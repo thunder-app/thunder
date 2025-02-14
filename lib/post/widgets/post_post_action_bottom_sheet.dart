@@ -7,6 +7,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';

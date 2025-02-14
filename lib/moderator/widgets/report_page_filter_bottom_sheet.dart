@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/models/community/models.dart';
 
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/community/pages/create_post_page.dart';

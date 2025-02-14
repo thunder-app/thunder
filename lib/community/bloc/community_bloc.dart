@@ -6,9 +6,11 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
@@ -57,7 +59,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           BlockCommunityResponse blockCommunityResponse = await blockCommunity(event.communityId, event.value);
           emit(state.copyWith(
             status: CommunityStatus.success,
-            communityView: blockCommunityResponse.communityView,
+            communityView: convertToCommunityView(blockCommunityResponse.communityView),
             message: blockCommunityResponse.blocked
                 ? l10n.successfullyBlockedCommunity(blockCommunityResponse.communityView.community.name)
                 : l10n.successfullyUnblockedCommunity(blockCommunityResponse.communityView.community.name),
@@ -100,7 +102,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           // Wait for one second before fetching the community information to get any updated information
           await Future.delayed(const Duration(seconds: 1)).then((value) async {
             GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
-            emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
+            emit(state.copyWith(status: CommunityStatus.success, communityView: convertToCommunityView(getCommunityResponse.communityView)));
 
             if (GlobalContext.context.mounted && getCommunityResponse.communityView.subscribed == subscribedType) {
               if (subscribedType == SubscribedType.subscribed) {

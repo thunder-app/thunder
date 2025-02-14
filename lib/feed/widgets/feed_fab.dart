@@ -10,6 +10,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -19,6 +20,7 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/convert.dart';
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag});
@@ -60,7 +62,7 @@ class FeedFAB extends StatelessWidget {
     bool isPostLocked = false;
 
     if (authState.isLoggedIn && isCommunityFeed) {
-      final CommunityView communityView = feedState.fullCommunityView!.communityView;
+      final CommunityView communityView = convertToCommunityView(feedState.fullCommunityView!.communityView)!;
 
       if (communityView.community.postingRestrictedToMods && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == communityView.community.id)) {
         isPostLocked = true;
@@ -311,6 +313,6 @@ class FeedFAB extends StatelessWidget {
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
+    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: convertToCommunityView(feedBloc.state.fullCommunityView?.communityView));
   }
 }

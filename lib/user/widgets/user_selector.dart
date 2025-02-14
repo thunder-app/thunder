@@ -6,10 +6,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/utils/convert.dart';
 
 /// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
 ///
@@ -128,7 +130,7 @@ Future<void> temporarilySwitchAccount(
         CommunityView? resolvedCommunity;
         try {
           final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: communityActorId!));
-          resolvedCommunity = resolveObjectResponse.community;
+          resolvedCommunity = convertToCommunityView(resolveObjectResponse.community);
         } catch (e) {
           // We'll just return null if we can't find it.
         }

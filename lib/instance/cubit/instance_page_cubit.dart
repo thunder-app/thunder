@@ -3,9 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/error_messages.dart';
 
 part 'instance_page_state.dart';
@@ -40,7 +42,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       emit(state.copyWith(
         status: searchResponse.communities.isEmpty || searchResponse.communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        communities: [...(state.communities ?? []), ...searchResponse.communities],
+        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => convertToCommunityView(cv)!)],
         page: page ?? 1,
       ));
     } catch (e) {

@@ -5,7 +5,9 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/convert.dart';
 
 /// Logic to block a community
 Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async {
@@ -35,7 +37,7 @@ Future<CommunityView> followCommunity(int communityId, bool follow) async {
     follow: follow,
   ));
 
-  return communityResponse.communityView;
+  return convertToCommunityView(communityResponse.communityView)!;
 }
 
 Future<GetCommunityResponse> fetchCommunityInformation({int? id, String? name}) async {

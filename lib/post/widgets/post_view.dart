@@ -19,6 +19,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
@@ -49,6 +50,7 @@ import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/utils/convert.dart';
 
 class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -359,6 +361,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     id: postViewMedia.postView.community.id,
                   ));
 
+                  final CommunityView communityView = convertToCommunityView(getCommunityResponse.communityView)!;
+
                   if (context.mounted) {
                     Navigator.of(context).push(
                       SwipeablePageRoute(
@@ -374,7 +378,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             ],
                             child: CreatePostPage(
                               communityId: postViewMedia.postView.community.id,
-                              communityView: getCommunityResponse.communityView,
+                              communityView: communityView,
                               postView: postViewMedia.postView,
                               onPostSuccess: (PostViewMedia pvm, _) {
                                 setState(() => postViewMedia = pvm);

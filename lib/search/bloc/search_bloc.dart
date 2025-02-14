@@ -9,12 +9,14 @@ import 'package:collection/collection.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -182,7 +184,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse?.communities.toList(), event.favoriteCommunities),
+        communities: prioritizeFavorites(searchResponse?.communities.toList().map((cv) => convertToCommunityView(cv)!).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
         comments: searchResponse?.comments,
         posts: await parsePostViews(searchResponse?.posts ?? []),
@@ -236,7 +238,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse?.communities ?? []];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((community) => convertToCommunityView(community)!) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
           state.comments = [...state.comments ?? [], ...searchResponse?.comments ?? []];
           state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse?.posts ?? [])];
@@ -292,7 +294,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         communities = state.communities?.map((CommunityView communityView) {
               if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
+                return convertToCommunityView(fullCommunityView.communityView)!;
               }
               return communityView;
             }).toList() ??
@@ -304,7 +306,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         communities = state.trendingCommunities?.map((CommunityView communityView) {
               if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
+                return convertToCommunityView(fullCommunityView.communityView)!;
               }
               return communityView;
             }).toList() ??
@@ -326,7 +328,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         communities = state.communities?.map((CommunityView communityView) {
               if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
+                return convertToCommunityView(fullCommunityView.communityView)!;
               }
               return communityView;
             }).toList() ??
@@ -338,7 +340,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         communities = state.trendingCommunities?.map((CommunityView communityView) {
               if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
+                return convertToCommunityView(fullCommunityView.communityView)!;
               }
               return communityView;
             }).toList() ??
@@ -363,7 +365,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         auth: account?.jwt,
       ));
 
-      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: listCommunitiesResponse.communities));
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: listCommunitiesResponse.communities.map((cv) => convertToCommunityView(cv)!).toList()));
     } catch (e) {
       // Not the end of the world if we can't load trending
     }

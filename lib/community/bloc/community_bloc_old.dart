@@ -11,10 +11,12 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -260,7 +262,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               hasReachedEnd: getPostsResponse.posts.isEmpty || getPostsResponse.posts.length < limit,
               subscribedType: subscribedType,
               sortType: sortType,
-              communityInfo: getCommunityResponse?.communityView,
+              communityInfo: convertToCommunityView(getCommunityResponse!.communityView),
               tagline: getSiteResponse.taglines.isEmpty ? '' : getSiteResponse.taglines[Random().nextInt(getSiteResponse.taglines.length)].content,
             ),
           );
@@ -469,7 +471,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        blockedCommunity: blockCommunityResponse.communityView,
+        blockedCommunity: convertToCommunityView(blockCommunityResponse.communityView),
       ));
     } catch (e) {
       return emit(

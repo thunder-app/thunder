@@ -18,6 +18,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';

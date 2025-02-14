@@ -29,6 +29,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/convert.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
@@ -234,7 +235,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ),
             if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
               ThunderPopupMenuItem(
-                onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
+                onTap: () => showCommunityShareSheet(context, convertToCommunityView(feedBloc.state.fullCommunityView!.communityView)!),
                 icon: Icons.share_rounded,
                 title: l10n.share,
               ),
@@ -256,7 +257,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                           BlocProvider.value(value: searchBloc),
                           BlocProvider.value(value: thunderBloc),
                         ],
-                        child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
+                        child: SearchPage(communityToSearch: convertToCommunityView(feedBloc.state.fullCommunityView!.communityView), isInitiallyFocused: true),
                       ),
                     ),
                   );

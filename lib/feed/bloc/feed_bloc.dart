@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
@@ -450,9 +451,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedCommunityViewUpdated(FeedCommunityViewUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    GetCommunityResponse? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView);
+    // GetCommunityResponse? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView!);
 
-    emit(state.copyWith(status: FeedStatus.success, fullCommunityView: updatedFullCommunityView));
+    emit(state.copyWith(status: FeedStatus.success, fullCommunityView: state.fullCommunityView));
   }
 
   /// Resets the FeedState to its initial state

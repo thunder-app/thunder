@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -18,6 +19,7 @@ import 'package:thunder/post/utils/navigate_create_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -50,7 +52,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
 
     if (widget.getCommunityResponse == null) return Container();
 
-    CommunityView communityView = widget.getCommunityResponse!.communityView;
+    CommunityView? communityView = convertToCommunityView(widget.getCommunityResponse?.communityView);
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
@@ -63,7 +65,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
         child: Container(
           alignment: Alignment.centerRight,
           child: Dismissible(
-            key: Key(communityView.community.id.toString()),
+            key: Key(communityView!.community.id.toString()),
             onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
@@ -350,7 +352,7 @@ class CommunityActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    CommunityView communityView = getCommunityResponse.communityView;
+    CommunityView? communityView = convertToCommunityView(getCommunityResponse.communityView);
 
     return Row(
       children: [
@@ -359,7 +361,7 @@ class CommunityActions extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () async {
                     HapticFeedback.mediumImpact();
-                    navigateToCreatePostPage(context, communityId: communityView.community.id, communityView: getCommunityResponse.communityView);
+                    navigateToCreatePostPage(context, communityId: communityView?.community.id, communityView: communityView);
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -387,7 +389,7 @@ class CommunityActions extends StatelessWidget {
                 ? () {
                     HapticFeedback.mediumImpact();
                     context.read<CommunityBloc>().add(CommunityActionEvent(
-                        communityAction: CommunityAction.follow, communityId: communityView.community.id, value: communityView.subscribed == SubscribedType.notSubscribed ? true : false));
+                        communityAction: CommunityAction.follow, communityId: communityView!.community.id, value: communityView.subscribed == SubscribedType.notSubscribed ? true : false));
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -399,7 +401,7 @@ class CommunityActions extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  switch (communityView.subscribed) {
+                  switch (communityView!.subscribed) {
                     SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
                     SubscribedType.pending => Icons.pending_outlined,
                     SubscribedType.subscribed => Icons.remove_circle_outline_rounded,

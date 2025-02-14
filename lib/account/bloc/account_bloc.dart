@@ -9,6 +9,8 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/models/models.dart';
+import 'package:thunder/utils/convert.dart';
 
 part 'account_event.dart';
 part 'account_state.dart';
@@ -111,7 +113,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           ),
         );
 
-        subscriptions.addAll(listCommunitiesResponse.communities);
+        subscriptions.addAll(listCommunitiesResponse.communities.map((cv) => convertToCommunityView(cv)!));
         currentPage++;
         hasFetchedAllSubsciptions = listCommunitiesResponse.communities.isEmpty;
       }
