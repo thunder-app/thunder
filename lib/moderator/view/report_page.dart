@@ -26,6 +26,7 @@ import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -208,7 +209,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                 PostView postView = PostView(
                                   post: state.postReports[index].post,
                                   creator: state.postReports[index].creator,
-                                  community: state.postReports[index].community,
+                                  community: convertToCommunity(state.postReports[index].community)!,
                                   creatorBannedFromCommunity: state.postReports[index].creatorBannedFromCommunity,
                                   counts: state.postReports[index].counts,
                                   subscribed: SubscribedType.notSubscribed, // Not available

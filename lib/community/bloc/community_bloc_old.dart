@@ -241,7 +241,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           currentPage++;
 
           // Parse the posts and add in media information which is used elsewhere in the app
-          List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+          List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts.map((p) => convertToPostView(p)!).toList());
           posts.addAll(formattedPosts);
 
           for (PostViewMedia post in formattedPosts) {
@@ -301,7 +301,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           currentPage++;
 
           // Parse the posts, and append them to the existing list
-          List<PostViewMedia> postMedias = await parsePostViews(getPostsResponse.posts);
+          List<PostViewMedia> postMedias = await parsePostViews(getPostsResponse.posts.map((p) => convertToPostView(p)!).toList());
 
           Set<int> postIds = Set.from(state.postIds ?? {});
 
@@ -420,7 +420,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       PostResponse postResponse = await lemmy.run(CreatePost(auth: account!.jwt!, communityId: state.communityId!, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw));
 
       // Parse the posts, and append them to the existing list
-      List<PostViewMedia> posts = await parsePostViews([postResponse.postView]);
+      List<PostViewMedia> posts = await parsePostViews([convertToPostView(postResponse.postView)!]);
       List<PostViewMedia> postViews = List.from(state.postViews ?? []);
       postViews.addAll(posts);
 

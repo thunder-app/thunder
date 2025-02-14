@@ -10,7 +10,7 @@ bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchR
   final List<CommunityView>? communities = searchState?.communities?.map((cv) => convertToCommunityView(cv)!).toList() ?? searchResponse?.communities.map((cv) => convertToCommunityView(cv)!).toList();
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
   final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
-  final List<PostView>? posts = searchState?.posts?.map((pvm) => pvm.postView).toList() ?? searchResponse?.posts;
+  final List<PostView>? posts = searchState?.posts?.map((pvm) => convertToPostView(pvm.postView)!).toList() ?? searchResponse?.posts.map((pv) => convertToPostView(pv)!).toList();
   final List<GetInstanceInfoResponse>? instances = searchState?.instances;
 
   return switch (searchType) {

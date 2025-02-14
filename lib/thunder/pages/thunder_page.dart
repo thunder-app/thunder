@@ -40,6 +40,7 @@ import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.d
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -277,7 +278,7 @@ class _ThunderState extends State<Thunder> {
           auth: account?.jwt,
         ));
         if (context.mounted) {
-          navigateToPost(context, postViewMedia: (await parsePostViews([fullPostView.postView])).first);
+          navigateToPost(context, postViewMedia: (await parsePostViews([convertToPostView(fullPostView.postView)!])).first);
           return;
         }
       } catch (e) {

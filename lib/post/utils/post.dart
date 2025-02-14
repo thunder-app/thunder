@@ -10,9 +10,11 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -273,7 +275,7 @@ Future<PostView> votePost(int postId, int score) async {
     score: score,
   ));
 
-  PostView updatedPostView = postResponse.postView;
+  PostView updatedPostView = convertToPostView(postResponse.postView)!;
   return updatedPostView;
 }
 
@@ -290,7 +292,7 @@ Future<PostView> savePost(int postId, bool save) async {
     save: save,
   ));
 
-  PostView updatedPostView = postResponse.postView;
+  PostView updatedPostView = convertToPostView(postResponse.postView)!;
   return updatedPostView;
 }
 
@@ -312,7 +314,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
     for (PostView postView in postViews) {
       try {
         final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: postView.post.apId));
-        postViewsFinal.add(resolveObjectResponse.post!);
+        postViewsFinal.add(convertToPostView(resolveObjectResponse.post)!);
       } catch (e) {
         // If we can't resolve it, we won't even add it
       }

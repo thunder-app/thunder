@@ -1,4 +1,4 @@
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/enums.dart';
 
 class Community {
   final int id;

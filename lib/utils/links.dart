@@ -20,6 +20,7 @@ import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/webview.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 import 'package:thunder/utils/settings_utils.dart';
@@ -200,7 +201,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       ));
 
       if (context.mounted) {
-        navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
+        navigateToPost(context, postViewMedia: (await parsePostViews([convertToPostView(post.postView)!])).first);
         return;
       }
     } catch (e) {

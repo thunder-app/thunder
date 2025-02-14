@@ -1,5 +1,5 @@
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/models/media.dart';
+import 'package:thunder/core/models/models.dart';
 
 class PostViewMedia {
   PostView postView;

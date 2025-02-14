@@ -16,11 +16,13 @@ import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/network_errors.dart';
@@ -133,12 +135,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+            List<PostViewMedia> posts = await parsePostViews([convertToPostView(getPostResponse.postView)!]);
 
             postView = posts.first;
 
             moderators = getPostResponse.moderators;
-            crossPosts = getPostResponse.crossPosts;
+            crossPosts = getPostResponse.crossPosts.map((pv) => convertToPostView(pv)!).toList();
           }
 
           // If we can't get mods from the post response, fallback to getting the whole community.

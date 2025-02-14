@@ -344,6 +344,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         auth: account?.jwt,
       )))
           .posts
+          .map((p) => convertToPostView(p)!)
           .toList(); // Copy so we can modify
 
       List<PostView> postsByUrl = (await lemmy.run(Search(
@@ -351,7 +352,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         type: SearchType.url,
         auth: account?.jwt,
       )))
-          .posts;
+          .posts
+          .map((p) => convertToPostView(p)!)
+          .toList();
 
       // De-dup posts found by body and URL
       posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));

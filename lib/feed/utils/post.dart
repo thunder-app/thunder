@@ -11,6 +11,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/convert.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
@@ -60,21 +61,20 @@ Future<Map<String, dynamic>> fetchFeedItems({
       int postResponseLength = getPostsResponse.posts.length;
 
       // Remove deleted posts
-      getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
+      List<PostView> posts = getPostsResponse.posts.map((p) => convertToPostView(p)!).toList();
+      posts = posts.where((PostView postView) => postView.post.deleted == false).toList();
 
       // Remove posts that contain any of the keywords in the title, body, or url
-      getPostsResponse = getPostsResponse.copyWith(
-        posts: getPostsResponse.posts.where((postView) {
-          final title = postView.post.name.toLowerCase();
-          final body = postView.post.body?.toLowerCase() ?? '';
-          final url = postView.post.url?.toLowerCase() ?? '';
+      posts = posts.where((postView) {
+        final title = postView.post.name.toLowerCase();
+        final body = postView.post.body?.toLowerCase() ?? '';
+        final url = postView.post.url?.toLowerCase() ?? '';
 
-          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
-        }).toList(),
-      );
+        return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
+      }).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+      List<PostViewMedia> formattedPosts = await parsePostViews(posts);
       postViewMedias.addAll(formattedPosts);
 
       if (keywordFilters.isNotEmpty) {
@@ -109,13 +109,15 @@ Future<Map<String, dynamic>> fetchFeedItems({
       ));
 
       // Remove deleted posts and comments
+      List<PostView> posts = getPersonDetailsResponse.posts.map((p) => convertToPostView(p)!).toList();
+      posts = posts.where((PostView postView) => postView.post.deleted == false).toList();
+
       getPersonDetailsResponse = getPersonDetailsResponse.copyWith(
-        posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
         comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
       );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPersonDetailsResponse.posts);
+      List<PostViewMedia> formattedPosts = await parsePostViews(posts);
       postViewMedias.addAll(formattedPosts);
 
       commentViews.addAll(getPersonDetailsResponse.comments);
@@ -173,7 +175,7 @@ Future<PostView> createPost({
     ));
   }
 
-  return postResponse.postView;
+  return convertToPostView(postResponse.postView)!;
 }
 
 /// Creates a placeholder post from the given parameters. This is mainly used to display a preview of the post

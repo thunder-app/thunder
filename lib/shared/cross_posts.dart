@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

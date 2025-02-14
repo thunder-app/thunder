@@ -142,7 +142,7 @@ Future<void> temporarilySwitchAccount(
         PostView? resolvedPost;
         try {
           final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: postActorId!));
-          resolvedPost = resolveObjectResponse.post;
+          resolvedPost = convertToPostView(resolveObjectResponse.post);
           if (resolvedPost != null) {
             onPostChanged((await parsePostViews([resolvedPost])).first);
           }

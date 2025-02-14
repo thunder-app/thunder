@@ -38,6 +38,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -752,7 +753,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
 
     setState(() {
-      crossPosts = searchResponse?.posts ?? [];
+      crossPosts = searchResponse?.posts.map((p) => convertToPostView(p)!).toList() ?? [];
     });
   }
 

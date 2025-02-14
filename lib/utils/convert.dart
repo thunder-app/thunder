@@ -37,6 +37,29 @@ Community? convertToCommunity(dynamic community) {
   );
 }
 
+PostView? convertToPostView(dynamic postView) {
+  if (postView == null) return null;
+
+  return PostView(
+    post: postView.post,
+    creator: postView.creator,
+    community: convertToCommunity(postView.community)!,
+    imageDetails: postView.imageDetails,
+    creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
+    bannedFromCommunity: postView.bannedFromCommunity,
+    creatorIsModerator: postView.creatorIsModerator,
+    creatorIsAdmin: postView.creatorIsAdmin,
+    counts: postView.counts,
+    subscribed: postView.subscribed,
+    saved: postView.saved,
+    read: postView.read,
+    hidden: postView.hidden,
+    creatorBlocked: postView.creatorBlocked,
+    myVote: postView.myVote,
+    unreadComments: postView.unreadComments,
+  );
+}
+
 SubscribedType? convertToSubscribedType(dynamic subscribedType) {
   if (subscribedType == null) return null;
 

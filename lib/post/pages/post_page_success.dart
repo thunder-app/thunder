@@ -9,6 +9,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
