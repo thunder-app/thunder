@@ -1356,5 +1356,23 @@
   "viewAll": "Alles bekĳken",
   "@viewAll": {
     "description": "A title for viewing all of something (e.g., instances)"
+  },
+  "accountSettingsImportedSuccessfully": "Lemmy-account­instellingen succesvol geïmporteerd!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "accessibilityProfilesDescription": "Met toegankelĳkheids­profielen kunt u meerdere instellingen tegelĳk toepassen om aan een specifieke toegankelĳkheids­vereiste te voldoen.",
+  "@accessibilityProfilesDescription": {},
+  "accountSettingOverrideWarning": "Uw account­instellingen hebben voorrang op de volgende instellingen",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "accountSwitchParentCommentNotFound": "De geselecteerde opmerking is niet gevonden op ‘{instance}’. Terug­schakelen naar het vorige account.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "accountSettingsExportedSuccessfully": "Lemmy-account­instellingen zijn succesvol geëxporteerd naar {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
   }
 }
