@@ -264,7 +264,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ),
                       CommunityChip(
                         communityId: postView.community.id,
-                        communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
+                        communityAvatar: CommunityAvatar(community: convertToCommunity(postView.community), radius: 10, thumbnailSize: 20, format: 'png'),
                         communityName: postView.community.name,
                         communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,

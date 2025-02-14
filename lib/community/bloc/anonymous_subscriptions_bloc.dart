@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/community/helpers/anonymous_subscriptions_helper.dart';
 import 'package:thunder/community/models/anonymous_subscriptions.dart';
+import 'package:thunder/core/models/models.dart';
 
 part 'anonymous_subscriptions_event.dart';
 part 'anonymous_subscriptions_state.dart';

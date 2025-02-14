@@ -14,6 +14,7 @@ import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -534,7 +535,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: CommunityAvatar(community: postView.community, radius: 14),
+                child: CommunityAvatar(community: convertToCommunity(postView.community), radius: 14),
               ),
               onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
             ),

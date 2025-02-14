@@ -5,6 +5,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/modlog/modlog.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Helper function which handles the logic of fetching modlog events from the API
@@ -96,7 +97,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         moderator: modRemovePostView.moderator,
         reason: modRemovePostView.modRemovePost.reason,
         post: modRemovePostView.post,
-        community: modRemovePostView.community,
+        community: convertToCommunity(modRemovePostView.community),
         actioned: modRemovePostView.modRemovePost.removed,
       );
     case ModlogActionType.modLockPost:
@@ -106,7 +107,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modLockPostView.modLockPost.when,
         moderator: modLockPostView.moderator,
         post: modLockPostView.post,
-        community: modLockPostView.community,
+        community: convertToCommunity(modLockPostView.community),
         actioned: modLockPostView.modLockPost.locked,
       );
     case ModlogActionType.modFeaturePost:
@@ -116,7 +117,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modFeaturePostView.modFeaturePost.when,
         moderator: modFeaturePostView.moderator,
         post: modFeaturePostView.post,
-        community: modFeaturePostView.community,
+        community: convertToCommunity(modFeaturePostView.community),
         actioned: modFeaturePostView.modFeaturePost.featured,
       );
     case ModlogActionType.modRemoveComment:
@@ -129,7 +130,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         user: modRemoveCommentView.commenter,
         post: modRemoveCommentView.post,
         comment: modRemoveCommentView.comment,
-        community: modRemoveCommentView.community,
+        community: convertToCommunity(modRemoveCommentView.community),
         actioned: modRemoveCommentView.modRemoveComment.removed,
       );
     case ModlogActionType.modRemoveCommunity:
@@ -139,7 +140,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modRemoveCommunityView.modRemoveCommunity.when,
         moderator: modRemoveCommunityView.moderator,
         reason: modRemoveCommunityView.modRemoveCommunity.reason,
-        community: modRemoveCommunityView.community,
+        community: convertToCommunity(modRemoveCommunityView.community),
         actioned: modRemoveCommunityView.modRemoveCommunity.removed,
       );
     case ModlogActionType.modBanFromCommunity:
@@ -150,7 +151,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         moderator: modBanFromCommunityView.moderator,
         reason: modBanFromCommunityView.modBanFromCommunity.reason,
         user: modBanFromCommunityView.bannedPerson,
-        community: modBanFromCommunityView.community,
+        community: convertToCommunity(modBanFromCommunityView.community),
         actioned: modBanFromCommunityView.modBanFromCommunity.banned,
       );
     case ModlogActionType.modBan:
@@ -170,7 +171,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modAddCommunityView.modAddCommunity.when,
         moderator: modAddCommunityView.moderator,
         user: modAddCommunityView.moddedPerson,
-        community: modAddCommunityView.community,
+        community: convertToCommunity(modAddCommunityView.community),
         actioned: !modAddCommunityView.modAddCommunity.removed,
       );
     case ModlogActionType.modTransferCommunity:
@@ -180,7 +181,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modTransferCommunityView.modTransferCommunity.when,
         moderator: modTransferCommunityView.moderator,
         user: modTransferCommunityView.moddedPerson,
-        community: modTransferCommunityView.community,
+        community: convertToCommunity(modTransferCommunityView.community),
         actioned: true,
       );
     case ModlogActionType.modAdd:
@@ -235,7 +236,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: modHideCommunityView.modHideCommunity.when,
         admin: modHideCommunityView.admin,
         reason: modHideCommunityView.modHideCommunity.reason,
-        community: modHideCommunityView.community,
+        community: convertToCommunity(modHideCommunityView.community),
         actioned: modHideCommunityView.modHideCommunity.hidden,
       );
     default:

@@ -17,6 +17,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a user
@@ -117,7 +118,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
                   communityId: postViewMedia.postView.community.id,
                   // Create a stub for the community view.
                   communityView: CommunityView(
-                    community: postViewMedia.postView.community,
+                    community: convertToCommunity(postViewMedia.postView.community)!,
                     subscribed: postViewMedia.postView.subscribed,
                     blocked: false,
                     counts: CommunityAggregates(

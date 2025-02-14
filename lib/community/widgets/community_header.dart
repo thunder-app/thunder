@@ -9,6 +9,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -96,7 +97,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       Row(
                         children: [
                           CommunityAvatar(
-                            community: widget.getCommunityResponse.communityView.community,
+                            community: convertToCommunity(widget.getCommunityResponse.communityView.community),
                             radius: 45.0,
                             showCommunityStatus: true,
                           ),

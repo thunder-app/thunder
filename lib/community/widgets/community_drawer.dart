@@ -21,6 +21,7 @@ import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -379,7 +380,7 @@ class ModeratedCommunities extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: moderatedCommunities.length,
               itemBuilder: (context, index) {
-                Community community = moderatedCommunities[index].community;
+                Community community = convertToCommunity(moderatedCommunities[index].community)!;
 
                 final bool isCommunitySelected = feedState.communityId == community.id;
 

@@ -1,6 +1,7 @@
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';

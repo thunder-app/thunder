@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -226,7 +227,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
             if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
               ThunderPopupMenuItem(
                 onTap: () async {
-                  final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                  final Community community = convertToCommunity(context.read<FeedBloc>().state.fullCommunityView!.communityView.community)!;
                   bool isFavorite = _getFavoriteStatus(context);
                   await toggleFavoriteCommunity(context, community, isFavorite);
                 },
@@ -412,7 +413,7 @@ void _onSubscribeIconPressed(BuildContext context) async {
   final FeedBloc feedBloc = context.read<FeedBloc>();
   final FeedState feedState = feedBloc.state;
 
-  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
+  final Community community = convertToCommunity(feedBloc.state.fullCommunityView!.communityView.community)!;
   final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   final AppLocalizations l10n = AppLocalizations.of(context)!;

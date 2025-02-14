@@ -1,4 +1,4 @@
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 
 import '../models/anonymous_subscriptions.dart';
 

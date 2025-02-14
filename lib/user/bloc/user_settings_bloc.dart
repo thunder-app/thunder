@@ -8,10 +8,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -177,7 +179,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       );
 
       final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
-      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => convertToCommunity(communityBlockView.community)!).toList()..sort((a, b) => a.name.compareTo(b.name));
       final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
 
       return emit(state.copyWith(
@@ -231,7 +233,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       if (event.unblock) {
         updatedCommunityBlocks = state.communityBlocks.where((community) => community.id != event.communityId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedCommunityBlocks = (state.communityBlocks + [blockCommunityResponse.communityView.community])..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = (state.communityBlocks + [convertToCommunity(blockCommunityResponse.communityView.community)!])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
@@ -314,7 +316,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       if (account?.jwt == null) return;
 
-      await PictrsApi(account!.instance!).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
+      await PictrsApi(account!.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
     } catch (e) {

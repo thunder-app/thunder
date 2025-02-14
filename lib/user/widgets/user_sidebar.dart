@@ -14,6 +14,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -218,7 +219,7 @@ class UserModeratorList extends StatelessWidget {
                 child: Row(
                   children: [
                     CommunityAvatar(
-                      community: mods.community,
+                      community: convertToCommunity(mods.community),
                       radius: 20.0,
                     ),
                     const SizedBox(width: 16.0),
