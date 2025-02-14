@@ -10,6 +10,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 

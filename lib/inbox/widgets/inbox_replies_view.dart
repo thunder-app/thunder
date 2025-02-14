@@ -10,10 +10,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/utils/convert.dart';
 
 extension on CommentReplyView {
   CommentView toCommentView() {
@@ -21,10 +23,10 @@ extension on CommentReplyView {
       comment: comment,
       creator: creator,
       post: post,
-      community: community,
+      community: convertToCommunity(community)!,
       counts: counts,
       creatorBannedFromCommunity: creatorBannedFromCommunity,
-      subscribed: subscribed,
+      subscribed: convertToSubscribedType(subscribed)!,
       saved: saved,
       creatorBlocked: creatorBlocked,
       myVote: myVote as int?,

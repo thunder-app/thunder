@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/modlog/utils/navigate_modlog.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';

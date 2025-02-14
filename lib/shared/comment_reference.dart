@@ -8,6 +8,7 @@ import 'package:thunder/comment/utils/comment.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/shared/comment_content.dart';
 import 'package:thunder/shared/full_name_widgets.dart';

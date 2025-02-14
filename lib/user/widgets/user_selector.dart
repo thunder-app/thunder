@@ -161,7 +161,7 @@ Future<void> temporarilySwitchAccount(
         CommentView? resolvedComment;
         try {
           final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: parentCommentActorId!));
-          resolvedComment = resolveObjectResponse.comment;
+          resolvedComment = convertToCommentView(resolveObjectResponse.comment);
           if (resolvedComment != null) {
             onParentCommentChanged(resolvedComment);
           }

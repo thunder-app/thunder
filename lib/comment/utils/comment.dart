@@ -2,6 +2,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -63,7 +64,7 @@ Future<CommentView> voteComment(int commentId, int score) async {
     score: score,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
+  CommentView updatedCommentView = convertToCommentView(commentResponse.commentView)!;
   return updatedCommentView;
 }
 
@@ -85,7 +86,7 @@ Future<CommentView> saveComment(int commentId, bool save) async {
     save: save,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
+  CommentView updatedCommentView = convertToCommentView(commentResponse.commentView)!;
   return updatedCommentView;
 }
 
@@ -107,7 +108,7 @@ Future<CommentView> deleteComment(int commentId, bool deleted) async {
     deleted: deleted,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
+  CommentView updatedCommentView = convertToCommentView(commentResponse.commentView)!;
   return updatedCommentView;
 }
 

@@ -323,7 +323,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   creatorIsModerator: state.commentReports[index].creatorIsModerator,
                                   creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
                                   post: state.commentReports[index].post,
-                                  community: state.commentReports[index].community,
+                                  community: convertToCommunity(state.commentReports[index].community)!,
                                   counts: state.commentReports[index].counts,
                                   creatorBannedFromCommunity: state.commentReports[index].creatorBannedFromCommunity,
                                   subscribed: SubscribedType.notSubscribed, // Not available

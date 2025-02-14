@@ -364,7 +364,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         type: SearchType.comments,
         auth: account?.jwt,
       )))
-          .comments;
+          .comments
+          .map((c) => convertToCommentView(c)!)
+          .toList();
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,

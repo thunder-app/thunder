@@ -193,11 +193,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           });
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
-          CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!).toList());
+          CommentNode comments = buildCommentTree(getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!).toList());
 
           Map<int, CommentView> responseMap = {};
-          for (CommentView comment in getCommentsResponse.comments) {
+          for (CommentView comment in getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!)) {
             responseMap[comment.comment.id] = comment;
           }
 
@@ -274,11 +274,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             });
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
-            CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!).toList());
+            CommentNode comments = buildCommentTree(getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!).toList());
 
             Map<int, CommentView> responseMap = {};
-            for (CommentView comment in getCommentsResponse.comments) {
+            for (CommentView comment in getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!)) {
               responseMap[comment.comment.id] = comment;
             }
 
@@ -336,9 +336,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!));
 
-          for (CommentView comment in getCommentsResponse.comments) {
+          for (CommentView comment in getCommentsResponse.comments.map((cv) => convertToCommentView(cv)!)) {
             state.commentResponseMap[comment.comment.id] = comment;
           }
           // Build the tree view from the flattened comments
@@ -608,7 +608,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       CommentResponse deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
-      updateModifiedComment(state.comments, deletedComment.commentView);
+      updateModifiedComment(state.comments, convertToCommentView(deletedComment.commentView)!);
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));

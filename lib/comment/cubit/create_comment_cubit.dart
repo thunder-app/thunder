@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:lemmy_api_client/pictrs.dart';
+import 'package:thunder/core/models/models.dart';
+import 'package:thunder/utils/convert.dart';
 
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/models/account.dart';
@@ -72,7 +74,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         ));
       }
 
-      emit(state.copyWith(status: CreateCommentStatus.success, commentView: commentResponse.commentView));
+      emit(state.copyWith(status: CreateCommentStatus.success, commentView: convertToCommentView(commentResponse.commentView)));
       return commentResponse.commentView.comment.id;
     } catch (e) {
       emit(state.copyWith(status: CreateCommentStatus.error, message: getExceptionErrorMessage(e)));

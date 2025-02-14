@@ -9,8 +9,10 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
+import 'package:thunder/utils/convert.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'inbox_event.dart';
@@ -268,10 +270,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         comment: existingCommentReplyView.comment,
         creator: existingCommentReplyView.creator,
         post: existingCommentReplyView.post,
-        community: existingCommentReplyView.community,
+        community: convertToCommunity(existingCommentReplyView.community)!,
         counts: existingCommentReplyView.counts,
         creatorBannedFromCommunity: existingCommentReplyView.creatorBannedFromCommunity,
-        subscribed: existingCommentReplyView.subscribed,
+        subscribed: convertToSubscribedType(existingCommentReplyView.subscribed)!,
         saved: existingCommentReplyView.saved,
         creatorBlocked: existingCommentReplyView.creatorBlocked,
         myVote: existingCommentReplyView.myVote as int?,
@@ -281,10 +283,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         comment: existingPersonMentionView.comment,
         creator: existingPersonMentionView.creator,
         post: existingPersonMentionView.post,
-        community: existingPersonMentionView.community,
+        community: convertToCommunity(existingPersonMentionView.community)!,
         counts: existingPersonMentionView.counts,
         creatorBannedFromCommunity: existingPersonMentionView.creatorBannedFromCommunity,
-        subscribed: existingPersonMentionView.subscribed,
+        subscribed: convertToSubscribedType(existingPersonMentionView.subscribed)!,
         saved: existingPersonMentionView.saved,
         creatorBlocked: existingPersonMentionView.creatorBlocked,
         myVote: existingPersonMentionView.myVote,

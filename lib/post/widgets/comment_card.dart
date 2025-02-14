@@ -9,6 +9,7 @@ import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';

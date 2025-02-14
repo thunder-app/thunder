@@ -1,4 +1,4 @@
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 
 class CommentViewTree {
   /// The comment information

@@ -9,10 +9,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // Project imports
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/utils/convert.dart';
 
 extension on PersonMentionView {
   CommentView toCommentView() {
@@ -20,10 +22,10 @@ extension on PersonMentionView {
       comment: comment,
       creator: creator,
       post: post,
-      community: community,
+      community: convertToCommunity(community)!,
       counts: counts,
       creatorBannedFromCommunity: creatorBannedFromCommunity,
-      subscribed: subscribed,
+      subscribed: convertToSubscribedType(subscribed)!,
       saved: saved,
       creatorBlocked: creatorBlocked,
     );

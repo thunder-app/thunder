@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/shared/comment_reference.dart';
 

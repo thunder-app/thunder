@@ -352,7 +352,7 @@ class _ThunderState extends State<Thunder> {
           auth: account?.jwt,
         ));
         if (context.mounted) {
-          navigateToComment(context, fullCommentView.commentView);
+          navigateToComment(context, convertToCommentView(fullCommentView.commentView)!);
           return;
         }
       } catch (e) {

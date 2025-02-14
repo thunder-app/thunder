@@ -121,13 +121,13 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         type: SearchType.comments,
       ));
 
-      List<CommentView> comments = [...(state.comments ?? []), ...searchResponse.comments];
+      List<CommentView> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => convertToCommentView(cv)!)];
       List<CommentView> commentsFinal = [];
       final LemmyApiV3 resolutionLemmy = (LemmyClient()..changeBaseUrl(state.resolutionInstance)).lemmyApiV3;
       for (final CommentView commentView in comments) {
         try {
           final ResolveObjectResponse resolveObjectResponse = await resolutionLemmy.run(ResolveObject(q: commentView.comment.apId));
-          commentsFinal.add(resolveObjectResponse.comment!);
+          commentsFinal.add(convertToCommentView(resolveObjectResponse.comment)!);
         } catch (e) {
           // If we can't resolve it, we won't even add it
         }

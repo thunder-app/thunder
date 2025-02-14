@@ -12,6 +12,7 @@ import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/comment/utils/navigate_comment.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';

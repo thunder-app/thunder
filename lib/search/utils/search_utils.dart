@@ -9,7 +9,7 @@ import 'package:thunder/utils/instance.dart';
 bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchResponse? searchResponse}) {
   final List<CommunityView>? communities = searchState?.communities?.map((cv) => convertToCommunityView(cv)!).toList() ?? searchResponse?.communities.map((cv) => convertToCommunityView(cv)!).toList();
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
-  final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
+  final List<CommentView>? comments = searchState?.comments?.map((cv) => convertToCommentView(cv)!).toList() ?? searchResponse?.comments.map((cv) => convertToCommentView(cv)!).toList();
   final List<PostView>? posts = searchState?.posts?.map((pvm) => convertToPostView(pvm.postView)!).toList() ?? searchResponse?.posts.map((pv) => convertToPostView(pv)!).toList();
   final List<GetInstanceInfoResponse>? instances = searchState?.instances;
 

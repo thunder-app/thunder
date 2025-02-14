@@ -222,7 +222,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       ));
 
       if (context.mounted) {
-        navigateToComment(context, fullCommentView.commentView);
+        navigateToComment(context, convertToCommentView(fullCommentView.commentView)!);
         return;
       }
     } catch (e) {

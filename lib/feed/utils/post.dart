@@ -112,15 +112,14 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<PostView> posts = getPersonDetailsResponse.posts.map((p) => convertToPostView(p)!).toList();
       posts = posts.where((PostView postView) => postView.post.deleted == false).toList();
 
-      getPersonDetailsResponse = getPersonDetailsResponse.copyWith(
-        comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
-      );
+      List<CommentView> comments = getPersonDetailsResponse.comments.map((c) => convertToCommentView(c)!).toList();
+      comments = comments.where((CommentView commentView) => commentView.comment.deleted == false).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
       List<PostViewMedia> formattedPosts = await parsePostViews(posts);
-      postViewMedias.addAll(formattedPosts);
 
-      commentViews.addAll(getPersonDetailsResponse.comments);
+      postViewMedias.addAll(formattedPosts);
+      commentViews.addAll(comments);
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;

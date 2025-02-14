@@ -6,7 +6,7 @@ CommunityView? convertToCommunityView(dynamic communityView) {
 
   return CommunityView(
     community: convertToCommunity(communityView.community)!,
-    subscribed: communityView.subscribed,
+    subscribed: convertToSubscribedType(communityView.subscribed)!,
     blocked: communityView.blocked,
     counts: communityView.counts,
     bannedFromCommunity: communityView.bannedFromCommunity,
@@ -50,7 +50,7 @@ PostView? convertToPostView(dynamic postView) {
     creatorIsModerator: postView.creatorIsModerator,
     creatorIsAdmin: postView.creatorIsAdmin,
     counts: postView.counts,
-    subscribed: postView.subscribed,
+    subscribed: convertToSubscribedType(postView.subscribed)!,
     saved: postView.saved,
     read: postView.read,
     hidden: postView.hidden,
@@ -60,8 +60,22 @@ PostView? convertToPostView(dynamic postView) {
   );
 }
 
+CommentView? convertToCommentView(dynamic commentView) {
+  return CommentView(
+    comment: commentView.comment,
+    creator: commentView.creator,
+    post: commentView.post,
+    community: convertToCommunity(commentView.community)!,
+    counts: commentView.counts,
+    creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+    subscribed: convertToSubscribedType(commentView.subscribed)!,
+    saved: commentView.saved,
+    creatorBlocked: commentView.creatorBlocked,
+    myVote: commentView.myVote as int?,
+  );
+}
+
 SubscribedType? convertToSubscribedType(dynamic subscribedType) {
   if (subscribedType == null) return null;
-
-  return SubscribedType.values.firstWhere((e) => e.name == subscribedType.name);
+  return SubscribedType.values.firstWhere((e) => e.value == subscribedType.value);
 }

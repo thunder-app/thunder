@@ -186,7 +186,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         status: SearchStatus.success,
         communities: prioritizeFavorites(searchResponse?.communities.toList().map((cv) => convertToCommunityView(cv)!).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
-        comments: searchResponse?.comments,
+        comments: searchResponse?.comments.map((cv) => convertToCommentView(cv)!).toList(),
         posts: await parsePostViews(searchResponse?.posts.map((pv) => convertToPostView(pv)!).toList() ?? []),
         instances: instances,
         page: 2,
@@ -240,7 +240,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           // Append the search results
           state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((community) => convertToCommunityView(community)!) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
-          state.comments = [...state.comments ?? [], ...searchResponse?.comments ?? []];
+          state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => convertToCommentView(cv)!) ?? []];
           state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse?.posts.map((pv) => convertToPostView(pv)!).toList() ?? [])];
 
           return emit(state.copyWith(
