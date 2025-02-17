@@ -526,7 +526,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
 }
 
 Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
-  Uri? parsedUri = Uri.tryParse(text);
+  Uri? parsedUri = Uri.tryParse(url ?? '') ?? Uri.tryParse(text);
 
   String parsedUrl = text;
 
