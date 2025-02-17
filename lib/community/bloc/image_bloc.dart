@@ -1,9 +1,19 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
-import 'package:thunder/community/bloc/community_bloc_old.dart';
+import 'package:stream_transform/stream_transform.dart';
+
 part 'image_state.dart';
 part 'image_event.dart';
+
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class ImageBloc extends Bloc<ImageEvent, ImageState> {
   ImageBloc() : super(const ImageState()) {
