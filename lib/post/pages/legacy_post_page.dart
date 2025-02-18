@@ -208,47 +208,50 @@ class _PostPageState extends State<PostPage> {
                     showSortBottomSheet(context, state);
                   },
                 ),
-                PopupMenuButton(
-                  itemBuilder: (context) => [
-                    ThunderPopupMenuItem(
-                      onTap: () => createCrossPost(
-                        context,
-                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
-                        url: widget.postView?.postView.post.url ?? state.postView?.postView.post.url,
-                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body,
-                        postUrl: widget.postView?.postView.post.apId ?? state.postView?.postView.post.apId,
-                      ),
-                      icon: Icons.repeat_rounded,
-                      title: l10n.createNewCrossPost,
-                    ),
-                    ThunderPopupMenuItem(
-                      onTap: () => setState(() => viewSource = !viewSource),
-                      icon: Icons.edit_document,
-                      title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
-                    ),
-                    ThunderPopupMenuItem(
-                      onTap: () => showSelectableTextModal(
-                        context,
-                        title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
-                        text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
-                      ),
-                      icon: Icons.select_all_rounded,
-                      title: l10n.selectText,
-                    ),
-                    if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+                Semantics(
+                  label: l10n.menu,
+                  child: PopupMenuButton(
+                    itemBuilder: (context) => [
                       ThunderPopupMenuItem(
-                        onTap: () {
-                          handleLinkLongPress(
-                            context,
-                            state.postView!.media.first.originalUrl!,
-                            state.postView!.media.first.originalUrl!,
-                            initialPage: LinkBottomSheetPage.alternateLinks,
-                          );
-                        },
-                        icon: Icons.link_rounded,
-                        title: l10n.alternateSources,
+                        onTap: () => createCrossPost(
+                          context,
+                          title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                          url: widget.postView?.postView.post.url ?? state.postView?.postView.post.url,
+                          text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body,
+                          postUrl: widget.postView?.postView.post.apId ?? state.postView?.postView.post.apId,
+                        ),
+                        icon: Icons.repeat_rounded,
+                        title: l10n.createNewCrossPost,
                       ),
-                  ],
+                      ThunderPopupMenuItem(
+                        onTap: () => setState(() => viewSource = !viewSource),
+                        icon: Icons.edit_document,
+                        title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+                      ),
+                      ThunderPopupMenuItem(
+                        onTap: () => showSelectableTextModal(
+                          context,
+                          title: widget.postView?.postView.post.name ?? state.postView?.postView.post.name ?? '',
+                          text: widget.postView?.postView.post.body ?? state.postView?.postView.post.body ?? '',
+                        ),
+                        icon: Icons.select_all_rounded,
+                        title: l10n.selectText,
+                      ),
+                      if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+                        ThunderPopupMenuItem(
+                          onTap: () {
+                            handleLinkLongPress(
+                              context,
+                              state.postView!.media.first.originalUrl!,
+                              state.postView!.media.first.originalUrl!,
+                              initialPage: LinkBottomSheetPage.alternateLinks,
+                            );
+                          },
+                          icon: Icons.link_rounded,
+                          title: l10n.alternateSources,
+                        ),
+                    ],
+                  ),
                 ),
               ],
               centerTitle: false,

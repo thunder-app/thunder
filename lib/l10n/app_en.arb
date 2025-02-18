@@ -1363,6 +1363,10 @@
   },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
+  "menu": "Menu",
+  "@menu": {
+    "description": "Menu button description"
+  },
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
   "@message": {},
   "metadataFontScale": "Metadata Font Scale",

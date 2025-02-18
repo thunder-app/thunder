@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
@@ -271,6 +272,8 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -314,22 +317,25 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                       color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) => VideoPlayBackSpeed.values
-                        .map(
-                          (videoPlaybackSpeed) => ThunderPopupMenuItem(
-                            onTap: () {
-                              widget.controller.setPlaybackSpeed(videoPlaybackSpeed.value);
-                              setState(() {});
-                            },
-                            icon: Icons.speed_rounded,
-                            title: videoPlaybackSpeed.label,
-                          ),
-                        )
-                        .toList(),
-                    icon: Icon(
-                      Icons.speed_rounded,
-                      color: Colors.white.withValues(alpha: 0.90),
+                  Semantics(
+                    label: l10n.menu,
+                    child: PopupMenuButton(
+                      itemBuilder: (context) => VideoPlayBackSpeed.values
+                          .map(
+                            (videoPlaybackSpeed) => ThunderPopupMenuItem(
+                              onTap: () {
+                                widget.controller.setPlaybackSpeed(videoPlaybackSpeed.value);
+                                setState(() {});
+                              },
+                              icon: Icons.speed_rounded,
+                              title: videoPlaybackSpeed.label,
+                            ),
+                          )
+                          .toList(),
+                      icon: Icon(
+                        Icons.speed_rounded,
+                        color: Colors.white.withValues(alpha: 0.90),
+                      ),
                     ),
                   ),
                   IconButton(

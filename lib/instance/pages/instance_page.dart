@@ -181,28 +181,31 @@ class _InstancePageState extends State<InstancePage> {
                                 );
                               },
                             ),
-                          PopupMenuButton(
-                            itemBuilder: (context) => [
-                              ThunderPopupMenuItem(
-                                onTap: () async {
-                                  HapticFeedback.mediumImpact();
-                                  FeedBloc feedBloc = context.read<FeedBloc>();
-                                  navigateToModlogPage(
-                                    context,
-                                    feedBloc: feedBloc,
-                                    lemmyClient: feedBloc.lemmyClient,
-                                  );
-                                },
-                                icon: Icons.shield_rounded,
-                                title: l10n.modlog,
-                              ),
-                              if (viewType != SearchType.all)
+                          Semantics(
+                            label: l10n.menu,
+                            child: PopupMenuButton(
+                              itemBuilder: (context) => [
                                 ThunderPopupMenuItem(
-                                  onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
-                                  icon: Icons.open_in_browser_rounded,
-                                  title: l10n.openInBrowser,
+                                  onTap: () async {
+                                    HapticFeedback.mediumImpact();
+                                    FeedBloc feedBloc = context.read<FeedBloc>();
+                                    navigateToModlogPage(
+                                      context,
+                                      feedBloc: feedBloc,
+                                      lemmyClient: feedBloc.lemmyClient,
+                                    );
+                                  },
+                                  icon: Icons.shield_rounded,
+                                  title: l10n.modlog,
                                 ),
-                            ],
+                                if (viewType != SearchType.all)
+                                  ThunderPopupMenuItem(
+                                    onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                                    icon: Icons.open_in_browser_rounded,
+                                    title: l10n.openInBrowser,
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

@@ -136,38 +136,41 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                         onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
                       ),
                       IconButton(onPressed: () => showSortBottomSheet(), icon: Icon(Icons.sort, semanticLabel: l10n.sortBy)),
-                      PopupMenuButton(
-                        onOpened: () => HapticFeedback.mediumImpact(),
-                        itemBuilder: (context) => [
-                          ThunderPopupMenuItem(
-                            onTap: () async {
-                              HapticFeedback.mediumImpact();
-                              await showThunderDialog<bool>(
-                                context: context,
-                                title: l10n.confirmMarkAllAsReadTitle,
-                                contentText: l10n.confirmMarkAllAsReadBody,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                secondaryButtonText: l10n.cancel,
-                                onPrimaryButtonPressed: (dialogContext, _) {
-                                  Navigator.of(dialogContext).pop();
-                                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
-                                },
-                                primaryButtonText: l10n.markAllAsRead,
-                              );
-                            },
-                            icon: Icons.checklist,
-                            title: l10n.markAllAsRead,
-                          ),
-                          ThunderPopupMenuItem(
-                            onTap: () async {
-                              HapticFeedback.mediumImpact();
-                              context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: !showAll));
-                              setState(() => showAll = !showAll);
-                            },
-                            icon: showAll ? Icons.mark_as_unread : Icons.all_inbox_rounded,
-                            title: showAll ? l10n.showUnreadOnly : l10n.showAll,
-                          ),
-                        ],
+                      Semantics(
+                        label: l10n.menu,
+                        child: PopupMenuButton(
+                          onOpened: () => HapticFeedback.mediumImpact(),
+                          itemBuilder: (context) => [
+                            ThunderPopupMenuItem(
+                              onTap: () async {
+                                HapticFeedback.mediumImpact();
+                                await showThunderDialog<bool>(
+                                  context: context,
+                                  title: l10n.confirmMarkAllAsReadTitle,
+                                  contentText: l10n.confirmMarkAllAsReadBody,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    Navigator.of(dialogContext).pop();
+                                    context.read<InboxBloc>().add(MarkAllAsReadEvent());
+                                  },
+                                  primaryButtonText: l10n.markAllAsRead,
+                                );
+                              },
+                              icon: Icons.checklist,
+                              title: l10n.markAllAsRead,
+                            ),
+                            ThunderPopupMenuItem(
+                              onTap: () async {
+                                HapticFeedback.mediumImpact();
+                                context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: !showAll));
+                                setState(() => showAll = !showAll);
+                              },
+                              icon: showAll ? Icons.mark_as_unread : Icons.all_inbox_rounded,
+                              title: showAll ? l10n.showUnreadOnly : l10n.showAll,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                     bottom: TabBar(

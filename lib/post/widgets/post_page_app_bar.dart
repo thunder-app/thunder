@@ -173,50 +173,53 @@ class PostAppBarActions extends StatelessWidget {
             );
           },
         ),
-        PopupMenuButton(
-          itemBuilder: (context) => [
-            ThunderPopupMenuItem(
-              onTap: onCreateCrossPost,
-              icon: Icons.repeat_rounded,
-              title: l10n.createNewCrossPost,
-            ),
-            ThunderPopupMenuItem(
-              onTap: () => onViewSource?.call(!viewSource),
-              icon: Icons.edit_document,
-              title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
-            ),
-            ThunderPopupMenuItem(
-              onTap: onSelectText,
-              icon: Icons.select_all_rounded,
-              title: l10n.selectText,
-            ),
-            ThunderPopupMenuItem(
-              onTap: () async {
-                await temporarilySwitchAccount(
-                  context,
-                  profileModalHeading: l10n.viewPostAsDifferentAccount,
-                  onUserChanged: onUserChanged,
-                  postActorId: context.read<PostBloc>().state.postView?.postView.post.apId,
-                  onPostChanged: onPostChanged,
-                );
-              },
-              icon: Icons.people_alt_rounded,
-              title: l10n.viewPostAsDifferentAccount,
-            ),
-            if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+        Semantics(
+          label: l10n.menu,
+          child: PopupMenuButton(
+            itemBuilder: (context) => [
               ThunderPopupMenuItem(
-                onTap: () {
-                  handleLinkLongPress(
+                onTap: onCreateCrossPost,
+                icon: Icons.repeat_rounded,
+                title: l10n.createNewCrossPost,
+              ),
+              ThunderPopupMenuItem(
+                onTap: () => onViewSource?.call(!viewSource),
+                icon: Icons.edit_document,
+                title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
+              ),
+              ThunderPopupMenuItem(
+                onTap: onSelectText,
+                icon: Icons.select_all_rounded,
+                title: l10n.selectText,
+              ),
+              ThunderPopupMenuItem(
+                onTap: () async {
+                  await temporarilySwitchAccount(
                     context,
-                    state.postView!.media.first.originalUrl!,
-                    state.postView!.media.first.originalUrl!,
-                    initialPage: LinkBottomSheetPage.alternateLinks,
+                    profileModalHeading: l10n.viewPostAsDifferentAccount,
+                    onUserChanged: onUserChanged,
+                    postActorId: context.read<PostBloc>().state.postView?.postView.post.apId,
+                    onPostChanged: onPostChanged,
                   );
                 },
-                icon: Icons.link_rounded,
-                title: l10n.alternateSources,
+                icon: Icons.people_alt_rounded,
+                title: l10n.viewPostAsDifferentAccount,
               ),
-          ],
+              if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+                ThunderPopupMenuItem(
+                  onTap: () {
+                    handleLinkLongPress(
+                      context,
+                      state.postView!.media.first.originalUrl!,
+                      state.postView!.media.first.originalUrl!,
+                      initialPage: LinkBottomSheetPage.alternateLinks,
+                    );
+                  },
+                  icon: Icons.link_rounded,
+                  title: l10n.alternateSources,
+                ),
+            ],
+          ),
         ),
       ],
     );

@@ -175,37 +175,40 @@ class AccountAppBarUserActions extends StatelessWidget {
             );
           },
         ),
-        PopupMenuButton(
-          onOpened: () => HapticFeedback.mediumImpact(),
-          itemBuilder: (context) => [
-            ThunderPopupMenuItem(
-              icon: Icons.sort,
-              title: l10n.sortBy,
-              onTap: () {
-                showModalBottomSheet<void>(
-                  showDragHandle: true,
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (builderContext) => SortPicker(
-                    title: l10n.sortOptions,
-                    onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                    previouslySelected: feedBloc.state.sortType,
-                    minimumVersion: LemmyClient.instance.version,
-                  ),
-                );
-              },
-            ),
-            ThunderPopupMenuItem(
-              icon: Icons.refresh_rounded,
-              title: l10n.refresh,
-              onTap: () => triggerRefresh(context),
-            ),
-            ThunderPopupMenuItem(
-              icon: Icons.share_rounded,
-              title: l10n.share,
-              onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
-            ),
-          ],
+        Semantics(
+          label: l10n.menu,
+          child: PopupMenuButton(
+            onOpened: () => HapticFeedback.mediumImpact(),
+            itemBuilder: (context) => [
+              ThunderPopupMenuItem(
+                icon: Icons.sort,
+                title: l10n.sortBy,
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    showDragHandle: true,
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (builderContext) => SortPicker(
+                      title: l10n.sortOptions,
+                      onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                      previouslySelected: feedBloc.state.sortType,
+                      minimumVersion: LemmyClient.instance.version,
+                    ),
+                  );
+                },
+              ),
+              ThunderPopupMenuItem(
+                icon: Icons.refresh_rounded,
+                title: l10n.refresh,
+                onTap: () => triggerRefresh(context),
+              ),
+              ThunderPopupMenuItem(
+                icon: Icons.share_rounded,
+                title: l10n.share,
+                onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
+              ),
+            ],
+          ),
         ),
       ],
     );
