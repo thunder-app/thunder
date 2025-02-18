@@ -2435,9 +2435,9 @@
   "@system": {
     "description": "Describes using the system settings for theme"
   },
-  "systemDarkMode": "System Dark Mode",
+  "systemDarkMode": "Pure Black",
   "@systemDarkMode": {
-    "description": "Setting which toggles the dark theme type when the system theme is selected"
+    "description": "Setting which toggles the pure black theme type when the theme is dark"
   },
   "systemDarkModeDescription": "Enable pure black theme for dark mode",
   "@systemDarkModeDescription": {
