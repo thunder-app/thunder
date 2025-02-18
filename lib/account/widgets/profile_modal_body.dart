@@ -252,7 +252,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               ? null
                               : () {
                                   context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context, rootNavigator: true).pop();
                                 },
                           borderRadius: BorderRadius.circular(50),
                           child: AnimatedSize(
@@ -508,7 +508,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     context.read<AuthBloc>().add(const LogOutOfAllAccounts());
                                     context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
                                     context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context, rootNavigator: true).pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
                             child: AnimatedSize(
