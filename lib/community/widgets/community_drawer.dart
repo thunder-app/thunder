@@ -251,7 +251,7 @@ class FeedDrawerItems extends StatelessWidget {
         if (accountState.moderates.isNotEmpty || accountState.personView?.isAdmin == true)
           DrawerItem(
             label: l10n.report(2),
-            onTap: () async {
+            onTap: () {
               HapticFeedback.mediumImpact();
               navigateToReportPage(context);
             },
