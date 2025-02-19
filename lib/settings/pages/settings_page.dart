@@ -1,31 +1,12 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
-import 'package:thunder/settings/pages/about_settings_page.dart';
-import 'package:thunder/settings/pages/accessibility_settings_page.dart';
-import 'package:thunder/settings/pages/appearance_settings_page.dart';
-import 'package:thunder/settings/pages/debug_settings_page.dart';
-import 'package:thunder/settings/pages/fab_settings_page.dart';
-import 'package:thunder/settings/pages/filter_settings_page.dart';
-import 'package:thunder/settings/pages/general_settings_page.dart';
-import 'package:thunder/settings/pages/gesture_settings_page.dart';
-import 'package:thunder/settings/pages/user_labels_settings_page.dart';
-import 'package:thunder/settings/pages/video_player_settings.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
-import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/constants.dart';
-import 'package:thunder/utils/settings_utils.dart';
+import 'package:thunder/utils/navigation.dart';
 
 class SettingTopic {
   final String title;
@@ -108,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onTap: () {
                           controller.closeView(null);
                           controller.clear();
-                          navigateToSetting(context, localSettings[index]);
+                          navigateToSettingPage(context, localSettings[index]);
                         },
                         title: Text(
                           l10n.getLocalSettingLocalization(localSettings[index].key),
@@ -134,71 +115,39 @@ class _SettingsPageState extends State<SettingsPage> {
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () {
                         if (topic.path == SETTINGS_ABOUT_PAGE) {
-                          final AccountBloc accountBloc = context.read<AccountBloc>();
-                          final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                          final AuthBloc authBloc = context.read<AuthBloc>();
-
-                          Navigator.of(context).push(
-                            SwipeablePageRoute(
-                              transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              builder: (context) => MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(value: accountBloc),
-                                  BlocProvider.value(value: thunderBloc),
-                                  BlocProvider.value(value: authBloc),
-                                ],
-                                child: const AboutSettingsPage(),
-                              ),
-                            ),
-                          );
+                          navigateToSettingPage(context, LocalSettings.settingsPageAbout);
                         } else if (topic.path == SETTINGS_ACCOUNT_PAGE) {
-                          final AccountBloc accountBloc = context.read<AccountBloc>();
-                          final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                          final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
-
-                          Navigator.of(context).push(
-                            SwipeablePageRoute(
-                              transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              builder: (context) => MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(value: thunderBloc),
-                                  BlocProvider.value(value: accountBloc),
-                                  BlocProvider.value(value: userSettingsBloc),
-                                ],
-                                child: const UserSettingsPage(),
-                              ),
-                            ),
-                          );
+                          navigateToSettingPage(context, LocalSettings.settingsPageAccount);
                         } else {
-                          final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                          Navigator.of(context).push(
-                            SwipeablePageRoute(
-                              transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                              builder: (context) => MultiBlocProvider(
-                                providers: [BlocProvider.value(value: thunderBloc)],
-                                child: switch (topic.path) {
-                                  SETTINGS_GENERAL_PAGE => const GeneralSettingsPage(),
-                                  SETTINGS_FILTERS_PAGE => const FilterSettingsPage(),
-                                  SETTINGS_APPEARANCE_PAGE => const AppearanceSettingsPage(),
-                                  SETTINGS_GESTURES_PAGE => const GestureSettingsPage(),
-                                  SETTINGS_VIDEO_PAGE => const VideoPlayerSettingsPage(),
-                                  SETTINGS_FAB_PAGE => const FabSettingsPage(),
-                                  SETTINGS_ACCESSIBILITY_PAGE => const AccessibilitySettingsPage(),
-                                  SETTINGS_USER_LABELS_PAGE => const UserLabelSettingsPage(),
-                                  SETTINGS_ABOUT_PAGE => const AboutSettingsPage(),
-                                  SETTINGS_DEBUG_PAGE => const DebugSettingsPage(),
-                                  _ => Container(),
-                                },
-                              ),
-                            ),
-                          );
+                          switch (topic.path) {
+                            case SETTINGS_GENERAL_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageGeneral);
+                              break;
+                            case SETTINGS_FILTERS_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageFilters);
+                              break;
+                            case SETTINGS_APPEARANCE_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageAppearance);
+                              break;
+                            case SETTINGS_GESTURES_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageGestures);
+                              break;
+                            case SETTINGS_VIDEO_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageVideo);
+                              break;
+                            case SETTINGS_FAB_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageFloatingActionButton);
+                              break;
+                            case SETTINGS_ACCESSIBILITY_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageAccessibility);
+                              break;
+                            case SETTINGS_USER_LABELS_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageUserLabels);
+                              break;
+                            case SETTINGS_DEBUG_PAGE:
+                              navigateToSettingPage(context, LocalSettings.settingsPageDebug);
+                              break;
+                          }
                         }
                       },
                     ),

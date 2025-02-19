@@ -11,14 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 // Project imports
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
@@ -33,7 +30,6 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/widgets/post_metadata.dart';
 import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -346,45 +342,21 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   );
                 },
                 onEdit: () async {
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  CreatePostCubit createPostCubit = CreatePostCubit();
-
-                  final ThunderState thunderState = context.read<ThunderBloc>().state;
-                  final bool reduceAnimations = thunderState.reduceAnimations;
-
                   final Account? account = await fetchActiveProfileAccount();
                   final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                     auth: account?.jwt,
                     id: postViewMedia.postView.community.id,
                   ));
 
-                  if (context.mounted) {
-                    Navigator.of(context).push(
-                      SwipeablePageRoute(
-                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                        canOnlySwipeFromEdge: true,
-                        backGestureDetectionWidth: 45,
-                        builder: (context) {
-                          return MultiBlocProvider(
-                            providers: [
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                              BlocProvider<AccountBloc>.value(value: accountBloc),
-                              BlocProvider<CreatePostCubit>.value(value: createPostCubit),
-                            ],
-                            child: CreatePostPage(
-                              communityId: postViewMedia.postView.community.id,
-                              communityView: getCommunityResponse.communityView,
-                              postView: postViewMedia.postView,
-                              onPostSuccess: (PostViewMedia pvm, _) {
-                                setState(() => postViewMedia = pvm);
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }
+                  navigateToCreatePostPage(
+                    context,
+                    communityId: postView.community.id,
+                    communityView: getCommunityResponse.communityView,
+                    postViewMedia: postViewMedia,
+                    onPostSuccess: (PostViewMedia pvm, _) {
+                      setState(() => postViewMedia = pvm);
+                    },
+                  );
                 },
                 onReply: () async => navigateToCreateCommentPage(
                   context,

@@ -16,6 +16,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/utils/numbers.dart';
 
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.

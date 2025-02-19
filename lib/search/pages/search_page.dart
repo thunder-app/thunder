@@ -25,7 +25,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
-import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -7,7 +6,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -15,7 +13,6 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
-import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -24,6 +21,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/navigation.dart';
 
 class CommentAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -411,21 +409,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 height: 42.0,
                 child: Icon(Icons.chevron_right_rounded),
               ),
-              onTap: () {
-                final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                Navigator.of(context).push(
-                  SwipeablePageRoute(
-                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                    canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                    builder: (context) => MultiBlocProvider(
-                      providers: [BlocProvider.value(value: thunderBloc)],
-                      child: const ThemeSettingsPage(settingToHighlight: LocalSettings.userStyle),
-                    ),
-                  ),
-                );
-              },
+              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming, settingToHighlight: LocalSettings.userStyle),
               highlightKey: settingToHighlightKey,
               setting: null,
               highlightedSetting: settingToHighlight,

@@ -10,19 +10,16 @@ import 'package:intl/message_format.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
-import 'package:thunder/modlog/utils/navigate_modlog.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/picker_item.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
-import 'package:thunder/utils/settings_utils.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,12 +28,9 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
 
 class LinkInfo {
   String? imageURL;
@@ -135,21 +129,7 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
       hideLoadingPage(context, delay: true);
       url_launcher.launchUrl(uri, mode: url_launcher.LaunchMode.externalApplication);
     } else {
-      final bool reduceAnimations = state.reduceAnimations;
-
-      SwipeablePageRoute route = SwipeablePageRoute(
-        transitionDuration: isLoadingPageShown
-            ? Duration.zero
-            : reduceAnimations
-                ? const Duration(milliseconds: 100)
-                : null,
-        reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
-        backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: true,
-        builder: (context) => WebView(url: url),
-      );
-
-      pushOnTopOfLoadingPage(context, route);
+      navigateToWebView(context, url);
     }
   }
 }
@@ -237,7 +217,6 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
       await navigateToModlogPage(
         context,
-        feedBloc: feedBloc,
         modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
         communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
@@ -277,7 +256,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
     if (link.startsWith('setting-')) {
       String setting = link.replaceFirst('setting-', '');
-      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+      navigateToSettingPage(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
       return;
     }
   }

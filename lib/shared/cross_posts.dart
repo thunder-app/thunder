@@ -6,8 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/post/utils/navigate_create_post.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/utils/navigation.dart';
 
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 

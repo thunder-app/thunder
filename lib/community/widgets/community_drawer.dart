@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,14 +7,12 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -24,6 +20,7 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/utils/navigation.dart';
 
 class CommunityDrawer extends StatefulWidget {
   const CommunityDrawer({super.key, this.navigateToAccount});
@@ -256,25 +253,7 @@ class FeedDrawerItems extends StatelessWidget {
             label: l10n.report(2),
             onTap: () async {
               HapticFeedback.mediumImpact();
-              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-              await Navigator.of(context).push(
-                SwipeablePageRoute(
-                  transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                  backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                  backGestureDetectionWidth: 45,
-                  canOnlySwipeFromEdge: true,
-                  builder: (otherContext) {
-                    return MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: feedBloc),
-                        BlocProvider.value(value: thunderBloc),
-                      ],
-                      child: const ReportFeedPage(),
-                    );
-                  },
-                ),
-              );
+              navigateToReportPage(context);
             },
             icon: Icons.report_rounded,
             trailing: const Icon(Icons.arrow_forward_rounded),

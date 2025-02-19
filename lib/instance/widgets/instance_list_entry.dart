@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/instance_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';

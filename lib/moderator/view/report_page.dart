@@ -18,7 +18,7 @@ import 'package:thunder/feed/feed.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
 import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/widgets/report_page_filter_bottom_sheet.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';

@@ -13,7 +13,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 // Project imports
-import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/media_type.dart';

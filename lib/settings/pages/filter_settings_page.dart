@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
@@ -16,8 +14,7 @@ import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
-import 'package:thunder/user/pages/user_settings_page.dart';
+import 'package:thunder/utils/navigation.dart';
 
 class FilterSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -201,25 +198,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               onTap: () {
                 // Can only set discussion language if user is logged in
                 if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.personView != null) {
-                  final AccountBloc accountBloc = context.read<AccountBloc>();
-                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
-
-                  Navigator.of(context).push(
-                    SwipeablePageRoute(
-                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                      canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: thunderBloc),
-                          BlocProvider.value(value: accountBloc),
-                          BlocProvider.value(value: userSettingsBloc),
-                        ],
-                        child: const UserSettingsPage(settingToHighlight: LocalSettings.discussionLanguages),
-                      ),
-                    ),
-                  );
+                  navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
                 } else {
                   showThunderDialog(
                     context: context,

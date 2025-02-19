@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigation.dart';
 
 /// A widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 class UserListEntry extends StatelessWidget {

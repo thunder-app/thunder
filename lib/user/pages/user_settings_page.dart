@@ -2,7 +2,6 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
@@ -12,7 +11,6 @@ import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:path_provider/path_provider.dart";
-import "package:swipeable_page_route/swipeable_page_route.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
 import "package:thunder/account/bloc/account_bloc.dart";
@@ -22,23 +20,20 @@ import "package:thunder/core/auth/bloc/auth_bloc.dart";
 import "package:thunder/core/auth/helpers/fetch_account.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
-import "package:thunder/settings/widgets/discussion_language_selector.dart";
 import "package:thunder/settings/widgets/list_option.dart";
 import "package:thunder/settings/widgets/settings_list_tile.dart";
 import "package:thunder/settings/widgets/toggle_option.dart";
 import "package:thunder/shared/dialogs.dart";
 import "package:thunder/shared/snackbar.dart";
 import "package:thunder/shared/sort_picker.dart";
-import "package:thunder/thunder/bloc/thunder_bloc.dart";
 import "package:thunder/thunder/thunder_icons.dart";
 import "package:thunder/user/bloc/user_settings_bloc.dart";
-import "package:thunder/user/pages/media_management_page.dart";
-import "package:thunder/user/pages/user_settings_block_page.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
 import "package:thunder/utils/error_messages.dart";
 import "package:thunder/utils/links.dart";
 import "package:thunder/account/utils/profiles.dart";
+import "package:thunder/utils/navigation.dart";
 import "package:version/version.dart";
 
 /// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
@@ -417,22 +412,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               icon: Icons.language_rounded,
                               description: l10n.discussionLanguages,
                               widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () async {
-                                final state = context.read<ThunderBloc>().state;
-                                await Navigator.of(context).push(
-                                  SwipeablePageRoute(
-                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                    canOnlySwipeFromEdge: true,
-                                    backGestureDetectionWidth: 45,
-                                    builder: (navigatorContext) {
-                                      return MultiBlocProvider(
-                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
-                                        child: const DiscussionLanguageSelector(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
+                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
                               highlightKey: settingToHighlightKey,
                               setting: LocalSettings.discussionLanguages,
                               highlightedSetting: settingToHighlight,
@@ -441,22 +421,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               icon: Icons.block_rounded,
                               description: l10n.blockSettingLabel,
                               widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () async {
-                                final state = context.read<ThunderBloc>().state;
-                                await Navigator.of(context).push(
-                                  SwipeablePageRoute(
-                                    transitionDuration: state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                    canOnlySwipeFromEdge: true,
-                                    backGestureDetectionWidth: 45,
-                                    builder: (navigatorContext) {
-                                      return MultiBlocProvider(
-                                        providers: [BlocProvider<UserSettingsBloc>.value(value: context.read<UserSettingsBloc>())],
-                                        child: const UserSettingsBlockPage(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
+                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
                               highlightKey: settingToHighlightKey,
                               setting: LocalSettings.accountBlocks,
                               highlightedSetting: settingToHighlight,
@@ -630,32 +595,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   height: 42.0,
                                   child: Icon(Icons.chevron_right_rounded),
                                 ),
-                                onTap: () async {
-                                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                  final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
-                                  final AuthBloc authBloc = context.read<AuthBloc>();
-
-                                  userSettingsBloc.add(const ListMediaEvent());
-
-                                  await Navigator.of(context).push(
-                                    SwipeablePageRoute(
-                                      transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                                      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
-                                      backGestureDetectionWidth: 45,
-                                      canOnlySwipeFromEdge: true,
-                                      builder: (otherContext) {
-                                        return MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider.value(value: userSettingsBloc),
-                                            BlocProvider.value(value: thunderBloc),
-                                            BlocProvider.value(value: authBloc),
-                                          ],
-                                          child: const MediaManagementPage(),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
+                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
                                 highlightKey: settingToHighlightKey,
                                 setting: LocalSettings.accountManageMedia,
                                 highlightedSetting: settingToHighlight,

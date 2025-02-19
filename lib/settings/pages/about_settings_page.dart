@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
+import 'package:thunder/utils/navigation.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   final LocalSettings? settingToHighlight;

@@ -14,14 +14,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/notification/utils/local_notifications.dart';
-import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 
@@ -33,6 +31,7 @@ import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
 class DebugSettingsPage extends StatefulWidget {
@@ -538,21 +537,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 height: 42.0,
                 child: Icon(Icons.chevron_right_rounded),
               ),
-              onTap: () {
-                final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                Navigator.of(context).push(
-                  SwipeablePageRoute(
-                    transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                    canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                    builder: (context) => MultiBlocProvider(
-                      providers: [BlocProvider.value(value: thunderBloc)],
-                      child: const GeneralSettingsPage(settingToHighlight: LocalSettings.inboxNotificationType),
-                    ),
-                  ),
-                );
-              },
+              onTap: () => navigateToSettingPage(context, LocalSettings.inboxNotificationType),
               highlightKey: settingToHighlightKey,
               setting: null,
               highlightedSetting: settingToHighlight,

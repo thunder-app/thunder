@@ -18,7 +18,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
 class PostCard extends StatefulWidget {

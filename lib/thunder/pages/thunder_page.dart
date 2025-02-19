@@ -31,7 +31,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/modlog/utils/navigate_modlog.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -53,12 +53,6 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/comment/utils/navigate_comment.dart';
-import 'package:thunder/post/utils/navigate_create_post.dart';
-import 'package:thunder/instance/utils/navigate_instance.dart';
-import 'package:thunder/post/utils/navigate_post.dart';
-import 'package:thunder/notification/utils/navigate_notification.dart';
-import 'package:thunder/utils/settings_utils.dart';
 
 String? currentIntent;
 
@@ -320,7 +314,6 @@ class _ThunderState extends State<Thunder> {
         FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
         await navigateToModlogPage(
           context,
-          feedBloc: feedBloc,
           modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
           communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
           userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
@@ -388,7 +381,7 @@ class _ThunderState extends State<Thunder> {
     link = link.replaceFirst('https://', '');
     if (link.startsWith('setting-')) {
       String setting = link.replaceFirst('setting-', '');
-      navigateToSetting(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+      navigateToSettingPage(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 // Project imports
-import 'package:thunder/comment/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';

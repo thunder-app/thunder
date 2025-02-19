@@ -13,6 +13,7 @@ import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {

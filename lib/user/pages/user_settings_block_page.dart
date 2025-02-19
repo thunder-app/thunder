@@ -5,9 +5,8 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/instance/utils/navigate_instance.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';

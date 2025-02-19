@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a user
 /// TODO: Implement admin-level actions
@@ -92,53 +87,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         return;
       case PostPostAction.editPost:
         Navigator.of(context).pop();
-
-        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-        AccountBloc accountBloc = context.read<AccountBloc>();
-        CreatePostCubit createPostCubit = CreatePostCubit();
-
-        final ThunderState thunderState = context.read<ThunderBloc>().state;
-        final bool reduceAnimations = thunderState.reduceAnimations;
-
-        Navigator.of(widget.context).push(
-          SwipeablePageRoute(
-            transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-            canOnlySwipeFromEdge: true,
-            backGestureDetectionWidth: 45,
-            builder: (context) {
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  BlocProvider<AccountBloc>.value(value: accountBloc),
-                  BlocProvider<CreatePostCubit>.value(value: createPostCubit),
-                ],
-                child: CreatePostPage(
-                  communityId: postViewMedia.postView.community.id,
-                  // Create a stub for the community view.
-                  communityView: CommunityView(
-                    community: postViewMedia.postView.community,
-                    subscribed: postViewMedia.postView.subscribed,
-                    blocked: false,
-                    counts: CommunityAggregates(
-                      communityId: postViewMedia.postView.community.id,
-                      subscribers: 0,
-                      posts: 0,
-                      comments: 0,
-                      published: DateTime.now(),
-                      usersActiveDay: 0,
-                      usersActiveWeek: 0,
-                      usersActiveMonth: 0,
-                      usersActiveHalfYear: 0,
-                    ),
-                  ),
-                  postView: postViewMedia.postView,
-                  onPostSuccess: (PostViewMedia pvm, _) {},
-                ),
-              );
-            },
-          ),
-        );
-
+        navigateToCreatePostPage(context, communityId: postViewMedia.postView.community.id, postViewMedia: postViewMedia);
         return;
       case PostPostAction.deletePost:
         Navigator.of(context).pop();

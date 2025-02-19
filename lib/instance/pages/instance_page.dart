@@ -12,7 +12,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
-import 'package:thunder/modlog/utils/navigate_modlog.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
@@ -191,7 +191,6 @@ class _InstancePageState extends State<InstancePage> {
                                     FeedBloc feedBloc = context.read<FeedBloc>();
                                     navigateToModlogPage(
                                       context,
-                                      feedBloc: feedBloc,
                                       lemmyClient: feedBloc.lemmyClient,
                                     );
                                   },

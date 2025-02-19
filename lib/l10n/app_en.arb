@@ -2157,9 +2157,33 @@
   "@settingsPageAccount": {
     "description": "Account settings page"
   },
+  "settingsPageAccountBlocks": "Blocklists",
+  "@settingsPageAccountBlocks": {
+    "description": "Account blocklist (user/community/instance) page"
+  },
+  "settingsPageAccountLanguages": "Discussion Languages",
+  "@settingsPageAccountLanguages": {
+    "description": "Account discussion languages page"
+  },
+  "settingsPageAccountMedia": "Manage Media",
+  "@settingsPageAccountMedia": {
+    "description": "Account manage media page"
+  },
   "settingsPageAppearance": "Appearance",
   "@settingsPageAppearance": {
     "description": "Appearance settings page"
+  },
+  "settingsPageAppearanceComments": "Comments",
+  "@settingsPageAppearanceComments": {
+    "description": "Theming comments page"
+  },
+  "settingsPageAppearancePosts": "Posts",
+  "@settingsPageAppearancePosts": {
+    "description": "Theming posts page"
+  },
+  "settingsPageAppearanceTheming": "Theming",
+  "@settingsPageAppearanceTheming": {
+    "description": "Theming settings page"
   },
   "settingsPageDebug": "Debug",
   "@settingsPageDebug": {

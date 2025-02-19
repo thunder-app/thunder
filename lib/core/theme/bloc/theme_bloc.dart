@@ -43,7 +43,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       bool usePureBlackTheme = prefs.getBool(LocalSettings.usePureBlackTheme.name) ?? false;
       if (usePureBlackTheme && (themeType == ThemeType.dark || (themeType == ThemeType.system && brightness == Brightness.dark))) themeType = ThemeType.pureBlack;
 
-      bool useDarkTheme = themeType == ThemeType.dark || themeType == ThemeType.pureBlack;
+      bool useDarkTheme = themeType == ThemeType.dark || themeType == ThemeType.pureBlack || (themeType == ThemeType.system && brightness == Brightness.dark);
 
       CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
 

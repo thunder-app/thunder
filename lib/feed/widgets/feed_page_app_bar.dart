@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -15,14 +14,11 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/modlog/utils/navigate_modlog.dart';
-import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/search/pages/search_page.dart';
+import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -224,16 +220,6 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 icon: Icons.refresh_rounded,
                 title: l10n.refresh,
               ),
-              if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
-                ThunderPopupMenuItem(
-                  onTap: () async {
-                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
-                    bool isFavorite = _getFavoriteStatus(context);
-                    await toggleFavoriteCommunity(context, community, isFavorite);
-                  },
-                  icon: _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
-                  title: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
-                ),
               if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
                 ThunderPopupMenuItem(
                   onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
@@ -242,27 +228,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 ),
               if (feedBloc.state.fullCommunityView?.communityView != null)
                 ThunderPopupMenuItem(
-                  onTap: () async {
-                    final ThunderState state = context.read<ThunderBloc>().state;
-                    final bool reduceAnimations = state.reduceAnimations;
-                    final SearchBloc searchBloc = SearchBloc();
-
-                    await Navigator.of(context).push(
-                      SwipeablePageRoute(
-                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                        backGestureDetectionWidth: 45,
-                        canOnlySwipeFromEdge: true,
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            // Create a new SearchBloc so it doesn't conflict with the main one
-                            BlocProvider.value(value: searchBloc),
-                            BlocProvider.value(value: thunderBloc),
-                          ],
-                          child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
-                        ),
-                      ),
-                    );
-                  },
+                  onTap: () async => navigateToSearchPage(context),
                   icon: Icons.search_rounded,
                   title: l10n.search,
                 ),
@@ -270,7 +236,6 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 onTap: () async {
                   await navigateToModlogPage(
                     context,
-                    feedBloc: feedBloc,
                     communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
                   );
                 },
@@ -381,7 +346,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               ThunderPopupMenuItem(
                 onTap: () async {
                   HapticFeedback.mediumImpact();
-                  await navigateToModlogPage(context, feedBloc: feedBloc);
+                  await navigateToModlogPage(context);
                 },
                 icon: Icons.shield_rounded,
                 title: l10n.modlog,

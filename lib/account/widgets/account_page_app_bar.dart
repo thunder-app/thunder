@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/user_share.dart';
@@ -17,9 +14,8 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_settings_bloc.dart';
-import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigation.dart';
 
 /// Holds the app bar for the account page
 class AccountPageAppBar extends StatefulWidget {
@@ -153,26 +149,7 @@ class AccountAppBarUserActions extends StatelessWidget {
           tooltip: l10n.accountSettings,
           onPressed: () {
             HapticFeedback.mediumImpact();
-
-            final AccountBloc accountBloc = context.read<AccountBloc>();
-            final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-            final UserSettingsBloc userSettingsBloc = UserSettingsBloc();
-
-            Navigator.of(context).push(
-              SwipeablePageRoute(
-                transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
-                canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-                builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: accountBloc),
-                    BlocProvider.value(value: thunderBloc),
-                    BlocProvider.value(value: userSettingsBloc),
-                  ],
-                  child: const UserSettingsPage(),
-                ),
-              ),
-            );
+            navigateToSettingPage(context, LocalSettings.settingsPageAccount);
           },
         ),
         Semantics(
