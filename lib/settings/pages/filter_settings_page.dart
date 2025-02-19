@@ -109,7 +109,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               child: Text(
                 l10n.keywordFilterDescription,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -154,7 +154,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                       child: Text(
                         l10n.noKeywordFilters,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                         ),
                       ),
                     )

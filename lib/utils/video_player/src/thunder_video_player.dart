@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/enums/video_playback_speed.dart';
-import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:thunder/core/enums/video_playback_speed.dart';
+import 'package:thunder/shared/thunder_popup_menu_item.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/internet_connection_type.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
-import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/cubits/network_checker_cubit/network_checker_cubit.dart';
@@ -100,7 +101,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
 
       if (_videoPlayerController.value.hasError) {
         showSnackbar(
-          l10n.failedToLoadVideo,
+          GlobalContext.l10n.failedToLoadVideo,
           trailingIcon: Icons.chevron_right_rounded,
           trailingAction: () {
             handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true);
@@ -147,7 +148,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                         icon: Icon(
                           Icons.arrow_back,
                           semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                          color: Colors.white.withOpacity(0.90),
+                          color: Colors.white.withValues(alpha: 0.90),
                         ),
                       ),
                     ),
@@ -157,8 +158,8 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                         onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
                         icon: Icon(
                           Icons.open_in_browser_rounded,
-                          semanticLabel: l10n.openInBrowser,
-                          color: Colors.white.withOpacity(0.90),
+                          semanticLabel: GlobalContext.l10n.openInBrowser,
+                          color: Colors.white.withValues(alpha: 0.90),
                         ),
                       ),
                     ),
@@ -271,6 +272,8 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -291,12 +294,12 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                   Text(
                     '${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}',
-                    style: TextStyle(color: Colors.white.withOpacity(0.90)),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.90)),
                   ),
                 ],
               ),
@@ -311,25 +314,28 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       widget.controller.value.volume == 0 ? Icons.volume_mute_rounded : Icons.volume_up_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) => VideoPlayBackSpeed.values
-                        .map(
-                          (videoPlaybackSpeed) => ThunderPopupMenuItem(
-                            onTap: () {
-                              widget.controller.setPlaybackSpeed(videoPlaybackSpeed.value);
-                              setState(() {});
-                            },
-                            icon: Icons.speed_rounded,
-                            title: videoPlaybackSpeed.label,
-                          ),
-                        )
-                        .toList(),
-                    icon: Icon(
-                      Icons.speed_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                  Semantics(
+                    label: l10n.menu,
+                    child: PopupMenuButton(
+                      itemBuilder: (context) => VideoPlayBackSpeed.values
+                          .map(
+                            (videoPlaybackSpeed) => ThunderPopupMenuItem(
+                              onTap: () {
+                                widget.controller.setPlaybackSpeed(videoPlaybackSpeed.value);
+                                setState(() {});
+                              },
+                              icon: Icons.speed_rounded,
+                              title: videoPlaybackSpeed.label,
+                            ),
+                          )
+                          .toList(),
+                      icon: Icon(
+                        Icons.speed_rounded,
+                        color: Colors.white.withValues(alpha: 0.90),
+                      ),
                     ),
                   ),
                   IconButton(
@@ -339,7 +345,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                     },
                     icon: Icon(
                       Icons.fullscreen_rounded,
-                      color: Colors.white.withOpacity(0.90),
+                      color: Colors.white.withValues(alpha: 0.90),
                     ),
                   ),
                 ],

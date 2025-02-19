@@ -61,7 +61,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 blockPersonResponse.blocked ? l10n.successfullyBlockedUser(blockPersonResponse.personView.person.name) : l10n.successfullyUnblockedUser(blockPersonResponse.personView.person.name),
           ));
         } catch (e) {
-          return emit(state.copyWith(status: UserStatus.failure));
+          return emit(state.copyWith(status: UserStatus.failure, message: e.toString()));
         }
         break;
       case UserAction.banFromCommunity:
@@ -109,6 +109,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure));
         }
+        break;
+      default:
         break;
     }
   }

@@ -142,7 +142,7 @@ class ToggleOption extends StatelessWidget {
                                     style: theme.textTheme.bodyMedium,
                                   ),
                                 ),
-                                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8))),
                               ],
                             ),
                           ),

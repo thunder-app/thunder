@@ -188,43 +188,46 @@ class NavigationControls extends StatelessWidget {
               ),
               onPressed: snapshot.hasData && snapshot.data![1] == true ? () async => await webViewController.goForward() : null,
             ),
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                ThunderPopupMenuItem(
-                  onTap: () async => await webViewController.reload(),
-                  icon: Icons.replay_rounded,
-                  title: l10n.refresh,
-                ),
-                ThunderPopupMenuItem(
-                  onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-                  icon: Icons.open_in_browser_rounded,
-                  title: l10n.openInBrowser,
-                ),
-                ThunderPopupMenuItem(
-                  onTap: () => Share.share(url),
-                  icon: Icons.share_rounded,
-                  title: l10n.share,
-                ),
-                ThunderPopupMenuItem(
-                  onTap: () {
-                    handleLinkLongPress(
-                      context,
-                      url,
-                      url,
-                      initialPage: LinkBottomSheetPage.alternateLinks,
-                      customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
-                    );
-                  },
-                  icon: Icons.link_rounded,
-                  title: l10n.alternateSources,
-                ),
-                ThunderPopupMenuItem(
-                  onTap: onReaderModeToggled,
-                  icon: Icons.menu_book_rounded,
-                  title: l10n.readerMode,
-                  trailing: readerMode ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
-                ),
-              ],
+            Semantics(
+              label: l10n.menu,
+              child: PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  ThunderPopupMenuItem(
+                    onTap: () async => await webViewController.reload(),
+                    icon: Icons.replay_rounded,
+                    title: l10n.refresh,
+                  ),
+                  ThunderPopupMenuItem(
+                    onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+                    icon: Icons.open_in_browser_rounded,
+                    title: l10n.openInBrowser,
+                  ),
+                  ThunderPopupMenuItem(
+                    onTap: () => Share.share(url),
+                    icon: Icons.share_rounded,
+                    title: l10n.share,
+                  ),
+                  ThunderPopupMenuItem(
+                    onTap: () {
+                      handleLinkLongPress(
+                        context,
+                        url,
+                        url,
+                        initialPage: LinkBottomSheetPage.alternateLinks,
+                        customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
+                      );
+                    },
+                    icon: Icons.link_rounded,
+                    title: l10n.alternateSources,
+                  ),
+                  ThunderPopupMenuItem(
+                    onTap: onReaderModeToggled,
+                    icon: Icons.menu_book_rounded,
+                    title: l10n.readerMode,
+                    trailing: readerMode ? const Icon(Icons.check_box_rounded) : const Icon(Icons.check_box_outline_blank_rounded),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(width: 8.0),
           ],

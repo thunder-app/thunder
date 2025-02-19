@@ -25,6 +25,14 @@
   },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
+  "accountSettingsExportedSuccessfully": "Lemmy account settings exported successfully to {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Lemmy account settings imported successfully!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
@@ -105,6 +113,10 @@
   },
   "alreadyPostedTo": "Already posted to",
   "@alreadyPostedTo": {},
+  "altText": "Alt Text",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
   "alternateSources": "Alternate Sources",
   "@alternateSources": {
     "description": "Action for viewing a link from alternate sources"
@@ -661,6 +673,10 @@
   "@deleteAccountDescription": {
     "description": "Description for confirmation action to delete account"
   },
+  "deleteComment": "Delete Comment",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
   "deleteImageConfirmMessage": "Are you sure you want to delete this image?",
   "@deleteImageConfirmMessage": {
     "description": "Confirmation messages for deleting an image"
@@ -825,6 +841,14 @@
   },
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
+  "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
+  "@errorImportingAccountSettings": {
+    "description": "Message shown to user when account there was an error importing the settings"
+  },
+  "errorLoadingAccountSettings": "There was an error loading the settings file or the operation was canceled.",
+  "@errorLoadingAccountSettings": {
+    "description": "Message shown to user when there was an error loading the settings file"
+  },
   "errorMarkingReplyRead": "There was an error marking the reply as read.",
   "@errorMarkingReplyRead": {
     "description": "Error message for marking a reply read"
@@ -832,6 +856,14 @@
   "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
   "@errorMarkingReplyUnread": {
     "description": "Error message for marking a reply unread"
+  },
+  "errorParsingJson": "There was an error parsing the selected file. It may not be valid JSON.",
+  "@errorParsingJson": {
+    "description": "Message shown to user when there was an error parsing the selected file"
+  },
+  "errorSavingAccountSettings": "There was an error saving the settings file or the operation was canceled.",
+  "@errorSavingAccountSettings": {
+    "description": "Message shown to user when there was an error saving the settings file"
   },
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri": {
@@ -888,6 +920,10 @@
   "exportDatabaseSubtitle": "The database contains info about accounts, favorites, anonymous subscriptions, and user labels.",
   "@exportDatabaseSubtitle": {
     "description": "Subtitle of setting for exporting the db"
+  },
+  "exportLemmyAccountSettingsDescription": "Export Lemmy account settings",
+  "@exportLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings export"
   },
   "exportSettingsSubtitle": "The settings includes all of the preferences that you have configured in Thunder.",
   "@exportSettingsSubtitle": {
@@ -1083,13 +1119,29 @@
   "@importDatabase": {
     "description": "Name of setting for importing the db"
   },
-  "importExportDatabase": "Import/Export Database",
+  "importExportDatabase": "Import/Export Thunder Database",
   "@importExportDatabase": {
     "description": "Overall name of setting for importing or exporting the db (for searching)"
+  },
+  "importExportLemmyAccountSettings": "Import/Export Lemmy Account Settings",
+  "@importExportLemmyAccountSettings": {
+    "description": "This is specifically used in search results to distinguish from Thunder import/export"
+  },
+  "importExportLemmyAccountSettingsSubtitle": "Includes subscribed communities, blocklists, and account preferences",
+  "@importExportLemmyAccountSettingsSubtitle": {
+    "description": "Subtitle for Lemmy account settings import/export section"
   },
   "importExportSettings": "Import/Export Settings",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."
+  },
+  "importExportThunderSettings": "Import/Export Thunder Settings",
+  "@importExportThunderSettings": {
+    "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+  },
+  "importLemmyAccountSettingsDescription": "Import Lemmy account settings",
+  "@importLemmyAccountSettingsDescription": {
+    "description": "Description for setting related to Lemmy account settings import"
   },
   "importSettings": "Import Settings",
   "@importSettings": {
@@ -1311,6 +1363,10 @@
   },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
+  "menu": "Menu",
+  "@menu": {
+    "description": "Menu button description"
+  },
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
   "@message": {},
   "metadataFontScale": "Metadata Font Scale",
@@ -1775,6 +1831,10 @@
   "@pushNotificationServerDescription": {
     "description": "Description of choosing push notification server setting"
   },
+  "rateLimitErrorMessage": "You have hit the rate limit for this request. Please wait and try again later.",
+  "@rateLimitErrorMessage": {
+    "description": "Error message for the rate-limit Lemmy exception"
+  },
   "reachedTheBottom": "No more items to load",
   "@reachedTheBottom": {},
   "read": "Read",
@@ -1816,6 +1876,10 @@
   "removeAsCommunityModerator": "Remove as Community Moderator",
   "@removeAsCommunityModerator": {
     "description": "Moderator action to remove user as community moderator"
+  },
+  "removeComment": "Remove Comment",
+  "@removeComment": {
+    "description": "Moderator action to remove a comment"
   },
   "removeFromFavorites": "Remove from favorites",
   "@removeFromFavorites": {
@@ -1909,6 +1973,10 @@
   },
   "restore": "Restore",
   "@restore": {},
+  "restoreComment": "Restore Comment",
+  "@restoreComment": {
+    "description": "Moderator action to restore a comment"
+  },
   "restorePost": "Restore Post",
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
@@ -2076,6 +2144,54 @@
   "settingsNotImportedSuccessfully": "Settings were not imported successfully or the operation was canceled.",
   "@settingsNotImportedSuccessfully": {
     "description": "Message shown to the user when the settings were imported unsuccessfully"
+  },
+  "settingsPage": "Settings Page",
+  "@settingsPage": {
+    "description": "Settings page subtitle for search results"
+  },
+  "settingsPageAbout": "About",
+  "@settingsPageAbout": {
+    "description": "About settings page"
+  },
+  "settingsPageAccessibility": "Accessibility",
+  "@settingsPageAccessibility": {
+    "description": "Accessibility settings page"
+  },
+  "settingsPageAccount": "Account",
+  "@settingsPageAccount": {
+    "description": "Account settings page"
+  },
+  "settingsPageAppearance": "Appearance",
+  "@settingsPageAppearance": {
+    "description": "Appearance settings page"
+  },
+  "settingsPageDebug": "Debug",
+  "@settingsPageDebug": {
+    "description": "Debug settings page"
+  },
+  "settingsPageFilters": "Filters",
+  "@settingsPageFilters": {
+    "description": "Filters settings page"
+  },
+  "settingsPageFloatingActionButton": "Floating Action Button",
+  "@settingsPageFloatingActionButton": {
+    "description": "Floating action button settings page"
+  },
+  "settingsPageGeneral": "General",
+  "@settingsPageGeneral": {
+    "description": "General settings page"
+  },
+  "settingsPageGestures": "Gestures",
+  "@settingsPageGestures": {
+    "description": "Gestures settings page"
+  },
+  "settingsPageUserLabels": "User Labels",
+  "@settingsPageUserLabels": {
+    "description": "User labels settings page"
+  },
+  "settingsPageVideo": "Video",
+  "@settingsPageVideo": {
+    "description": "Video settings page"
   },
   "share": "Share",
   "@share": {},
@@ -2379,13 +2495,13 @@
   "@system": {
     "description": "Describes using the system settings for theme"
   },
-  "systemDarkMode": "System Dark Mode",
+  "systemDarkMode": "Pure Black",
   "@systemDarkMode": {
-    "description": "Setting which toggles the dark theme type when the system theme is selected"
+    "description": "Setting which toggles the pure black theme type when the theme is dark"
   },
-  "systemDarkModeDescription": "Enable pure black theme in system dark mode",
+  "systemDarkModeDescription": "Enable pure black theme for dark mode",
   "@systemDarkModeDescription": {
-    "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
+    "description": "Toggle which enables the pure black theme when dark mode is selected"
   },
   "tabletMode": "Tablet Mode (2-column view)",
   "@tabletMode": {
@@ -2914,5 +3030,9 @@
   "yes": "Yes",
   "@yes": {
     "description": "A positive status"
+  },
+  "youMustSelectAJsonFile": "You must select a .json file.",
+  "@youMustSelectAJsonFile": {
+    "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
   }
 }

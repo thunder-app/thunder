@@ -85,7 +85,7 @@ class SettingsListTile extends StatelessWidget {
                                     style: onTap != null || onLongPress != null
                                         ? theme.textTheme.bodyMedium
                                         : theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                                           ),
                                   ),
                                 ),
@@ -93,7 +93,7 @@ class SettingsListTile extends StatelessWidget {
                                   Text(
                                     subtitle!,
                                     maxLines: subtitleMaxLines,
-                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8)),
+                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8)),
                                   ),
                               ],
                             ),

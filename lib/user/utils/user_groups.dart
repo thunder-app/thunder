@@ -34,7 +34,7 @@ Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
 
   if (color != null) {
     // Blend with theme
-    color = Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), color);
+    color = Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.35), color);
 
     // Lighten for light mode
     if (!darkTheme) {

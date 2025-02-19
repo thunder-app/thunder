@@ -27,6 +27,9 @@ class Draft {
   /// The custom thumbnail of the post
   final String? customThumbnail;
 
+  /// Alternative text for the image
+  final String? altText;
+
   /// The body of the post/comment
   final String? body;
 
@@ -38,6 +41,7 @@ class Draft {
     this.title,
     this.url,
     this.customThumbnail,
+    this.altText,
     this.body,
   });
 
@@ -49,6 +53,7 @@ class Draft {
     String? title,
     String? url,
     String? customThumbnail,
+    String? altText,
     String? body,
   }) =>
       Draft(
@@ -59,11 +64,12 @@ class Draft {
         title: title ?? this.title,
         url: url ?? this.url,
         customThumbnail: customThumbnail ?? this.customThumbnail,
+        altText: altText ?? this.altText,
         body: body ?? this.body,
       );
 
   /// See whether this draft contains enough info to save for a post
-  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || body?.isNotEmpty == true;
+  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || altText?.isNotEmpty == true || body?.isNotEmpty == true;
 
   /// See whether this draft contains enough info to save for a comment
   bool get isCommentNotEmpty => body?.isNotEmpty == true;
@@ -86,6 +92,7 @@ class Draft {
                 title: Value(draft.title),
                 url: Value(draft.url),
                 customThumbnail: Value(draft.customThumbnail),
+                altText: Value(draft.altText),
                 body: Value(draft.body),
               ),
             );
@@ -100,6 +107,7 @@ class Draft {
                 title: Value(draft.title),
                 url: Value(draft.url),
                 customThumbnail: Value(draft.customThumbnail),
+                altText: Value(draft.altText),
                 body: Value(draft.body),
               ),
             );
@@ -130,6 +138,7 @@ class Draft {
         title: draft.title,
         url: draft.url,
         customThumbnail: draft.customThumbnail,
+        altText: draft.altText,
         body: draft.body,
       );
     } catch (e) {

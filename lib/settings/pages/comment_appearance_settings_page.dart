@@ -278,7 +278,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                     child: Text(
                       l10n.commentPreview,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                       ),
                     ),
                   ),
@@ -304,7 +304,6 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                   onVoteAction: (int commentId, int voteType) => {},
                                   onCollapseCommentChange: (int commentId, bool collapsed) => {},
                                   onDeleteAction: (int commentId, bool deleted) => {},
-                                  onReportAction: (int commentId) => {},
                                   onReplyEditAction: (CommentView commentView, bool isEdit) => {},
                                 ),
                               ],

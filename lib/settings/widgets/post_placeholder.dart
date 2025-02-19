@@ -18,7 +18,7 @@ class PostPlaceholder extends StatelessWidget {
               width: 100,
               height: 10,
               decoration: BoxDecoration(
-                color: theme.hintColor.withOpacity(.25),
+                color: theme.hintColor.withValues(alpha: .25),
                 borderRadius: const BorderRadius.all(
                   Radius.elliptical(5, 5),
                 ),
@@ -34,7 +34,7 @@ class PostPlaceholder extends StatelessWidget {
               width: 75,
               height: 10,
               decoration: BoxDecoration(
-                color: theme.hintColor.withOpacity(.1),
+                color: theme.hintColor.withValues(alpha: .1),
                 borderRadius: const BorderRadius.all(
                   Radius.elliptical(5, 5),
                 ),
@@ -50,7 +50,7 @@ class PostPlaceholder extends StatelessWidget {
               width: 75,
               height: 10,
               decoration: BoxDecoration(
-                color: theme.hintColor.withOpacity(.1),
+                color: theme.hintColor.withValues(alpha: .1),
                 borderRadius: const BorderRadius.all(
                   Radius.elliptical(5, 5),
                 ),

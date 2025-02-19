@@ -51,7 +51,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                         const SizedBox(width: 26),
                         SearchActionChip(
                           onPressed: () => setState(() => viewSource = !viewSource),
-                          backgroundColor: viewSource ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                          backgroundColor: viewSource ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                           children: [
                             Text(l10n.viewSource),
                             if (viewSource) ...[
@@ -77,7 +77,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                   setState(() => copySuccess = false);
                                 }
                               : null,
-                          backgroundColor: copySuccess ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                          backgroundColor: copySuccess ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                           children: [
                             Text(l10n.copySelected),
                             if (copySuccess) ...[

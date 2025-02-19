@@ -134,7 +134,7 @@ class LinkPreviewCard extends StatelessWidget {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                    splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
                     onTap: () => triggerOnTap(context),
                     onLongPress: originURL != null ? () => handleLinkLongPress(context, originURL!, originURL) : null,
                     borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
@@ -205,7 +205,7 @@ class LinkPreviewCard extends StatelessWidget {
                         color: theme.cardColor.darken(5),
                         child: Icon(
                           hideNsfw ? null : Icons.language,
-                          color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
+                          color: theme.colorScheme.onSecondaryContainer.withValues(alpha: read == true ? 0.55 : 1.0),
                         ),
                       ),
             if (hideNsfw)
@@ -222,7 +222,7 @@ class LinkPreviewCard extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                  splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
                   onTap: () => triggerOnTap(context),
                   onLongPress: originURL != null ? () => handleLinkLongPress(context, originURL!, originURL) : null,
                 ),

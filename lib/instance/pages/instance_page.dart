@@ -181,28 +181,31 @@ class _InstancePageState extends State<InstancePage> {
                                 );
                               },
                             ),
-                          PopupMenuButton(
-                            itemBuilder: (context) => [
-                              ThunderPopupMenuItem(
-                                onTap: () async {
-                                  HapticFeedback.mediumImpact();
-                                  FeedBloc feedBloc = context.read<FeedBloc>();
-                                  navigateToModlogPage(
-                                    context,
-                                    feedBloc: feedBloc,
-                                    lemmyClient: feedBloc.lemmyClient,
-                                  );
-                                },
-                                icon: Icons.shield_rounded,
-                                title: l10n.modlog,
-                              ),
-                              if (viewType != SearchType.all)
+                          Semantics(
+                            label: l10n.menu,
+                            child: PopupMenuButton(
+                              itemBuilder: (context) => [
                                 ThunderPopupMenuItem(
-                                  onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
-                                  icon: Icons.open_in_browser_rounded,
-                                  title: l10n.openInBrowser,
+                                  onTap: () async {
+                                    HapticFeedback.mediumImpact();
+                                    FeedBloc feedBloc = context.read<FeedBloc>();
+                                    navigateToModlogPage(
+                                      context,
+                                      feedBloc: feedBloc,
+                                      lemmyClient: feedBloc.lemmyClient,
+                                    );
+                                  },
+                                  icon: Icons.shield_rounded,
+                                  title: l10n.modlog,
                                 ),
-                            ],
+                                if (viewType != SearchType.all)
+                                  ThunderPopupMenuItem(
+                                    onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                                    icon: Icons.open_in_browser_rounded,
+                                    title: l10n.openInBrowser,
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -216,7 +219,7 @@ class _InstancePageState extends State<InstancePage> {
                               child: Row(
                                 children: [
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.about),
                                     ],
@@ -224,7 +227,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.communities),
                                     ],
@@ -239,7 +242,7 @@ class _InstancePageState extends State<InstancePage> {
                                   if (false) ...[
                                     const SizedBox(width: 10),
                                     SearchActionChip(
-                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                       children: [
                                         Text(l10n.users),
                                       ],
@@ -252,7 +255,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ],
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.posts),
                                     ],
@@ -264,7 +267,7 @@ class _InstancePageState extends State<InstancePage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
-                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
                                     children: [
                                       Text(l10n.comments),
                                     ],

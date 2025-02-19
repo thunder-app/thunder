@@ -233,7 +233,7 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "В настоящее время не удалось отправить ваш отчет о комментариях. Пожалуйста, повторите попытку позже",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} подписчиков",
+  "countSubscribers": "{count} Подписчиков",
   "@countSubscribers": {},
   "countUsers": "{count} пользователей",
   "@countUsers": {
@@ -1288,5 +1288,137 @@
   "defaultFeedSortType": "Сортировка ленты по умолчанию",
   "@defaultFeedSortType": {
     "description": "Default sorting type for the feed."
+  },
+  "bot": "Бот",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "colors": "Цвета",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "public": "Публично",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "hide": "Скрыть",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "in_": "в",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
+  "no": "Нет",
+  "@no": {
+    "description": "A negative status"
+  },
+  "accountBirthday": "День рождения аккаунта {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "always": "Всегда",
+  "@always": {},
+  "deleteImageConfirmTitle": "Удалить?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "hidden": "Скрытый",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "green": "Зеленый",
+  "@green": {
+    "description": "The color green"
+  },
+  "offline": "оффлайн",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "instances": "Инстансы",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "teal": "Бирюзовый",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "loading": "Загрузка...",
+  "@loading": {
+    "description": "Placeholder text for loading"
+  },
+  "red": "Красный",
+  "@red": {
+    "description": "The color red"
+  },
+  "disabled": "Выключено",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "email": "Эл. почта",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "never": "Никогда",
+  "@never": {},
+  "video": "Видео",
+  "@video": {
+    "description": "String for video "
+  },
+  "purple": "Фиолетовый",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "yes": "Да",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "me": "Я",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "requiredField": "*обязательно",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
+  "blue": "Синий",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "stats": "Статистика",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "orange": "Оранжевый",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "reorder": "Переместить",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "none": "Нет",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "post": "Пост",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "accept": "Принять",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "unhide": "Раскрыть",
+  "@unhide": {
+    "description": "The action to unhide a post"
   }
 }

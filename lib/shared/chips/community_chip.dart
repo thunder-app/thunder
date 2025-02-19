@@ -52,6 +52,7 @@ class CommunityChip extends StatelessWidget {
           communityName,
           communityTitle,
           fetchInstanceNameFromUrl(communityUrl) ?? '-',
+          useDisplayName: false,
         ),
         preferBelow: false,
         child: Row(
@@ -66,7 +67,7 @@ class CommunityChip extends StatelessWidget {
               fetchInstanceNameFromUrl(communityUrl),
               includeInstance: state.postBodyShowCommunityInstance,
               fontScale: state.metadataFontSizeScale,
-              transformColor: (color) => color?.withOpacity(0.75),
+              transformColor: (color) => color?.withValues(alpha: 0.75),
             ),
           ],
         ),

@@ -1,6 +1,8 @@
 import 'package:thunder/post/enums/post_action.dart';
 
 enum UserAction {
+  setUserLabel(permissionType: PermissionType.all),
+
   /// User level user actions
   block(permissionType: PermissionType.user),
 

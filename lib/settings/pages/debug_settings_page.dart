@@ -187,7 +187,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   Text(
                     l10n.debugDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -304,7 +304,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   Text(
                     l10n.debugNotificationsDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -569,7 +569,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   Text(
                     l10n.experimentalFeaturesDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                 ],

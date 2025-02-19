@@ -110,7 +110,7 @@ class ListOption<T> extends StatelessWidget {
                         children: [
                           Text(description, style: theme.textTheme.bodyMedium),
                           if (subtitleWidget != null) subtitleWidget!,
-                          if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                          if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8))),
                         ],
                       ),
                     ),
@@ -126,12 +126,12 @@ class ListOption<T> extends StatelessWidget {
                                 })
                               : value.label,
                           style: theme.textTheme.titleSmall?.copyWith(
-                            color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+                            color: disabled ? theme.colorScheme.onSurface.withValues(alpha: 0.5) : theme.colorScheme.onSurface,
                           ),
                         ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
+                      color: disabled ? theme.colorScheme.onSurface.withValues(alpha: 0.5) : null,
                     ),
                     const SizedBox(
                       height: 42.0,

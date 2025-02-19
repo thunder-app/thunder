@@ -454,7 +454,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                     bodyTextOverflow: TextOverflow.fade,
                     graphicFit: BoxFit.scaleDown,
                     removeElevation: true,
-                    backgroundColor: theme.dividerColor.withOpacity(0.25),
+                    backgroundColor: theme.dividerColor.withValues(alpha: 0.25),
                     borderRadius: 10,
                     useDefaultOnTap: false,
                   ),
@@ -465,7 +465,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: theme.dividerColor.withOpacity(0.25),
+                    color: theme.dividerColor.withValues(alpha: 0.25),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
@@ -526,7 +526,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
 }
 
 Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
-  Uri? parsedUri = Uri.tryParse(text);
+  Uri? parsedUri = Uri.tryParse(url ?? '') ?? Uri.tryParse(text);
 
   String parsedUrl = text;
 

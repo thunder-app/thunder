@@ -26,7 +26,6 @@ class CommentContent extends StatefulWidget {
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
-  final Function(int) onReportAction;
   final Function(CommentView, bool) onReplyEditAction;
 
   final int? moddingCommentId;
@@ -44,7 +43,6 @@ class CommentContent extends StatefulWidget {
     required this.onSaveAction,
     required this.onDeleteAction,
     required this.onReplyEditAction,
-    required this.onReportAction,
     required this.isOwnComment,
     required this.isHidden,
     this.moddingCommentId,
@@ -157,7 +155,6 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                               onSaveAction: widget.onSaveAction,
                               onDeleteAction: widget.onDeleteAction,
                               onReplyEditAction: widget.onReplyEditAction,
-                              onReportAction: widget.onReportAction,
                               onViewSourceToggled: widget.onViewSourceToggled,
                               viewSource: widget.viewSource,
                             ),

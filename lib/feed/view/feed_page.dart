@@ -541,7 +541,7 @@ class _FeedViewState extends State<FeedView> {
                                           child: Container(
                                             height: MediaQuery.of(context).size.height,
                                             width: MediaQuery.of(context).size.width,
-                                            color: Colors.black.withOpacity(0.5),
+                                            color: Colors.black.withValues(alpha: 0.5),
                                           ),
                                         )
                                       : null,
@@ -598,7 +598,7 @@ class _FeedViewState extends State<FeedView> {
                         children: [
                           IgnorePointer(
                               child: Container(
-                            color: theme.colorScheme.surface.withOpacity(0.95),
+                            color: theme.colorScheme.surface.withValues(alpha: 0.95),
                           )),
                           if (thunderBloc.state.isFabOpen)
                             ModalBarrier(
@@ -804,7 +804,7 @@ class _TagLineState extends State<TagLine> {
                                     end: Alignment.bottomCenter,
                                     stops: const [0.0, 0.5, 1.0],
                                     colors: [
-                                      getBackgroundColor(context).withOpacity(0.0),
+                                      getBackgroundColor(context).withValues(alpha: 0.0),
                                       getBackgroundColor(context),
                                       getBackgroundColor(context),
                                     ],
@@ -819,7 +819,7 @@ class _TagLineState extends State<TagLine> {
                                 child: Text(
                                   AppLocalizations.of(context)!.showMore,
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ),
@@ -837,7 +837,7 @@ class _TagLineState extends State<TagLine> {
                           child: Text(
                             AppLocalizations.of(context)!.showLess,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                             ),
                           ),
                         ),
@@ -867,7 +867,7 @@ class FeedReachedEnd extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          color: theme.dividerColor.withOpacity(0.1),
+          color: theme.dividerColor.withValues(alpha: 0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
           child: ScalableText(
             l10n.reachedTheBottom,

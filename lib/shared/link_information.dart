@@ -76,7 +76,7 @@ class _LinkInformationState extends State<LinkInformation> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface.withOpacity(0.8), theme.colorScheme.surfaceTint, 10),
+            color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface.withValues(alpha: 0.8), theme.colorScheme.surfaceTint, 10),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Row(

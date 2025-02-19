@@ -77,9 +77,9 @@ class _UserHeaderState extends State<UserHeader> {
                       colors: [
                         theme.colorScheme.surface,
                         theme.colorScheme.surface,
-                        theme.colorScheme.surface.withOpacity(0.9),
-                        theme.colorScheme.surface.withOpacity(0.6),
-                        theme.colorScheme.surface.withOpacity(0.3),
+                        theme.colorScheme.surface.withValues(alpha: 0.9),
+                        theme.colorScheme.surface.withValues(alpha: 0.6),
+                        theme.colorScheme.surface.withValues(alpha: 0.3),
                       ],
                     ),
                   ),

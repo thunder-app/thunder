@@ -598,5 +598,13 @@
   "xDownvotes": "{x} voti in giù",
   "@xDownvotes": {},
   "xUpvotes": "{x} voti in su",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "accountBirthday": "Compleanno dell'Account {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accept": "Accetta",
+  "@accept": {
+    "description": "The ability to accept an option"
+  }
 }

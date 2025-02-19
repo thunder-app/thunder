@@ -1,0 +1,800 @@
+{
+  "about": "Over",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibility": "Toegankelĳkheid",
+  "@accessibility": {},
+  "actions": "Acties",
+  "@actions": {},
+  "admin": "Administrator",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "all": "Alles",
+  "@all": {},
+  "always": "Altĳd",
+  "@always": {},
+  "animations": "Animaties",
+  "@animations": {},
+  "anonymous": "Anoniem",
+  "@anonymous": {},
+  "applied": "Toegepast",
+  "@applied": {},
+  "apply": "Toepassen",
+  "@apply": {},
+  "back": "Terug",
+  "@back": {},
+  "base": "Basis",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "blue": "Blauw",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "close": "Sluiten",
+  "@close": {},
+  "collapse": "Inklappen",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "color": "Kleur",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colors": "Kleuren",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "comfortable": "Comfortabel",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "comment": "Opmerking",
+  "@comment": {},
+  "commentBehaviourSettings": "Opmerkingen",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "comments": "Opmerkingen",
+  "@comments": {},
+  "communities": "Gemeen­schappen",
+  "@communities": {},
+  "community": "Gemeen­schap",
+  "@community": {},
+  "advanced": "Geavanceerd",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "accept": "Accepteren",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "active": "Actief",
+  "@active": {},
+  "add": "Toe­voegen",
+  "@add": {},
+  "bold": "Vetgedrukt",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "cancel": "Annuleren",
+  "@cancel": {},
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "compact": "Compact",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "account": "{count, plural, one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountBirthday": "Account­verjaardag {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accountSettings": "Account­instellingen",
+  "@accountSettings": {},
+  "actionColors": "Actie­kleuren",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "addUserLabel": "Gebruikers­label toevoegen",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "addedCommunityToSubscriptions": "Geabonneerd op gemeenschap",
+  "@addedCommunityToSubscriptions": {},
+  "allPosts": "Alle berichten",
+  "@allPosts": {},
+  "appLanguage": "App-taal",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "backButton": "Terug­knop",
+  "@backButton": {},
+  "backToTop": "Terug naar boven",
+  "@backToTop": {},
+  "blockInstance": "Instantie blokkeren",
+  "@blockInstance": {},
+  "changePassword": "Wachtwoord wĳzigen",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "addToFavorites": "Toevoegen aan favorieten",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addKeywordFilter": "Sleutel­woord toevoegen",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "cardView": "Kaart­weergave",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "unsubscribed": "Uitgeschreven",
+  "@unsubscribed": {},
+  "url": "URL",
+  "@url": {},
+  "user": "Gebruiker",
+  "@user": {
+    "description": "Role name for user"
+  },
+  "username": "Gebruikers­naam",
+  "@username": {},
+  "users": "Gebruikers",
+  "@users": {},
+  "video": "Video",
+  "@video": {
+    "description": "String for video "
+  },
+  "warning": "Waarschuwing",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
+  "yes": "Ja",
+  "@yes": {
+    "description": "A positive status"
+  },
+  "addAccount": "Account toevoegen",
+  "@addAccount": {},
+  "alternateSources": "Alternatieve bronnen",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "anonymousInstances": "Anonieme instanties",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "appearance": "Weergave",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "blockCommunity": "Gemeenschap blokkeren",
+  "@blockCommunity": {},
+  "blockManagement": "Blokkade­beheer",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockSettingLabel": "Gebruiker-/gemeenschap-/instantie­blokkades",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockUser": "Gebruiker blokkeren",
+  "@blockUser": {},
+  "blockedCommunities": "Geblokkeerde gemeenschappen",
+  "@blockedCommunities": {},
+  "blockedInstances": "Geblokkeerde instanties",
+  "@blockedInstances": {},
+  "blockedUsers": "Geblokkeerde gebruikers",
+  "@blockedUsers": {},
+  "browserMode": "Koppelings­verwerking",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "changeSort": "Sortering wĳzigen",
+  "@changeSort": {},
+  "clearCacheLabel": "Cache wissen",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearDatabase": "Database wissen",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Voorkeuren wissen",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearSearch": "Zoek­opdrachten wissen",
+  "@clearSearch": {},
+  "confirm": "Bevestigen",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "controversial": "Controversieel",
+  "@controversial": {},
+  "copy": "Kopiëren",
+  "@copy": {},
+  "dark": "Donker",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "defaultColor": "Standaard",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "delete": "Verwĳderen",
+  "@delete": {},
+  "edit": "Bewerken",
+  "@edit": {},
+  "empty": "Leeg",
+  "@empty": {},
+  "expand": "Uitvouwen",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "favorites": "Favorieten",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "fonts": "Letter­typen",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "forward": "Vooruit",
+  "@forward": {
+    "description": "Label for navigating forward (e.g., in a browser)"
+  },
+  "general": "Algemeen",
+  "@general": {
+    "description": "General settings category."
+  },
+  "gestures": "Gebaren",
+  "@gestures": {},
+  "hot": "Populair",
+  "@hot": {},
+  "image": "Afbeelding",
+  "@image": {},
+  "imageCachingModeAggressiveShort": "Agressief",
+  "@imageCachingModeAggressiveShort": {
+    "description": "Short description for aggressive image caching mode"
+  },
+  "imageCachingModeRelaxedShort": "Ontspannen",
+  "@imageCachingModeRelaxedShort": {
+    "description": "Short description for relaxed image caching mode"
+  },
+  "inbox": "Postvak IN",
+  "@inbox": {},
+  "information": "Informatie",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "instances": "Instanties",
+  "@instances": {
+    "description": "Title for settings related to instances"
+  },
+  "label": "Label",
+  "@label": {
+    "description": "Text field label for a user label"
+  },
+  "language": "Taal",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "large": "Groot",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "light": "Licht",
+  "@light": {
+    "description": "Describes using the light theme"
+  },
+  "linkHandlingInAppShort": "Intern",
+  "@linkHandlingInAppShort": {
+    "description": "Short description for in-app link handling"
+  },
+  "linksBehaviourSettings": "Koppelingen",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "me": "Ik",
+  "@me": {
+    "description": "Label for the current user."
+  },
+  "medium": "Gemiddeld",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "modlog": "Moderator­logboek",
+  "@modlog": {
+    "description": "Option for viewing modlog."
+  },
+  "names": "Namen",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "no": "Nee",
+  "@no": {
+    "description": "A negative status"
+  },
+  "normal": "Normaal",
+  "@normal": {
+    "description": "Normal name thickness/weight"
+  },
+  "orange": "Oranje",
+  "@orange": {
+    "description": "The color orange"
+  },
+  "overview": "Overzicht",
+  "@overview": {},
+  "pending": "In behandeling",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "post": "Bericht",
+  "@post": {
+    "description": "Describes a single post"
+  },
+  "postTitle": "Titel",
+  "@postTitle": {},
+  "postURL": "URL",
+  "@postURL": {},
+  "posts": "Berichten",
+  "@posts": {},
+  "preview": "Voor­vertoning",
+  "@preview": {},
+  "profiles": "Profielen",
+  "@profiles": {},
+  "public": "Openbaar",
+  "@public": {
+    "description": "Public community visibility"
+  },
+  "purple": "Paars",
+  "@purple": {
+    "description": "The color purple"
+  },
+  "read": "Gelezen",
+  "@read": {
+    "description": "Indicates that a post has been read"
+  },
+  "reorder": "Opnieuw ordenen",
+  "@reorder": {
+    "description": "Tooltip text for the list editor button"
+  },
+  "requiredField": "*vereist",
+  "@requiredField": {
+    "description": "Helper text for a required form field"
+  },
+  "reset": "Opnieuw instellen",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "restore": "Herstellen",
+  "@restore": {},
+  "retry": "Opnieuw proberen",
+  "@retry": {},
+  "save": "Opslaan",
+  "@save": {},
+  "saved": "Opgeslagen",
+  "@saved": {},
+  "scaled": "Geschaald",
+  "@scaled": {},
+  "search": "Zoeken",
+  "@search": {},
+  "settings": "Instellingen",
+  "@settings": {},
+  "share": "Delen",
+  "@share": {},
+  "sidebar": "Zĳbalk",
+  "@sidebar": {},
+  "small": "Klein",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "stats": "Statistieken",
+  "@stats": {
+    "description": "Community statistics"
+  },
+  "standard": "Standaard",
+  "@standard": {
+    "description": "Describes a standard visual density"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Status of the action"
+  },
+  "submit": "Indienen",
+  "@submit": {},
+  "subscribe": "Abonneren",
+  "@subscribe": {},
+  "subscribed": "Geabonneerd",
+  "@subscribed": {},
+  "subscriptions": "Abonnementen",
+  "@subscriptions": {},
+  "successfullyBlocked": "Geblokkeerd.",
+  "@successfullyBlocked": {},
+  "successfullyUnblocked": "Gedeblokkeerd.",
+  "@successfullyUnblocked": {},
+  "system": "Systeem",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "teal": "Blauw­groen",
+  "@teal": {
+    "description": "The color teal"
+  },
+  "text": "Tekst",
+  "@text": {},
+  "theme": "Thema",
+  "@theme": {
+    "description": "Setting for theme"
+  },
+  "theming": "Thematiek",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "thickness": "Dikte",
+  "@thickness": {
+    "description": "Describes a thickness (e.g., divider)"
+  },
+  "top": "Beste",
+  "@top": {},
+  "unifiedpush": "UnifiedPush",
+  "@unifiedpush": {
+    "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+  },
+  "unreachable": "Onbereikbaar",
+  "@unreachable": {
+    "description": "Describes an instance that is currently unreachable"
+  },
+  "hide": "Verbergen",
+  "@hide": {
+    "description": "The action to hide a post"
+  },
+  "open": "Openen",
+  "@open": {},
+  "linkHandlingExternalShort": "Extern",
+  "@linkHandlingExternalShort": {
+    "description": "Short description for external link handling"
+  },
+  "in_": "in",
+  "@in_": {
+    "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+  },
+  "ago": "{time} geleden",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "email": "E-mail",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "navigation": "Navigatie",
+  "@navigation": {},
+  "on": "aan",
+  "@on": {},
+  "disable": "Uitschakelen",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "feed": "Feed",
+  "@feed": {},
+  "nsfw": "NSFW",
+  "@nsfw": {
+    "description": "Short description for NSFW label"
+  },
+  "creator": "Maker",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "expanded": "Uitgevouwen",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "new_": "Nieuw",
+  "@new_": {},
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "red": "Rood",
+  "@red": {
+    "description": "The color red"
+  },
+  "filters": "Filters",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "disabled": "Uitgeschakeld",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "never": "Nooit",
+  "@never": {},
+  "postBehaviourSettings": "Berichten",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "refresh": "Vernieuwen",
+  "@refresh": {},
+  "local": "Lokaal",
+  "@local": {},
+  "none": "Geen",
+  "@none": {
+    "description": "Describes the notification type when push notifications are disabled"
+  },
+  "debug": "Fout­opsporing",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "decline": "Afwĳzen",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
+  "green": "Groen",
+  "@green": {
+    "description": "The color green"
+  },
+  "reason": "Reden",
+  "@reason": {
+    "description": "The reason for the moderation action (e.g., removing post)"
+  },
+  "hidden": "Verborgen",
+  "@hidden": {
+    "description": "Describes a post that is hidden"
+  },
+  "notificationsBehaviourSettings": "Meldingen",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "old": "Oud",
+  "@old": {},
+  "off": "uit",
+  "@off": {},
+  "offline": "offline",
+  "@offline": {
+    "description": "Describes a service that is unavailable"
+  },
+  "ok": "Oké",
+  "@ok": {},
+  "password": "Wacht­woord",
+  "@password": {},
+  "unsubscribe": "Uitschrĳven",
+  "@unsubscribe": {},
+  "addDiscussionLanguage": "Taal toevoegen",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "remove": "Verwĳderen",
+  "@remove": {},
+  "upvote": "Upvoten",
+  "@upvote": {
+    "description": "Action for upvoting a post/comment"
+  },
+  "upvoted": "Geüpvotet",
+  "@upvoted": {
+    "description": "Short description for upvoted post/comment"
+  },
+  "bannedUser": "Verbannen gebruiker",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "condensed": "Beknopt",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "downvote": "Downvoten",
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "Gedownvotet",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "reporter": "Rapporteerder:",
+  "@reporter": {
+    "description": "Name of reporter that reported a post/comment"
+  },
+  "unhide": "Verbergen herstellen",
+  "@unhide": {
+    "description": "The action to unhide a post"
+  },
+  "unresolved": "Onopgelost",
+  "@unresolved": {
+    "description": "Description for unresolved status (e.g., unresolved reports)"
+  },
+  "collapseInformation": "Informatie samen­vouwen",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapsePost": "Bericht samen­vouwen",
+  "@collapsePost": {},
+  "collapseSpoiler": "Spoiler samen­vouwen",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "communityActions": "Gemeenschaps­acties",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "Gemeenschap ‘{community}’",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "communityFormat": "Gemeenschaps­formaat",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "communityStyle": "Gemeenschaps­stĳl",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "compactView": "Compacte weergave",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "confirmLogOutTitle": "Uit­loggen?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "contentManagement": "Inhouds­beheer",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "contentWarning": "Inhouds­waarschuwing",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "copyComment": "Opmerking kopiëren",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "copySelected": "Geselecteerde tekst kopiëren",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "copyText": "Tekst kopiëren",
+  "@copyText": {},
+  "countComments": "{count} opmerkingen",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countUsersActiveWeek": "{count} gebruikers/week",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "countUsersActiveMonth": "{count} gebruikers/maand",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "createComment": "Opmerking plaatsen",
+  "@createComment": {},
+  "createPost": "Bericht plaatsen",
+  "@createPost": {},
+  "crossPostedTo": "Gekruisplaatst naar",
+  "@crossPostedTo": {},
+  "dangerZone": "Gevaren­zone",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dateFormat": "Datum­formaat",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "deleteAccount": "Account verwĳderen",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deletePost": "Bericht verwĳderen",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "detailedReason": "Reden: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "discussionLanguages": "Discussie­talen",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "dismissRead": "Gelezen items afwĳzen",
+  "@dismissRead": {},
+  "dividerAppearance": "Verdeler­weergave",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "downvoteColor": "Downvote-kleur",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "editComment": "Opmerking bewerken",
+  "@editComment": {},
+  "emptyInbox": "Postvak IN legen",
+  "@emptyInbox": {},
+  "endSearch": "Stoppen met zoeken",
+  "@endSearch": {},
+  "expandOptions": "Opties uitvouwen",
+  "@expandOptions": {},
+  "experimentalFeatures": "Experimentele functies",
+  "@experimentalFeatures": {
+    "description": "Name of setting for experimental features"
+  },
+  "exploreInstance": "Instantie verkennen",
+  "@exploreInstance": {
+    "description": "Button for exploring an instance"
+  },
+  "exportDatabase": "Database exporteren",
+  "@exportDatabase": {
+    "description": "Name of the setting for exporting the db"
+  },
+  "extraLarge": "Extra groot",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
+  "featuredPost": "Uitgelicht bericht",
+  "@featuredPost": {
+    "description": "Short decription for moderator action to feature a post"
+  },
+  "feedSettings": "Feed-instellingen",
+  "@feedSettings": {
+    "description": "Feed settings category."
+  },
+  "generalSettings": "Algemene instellingen",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "countPosts": "{count} berichten",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "createAccount": "Account aan­maken",
+  "@createAccount": {},
+  "displayName": "Weergave­naam",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "expandInformation": "Informatie uitvouwen",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "createdToday": "Vandaag geplaatst",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "countSubscribers": "{count} abonnees",
+  "@countSubscribers": {
+    "description": "Number of subscribers"
+  },
+  "countUsers": "{count} gebruikers",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "countUsersActiveDay": "{count} gebruikers/dag",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "created": "Geplaatst op {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "editPost": "Bericht bewerken",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "expandPost": "Bericht uitvouwen",
+  "@expandPost": {},
+  "expandSpoiler": "Spoiler uitvouwen",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  }
+}

@@ -2,10 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
           xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- The tools:replace line is needed by background_fetch -->
@@ -19,6 +16,11 @@
         android:requestLegacyExternalStorage="true"
         android:enableOnBackInvokedCallback="false"
         >
+
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
+      
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -84,9 +86,10 @@
               <data android:host="aussie.zone" />
               <data android:host="awful.systems" />
               <data android:host="beehaw.org" />
-              <data android:host="delraymisfitsboard.com" />
+              <data android:host="diggita.com" />
               <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
+              <data android:host="endlesstalk.org" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />

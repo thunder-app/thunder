@@ -131,7 +131,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       plainTextComment!,
                       style: TextStyle(
                         fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
-                        color: widget.read == true ? theme.colorScheme.onSurface.withOpacity(0.55) : theme.colorScheme.onSurface.withOpacity(0.7),
+                        color: widget.read == true ? theme.colorScheme.onSurface.withValues(alpha: 0.55) : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ),
@@ -143,7 +143,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 color: theme.cardColor.darken(5),
                 child: Icon(
                   Icons.text_fields_rounded,
-                  color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                  color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
                 ),
               ),
       ),
@@ -242,7 +242,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              splashColor: theme.colorScheme.primary.withOpacity(0.4),
+              splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
               onTap: showImage,
               child: GestureDetector(
@@ -286,7 +286,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
 
     return InkWell(
-      splashColor: theme.colorScheme.primary.withOpacity(0.4),
+      splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
       borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
       onTap: () {
         if (widget.isUserLoggedIn && widget.markPostReadOnMediaView && widget.postViewMedia.postView.read == false) {
@@ -328,7 +328,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             if (!widget.postViewMedia.postView.post.nsfw && widget.postViewMedia.media.first.thumbnailUrl?.isNotEmpty != true)
               Icon(
                 Icons.video_camera_back_outlined,
-                color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
               ),
             if (widget.postViewMedia.media.first.thumbnailUrl != null)
               ImageFiltered(
@@ -461,7 +461,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       // Should never come here
                       MediaType.text => Icons.text_fields_rounded,
                     },
-                    color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                    color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
                   );
         }
       },

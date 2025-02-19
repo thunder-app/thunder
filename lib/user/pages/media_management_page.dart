@@ -118,7 +118,7 @@ class MediaManagementPage extends StatelessWidget {
                                                     child: Text(
                                                       l10n.unableToLoadImageFrom(LemmyClient.instance.lemmyApiV3.host),
                                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                                                       ),
                                                     ),
                                                   ),
@@ -208,7 +208,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.only(bottom: 24),
                                                                   child: Container(
-                                                                    color: theme.dividerColor.withOpacity(0.1),
+                                                                    color: theme.dividerColor.withValues(alpha: 0.1),
                                                                     padding: const EdgeInsets.symmetric(vertical: 32.0),
                                                                     child: ScalableText(
                                                                       l10n.noReferencesToImage,
@@ -272,7 +272,7 @@ class MediaManagementPage extends StatelessWidget {
                     if (state.images?.isNotEmpty != true)
                       SliverToBoxAdapter(
                         child: Container(
-                          color: theme.dividerColor.withOpacity(0.1),
+                          color: theme.dividerColor.withValues(alpha: 0.1),
                           padding: const EdgeInsets.symmetric(vertical: 32.0),
                           child: ScalableText(
                             l10n.noImages,

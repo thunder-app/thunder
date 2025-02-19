@@ -23,7 +23,7 @@ class FeedCardDivider extends StatelessWidget {
       thickness: feedCardDividerThickness.value,
       color: feedCardDividerColor == Colors.transparent
           ? ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)
-          : Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), feedCardDividerColor).withOpacity(0.2),
+          : Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), feedCardDividerColor).withValues(alpha: 0.2),
     );
   }
 }

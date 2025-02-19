@@ -325,7 +325,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       onVoteAction: (_, __) {},
                                       onSaveAction: (_, __) {},
                                       onReplyEditAction: (_, __) {},
-                                      onReportAction: (_) {},
                                       onDeleteAction: (_, __) {},
                                       isUserLoggedIn: true,
                                       isOwnComment: false,

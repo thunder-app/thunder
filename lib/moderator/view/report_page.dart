@@ -241,7 +241,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                                               Wrap(
                                                 children: [
                                                   Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -316,7 +316,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                               itemBuilder: (context, index) {
                                 CommentView commentView = CommentView(
                                   comment: state.commentReports[index].comment,
-                                  creator: state.commentReports[index].creator,
+                                  creator: state.commentReports[index].commentCreator,
+                                  creatorIsModerator: state.commentReports[index].creatorIsModerator,
+                                  creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
                                   post: state.commentReports[index].post,
                                   community: state.commentReports[index].community,
                                   counts: state.commentReports[index].counts,
@@ -342,7 +344,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Divider(thickness: 1.0, color: theme.dividerColor.withOpacity(0.3)),
+                                              Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                                               Wrap(
                                                 children: [
                                                   Text(l10n.reporter, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),

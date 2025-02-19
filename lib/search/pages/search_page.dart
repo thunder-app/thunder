@@ -276,7 +276,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           children: [
                             if (state.viewingAll) ...[
                               SearchActionChip(
-                                backgroundColor: theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
                                 children: [
                                   Text(l10n.viewingAll),
                                   const SizedBox(width: 5),
@@ -398,7 +398,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                 ),
                                 const SizedBox(width: 10),
                                 SearchActionChip(
-                                  backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                  backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
                                   children: [
                                     const Icon(Icons.people_rounded, size: 15),
                                     const SizedBox(width: 5),
@@ -432,7 +432,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               ],
                               const SizedBox(width: 10),
                               SearchActionChip(
-                                backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                                backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
                                 children: [
                                   const Icon(Icons.person_rounded, size: 15),
                                   const SizedBox(width: 5),

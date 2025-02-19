@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 class CommentNavigatorFab extends StatefulWidget {
   /// The [ScrollController] for the scrollable list
@@ -60,6 +62,9 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
 
   @override
   Widget build(BuildContext context) {
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final ThemeData theme = Theme.of(context);
+
     return SizedBox(
       width: 135,
       child: Material(
@@ -73,6 +78,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                 child: SizedBox(
                   height: 45,
                   child: Material(
+                    color: darkTheme ? theme.colorScheme.primaryContainer : null,
                     borderRadius: BorderRadius.circular(50),
                     child: const InkWell(),
                   ),

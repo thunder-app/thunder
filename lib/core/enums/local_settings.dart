@@ -13,7 +13,8 @@ enum LocalSettingsCategories {
   about('About'),
   debug('Debug'),
   theming('Theming'),
-  videoPlayer('Video Player');
+  videoPlayer('Video Player'),
+  appearance('Appearance');
 
   final String value;
 
@@ -37,7 +38,7 @@ enum LocalSettingsSubCategories {
   advanced('advanced'),
   names('names'),
   notifications('notifications'),
-  importExportSettings('importExportSettings'),
+  importExportThunderSettings('importExportThunderSettings'),
   filters('filters'),
   themes('theme'),
   fonts('fonts'),
@@ -50,6 +51,7 @@ enum LocalSettingsSubCategories {
   navigation('navigation'),
   videoPlayer('videoPlayer'),
   contentManagement('contentManagement'),
+  importExportLemmyAccountSettings('importExportLemmyAccountSettings'),
   dangerZone('dangerZone'),
   reset('reset'),
   experimental('experimental'),
@@ -68,6 +70,25 @@ enum LocalSettingsSubCategories {
 }
 
 enum LocalSettings {
+  /// -------------------------- Setting entries which allow searching for top-level settings pages --------------------------
+  settingsPageGeneral(name: 'settings_page_general', key: 'settingsPageGeneral', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageFilters(name: 'settings_page_filters', key: 'settingsPageFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageAppearance(name: 'settings_page_appearance', key: 'settingsPageAppearance', category: LocalSettingsCategories.appearance, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageGestures(name: 'settings_page_gestures', key: 'settingsPageGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageVideo(name: 'settings_page_video', key: 'settingsPageVideo', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageFloatingActionButton(
+      name: 'settings_page_floating_action_button',
+      key: 'settingsPageFloatingActionButton',
+      category: LocalSettingsCategories.floatingActionButton,
+      subCategory: LocalSettingsSubCategories.general,
+      isPage: true),
+  settingsPageAccessibility(
+      name: 'settings_page_accessibility', key: 'settingsPageAccessibility', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageAccount(name: 'settings_page_account', key: 'settingsPageAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageUserLabels(name: 'settings_page_user_labels', key: 'settingsPageUserLabels', category: LocalSettingsCategories.userLabels, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageAbout(name: 'settings_page_about', key: 'settingsPageAbout', category: LocalSettingsCategories.about, subCategory: LocalSettingsSubCategories.general, isPage: true),
+  settingsPageDebug(name: 'settings_page_debug', key: 'settingsPageDebug', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.general, isPage: true),
+
   /// -------------------------- Account Settings --------------------------
   // Discussion Languages
   discussionLanguages(name: 'account_discussion_languages', key: 'discussionLanguages', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
@@ -198,7 +219,7 @@ enum LocalSettings {
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   appTheme(name: 'setting_theme_app_theme', key: 'theme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
-  systemThemePureBlack(name: 'setting_theme_system_pure_black', key: 'systemThemePureBlack', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+  usePureBlackTheme(name: 'setting_theme_system_pure_black', key: 'systemThemePureBlack', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   appThemeAccentColor(name: 'setting_theme_custom_app_theme', key: 'themeAccentColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   useMaterialYouTheme(name: 'setting_theme_use_material_you', key: 'useMaterialYouTheme', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
 
@@ -322,8 +343,8 @@ enum LocalSettings {
   // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
   // import export settings
-  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
-  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportSettings),
+  importExportSettings(name: 'import_export_settings', key: 'importExportSettings', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportThunderSettings),
+  importExportDatabase(name: 'import_export_database', key: 'importExportDatabase', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.importExportThunderSettings),
   // video player
   videoAutoMute(name: 'auto_mute_videos', key: 'videoAutoMute', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
   videoDefaultPlaybackSpeed(name: 'video_default_playback_speed', key: 'videoDefaultPlaybackSpeed', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.videoPlayer),
@@ -348,6 +369,10 @@ enum LocalSettings {
   accountShowBotAccounts(name: 'account_show_bot_accounts', key: 'accountShowBotAccounts', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.feed),
   accountBlocks(name: 'account_blocks', key: 'accountBlocks', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
   accountChangePassword(name: 'account_change_password', key: 'accountChangePassword', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
+  accountImportSettings(
+      name: 'account_import_settings', key: 'accountImportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
+  accountExportSettings(
+      name: 'account_export_settings', key: 'accountExportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
   accountDeleteAccount(name: 'account_delete_account', key: 'accountDeleteAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   accountManageMedia(name: 'account_manage_media', key: 'accountManageMedia', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   debugDeleteLocalPreferences(name: 'debug_delete_local_preferences', key: 'debugDeleteLocalPreferences', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
@@ -374,6 +399,7 @@ enum LocalSettings {
     required this.subCategory,
     required this.key,
     this.searchable = true,
+    this.isPage = false,
   });
 
   /// The name of the setting as stored in local preferences
@@ -393,6 +419,9 @@ enum LocalSettings {
   /// Whether this setting should appear as a search result
   final bool searchable;
 
+  /// Whether this settings entry represents a whole page of settings
+  final bool isPage;
+
   /// Defines the settings that are excluded from import/export
   static List<LocalSettings> importExportExcludedSettings = [
     LocalSettings.currentAnonymousInstance,
@@ -403,6 +432,17 @@ enum LocalSettings {
 extension LocalizationExt on AppLocalizations {
   String getLocalSettingLocalization(String key) {
     Map<String, String> localizationMap = {
+      'settingsPageDebug': settingsPageDebug,
+      'settingsPageAbout': settingsPageAbout,
+      'settingsPageUserLabels': settingsPageUserLabels,
+      'settingsPageAccount': settingsPageAccount,
+      'settingsPageAccessibility': settingsPageAccessibility,
+      'settingsPageFloatingActionButton': settingsPageFloatingActionButton,
+      'settingsPageVideo': settingsPageVideo,
+      'settingsPageGestures': settingsPageGestures,
+      'settingsPageAppearance': settingsPageAppearance,
+      'settingsPageFilters': settingsPageFilters,
+      'settingsPageGeneral': settingsPageGeneral,
       'defaultFeedType': defaultFeedType,
       'defaultFeedSortType': defaultFeedSortType,
       'hideNsfwPostsFromFeed': hideNsfwPostsFromFeed,
@@ -504,7 +544,7 @@ extension LocalizationExt on AppLocalizations {
       'posts': posts,
       'comments': comments,
       'linksBehaviourSettings': linksBehaviourSettings,
-      'importExportSettings': importExportSettings,
+      'importExportSettings': importExportThunderSettings,
       'importExportDatabase': importExportDatabase,
       'advanced': advanced,
       'names': names,
@@ -541,6 +581,7 @@ extension LocalizationExt on AppLocalizations {
       'contentManagement': contentManagement,
       'accountBlocks': blockSettingLabel,
       'accountChangePassword': changePassword,
+      'importExportLemmyAccountSettings': importExportLemmyAccountSettings,
       'dangerZone': dangerZone,
       'accountDeleteAccount': deleteAccount,
       'accountManageMedia': manageMedia,
@@ -555,6 +596,8 @@ extension LocalizationExt on AppLocalizations {
       'enableExperimentalFeatures': enableExperimentalFeatures,
       'experimental': experimentalFeatures,
       'imageDimensionTimeout': imageDimensionTimeout,
+      'accountImportSettings': importLemmyAccountSettingsDescription,
+      'accountExportSettings': exportLemmyAccountSettingsDescription,
     };
 
     if (localizationMap.containsKey(key)) {

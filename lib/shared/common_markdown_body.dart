@@ -167,7 +167,7 @@ class CommonMarkdownBody extends StatelessWidget {
               textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
               blockquoteDecoration: BoxDecoration(
                 color: getBackgroundColor(context),
-                border: Border(left: BorderSide(color: theme.colorScheme.primary.withOpacity(0.75), width: 4)),
+                border: Border(left: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.75), width: 4)),
                 borderRadius: BorderRadius.circular(5),
               ),
               codeblockDecoration: BoxDecoration(
@@ -189,7 +189,7 @@ class CommonMarkdownBody extends StatelessWidget {
                 border: Border(
                   top: BorderSide(
                     width: 3,
-                    color: theme.colorScheme.primary.withOpacity(0.75),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.75),
                   ),
                 ),
               ),

@@ -2,25 +2,22 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
+
+import 'package:expandable/expandable.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:thunder/core/enums/image_caching_mode.dart';
-import 'package:thunder/shared/dialogs.dart';
-
-import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/media/image.dart';
 
@@ -103,44 +100,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
   }
 
-  Future<bool> _requestPermission() async {
-    bool androidVersionBelow33 = false;
-
-    if (!kIsWeb && Platform.isAndroid) {
-      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
-    }
-
-    // Check first if we have permissions
-    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
-    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
-
-    if (androidVersionBelow33 && !hasStoragePermission) {
-      await Permission.storage.request();
-      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
-    } else if (!androidVersionBelow33 && !hasPhotosPermission) {
-      await Permission.photos.request();
-      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
-    }
-
-    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
-    return hasPhotosPermission;
-  }
-
-  /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
-  void showPermissionDeniedDialog(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-
-    showThunderDialog(
-      context: context,
-      title: l10n.permissionDenied,
-      contentText: l10n.permissionDeniedMessage,
-      onPrimaryButtonPressed: (_, __) {
-        openAppSettings();
-      },
-      primaryButtonText: l10n.openSettings,
-    );
-  }
-
   Future<void> getImageSize() async {
     try {
       Size decodedImage = await retrieveImageDimensions(imageUrl: widget.url, imageBytes: widget.bytes).timeout(const Duration(seconds: 2));
@@ -195,7 +154,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 400),
-            color: fullscreen ? Colors.black : Colors.black.withOpacity(slideTransparency),
+            color: fullscreen ? Colors.black : Colors.black.withValues(alpha: slideTransparency),
           ),
           Positioned.fill(
             child: GestureDetector(
@@ -296,7 +255,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   child: widget.url != null
                       ? ExtendedImage.network(
                           widget.url!,
-                          color: Colors.white.withOpacity(imageTransparency),
+                          color: Colors.white.withValues(alpha: imageTransparency),
                           colorBlendMode: BlendMode.dstIn,
                           enableSlideOutPage: true,
                           mode: ExtendedImageMode.gesture,
@@ -350,7 +309,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             if (state.extendedImageLoadState == LoadState.loading) {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  color: Colors.white.withOpacity(0.90),
+                                  color: Colors.white.withValues(alpha: 0.90),
                                 ),
                               );
                             }
@@ -359,7 +318,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         )
                       : ExtendedImage.memory(
                           widget.bytes!,
-                          color: Colors.white.withOpacity(imageTransparency),
+                          color: Colors.white.withValues(alpha: imageTransparency),
                           colorBlendMode: BlendMode.dstIn,
                           enableSlideOutPage: true,
                           mode: ExtendedImageMode.gesture,
@@ -411,7 +370,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             if (state.extendedImageLoadState == LoadState.loading) {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  color: Colors.white.withOpacity(0.90),
+                                  color: Colors.white.withValues(alpha: 0.90),
                                 ),
                               );
                             }
@@ -455,7 +414,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             icon: Icon(
                               Icons.arrow_back,
                               semanticLabel: "Back",
-                              color: Colors.white.withOpacity(0.90),
+                              color: Colors.white.withValues(alpha: 0.90),
                             ),
                           ),
                         ),
@@ -517,13 +476,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       height: 20,
                                       width: 20,
                                       child: CircularProgressIndicator(
-                                        color: Colors.white.withOpacity(0.90),
+                                        color: Colors.white.withValues(alpha: 0.90),
                                       ),
                                     )
                                   : Icon(
                                       Icons.share_rounded,
                                       semanticLabel: "Share",
-                                      color: Colors.white.withOpacity(0.90),
+                                      color: Colors.white.withValues(alpha: 0.90),
                                     ),
                             ),
                           ),
@@ -535,12 +494,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ? null
                                   : () async {
                                       File file = await DefaultCacheManager().getSingleFile(widget.url!);
-                                      bool hasPermission = await _requestPermission();
-
-                                      if (!hasPermission) {
-                                        if (context.mounted) showPermissionDeniedDialog(context);
-                                        return;
-                                      }
+                                      bool hasPermission = await Gal.hasAccess(toAlbum: true);
+                                      if (!hasPermission) await Gal.requestAccess(toAlbum: true);
 
                                       setState(() => isSavingMedia = true);
 
@@ -573,19 +528,19 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       height: 20,
                                       width: 20,
                                       child: CircularProgressIndicator(
-                                        color: Colors.white.withOpacity(0.90),
+                                        color: Colors.white.withValues(alpha: 0.90),
                                       ),
                                     )
                                   : downloaded
                                       ? Icon(
                                           Icons.check_circle,
                                           semanticLabel: 'Downloaded',
-                                          color: Colors.white.withOpacity(0.90),
+                                          color: Colors.white.withValues(alpha: 0.90),
                                         )
                                       : Icon(
                                           Icons.download,
                                           semanticLabel: "Download",
-                                          color: Colors.white.withOpacity(0.90),
+                                          color: Colors.white.withValues(alpha: 0.90),
                                         ),
                             ),
                           ),
@@ -600,7 +555,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               icon: Icon(
                                 Icons.chat_rounded,
                                 semanticLabel: "Comments",
-                                color: Colors.white.withOpacity(0.90),
+                                color: Colors.white.withValues(alpha: 0.90),
                               ),
                             ),
                           ),
@@ -673,7 +628,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
                 child: Text(
                   l10n.showLess,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -707,7 +662,7 @@ class _ImageAltTextWrapperState extends State<ImageAltTextWrapper> {
                   child: Text(
                     l10n.showMore,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -736,11 +691,11 @@ class ImageAltText extends StatelessWidget {
       key: key,
       altText,
       style: theme.textTheme.bodyMedium?.copyWith(
-        color: Colors.white.withOpacity(0.90),
+        color: Colors.white.withValues(alpha: 0.90),
         shadows: [
           Shadow(
             offset: const Offset(1, 1),
-            color: Colors.black.withOpacity(1),
+            color: Colors.black.withValues(alpha: 1),
             blurRadius: 5.0,
           )
         ],
