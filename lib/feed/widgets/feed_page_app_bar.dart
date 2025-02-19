@@ -14,6 +14,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -220,6 +221,16 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 icon: Icons.refresh_rounded,
                 title: l10n.refresh,
               ),
+              if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
+                ThunderPopupMenuItem(
+                  onTap: () async {
+                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                    bool isFavorite = _getFavoriteStatus(context);
+                    await toggleFavoriteCommunity(context, community, isFavorite);
+                  },
+                  icon: _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
+                  title: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
+                ),
               if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
                 ThunderPopupMenuItem(
                   onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
@@ -228,13 +239,13 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 ),
               if (feedBloc.state.fullCommunityView?.communityView != null)
                 ThunderPopupMenuItem(
-                  onTap: () async => navigateToSearchPage(context),
+                  onTap: () => navigateToSearchPage(context),
                   icon: Icons.search_rounded,
                   title: l10n.search,
                 ),
               ThunderPopupMenuItem(
-                onTap: () async {
-                  await navigateToModlogPage(
+                onTap: () {
+                  navigateToModlogPage(
                     context,
                     communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
                   );
