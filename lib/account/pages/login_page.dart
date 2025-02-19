@@ -13,6 +13,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -47,6 +48,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   bool instanceValidated = true;
   bool instanceAwaitingValidation = true;
   String? instanceError;
+  List<ProviderView> oauthProviders = [];
 
   bool isLoading = false;
 
@@ -77,6 +79,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _instanceTextEditingController.addListener(() async {
       if (currentInstance != _instanceTextEditingController.text) {
         setState(() => instanceIcon = null);
+        setState(() => oauthProviders = []);
         currentInstance = _instanceTextEditingController.text;
       }
 
@@ -94,6 +97,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         await getInstanceInfo(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
+            setState(() => oauthProviders = value.oauthProviders ?? []);
             setState(() => instanceIcon = value.icon);
           }
         });
@@ -152,7 +156,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
               widget.popModal();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
-            } else if (state.status == AuthStatus.contentWarning) {
+            } else if (state.status == AuthStatus.contentWarning || state.status == AuthStatus.oauthContentWarning) {
               bool acceptedContentWarning = false;
 
               await showThunderDialog<void>(
@@ -170,8 +174,37 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               if (context.mounted) {
                 if (acceptedContentWarning) {
-                  // Do another login attempt, this time without the content warning
-                  _handleLogin(showContentWarning: false);
+                  if (state.status == AuthStatus.oauthContentWarning) {
+                    context.read<AuthBloc>().add(const AddAccount());
+                  } else {
+                    // Do another login attempt, this time without the content warning
+                    // TODO: This can be updated to use AddAccount instead of starting the login process over.
+                    _handleLogin(showContentWarning: false);
+                  }
+                } else {
+                  // Cancel the login
+                  context.read<AuthBloc>().add(const CancelLoginAttempt());
+                }
+              }
+            } else if (state.status == AuthStatus.oauthSignUp) {
+              bool completedSignUp = false;
+              String? username;
+
+              await showBlockingInputDialog<String>(
+                  context: context,
+                  title: l10n.signUp,
+                  inputLabel: l10n.username,
+                  getSuggestions: (_) => [],
+                  suggestionBuilder: (payload) => Container(),
+                  onSubmitted: ({payload, value}) {
+                    completedSignUp = true;
+                    username = value;
+                    return Future.value(null);
+                  });
+
+              if (context.mounted) {
+                if (completedSignUp) {
+                  context.read<AuthBloc>().add(OAuthLoginAttempt(username: username));
                 } else {
                   // Cancel the login
                   context.read<AuthBloc>().add(const CancelLoginAttempt());
@@ -435,6 +468,34 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
                         style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
+                  if (oauthProviders.isNotEmpty) ...[
+                    const SizedBox(height: 20.0),
+                    Text(
+                      l10n.orLogInWithSso,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ],
+                  for (final provider in oauthProviders) ...[
+                    const SizedBox(height: 12.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(60),
+                        backgroundColor: theme.colorScheme.primary,
+                        textStyle: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                      onPressed: (!isLoading && _instanceTextEditingController.text.isNotEmpty)
+                          ? () {
+                              _handleOAuthLogin(provider: provider);
+                            }
+                          : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                              ? () => _addAnonymousInstance(context)
+                              : null,
+                      child: Text(provider.displayName,
+                          style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && _instanceTextEditingController.text.isNotEmpty ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
+                    ),
+                  ],
                   const SizedBox(height: 12.0),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
@@ -461,6 +522,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             instance: _instanceTextEditingController.text.trim(),
             totp: _totpTextEditingController.text,
             showContentWarning: showContentWarning,
+          ),
+        );
+  }
+
+  void _handleOAuthLogin({required ProviderView provider}) {
+    TextInput.finishAutofillContext();
+    // Perform oauth login authentication.
+    context.read<AuthBloc>().add(
+          OAuthLoginAttempt(
+            instance: _instanceTextEditingController.text.trim(),
+            provider: provider,
           ),
         );
   }

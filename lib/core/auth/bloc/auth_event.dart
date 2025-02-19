@@ -29,13 +29,42 @@ class LoginAttempt extends AuthEvent {
   const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = "", this.showContentWarning = true});
 }
 
+/// The [OAuthLoginAttempt] event should be triggered whenever the user attempts to log in with OAuth.
+/// This event is responsible for login authentication and handling related errors.
+class OAuthLoginAttempt extends AuthEvent {
+  final String? instance;
+  final ProviderView? provider;
+  final String? username;
+
+  const OAuthLoginAttempt({this.instance, this.provider, this.username});
+}
+
+/// The [OAuthLoginAttemptPart2] event should be triggered whenever the user attempts to log in with OAuth.
+/// This event is responsible for login authentication and handling related errors.
+class OAuthLoginAttemptPart2 extends AuthEvent {
+  final String? link;
+  final String? username;
+  const OAuthLoginAttemptPart2({required this.link, this.username});
+}
+
+class OAuthCreateAccount extends AuthEvent {
+  const OAuthCreateAccount();
+}
+
+class AddAccount extends AuthEvent {
+  final Account? account;
+  const AddAccount({this.account});
+}
+
 /// Cancels a login attempt by emitting the `failure` state.
 class CancelLoginAttempt extends AuthEvent {
   const CancelLoginAttempt();
 }
 
-/// TODO: Consolidate logic to have adding accounts (for both authenticated and anonymous accounts) placed here
-class AddAccount extends AuthEvent {}
+/// Cancels a login attempt by emitting the `failure` state.
+class ShowContentWarning extends AuthEvent {
+  const ShowContentWarning();
+}
 
 /// The [RemoveAccount] event should be triggered whenever the user removes a given account.
 /// Currently, this event only handles removing authenticated accounts.

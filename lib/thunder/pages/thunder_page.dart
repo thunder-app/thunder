@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 // Flutter
@@ -59,6 +60,7 @@ import 'package:thunder/instance/utils/navigate_instance.dart';
 import 'package:thunder/post/utils/navigate_post.dart';
 import 'package:thunder/notification/utils/navigate_notification.dart';
 import 'package:thunder/utils/settings_utils.dart';
+import 'package:http/http.dart' as http;
 
 String? currentIntent;
 
@@ -241,10 +243,23 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToInstance(link);
       case LinkType.thunder:
         if (context.mounted) await _navigateToInternal(link);
+      case LinkType.oauth:
+        if (context.mounted) await _oauthCallback(link);
       case LinkType.unknown:
         if (context.mounted) {
           _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
         }
+    }
+  }
+
+  Future<void> _oauthCallback(String link) async {
+    try {
+      debugPrint("_oauthCallback $link");
+      context.read<AuthBloc>().add(OAuthLoginAttemptPart2(link: link));
+    } catch (e) {
+      if (context.mounted) {
+        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      }
     }
   }
 
@@ -531,6 +546,8 @@ class _ThunderState extends State<Thunder> {
                             ),
                           );
                         case AuthStatus.contentWarning:
+                        case AuthStatus.oauthContentWarning:
+                        case AuthStatus.oauthSignUp:
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;

@@ -7,4 +7,5 @@ enum LinkType {
   community,
   modlog,
   thunder,
+  oauth,
 }
