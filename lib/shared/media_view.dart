@@ -354,6 +354,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                     viewMode: widget.viewMode,
                     mediaType: widget.postViewMedia.media.first.mediaType,
                     originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+                    showEdgeToEdgeImages: widget.edgeToEdgeImages,
                   ),
                 ),
               ),
@@ -371,6 +372,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         originURL: widget.postViewMedia.media.first.originalUrl,
         mediaType: widget.postViewMedia.media.first.mediaType,
         onTap: widget.postViewMedia.media.first.mediaType == MediaType.image ? showImage : null,
+        showEdgeToEdgeImages: widget.edgeToEdgeImages,
       );
     }
     switch (widget.postViewMedia.media.firstOrNull?.mediaType) {
@@ -382,6 +384,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             viewMode: widget.viewMode,
             mediaType: widget.postViewMedia.media.first.mediaType,
             originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+            showEdgeToEdgeImages: widget.edgeToEdgeImages,
           );
         }
 

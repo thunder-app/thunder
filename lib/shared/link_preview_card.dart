@@ -78,6 +78,7 @@ class LinkPreviewCard extends StatelessWidget {
                           url: mediaURL ?? originURL!,
                           height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
                           width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                          edgeToEdgeImages: edgeToEdgeImages,
                           isExpandable: false,
                         ),
                       )
@@ -86,6 +87,7 @@ class LinkPreviewCard extends StatelessWidget {
                         url: mediaURL ?? originURL!,
                         height: showFullHeightImages ? mediaHeight : ViewMode.comfortable.height,
                         width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                        edgeToEdgeImages: edgeToEdgeImages,
                         isExpandable: false,
                       )
               ] else if (scrapeMissingPreviews)
@@ -129,6 +131,7 @@ class LinkPreviewCard extends StatelessWidget {
               LinkInformation(
                 viewMode: viewMode,
                 originURL: originURL,
+                showEdgeToEdgeImages: edgeToEdgeImages,
               ),
               Positioned.fill(
                 child: Material(

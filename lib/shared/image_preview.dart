@@ -22,6 +22,7 @@ class ImagePreview extends StatefulWidget {
   final bool isGallery;
   final bool isExpandable;
   final bool showFullHeightImages;
+  final bool edgeToEdgeImages;
   final int? postId;
   final void Function()? navigateToPost;
   final bool? isComment;
@@ -39,6 +40,7 @@ class ImagePreview extends StatefulWidget {
     this.isGallery = false,
     this.isExpandable = true,
     this.showFullHeightImages = false,
+    this.edgeToEdgeImages = false,
     this.postId,
     this.navigateToPost,
     this.isComment,
@@ -93,7 +95,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
     return Container(
       clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(widget.edgeToEdgeImages ? 0 : 12)),
       child: Stack(
         children: [
           // This is used for link posts where the preview comes from Lemmy
@@ -108,7 +110,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
                       : BoxConstraints(
-                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
+                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24),
                         ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.url!,

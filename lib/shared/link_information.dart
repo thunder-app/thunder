@@ -19,6 +19,8 @@ class LinkInformation extends StatefulWidget {
   /// Type of media (image, link, text, etc.)
   final MediaType? mediaType;
 
+  final bool showEdgeToEdgeImages;
+
   /// Custom callback function for when the link is tapped
   final Function? onTap;
 
@@ -30,6 +32,7 @@ class LinkInformation extends StatefulWidget {
     required this.viewMode,
     this.originURL,
     this.mediaType,
+    this.showEdgeToEdgeImages = false,
     this.onTap,
     this.onLongPress,
   });
@@ -75,7 +78,7 @@ class _LinkInformationState extends State<LinkInformation> {
         },
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(widget.showEdgeToEdgeImages ? 0 : 12),
             color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface.withValues(alpha: 0.8), theme.colorScheme.surfaceTint, 10),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
