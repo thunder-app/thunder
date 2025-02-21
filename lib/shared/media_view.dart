@@ -181,6 +181,30 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     );
   }
 
+  double getMinHeight() {
+    if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
+
+    if (widget.postViewMedia.media.first.height != null) {
+      if (MediaQuery.of(context).size.height < widget.postViewMedia.media.first.height!) return MediaQuery.of(context).size.height;
+      return widget.postViewMedia.media.first.height!;
+    }
+
+    return ViewMode.comfortable.height;
+  }
+
+  double getMaxHeight() {
+    if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
+
+    if (widget.postViewMedia.media.first.height != null) {
+      if (MediaQuery.of(context).size.height < widget.postViewMedia.media.first.height!) return MediaQuery.of(context).size.height;
+      return widget.postViewMedia.media.first.height!;
+    }
+
+    if (widget.allowUnconstrainedImageHeight) return MediaQuery.of(context).size.height;
+
+    return ViewMode.comfortable.height;
+  }
+
   /// Creates an image preview
   Widget buildMediaImage() {
     final theme = Theme.of(context);
@@ -201,13 +225,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           constraints: BoxConstraints(
               maxHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
-                ViewMode.comfortable => widget.showFullHeightImages
-                    ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
-                    : ViewMode.comfortable.height,
+                ViewMode.comfortable => getMaxHeight(),
               },
               minHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
-                ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+                ViewMode.comfortable => getMinHeight(),
               },
               maxWidth: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
@@ -305,13 +327,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
               ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.showFullHeightImages
-                  ? widget.postViewMedia.media.first.height ?? (widget.allowUnconstrainedImageHeight ? double.infinity : ViewMode.comfortable.height)
-                  : ViewMode.comfortable.height,
+              ViewMode.comfortable => getMaxHeight(),
             },
             minHeight: switch (widget.viewMode) {
               ViewMode.compact => ViewMode.compact.height,
-              ViewMode.comfortable => widget.showFullHeightImages ? widget.postViewMedia.media.first.height ?? ViewMode.comfortable.height : ViewMode.comfortable.height,
+              ViewMode.comfortable => getMinHeight(),
             },
             maxWidth: switch (widget.viewMode) {
               ViewMode.compact => ViewMode.compact.height,
