@@ -47,6 +47,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/build
+/android/app/.cxx/
 
 # IOS build
 /ios/build

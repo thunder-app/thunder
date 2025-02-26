@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +10,13 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/gesture_fab.dart';
+import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -108,6 +116,91 @@ class _PostPageState extends State<PostPage> {
     });
   }
 
+  void showSortBottomSheet(BuildContext context, PostState state) {
+    final l10n = AppLocalizations.of(context)!;
+
+    HapticFeedback.mediumImpact();
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (builderContext) => CommentSortPicker(
+        title: l10n.sortOptions,
+        onSelect: (selected) async {
+          await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
+          if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(sortType: selected.payload, reset: true));
+        },
+        previouslySelected: state.sortType,
+        minimumVersion: LemmyClient.instance.version,
+      ),
+    );
+  }
+
+  void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.read<AuthBloc>().state;
+
+    if (postLocked) return showSnackbar(l10n.postLocked);
+    if (!state.isLoggedIn) return showSnackbar(l10n.mustBeLoggedInComment);
+
+    navigateToCreateCommentPage(
+      context,
+      postViewMedia: postViewMedia,
+      onCommentSuccess: (commentView, userChanged) {
+        if (!userChanged) {
+          context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+        }
+      },
+    );
+  }
+
+  void startCommentSearch(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final state = context.read<PostBloc>().state;
+
+    PostFabAction.search.execute(
+      override: () {
+        if (state.status == PostStatus.searchInProgress) {
+          context.read<PostBloc>().add(const EndCommentSearchEvent());
+        } else {
+          showInputDialog<String>(
+            context: context,
+            title: l10n.searchComments,
+            inputLabel: l10n.searchTerm,
+            onSubmitted: ({payload, value}) {
+              Navigator.of(context).pop();
+
+              List<Comment> commentMatches = [];
+
+              /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
+              void findMatches(List<CommentViewTree> commentViewTrees) {
+                for (CommentViewTree commentViewTree in commentViewTrees) {
+                  if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
+                    commentMatches.add(commentViewTree.commentView!.comment);
+                  }
+                  findMatches(commentViewTree.replies);
+                }
+              }
+
+              // Find all comments which contain the query
+              findMatches(state.comments);
+
+              if (commentMatches.isEmpty) {
+                showSnackbar(l10n.noResultsFound);
+              } else {
+                context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
+              }
+
+              return Future.value(null);
+            },
+            getSuggestions: (_) => [],
+            suggestionBuilder: (payload) => Container(),
+          );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -125,7 +218,7 @@ class _PostPageState extends State<PostPage> {
       },
       child: BlocConsumer<PostBloc, PostState>(
         listener: (context, state) {
-          if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia) {
+          if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia && state.postView != null) {
             if (!userChanged) {
               widget.onPostUpdated?.call(state.postView!);
             }
@@ -139,6 +232,14 @@ class _PostPageState extends State<PostPage> {
           }
 
           List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
+
+          final combineNavAndFab = thunderState.combineNavAndFab;
+          final isFabSummoned = thunderState.isFabSummoned;
+
+          final singlePressAction = thunderState.postFabSinglePressAction;
+          final longPressAction = thunderState.postFabLongPressAction;
+
+          final post = state.postView?.postView.post ?? widget.initialPostViewMedia.postView.post;
 
           return Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -161,6 +262,142 @@ class _PostPageState extends State<PostPage> {
                     ),
                   ),
                 ),
+                if (thunderState.enablePostsFab)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: combineNavAndFab ? 0 : 16,
+                      bottom: combineNavAndFab ? 5 : 0,
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: isFabSummoned
+                          ? GestureFab(
+                              centered: combineNavAndFab,
+                              distance: combineNavAndFab ? 45 : 60,
+                              icon: Icon(
+                                state.status == PostStatus.searchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.locked),
+                                semanticLabel: state.status == PostStatus.searchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.locked),
+                                size: 35,
+                              ),
+                              onPressed: state.status == PostStatus.searchInProgress
+                                  ? () {
+                                      context.read<PostBloc>().add(const ContinueCommentSearchEvent());
+                                    }
+                                  : () => singlePressAction.execute(
+                                      context: context,
+                                      postView: state.postView,
+                                      postId: state.postId,
+                                      selectedCommentId: state.selectedCommentId,
+                                      selectedCommentPath: state.selectedCommentPath,
+                                      override: singlePressAction == PostFabAction.backToTop
+                                          ? () => {
+                                                listController.animateToItem(
+                                                  index: 0,
+                                                  scrollController: scrollController,
+                                                  alignment: 0,
+                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                ),
+                                              }
+                                          : singlePressAction == PostFabAction.changeSort
+                                              ? () => showSortBottomSheet(context, state)
+                                              : singlePressAction == PostFabAction.replyToPost
+                                                  ? () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked)
+                                                  : singlePressAction == PostFabAction.search
+                                                      ? () => startCommentSearch(context)
+                                                      : null),
+                              onLongPress: () => longPressAction.execute(
+                                  context: context,
+                                  postView: state.postView,
+                                  postId: state.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
+                                  override: longPressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            listController.animateToItem(
+                                              index: 0,
+                                              scrollController: scrollController,
+                                              alignment: 0,
+                                              duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                            ),
+                                          }
+                                      : longPressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : longPressAction == PostFabAction.replyToPost
+                                              ? () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked)
+                                              : null),
+                              children: [
+                                if (thunderState.postFabEnableRefresh)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.refresh.execute(
+                                        context: context,
+                                        postView: state.postView,
+                                        postId: state.postId,
+                                        selectedCommentId: state.selectedCommentId,
+                                        selectedCommentPath: state.selectedCommentPath,
+                                      );
+                                    },
+                                    title: PostFabAction.refresh.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.refresh.getIcon(),
+                                    ),
+                                  ),
+                                if (thunderState.postFabEnableReplyToPost)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.replyToPost.execute(
+                                        override: () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked),
+                                      );
+                                    },
+                                    title: PostFabAction.replyToPost.getTitle(context),
+                                    icon: Icon(post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
+                                  ),
+                                if (thunderState.enableChangeSort)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.changeSort.execute(
+                                        override: () => showSortBottomSheet(context, state),
+                                      );
+                                    },
+                                    title: PostFabAction.changeSort.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.changeSort.getIcon(),
+                                    ),
+                                  ),
+                                if (thunderState.enableBackToTop)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      PostFabAction.backToTop
+                                          .execute(override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
+                                    },
+                                    title: PostFabAction.backToTop.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.backToTop.getIcon(),
+                                    ),
+                                  ),
+                                if (thunderState.postFabEnableSearch)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () => startCommentSearch(context),
+                                    title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
+                                    icon: Icon(
+                                      state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : null,
+                    ),
+                  ),
               ],
             ),
             body: SafeArea(
@@ -230,6 +467,7 @@ class _PostPageState extends State<PostPage> {
                               level: commentNode.depth,
                               collapsed: isCollapsed,
                               hidden: isHidden,
+                              newlyCreatedCommentId: state.newlyCreatedCommentId,
                               onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
