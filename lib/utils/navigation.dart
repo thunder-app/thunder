@@ -20,7 +20,6 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -33,6 +32,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/about_settings_page.dart';
@@ -60,7 +60,6 @@ import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/swipe.dart';
-import 'package:thunder/post/pages/legacy_post_page.dart' as legacy_post_page;
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 
 /// Navigates to the instance page for the given [instanceHost].
@@ -157,9 +156,6 @@ Future<void> navigateToPost(
     feedBloc?.add(FeedItemActionedEvent(postId: postViewMedia?.postView.post.id ?? postId, postAction: PostAction.read, value: true));
   }
 
-  final prefs = (await UserPreferences.instance).sharedPreferences;
-  final enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
-
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
@@ -186,34 +182,18 @@ Future<void> navigateToPost(
           BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
-        child: enableExperimentalFeatures
-            ? PostPage(
-                initialPostViewMedia: postViewMedia!,
-                onPostUpdated: (PostViewMedia postViewMedia) {
-                  // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-                  feedBloc?.add(FeedItemUpdatedEvent(
-                    postViewMedia: PostViewMedia(
-                      postView: postViewMedia.postView.copyWith(read: true),
-                      media: postViewMedia.media,
-                    ),
-                  ));
-                },
-              )
-            : legacy_post_page.PostPage(
-                postView: postViewMedia,
-                postId: postId,
-                selectedCommentId: selectedCommentId,
-                selectedCommentPath: selectedCommentPath,
-                onPostUpdated: (PostViewMedia postViewMedia) {
-                  // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-                  feedBloc?.add(FeedItemUpdatedEvent(
-                    postViewMedia: PostViewMedia(
-                      postView: postViewMedia.postView.copyWith(read: true),
-                      media: postViewMedia.media,
-                    ),
-                  ));
-                },
+        child: PostPage(
+          initialPostViewMedia: postViewMedia!,
+          onPostUpdated: (PostViewMedia postViewMedia) {
+            // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
+            feedBloc?.add(FeedItemUpdatedEvent(
+              postViewMedia: PostViewMedia(
+                postView: postViewMedia.postView.copyWith(read: true),
+                media: postViewMedia.media,
               ),
+            ));
+          },
+        ),
       );
     },
   );
@@ -279,6 +259,19 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
   final ThunderState state = context.read<ThunderBloc>().state;
   final bool reduceAnimations = state.reduceAnimations;
 
+  final client = LemmyClient.instance.lemmyApiV3;
+  final account = await fetchActiveProfileAccount();
+
+  GetPostResponse getPostResponse = await client.run(
+    GetPost(
+      auth: account?.jwt,
+      id: commentView.post.id,
+      commentId: commentView.comment.id,
+    ),
+  );
+
+  List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
+
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
@@ -296,11 +289,11 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
         BlocProvider.value(value: thunderBloc),
         BlocProvider(create: (context) => PostBloc()),
       ],
-      child: legacy_post_page.PostPage(
-        selectedCommentId: commentView.comment.id,
-        selectedCommentPath: commentView.comment.path,
-        postId: commentView.post.id,
-        onPostUpdated: (PostViewMedia postViewMedia) => {},
+      child: PostPage(
+        initialPostViewMedia: postViewMedias.first,
+        highlightedCommentId: commentView.comment.id,
+        commentPath: commentView.comment.path,
+        onPostUpdated: (PostViewMedia postViewMedia) {},
       ),
     ),
   );

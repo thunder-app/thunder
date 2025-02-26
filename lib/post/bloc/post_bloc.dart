@@ -250,7 +250,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           if (event.reset || event.viewAllCommentsRefresh) {
             if (event.viewAllCommentsRefresh) {
-              emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
+              emit(state.copyWith(status: PostStatus.loading, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
             } else {
               emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
             }

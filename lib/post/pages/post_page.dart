@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -41,10 +43,18 @@ class PostPage extends StatefulWidget {
   /// Called whenever the post is updated. Used to update the post in the feed.
   final Function(PostViewMedia)? onPostUpdated;
 
+  /// The ID of the comment that should be initially highlighted.
+  final int? highlightedCommentId;
+
+  /// The path of the comment that should be initially highlighted.
+  final String? commentPath;
+
   const PostPage({
     super.key,
     required this.initialPostViewMedia,
     this.onPostUpdated,
+    this.highlightedCommentId,
+    this.commentPath,
   });
 
   @override
@@ -79,9 +89,14 @@ class _PostPageState extends State<PostPage> {
   /// The height of the bottom spacer
   double? bottomSpacerHeight;
 
+  /// The ID of the comment that should be highlighted
+  int? highlightedCommentId;
+
   @override
   void initState() {
     super.initState();
+
+    highlightedCommentId = widget.highlightedCommentId;
 
     scrollController.addListener(() {
       // Fetches new comments when the user has scrolled past 70% list
@@ -228,7 +243,13 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           if (state.status == PostStatus.initial) {
             // This is required because listener does not get called on initial build
-            context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia));
+            context.read<PostBloc>().add(
+                  GetPostEvent(
+                    postView: widget.initialPostViewMedia,
+                    selectedCommentPath: widget.commentPath,
+                    selectedCommentId: widget.highlightedCommentId,
+                  ),
+                );
           }
 
           List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(state.commentNodes);
@@ -240,6 +261,25 @@ class _PostPageState extends State<PostPage> {
           final longPressAction = thunderState.postFabLongPressAction;
 
           final post = state.postView?.postView.post ?? widget.initialPostViewMedia.postView.post;
+
+          // Check to see if there is a highlighted comment. If there is, check to see if it is visible.
+          // If it is not visible, scroll to it.
+          final highlightedCommentId = state.newlyCreatedCommentId;
+          final highlightedCommentIndex = flattenedComments.indexWhere((element) => element.commentView!.comment.id == highlightedCommentId);
+
+          if (listController.isAttached && highlightedCommentIndex != -1) {
+            final visibleRange = listController.visibleRange;
+
+            if (visibleRange != null && (highlightedCommentIndex < (visibleRange.$1 + 3) || highlightedCommentIndex > (visibleRange.$2 - 3))) {
+              listController.animateToItem(
+                index: highlightedCommentIndex,
+                scrollController: scrollController,
+                alignment: 0,
+                duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+              );
+            }
+          }
 
           return Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -407,6 +447,7 @@ class _PostPageState extends State<PostPage> {
                 children: [
                   CustomScrollView(
                     controller: scrollController,
+                    cacheExtent: 1000,
                     slivers: [
                       PostPageAppBar(
                         key: appBarKey,
@@ -437,8 +478,33 @@ class _PostPageState extends State<PostPage> {
                           postViewMedia: state.postView ?? widget.initialPostViewMedia,
                           crossPosts: state.crossPosts,
                           viewSource: viewSource,
+                          showCompactPostBody: widget.highlightedCommentId != null,
                         ),
                       ),
+                      if (state.status != PostStatus.loading && this.highlightedCommentId != null)
+                        SliverToBoxAdapter(
+                          child: InkWell(
+                            child: Container(
+                              height: 60.0,
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.surface,
+                                border: Border(top: BorderSide(color: theme.dividerColor)),
+                              ),
+                              child: Row(
+                                spacing: 4.0,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(l10n.viewAllComments, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+                                  Icon(Icons.arrow_right_alt_rounded),
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
+                              setState(() => this.highlightedCommentId = null);
+                            },
+                          ),
+                        ),
                       if (state.status == PostStatus.loading)
                         const SliverFillRemaining(
                           hasScrollBody: false,
@@ -467,7 +533,7 @@ class _PostPageState extends State<PostPage> {
                               level: commentNode.depth,
                               collapsed: isCollapsed,
                               hidden: isHidden,
-                              newlyCreatedCommentId: state.newlyCreatedCommentId,
+                              newlyCreatedCommentId: state.newlyCreatedCommentId ?? this.highlightedCommentId,
                               onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
@@ -527,7 +593,16 @@ class _PostPageState extends State<PostPage> {
                         height: MediaQuery.of(context).padding.top,
                         color: theme.colorScheme.surface,
                       ),
-                    )
+                    ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: thunderState.isFabOpen
+                        ? Listener(
+                            onPointerUp: (details) => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                            child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95)),
+                          )
+                        : null,
+                  ),
                 ],
               ),
             ),

@@ -57,6 +57,7 @@ class PostSubview extends StatefulWidget {
   final bool selectable;
   final bool showReplyEditorButtons;
   final void Function(String? selection)? onSelectionChanged;
+  final bool showCompactPostBody;
 
   const PostSubview({
     super.key,
@@ -70,6 +71,7 @@ class PostSubview extends StatefulWidget {
     this.selectable = false,
     this.showReplyEditorButtons = false,
     this.onSelectionChanged,
+    this.showCompactPostBody = false,
   });
 
   @override
@@ -80,7 +82,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   @override
   bool get wantKeepAlive => true;
 
-  final ExpandableController expandableController = ExpandableController(initialExpanded: true);
+  late ExpandableController expandableController;
   late PostViewMedia postViewMedia;
   final FocusNode _selectableRegionFocusNode = FocusNode();
 
@@ -88,6 +90,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   void initState() {
     super.initState();
 
+    expandableController = ExpandableController(initialExpanded: !widget.showCompactPostBody);
     postViewMedia = widget.postViewMedia;
   }
 
