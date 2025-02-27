@@ -13,7 +13,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_player_mode.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
@@ -214,7 +213,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
     try {
       final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
-      FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
+
       await navigateToModlogPage(
         context,
         modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),

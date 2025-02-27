@@ -56,38 +56,6 @@ final class CommentItemUpdatedEvent extends PostEvent {
   const CommentItemUpdatedEvent({required this.commentView});
 }
 
-@Deprecated('Use CommentActionEvent instead')
-class VoteCommentEvent extends PostEvent {
-  final int commentId;
-  final int score;
-
-  const VoteCommentEvent({required this.commentId, required this.score});
-}
-
-@Deprecated('Use CommentActionEvent instead')
-class SaveCommentEvent extends PostEvent {
-  final int commentId;
-  final bool save;
-
-  const SaveCommentEvent({required this.commentId, required this.save});
-}
-
-@Deprecated('Use CommentActionEvent instead')
-class DeleteCommentEvent extends PostEvent {
-  final int commentId;
-  final bool deleted;
-
-  const DeleteCommentEvent({required this.deleted, required this.commentId});
-}
-
-@Deprecated('Use CommentItemUpdatedEvent instead')
-class UpdateCommentEvent extends PostEvent {
-  final CommentView commentView;
-  final bool isEdit;
-
-  const UpdateCommentEvent({required this.commentView, this.isEdit = false});
-}
-
 enum NavigateCommentDirection { up, down }
 
 class NavigateCommentEvent extends PostEvent {

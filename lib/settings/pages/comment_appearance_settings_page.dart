@@ -6,13 +6,13 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/comment/widgets/comment_card.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -55,7 +55,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   ExpandableController expandableController = ExpandableController();
 
   /// An example comment for use with comment preview
-  Future<CommentViewTree>? exampleCommentViewTree;
+  Future<CommentNode>? exampleCommentNode;
 
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
@@ -165,11 +165,13 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isBotAccount: true,
     );
 
-    List<CommentViewTree> commentViewTrees = buildCommentViewTree([commentView, replyCommentViewFirst, replyCommentViewSecond]);
-
     if (context.mounted) {
       setState(() {
-        exampleCommentViewTree = Future.value(commentViewTrees.first);
+        exampleCommentNode = Future.value(buildCommentTree([
+          commentView,
+          replyCommentViewFirst,
+          replyCommentViewSecond,
+        ]));
       });
     }
   }
@@ -283,10 +285,12 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                   Expandable(
                     controller: expandableController,
                     collapsed: Container(),
-                    expanded: FutureBuilder<CommentViewTree>(
-                      future: exampleCommentViewTree,
+                    expanded: FutureBuilder<CommentNode>(
+                      future: exampleCommentNode,
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return Container();
+
+                        List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(snapshot.data);
 
                         return BlocProvider(
                           create: (context) => PostBloc(),
@@ -295,16 +299,12 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               padding: EdgeInsets.zero,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                CommentCard(
-                                  commentViewTree: snapshot.data!,
-                                  onSaveAction: (int commentId, bool save) => {},
-                                  onVoteAction: (int commentId, int voteType) => {},
-                                  onCollapseCommentChange: (int commentId, bool collapsed) => {},
-                                  onDeleteAction: (int commentId, bool deleted) => {},
-                                  onReplyEditAction: (CommentView commentView, bool isEdit) => {},
-                                ),
-                              ],
+                              children: flattenedComments.map((commentNode) {
+                                return CommentCard(
+                                  commentView: commentNode.commentView!,
+                                  level: commentNode.depth,
+                                );
+                              }).toList(),
                             ),
                           ),
                         );

@@ -310,8 +310,8 @@ class _ThunderState extends State<Thunder> {
     try {
       Uri? uri = Uri.tryParse(link);
       if (uri != null) {
-        final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
-        FeedBloc feedBloc = FeedBloc(lemmyClient: lemmyClient);
+        final lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
+
         await navigateToModlogPage(
           context,
           modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),

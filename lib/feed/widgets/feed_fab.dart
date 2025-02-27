@@ -140,8 +140,6 @@ class FeedFAB extends StatelessWidget {
                   case FeedFabAction.newPost:
                     triggerNewPost(context, isPostingLocked: isPostLocked);
                     break;
-                  default:
-                    break;
                 }
               },
               onLongPress: () {
@@ -168,8 +166,6 @@ class FeedFAB extends StatelessWidget {
                     break;
                   case FeedFabAction.newPost:
                     triggerNewPost(context, isPostingLocked: isPostLocked);
-                    break;
-                  default:
                     break;
                 }
               },

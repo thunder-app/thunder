@@ -314,7 +314,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       if (account?.jwt == null) return;
 
-      await PictrsApi(account!.instance!).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
+      await PictrsApi(account!.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
     } catch (e) {

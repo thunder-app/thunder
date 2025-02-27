@@ -421,11 +421,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.pinInstance:
-      // TODO: Handle this case.
       case PostAction.purge:
-      // TODO: Handle this case.
-      default:
-        emit(state.copyWith(status: FeedStatus.failure, message: 'Action is not supported'));
         break;
     }
 
