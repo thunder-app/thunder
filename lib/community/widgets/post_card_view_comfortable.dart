@@ -19,7 +19,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';

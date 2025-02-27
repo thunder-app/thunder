@@ -1,17 +1,13 @@
 import 'dart:ui';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:html/parser.dart';
-import 'package:markdown/markdown.dart' hide Text;
-import 'package:thunder/notification/utils/notification_utils.dart';
 
 import 'package:thunder/shared/link_information.dart';
+import 'package:thunder/shared/media/media_view_text.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
@@ -100,54 +96,6 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     _controller.dispose();
     _overlayAnimationController.dispose();
     super.dispose();
-  }
-
-  /// Creates a text preview for posts in compact mode
-  Widget buildMediaText() {
-    final theme = Theme.of(context);
-
-    if (widget.viewMode == ViewMode.comfortable) return Container();
-
-    String? plainTextComment;
-    if (widget.postViewMedia.postView.post.body?.isNotEmpty == true) {
-      final String htmlComment = cleanImagesFromHtml(markdownToHtml(widget.postViewMedia.postView.post.body!));
-      plainTextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? widget.postViewMedia.postView.post.body!;
-    }
-
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        color: theme.cardColor.darken(5),
-        child: widget.postViewMedia.postView.post.body?.isNotEmpty == true
-            ? SizedBox(
-                height: ViewMode.compact.height,
-                width: ViewMode.compact.height,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      plainTextComment!,
-                      style: TextStyle(
-                        fontSize: min(20, max(4.5, (20 * (1 / log(widget.postViewMedia.postView.post.body!.length))))),
-                        color: widget.read == true ? theme.colorScheme.onSurface.withValues(alpha: 0.55) : theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            : Container(
-                height: ViewMode.compact.height,
-                width: ViewMode.compact.height,
-                color: theme.cardColor.darken(5),
-                child: Icon(
-                  Icons.text_fields_rounded,
-                  color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
-                ),
-              ),
-      ),
-    );
   }
 
   /// Overlays the image as an ImageViewer
@@ -426,7 +374,12 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           read: widget.read,
         );
       case MediaType.text:
-        return buildMediaText();
+        if (widget.viewMode == ViewMode.comfortable) return Container();
+
+        return MediaViewText(
+          text: widget.postViewMedia.postView.post.body,
+          read: widget.read,
+        );
       default:
         return Container();
     }

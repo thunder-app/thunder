@@ -40,7 +40,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/divider.dart';
-import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
