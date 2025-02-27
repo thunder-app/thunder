@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/shared/image/image_preview.dart';
 import 'package:thunder/shared/link_information.dart';
 import 'package:thunder/shared/media/media_view_text.dart';
 import 'package:thunder/utils/colors.dart';
@@ -17,7 +15,6 @@ import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/utils/media/video.dart';
 
 class MediaView extends StatefulWidget {
@@ -78,22 +75,18 @@ class MediaView extends StatefulWidget {
 }
 
 class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
-  late AnimationController _controller;
-
   // Overlay used for image peeking
   OverlayEntry? _overlayEntry;
   late final AnimationController _overlayAnimationController;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
     _overlayAnimationController = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     _overlayAnimationController.dispose();
     super.dispose();
   }
@@ -158,9 +151,24 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    final state = context.read<ThunderBloc>().state;
+
     // TODO: If this site has a content warning, we don't need to blur previews.
     // (This can be implemented once the web UI does the same.)
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
+
+    double? width;
+    double? height;
+
+    switch (widget.viewMode) {
+      case ViewMode.compact:
+        width = null; // Setting this to null will use the image's width. This will allow the image to not be stretched or squished.
+        height = ViewMode.compact.height;
+        break;
+      case ViewMode.comfortable:
+        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
+        height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
+    }
 
     return Stack(
       children: [
@@ -191,10 +199,14 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             fit: widget.allowUnconstrainedImageHeight ? StackFit.loose : StackFit.expand,
             alignment: Alignment.center,
             children: [
-              ImageFiltered(
-                enabled: blurNSFWPreviews,
-                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: previewImage(context),
+              ImagePreview(
+                url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
+                width: width,
+                height: height,
+                fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+                mediaType: widget.postViewMedia.media.first.mediaType,
+                viewed: widget.read,
+                blur: blurNSFWPreviews,
               ),
               if (blurNSFWPreviews)
                 Column(
@@ -250,10 +262,24 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   Widget buildMediaVideo() {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final state = context.read<ThunderBloc>().state;
 
     // TODO: If this site has a content warning, we don't need to blur previews.
     // (This can be implemented once the web UI does the same.)
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
+
+    double? width;
+    double? height;
+
+    switch (widget.viewMode) {
+      case ViewMode.compact:
+        width = null; // Setting this to null will use the image's width. This will allow the image to not be stretched or squished.
+        height = ViewMode.compact.height;
+        break;
+      case ViewMode.comfortable:
+        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
+        height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
+    }
 
     return InkWell(
       splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
@@ -299,10 +325,14 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
               ),
             if (widget.postViewMedia.media.first.thumbnailUrl != null)
-              ImageFiltered(
-                enabled: blurNSFWPreviews,
-                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: previewImage(context),
+              ImagePreview(
+                url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
+                width: width,
+                height: height,
+                fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+                mediaType: widget.postViewMedia.media.first.mediaType,
+                viewed: widget.read,
+                blur: blurNSFWPreviews,
               ),
             if (widget.postViewMedia.postView.post.nsfw)
               Column(
@@ -383,64 +413,5 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       default:
         return Container();
     }
-  }
-
-  Widget previewImage(BuildContext context) {
-    final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-
-    double? width;
-    double? height;
-
-    switch (widget.viewMode) {
-      case ViewMode.compact:
-        width = null; // Setting this to null will use the image's width. This will allow the image to not be stretched or squished.
-        height = ViewMode.compact.height;
-        break;
-      case ViewMode.comfortable:
-        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
-        height = widget.showFullHeightImages ? widget.postViewMedia.media.first.height : null;
-    }
-
-    return ExtendedImage.network(
-      color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
-      colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-      widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
-      height: height,
-      width: width,
-      fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-      cache: true,
-      clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
-      cacheWidth: width != null ? (width * View.of(context).devicePixelRatio.ceil()).toInt() : null,
-      cacheHeight: height != null ? (height * View.of(context).devicePixelRatio.ceil()).toInt() : null,
-      loadStateChanged: (ExtendedImageState state) {
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-            _controller.reset();
-            return Container();
-          case LoadState.completed:
-            if (state.wasSynchronouslyLoaded) return state.completedWidget;
-
-            _controller.forward();
-            return FadeTransition(opacity: _controller, child: state.completedWidget);
-          case LoadState.failed:
-            _controller.reset();
-            state.imageProvider.evict();
-
-            return widget.postViewMedia.postView.post.nsfw
-                ? Container()
-                : Icon(
-                    switch (widget.postViewMedia.media.first.mediaType) {
-                      MediaType.image => Icons.image_not_supported_outlined,
-                      MediaType.video => Icons.video_camera_back_outlined,
-                      MediaType.link => Icons.language_rounded,
-                      // Should never come here
-                      MediaType.text => Icons.text_fields_rounded,
-                    },
-                    color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.read == true ? 0.55 : 1.0),
-                  );
-        }
-      },
-    );
   }
 }
