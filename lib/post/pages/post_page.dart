@@ -473,44 +473,44 @@ class _PostPageState extends State<PostPage> {
                         onUserChanged: () => userChanged = true,
                         onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
                       ),
-                      SliverToBoxAdapter(
-                        child: PostSubview(
-                          postViewMedia: state.postView ?? widget.initialPostViewMedia,
-                          crossPosts: state.crossPosts,
-                          viewSource: viewSource,
-                          showCompactPostBody: widget.highlightedCommentId != null,
-                        ),
-                      ),
-                      if (state.status != PostStatus.loading && this.highlightedCommentId != null)
-                        SliverToBoxAdapter(
-                          child: InkWell(
-                            child: Container(
-                              height: 60.0,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.surface,
-                                border: Border(top: BorderSide(color: theme.dividerColor)),
-                              ),
-                              child: Row(
-                                spacing: 4.0,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(l10n.viewAllComments, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
-                                  Icon(Icons.arrow_right_alt_rounded),
-                                ],
-                              ),
-                            ),
-                            onTap: () {
-                              context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
-                              setState(() => this.highlightedCommentId = null);
-                            },
-                          ),
-                        ),
                       if (state.status == PostStatus.loading)
                         const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      else
+                      else ...[
+                        SliverToBoxAdapter(
+                          child: PostSubview(
+                            postViewMedia: state.postView ?? widget.initialPostViewMedia,
+                            crossPosts: state.crossPosts,
+                            viewSource: viewSource,
+                            showCompactPostBody: widget.highlightedCommentId != null,
+                          ),
+                        ),
+                        if (state.status != PostStatus.loading && this.highlightedCommentId != null)
+                          SliverToBoxAdapter(
+                            child: InkWell(
+                              child: Container(
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.surface,
+                                  border: Border(top: BorderSide(color: theme.dividerColor)),
+                                ),
+                                child: Row(
+                                  spacing: 4.0,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(l10n.viewAllComments, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+                                    Icon(Icons.arrow_right_alt_rounded),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
+                                setState(() => this.highlightedCommentId = null);
+                              },
+                            ),
+                          ),
                         SuperSliverList.builder(
                           itemCount: flattenedComments.length + 1,
                           listController: listController,
@@ -561,29 +561,30 @@ class _PostPageState extends State<PostPage> {
                             );
                           },
                         ),
-                      SliverToBoxAdapter(
-                        child: state.hasReachedCommentEnd == true
-                            ? Container(
-                                key: reachedEndKey,
-                                color: theme.dividerColor.withValues(alpha: 0.1),
-                                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                child: ScalableText(
-                                  flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
-                                  fontScale: thunderState.metadataFontSizeScale,
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.titleSmall,
+                        SliverToBoxAdapter(
+                          child: state.hasReachedCommentEnd == true
+                              ? Container(
+                                  key: reachedEndKey,
+                                  color: theme.dividerColor.withValues(alpha: 0.1),
+                                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                                  child: ScalableText(
+                                    flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
+                                    fontScale: thunderState.metadataFontSizeScale,
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                )
+                              : Visibility(
+                                  visible: state.status == PostStatus.success,
+                                  child: Container(
+                                    height: 100.0,
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    child: const CircularProgressIndicator(),
+                                  ),
                                 ),
-                              )
-                            : Visibility(
-                                visible: state.status == PostStatus.success,
-                                child: Container(
-                                  height: 100.0,
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                  child: const CircularProgressIndicator(),
-                                ),
-                              ),
-                      ),
+                        ),
+                      ],
                       SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
                     ],
                   ),
