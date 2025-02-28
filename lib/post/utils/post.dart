@@ -382,32 +382,31 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     media.mediaUrl = videoUrl;
   }
 
-  if (fetchImageDimensions && media.thumbnailUrl != null) {
-    Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
+  Size result = Size(MediaQuery.of(GlobalContext.context).size.width, 200);
+  bool useImageMetadata = LemmyClient.instance.supportsFeature(LemmyFeature.imageDimension);
 
-    bool useImageMetadata = LemmyClient.instance.supportsFeature(LemmyFeature.imageDimension);
-
-    // Finally, check to see if we need to fetch the image dimensions for the thumbnail url
-    if (useImageMetadata && postView.imageDetails != null) {
-      debugPrint('Using image metadata for ${media.thumbnailUrl ?? media.mediaUrl}');
-      result = Size(postView.imageDetails!.width.toDouble(), postView.imageDetails!.height.toDouble());
-    } else {
-      // If the instance does not contain image metadata, we'll do some additional checks
-      try {
-        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-        int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
-
-        result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
-      } catch (e) {
-        debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
-      }
-    }
-
-    Size scaledSize = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-
-    media.width = scaledSize.width;
-    media.height = scaledSize.height;
+  // Check to see if there is available image metadata
+  if (useImageMetadata && postView.imageDetails != null) {
+    debugPrint('Using image metadata for ${media.thumbnailUrl ?? media.mediaUrl}');
+    result = Size(postView.imageDetails!.width.toDouble(), postView.imageDetails!.height.toDouble());
   }
+
+  if (fetchImageDimensions && media.thumbnailUrl != null) {
+    // If the instance does not contain image metadata, we'll do some additional checks
+    try {
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+
+      result = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
+    } catch (e) {
+      debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
+    }
+  }
+
+  Size scaledSize = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+
+  media.width = scaledSize.width;
+  media.height = scaledSize.height;
 
   media.altText = postView.post.altText;
   mediaList.add(media);

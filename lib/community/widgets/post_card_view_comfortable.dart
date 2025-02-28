@@ -90,7 +90,6 @@ class PostCardViewComfortable extends StatelessWidget {
     final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
 
     Widget mediaView = MediaView(
-      scrapeMissingPreviews: state.scrapeMissingPreviews,
       postViewMedia: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
