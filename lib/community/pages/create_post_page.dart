@@ -18,6 +18,8 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/enums/media_type.dart';
+import 'package:thunder/core/models/media.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -32,7 +34,7 @@ import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
-import 'package:thunder/shared/link_preview_card.dart';
+import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
@@ -538,23 +540,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             SizedBox(height: url.isNotEmpty ? 10 : 5),
                             Visibility(
                               visible: url.isNotEmpty,
-                              child: LinkPreviewCard(
-                                hideNsfw: false,
-                                scrapeMissingPreviews: false,
-                                originURL: url,
-                                mediaURL: isImageUrl(url)
-                                    ? url
-                                    : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
-                                        ? customThumbnail
-                                        : null,
-                                mediaHeight: null,
-                                mediaWidth: null,
+                              child: MediaView(
                                 showFullHeightImages: false,
                                 edgeToEdgeImages: false,
                                 viewMode: ViewMode.comfortable,
-                                postId: null,
                                 markPostReadOnMediaView: false,
                                 isUserLoggedIn: true,
+                                media: Media(
+                                  originalUrl: url,
+                                  mediaUrl: isImageUrl(url)
+                                      ? url
+                                      : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
+                                          ? customThumbnail
+                                          : null,
+                                  nsfw: isNSFW,
+                                  mediaType: MediaType.link,
+                                ),
                               ),
                             ),
                             if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),

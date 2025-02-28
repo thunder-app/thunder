@@ -357,7 +357,13 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     mediaType = MediaType.text;
   }
 
-  Media media = Media(mediaType: mediaType, originalUrl: url);
+  Media media = Media(mediaType: mediaType, originalUrl: url, nsfw: postView.post.nsfw);
+
+  if (media.mediaType == MediaType.text) {
+    media.altText = postView.post.body;
+  } else if (media.mediaType == MediaType.image) {
+    media.altText = postView.post.altText;
+  }
 
   // Determine the thumbnail url
   if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
@@ -408,7 +414,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   media.width = scaledSize.width;
   media.height = scaledSize.height;
 
-  media.altText = postView.post.altText;
   mediaList.add(media);
 
   return PostViewMedia(postView: postView, media: mediaList);

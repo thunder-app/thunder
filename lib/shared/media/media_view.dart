@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/models/media.dart';
 import 'package:thunder/shared/image/image_preview.dart';
 import 'package:thunder/shared/link_information.dart';
 import 'package:thunder/shared/media/media_view_text.dart';
@@ -13,13 +14,15 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/media/video.dart';
 
 class MediaView extends StatefulWidget {
-  /// The post containing the media information
-  final PostViewMedia postViewMedia;
+  /// The media information
+  final Media media;
+
+  /// The associated post ID for the media
+  final int? postId;
 
   /// Whether to show the full height for images
   final bool showFullHeightImages;
@@ -46,14 +49,15 @@ class MediaView extends StatefulWidget {
   final ViewMode viewMode;
 
   /// The function to navigate to the post
-  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
+  final void Function()? navigateToPost;
 
   /// Whether the post has been read
   final bool? read;
 
   const MediaView({
     super.key,
-    required this.postViewMedia,
+    required this.media,
+    this.postId,
     this.showFullHeightImages = true,
     this.allowUnconstrainedImageHeight = false,
     this.edgeToEdgeImages = false,
@@ -94,8 +98,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
       try {
         // Mark post as read when on the feed page
-        int postId = widget.postViewMedia.postView.post.id;
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));
       } catch (e) {
         // Do nothing otherwise
       }
@@ -110,10 +113,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         },
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
-            url: widget.postViewMedia.media.first.imageUrl,
-            postId: widget.postViewMedia.postView.post.id,
+            url: widget.media.imageUrl,
+            postId: widget.postId,
             navigateToPost: widget.navigateToPost,
-            altText: widget.postViewMedia.media.first.altText,
+            altText: widget.media.altText,
           );
         },
       ),
@@ -123,9 +126,9 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   double getMinHeight() {
     if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
 
-    if (widget.postViewMedia.media.first.height != null) {
-      if (MediaQuery.of(context).size.height < widget.postViewMedia.media.first.height!) return MediaQuery.of(context).size.height;
-      return widget.postViewMedia.media.first.height!;
+    if (widget.media.height != null) {
+      if (MediaQuery.of(context).size.height < widget.media.height!) return MediaQuery.of(context).size.height;
+      return widget.media.height!;
     }
 
     return ViewMode.comfortable.height;
@@ -135,9 +138,9 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     if (widget.allowUnconstrainedImageHeight) return MediaQuery.of(context).size.height;
     if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
 
-    if (widget.postViewMedia.media.first.height != null) {
-      if (MediaQuery.of(context).size.height < widget.postViewMedia.media.first.height!) return MediaQuery.of(context).size.height;
-      return widget.postViewMedia.media.first.height!;
+    if (widget.media.height != null) {
+      if (MediaQuery.of(context).size.height < widget.media.height!) return MediaQuery.of(context).size.height;
+      return widget.media.height!;
     }
 
     return ViewMode.comfortable.height;
@@ -145,24 +148,21 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final media = widget.postViewMedia.media.firstOrNull;
-    if (media == null) return Container();
-
     // If hiding thumbnails is enabled or if the media has no image URL (e.g., text or links with no images), we should display a link preview instead
     // This only applies for [ViewMode.comfortable]
-    if (widget.viewMode == ViewMode.comfortable && (widget.hideThumbnails || media.imageUrl == null)) {
+    if (widget.viewMode == ViewMode.comfortable && (widget.hideThumbnails || widget.media.imageUrl == null)) {
       return LinkInformation(
         viewMode: widget.viewMode,
-        originURL: media.originalUrl,
-        mediaType: media.mediaType,
-        onTap: media.mediaType == MediaType.image ? showImage : null,
+        originURL: widget.media.originalUrl,
+        mediaType: widget.media.mediaType,
+        onTap: widget.media.mediaType == MediaType.image ? showImage : null,
         showEdgeToEdgeImages: widget.edgeToEdgeImages,
       );
     }
 
-    if (widget.viewMode == ViewMode.compact && media.mediaType == MediaType.text) {
+    if (widget.viewMode == ViewMode.compact && widget.media.mediaType == MediaType.text) {
       return MediaViewText(
-        text: widget.postViewMedia.postView.post.body,
+        text: widget.media.altText,
         read: widget.read,
       );
     }
@@ -172,7 +172,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ThunderBloc>().state;
 
-    final blurNSFWPreviews = widget.hideNsfwPreviews && widget.postViewMedia.postView.post.nsfw;
+    final blurNSFWPreviews = widget.hideNsfwPreviews && widget.media.nsfw;
 
     double? width;
     double? height;
@@ -184,17 +184,17 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         break;
       case ViewMode.comfortable:
         width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
-        height = (widget.showFullHeightImages && !widget.allowUnconstrainedImageHeight) ? widget.postViewMedia.media.first.height : null;
+        height = (widget.showFullHeightImages && !widget.allowUnconstrainedImageHeight) ? widget.media.height : null;
     }
 
     Widget? child;
 
     // For links, add inkwell to handle links. For [ViewMode.comfortable], add link information below the image
-    if (media.mediaType == MediaType.link) {
+    if (widget.media.mediaType == MediaType.link) {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-        onLongPress: () => handleLinkLongPress(context, media.originalUrl!, media.originalUrl),
+        onLongPress: () => handleLinkLongPress(context, widget.media.originalUrl!, widget.media.originalUrl),
         child: widget.viewMode == ViewMode.comfortable
             ? SizedBox(
                 height: 70.0,
@@ -202,8 +202,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                   alignment: Alignment.bottomCenter,
                   child: LinkInformation(
                     viewMode: widget.viewMode,
-                    mediaType: widget.postViewMedia.media.first.mediaType,
-                    originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+                    mediaType: widget.media.mediaType,
+                    originURL: widget.media.originalUrl ?? '',
                     showEdgeToEdgeImages: widget.edgeToEdgeImages,
                   ),
                 ),
@@ -213,7 +213,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     }
 
     // For images, add hold to peek gesture
-    if (media.mediaType == MediaType.image) {
+    if (widget.media.mediaType == MediaType.image) {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
@@ -225,8 +225,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 return FadeTransition(
                   opacity: _overlayAnimationController,
                   child: ImageViewer(
-                    url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.mediaUrl,
-                    postId: widget.postViewMedia.postView.post.id,
+                    url: widget.media.thumbnailUrl ?? widget.media.mediaUrl,
+                    postId: widget.postId,
                     navigateToPost: widget.navigateToPost,
                     isPeek: true,
                   ),
@@ -246,17 +246,17 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     }
 
     // For videos, add a play icon and tap gesture to play the video
-    if (media.mediaType == MediaType.video) {
+    if (widget.media.mediaType == MediaType.video) {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
         onTap: () {
-          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView && widget.postViewMedia.postView.read == false) {
+          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
             FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
-            feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postViewMedia.postView.post.id, value: true));
+            feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));
           }
 
-          showVideoPlayer(context, url: widget.postViewMedia.media.first.mediaUrl ?? widget.postViewMedia.media.first.originalUrl, postId: widget.postViewMedia.postView.post.id);
+          showVideoPlayer(context, url: widget.media.mediaUrl ?? widget.media.originalUrl, postId: widget.postId);
         },
         child: widget.viewMode == ViewMode.comfortable
             ? Column(
@@ -268,8 +268,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       alignment: Alignment.bottomCenter,
                       child: LinkInformation(
                         viewMode: widget.viewMode,
-                        mediaType: widget.postViewMedia.media.first.mediaType,
-                        originURL: widget.postViewMedia.media.first.originalUrl ?? '',
+                        mediaType: widget.media.mediaType,
+                        originURL: widget.media.originalUrl ?? '',
                         showEdgeToEdgeImages: widget.edgeToEdgeImages,
                       ),
                     ),
@@ -310,11 +310,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             alignment: Alignment.center,
             children: [
               ImagePreview(
-                url: widget.postViewMedia.media.first.thumbnailUrl ?? widget.postViewMedia.media.first.originalUrl!,
+                url: widget.media.thumbnailUrl ?? widget.media.imageUrl ?? widget.media.originalUrl!,
                 width: width,
                 height: height,
                 fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-                mediaType: widget.postViewMedia.media.first.mediaType,
+                mediaType: widget.media.mediaType,
                 viewed: widget.read,
                 blur: blurNSFWPreviews,
               ),
@@ -323,7 +323,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    media.mediaType == MediaType.image
+                    widget.media.mediaType == MediaType.image
                         ? Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30)
                         : Icon(widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                     if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),

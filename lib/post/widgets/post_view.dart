@@ -186,7 +186,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 collapsed: Container(),
                 expanded: MediaView(
                   viewMode: ViewMode.comfortable,
-                  postViewMedia: widget.postViewMedia,
+                  media: postViewMedia.media.first,
                   showFullHeightImages: true,
                   allowUnconstrainedImageHeight: true,
                   hideNsfwPreviews: hideNsfwPreviews,
@@ -388,7 +388,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             vertical: 4,
           ),
           child: MediaView(
-            postViewMedia: postViewMedia,
+            media: postViewMedia.media.first,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,

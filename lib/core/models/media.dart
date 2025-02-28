@@ -9,6 +9,7 @@ class Media {
     this.originalUrl,
     this.width,
     this.height,
+    this.nsfw = false,
     required this.mediaType,
   });
 
@@ -26,6 +27,9 @@ class Media {
 
   /// The height of the media source
   double? height;
+
+  /// Indicates whether the media is NSFW
+  bool nsfw;
 
   /// Indicates the type of media it holds
   MediaType mediaType;
