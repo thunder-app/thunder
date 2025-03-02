@@ -111,11 +111,15 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
       },
     );
 
-    return ImageFiltered(
-      enabled: widget.blur == true,
-      imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-      child: image,
-    );
+    if (widget.blur == true) {
+      return ImageFiltered(
+        enabled: true,
+        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+        child: image,
+      );
+    }
+
+    return image;
   }
 
   IconData _getErrorIcon(MediaType? mediaType) {
