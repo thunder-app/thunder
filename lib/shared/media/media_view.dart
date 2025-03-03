@@ -146,6 +146,17 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     return ViewMode.comfortable.height;
   }
 
+  void handleTap() {
+    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+      try {
+        final feedBloc = BlocProvider.of<FeedBloc>(context);
+        feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));
+      } catch (e) {
+        debugPrint('Error marking post as read: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // If hiding thumbnails is enabled or if the media has no image URL (e.g., text or links with no images), we should display a link preview instead
@@ -155,7 +166,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         viewMode: widget.viewMode,
         originURL: widget.media.originalUrl,
         mediaType: widget.media.mediaType,
-        onTap: widget.media.mediaType == MediaType.image ? showImage : null,
+        onTap: () {
+          handleTap();
+          handleLink(context, url: widget.media.originalUrl!);
+        },
         showEdgeToEdgeImages: widget.edgeToEdgeImages,
       );
     }
@@ -194,7 +208,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-        onTap: () => handleLink(context, url: widget.media.originalUrl!),
+        onTap: () {
+          handleTap();
+          handleLink(context, url: widget.media.originalUrl!);
+        },
         onLongPress: () => handleLinkLongPress(context, widget.media.originalUrl!, widget.media.originalUrl),
         child: widget.viewMode == ViewMode.comfortable
             ? SizedBox(
@@ -218,7 +235,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-        onTap: showImage,
+        onTap: () {
+          handleTap();
+          showImage();
+        },
         child: GestureDetector(
           onLongPressStart: (_) {
             _overlayEntry = OverlayEntry(
@@ -252,11 +272,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
         onTap: () {
-          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-            FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
-            feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));
-          }
-
+          handleTap();
           showVideoPlayer(context, url: widget.media.mediaUrl ?? widget.media.originalUrl, postId: widget.postId);
         },
         child: widget.viewMode == ViewMode.comfortable
