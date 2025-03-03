@@ -1173,10 +1173,6 @@
   "@malformedUri": {
     "description": "Error related to unsupported link format."
   },
-  "scrapeMissingPreviews": "Włączenie wpłynie negatywnie na wydajność.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "linkActions": "Akcje Linków",
   "@linkActions": {},
   "postTitleFontScale": "Skala Czcionki Tytułu Wpisu",

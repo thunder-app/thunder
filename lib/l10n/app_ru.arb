@@ -749,10 +749,6 @@
   "@saved": {},
   "scaled": "Масштабированный",
   "@scaled": {},
-  "scrapeMissingPreviews": "Включение приведет к снижению производительности.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "screenReaderProfile": "Профиль чтения экрана",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Оптимизирует Thunder для программ чтения с экрана, уменьшая количество элементов и удаляя потенциально конфликтующие жесты.",

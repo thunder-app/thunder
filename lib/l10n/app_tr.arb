@@ -1785,10 +1785,6 @@
   "@scrapeMissingLinkPreviews": {
     "description": "Eksik dış bağlantı önizlemelerini kazımak için geçiş yapın."
   },
-  "scrapeMissingPreviews": "Etkinleştirme performansı düşürecektir.",
-  "@scrapeMissingPreviews": {
-    "description": "Bağlantı kazıma etkinleştirildiğinde olası performans etkisi hakkında bildirim."
-  },
   "screenReaderProfile": "Ekran Okuyucu Profili",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Ekran okuyucuları için Thunder'ı optimize eder, genel öğeleri azaltır ve potansiyel olarak çelişkili hareketleri kaldırır.",

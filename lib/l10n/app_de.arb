@@ -1831,10 +1831,6 @@
   "@mustBeLoggedIn": {},
   "postTitle": "Titel",
   "@postTitle": {},
-  "scrapeMissingPreviews": "Die Aktivierung wird sich auf die Leistung auswirken.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "searchByText": "Suche nach Text",
   "@searchByText": {},
   "modFeaturePost": "Hervorheben/Anpassen Posts",

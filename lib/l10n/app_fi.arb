@@ -459,10 +459,6 @@
   "@saved": {},
   "scaled": "Skaalattu",
   "@scaled": {},
-  "scrapeMissingPreviews": "Tämän käyttöönotto vaikuttaa suorituskykyyn.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "search": "Haku",
   "@search": {},
   "searchByText": "Hae tekstillä",

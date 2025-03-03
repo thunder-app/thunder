@@ -1415,10 +1415,6 @@
   "@reachedTheBottom": {},
   "restore": "恢复",
   "@restore": {},
-  "scrapeMissingPreviews": "启用将会影响性能。",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "shareCommentLocal": "分享评论链接（我的实例）",
   "@shareCommentLocal": {
     "description": "Menu item for sharing a local link to comment"

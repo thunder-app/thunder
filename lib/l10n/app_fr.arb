@@ -749,10 +749,6 @@
   "@saved": {},
   "scaled": "Échelle",
   "@scaled": {},
-  "scrapeMissingPreviews": "L'activation aura un impact sur les performances.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "screenReaderProfile": "Profil du lecteur d'écran",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Optimise Thunder pour les lecteurs d'écran en réduisant les éléments globaux et en supprimant les gestes potentiellement conflictuels.",

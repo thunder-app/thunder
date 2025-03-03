@@ -717,10 +717,6 @@
   "@saved": {},
   "scaled": "Skalita",
   "@scaled": {},
-  "scrapeMissingPreviews": "Ŝalti reduktos rendimenton.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "screenReaderProfile": "Ekrano-Leganta Profilo",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Optimumigas Thunder por ekranlegiloj reduktante ĝeneralajn elementojn kaj forigante eble konfliktajn gestojn.",

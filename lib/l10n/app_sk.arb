@@ -1179,10 +1179,6 @@
   "@scrapeMissingLinkPreviews": {
     "description": "Toggle to scrape missing external link previews."
   },
-  "scrapeMissingPreviews": "Zapnutie bude mať vplyv na výkon.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "searchByText": "Vyhľadávanie podľa textu",
   "@searchByText": {},
   "searchByUrl": "Vyhľadávanie podľa adresy URL",

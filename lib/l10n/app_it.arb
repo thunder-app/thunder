@@ -407,10 +407,6 @@
   "@saved": {},
   "scaled": "Scala",
   "@scaled": {},
-  "scrapeMissingPreviews": "Questa abilitazione avrà un impatto sulla performance.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "screenReaderProfile": "Profilo del Lettore di Schermo",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Ottimizza Thunder per lettori di schermo tramite una riduzione generale degli elementi visualizzati e la rimozione di movimenti contrastanti.",
