@@ -194,6 +194,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+        onTap: () => handleLink(context, url: widget.media.originalUrl!),
         onLongPress: () => handleLinkLongPress(context, widget.media.originalUrl!, widget.media.originalUrl),
         child: widget.viewMode == ViewMode.comfortable
             ? SizedBox(
