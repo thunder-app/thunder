@@ -114,7 +114,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final AuthState authState = context.watch<AuthBloc>().state;
 
-    final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 

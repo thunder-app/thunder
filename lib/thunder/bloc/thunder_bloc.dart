@@ -108,7 +108,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
 
       // General Settings
-      bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
       bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
@@ -283,7 +282,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         tabletMode: tabletMode,
 
         // General Settings
-        scrapeMissingPreviews: scrapeMissingPreviews,
         browserMode: browserMode,
         openInReaderMode: openInReaderMode,
         useDisplayNamesForUsers: useDisplayNamesForUsers,

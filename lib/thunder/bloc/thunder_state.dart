@@ -24,7 +24,6 @@ class ThunderState extends Equatable {
     this.tabletMode = false,
 
     // General Settings
-    this.scrapeMissingPreviews = false,
     this.browserMode = BrowserMode.customTabs,
     this.openInReaderMode = false,
     this.useDisplayNamesForUsers = false,
@@ -197,7 +196,6 @@ class ThunderState extends Equatable {
   final bool tabletMode;
 
   // General Settings
-  final bool scrapeMissingPreviews;
   final BrowserMode browserMode;
   final bool openInReaderMode;
   final bool useDisplayNamesForUsers;
@@ -378,7 +376,6 @@ class ThunderState extends Equatable {
     bool? tabletMode,
 
     // General Settings
-    bool? scrapeMissingPreviews,
     BrowserMode? browserMode,
     bool? openInReaderMode,
     bool? useDisplayNamesForUsers,
@@ -551,7 +548,6 @@ class ThunderState extends Equatable {
       tabletMode: tabletMode ?? this.tabletMode,
 
       // General Settings
-      scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       browserMode: browserMode ?? this.browserMode,
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNamesForUsers: useDisplayNamesForUsers ?? this.useDisplayNamesForUsers,
@@ -734,7 +730,6 @@ class ThunderState extends Equatable {
         tabletMode,
 
         // General Settings
-        scrapeMissingPreviews,
         browserMode,
         useDisplayNamesForUsers,
         useDisplayNamesForCommunities,

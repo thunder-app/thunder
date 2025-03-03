@@ -2021,10 +2021,6 @@
   "@scrapeMissingLinkPreviews": {
     "description": "Toggle to scrape missing external link previews."
   },
-  "scrapeMissingPreviews": "Enabling will have a performance hit.",
-  "@scrapeMissingPreviews": {
-    "description": "Notice regarding potential performance impact when enabling link scrapping."
-  },
   "screenReaderProfile": "Screen Reader Profile",
   "@screenReaderProfile": {},
   "screenReaderProfileDescription": "Optimizes Thunder for screen readers by reducing overall elements and removing potentially conflicting gestures.",

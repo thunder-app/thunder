@@ -15,7 +15,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
-import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/media/video.dart';
 
 extension on MarkPostAsReadResponse {
@@ -302,7 +301,6 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-  bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
   List<PostView> postViewsFinal = [];
 
@@ -324,7 +322,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   Iterable<Future<PostViewMedia>> postFutures = postViewsFinal
       .expand(
         (post) => [
-          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode, scrapeMissingPreviews),
+          if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode),
         ],
       )
       .toList();
@@ -333,7 +331,7 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, {String? re
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool scrapeMissingPreviews) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
   List<Media> mediaList = [];
 
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
@@ -372,13 +370,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   } else if (isImage) {
     // If there is no thumbnail image, but the url is an image, we'll use that for the thumbnailUrl
     media.thumbnailUrl = url;
-  } else if (scrapeMissingPreviews) {
-    // If there is no thumbnail image, we'll see if we should try to fetch the link metadata
-    LinkInfo linkInfo = await getLinkInfo(url);
-
-    if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-      media.thumbnailUrl = linkInfo.imageURL!;
-    }
   }
 
   // Determine the media url

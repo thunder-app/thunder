@@ -153,8 +153,6 @@ enum LocalSettings {
 
   // General Settings
 
-  scrapeMissingPreviews(
-      name: 'setting_general_scrape_missing_previews', key: 'scrapeMissingLinkPreviews', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   // Deprecated, use browserMode
   openLinksInExternalBrowser(
       name: 'setting_links_open_in_external_browser',

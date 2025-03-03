@@ -137,4 +137,11 @@ Future<void> performSharedPreferencesMigration() async {
     await prefs.setInt(LocalSettings.appTheme.name, ThemeType.dark.index);
     await prefs.setBool(LocalSettings.usePureBlackTheme.name, true);
   }
+
+  // Remove scrapeMissingPreviews setting
+  bool? scrapeMissingPreviews = prefs.getBool('setting_general_scrape_missing_previews');
+  if (scrapeMissingPreviews != null) {
+    await prefs.remove('setting_general_scrape_missing_previews');
+    debugPrint('Removed setting_general_scrape_missing_previews');
+  }
 }

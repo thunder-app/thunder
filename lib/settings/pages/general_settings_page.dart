@@ -71,9 +71,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the feed page will display two columns for posts
   bool tabletMode = false;
 
-  /// When enabled, missing link previews will be scraped
-  bool scrapeMissingPreviews = false;
-
   /// Determines how links are handled
   BrowserMode browserMode = BrowserMode.customTabs;
 
@@ -229,10 +226,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
         setState(() => openInReaderMode = value);
         break;
-      case LocalSettings.scrapeMissingPreviews:
-        await prefs.setBool(LocalSettings.scrapeMissingPreviews.name, value);
-        setState(() => scrapeMissingPreviews = value);
-        break;
 
       case LocalSettings.showInAppUpdateNotification:
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
@@ -302,7 +295,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
 
       openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
-      scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
       showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
@@ -725,19 +717,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 highlightedSetting: settingToHighlight,
               ),
             ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.scrapeMissingLinkPreviews,
-              subtitle: l10n.scrapeMissingPreviews,
-              value: scrapeMissingPreviews,
-              iconEnabled: Icons.image_search_rounded,
-              iconDisabled: Icons.link_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.scrapeMissingPreviews,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
             child: Padding(
