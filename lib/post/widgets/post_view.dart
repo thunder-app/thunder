@@ -20,7 +20,7 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
-import 'package:thunder/community/widgets/post_card_type_badge.dart';
+import 'package:thunder/shared/media/media_type_badge.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -399,7 +399,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         ),
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
-          child: TypeBadge(
+          child: MediaTypeBadge(
             mediaType: postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
             dim: false,
           ),
