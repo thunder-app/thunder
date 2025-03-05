@@ -151,9 +151,27 @@ Future<void> navigateToPost(
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
   final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : null;
 
+  PostViewMedia? pvm = postViewMedia;
+
+  if (pvm == null) {
+    final client = LemmyClient.instance.lemmyApiV3;
+    final account = await fetchActiveProfileAccount();
+
+    GetPostResponse getPostResponse = await client.run(
+      GetPost(
+        auth: account?.jwt,
+        id: postId,
+      ),
+    );
+
+    List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
+
+    pvm = postViewMedias.first;
+  }
+
   // Mark post as read when tapped
   if (authBloc.state.isLoggedIn) {
-    feedBloc?.add(FeedItemActionedEvent(postId: postViewMedia?.postView.post.id ?? postId, postAction: PostAction.read, value: true));
+    feedBloc?.add(FeedItemActionedEvent(postId: pvm.postView.post.id, postAction: PostAction.read, value: true));
   }
 
   final state = thunderBloc.state;
@@ -183,7 +201,7 @@ Future<void> navigateToPost(
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
-          initialPostViewMedia: postViewMedia!,
+          initialPostViewMedia: pvm!,
           onPostUpdated: (PostViewMedia postViewMedia) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
             feedBloc?.add(FeedItemUpdatedEvent(
