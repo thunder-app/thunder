@@ -92,6 +92,9 @@ class _PostPageState extends State<PostPage> {
   /// The ID of the comment that should be highlighted
   int? highlightedCommentId;
 
+  /// The timer for calculating the bottom spacer height
+  Timer? _calculateBottomSpacerTimer;
+
   @override
   void initState() {
     super.initState();
@@ -104,31 +107,14 @@ class _PostPageState extends State<PostPage> {
         context.read<PostBloc>().add(const GetPostCommentsEvent());
       }
     });
+  }
 
-    // The following logic helps us to set the size of the bottom spacer so that the user can scroll the last comment to the top of the viewport but no further.
-    // This must be run some time after the layout has been rendered so we can measure everything.
-    // It also must be run after there is something to scroll, and the easiest way to do this is to do it in a scroll listener.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController.addListener(() {
-        if (bottomSpacerHeight == null) {
-          final deviceHeight = MediaQuery.sizeOf(context).height;
-
-          // Get the height of the "reached end" indicator widget
-          final reachedEndHeight = (reachedEndKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
-
-          // Get the height of the app bar
-          final renderObject = appBarKey.currentContext?.findRenderObject() as RenderSliverFloatingPersistentHeader?;
-          final appBarHeight = renderObject?.geometry!.maxPaintExtent;
-
-          if (appBarHeight != null && reachedEndHeight != null) {
-            // We will make the bottom spacer the size of the device height, minus the size of the app bar and the size of the "reached bottom" indicator.
-            // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer taking up the rest of the space.
-            bottomSpacerHeight = deviceHeight - appBarHeight - reachedEndHeight;
-            setState(() {});
-          }
-        }
-      });
-    });
+  @override
+  void dispose() {
+    scrollController.dispose();
+    listController.dispose();
+    _calculateBottomSpacerTimer?.cancel();
+    super.dispose();
   }
 
   void showSortBottomSheet(BuildContext context, PostState state) {
@@ -216,6 +202,26 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
+  // The following logic helps us to set the size of the bottom spacer so that the user can scroll the last comment to the top of the viewport but no further.
+  // This must be run some time after the layout has been rendered so we can measure everything.
+  Future<void> _getBottomSpacerHeight() async {
+    final deviceHeight = MediaQuery.sizeOf(context).height;
+
+    // Get the height of the "reached end" indicator widget
+    final reachedEndHeight = (reachedEndKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+
+    // Get the height of the app bar
+    final renderObject = appBarKey.currentContext?.findRenderObject() as RenderSliverFloatingPersistentHeader?;
+    final appBarHeight = renderObject?.geometry!.maxPaintExtent;
+
+    if (appBarHeight != null && reachedEndHeight != null) {
+      // We will make the bottom spacer the size of the device height, minus the size of the app bar and the size of the "reached bottom" indicator.
+      // This will allow the last comment to be scrolled to the top, with the "reached bottom" indicator and the spacer taking up the rest of the space.
+      bottomSpacerHeight = deviceHeight - appBarHeight - reachedEndHeight;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -224,6 +230,11 @@ class _PostPageState extends State<PostPage> {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     originalUser ??= context.read<AuthBloc>().state.account;
+
+    if (bottomSpacerHeight == null) {
+      if (_calculateBottomSpacerTimer != null) _calculateBottomSpacerTimer!.cancel();
+      _calculateBottomSpacerTimer = Timer(Duration(milliseconds: 250), _getBottomSpacerHeight);
+    }
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
