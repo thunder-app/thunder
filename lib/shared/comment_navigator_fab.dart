@@ -154,13 +154,6 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateToParent() {
-    if (widget.comments == null) {
-      // This is a placeholder to allow the previous post page to function correctly.
-      // TODO: Remove this logic when we deprecate the legacy post page
-      navigateUp();
-      return;
-    }
-
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
     int previousIndex = (unobstructedVisibleRange?.$1 ?? 0) - 1;
@@ -218,13 +211,6 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
   }
 
   void navigateToNextParent() {
-    if (widget.comments == null) {
-      // This is a placeholder to allow the previous post page to function correctly.
-      // TODO: Remove this logic when we deprecate the legacy post page
-      navigateDown();
-      return;
-    }
-
     var unobstructedVisibleRange = widget.listController.unobstructedVisibleRange;
 
     int nextIndex = (unobstructedVisibleRange?.$1 ?? 0) + 1;
