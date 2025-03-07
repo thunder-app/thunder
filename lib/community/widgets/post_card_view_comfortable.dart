@@ -3,22 +3,20 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart';
-import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/post/widgets/post_card_title.dart';
 import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -30,7 +28,6 @@ class PostCardViewComfortable extends StatelessWidget {
 
   final PostViewMedia postViewMedia;
   final bool hideThumbnails;
-  final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
@@ -52,7 +49,6 @@ class PostCardViewComfortable extends StatelessWidget {
     super.key,
     required this.postViewMedia,
     required this.hideThumbnails,
-    required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
@@ -73,237 +69,98 @@ class PostCardViewComfortable extends StatelessWidget {
     this.navigateToPost,
   });
 
+  /// Returns the color of the container based on the current theme and whether the post is dimmed or not.
+  ///
+  /// If the post is the last tapped post, the container will be highlighted with the primary color.
+  Color? getContainerColor(BuildContext context, {bool dim = false}) {
+    final theme = Theme.of(context);
+    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
+
+    if (isLastTapped) {
+      return theme.colorScheme.primary.withValues(alpha: 0.15);
+    } else if (dim) {
+      return theme.colorScheme.onSurface.withValues(alpha: useDarkTheme ? 0.05 : 0.075);
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
 
-    bool indicateRead = this.indicateRead ?? state.dimReadPosts;
+    final postView = postViewMedia.postView;
+    final post = postView.post;
+    final counts = postView.counts;
+    final media = postViewMedia.media.firstOrNull;
 
-    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
-        isUserLoggedIn &&
-        context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
+    final showCommunitySubscription = isUserLoggedIn && (listingType == ListingType.all || listingType == ListingType.local) && postView.subscribed != SubscribedType.notSubscribed;
+    bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
+    final textContent = post.body ?? "";
+    final readColor = indicateRead && postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
 
-    final String textContent = postViewMedia.postView.post.body ?? "";
-    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && postViewMedia.postView.read ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.85);
+    Widget mediaView;
 
-    final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
+    if (media == null || media.mediaType == MediaType.text) {
+      mediaView = const SizedBox.shrink();
+    } else {
+      mediaView = MediaView(
+        media: media,
+        postId: post.id,
+        showFullHeightImages: showFullHeightImages,
+        hideNsfwPreviews: hideNsfwPreviews,
+        hideThumbnails: hideThumbnails,
+        edgeToEdgeImages: edgeToEdgeImages,
+        markPostReadOnMediaView: markPostReadOnMediaView,
+        isUserLoggedIn: isUserLoggedIn,
+        navigateToPost: navigateToPost,
+        read: indicateRead && postView.read,
+      );
+    }
 
-    Widget mediaView = MediaView(
-      media: postViewMedia.media.first,
-      postId: postViewMedia.postView.post.id,
-      showFullHeightImages: showFullHeightImages,
-      hideNsfwPreviews: hideNsfwPreviews,
-      hideThumbnails: hideThumbnails,
-      edgeToEdgeImages: edgeToEdgeImages,
-      markPostReadOnMediaView: markPostReadOnMediaView,
-      isUserLoggedIn: isUserLoggedIn,
-      navigateToPost: navigateToPost,
-      read: indicateRead && postViewMedia.postView.read,
+    // Post statuses
+    final read = postView.read;
+    final hidden = postView.hidden;
+    final removed = post.removed;
+    final deleted = post.deleted;
+    final saved = postView.saved;
+    final locked = post.locked;
+    final pinned = post.featuredCommunity || post.featuredLocal;
+
+    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && read ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
+
+    final dim = indicateRead && read;
+
+    Widget postCardTitle = Padding(
+      padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+      child: PostCardTitle(
+        title: post.name,
+        hidden: hidden ?? false,
+        locked: locked,
+        saved: saved,
+        pinned: pinned,
+        deleted: deleted,
+        removed: removed,
+        dim: dim,
+      ),
     );
-    final bool useSaveButton = state.showSaveAction;
-    final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
-
-    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: isLastTapped
-          ? theme.colorScheme.primary.withValues(alpha: 0.15)
-          : indicateRead && postViewMedia.postView.read
-              ? theme.colorScheme.onSurface.withValues(alpha: darkTheme ? 0.05 : 0.075)
-              : null,
+      color: getContainerColor(context, dim: dim),
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
+        spacing: 2.0,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (showTitleFirst)
+          if (showTitleFirst) postCardTitle,
+          if (media != null && media.mediaType != MediaType.text)
             Padding(
-              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    if (postViewMedia.postView.hidden == true)
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.visibility_off_rounded,
-                          color: indicateRead && postViewMedia.postView.read
-                              ? context.read<ThunderBloc>().state.hideColor.color.withValues(alpha: 0.55)
-                              : context.read<ThunderBloc>().state.hideColor.color,
-                          size: 16 * textScaleFactor,
-                          semanticLabel: l10n.hidden,
-                        ),
-                      ),
-                    if (postViewMedia.postView.post.locked) ...[
-                      WidgetSpan(
-                          child: Icon(
-                        Icons.lock,
-                        color: indicateRead && postViewMedia.postView.read
-                            ? context.read<ThunderBloc>().state.upvoteColor.color.withValues(alpha: 0.55)
-                            : context.read<ThunderBloc>().state.upvoteColor.color,
-                        size: 15 * textScaleFactor,
-                      )),
-                    ],
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.star_rounded,
-                          color: indicateRead && postViewMedia.postView.read
-                              ? context.read<ThunderBloc>().state.saveColor.color.withValues(alpha: 0.55)
-                              : context.read<ThunderBloc>().state.saveColor.color,
-                          size: 17 * textScaleFactor,
-                          semanticLabel: 'Saved',
-                        ),
-                      ),
-                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal)
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.push_pin_rounded,
-                          size: 15 * textScaleFactor,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green,
-                        ),
-                      ),
-                    if (postViewMedia.postView.post.deleted)
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.delete_rounded,
-                          size: 16 * textScaleFactor,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
-                        ),
-                      ),
-                    if (postViewMedia.postView.post.removed)
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.delete_forever_rounded,
-                          size: 16 * textScaleFactor,
-                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
-                        ),
-                      ),
-                    if (postViewMedia.postView.post.deleted ||
-                        postViewMedia.postView.post.removed ||
-                        postViewMedia.postView.post.featuredCommunity ||
-                        postViewMedia.postView.post.featuredLocal ||
-                        (!useSaveButton && postViewMedia.postView.saved) ||
-                        postViewMedia.postView.post.locked)
-                      const WidgetSpan(
-                        child: SizedBox(
-                          width: 3.5,
-                        ),
-                      ),
-                    TextSpan(
-                      text: HtmlUnescape().convert(postViewMedia.postView.post.name),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
-                        color: postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal
-                            ? (indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green)
-                            : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.55) : null),
-                      ),
-                    ),
-                  ],
-                ),
-                textScaler: TextScaler.noScaling,
-              ),
-            ),
-          if (postViewMedia.media.first.mediaType != MediaType.text && edgeToEdgeImages)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: edgeToEdgeImages ? const EdgeInsets.symmetric(vertical: 8.0) : const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: mediaView,
             ),
-          if (postViewMedia.media.first.mediaType != MediaType.text && !edgeToEdgeImages)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: mediaView,
-            ),
-          if (!showTitleFirst)
-            Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      if (postViewMedia.postView.hidden == true) ...[
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.visibility_off_rounded,
-                            color: indicateRead && postViewMedia.postView.read
-                                ? context.read<ThunderBloc>().state.hideColor.color.withValues(alpha: 0.55)
-                                : context.read<ThunderBloc>().state.hideColor.color,
-                            size: 16 * textScaleFactor,
-                            semanticLabel: l10n.hidden,
-                          ),
-                        ),
-                        const WidgetSpan(child: SizedBox(width: 2)),
-                      ],
-                      if (postViewMedia.postView.post.locked) ...[
-                        WidgetSpan(
-                            child: Icon(
-                          Icons.lock,
-                          color: indicateRead && postViewMedia.postView.read
-                              ? context.read<ThunderBloc>().state.upvoteColor.color.withValues(alpha: 0.55)
-                              : context.read<ThunderBloc>().state.upvoteColor.color,
-                          size: 15 * textScaleFactor,
-                        )),
-                      ],
-                      if (!useSaveButton && postViewMedia.postView.saved)
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: indicateRead && postViewMedia.postView.read
-                                ? context.read<ThunderBloc>().state.saveColor.color.withValues(alpha: 0.55)
-                                : context.read<ThunderBloc>().state.saveColor.color,
-                            size: 17 * textScaleFactor,
-                            semanticLabel: 'Saved',
-                          ),
-                        ),
-                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal)
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 15 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green,
-                          ),
-                        ),
-                      if (postViewMedia.postView.post.deleted)
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.delete_rounded,
-                            size: 16 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
-                          ),
-                        ),
-                      if (postViewMedia.postView.post.removed)
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.delete_forever_rounded,
-                            size: 16 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.red.withValues(alpha: 0.55) : Colors.red,
-                          ),
-                        ),
-                      if (postViewMedia.postView.post.deleted ||
-                          postViewMedia.postView.post.removed ||
-                          postViewMedia.postView.post.featuredCommunity ||
-                          postViewMedia.postView.post.featuredLocal ||
-                          (!useSaveButton && postViewMedia.postView.saved) ||
-                          postViewMedia.postView.post.locked)
-                        const WidgetSpan(
-                          child: SizedBox(
-                            width: 3.5,
-                          ),
-                        ),
-                      TextSpan(
-                        text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
-                          color: postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal
-                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withValues(alpha: 0.55) : Colors.green)
-                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.55) : null),
-                        ),
-                      ),
-                    ],
-                  ),
-                  textScaler: TextScaler.noScaling,
-                )),
+          if (!showTitleFirst) postCardTitle,
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
@@ -314,7 +171,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: postViewMedia.postView.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
+                  color: postView.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),
               ),
             ),
@@ -326,6 +183,7 @@ class PostCardViewComfortable extends StatelessWidget {
               children: [
                 Expanded(
                   child: Column(
+                    spacing: 8.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
@@ -337,29 +195,25 @@ class PostCardViewComfortable extends StatelessWidget {
                         compactMode: false,
                         showCommunitySubscription: showCommunitySubscription,
                       ),
-                      const SizedBox(height: 8.0),
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
-                        score: postViewMedia.postView.counts.score,
-                        upvoteCount: postViewMedia.postView.counts.upvotes,
-                        downvoteCount: postViewMedia.postView.counts.downvotes,
-                        voteType: postViewMedia.postView.myVote ?? 0,
-                        commentCount: postViewMedia.postView.counts.comments,
-                        unreadCommentCount: postViewMedia.postView.unreadComments,
-                        dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
-                        hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                        url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                        languageId: postViewMedia.postView.post.languageId,
-                        hasBeenRead: indicateRead && postViewMedia.postView.read,
+                        score: counts.score,
+                        upvoteCount: counts.upvotes,
+                        downvoteCount: counts.downvotes,
+                        voteType: postView.myVote ?? 0,
+                        commentCount: counts.comments,
+                        unreadCommentCount: postView.unreadComments,
+                        dateTime: post.updated != null ? post.updated?.toIso8601String() : post.published.toIso8601String(),
+                        hasBeenEdited: post.updated != null ? true : false,
+                        url: media?.originalUrl,
+                        languageId: post.languageId,
+                        hasBeenRead: dim,
                       ),
                     ],
                   ),
                 ),
                 IconButton(
-                    icon: const Icon(
-                      Icons.more_horiz_rounded,
-                      semanticLabel: 'Actions',
-                    ),
+                    icon: const Icon(Icons.more_horiz_rounded, semanticLabel: 'Actions'),
                     visualDensity: VisualDensity.compact,
                     onPressed: () {
                       showPostActionBottomModalSheet(
@@ -370,7 +224,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                           switch (postAction) {
                             case PostAction.hide:
-                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
                               break;
                             default:
                               break;
@@ -378,7 +232,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                           switch (userAction) {
                             case UserAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postView.creator.id));
                               break;
                             default:
                               break;
@@ -386,7 +240,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                           switch (communityAction) {
                             case CommunityAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postView.community.id));
                               break;
                             default:
                               break;
@@ -396,14 +250,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                       HapticFeedback.mediumImpact();
                     }),
-                if (isUserLoggedIn)
-                  PostCardActions(
-                    postId: postViewMedia.postView.post.id,
-                    voteType: postViewMedia.postView.myVote ?? 0,
-                    saved: postViewMedia.postView.saved,
-                    onVoteAction: onVoteAction,
-                    onSaveAction: onSaveAction,
-                  ),
+                if (isUserLoggedIn) PostCardActions(voteType: postView.myVote ?? 0, saved: postView.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
           )

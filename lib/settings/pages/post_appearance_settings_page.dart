@@ -520,7 +520,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                         child: PostCardViewComfortable(
                                           postViewMedia: snapshot.data![index]!,
                                           hideThumbnails: hideThumbnails,
-                                          showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,
                                           feedType: FeedType.general,
