@@ -33,6 +33,9 @@ class PostCardActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final isUserLoggedIn = context.select((AuthBloc bloc) => bloc.state.isLoggedIn);
+    if (isUserLoggedIn) return const SizedBox.shrink();
+
     return BlocBuilder<ThunderBloc, ThunderState>(
       buildWhen: (previous, current) {
         return previous.upvoteColor != current.upvoteColor ||

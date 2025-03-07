@@ -13,17 +13,23 @@ class FeedCardDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.watch<ThunderBloc>().state;
 
-    final feedCardDividerThickness = state.feedCardDividerThickness;
-    final feedCardDividerColor = state.feedCardDividerColor;
+    return BlocBuilder<ThunderBloc, ThunderState>(
+      buildWhen: (previous, current) {
+        return previous.feedCardDividerThickness != current.feedCardDividerThickness || previous.feedCardDividerColor != current.feedCardDividerColor;
+      },
+      builder: (context, state) {
+        final feedCardDividerThickness = state.feedCardDividerThickness;
+        final feedCardDividerColor = state.feedCardDividerColor;
 
-    return Divider(
-      height: feedCardDividerThickness.value,
-      thickness: feedCardDividerThickness.value,
-      color: feedCardDividerColor == Colors.transparent
-          ? ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)
-          : Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), feedCardDividerColor).withValues(alpha: 0.2),
+        return Divider(
+          height: feedCardDividerThickness.value,
+          thickness: feedCardDividerThickness.value,
+          color: feedCardDividerColor == Colors.transparent
+              ? ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)
+              : Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), feedCardDividerColor).withValues(alpha: 0.2),
+        );
+      },
     );
   }
 }

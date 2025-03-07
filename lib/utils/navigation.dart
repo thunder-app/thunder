@@ -188,7 +188,7 @@ Future<void> navigateToPost(
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(context, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
     builder: (_) {
       return MultiBlocProvider(
         providers: [
@@ -299,7 +299,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(context, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: accountBloc),
@@ -637,7 +637,7 @@ Future<void> navigateToFeedPage(
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(context, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: accountBloc),

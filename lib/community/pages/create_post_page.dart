@@ -545,7 +545,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 edgeToEdgeImages: false,
                                 viewMode: ViewMode.comfortable,
                                 markPostReadOnMediaView: false,
-                                isUserLoggedIn: true,
                                 media: Media(
                                   originalUrl: url,
                                   mediaUrl: isImageUrl(url)

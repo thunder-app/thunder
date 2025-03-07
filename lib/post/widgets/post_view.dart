@@ -191,7 +191,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   allowUnconstrainedImageHeight: true,
                   hideNsfwPreviews: hideNsfwPreviews,
                   markPostReadOnMediaView: markPostReadOnMediaView,
-                  isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
             if (widget.postViewMedia.postView.post.body?.isNotEmpty == true)
@@ -394,7 +393,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
             viewMode: ViewMode.compact,
-            isUserLoggedIn: isUserLoggedIn,
           ),
         ),
         Padding(

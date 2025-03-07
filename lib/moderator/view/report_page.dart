@@ -229,7 +229,6 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                               showMedia: false,
                                               postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),
                                               feedType: FeedType.general,
-                                              isUserLoggedIn: false,
                                               listingType: ListingType.all,
                                               isLastTapped: false,
                                             ),

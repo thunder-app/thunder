@@ -61,7 +61,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  /// The current point at which the user drags the comment
+  /// The current point at which the user drags the post card
   double dismissThreshold = 0;
 
   /// The current swipe action that would be performed if the user let go off the screen
@@ -76,9 +76,6 @@ class _PostCardState extends State<PostCard> {
   /// The second action threshold to trigger the left or right actions (downvote/save)
   double secondActionThreshold = 0.35;
 
-  /// User Settings
-  bool isUserLoggedIn = false;
-
   /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
   bool isOverridingSwipeGestureAction = false;
 
@@ -86,28 +83,24 @@ class _PostCardState extends State<PostCard> {
   double verticalDragDistance = 0;
 
   @override
-  void initState() {
-    super.initState();
-
-    isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final ThunderState state = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
 
-    int? myVote = widget.postViewMedia.postView.myVote;
-    bool saved = widget.postViewMedia.postView.saved;
-    bool read = widget.postViewMedia.postView.read;
-    bool? hidden = widget.postViewMedia.postView.hidden;
+    final postView = widget.postViewMedia.postView;
+
+    int? myVote = postView.myVote;
+    bool saved = postView.saved;
+    bool read = postView.read;
+    bool? hidden = postView.hidden;
+
+    // Determine the post swipe direction
+    final postSwipeDirection = determinePostSwipeDirection(context, disableSwiping: widget.disableSwiping);
 
     return Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (PointerDownEvent event) {
-        widget.onDownAction();
-      },
-      onPointerUp: (event) {
-        setState(() => isOverridingSwipeGestureAction = false);
+      onPointerDown: (_) => widget.onDownAction(),
+      onPointerUp: (_) {
+        if (isOverridingSwipeGestureAction == true) setState(() => isOverridingSwipeGestureAction = false);
 
         if (swipeAction != null && swipeAction != SwipeAction.none) {
           triggerPostAction(
@@ -127,38 +120,31 @@ class _PostCardState extends State<PostCard> {
 
         widget.onUpAction(verticalDragDistance);
       },
-      onPointerCancel: (event) => {},
+      onPointerCancel: (_) => {},
       onPointerMove: (PointerMoveEvent event) {
-        // Get the horizontal drag distance
-        double horizontalDragDistance = event.delta.dx;
-
-        // Set the vertical drag distance
+        // Update the vertical drag distance
         verticalDragDistance = event.delta.dy;
 
-        // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
-        // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
-        if (horizontalDragDistance > 0) {
-          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart &&
-              isOverridingSwipeGestureAction == false &&
-              dismissThreshold == 0.0) {
-            setState(() => isOverridingSwipeGestureAction = true);
-          }
-        } else {
-          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
-            setState(() => isOverridingSwipeGestureAction = false);
-          }
+        // Get the horizontal drag distance
+        final horizontalDragDistance = event.delta.dx;
+
+        // We are checking to see if there is a left to right swipe here.
+        // If there is a LTR swipe and LTR swipe actions are disabled, then we disable the DismissDirection temporarily to allow for the full screen swipe to go back.
+        // Otherwise, we retain the default behaviour
+        if (horizontalDragDistance > 0 && postSwipeDirection == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+          setState(() => isOverridingSwipeGestureAction = true);
+        } else if (postSwipeDirection == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+          setState(() => isOverridingSwipeGestureAction = false);
         }
       },
       child: Column(
         children: [
           Dismissible(
-            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping),
-            key: ObjectKey(widget.postViewMedia.postView.post.id),
+            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : postSwipeDirection,
+            key: ObjectKey(postView.post.id),
             resizeDuration: Duration.zero,
             dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-            confirmDismiss: (DismissDirection direction) async {
-              return false;
-            },
+            confirmDismiss: (_) async => false,
             onUpdate: (DismissUpdateDetails details) {
               SwipeAction? updatedSwipeAction;
 
@@ -244,7 +230,6 @@ class _PostCardState extends State<PostCard> {
                   ? PostCardViewCompact(
                       postViewMedia: widget.postViewMedia,
                       feedType: widget.feedType,
-                      isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: ({PostViewMedia? postViewMedia}) async {
                         widget.onTap.call();
@@ -268,7 +253,6 @@ class _PostCardState extends State<PostCard> {
                       showSaveAction: state.showSaveAction,
                       showCommunityIcons: state.showCommunityIcons,
                       showTextContent: state.showTextContent,
-                      isUserLoggedIn: isUserLoggedIn,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
@@ -287,7 +271,7 @@ class _PostCardState extends State<PostCard> {
 
                   switch (postAction) {
                     case PostAction.hide:
-                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postView.post.id));
                       break;
                     default:
                       break;
@@ -295,7 +279,7 @@ class _PostCardState extends State<PostCard> {
 
                   switch (userAction) {
                     case UserAction.block:
-                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postView.creator.id));
                       break;
                     default:
                       break;
@@ -303,7 +287,7 @@ class _PostCardState extends State<PostCard> {
 
                   switch (communityAction) {
                     case CommunityAction.block:
-                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postView.community.id));
                       break;
                     default:
                       break;
@@ -311,8 +295,9 @@ class _PostCardState extends State<PostCard> {
                 },
               ),
               onTap: () async {
+                final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
                 widget.onTap.call();
-                PostView postView = widget.postViewMedia.postView;
                 if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
                 return await navigateToPost(context, postViewMedia: widget.postViewMedia);
               },

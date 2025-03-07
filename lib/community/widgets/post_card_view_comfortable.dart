@@ -38,7 +38,6 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showSaveAction;
   final bool showCommunityIcons;
   final bool showTextContent;
-  final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
   final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
@@ -59,7 +58,6 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.showSaveAction,
     required this.showCommunityIcons,
     required this.showTextContent,
-    required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
@@ -95,7 +93,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final counts = postView.counts;
     final media = postViewMedia.media.firstOrNull;
 
-    final showCommunitySubscription = isUserLoggedIn && (listingType == ListingType.all || listingType == ListingType.local) && postView.subscribed != SubscribedType.notSubscribed;
+    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) && postView.subscribed != SubscribedType.notSubscribed;
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
     final textContent = post.body ?? "";
     final readColor = indicateRead && postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
@@ -113,7 +111,6 @@ class PostCardViewComfortable extends StatelessWidget {
         hideThumbnails: hideThumbnails,
         edgeToEdgeImages: edgeToEdgeImages,
         markPostReadOnMediaView: markPostReadOnMediaView,
-        isUserLoggedIn: isUserLoggedIn,
         navigateToPost: navigateToPost,
         read: indicateRead && postView.read,
       );
@@ -250,7 +247,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                       HapticFeedback.mediumImpact();
                     }),
-                if (isUserLoggedIn) PostCardActions(voteType: postView.myVote ?? 0, saved: postView.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
+                PostCardActions(voteType: postView.myVote ?? 0, saved: postView.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
           )

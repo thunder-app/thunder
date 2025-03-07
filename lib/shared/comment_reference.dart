@@ -201,17 +201,17 @@ class _CommentReferenceState extends State<CommentReference> {
                       // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
                       // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
                       if (horizontalDragDistance > 0) {
-                        if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                        if (determineCommentSwipeDirection(context) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
                           setState(() => isOverridingSwipeGestureAction = true);
                         }
                       } else {
-                        if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+                        if (determineCommentSwipeDirection(context) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
                           setState(() => isOverridingSwipeGestureAction = false);
                         }
                       }
                     },
                     child: Dismissible(
-                      direction: (widget.disableActions || isOverridingSwipeGestureAction == true) ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+                      direction: (widget.disableActions || isOverridingSwipeGestureAction == true) ? DismissDirection.none : determineCommentSwipeDirection(context),
                       key: ObjectKey(widget.comment.comment.id),
                       resizeDuration: Duration.zero,
                       dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},

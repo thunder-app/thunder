@@ -64,7 +64,10 @@ void triggerCommentAction({
   }
 }
 
-DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderState state) {
+DismissDirection determineCommentSwipeDirection(BuildContext context) {
+  final state = context.read<ThunderBloc>().state;
+  final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
   if (!isUserLoggedIn) return DismissDirection.none;
 
   if (state.enableCommentGestures == false) return DismissDirection.none;

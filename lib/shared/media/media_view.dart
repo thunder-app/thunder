@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/shared/image/image_preview.dart';
 import 'package:thunder/shared/link_information.dart';
@@ -42,9 +43,6 @@ class MediaView extends StatefulWidget {
   /// Whether to mark the post as read when the media is viewed
   final bool markPostReadOnMediaView;
 
-  /// Whether the user is logged in
-  final bool isUserLoggedIn;
-
   /// The view mode of the media
   final ViewMode viewMode;
 
@@ -64,7 +62,6 @@ class MediaView extends StatefulWidget {
     this.hideNsfwPreviews = true,
     this.hideThumbnails = false,
     this.markPostReadOnMediaView = false,
-    this.isUserLoggedIn = false,
     this.viewMode = ViewMode.comfortable,
     this.navigateToPost,
     this.read,
@@ -95,14 +92,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
   /// Overlays the image as an ImageViewer
   void showImage() {
-    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-      try {
-        // Mark post as read when on the feed page
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));
-      } catch (e) {
-        // Do nothing otherwise
-      }
-    }
+    handleTap();
+
     Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
@@ -147,7 +138,9 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   }
 
   void handleTap() {
-    if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
+    if (isUserLoggedIn && widget.markPostReadOnMediaView) {
       try {
         final feedBloc = BlocProvider.of<FeedBloc>(context);
         feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, value: true));

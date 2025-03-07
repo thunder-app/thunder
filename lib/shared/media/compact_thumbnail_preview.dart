@@ -33,8 +33,6 @@ class CompactThumbnailPreview extends StatelessWidget {
     final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
     final markPostReadOnMediaView = context.select((ThunderBloc bloc) => bloc.state.markPostReadOnMediaView);
 
-    final isUserLoggedIn = context.select((AuthBloc bloc) => bloc.state.isLoggedIn);
-
     return ExcludeSemantics(
       child: Stack(
         alignment: AlignmentDirectional.bottomEnd,
@@ -47,7 +45,6 @@ class CompactThumbnailPreview extends StatelessWidget {
               hideNsfwPreviews: hideNsfwPreviews,
               markPostReadOnMediaView: markPostReadOnMediaView,
               viewMode: ViewMode.compact,
-              isUserLoggedIn: isUserLoggedIn,
               navigateToPost: navigateToPost,
               read: dim,
             ),

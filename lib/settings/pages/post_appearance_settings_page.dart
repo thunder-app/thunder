@@ -510,7 +510,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                         child: PostCardViewCompact(
                                           postViewMedia: snapshot.data![index]!,
                                           feedType: FeedType.general,
-                                          isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
                                           isLastTapped: false,
@@ -524,7 +523,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                           hideNsfwPreviews: hideNsfwPreviews,
                                           feedType: FeedType.general,
                                           markPostReadOnMediaView: false,
-                                          isUserLoggedIn: true,
                                           listingType: ListingType.all,
                                           indicateRead: dimReadPosts,
                                           edgeToEdgeImages: showEdgeToEdgeImages,

@@ -21,9 +21,6 @@ class PostCardViewCompact extends StatelessWidget {
   /// The type of feed that the post is in.
   final FeedType? feedType;
 
-  /// Determines whether the user is logged in or not.
-  final bool isUserLoggedIn;
-
   /// The type of listing that the post is in.
   final ListingType? listingType;
 
@@ -43,7 +40,6 @@ class PostCardViewCompact extends StatelessWidget {
     super.key,
     required this.postViewMedia,
     required this.feedType,
-    required this.isUserLoggedIn,
     required this.listingType,
     this.navigateToPost,
     this.indicateRead,
@@ -71,7 +67,7 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final showThumbnailPreviewOnRight = context.select((ThunderBloc bloc) => bloc.state.showThumbnailPreviewOnRight);
     final showTextPostIndicator = context.select((ThunderBloc bloc) => bloc.state.showTextPostIndicator);
-    final showCommunitySubscription = isUserLoggedIn && (listingType == ListingType.all || listingType == ListingType.local) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed;
+    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed;
 
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
 

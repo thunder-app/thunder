@@ -54,7 +54,11 @@ void triggerPostAction({
   }
 }
 
-DismissDirection determinePostSwipeDirection(bool isUserLoggedIn, ThunderState state, {bool disableSwiping = false}) {
+/// Determine the direction of the swipe based on the current state
+DismissDirection determinePostSwipeDirection(BuildContext context, {bool disableSwiping = false}) {
+  final state = context.read<ThunderBloc>().state;
+  final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
   if (!isUserLoggedIn) return DismissDirection.none;
 
   if (state.enablePostGestures == false) return DismissDirection.none;
