@@ -114,8 +114,8 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
       height: widget.height,
       width: widget.width,
       fit: widget.fit,
-      // cache: true,
-      // clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
+      cache: true,
+      clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.width != null ? (widget.width! * devicePixelRatio).toInt() : null,
       cacheHeight: widget.height != null ? (widget.height! * devicePixelRatio).toInt() : null,
       loadStateChanged: (ExtendedImageState state) {
