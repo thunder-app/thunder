@@ -2527,7 +2527,7 @@
   "@standard": {
     "description": "Describes a standard visual density"
   },
-  "systemDarkModeDescription": "Schwarzes Thema im dunklen Modus des Systems aktivieren",
+  "systemDarkModeDescription": "Rein schwarzes Thema für dunklen Modus aktivieren",
   "@systemDarkModeDescription": {
     "description": "Toggle which enables the pure black theme when using system theme, and is using the dark mode version"
   },
@@ -2779,7 +2779,7 @@
   "@successfullyUnbannedUser": {
     "description": "Notification for successfully unbanning a user"
   },
-  "systemDarkMode": "System Dark Mode",
+  "systemDarkMode": "Reines Schwarz",
   "@systemDarkMode": {
     "description": "Setting which toggles the dark theme type when the system theme is selected"
   },
@@ -2964,5 +2964,77 @@
   "restoreComment": "Kommentar wiederherstellen",
   "@restoreComment": {
     "description": "Moderator action to restore a comment"
+  },
+  "settingsPage": "Einstellungsseite",
+  "@settingsPage": {
+    "description": "Settings page subtitle for search results"
+  },
+  "settingsPageAccount": "Konto",
+  "@settingsPageAccount": {
+    "description": "Account settings page"
+  },
+  "deleted": "Gelöscht",
+  "@deleted": {
+    "description": "Status to indicate that an item has been deleted"
+  },
+  "locked": "Gesperrt",
+  "@locked": {
+    "description": "Status to indicate that an item has been locked"
+  },
+  "pinned": "Angeheftet",
+  "@pinned": {
+    "description": "Status to indicate that an item has been pinned"
+  },
+  "settingsPageDebug": "Debug",
+  "@settingsPageDebug": {
+    "description": "Debug settings page"
+  },
+  "settingsPageFilters": "Filter",
+  "@settingsPageFilters": {
+    "description": "Filters settings page"
+  },
+  "settingsPageAbout": "Über",
+  "@settingsPageAbout": {
+    "description": "About settings page"
+  },
+  "menu": "Menü",
+  "@menu": {
+    "description": "Menu button description"
+  },
+  "settingsPageVideo": "Video",
+  "@settingsPageVideo": {
+    "description": "Video settings page"
+  },
+  "settingsPageAccountMedia": "Medien verwalten",
+  "@settingsPageAccountMedia": {
+    "description": "Account manage media page"
+  },
+  "settingsPageAppearanceComments": "Kommentare",
+  "@settingsPageAppearanceComments": {
+    "description": "Theming comments page"
+  },
+  "settingsPageAppearancePosts": "Beiträge",
+  "@settingsPageAppearancePosts": {
+    "description": "Theming posts page"
+  },
+  "settingsPageAccessibility": "Barrierefreiheit",
+  "@settingsPageAccessibility": {
+    "description": "Accessibility settings page"
+  },
+  "settingsPageGeneral": "Allgemein",
+  "@settingsPageGeneral": {
+    "description": "General settings page"
+  },
+  "removed": "Entfernt",
+  "@removed": {
+    "description": "Status to indicate that an item has been removed"
+  },
+  "settingsPageAppearance": "Darstellung",
+  "@settingsPageAppearance": {
+    "description": "Appearance settings page"
+  },
+  "settingsPageGestures": "Gesten",
+  "@settingsPageGestures": {
+    "description": "Gestures settings page"
   }
 }
