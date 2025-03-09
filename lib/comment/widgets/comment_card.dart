@@ -304,7 +304,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             context,
                             widget.commentView,
                             isShowingSource: viewSource,
-                            onAction: ({commentAction, required commentView, communityAction, userAction, value}) {
+                            onAction: ({commentAction, required commentView, communityAction, userAction, value}) async {
                               if (commentAction != null) {
                                 switch (commentAction) {
                                   case CommentAction.vote:
@@ -314,11 +314,19 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                     widget.onSaveAction?.call(commentView.comment.id, value);
                                     break;
                                   case CommentAction.reply:
-                                    widget.onReplyEditAction?.call(commentView, false);
-                                    break;
+                                    return navigateToCreateCommentPage(
+                                      context,
+                                      commentView: null,
+                                      parentCommentView: commentView,
+                                      onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                    );
                                   case CommentAction.edit:
-                                    widget.onReplyEditAction?.call(commentView, true);
-                                    break;
+                                    return navigateToCreateCommentPage(
+                                      context,
+                                      commentView: commentView,
+                                      parentCommentView: null,
+                                      onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                    );
                                   case CommentAction.delete:
                                     widget.onDeleteAction?.call(commentView.comment.id, value);
                                     break;

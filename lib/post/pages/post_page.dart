@@ -549,16 +549,7 @@ class _PostPageState extends State<PostPage> {
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
                               onReplyEditAction: (CommentView commentView, bool isEdit) {
-                                navigateToCreateCommentPage(
-                                  context,
-                                  commentView: isEdit ? commentView : null,
-                                  parentCommentView: isEdit ? null : commentView,
-                                  onCommentSuccess: (commentView, userChanged) {
-                                    if (!userChanged) {
-                                      context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
-                                    }
-                                  },
-                                );
+                                context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
                               },
                               onCollapseCommentChange: (int commentId, bool collapsed) {
                                 if (collapsed) {
