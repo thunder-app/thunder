@@ -50,10 +50,10 @@ class PostCardMetadata extends StatelessWidget {
   final String? dateTime;
 
   /// Whether or not the post has been edited. This determines the icon for the [dateTime] field.
-  final bool? hasBeenEdited;
+  final bool? edited;
 
-  /// Whether or not the post has been read. This is passed down to the individual [PostCardMetadataItem] widgets to determine the color.
-  final bool? hasBeenRead;
+  /// Whether or not to dim the metadata widgets. This is passed down to the individual [PostCardMetadataItem] widgets to determine the color.
+  final bool? dim;
 
   /// The URL to display in the metadata. If null, no URL will be displayed.
   final String? url;
@@ -71,38 +71,64 @@ class PostCardMetadata extends StatelessWidget {
     this.commentCount,
     this.unreadCommentCount,
     this.dateTime,
-    this.hasBeenEdited = false,
-    this.hasBeenRead = false,
+    this.edited = false,
+    this.dim = false,
     this.url,
     this.languageId,
   });
 
   @override
   Widget build(BuildContext context) {
-    final showScores = context.watch<AuthBloc>().state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    final showScores = context.select((AuthBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
-    List<PostCardMetadataItem> postCardMetadataItems = switch (postCardViewType) {
-      ViewMode.compact => context.read<ThunderBloc>().state.compactPostCardMetadataItems,
-      ViewMode.comfortable => context.read<ThunderBloc>().state.cardPostCardMetadataItems,
-    };
+    final List<PostCardMetadataItem> postCardMetadataItems = postCardViewType == ViewMode.compact
+        ? context.select((ThunderBloc bloc) => bloc.state.compactPostCardMetadataItems)
+        : context.select((ThunderBloc bloc) => bloc.state.cardPostCardMetadataItems);
 
     return Wrap(
       spacing: 0,
       runSpacing: 4.0,
       crossAxisAlignment: WrapCrossAlignment.center,
-      children: postCardMetadataItems.map(
-        (PostCardMetadataItem postCardMetadataItem) {
-          return switch (postCardMetadataItem) {
-            PostCardMetadataItem.score => ScorePostCardMetaData(score: score, voteType: voteType, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
-            PostCardMetadataItem.upvote => UpvotePostCardMetaData(upvotes: upvoteCount, isUpvoted: voteType == 1, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
-            PostCardMetadataItem.downvote => DownvotePostCardMetaData(downvotes: downvoteCount, isDownvoted: voteType == -1, hasBeenRead: hasBeenRead ?? false, showScores: showScores),
-            PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, hasBeenRead: hasBeenRead ?? false),
-            PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, hasBeenRead: hasBeenRead ?? false, hasBeenEdited: hasBeenEdited ?? false),
-            PostCardMetadataItem.url => UrlPostCardMetaData(url: url, hasBeenRead: hasBeenRead ?? false),
-            PostCardMetadataItem.language => LanguagePostCardMetaData(languageId: languageId, hasBeenRead: hasBeenRead ?? false),
-          };
-        },
-      ).toList(),
+      children: postCardMetadataItems.map((PostCardMetadataItem postCardMetadataItem) {
+        return switch (postCardMetadataItem) {
+          PostCardMetadataItem.score => ScorePostCardMetaData(
+              score: score,
+              voteType: voteType,
+              dim: dim ?? false,
+              showScores: showScores,
+            ),
+          PostCardMetadataItem.upvote => UpvotePostCardMetaData(
+              upvotes: upvoteCount,
+              upvoted: voteType == 1,
+              dim: dim ?? false,
+              showScores: showScores,
+            ),
+          PostCardMetadataItem.downvote => DownvotePostCardMetaData(
+              downvotes: downvoteCount,
+              downvoted: voteType == -1,
+              dim: dim ?? false,
+              showScores: showScores,
+            ),
+          PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(
+              commentCount: commentCount,
+              unreadCommentCount: unreadCommentCount ?? 0,
+              dim: dim ?? false,
+            ),
+          PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
+              dateTime: dateTime!,
+              dim: dim ?? false,
+              edited: edited ?? false,
+            ),
+          PostCardMetadataItem.url => UrlPostCardMetaData(
+              url: url,
+              dim: dim ?? false,
+            ),
+          PostCardMetadataItem.language => LanguagePostCardMetaData(
+              languageId: languageId,
+              hasBeenRead: dim ?? false,
+            ),
+        };
+      }).toList(),
     );
   }
 }
@@ -115,8 +141,8 @@ class ScorePostCardMetaData extends StatelessWidget {
   /// The vote for the post. This should be either 0, 1 or -1. Defaults to 0 if not specified.
   final int? voteType;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
@@ -125,30 +151,33 @@ class ScorePostCardMetaData extends StatelessWidget {
     super.key,
     this.score = 0,
     this.voteType = 0,
-    this.hasBeenRead = false,
+    this.dim = false,
     this.showScores = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    // If scores should not be shown and voteType is 0, return an empty widget.
+    if (!showScores && voteType == 0) return const SizedBox.shrink();
+
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.read<ThunderBloc>().state;
 
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final metadataFontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final upvoteColor = context.select((ThunderBloc bloc) => bloc.state.upvoteColor.color);
+    final downvoteColor = context.select((ThunderBloc bloc) => bloc.state.downvoteColor.color);
 
+    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+
+    // Compute the color based on the vote type.
     final color = switch (voteType) {
-      1 => context.read<ThunderBloc>().state.upvoteColor.color,
-      -1 => context.read<ThunderBloc>().state.downvoteColor.color,
-      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
+      1 => upvoteColor,
+      -1 => downvoteColor,
+      _ => dim ? dimColor : theme.textTheme.bodyMedium?.color,
     };
 
-    if (!showScores && voteType == 0) {
-      return const SizedBox();
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: Wrap(
         spacing: 2.0,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -159,10 +188,21 @@ class ScorePostCardMetaData extends StatelessWidget {
             height: 17,
             child: Stack(
               children: [
-                Align(alignment: Alignment.topLeft, child: Icon(Icons.arrow_upward, size: 13.5, color: voteType == -1 ? readColor : color)),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Icon(
+                    Icons.arrow_upward,
+                    size: 13.5,
+                    color: voteType == -1 ? dimColor : color,
+                  ),
+                ),
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: Icon(Icons.arrow_downward, size: 13.5, color: voteType == 1 ? readColor : color),
+                  child: Icon(
+                    Icons.arrow_downward,
+                    size: 13.5,
+                    color: voteType == 1 ? dimColor : color,
+                  ),
                 ),
               ],
             ),
@@ -171,7 +211,7 @@ class ScorePostCardMetaData extends StatelessWidget {
             ScalableText(
               formatNumberToK(score ?? 0),
               semanticsLabel: l10n.xScore(formatNumberToK(score ?? 0)),
-              fontScale: state.metadataFontSizeScale,
+              fontScale: metadataFontScale,
               style: theme.textTheme.bodyMedium?.copyWith(color: color),
             ),
         ],
@@ -186,10 +226,10 @@ class UpvotePostCardMetaData extends StatelessWidget {
   final int? upvotes;
 
   /// Whether or not the post has been upvoted. Defaults to false if not specified.
-  final bool? isUpvoted;
+  final bool? upvoted;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
@@ -197,30 +237,30 @@ class UpvotePostCardMetaData extends StatelessWidget {
   const UpvotePostCardMetaData({
     super.key,
     this.upvotes = 0,
-    this.isUpvoted = false,
-    this.hasBeenRead = false,
+    this.upvoted = false,
+    this.dim = false,
     this.showScores = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    // If scores should not be shown and the post is not upvoted, return an empty widget.
+    if (!showScores && upvoted == false) return const SizedBox.shrink();
+
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    final color = switch (isUpvoted) {
-      true => context.read<ThunderBloc>().state.upvoteColor.color,
-      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
-    };
+    final metadataFontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final upvoteColor = context.select((ThunderBloc bloc) => bloc.state.upvoteColor.color);
 
-    if (!showScores && isUpvoted == false) {
-      return const SizedBox();
-    }
+    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    // Compute the final color based on the upvote status and read status.
+    final color = upvoted == true ? upvoteColor : (dim ? dimColor : theme.textTheme.bodyMedium?.color);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
-        fontScale: state.metadataFontSizeScale,
+        fontScale: metadataFontScale,
         text: showScores ? formatNumberToK(upvotes ?? 0) : null,
         textColor: color,
         padding: 2.0,
@@ -236,10 +276,10 @@ class DownvotePostCardMetaData extends StatelessWidget {
   final int? downvotes;
 
   /// Whether or not the post has been downvoted. Defaults to false if not specified.
-  final bool? isDownvoted;
+  final bool? downvoted;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
@@ -247,30 +287,30 @@ class DownvotePostCardMetaData extends StatelessWidget {
   const DownvotePostCardMetaData({
     super.key,
     this.downvotes = 0,
-    this.isDownvoted = false,
-    this.hasBeenRead = false,
+    this.downvoted = false,
+    this.dim = false,
     this.showScores = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    // If scores should not be shown and the post is not downvoted, return an empty widget.
+    if (!showScores && downvoted == false) return const SizedBox.shrink();
+
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    final color = switch (isDownvoted) {
-      true => context.read<ThunderBloc>().state.downvoteColor.color,
-      _ => hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color,
-    };
+    final metadataFontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final downvoteColor = context.select((ThunderBloc bloc) => bloc.state.downvoteColor.color);
 
-    if (!showScores && isDownvoted == false) {
-      return const SizedBox();
-    }
+    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    // Determine the final color based on the downvote status and read status.
+    final color = downvoted == true ? downvoteColor : (dim ? dimColor : theme.textTheme.bodyMedium?.color);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
-        fontScale: state.metadataFontSizeScale,
+        fontScale: metadataFontScale,
         text: showScores ? formatNumberToK(downvotes ?? 0) : null,
         textColor: color,
         padding: 2.0,
@@ -288,35 +328,42 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   /// The number of unread comments on the post. Defaults to 0 if not specified.
   final int unreadCommentCount;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
   const CommentCountPostCardMetaData({
     super.key,
     this.commentCount = 0,
     this.unreadCommentCount = 0,
-    this.hasBeenRead = false,
+    this.dim = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    final color = switch (hasBeenRead) {
-      true => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : readColor,
-      _ => (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
+    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+
+    final bool hasUnread = unreadCommentCount > 0 && unreadCommentCount != commentCount;
+
+    final color = switch (dim) {
+      true => hasUnread ? theme.primaryColor : dimColor,
+      _ => hasUnread ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
     };
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
-        fontScale: state.metadataFontSizeScale,
-        text: (unreadCommentCount > 0 && unreadCommentCount != commentCount) ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
+        fontScale: fontScale,
+        text: hasUnread ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0),
         textColor: color,
         padding: 4.0,
-        icon: Icon(unreadCommentCount > 0 && unreadCommentCount != commentCount ? Icons.mark_unread_chat_alt_rounded : Icons.chat, size: 17.0, color: color),
+        icon: Icon(
+          hasUnread ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
+          size: 17.0,
+          color: color,
+        ),
       ),
     );
   }
@@ -327,38 +374,42 @@ class DateTimePostCardMetaData extends StatelessWidget {
   /// The date/time the post was created or updated. This string should conform to ISO-8601 format.
   final String dateTime;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
   /// Whether or not the post has been edited. This determines the icon for the [dateTime] field.
-  final bool hasBeenEdited;
+  final bool edited;
 
-  const DateTimePostCardMetaData({
-    super.key,
-    required this.dateTime,
-    this.hasBeenRead = false,
-    this.hasBeenEdited = false,
-  });
+  const DateTimePostCardMetaData({super.key, required this.dateTime, this.dim = false, this.edited = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    final color = switch (hasBeenRead) {
-      true => readColor,
-      _ => state.showFullPostDate ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75) : theme.textTheme.bodyMedium?.color,
-    };
+    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final showFullPostDate = context.select((ThunderBloc bloc) => bloc.state.showFullPostDate);
+    final dateFormat = context.select((ThunderBloc bloc) => bloc.state.dateFormat);
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    final baseColor = theme.textTheme.bodyMedium?.color;
+    final dimColor = baseColor?.withValues(alpha: 0.45);
+    final fullDateColor = baseColor?.withValues(alpha: 0.75);
+    final color = dim ? dimColor : (showFullPostDate ? fullDateColor : baseColor);
+
+    final parsedDateTime = DateTime.parse(dateTime);
+    final formattedDate = showFullPostDate && dateFormat != null ? dateFormat.format(parsedDateTime) : formatTimeToString(dateTime: dateTime);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
-        fontScale: state.metadataFontSizeScale,
-        text: state.showFullPostDate ? state.dateFormat?.format(DateTime.parse(dateTime)) : formatTimeToString(dateTime: dateTime),
+        fontScale: fontScale,
+        text: formattedDate,
         textColor: color,
         padding: 2.0,
-        icon: Icon(hasBeenEdited ? Icons.edit : Icons.history_rounded, size: 17.0, color: color),
+        icon: Icon(
+          edited ? Icons.edit : Icons.history_rounded,
+          size: 17.0,
+          color: color,
+        ),
       ),
     );
   }
@@ -369,41 +420,35 @@ class UrlPostCardMetaData extends StatelessWidget {
   /// The URL to display in the metadata. If null, no URL will be displayed.
   final String? url;
 
-  /// Whether or not the post has been read. This is used to determine the color.
-  final bool hasBeenRead;
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
 
-  const UrlPostCardMetaData({
-    super.key,
-    this.url,
-    this.hasBeenRead = false,
-  });
+  const UrlPostCardMetaData({super.key, this.url, this.dim = false});
 
   @override
   Widget build(BuildContext context) {
+    if (url?.isEmpty ?? true) return const SizedBox.shrink();
+
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
-    final color = switch (hasBeenRead) {
-      true => readColor,
-      _ => theme.textTheme.bodyMedium?.color,
-    };
+    final textStyle = theme.textTheme.bodyMedium;
+    final dimColor = textStyle?.color?.withValues(alpha: 0.45);
+    final textColor = dim ? dimColor : textStyle?.color;
 
-    if (url == null || url!.isEmpty == true) {
-      return Container();
-    }
+    final host = Uri.parse(url!).host.replaceFirst('www.', '');
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
       child: Tooltip(
-        message: url,
+        message: url!,
         preferBelow: false,
         child: IconText(
-          fontScale: state.metadataFontSizeScale,
-          text: Uri.parse(url ?? '').host.replaceFirst('www.', ''),
-          textColor: color,
+          fontScale: fontScale,
+          text: host,
+          textColor: textColor,
           padding: 3.0,
-          icon: Icon(Icons.public, size: 17.0, color: color),
+          icon: Icon(Icons.public, size: 17.0, color: textColor),
         ),
       ),
     );
@@ -480,19 +525,19 @@ class CrossPostMetaData extends StatelessWidget {
             ScorePostCardMetaData(
               score: crossPost.counts.score,
               voteType: crossPost.myVote,
-              hasBeenRead: true,
+              dim: true,
             ),
             const SizedBox(width: 10.0),
             CommentCountPostCardMetaData(
               commentCount: crossPost.counts.comments,
               unreadCommentCount: crossPost.unreadComments,
-              hasBeenRead: true,
+              dim: true,
             ),
             const SizedBox(width: 10.0),
             DateTimePostCardMetaData(
               dateTime: crossPost.post.published.toIso8601String(),
-              hasBeenEdited: crossPost.post.updated != null ? true : false,
-              hasBeenRead: true,
+              edited: crossPost.post.updated != null ? true : false,
+              dim: true,
             ),
           ],
         );

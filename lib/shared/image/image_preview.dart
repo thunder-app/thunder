@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/media/image.dart';
 
 /// Displays a preview of an image.
 class ImagePreview extends StatefulWidget {
@@ -51,11 +52,17 @@ class ImagePreview extends StatefulWidget {
 }
 
 class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderStateMixin {
+  /// The controller for the image fade animation.
   late AnimationController _controller;
+
+  /// Whether the image URL is valid.
+  late bool _isValidImageUrl;
 
   @override
   void initState() {
     super.initState();
+
+    _isValidImageUrl = isImageUrl(widget.url);
 
     _controller = AnimationController(
       vsync: this,
@@ -66,6 +73,14 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
   }
 
   @override
+  void didUpdateWidget(ImagePreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      _isValidImageUrl = isImageUrl(widget.url);
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -73,30 +88,48 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
+    if (!_isValidImageUrl) {
+      return Center(
+        child: Icon(
+          _getErrorIcon(widget.mediaType),
+          color: Theme.of(context).colorScheme.onSecondaryContainer.withValues(alpha: widget.viewed == true ? 0.55 : 1.0),
+        ),
+      );
+    }
 
-    final devicePixelRatio = View.of(context).devicePixelRatio.ceil();
+    return BlocSelector<ThunderBloc, ThunderState, ImageCachingMode>(
+      selector: (state) => state.imageCachingMode,
+      builder: (context, imageCachingMode) {
+        return _buildImage(context, imageCachingMode);
+      },
+    );
+  }
+
+  Widget _buildImage(BuildContext context, ImageCachingMode imageCachingMode) {
+    final theme = Theme.of(context);
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context).ceil();
 
     Widget image = ExtendedImage.network(
       widget.url,
       height: widget.height,
       width: widget.width,
       fit: widget.fit,
-      cache: true,
-      clearMemoryCacheWhenDispose: state.imageCachingMode == ImageCachingMode.relaxed,
+      // cache: true,
+      // clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.width != null ? (widget.width! * devicePixelRatio).toInt() : null,
       cacheHeight: widget.height != null ? (widget.height! * devicePixelRatio).toInt() : null,
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             _controller.reset();
-            return Container();
+            return const SizedBox.shrink();
+
           case LoadState.completed:
             if (state.wasSynchronouslyLoaded) return state.completedWidget;
 
             _controller.forward();
             return FadeTransition(opacity: _controller, child: state.completedWidget);
+
           case LoadState.failed:
             _controller.reset();
             state.imageProvider.evict();
