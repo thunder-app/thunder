@@ -11,7 +11,7 @@
   "@account": {
     "description": "Describes the user account"
   },
-  "changePassword": "Mudar Palavra-passe",
+  "changePassword": "Mudar palavra-passe",
   "@changePassword": {
     "description": "Label for action to change password"
   },
@@ -25,7 +25,7 @@
   },
   "ok": "OK",
   "@ok": {},
-  "addAnonymousInstance": "Adicionar Instância Anônima",
+  "addAnonymousInstance": "Adicionar uma instância anónima",
   "@addAnonymousInstance": {},
   "collapseInformation": "Colapsar Informação",
   "@collapseInformation": {
@@ -45,13 +45,13 @@
   "@communityStyle": {
     "description": "Heading for community style setting"
   },
-  "actionColorsRedirect": "Quer customizar cores?",
+  "actionColorsRedirect": "Quer personalizar as cores?",
   "@actionColorsRedirect": {
     "description": "Redirect hint to action colors"
   },
   "addAccountToSeeProfile": "Faça login para ver a sua conta.",
   "@addAccountToSeeProfile": {},
-  "addKeywordFilter": "Adicionar Palavra-chave",
+  "addKeywordFilter": "Adicionar palavra-chave",
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
   },
@@ -59,7 +59,7 @@
   "@addToFavorites": {
     "description": "Action to add a community in drawer to favorites"
   },
-  "addedCommunityToSubscriptions": "Inscrito na comunidade",
+  "addedCommunityToSubscriptions": "Subscrito à comunidade",
   "@addedCommunityToSubscriptions": {},
   "accountBirthday": "Aniversário da conta {additionalInfo}",
   "@accountBirthday": {
@@ -69,9 +69,9 @@
   "@admin": {
     "description": "Role name for admin"
   },
-  "andXMore": "e {count} mais",
+  "andXMore": "e mais {count}",
   "@andXMore": {},
-  "anonymous": "Anônimo",
+  "anonymous": "Anónimo",
   "@anonymous": {},
   "apply": "Aplicar",
   "@apply": {},
@@ -85,19 +85,19 @@
   "@bannedUser": {
     "description": "Short decription for moderator action to ban a user"
   },
-  "collapsePost": "Colapsar post",
+  "collapsePost": "Colapsar publicação",
   "@collapsePost": {},
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
   },
-  "allowOpenSupportedLinks": "Permitir que a app abra ligações suportadas.",
+  "allowOpenSupportedLinks": "Permitir que a aplicação abra ligações suportadas.",
   "@allowOpenSupportedLinks": {
     "description": "Option to permit the app to open supported links."
   },
-  "alreadyPostedTo": "Já postado em",
+  "alreadyPostedTo": "Já publicado em",
   "@alreadyPostedTo": {},
-  "appLanguage": "Idioma do app",
+  "appLanguage": "Idioma da aplicação",
   "@appLanguage": {
     "description": "Language selection in settings."
   },
@@ -107,17 +107,17 @@
   "@blockInstance": {},
   "blockUser": "Bloquear utilizador",
   "@blockUser": {},
-  "cantBlockYourself": "Não pode bloquear a si mesmo.",
+  "cantBlockYourself": "Não se pode bloquear a si próprio.",
   "@cantBlockYourself": {},
-  "clearCache": "Limpar Cache ({cacheSize})",
+  "clearCache": "Limpar a cache ({cacheSize})",
   "@clearCache": {
     "description": "Label for action to clear cache in the dialog"
   },
-  "changeAccountSettingsFor": "Mudar configurações de conta para",
+  "changeAccountSettingsFor": "Alterar as definições da conta para",
   "@changeAccountSettingsFor": {
     "description": "Heading for the profiler modal when changing account settings"
   },
-  "clearDatabase": "Limpar Banco de Dados",
+  "clearDatabase": "Apagar dados",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
   },
@@ -129,7 +129,7 @@
   },
   "commentSavedAsDraft": "Comentário gravado como rascunho",
   "@commentSavedAsDraft": {},
-  "accountSettings": "Configurações da conta",
+  "accountSettings": "Definições da conta",
   "@accountSettings": {},
   "actions": "Ações",
   "@actions": {},
@@ -139,9 +139,9 @@
   "@advanced": {
     "description": "Heading for advanced settings"
   },
-  "all": "Todos",
+  "all": "Tudo",
   "@all": {},
-  "allPosts": "Todos os posts",
+  "allPosts": "Todas as publicações",
   "@allPosts": {},
   "appearance": "Aparência",
   "@appearance": {
@@ -153,17 +153,17 @@
   "@blockedCommunities": {},
   "blockedInstances": "Instâncias bloqueadas",
   "@blockedInstances": {},
-  "clearPreferences": "Limpar Preferências",
+  "clearPreferences": "Apagar preferências",
   "@clearPreferences": {
     "description": "Label for action to clear local user preferences in the dialog"
   },
   "blockedUsers": "Utilizadores bloqueados",
   "@blockedUsers": {},
-  "clearedCache": "Cache limpado com sucesso.",
+  "clearedCache": "Cache limpa com sucesso.",
   "@clearedCache": {
     "description": "Message indicating that cache was cleared successfully"
   },
-  "changeNotificationSettings": "Mudar configurações de notificação.",
+  "changeNotificationSettings": "Alterar as definições de notificação...",
   "@changeNotificationSettings": {
     "description": "A shortcut to navigate to the notification settings"
   },
@@ -171,17 +171,17 @@
   "@collapse": {
     "description": "Action to collapse something"
   },
-  "collapseCommentPreview": "Colapsar Prévia de Comentário",
+  "collapseCommentPreview": "Colapsar a pré-visualização dos comentários",
   "@collapseCommentPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
   },
   "off": "desligado",
   "@off": {},
-  "addDiscussionLanguage": "Adicionar Idioma",
+  "addDiscussionLanguage": "Adicionar idioma",
   "@addDiscussionLanguage": {
     "description": "Hint for text field to add language"
   },
-  "addedModToCommunity": "Moderador Adicionado à Comunidade",
+  "addedModToCommunity": "Moderador adicionado à comunidade",
   "@addedModToCommunity": {
     "description": "Short decription for moderator action to add a mod to a community"
   },
@@ -239,7 +239,7 @@
   "@community": {},
   "old": "Velho",
   "@old": {},
-  "accountSettingOverrideWarning": "As suas configurações de conta sobrescrevem as configurações a seguir",
+  "accountSettingOverrideWarning": "As definições da sua conta substituem as seguintes definições",
   "@accountSettingOverrideWarning": {
     "description": "Warning for account settings override"
   },
@@ -271,9 +271,9 @@
   },
   "cancel": "Cancelar",
   "@cancel": {},
-  "clearedDatabase": "O banco de dados local foi limpo. Reinicie o Thunder para que as mudanças sejam aplicadas.",
+  "clearedDatabase": "Base de dados local limpa. Reinicie o Thunder para que as novas alterações tenham efeito.",
   "@clearedDatabase": {},
-  "clearedUserPreferences": "As preferências de utilizadores foram limpas",
+  "clearedUserPreferences": "As preferências de utilizador foram apagadas",
   "@clearedUserPreferences": {},
   "colorizeCommunityName": "Colorir Nome da Comunidade",
   "@colorizeCommunityName": {
@@ -290,5 +290,139 @@
   "accept": "Aceitar",
   "@accept": {
     "description": "The ability to accept an option"
+  },
+  "anonymousInstances": "Instâncias anónimas",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "accountSettingsExportedSuccessfully": "As definições da conta Lemmy foram exportadas com sucesso para {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "As definições da conta Lemmy foram importadas com sucesso!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "actionColors": "Cores das ações",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "addAsCommunityModerator": "Adicionar como moderador da comunidade",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "alternateSources": "Fontes alternativas",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "browserMode": "Gestão de links",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "backgroundCheckWarning": "Tenha em conta que as verificações de notificação irão consumir mais bateria",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "banFromCommunity": "Banir da comunidade",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "blockUserInstance": "Bloquear a instância do utilizador",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "collapseParentCommentBodyOnGesture": "Ocultar o comentário pai quando colapsado",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "accountSwitchParentCommentNotFound": "O comentário selecionado não foi encontrado em '{instance}'. A voltar para a conta anterior...",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "addedInstanceMod": "Moderador da instância adicionado",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "changeSort": "Mudar ordem",
+  "@changeSort": {},
+  "accountSwitchPostNotFound": "A publicação selecionada não foi encontrada em '{instance}'. A voltar para a conta anterior...",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "areNotificationsAllowedBySystem": "As notificações são permitidas pelo sistema: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "cardPostCardMetadataItems": "Metadados da Vista em Cartão",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "ago": "Há {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "clearCacheLabel": "Limpar a cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "bannedUserFromCommunity": "Utilizador banido da comunidade",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "cardViewSettings": "Definições da vista em cartões",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "blockSettingLabel": "Bloqueios de Utilizador/Comunidade/Instância",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "altText": "Texto alternativo",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "applePushNotificationService": "Serviço de Notificações Push da Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "blockCommunityInstance": "Bloquear instância da comunidade",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockManagement": "Gestão de bloqueios",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "boldCommunityName": "Nome da comunidade a negrito",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "Nome da instância a negrito",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "Nome do utilizador a negrito",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "cardView": "Vista em Cartão",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Ative a vista em cartões para ajustar as definições",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "changePasswordWarning": "Para alterar a sua palavra-passe, será redirecionado para o sítio da sua instância.  \n\nTem a certeza de que pretende continuar?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
   }
 }
