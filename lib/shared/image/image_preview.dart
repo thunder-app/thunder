@@ -88,14 +88,7 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (!_isValidImageUrl) {
-      return Center(
-        child: Icon(
-          _getErrorIcon(widget.mediaType),
-          color: Theme.of(context).colorScheme.onSecondaryContainer.withValues(alpha: widget.viewed == true ? 0.55 : 1.0),
-        ),
-      );
-    }
+    if (!_isValidImageUrl) return _fallbackWidget();
 
     return BlocSelector<ThunderBloc, ThunderState, ImageCachingMode>(
       selector: (state) => state.imageCachingMode,
@@ -106,7 +99,6 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
   }
 
   Widget _buildImage(BuildContext context, ImageCachingMode imageCachingMode) {
-    final theme = Theme.of(context);
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context).ceil();
 
     Widget image = ExtendedImage.network(
@@ -134,12 +126,7 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
             _controller.reset();
             state.imageProvider.evict();
 
-            return Center(
-              child: Icon(
-                _getErrorIcon(widget.mediaType),
-                color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.viewed == true ? 0.55 : 1.0),
-              ),
-            );
+            return _fallbackWidget();
         }
       },
     );
@@ -153,6 +140,20 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
     }
 
     return image;
+  }
+
+  Widget _fallbackWidget() {
+    final theme = Theme.of(context);
+
+    // Don't display the associated icon if blur is enabled, otherwise there will be two icons displayed at once.
+    if (widget.blur == true) return SizedBox.shrink();
+
+    return Center(
+      child: Icon(
+        _getErrorIcon(widget.mediaType),
+        color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.viewed == true ? 0.55 : 1.0),
+      ),
+    );
   }
 
   IconData _getErrorIcon(MediaType? mediaType) {
