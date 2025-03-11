@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,6 +97,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       WidgetsBinding.instance.addPostFrameCallback((_) => searchTextFieldFocus.requestFocus());
     }
 
+    BackButtonInterceptor.add(_handleBackButtonPress);
     super.initState();
   }
 
@@ -121,6 +123,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void deactivate() {
     _saveToDB();
     super.deactivate();
+  }
+
+  FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (searchTextFieldFocus.hasFocus) {
+      searchTextFieldFocus.unfocus();
+      return true;
+    }
+
+    return false;
   }
 
   void _onScroll() {
