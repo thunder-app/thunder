@@ -126,11 +126,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
-    if (searchTextFieldFocus.hasFocus) {
-      searchTextFieldFocus.unfocus();
-      return true;
-    }
-
+    if (searchTextFieldFocus.hasFocus) searchTextFieldFocus.unfocus();
     return false;
   }
 
