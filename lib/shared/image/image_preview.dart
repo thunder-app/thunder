@@ -88,7 +88,7 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (!_isValidImageUrl) return _fallbackWidget();
+    if (!_isValidImageUrl) return ImagePreviewError(mediaType: widget.mediaType, blur: widget.blur == true, viewed: widget.viewed == true);
 
     return BlocSelector<ThunderBloc, ThunderState, ImageCachingMode>(
       selector: (state) => state.imageCachingMode,
@@ -126,7 +126,7 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
             _controller.reset();
             state.imageProvider.evict();
 
-            return _fallbackWidget();
+            return ImagePreviewError(mediaType: widget.mediaType, blur: widget.blur == true, viewed: widget.viewed == true);
         }
       },
     );
@@ -141,17 +141,32 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
 
     return image;
   }
+}
 
-  Widget _fallbackWidget() {
+/// Displays the fallback widget when an image fails to load.
+class ImagePreviewError extends StatelessWidget {
+  /// The media type that the underlying image represents.
+  final MediaType? mediaType;
+
+  /// Whether the image should be blurred.
+  final bool blur;
+
+  /// Whether the image has been viewed. This will affect the opacity of the image.
+  final bool viewed;
+
+  const ImagePreviewError({super.key, this.mediaType, this.blur = false, this.viewed = false});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     // Don't display the associated icon if blur is enabled, otherwise there will be two icons displayed at once.
-    if (widget.blur == true) return SizedBox.shrink();
+    if (blur == true) return SizedBox.shrink();
 
     return Center(
       child: Icon(
-        _getErrorIcon(widget.mediaType),
-        color: theme.colorScheme.onSecondaryContainer.withValues(alpha: widget.viewed == true ? 0.55 : 1.0),
+        _getErrorIcon(mediaType),
+        color: theme.colorScheme.onSecondaryContainer.withValues(alpha: viewed == true ? 0.55 : 1.0),
       ),
     );
   }
