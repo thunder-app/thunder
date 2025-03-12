@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:thunder/community/widgets/post_card.dart';
@@ -78,6 +79,114 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     super.dispose();
   }
 
+  /// Builds an individual post card with the given [postViewMedia] and [index].
+  Widget _buildPostCard({
+    required PostViewMedia postViewMedia,
+    required int index,
+    FeedType? feedType,
+    bool dim = false,
+    ListingType? postListingType,
+    bool isUserLoggedIn = false,
+  }) {
+    final postView = postViewMedia.postView;
+    final post = postView.post;
+
+    Widget child = PostCard(
+      postViewMedia: postViewMedia,
+      feedType: feedType,
+      onVoteAction: (int voteType) {
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, value: voteType));
+      },
+      onSaveAction: (bool saved) {
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, value: saved));
+      },
+      onReadAction: (bool read) {
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, value: read));
+      },
+      onHideAction: (bool hide) {
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, value: hide));
+        context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
+      },
+      onDownAction: () {
+        if (lastTappedIndex != index) lastTappedIndex = index;
+      },
+      onUpAction: (double verticalDragDistance) {
+        bool updatedIsScrollingDown = verticalDragDistance < 0;
+
+        if (isScrollingDown != updatedIsScrollingDown) {
+          isScrollingDown = updatedIsScrollingDown;
+        }
+      },
+      onTap: () {
+        if (lastTappedPost != post.id) setState(() => lastTappedPost = post.id);
+      },
+      listingType: postListingType,
+      indicateRead: dim,
+      isLastTapped: lastTappedPost == post.id,
+      disableSwiping: widget.disableSwiping,
+    );
+
+    // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
+    if (isUserLoggedIn && widget.markPostReadOnScroll) {
+      child = VisibilityDetector(
+        key: Key(post.apId),
+        onVisibilityChanged: (info) {
+          if (!isScrollingDown) return;
+
+          if (index <= lastTappedIndex && info.visibleFraction == 0) {
+            // Debounce the read action to account for quick scrolling. This reduces the number of times the read action is triggered
+            debounceTimer?.cancel();
+
+            debounceTimer = Timer(const Duration(milliseconds: 500), () {
+              // TODO: Improve logic here so that we don't have to iterate through all posts if possible.
+              for (int i = index; i >= 0; i--) {
+                final postView = widget.postViewMedias[i].postView;
+                final post = postView.post;
+
+                // If we already checked this post's read status, or we already marked it as read, skip it
+                if (readPostIds.contains(post.id) || markReadPostIds.contains(post.id)) continue;
+
+                // Otherwise, check the post read status. If it's unread, queue it for marking as read
+                if (postView.read == false) markReadPostIds.add(post.id);
+                readPostIds.add(post.id);
+              }
+
+              if (markReadPostIds.isNotEmpty) {
+                context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
+                readPostIds.addAll(markReadPostIds); // Add all post ids that were queued to prevent them from being queued again
+                markReadPostIds = <int>{}; // Reset the list of post ids to mark as read
+              }
+            });
+          }
+        },
+        child: child,
+      );
+    }
+
+    return AnimatedSwitcher(
+      switchOutCurve: Curves.ease,
+      duration: Duration.zero,
+      reverseDuration: const Duration(milliseconds: 400),
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
+          ),
+          child: SlideTransition(
+            position: Tween<Offset>(begin: const Offset(1.2, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
+            child: SizeTransition(
+              sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.25)),
+              ),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: widget.queuedForRemoval?.contains(post.id) != true ? child : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.read<FeedBloc>().state;
@@ -85,111 +194,37 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
     bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts);
 
-    return SliverMasonryGrid.count(
-      crossAxisCount: widget.tabletMode ? 2 : 1,
-      crossAxisSpacing: 40,
-      mainAxisSpacing: 0,
-      itemBuilder: (BuildContext context, int index) {
-        final postViewMedia = widget.postViewMedias[index];
-        final postView = postViewMedia.postView;
-        final post = postView.post;
-
-        Widget child = PostCard(
-          postViewMedia: postViewMedia,
-          feedType: state.feedType,
-          onVoteAction: (int voteType) {
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, value: voteType));
-          },
-          onSaveAction: (bool saved) {
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, value: saved));
-          },
-          onReadAction: (bool read) {
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, value: read));
-          },
-          onHideAction: (bool hide) {
-            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, value: hide));
-            context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
-          },
-          onDownAction: () {
-            if (lastTappedIndex != index) lastTappedIndex = index;
-          },
-          onUpAction: (double verticalDragDistance) {
-            bool updatedIsScrollingDown = verticalDragDistance < 0;
-
-            if (isScrollingDown != updatedIsScrollingDown) {
-              isScrollingDown = updatedIsScrollingDown;
-            }
-          },
-          onTap: () {
-            if (lastTappedPost != post.id) setState(() => lastTappedPost = post.id);
-          },
-          listingType: state.postListingType,
-          indicateRead: widget.indicateRead ?? dimReadPosts,
-          isLastTapped: lastTappedPost == post.id,
-          disableSwiping: widget.disableSwiping,
-        );
-
-        // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
-        if (isUserLoggedIn && widget.markPostReadOnScroll) {
-          child = VisibilityDetector(
-            key: Key(post.apId),
-            onVisibilityChanged: (info) {
-              if (!isScrollingDown) return;
-
-              if (index <= lastTappedIndex && info.visibleFraction == 0) {
-                // Debounce the read action to account for quick scrolling. This reduces the number of times the read action is triggered
-                debounceTimer?.cancel();
-
-                debounceTimer = Timer(const Duration(milliseconds: 500), () {
-                  // TODO: Improve logic here so that we don't have to iterate through all posts if possible.
-                  for (int i = index; i >= 0; i--) {
-                    final postView = widget.postViewMedias[i].postView;
-                    final post = postView.post;
-
-                    // If we already checked this post's read status, or we already marked it as read, skip it
-                    if (readPostIds.contains(post.id) || markReadPostIds.contains(post.id)) continue;
-
-                    // Otherwise, check the post read status. If it's unread, queue it for marking as read
-                    if (postView.read == false) markReadPostIds.add(post.id);
-                    readPostIds.add(post.id);
-                  }
-
-                  if (markReadPostIds.isNotEmpty) {
-                    context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
-                    readPostIds.addAll(markReadPostIds); // Add all post ids that were queued to prevent them from being queued again
-                    markReadPostIds = <int>{}; // Reset the list of post ids to mark as read
-                  }
-                });
-              }
-            },
-            child: child,
+    if (widget.tabletMode) {
+      return SliverMasonryGrid.count(
+        crossAxisCount: widget.tabletMode ? 2 : 1,
+        crossAxisSpacing: 40,
+        mainAxisSpacing: 0,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildPostCard(
+            postViewMedia: widget.postViewMedias[index],
+            index: index,
+            dim: widget.indicateRead ?? dimReadPosts,
+            feedType: state.feedType,
+            postListingType: state.postListingType,
+            isUserLoggedIn: isUserLoggedIn,
           );
-        }
+        },
+        childCount: widget.postViewMedias.length,
+      );
+    }
 
-        return AnimatedSwitcher(
-          switchOutCurve: Curves.ease,
-          duration: Duration.zero,
-          reverseDuration: const Duration(milliseconds: 400),
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-              ),
-              child: SlideTransition(
-                position: Tween<Offset>(begin: const Offset(1.2, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
-                child: SizeTransition(
-                  sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                    CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.25)),
-                  ),
-                  child: child,
-                ),
-              ),
-            );
-          },
-          child: widget.queuedForRemoval?.contains(post.id) != true ? child : null,
+    return SliverList.builder(
+      itemBuilder: (context, index) {
+        return _buildPostCard(
+          postViewMedia: widget.postViewMedias[index],
+          index: index,
+          dim: widget.indicateRead ?? dimReadPosts,
+          feedType: state.feedType,
+          postListingType: state.postListingType,
+          isUserLoggedIn: isUserLoggedIn,
         );
       },
-      childCount: widget.postViewMedias.length,
+      itemCount: widget.postViewMedias.length,
     );
   }
 }
