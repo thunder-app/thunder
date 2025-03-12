@@ -28,5 +28,237 @@
   "accessibilityProfilesDescription": "تسمح ملفات تعريف إمكانية الوصول بتطبيق عدة إعدادات في وقت واحد لاستيعاب متطلبات إمكانية وصول معينة.",
   "@accessibilityProfilesDescription": {},
   "addAccountToSeeProfile": "قم بتسجيل الدخول لرؤية حسابك.",
-  "@addAccountToSeeProfile": {}
+  "@addAccountToSeeProfile": {},
+  "addedModToCommunity": "أضف إداري للمجتمع",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "blockedCommunities": "المجتمعات المحظورة",
+  "@blockedCommunities": {},
+  "blue": "أزرق",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "accountSettingsExportedSuccessfully": "استُخرج إعدادات الحساب بنجاح إلى {savedFilePath} !",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "استُخرج إعدادات الحساب بنجاح!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "addAnonymousInstance": "أضف مثيل خاص",
+  "@addAnonymousInstance": {},
+  "addedCommunityToSubscriptions": "مشترك في مجتمع",
+  "@addedCommunityToSubscriptions": {},
+  "allowOpenSupportedLinks": "إسمح للتطبيق بفتح الروابط المدعومة.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "نٌشِر بالفعل إلى",
+  "@alreadyPostedTo": {},
+  "anonymousInstances": "مثيل خصوصي",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "base": "الأساسي",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "bot": "‌بوت",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "blockInstance": "احظر المثيل",
+  "@blockInstance": {},
+  "boldCommunityName": "اسم عريض للمجتمع",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "changePassword": "غيّر كلمة المرور",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "cardViewSettings": "إعدادات عرض البطاقة",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "accountBirthday": "تاريخ الحساب {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "always": "دائما",
+  "@always": {},
+  "appLanguage": "لغة التطبيق",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "addAsCommunityModerator": "أضف كإداري للمجتمع",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "alternateSources": "مصدر بديل",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "animations": "الحركات",
+  "@animations": {},
+  "anonymous": "خصوصي",
+  "@anonymous": {},
+  "applePushNotificationService": "خدمة إشعارات أبل",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "appearance": "المظهر",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "apply": "طبّق",
+  "@apply": {},
+  "backgroundCheckWarning": "‍انتبه أن التحقق من الإشعارات يستهلك طاقة إضافية من البطارية",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "banFromCommunity": "حظر من المجتمع",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "bannedUserFromCommunity": "مستخدم محظور من المجموعة",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "blockUser": "احظر المستخدم",
+  "@blockUser": {},
+  "blockSettingLabel": "احظر المستخدم/المجتمع/المثيل",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockUserInstance": "احظر مستخدم المثيل",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "browserMode": "التصرف مع الروابط",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "boldInstanceName": "اسم عريض للمثيل",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "اسم عريض للمستخدم",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "browsingAnonymously": "‬أنت تتصفح {instance} بخصوصية.",
+  "@browsingAnonymously": {},
+  "cancel": "ألغِ",
+  "@cancel": {},
+  "accountSwitchPostNotFound": "لم يتم العثور على المنشور على '{instance}'. يتم العودة الى الحساب السابق",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "accountSwitchParentCommentNotFound": "لم يتم العثور على التعليق على '{instance}'. يتم العودة الى الحساب السابق",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "changeAccountSettingsFor": "غير إعدادات الحساب ل",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "blockedInstances": "المثيلات المحظورة",
+  "@blockedInstances": {},
+  "addDiscussionLanguage": "أضف لغة",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "backToTop": "عُد للأعلى",
+  "@backToTop": {},
+  "back": "عودة",
+  "@back": {},
+  "ago": "قبل {time}",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "blockCommunity": "احظر المجتمع",
+  "@blockCommunity": {},
+  "backButton": "زر العودة",
+  "@backButton": {},
+  "all": "الكل",
+  "@all": {},
+  "applied": "تم التطبيق",
+  "@applied": {},
+  "cannotReportOwnComment": "لا يمكنك الإبلاغ عن تعليقك الخاص.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "لا يمكنك حظر مدير مثيل",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "لا يمكنك حظر نفسك.",
+  "@cantBlockYourself": {},
+  "cardView": "عرض البطاقة",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "changeNotificationSettings": "غيّر إعدادات الإشعارات...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "cardViewDescription": "فعّل عرض البطاقة لتُعدّل الإعدادات",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "accountSettingOverrideWarning": "إعدادات الحساب تغطي إعدادات المتابعة",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "addedInstanceMod": "أضف مديرًا للمثيل",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "blockedUsers": "المستخدمون المحظورون",
+  "@blockedUsers": {},
+  "actionColors": "ألوان النشاط",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "actionColorsRedirect": "هل تودّ تخصيص الألوان؟",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "actions": "الأنشطة",
+  "@actions": {},
+  "admin": "الرئيس",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "advanced": "‍متقدم",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "allPosts": "كل المنشورات",
+  "@allPosts": {},
+  "andXMore": "أضف {count} شخص",
+  "@andXMore": {},
+  "accept": "قبول",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "altText": "نص توضيحي",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "areNotificationsAllowedBySystem": "الإشعارات مسموحة من قِبَل النظام: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "bannedUser": "مستخدم محظور",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "blockCommunityInstance": "احظر مثيل المجتمع",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "bold": "عريض",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  }
 }
