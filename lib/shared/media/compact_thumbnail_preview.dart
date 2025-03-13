@@ -18,6 +18,9 @@ class CompactThumbnailPreview extends StatelessWidget {
   /// This value can be overridden for special cases (e.g., viewing user account)
   final bool dim;
 
+  /// The post associated with the media
+  final int? postId;
+
   /// The callback function to navigate to the post
   final void Function()? navigateToPost;
 
@@ -25,6 +28,7 @@ class CompactThumbnailPreview extends StatelessWidget {
     super.key,
     required this.media,
     this.dim = false,
+    this.postId,
     this.navigateToPost,
   });
 
@@ -43,6 +47,7 @@ class CompactThumbnailPreview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             child: MediaView(
               media: media,
+              postId: postId,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               markPostReadOnMediaView: markPostReadOnMediaView,
