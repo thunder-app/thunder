@@ -29,10 +29,22 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
+  const FeedPageAppBar({
+    super.key,
+    required this.status,
+    this.feedType,
+    required this.scrollController,
+    this.scaffoldStateKey,
+  });
 
-  /// Whether to show the app bar title
-  final bool showAppBarTitle;
+  /// The status of the feed
+  final FeedStatus status;
+
+  /// The type of feed (general, community, user)
+  final FeedType? feedType;
+
+  /// The scroll controller for the feed. Used to determine when to show/hide the app bar title
+  final ScrollController scrollController;
 
   /// The scaffold key of the parent scaffold holding the drawer.
   /// This is used to determine if we are in a pushed navigation stack.
@@ -44,6 +56,41 @@ class FeedPageAppBar extends StatefulWidget {
 
 class _FeedPageAppBarState extends State<FeedPageAppBar> {
   Person? person;
+
+  /// Whether to show the app bar title
+  bool showAppBarTitle = false;
+
+  void _onScroll() {
+    // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
+    if (widget.scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      setState(() => showAppBarTitle = true);
+    } else if (widget.scrollController.position.pixels < 100.0 && showAppBarTitle == true && widget.feedType != FeedType.general) {
+      setState(() => showAppBarTitle = false);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(covariant FeedPageAppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.feedType == FeedType.general && widget.status != FeedStatus.initial) {
+      showAppBarTitle = true;
+    } else if (widget.status == FeedStatus.initial) {
+      showAppBarTitle = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +107,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       centerTitle: false,
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
+      title: FeedAppBarTitle(visible: showAppBarTitle),
       leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && authState.isLoggedIn ? 50 : null,
       leading: feedBloc.state.status == FeedStatus.initial
           ? null

@@ -609,7 +609,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+    List<PostViewMedia> postViewMedias = state.postViewMedias;
     List<CommentView> commentViews = List.from(state.commentViews);
 
     Map<String, dynamic> feedItemResult = await fetchFeedItems(

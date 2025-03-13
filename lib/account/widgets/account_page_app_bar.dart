@@ -21,13 +21,17 @@ import 'package:thunder/utils/navigation.dart';
 class AccountPageAppBar extends StatefulWidget {
   const AccountPageAppBar({
     super.key,
-    this.showAppBarTitle = true,
     this.showSaved = false,
     this.onToggleSaved,
+    required this.status,
+    required this.scrollController,
   });
 
-  /// Whether to show the app bar title
-  final bool showAppBarTitle;
+  /// The status of the feed
+  final FeedStatus status;
+
+  /// The scroll controller for the feed. Used to determine when to show/hide the app bar title
+  final ScrollController scrollController;
 
   /// Whether or not to show saved posts/comments
   final bool showSaved;
@@ -43,13 +47,43 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
   /// Whether or not to show saved posts. We store a local variable here so that the icon can be optimistically updated
   bool showSaved = false;
 
+  /// Whether to show the app bar title
+  bool showAppBarTitle = false;
+
+  void _onScroll() {
+    // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
+    if (widget.scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      setState(() => showAppBarTitle = true);
+    } else if (widget.scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
+      setState(() => showAppBarTitle = false);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
   @override
   void didUpdateWidget(covariant AccountPageAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (showSaved != widget.showSaved && context.read<FeedBloc>().state.status == FeedStatus.success) {
+    if (widget.status != FeedStatus.initial) {
+      showAppBarTitle = true;
+    } else {
+      showAppBarTitle = false;
+    }
+
+    if (showSaved != widget.showSaved && widget.status == FeedStatus.success) {
       setState(() => showSaved = widget.showSaved);
     }
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
   }
 
   @override
@@ -63,7 +97,7 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
       titleSpacing: 0.0,
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: AccountAppBarTitle(visible: widget.showAppBarTitle),
+      title: AccountAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         onPressed: () {
           HapticFeedback.mediumImpact();
