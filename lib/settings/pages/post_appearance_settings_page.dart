@@ -1079,10 +1079,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           ),
           SliverToBoxAdapter(
             child: ToggleOption(
-              description: l10n.postBodyShowCommunityAvatar,
+              description: l10n.showPostCommunityIcons,
               value: postBodyShowCommunityAvatar,
-              iconEnabled: Icons.image,
-              iconDisabled: Icons.image_not_supported,
+              iconEnabled: Icons.groups,
+              iconDisabled: Icons.groups,
               onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
               highlightKey: settingToHighlightKey,
               setting: LocalSettings.postBodyShowCommunityAvatar,

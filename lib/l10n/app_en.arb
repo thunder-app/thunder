@@ -1719,10 +1719,6 @@
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
   },
-  "postBodyShowCommunityAvatar": "Show Community Avatar",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Whether to show the community avatar for post bodies"
-  },
   "postBodyShowCommunityInstance": "Show Community Instance",
   "@postBodyShowCommunityInstance": {
     "description": "Whether to show the community instance for post bodies"

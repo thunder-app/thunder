@@ -535,7 +535,7 @@ extension LocalizationExt on AppLocalizations {
       'showCrossPosts': showCrossPosts,
       'postBodyShowUserInstance': postBodyShowUserInstance,
       'postBodyShowCommunityInstance': postBodyShowCommunityInstance,
-      'postBodyShowCommunityAvatar': postBodyShowCommunityAvatar,
+      'postBodyShowCommunityAvatar': showPostCommunityIcons,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
       'showHiddenPosts': showHiddenPosts,
