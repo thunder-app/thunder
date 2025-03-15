@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:intl/intl.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +18,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/post.dart';
@@ -498,51 +498,50 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return Container();
 
-                        return ListView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                (useCompactView)
-                                    ? IgnorePointer(
-                                        child: PostCardViewCompact(
-                                          postViewMedia: snapshot.data![index]!,
-                                          feedType: FeedType.general,
-                                          isUserLoggedIn: true,
-                                          listingType: ListingType.all,
-                                          indicateRead: dimReadPosts,
-                                          isLastTapped: false,
+                        return BlocProvider(
+                          create: (context) => FeedBloc(lemmyClient: LemmyClient()),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  (useCompactView)
+                                      ? IgnorePointer(
+                                          child: PostCardViewCompact(
+                                            postViewMedia: snapshot.data![index]!,
+                                            isUserLoggedIn: true,
+                                            indicateRead: dimReadPosts,
+                                            isLastTapped: false,
+                                          ),
+                                        )
+                                      : IgnorePointer(
+                                          child: PostCardViewComfortable(
+                                            postViewMedia: snapshot.data![index]!,
+                                            hideThumbnails: hideThumbnails,
+                                            showPostAuthor: showPostAuthor,
+                                            hideNsfwPreviews: hideNsfwPreviews,
+                                            markPostReadOnMediaView: false,
+                                            isUserLoggedIn: true,
+                                            indicateRead: dimReadPosts,
+                                            edgeToEdgeImages: showEdgeToEdgeImages,
+                                            showTitleFirst: showTitleFirst,
+                                            showFullHeightImages: showFullHeightImages,
+                                            showVoteActions: showVoteActions,
+                                            showSaveAction: showSaveAction,
+                                            showTextContent: showTextContent,
+                                            onVoteAction: (voteType) {},
+                                            onSaveAction: (saved) {},
+                                            isLastTapped: false,
+                                          ),
                                         ),
-                                      )
-                                    : IgnorePointer(
-                                        child: PostCardViewComfortable(
-                                          postViewMedia: snapshot.data![index]!,
-                                          hideThumbnails: hideThumbnails,
-                                          showPostAuthor: showPostAuthor,
-                                          hideNsfwPreviews: hideNsfwPreviews,
-                                          feedType: FeedType.general,
-                                          markPostReadOnMediaView: false,
-                                          isUserLoggedIn: true,
-                                          listingType: ListingType.all,
-                                          indicateRead: dimReadPosts,
-                                          edgeToEdgeImages: showEdgeToEdgeImages,
-                                          showTitleFirst: showTitleFirst,
-                                          showFullHeightImages: showFullHeightImages,
-                                          showVoteActions: showVoteActions,
-                                          showSaveAction: showSaveAction,
-                                          showTextContent: showTextContent,
-                                          onVoteAction: (voteType) {},
-                                          onSaveAction: (saved) {},
-                                          isLastTapped: false,
-                                        ),
-                                      ),
-                                const FeedCardDivider(),
-                              ],
-                            );
-                          },
-                          itemCount: snapshot.data!.length,
+                                  const FeedCardDivider(),
+                                ],
+                              );
+                            },
+                            itemCount: snapshot.data!.length,
+                          ),
                         );
                       },
                     ),

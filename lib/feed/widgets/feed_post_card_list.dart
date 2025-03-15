@@ -93,7 +93,6 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
     Widget child = PostCard(
       postViewMedia: postViewMedia,
-      feedType: feedType,
       onVoteAction: (int voteType) {
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, value: voteType));
       },
@@ -120,7 +119,6 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
       onTap: () {
         if (lastTappedPost != post.id) setState(() => lastTappedPost = post.id);
       },
-      listingType: postListingType,
       indicateRead: dim,
       isLastTapped: lastTappedPost == post.id,
       disableSwiping: widget.disableSwiping,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -8,7 +7,6 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/widgets/post_card_title.dart';
 import 'package:thunder/shared/media/compact_thumbnail_preview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -18,14 +16,8 @@ class PostCardViewCompact extends StatelessWidget {
   /// The associated post information to display in the card.
   final PostViewMedia postViewMedia;
 
-  /// The type of feed that the post is in.
-  final FeedType? feedType;
-
   /// Determines whether the user is logged in or not.
   final bool isUserLoggedIn;
-
-  /// The type of listing that the post is in.
-  final ListingType? listingType;
 
   /// The callback function to navigate to the post.
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
@@ -42,9 +34,7 @@ class PostCardViewCompact extends StatelessWidget {
   const PostCardViewCompact({
     super.key,
     required this.postViewMedia,
-    required this.feedType,
     required this.isUserLoggedIn,
-    required this.listingType,
     this.navigateToPost,
     this.indicateRead,
     this.showMedia = true,
@@ -87,7 +77,7 @@ class PostCardViewCompact extends StatelessWidget {
 
     return Container(
       color: getContainerColor(context, dim: dim),
-      padding: showMedia ? const EdgeInsets.only(bottom: 8.0, top: 6) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
+      padding: showMedia ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

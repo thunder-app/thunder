@@ -61,7 +61,7 @@ class PostCardTitle extends StatelessWidget {
     final theme = Theme.of(context);
 
     final textStyle = theme.textTheme.bodyMedium;
-    final fontSize = textStyle?.fontSize ?? 14.0;
+    final fontSize = (textStyle?.fontSize ?? 14.0) + 0.5;
 
     final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
 

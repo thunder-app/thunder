@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
@@ -14,7 +13,6 @@ import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -22,24 +20,42 @@ import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
 class PostCard extends StatefulWidget {
+  /// The associated post information to display in the card.
   final PostViewMedia postViewMedia;
-  final FeedType? feedType;
+
+  /// Determines whether the post should be dimmed or not. This is usually to indicate when a post has been read.
   final bool indicateRead;
+
+  /// Determines whether the post is the last tapped post. This is used to highlight the post.
   final bool isLastTapped;
-  final Function(int) onVoteAction;
-  final Function(bool) onSaveAction;
-  final Function(bool) onReadAction;
-  final Function(bool) onHideAction;
-  final Function(double) onUpAction;
-  final Function() onDownAction;
-  final Function() onTap;
-  final ListingType? listingType;
+
+  /// Determines whether the swipe gestures should be disabled or not.
   final bool disableSwiping;
+
+  /// The callback function when the user votes on a post.
+  final Function(int) onVoteAction;
+
+  /// The callback function when the user saves a post.
+  final Function(bool) onSaveAction;
+
+  /// The callback function when the user reads a post.
+  final Function(bool) onReadAction;
+
+  /// The callback function when the user hides a post.
+  final Function(bool) onHideAction;
+
+  /// The callback function when the user's finger is lifted off the screen.
+  final Function(double) onUpAction;
+
+  /// The callback function when the user's finger is placed on the screen.
+  final Function() onDownAction;
+
+  /// The callback function when the user taps on a post.
+  final Function() onTap;
 
   const PostCard({
     super.key,
     required this.postViewMedia,
-    required this.feedType,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
@@ -47,7 +63,6 @@ class PostCard extends StatefulWidget {
     required this.onUpAction,
     required this.onDownAction,
     required this.onTap,
-    required this.listingType,
     required this.indicateRead,
     required this.isLastTapped,
     this.disableSwiping = false,
@@ -82,6 +97,7 @@ class _PostCardState extends State<PostCard> {
   /// The vertical drag distance between moves
   double verticalDragDistance = 0;
 
+  /// The last timestamp of the pointer move event. This is used to debounce the pointer move event
   int _lastPointerMoveTimestamp = 0;
 
   @override
@@ -151,9 +167,7 @@ class _PostCardState extends State<PostCard> {
     Widget child = state.useCompactView
         ? PostCardViewCompact(
             postViewMedia: widget.postViewMedia,
-            feedType: widget.feedType,
             isUserLoggedIn: isUserLoggedIn,
-            listingType: widget.listingType,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
             showMedia: !state.hideThumbnails,
@@ -164,7 +178,6 @@ class _PostCardState extends State<PostCard> {
           )
         : PostCardViewComfortable(
             postViewMedia: widget.postViewMedia,
-            feedType: widget.feedType,
             hideThumbnails: state.hideThumbnails,
             hideNsfwPreviews: state.hideNsfwPreviews,
             markPostReadOnMediaView: state.markPostReadOnMediaView,
@@ -176,7 +189,6 @@ class _PostCardState extends State<PostCard> {
             showSaveAction: state.showSaveAction,
             showTextContent: state.showTextContent,
             isUserLoggedIn: isUserLoggedIn,
-            listingType: widget.listingType,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
             navigateToPost: ({PostViewMedia? postViewMedia}) async {

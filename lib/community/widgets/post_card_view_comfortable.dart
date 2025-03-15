@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/community/enums/community_action.dart';
@@ -31,7 +30,6 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
-  final FeedType? feedType;
   final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -39,7 +37,6 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
-  final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? indicateRead;
   final bool isLastTapped;
@@ -51,7 +48,6 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.feedType,
     required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -61,7 +57,6 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
-    required this.listingType,
     this.indicateRead,
     required this.isLastTapped,
     this.navigateToPost,
@@ -181,7 +176,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     spacing: 8.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PostCommunityAndAuthor(postView: postViewMedia.postView, dim: indicateRead && read),
+                      PostCommunityAndAuthor(postView: postViewMedia.postView, dim: dim),
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
                         score: counts.score,
