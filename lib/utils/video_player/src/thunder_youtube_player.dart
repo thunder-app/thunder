@@ -101,57 +101,53 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
           right: false,
           child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.arrow_back,
-                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        color: Colors.white.withValues(alpha: 0.90),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: IconButton(
-                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                      icon: Icon(
-                        Icons.open_in_browser_rounded,
-                        semanticLabel: GlobalContext.l10n.openInBrowser,
-                        color: Colors.white.withValues(alpha: 0.90),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Center(
                 child: ypf.YoutubePlayerBuilder(
                   player: ypf.YoutubePlayer(
                     aspectRatio: 16 / 10,
                     controller: _ypfController,
                     actionsPadding: const EdgeInsets.only(bottom: 8),
-                    topActions: [
-                      IconButton(
-                        onPressed: () {
-                          muted ? _ypfController.unMute() : _ypfController.mute();
-                          setState(() => muted = !muted);
-                        },
-                        icon: Icon(
-                          muted ? Icons.volume_off : Icons.volume_up,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
+                    topActions: [],
                   ),
                   builder: (context, player) => player,
                   onExitFullScreen: () {
                     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
                   },
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                      color: Colors.white.withValues(alpha: 0.90),
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      muted ? _ypfController.unMute() : _ypfController.mute();
+                      setState(() => muted = !muted);
+                    },
+                    icon: Icon(
+                      muted ? Icons.volume_off : Icons.volume_up,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                    icon: Icon(
+                      Icons.open_in_browser_rounded,
+                      semanticLabel: GlobalContext.l10n.openInBrowser,
+                      color: Colors.white.withValues(alpha: 0.90),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                ],
               ),
             ],
           ),
