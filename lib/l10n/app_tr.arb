@@ -1511,10 +1511,6 @@
   "@postBodySettingsDescription": {
     "description": "Gönderi gövde ayarlarının açıklaması"
   },
-  "postBodyShowCommunityAvatar": "Topluluk Avatarını Göster",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Gönderi içerikleri için topluluk avatarını gösterip göstermeme"
-  },
   "postBodyShowCommunityInstance": "Topluluk Örneğini Göster",
   "@postBodyShowCommunityInstance": {
     "description": "Gönderi gövdeleri için topluluk örneğini gösterip göstermeme"

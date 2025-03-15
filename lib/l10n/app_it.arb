@@ -1829,10 +1829,6 @@
   "@nsfw": {
     "description": "Short description for NSFW label"
   },
-  "postBodyShowCommunityAvatar": "Mostra Avatar Comunità",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Whether to show the community avatar for post bodies"
-  },
   "postCreatedSuccessfully": "Post creato con successo!",
   "@postCreatedSuccessfully": {
     "description": "Notifying the user that their post was created successfully"

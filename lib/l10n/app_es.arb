@@ -2069,10 +2069,6 @@
   "@nsfw": {
     "description": "Short description for NSFW label"
   },
-  "postBodyShowCommunityAvatar": "Mostrar avatar de la comunidad",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Whether to show the community avatar for post bodies"
-  },
   "pushNotification": "Notificaciones Push",
   "@pushNotification": {
     "description": "Setting for push notifications"

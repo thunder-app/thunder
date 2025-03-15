@@ -2473,10 +2473,6 @@
   "@postBodySettings": {
     "description": "Settings heading for post body settings"
   },
-  "postBodyShowCommunityAvatar": "显示社区头像",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Whether to show the community avatar for post bodies"
-  },
   "postBodyViewType": "帖子内容视图类型",
   "@postBodyViewType": {
     "description": "Setting name for the post body view type setting"

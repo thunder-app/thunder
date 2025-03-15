@@ -1621,10 +1621,6 @@
   "@markAsRead": {
     "description": "Label for the action to mark a message as read"
   },
-  "postBodyShowCommunityAvatar": "Community-Avatar anzeigen",
-  "@postBodyShowCommunityAvatar": {
-    "description": "Whether to show the community avatar for post bodies"
-  },
   "postSwipeGesturesHint": "Möchtest du stattdessen Buttons verwenden? Ändere in den allgemeinen Einstellungen, welche Buttons auf den Karten erscheinen.",
   "@postSwipeGesturesHint": {},
   "removeAccount": "Konto löschen",
