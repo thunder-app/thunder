@@ -71,7 +71,6 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final showThumbnailPreviewOnRight = context.select((ThunderBloc bloc) => bloc.state.showThumbnailPreviewOnRight);
     final showTextPostIndicator = context.select((ThunderBloc bloc) => bloc.state.showTextPostIndicator);
-    final showCommunitySubscription = isUserLoggedIn && (listingType == ListingType.all || listingType == ListingType.local) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed;
 
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
 
@@ -83,8 +82,6 @@ class PostCardViewCompact extends StatelessWidget {
     final saved = postViewMedia.postView.saved;
     final locked = postViewMedia.postView.post.locked;
     final pinned = postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal;
-
-    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && read ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
 
     final dim = indicateRead && read;
 
@@ -112,15 +109,7 @@ class PostCardViewCompact extends StatelessWidget {
                   removed: removed,
                   dim: dim,
                 ),
-                PostCommunityAndAuthor(
-                  compactMode: true,
-                  showCommunityIcons: false,
-                  feedType: feedType,
-                  postView: postViewMedia.postView,
-                  communityColorTransformation: communityAndAuthorColorTransformation,
-                  authorColorTransformation: communityAndAuthorColorTransformation,
-                  showCommunitySubscription: showCommunitySubscription,
-                ),
+                PostCommunityAndAuthor(postView: postViewMedia.postView, dim: dim),
                 PostCardMetadata(
                   postCardViewType: ViewMode.compact,
                   score: postViewMedia.postView.counts.score,

@@ -547,114 +547,170 @@ class CrossPostMetaData extends StatelessWidget {
 }
 
 class PostCommunityAndAuthor extends StatelessWidget {
-  const PostCommunityAndAuthor({
+  const PostCommunityAndAuthor({super.key, required this.postView, this.dim});
+
+  /// The post view to display the community and author information for
+  final PostView postView;
+
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool? dim;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.select((ThunderBloc bloc) => (bloc.state.showPostAuthor, bloc.state.showCommunityIcons));
+    final showPostAuthor = state.$1;
+    final showCommunityIcons = state.$2;
+
+    final feedType = context.select((FeedBloc bloc) => bloc.state.feedType);
+    final showUsername = (showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
+    final showCommunityName = feedType != FeedType.community;
+
+    final dim = this.dim ?? false;
+
+    return Row(
+      spacing: 6.0,
+      children: [
+        if (showCommunityIcons)
+          GestureDetector(
+            child: CommunityAvatar(community: postView.community, radius: 14),
+            onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
+          ),
+        if (showCommunityName && showUsername)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommunityPostCardMetadata(
+                communityName: postView.community.name,
+                displayName: postView.community.title,
+                actorId: postView.community.actorId,
+                subscribed: postView.subscribed != SubscribedType.notSubscribed,
+                dim: dim,
+              ),
+              UserPostCardMetadata(
+                username: postView.creator.name,
+                displayName: postView.creator.displayName,
+                actorId: postView.creator.actorId,
+                dim: dim,
+              ),
+            ],
+          )
+        else if (showCommunityName)
+          CommunityPostCardMetadata(
+            communityName: postView.community.name,
+            displayName: postView.community.title,
+            actorId: postView.community.actorId,
+            subscribed: postView.subscribed != SubscribedType.notSubscribed,
+            dim: dim,
+          )
+        else if (showUsername)
+          UserPostCardMetadata(
+            username: postView.creator.name,
+            displayName: postView.creator.displayName,
+            actorId: postView.creator.actorId,
+            dim: dim,
+          ),
+      ],
+    );
+  }
+}
+
+class CommunityPostCardMetadata extends StatelessWidget {
+  const CommunityPostCardMetadata({
     super.key,
-    required this.postView,
-    required this.showCommunityIcons,
-    required this.feedType,
-    this.authorColorTransformation,
-    this.communityColorTransformation,
-    required this.compactMode,
-    required this.showCommunitySubscription,
+    this.communityName,
+    this.displayName,
+    this.actorId,
+    required this.dim,
+    required this.subscribed,
   });
 
-  final bool showCommunityIcons;
-  final FeedType? feedType;
-  final bool compactMode;
-  final PostView postView;
-  final Color? Function(Color?)? authorColorTransformation;
-  final Color? Function(Color?)? communityColorTransformation;
-  final bool showCommunitySubscription;
+  /// The name of the community
+  final String? communityName;
+
+  /// The display name of the community
+  final String? displayName;
+
+  /// The actor ID of the community (e.g., community URL)
+  final String? actorId;
+
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
+
+  /// Whether the user is subscribed to the community
+  final bool subscribed;
+
+  Color? _transformColor(Color? color) => dim ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
-      final bool showUsername = (state.showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
-      final bool showCommunityName = feedType != FeedType.community;
+    final thunderState = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final postListingType = context.select((FeedBloc bloc) => bloc.state.postListingType);
+    final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 
-      return Row(
-        children: [
-          if (showCommunityIcons)
-            GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: CommunityAvatar(community: postView.community, radius: 14),
-              ),
-              onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
-            ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
-              child: Wrap(
-                direction: Axis.horizontal,
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.end,
-                children: [
-                  if (showUsername)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        InkWell(
-                          borderRadius: BorderRadius.circular(6),
-                          onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.user, userId: postView.creator.id),
-                          child: UserFullNameWidget(
-                            context,
-                            postView.creator.name,
-                            postView.creator.displayName,
-                            fetchInstanceNameFromUrl(postView.creator.actorId),
-                            includeInstance: state.postShowUserInstance,
-                            fontScale: state.metadataFontSizeScale,
-                            transformColor: authorColorTransformation,
-                          ),
-                        ),
-                        if (showUsername && showCommunityName)
-                          ScalableText(
-                            ' to ',
-                            fontScale: state.metadataFontSizeScale,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                            ),
-                          ),
-                      ],
-                    ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(6),
-                    onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (showCommunityName)
-                          CommunityFullNameWidget(
-                            context,
-                            postView.community.name,
-                            postView.community.title,
-                            fetchInstanceNameFromUrl(postView.community.actorId),
-                            fontScale: state.metadataFontSizeScale,
-                            transformColor: communityColorTransformation,
-                          ),
-                        if (showCommunitySubscription)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 3,
-                              left: 4,
-                            ),
-                            child: Icon(
-                              Icons.playlist_add_check_rounded,
-                              size: 16.0,
-                              color: communityColorTransformation?.call(theme.textTheme.bodyMedium?.color),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    });
+    final showCommunitySubscription = (postListingType == ListingType.all || postListingType == ListingType.local) && subscribed == true;
+
+    Widget child = CommunityFullNameWidget(
+      context,
+      communityName,
+      displayName,
+      instanceName,
+      fontScale: thunderState,
+      transformColor: _transformColor,
+    );
+
+    if (!showCommunitySubscription) return child;
+
+    return Row(
+      spacing: 4.0,
+      children: [
+        child,
+        Icon(Icons.playlist_add_check_rounded, size: 16.0, color: _transformColor(theme.textTheme.bodyMedium?.color)),
+      ],
+    );
+  }
+}
+
+class UserPostCardMetadata extends StatelessWidget {
+  const UserPostCardMetadata({
+    super.key,
+    this.username,
+    this.displayName,
+    this.actorId,
+    required this.dim,
+  });
+
+  /// The username of the user
+  final String? username;
+
+  /// The display name of the user
+  final String? displayName;
+
+  /// The actor ID of the user (e.g., user URL)
+  final String? actorId;
+
+  /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
+  final bool dim;
+
+  Color? _transformColor(Color? color) => dim ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.select((ThunderBloc bloc) => (bloc.state.postShowUserInstance, bloc.state.metadataFontSizeScale));
+
+    final postShowUserInstance = state.$1;
+    final metadataFontSizeScale = state.$2;
+    final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
+
+    return UserFullNameWidget(
+      context,
+      username,
+      displayName,
+      instanceName,
+      includeInstance: postShowUserInstance,
+      fontScale: metadataFontSizeScale,
+      transformColor: _transformColor,
+    );
   }
 }

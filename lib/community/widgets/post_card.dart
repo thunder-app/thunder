@@ -26,7 +26,6 @@ class PostCard extends StatefulWidget {
   final FeedType? feedType;
   final bool indicateRead;
   final bool isLastTapped;
-
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
@@ -34,9 +33,7 @@ class PostCard extends StatefulWidget {
   final Function(double) onUpAction;
   final Function() onDownAction;
   final Function() onTap;
-
   final ListingType? listingType;
-
   final bool disableSwiping;
 
   const PostCard({
@@ -71,10 +68,10 @@ class _PostCardState extends State<PostCard> {
   DismissDirection? dismissDirection;
 
   /// The first action threshold to trigger the left or right actions (upvote/reply)
-  double firstActionThreshold = 0.15;
+  static const double firstActionThreshold = 0.15;
 
   /// The second action threshold to trigger the left or right actions (downvote/save)
-  double secondActionThreshold = 0.35;
+  static const double secondActionThreshold = 0.35;
 
   /// User Settings
   bool isUserLoggedIn = false;
@@ -85,241 +82,266 @@ class _PostCardState extends State<PostCard> {
   /// The vertical drag distance between moves
   double verticalDragDistance = 0;
 
+  int _lastPointerMoveTimestamp = 0;
+
   @override
   void initState() {
     super.initState();
-
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+  }
+
+  void _updateOverridingSwipe(bool override) {
+    if (isOverridingSwipeGestureAction == override) return;
+    setState(() => isOverridingSwipeGestureAction = override);
+  }
+
+  void _onPointerUp() {
+    final int? myVote = widget.postViewMedia.postView.myVote;
+    final bool saved = widget.postViewMedia.postView.saved;
+    final bool read = widget.postViewMedia.postView.read;
+    final bool? hidden = widget.postViewMedia.postView.hidden;
+
+    _updateOverridingSwipe(false);
+
+    if (swipeAction != null && swipeAction != SwipeAction.none) {
+      triggerPostAction(
+        context: context,
+        swipeAction: swipeAction,
+        onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
+        onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
+        onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
+        onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
+        voteType: myVote ?? 0,
+        saved: saved,
+        read: read,
+        hidden: hidden,
+        postViewMedia: widget.postViewMedia,
+      );
+    }
+
+    widget.onUpAction(verticalDragDistance);
+  }
+
+  void _onPointerMove(PointerMoveEvent event, DismissDirection currentSwipeDirection) {
+    // Only process every 16ms (roughly 60fps)
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _lastPointerMoveTimestamp < 16) return;
+    _lastPointerMoveTimestamp = now;
+
+    verticalDragDistance = event.delta.dy;
+
+    if (currentSwipeDirection != DismissDirection.endToStart) return;
+
+    final horizontalDragDistance = event.delta.dx;
+    final isSwipingRight = horizontalDragDistance > 0;
+
+    if (isSwipingRight && !isOverridingSwipeGestureAction && dismissThreshold == 0.0) {
+      _updateOverridingSwipe(true);
+    } else if (!isSwipingRight && isOverridingSwipeGestureAction) {
+      _updateOverridingSwipe(false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState state = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderBloc>().state;
+    final currentSwipeDirection = determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping);
 
-    int? myVote = widget.postViewMedia.postView.myVote;
-    bool saved = widget.postViewMedia.postView.saved;
-    bool read = widget.postViewMedia.postView.read;
-    bool? hidden = widget.postViewMedia.postView.hidden;
+    // Determine which post card view to use based on the settings
+    Widget child = state.useCompactView
+        ? PostCardViewCompact(
+            postViewMedia: widget.postViewMedia,
+            feedType: widget.feedType,
+            isUserLoggedIn: isUserLoggedIn,
+            listingType: widget.listingType,
+            indicateRead: widget.indicateRead,
+            isLastTapped: widget.isLastTapped,
+            showMedia: !state.hideThumbnails,
+            navigateToPost: ({PostViewMedia? postViewMedia}) async {
+              widget.onTap();
+              await navigateToPost(context, postViewMedia: widget.postViewMedia);
+            },
+          )
+        : PostCardViewComfortable(
+            postViewMedia: widget.postViewMedia,
+            feedType: widget.feedType,
+            hideThumbnails: state.hideThumbnails,
+            hideNsfwPreviews: state.hideNsfwPreviews,
+            markPostReadOnMediaView: state.markPostReadOnMediaView,
+            showPostAuthor: state.showPostAuthor,
+            showFullHeightImages: state.showFullHeightImages,
+            edgeToEdgeImages: state.showEdgeToEdgeImages,
+            showTitleFirst: state.showTitleFirst,
+            showVoteActions: state.showVoteActions,
+            showSaveAction: state.showSaveAction,
+            showTextContent: state.showTextContent,
+            isUserLoggedIn: isUserLoggedIn,
+            listingType: widget.listingType,
+            indicateRead: widget.indicateRead,
+            isLastTapped: widget.isLastTapped,
+            navigateToPost: ({PostViewMedia? postViewMedia}) async {
+              widget.onTap();
+              await navigateToPost(context, postViewMedia: widget.postViewMedia);
+            },
+            onVoteAction: widget.onVoteAction,
+            onSaveAction: widget.onSaveAction,
+          );
+
+    // Wrap the post card in an InkWell to handle taps and long presses
+    child = RepaintBoundary(
+      child: InkWell(
+        onTap: () async {
+          widget.onTap();
+          await navigateToPost(context, postViewMedia: widget.postViewMedia);
+        },
+        onLongPress: () => showPostActionBottomModalSheet(
+          context,
+          widget.postViewMedia,
+          onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+            if (postAction == null && userAction == null && communityAction == null) return;
+
+            final post = postViewMedia.postView.post;
+            final creator = postViewMedia.postView.creator;
+            final community = postViewMedia.postView.community;
+
+            if (postAction == PostAction.hide) {
+              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
+            }
+
+            if (userAction == UserAction.block) {
+              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: creator.id));
+            }
+
+            if (communityAction == CommunityAction.block) {
+              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: community.id));
+            }
+          },
+        ),
+        child: child,
+      ),
+    );
+
+    // Wrap the post card in a Dismissible to handle swipe actions if swipe gestures are enabled
+    if (currentSwipeDirection != DismissDirection.none) {
+      final read = widget.postViewMedia.postView.read;
+      final hidden = widget.postViewMedia.postView.hidden;
+
+      final leftPrimary = state.leftPrimaryPostGesture;
+      final leftSecondary = state.leftSecondaryPostGesture;
+      final rightPrimary = state.rightPrimaryPostGesture;
+      final rightSecondary = state.rightSecondaryPostGesture;
+
+      bool shouldTriggerHaptic = false;
+
+      child = Dismissible(
+        key: ObjectKey(widget.postViewMedia.postView.post.id),
+        direction: isOverridingSwipeGestureAction ? DismissDirection.none : currentSwipeDirection,
+        resizeDuration: Duration.zero,
+        dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+        confirmDismiss: (_) async => false,
+        onUpdate: (details) {
+          if ((dismissThreshold - details.progress).abs() < 0.01) return;
+
+          SwipeAction? updatedAction;
+          final bool isStartToEnd = details.direction == DismissDirection.startToEnd;
+
+          if (details.progress > firstActionThreshold) {
+            if (isStartToEnd) {
+              updatedAction = details.progress < secondActionThreshold ? leftPrimary : (leftSecondary != SwipeAction.none ? leftSecondary : leftPrimary);
+            } else {
+              updatedAction = details.progress < secondActionThreshold ? rightPrimary : (rightSecondary != SwipeAction.none ? rightSecondary : rightPrimary);
+            }
+          }
+
+          if (updatedAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+            updatedAction = SwipeAction.none;
+          }
+
+          shouldTriggerHaptic = updatedAction != swipeAction && updatedAction != null;
+
+          setState(() {
+            dismissThreshold = details.progress;
+            dismissDirection = details.direction;
+            swipeAction = updatedAction;
+          });
+
+          if (shouldTriggerHaptic) HapticFeedback.mediumImpact();
+        },
+        background: PostCardActionBackground(
+          swipeAction: swipeAction,
+          dismissThreshold: dismissThreshold,
+          firstActionThreshold: firstActionThreshold,
+          dismissDirection: dismissDirection ?? DismissDirection.startToEnd,
+          read: read,
+          hidden: hidden ?? false,
+        ),
+        child: child,
+      );
+    }
 
     return Listener(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (PointerDownEvent event) {
-        widget.onDownAction();
-      },
-      onPointerUp: (event) {
-        setState(() => isOverridingSwipeGestureAction = false);
-
-        if (swipeAction != null && swipeAction != SwipeAction.none) {
-          triggerPostAction(
-            context: context,
-            swipeAction: swipeAction,
-            onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-            onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
-            onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
-            onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
-            voteType: myVote ?? 0,
-            saved: saved,
-            read: read,
-            hidden: hidden,
-            postViewMedia: widget.postViewMedia,
-          );
-        }
-
-        widget.onUpAction(verticalDragDistance);
-      },
-      onPointerCancel: (event) => {},
-      onPointerMove: (PointerMoveEvent event) {
-        // Get the horizontal drag distance
-        double horizontalDragDistance = event.delta.dx;
-
-        // Set the vertical drag distance
-        verticalDragDistance = event.delta.dy;
-
-        // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
-        // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
-        if (horizontalDragDistance > 0) {
-          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart &&
-              isOverridingSwipeGestureAction == false &&
-              dismissThreshold == 0.0) {
-            setState(() => isOverridingSwipeGestureAction = true);
-          }
-        } else {
-          if (determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
-            setState(() => isOverridingSwipeGestureAction = false);
-          }
-        }
-      },
+      onPointerDown: (_) => widget.onDownAction(),
+      onPointerUp: (_) => _onPointerUp,
+      onPointerMove: (event) => _onPointerMove(event, currentSwipeDirection),
       child: Column(
-        children: [
-          Dismissible(
-            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping),
-            key: ObjectKey(widget.postViewMedia.postView.post.id),
-            resizeDuration: Duration.zero,
-            dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-            confirmDismiss: (DismissDirection direction) async {
-              return false;
-            },
-            onUpdate: (DismissUpdateDetails details) {
-              SwipeAction? updatedSwipeAction;
+        mainAxisSize: MainAxisSize.min,
+        children: [child, const FeedCardDivider()],
+      ),
+    );
+  }
+}
 
-              if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                updatedSwipeAction = state.leftPrimaryPostGesture;
+/// Determines the appropriate color and icon for the post background swipe action
+class PostCardActionBackground extends StatelessWidget {
+  const PostCardActionBackground({
+    super.key,
+    this.swipeAction,
+    required this.firstActionThreshold,
+    required this.dismissThreshold,
+    required this.read,
+    required this.hidden,
+    required this.dismissDirection,
+  });
 
-                // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-                  updatedSwipeAction = SwipeAction.none;
-                }
+  /// The [SwipeAction] to be performed
+  final SwipeAction? swipeAction;
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                if (state.leftSecondaryPostGesture != SwipeAction.none) {
-                  updatedSwipeAction = state.leftSecondaryPostGesture;
-                } else {
-                  updatedSwipeAction = state.leftPrimaryPostGesture;
-                }
+  /// The threshold at which the first action should be triggered
+  final double firstActionThreshold;
 
-                // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-                  updatedSwipeAction = SwipeAction.none;
-                }
+  /// The current threshold of the swipe action
+  final double dismissThreshold;
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                updatedSwipeAction = state.rightPrimaryPostGesture;
+  /// Whether the post is read
+  final bool read;
 
-                // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-                  updatedSwipeAction = SwipeAction.none;
-                }
+  /// Whether the post is hidden
+  final bool hidden;
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                if (state.rightSecondaryPostGesture != SwipeAction.none) {
-                  updatedSwipeAction = state.rightSecondaryPostGesture;
-                } else {
-                  updatedSwipeAction = state.rightPrimaryPostGesture;
-                }
+  /// The direction of the swipe action
+  final DismissDirection dismissDirection;
 
-                // Change the hide action to none of not supported by instance
-                if (updatedSwipeAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-                  updatedSwipeAction = SwipeAction.none;
-                }
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
+    final leftPrimaryPostGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.leftPrimaryPostGesture);
+    final rightPrimaryPostGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.rightPrimaryPostGesture);
 
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else {
-                updatedSwipeAction = null;
-              }
+    final alignment = dismissDirection == DismissDirection.startToEnd ? Alignment.centerLeft : Alignment.centerRight;
+    final defaultColor = dismissDirection == DismissDirection.startToEnd ? leftPrimaryPostGesture.getColor(context) : rightPrimaryPostGesture.getColor(context);
 
-              setState(() {
-                dismissThreshold = details.progress;
-                dismissDirection = details.direction;
-                swipeAction = updatedSwipeAction;
-              });
-            },
-            background: dismissDirection == DismissDirection.startToEnd
-                ? AnimatedContainer(
-                    alignment: Alignment.centerLeft,
-                    color: swipeAction == null
-                        ? state.leftPrimaryPostGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
-                        : (swipeAction ?? SwipeAction.none).getColor(context),
-                    duration: const Duration(milliseconds: 200),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
-                    ),
-                  )
-                : AnimatedContainer(
-                    alignment: Alignment.centerRight,
-                    color: swipeAction == null
-                        ? state.rightPrimaryPostGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
-                        : (swipeAction ?? SwipeAction.none).getColor(context),
-                    duration: const Duration(milliseconds: 200),
-                    child: SizedBox(
-                      width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read, hidden: hidden)),
-                    ),
-                  ),
-            child: InkWell(
-              child: state.useCompactView
-                  ? PostCardViewCompact(
-                      postViewMedia: widget.postViewMedia,
-                      feedType: widget.feedType,
-                      isUserLoggedIn: isUserLoggedIn,
-                      listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async {
-                        widget.onTap.call();
-                        await navigateToPost(context, postViewMedia: widget.postViewMedia);
-                      },
-                      indicateRead: widget.indicateRead,
-                      showMedia: !state.hideThumbnails,
-                      isLastTapped: widget.isLastTapped,
-                    )
-                  : PostCardViewComfortable(
-                      postViewMedia: widget.postViewMedia,
-                      hideThumbnails: state.hideThumbnails,
-                      hideNsfwPreviews: state.hideNsfwPreviews,
-                      markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      feedType: widget.feedType,
-                      showPostAuthor: state.showPostAuthor,
-                      showFullHeightImages: state.showFullHeightImages,
-                      edgeToEdgeImages: state.showEdgeToEdgeImages,
-                      showTitleFirst: state.showTitleFirst,
-                      showVoteActions: state.showVoteActions,
-                      showSaveAction: state.showSaveAction,
-                      showCommunityIcons: state.showCommunityIcons,
-                      showTextContent: state.showTextContent,
-                      isUserLoggedIn: isUserLoggedIn,
-                      onVoteAction: widget.onVoteAction,
-                      onSaveAction: widget.onSaveAction,
-                      listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async {
-                        widget.onTap.call();
-                        await navigateToPost(context, postViewMedia: widget.postViewMedia);
-                      },
-                      indicateRead: widget.indicateRead,
-                      isLastTapped: widget.isLastTapped,
-                    ),
-              onLongPress: () => showPostActionBottomModalSheet(
-                context,
-                widget.postViewMedia,
-                onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
-                  if (postAction == null && userAction == null && communityAction == null) return;
+    final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
+    final computedWidth = width * (tabletMode ? 0.5 : 1) * dismissThreshold;
 
-                  switch (postAction) {
-                    case PostAction.hide:
-                      context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
-                      break;
-                    default:
-                      break;
-                  }
-
-                  switch (userAction) {
-                    case UserAction.block:
-                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
-                      break;
-                    default:
-                      break;
-                  }
-
-                  switch (communityAction) {
-                    case CommunityAction.block:
-                      context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
-                      break;
-                    default:
-                      break;
-                  }
-                },
-              ),
-              onTap: () async {
-                widget.onTap.call();
-                PostView postView = widget.postViewMedia.postView;
-                if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
-                return await navigateToPost(context, postViewMedia: widget.postViewMedia);
-              },
-            ),
-          ),
-          const FeedCardDivider(),
-        ],
+    return AnimatedContainer(
+      alignment: alignment,
+      duration: const Duration(milliseconds: 200),
+      color: backgroundColor,
+      child: SizedBox(
+        width: computedWidth,
+        child: swipeAction != null ? Icon(swipeAction!.getIcon(read: read, hidden: hidden)) : const SizedBox.shrink(),
       ),
     );
   }

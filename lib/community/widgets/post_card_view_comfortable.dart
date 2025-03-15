@@ -36,7 +36,6 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showFullHeightImages;
   final bool showVoteActions;
   final bool showSaveAction;
-  final bool showCommunityIcons;
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
@@ -57,7 +56,6 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.showFullHeightImages,
     required this.showVoteActions,
     required this.showSaveAction,
-    required this.showCommunityIcons,
     required this.showTextContent,
     required this.isUserLoggedIn,
     required this.onVoteAction,
@@ -95,7 +93,6 @@ class PostCardViewComfortable extends StatelessWidget {
     final counts = postView.counts;
     final media = postViewMedia.media.firstOrNull;
 
-    final showCommunitySubscription = isUserLoggedIn && (listingType == ListingType.all || listingType == ListingType.local) && postView.subscribed != SubscribedType.notSubscribed;
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
     final textContent = post.body ?? "";
     final readColor = indicateRead && postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
@@ -127,8 +124,6 @@ class PostCardViewComfortable extends StatelessWidget {
     final saved = postView.saved;
     final locked = post.locked;
     final pinned = post.featuredCommunity || post.featuredLocal;
-
-    Color? communityAndAuthorColorTransformation(Color? color) => indicateRead && read ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
 
     final dim = indicateRead && read;
 
@@ -186,15 +181,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     spacing: 8.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PostCommunityAndAuthor(
-                        showCommunityIcons: showCommunityIcons,
-                        feedType: feedType,
-                        postView: postViewMedia.postView,
-                        authorColorTransformation: communityAndAuthorColorTransformation,
-                        communityColorTransformation: communityAndAuthorColorTransformation,
-                        compactMode: false,
-                        showCommunitySubscription: showCommunitySubscription,
-                      ),
+                      PostCommunityAndAuthor(postView: postViewMedia.postView, dim: indicateRead && read),
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
                         score: counts.score,
