@@ -294,7 +294,7 @@ class _PostCardState extends State<PostCard> {
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (_) => widget.onDownAction(),
-      onPointerUp: (_) => _onPointerUp,
+      onPointerUp: (_) => _onPointerUp(),
       onPointerMove: (event) => _onPointerMove(event, currentSwipeDirection),
       child: Column(
         mainAxisSize: MainAxisSize.min,
