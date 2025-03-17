@@ -74,7 +74,8 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
                         Align(
                           alignment: Alignment.center,
                           child: UserAvatar(
-                            person: person,
+                            name: person?.displayName ?? person?.name ?? '',
+                            icon: person?.avatar,
                           ),
                         ),
                         Material(

@@ -242,7 +242,8 @@ class CommunityModeratorList extends StatelessWidget {
                 child: Row(
                   children: [
                     UserAvatar(
-                      person: mods.moderator,
+                      name: mods.moderator.displayName ?? mods.moderator.name,
+                      icon: mods.moderator.avatar,
                       radius: 20.0,
                     ),
                     const SizedBox(width: 16.0),

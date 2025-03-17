@@ -65,7 +65,13 @@ class CommentHeader extends StatelessWidget {
                   children: [
                     UserChip(
                       person: comment.creator,
-                      personAvatar: UserAvatar(person: comment.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                      personAvatar: UserAvatar(
+                        name: comment.creator.displayName ?? comment.creator.name,
+                        icon: comment.creator.avatar,
+                        radius: 10,
+                        thumbnailSize: 20,
+                        format: 'png',
+                      ),
                       userGroups: userGroups,
                       includeInstance: state.commentShowUserInstance,
                       ignorePointerEvents: isHidden && collapseParentCommentOnGesture,

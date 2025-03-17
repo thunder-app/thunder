@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// A user avatar. Displays the associated user icon if available.
@@ -8,8 +7,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 /// Otherwise, displays the first letter of the user's display name.
 /// If no display name is available, displays the first letter of the user's username.
 class UserAvatar extends StatelessWidget {
-  /// The user information to display
-  final Person? person;
+  /// The name of the user
+  final String name;
+
+  /// The link to the user's icon
+  final String? icon;
 
   /// The radius of the avatar. Defaults to 16
   final double radius;
@@ -20,7 +22,14 @@ class UserAvatar extends StatelessWidget {
   /// The image format to request from the instance
   final String? format;
 
-  const UserAvatar({super.key, this.person, this.radius = 16.0, this.thumbnailSize, this.format});
+  const UserAvatar({
+    super.key,
+    required this.name,
+    this.icon,
+    this.radius = 16.0,
+    this.thumbnailSize,
+    this.format,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +39,27 @@ class UserAvatar extends StatelessWidget {
       backgroundColor: theme.colorScheme.secondaryContainer,
       maxRadius: radius,
       child: Text(
-        person?.displayName?.isNotEmpty == true
-            ? person!.displayName![0].toUpperCase()
-            : person?.name.isNotEmpty == true
-                ? person!.name[0].toUpperCase()
-                : '',
+        name[0].toUpperCase(),
         semanticsLabel: '',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: radius),
       ),
     );
 
-    if (person?.avatar?.isNotEmpty != true) return placeholderIcon;
+    if (icon?.isNotEmpty != true) return placeholderIcon;
 
-    Uri imageUri = Uri.parse(person!.avatar!);
+    Uri imageUri = Uri.parse(icon!);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
+
     Map<String, dynamic> queryParameters = {};
     if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
     if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
+
     Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
 
     return CachedNetworkImage(
       imageUrl: thumbnailUri.toString(),
       imageBuilder: (context, imageProvider) {
-        return CircleAvatar(
-          backgroundColor: Colors.transparent,
-          foregroundImage: imageProvider,
-          maxRadius: radius,
-        );
+        return CircleAvatar(backgroundColor: Colors.transparent, foregroundImage: imageProvider, maxRadius: radius);
       },
       placeholder: (context, url) => placeholderIcon,
       errorWidget: (context, url, error) => placeholderIcon,

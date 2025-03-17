@@ -163,7 +163,8 @@ class UserDrawerItem extends StatelessWidget {
         child: Row(
           children: [
             UserAvatar(
-              person: isLoggedIn ? accountState.personView?.person : null,
+              name: accountState.personView?.person.displayName ?? accountState.personView?.person.name ?? '',
+              icon: accountState.personView?.person.avatar,
               radius: 16.0,
             ),
             const SizedBox(width: 16.0),

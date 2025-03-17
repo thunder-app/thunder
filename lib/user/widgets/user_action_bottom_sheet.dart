@@ -192,7 +192,10 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
             children: [
               UserChip(
                 person: widget.user,
-                personAvatar: UserAvatar(person: widget.user),
+                personAvatar: UserAvatar(
+                  name: widget.user.displayName ?? widget.user.name,
+                  icon: widget.user.avatar,
+                ),
                 userGroups: const [UserType.op],
                 includeInstance: true,
               ),

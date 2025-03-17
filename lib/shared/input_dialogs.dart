@@ -91,7 +91,10 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: UserAvatar(person: payload.person),
+        leading: UserAvatar(
+          name: payload.person.displayName ?? payload.person.name,
+          icon: payload.person.avatar,
+        ),
         title: Text(
           payload.person.displayName ?? payload.person.name,
           maxLines: 1,

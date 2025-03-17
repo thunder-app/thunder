@@ -65,7 +65,10 @@ class _UserIndicatorState extends State<UserIndicator> {
             : person != null
                 ? Row(
                     children: [
-                      UserAvatar(person: person),
+                      UserAvatar(
+                        name: person?.displayName ?? person?.name ?? '',
+                        icon: person?.avatar,
+                      ),
                       const SizedBox(
                         width: 12.0,
                       ),

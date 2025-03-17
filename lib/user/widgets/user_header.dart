@@ -96,7 +96,8 @@ class _UserHeaderState extends State<UserHeader> {
                       Row(
                         children: [
                           UserAvatar(
-                            person: widget.getPersonDetailsResponse.personView.person,
+                            name: widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
+                            icon: widget.getPersonDetailsResponse.personView.person.avatar,
                             radius: 45.0,
                           ),
                           const SizedBox(width: 20.0),

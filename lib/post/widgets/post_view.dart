@@ -249,7 +249,13 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     children: [
                       UserChip(
                         person: postView.creator,
-                        personAvatar: UserAvatar(person: postView.creator, radius: 10, thumbnailSize: 20, format: 'png'),
+                        personAvatar: UserAvatar(
+                          name: postView.creator.displayName ?? postView.creator.name,
+                          icon: postView.creator.avatar,
+                          radius: 10,
+                          thumbnailSize: 20,
+                          format: 'png',
+                        ),
                         userGroups: userGroups,
                         includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),

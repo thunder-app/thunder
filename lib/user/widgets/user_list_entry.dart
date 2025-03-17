@@ -27,7 +27,11 @@ class UserListEntry extends StatelessWidget {
       )}',
       preferBelow: false,
       child: ListTile(
-        leading: UserAvatar(person: personView.person, radius: 25),
+        leading: UserAvatar(
+          name: personView.person.displayName ?? personView.person.name,
+          icon: personView.person.avatar,
+          radius: 25,
+        ),
         title: Text(
           personView.person.displayName ?? personView.person.name,
           overflow: TextOverflow.ellipsis,
