@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
@@ -162,9 +163,10 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final state = context.read<ThunderBloc>().state;
     final currentSwipeDirection = determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping);
+    final feedType = context.read<FeedBloc>().state.feedType;
 
     // Determine which post card view to use based on the settings
-    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal == true
+    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal == true || (feedType == FeedType.community && widget.postViewMedia.postView.post.featuredCommunity)
         ? PostCardViewCompact(
             postViewMedia: widget.postViewMedia,
             isUserLoggedIn: isUserLoggedIn,
