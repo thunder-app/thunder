@@ -164,7 +164,7 @@ class _PostCardState extends State<PostCard> {
     final currentSwipeDirection = determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping);
 
     // Determine which post card view to use based on the settings
-    Widget child = state.useCompactView
+    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal == true
         ? PostCardViewCompact(
             postViewMedia: widget.postViewMedia,
             isUserLoggedIn: isUserLoggedIn,
