@@ -14,7 +14,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/models/thunder_community.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';

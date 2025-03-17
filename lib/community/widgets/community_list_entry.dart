@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/thunder_community.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';

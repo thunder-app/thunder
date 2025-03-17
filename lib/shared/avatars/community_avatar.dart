@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:thunder/core/models/models.dart';
 
 /// A community avatar. Displays the associated community icon if available.
@@ -9,6 +10,7 @@ import 'package:thunder/core/models/models.dart';
 /// Otherwise, displays the first letter of the community title (display name).
 /// If no title is available, displays the first letter of the community name.
 class CommunityAvatar extends StatelessWidget {
+  /// The community information to display
   final ThunderCommunity community;
 
   /// The radius of the avatar. Defaults to 12
