@@ -16,6 +16,7 @@ import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -447,7 +448,11 @@ class _FeedViewState extends State<FeedView> {
                                 child: Column(
                                   children: [
                                     UserHeader(
-                                      getPersonDetailsResponse: state.fullPersonView!,
+                                      user: ThunderUser(
+                                        state.fullPersonView!.personView.person,
+                                        totalPosts: state.fullPersonView!.personView.counts.postCount,
+                                        totalComments: state.fullPersonView!.personView.counts.commentCount,
+                                      ),
                                       showUserSidebar: showUserSidebar,
                                       onToggle: (bool toggled) {
                                         // Scroll to top first before showing the sidebar

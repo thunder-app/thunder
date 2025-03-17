@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:thunder/core/models/models.dart';
@@ -14,14 +13,19 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatefulWidget {
+  /// User to display in the header
+  final ThunderUser user;
+
+  /// Whether the user sidebar is currently shown
   final bool showUserSidebar;
-  final GetPersonDetailsResponse getPersonDetailsResponse;
+
+  /// Callback function when the user sidebar is toggled
   final Function(bool toggled) onToggle;
 
   const UserHeader({
     super.key,
+    required this.user,
     required this.showUserSidebar,
-    required this.getPersonDetailsResponse,
     required this.onToggle,
   });
 
@@ -48,8 +52,8 @@ class _UserHeaderState extends State<UserHeader> {
         },
         child: Stack(
           children: [
-            if (widget.getPersonDetailsResponse.personView.person.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.surface)),
-            if (widget.getPersonDetailsResponse.personView.person.banner != null)
+            if (widget.user.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.surface)),
+            if (widget.user.banner != null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -59,7 +63,7 @@ class _UserHeaderState extends State<UserHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.getPersonDetailsResponse.personView.person.banner!),
+                            image: CachedNetworkImageProvider(widget.user.banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -68,7 +72,7 @@ class _UserHeaderState extends State<UserHeader> {
                   ],
                 ),
               ),
-            if (widget.getPersonDetailsResponse.personView.person.banner != null)
+            if (widget.user.banner != null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -96,7 +100,7 @@ class _UserHeaderState extends State<UserHeader> {
                     children: [
                       Row(
                         children: [
-                          UserAvatar(user: ThunderUser(widget.getPersonDetailsResponse.personView.person), radius: 45.0),
+                          UserAvatar(user: widget.user, radius: 45.0),
                           const SizedBox(width: 20.0),
                           Expanded(
                             child: Column(
@@ -104,38 +108,38 @@ class _UserHeaderState extends State<UserHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 AutoSizeText(
-                                  widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
+                                  widget.user.name,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                   maxLines: 1,
                                 ),
                                 UserFullNameWidget(
                                   context,
-                                  widget.getPersonDetailsResponse.personView.person.name,
-                                  widget.getPersonDetailsResponse.personView.person.displayName,
-                                  fetchInstanceNameFromUrl(widget.getPersonDetailsResponse.personView.person.actorId),
+                                  widget.user.username,
+                                  widget.user.displayName,
+                                  fetchInstanceNameFromUrl(widget.user.url),
                                   autoSize: true,
                                   // Override because we're showing display name above
                                   useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
                                 Wrap(
+                                  spacing: 8.0,
                                   children: [
-                                    IconText(
-                                      icon: const Icon(Icons.wysiwyg_rounded),
-                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.postCount),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    IconText(
-                                      icon: const Icon(Icons.chat_rounded),
-                                      text: formatNumberToK(widget.getPersonDetailsResponse.personView.counts.commentCount),
-                                    ),
-                                    if (feedBloc.state.feedType == FeedType.user) ...[
-                                      const SizedBox(width: 8.0),
+                                    if (widget.user.totalPosts != null)
+                                      IconText(
+                                        icon: const Icon(Icons.wysiwyg_rounded),
+                                        text: formatNumberToK(widget.user.totalPosts!),
+                                      ),
+                                    if (widget.user.totalComments != null)
+                                      IconText(
+                                        icon: const Icon(Icons.chat_rounded),
+                                        text: formatNumberToK(widget.user.totalComments!),
+                                      ),
+                                    if (feedBloc.state.feedType == FeedType.user)
                                       IconText(
                                         icon: Icon(getSortIcon(feedBloc.state)),
                                         text: getSortName(feedBloc.state),
                                       ),
-                                    ],
                                   ],
                                 ),
                               ],

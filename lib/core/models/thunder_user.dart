@@ -4,7 +4,13 @@ class ThunderUser {
   /// The Lemmy API model for the user.
   Person user;
 
-  ThunderUser(this.user);
+  /// The total number of posts that the user has made.
+  final int? totalPosts;
+
+  /// The total number of comments that the user has made.
+  final int? totalComments;
+
+  ThunderUser(this.user, {this.totalPosts, this.totalComments});
 
   /// The ID of the user.
   int get id => user.id;
@@ -20,6 +26,9 @@ class ThunderUser {
 
   /// The avatar of the user.
   String? get icon => user.avatar;
+
+  /// The banner of the user.
+  String? get banner => user.banner;
 
   /// The URL to the user's profile. This is generally associated with the ActivityPub actor URL.
   String get url => user.actorId;
