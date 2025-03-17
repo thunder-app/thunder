@@ -65,7 +65,7 @@ class CommentHeader extends StatelessWidget {
                 child: Row(
                   children: [
                     UserChip(
-                      person: comment.creator,
+                      user: ThunderUser(comment.creator),
                       personAvatar: UserAvatar(
                         user: ThunderUser(comment.creator),
                         radius: 10,

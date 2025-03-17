@@ -248,7 +248,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
-                        person: postView.creator,
+                        user: ThunderUser(postView.creator),
                         personAvatar: UserAvatar(
                           user: ThunderUser(postView.creator),
                           radius: 10,

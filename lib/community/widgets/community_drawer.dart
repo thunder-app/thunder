@@ -162,10 +162,11 @@ class UserDrawerItem extends StatelessWidget {
         onPressed: () => navigateToAccount?.call(),
         child: Row(
           children: [
-            UserAvatar(
-              user: ThunderUser(accountState.personView?.person),
-              radius: 16.0,
-            ),
+            if (accountState.personView?.person != null)
+              UserAvatar(
+                user: ThunderUser(accountState.personView!.person),
+                radius: 16.0,
+              ),
             const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

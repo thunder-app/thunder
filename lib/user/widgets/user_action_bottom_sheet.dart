@@ -192,7 +192,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               UserChip(
-                person: widget.user,
+                user: ThunderUser(widget.user),
                 personAvatar: UserAvatar(user: ThunderUser(widget.user)),
                 userGroups: const [UserType.op],
                 includeInstance: true,

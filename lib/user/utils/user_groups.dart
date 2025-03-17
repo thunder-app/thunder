@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';

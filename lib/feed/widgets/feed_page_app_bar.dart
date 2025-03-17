@@ -72,10 +72,11 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
                     label: MaterialLocalizations.of(context).openAppDrawerTooltip,
                     child: Stack(
                       children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: UserAvatar(user: ThunderUser(person)),
-                        ),
+                        if (person != null)
+                          Align(
+                            alignment: Alignment.center,
+                            child: UserAvatar(user: ThunderUser(person!)),
+                          ),
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
