@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -20,7 +20,11 @@ import 'package:thunder/utils/navigation.dart';
 class UserChip extends StatelessWidget {
   const UserChip({
     super.key,
-    required this.person,
+    required this.userId,
+    required this.created,
+    required this.username,
+    this.displayName,
+    required this.url,
     required this.personAvatar,
     this.includeInstance = false,
     this.userGroups = const [],
@@ -28,8 +32,20 @@ class UserChip extends StatelessWidget {
     this.ignorePointerEvents = false,
   });
 
-  /// The person that this chip represents.
-  final Person person;
+  /// The user id of the user
+  final int userId;
+
+  /// When the user was created
+  final DateTime created;
+
+  /// The username of the user
+  final String username;
+
+  /// The display name of the user
+  final String? displayName;
+
+  /// The URL of the user's profile
+  final String url;
 
   /// The avatar of the user
   final UserAvatar? personAvatar;
@@ -59,11 +75,11 @@ class UserChip extends StatelessWidget {
         excludeFromSemantics: true,
         message: '${generateUserFullName(
           context,
-          person.name,
-          person.displayName,
-          fetchInstanceNameFromUrl(person.actorId),
+          username,
+          displayName,
+          fetchInstanceNameFromUrl(url),
           useDisplayName: false,
-        )}${fetchUserGroupDescriptor(userGroups, person)}',
+        )}${fetchUserGroupDescriptor(userGroups, created)}',
         preferBelow: false,
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onSurface : Colors.transparent,
@@ -71,7 +87,7 @@ class UserChip extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(5),
             onTap: () {
-              navigateToFeedPage(context, feedType: FeedType.user, userId: person.id);
+              navigateToFeedPage(context, feedType: FeedType.user, userId: userId);
             },
             child: Padding(
               padding: userGroups.isNotEmpty ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
@@ -81,9 +97,9 @@ class UserChip extends StatelessWidget {
                   if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
-                    person.name,
-                    person.displayName,
-                    fetchInstanceNameFromUrl(person.actorId),
+                    username,
+                    displayName,
+                    fetchInstanceNameFromUrl(url),
                     includeInstance: includeInstance,
                     fontScale: state.metadataFontSizeScale,
                     transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),

@@ -48,7 +48,7 @@ Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
 /// Fetches the user group descriptor based on the given [userGroups].
 ///
 /// If the user is in multiple groups, the descriptor will contain all of them.
-String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
+String fetchUserGroupDescriptor(List<UserType> userGroups, DateTime? created) {
   List<String> descriptors = [];
   String descriptor = '';
 
@@ -61,8 +61,8 @@ String fetchUserGroupDescriptor(List<UserType> userGroups, Person? person) {
   if (userGroups.contains(UserType.bot)) descriptors.add(l10n.bot);
   if (descriptors.isNotEmpty) descriptor = ' (${descriptors.join(', ')})';
 
-  if (userGroups.contains(UserType.birthday) && person != null) {
-    int yearsOld = DateTime.now().year - person.published.year;
+  if (userGroups.contains(UserType.birthday) && created != null) {
+    int yearsOld = DateTime.now().year - created.year;
     descriptor += '\n${l10n.accountBirthday(
       yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
     )}';
