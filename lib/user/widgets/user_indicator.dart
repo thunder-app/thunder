@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/models/models.dart';
@@ -18,87 +17,95 @@ class UserIndicator extends StatefulWidget {
 }
 
 class _UserIndicatorState extends State<UserIndicator> {
-  bool accountError = false;
-  Person? person;
+  /// The user to display.
+  ThunderUser? user;
+
+  /// Whether an error occurred while fetching the account information.
+  bool error = false;
 
   @override
   void initState() {
     super.initState();
 
-    person = context.read<AccountBloc>().state.personView?.person;
-    if (person == null) context.read<AccountBloc>().add(const GetAccountInformation());
+    final person = context.read<AccountBloc>().state.personView?.person;
+
+    if (person != null) {
+      setState(() => user = ThunderUser(person));
+    } else {
+      context.read<AccountBloc>().add(const GetAccountInformation());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AccountBloc, AccountState>(
+    final l10n = AppLocalizations.of(context)!;
+
+    return BlocConsumer<AccountBloc, AccountState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (listenerContext, state) {
         if (state.status == AccountStatus.success) {
-          setState(() => person = state.personView?.person);
+          if (state.personView?.person != null) setState(() => user = ThunderUser(state.personView!.person));
         } else if (state.status != AccountStatus.loading) {
-          setState(() => accountError = true);
+          setState(() => error = true);
         }
       },
-      child: SizedBox(
-        height: 40,
-        child: accountError
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+      builder: (context, state) {
+        if (error) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.warning_rounded),
+              const SizedBox(width: 8.0),
+              Text(l10n.fetchAccountError, overflow: TextOverflow.ellipsis),
+              TextButton.icon(
+                label: Text(l10n.retry),
+                icon: const Icon(Icons.refresh_rounded),
+                onPressed: () {
+                  context.read<AccountBloc>().add(const GetAccountInformation());
+                  setState(() => error = false);
+                },
+              ),
+            ],
+          );
+        }
+
+        if (user == null) {
+          return SizedBox(
+            height: 40,
+            child: Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+
+        return SizedBox(
+          height: 40,
+          child: Row(
+            spacing: 12.0,
+            children: [
+              if (user != null) UserAvatar(user: user!),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.warning_rounded),
-                  const SizedBox(
-                    width: 8.0,
+                  Text(user!.name),
+                  UserFullNameWidget(
+                    context,
+                    user!.username,
+                    user!.displayName,
+                    fetchInstanceNameFromUrl(user!.url) ?? '-',
+                    // Override because we're showing display name above
+                    useDisplayName: false,
                   ),
-                  Expanded(
-                      child: Text(
-                    AppLocalizations.of(context)!.fetchAccountError,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-                  TextButton.icon(
-                      onPressed: () {
-                        context.read<AccountBloc>().add(const GetAccountInformation());
-                        setState(() => accountError = false);
-                      },
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: Text(AppLocalizations.of(context)!.retry))
                 ],
-              )
-            : person != null
-                ? Row(
-                    children: [
-                      if (person != null) UserAvatar(user: ThunderUser(person!)),
-                      const SizedBox(
-                        width: 12.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(person!.displayName ?? person!.name),
-                          UserFullNameWidget(
-                            context,
-                            person!.name,
-                            person!.displayName,
-                            fetchInstanceNameFromUrl(person!.actorId) ?? '-',
-                            // Override because we're showing display name above
-                            useDisplayName: false,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                : const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Center(
-                      child: SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ),
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
