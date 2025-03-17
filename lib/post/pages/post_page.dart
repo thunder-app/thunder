@@ -484,7 +484,7 @@ class _PostPageState extends State<PostPage> {
                         onUserChanged: () => userChanged = true,
                         onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
                       ),
-                      if (state.status == PostStatus.loading)
+                      if (state.status == PostStatus.initial || state.status == PostStatus.loading)
                         const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(child: CircularProgressIndicator()),
