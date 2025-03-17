@@ -64,7 +64,7 @@ class ThunderState extends Equatable {
     this.showVoteActions = true,
     this.showSaveAction = true,
     this.showCommunityIcons = false,
-    this.showFullHeightImages = false,
+    this.showFullHeightImages = true,
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,

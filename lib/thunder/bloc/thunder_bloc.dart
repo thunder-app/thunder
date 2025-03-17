@@ -148,7 +148,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
       bool showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
       bool showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
-      bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? true;
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;

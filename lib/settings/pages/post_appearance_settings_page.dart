@@ -70,7 +70,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   bool showCommunityIcons = false;
 
   /// When enabled, images and media will display full height. By default, they are displayed with a max height
-  bool showFullHeightImages = false;
+  bool showFullHeightImages = true;
 
   /// When enabled, images and media will extend to the edge of the screen. By default, they are shown as a card
   bool showEdgeToEdgeImages = false;
@@ -157,7 +157,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       // Card View Settings
       showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? true;
       showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
