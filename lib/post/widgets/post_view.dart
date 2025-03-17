@@ -14,6 +14,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/models/thunder_community.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -261,7 +262,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ),
                       CommunityChip(
                         communityId: postView.community.id,
-                        communityAvatar: CommunityAvatar(community: postView.community, radius: 10, thumbnailSize: 20, format: 'png'),
+                        communityAvatar: CommunityAvatar(
+                          community: ThunderCommunity(postView.community),
+                          radius: 10,
+                          thumbnailSize: 20,
+                          format: 'png',
+                        ),
                         communityName: postView.community.name,
                         communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,

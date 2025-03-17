@@ -6,6 +6,7 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -385,7 +386,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
               spacing: 8.0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                CommunityAvatar(community: community),
+                CommunityAvatar(community: ThunderCommunity(community)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

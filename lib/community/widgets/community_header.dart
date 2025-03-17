@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/thunder_community.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 
@@ -96,7 +97,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       Row(
                         children: [
                           CommunityAvatar(
-                            community: widget.getCommunityResponse.communityView.community,
+                            community: ThunderCommunity(widget.getCommunityResponse.communityView.community),
                             radius: 45.0,
                             showCommunityStatus: true,
                           ),

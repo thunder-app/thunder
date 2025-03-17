@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/models/thunder_community.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -572,7 +573,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
       children: [
         if (showCommunityIcons && feedType != FeedType.community)
           GestureDetector(
-            child: CommunityAvatar(community: postView.community, radius: showUsername && showCommunityName ? 14 : 7),
+            child: CommunityAvatar(community: ThunderCommunity(postView.community), radius: showUsername && showCommunityName ? 14 : 7),
             onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
           ),
         if (showCommunityName && showUsername)

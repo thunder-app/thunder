@@ -20,6 +20,7 @@ import 'package:thunder/account/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -847,7 +848,10 @@ class _CommunitySelectorState extends State<CommunitySelector> {
             children: [
               Row(
                 children: [
-                  CommunityAvatar(community: widget.communityView?.community, radius: 16),
+                  CommunityAvatar(
+                    community: ThunderCommunity(widget.communityView?.community),
+                    radius: 16,
+                  ),
                   const SizedBox(width: 12),
                   widget.communityId != null
                       ? Column(
