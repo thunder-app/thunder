@@ -169,14 +169,10 @@ void createCrossPost(
   String? text,
   String? postUrl,
 }) async {
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
+  final l10n = AppLocalizations.of(context)!;
 
-  if (url?.isNotEmpty == true) {
-    text = null;
-  } else {
-    final String? quotedText = text?.split('\n').map((value) => '> $value\n').join();
-    text = "${l10n.crossPostedFrom(postUrl ?? '')}\n\n$quotedText";
-  }
+  final quotedText = text?.split('\n').map((value) => '> $value\n').join();
+  text = "${l10n.crossPostedFrom(postUrl ?? '')}\n\n$quotedText";
 
   await navigateToCreatePostPage(
     context,
@@ -184,5 +180,6 @@ void createCrossPost(
     url: url,
     text: text,
     prePopulated: true,
+    isCrossPost: true,
   );
 }

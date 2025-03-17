@@ -372,6 +372,7 @@ Future<void> navigateToCreatePostPage(
   int? communityId,
   CommunityView? communityView,
   PostViewMedia? postViewMedia,
+  bool isCrossPost = false,
   Function(PostViewMedia, bool)? onPostSuccess,
 }) async {
   try {
@@ -432,6 +433,7 @@ Future<void> navigateToCreatePostPage(
                       )
                     : null),
             postView: postViewMedia?.postView,
+            isCrossPost: isCrossPost,
             onPostSuccess: (PostViewMedia pvm, bool userChanged) {
               // Update the existing post view media if it exists
               if (feedBloc != null && postViewMedia != null) feedBloc.add(FeedItemUpdatedEvent(postViewMedia: pvm));

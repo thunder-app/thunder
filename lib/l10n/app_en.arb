@@ -73,6 +73,10 @@
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
   },
+  "addOriginalPostBody": "Add original post body?",
+  "@addOriginalPostBody": {
+    "description": "Prompt to add the original post body to a cross post"
+  },
   "addToFavorites": "Add to favorites",
   "@addToFavorites": {
     "description": "Action to add a community in drawer to favorites"

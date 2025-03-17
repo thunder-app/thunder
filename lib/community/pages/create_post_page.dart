@@ -72,6 +72,9 @@ class CreatePostPage extends StatefulWidget {
   /// [postView] is passed in when editing an existing post
   final PostView? postView;
 
+  /// Whether or not this post is a cross post
+  final bool isCrossPost;
+
   /// Callback function that is triggered whenever the post is successfully created or updated
   final Function(PostViewMedia postViewMedia, bool userChanged)? onPostSuccess;
 
@@ -87,6 +90,7 @@ class CreatePostPage extends StatefulWidget {
     this.altText,
     this.prePopulated = false,
     this.postView,
+    this.isCrossPost = false,
     this.onPostSuccess,
   });
 
@@ -202,11 +206,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
     // Logic for pre-populating the post with the given fields
     if (widget.prePopulated == true) {
       _titleTextController.text = widget.title ?? '';
-      _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
       _customThumbnailTextController.text = widget.customThumbnail ?? '';
       _altTextTextController.text = widget.altText ?? '';
       _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
+
+      // If the post is a cross-post, then prompt the user if they want to add the original post body
+      if (widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          showSnackbar(
+            l10n.addOriginalPostBody,
+            duration: const Duration(seconds: 10),
+            trailingIcon: Icons.add_rounded,
+            trailingIconColor: Theme.of(context).colorScheme.secondary,
+            trailingAction: () => _bodyTextController.text = widget.text ?? '',
+          );
+        });
+      } else {
+        _bodyTextController.text = widget.text ?? '';
+      }
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
