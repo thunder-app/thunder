@@ -397,7 +397,7 @@ class DateTimePostCardMetaData extends StatelessWidget {
     final color = dim ? dimColor : (showFullPostDate ? fullDateColor : baseColor);
 
     final parsedDateTime = DateTime.parse(dateTime);
-    final formattedDate = showFullPostDate && dateFormat != null ? dateFormat.format(parsedDateTime) : formatTimeToString(dateTime: dateTime);
+    final formattedDate = showFullPostDate && dateFormat != null ? dateFormat.format(parsedDateTime.toLocal()) : formatTimeToString(dateTime: dateTime);
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
