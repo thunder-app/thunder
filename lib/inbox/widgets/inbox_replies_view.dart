@@ -109,6 +109,9 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
             },
           ),
           if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          SliverToBoxAdapter(
+            child: SizedBox(height: kBottomNavigationBarHeight),
+          )
         ],
       );
     });
