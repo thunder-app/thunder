@@ -166,7 +166,7 @@ class _PostCardState extends State<PostCard> {
     final feedType = context.read<FeedBloc>().state.feedType;
 
     // Determine which post card view to use based on the settings
-    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal == true || (feedType == FeedType.community && widget.postViewMedia.postView.post.featuredCommunity)
+    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal || (feedType == FeedType.community && widget.postViewMedia.postView.post.featuredCommunity)
         ? PostCardViewCompact(
             postViewMedia: widget.postViewMedia,
             isUserLoggedIn: isUserLoggedIn,
