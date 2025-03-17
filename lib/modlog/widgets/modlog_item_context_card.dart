@@ -386,7 +386,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
               spacing: 8.0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                CommunityAvatar(community: ThunderCommunity(community)),
+                if (community != null) CommunityAvatar(community: ThunderCommunity(community!)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

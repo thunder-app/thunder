@@ -53,6 +53,10 @@
   "@actions": {},
   "active": "Active",
   "@active": {},
+  "activity": "Activity",
+  "@activity": {
+    "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+  },
   "add": "Add",
   "@add": {},
   "addAccount": "Add Account",
@@ -152,6 +156,18 @@
   "areNotificationsAllowedBySystem": "Notifications are allowed by system: {yesOrNo}",
   "@areNotificationsAllowedBySystem": {
     "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "averageComments": "{x} comments/month",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "averageContributions": "{x} contributions/month",
+  "@averageContributions": {
+    "description": "Describes the average number of contributions (both posts and comments) in the past month"
+  },
+  "averagePosts": "{x} posts/month",
+  "@averagePosts": {
+    "description": "Describes the average number of posts created in the past month"
   },
   "back": "Back",
   "@back": {},
@@ -1203,6 +1219,10 @@
   },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
+  "joined": "Joined {x}",
+  "@joined": {
+    "description": "Describes the time when a user joined the site (or was created)"
+  },
   "keywordFilterDescription": "Filters posts containing any keywords in the title, body, or URL",
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
@@ -1426,6 +1446,10 @@
   "moderatedCommunities": "Moderated Communities",
   "@moderatedCommunities": {
     "description": "Describes a list of communities that are moderated by the current user."
+  },
+  "moderates": "Moderates",
+  "@moderates": {
+    "description": "A heading describing the communities that a user moderates"
   },
   "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
   "@moderator": {
@@ -2643,6 +2667,14 @@
   "@topWeek": {},
   "topYear": "Top Year",
   "@topYear": {},
+  "totalComments": "{x} Comments",
+  "@totalComments": {
+    "description": "The total comments created by a user"
+  },
+  "totalPosts": "{x} Posts",
+  "@totalPosts": {
+    "description": "The total posts created by a user"
+  },
   "totp": "TOTP (optional)",
   "@totp": {},
   "transferredModToCommunity": "Transferred Community",

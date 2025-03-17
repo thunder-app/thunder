@@ -848,10 +848,11 @@ class _CommunitySelectorState extends State<CommunitySelector> {
             children: [
               Row(
                 children: [
-                  CommunityAvatar(
-                    community: ThunderCommunity(widget.communityView?.community),
-                    radius: 16,
-                  ),
+                  if (widget.communityView?.community != null)
+                    CommunityAvatar(
+                      community: ThunderCommunity(widget.communityView!.community),
+                      radius: 16,
+                    ),
                   const SizedBox(width: 12),
                   widget.communityId != null
                       ? Column(

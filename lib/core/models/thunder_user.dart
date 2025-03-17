@@ -4,13 +4,10 @@ class ThunderUser {
   /// The Lemmy API model for the user.
   Person user;
 
-  /// The total number of posts that the user has made.
-  final int? totalPosts;
+  /// The Lemmy API model for the person view.
+  PersonView? userView;
 
-  /// The total number of comments that the user has made.
-  final int? totalComments;
-
-  ThunderUser(this.user, {this.totalPosts, this.totalComments});
+  ThunderUser(this.user, {this.userView});
 
   /// The ID of the user.
   int get id => user.id;
@@ -24,6 +21,9 @@ class ThunderUser {
   /// The display name of the user.
   String? get displayName => user.displayName;
 
+  /// The bio of the user.
+  String? get bio => user.bio;
+
   /// The avatar of the user.
   String? get icon => user.avatar;
 
@@ -35,4 +35,13 @@ class ThunderUser {
 
   /// The date and time that the user was created.
   DateTime get created => user.published;
+
+  /// The total number of posts that the user has made.
+  int? get totalPosts => userView?.counts.postCount;
+
+  /// The total number of comments that the user has made.
+  int? get totalComments => userView?.counts.commentCount;
+
+  /// Whether the user is an admin.
+  bool? get admin => userView?.isAdmin == true;
 }

@@ -450,8 +450,7 @@ class _FeedViewState extends State<FeedView> {
                                     UserHeader(
                                       user: ThunderUser(
                                         state.fullPersonView!.personView.person,
-                                        totalPosts: state.fullPersonView!.personView.counts.postCount,
-                                        totalComments: state.fullPersonView!.personView.counts.commentCount,
+                                        userView: state.fullPersonView!.personView,
                                       ),
                                       showUserSidebar: showUserSidebar,
                                       onToggle: (bool toggled) {
@@ -553,9 +552,13 @@ class _FeedViewState extends State<FeedView> {
                                           getCommunityResponse: state.fullCommunityView,
                                           onDismiss: () => setState(() => showCommunitySidebar = false),
                                         )
-                                      : showUserSidebar
+                                      : showUserSidebar && state.fullPersonView != null
                                           ? UserSidebar(
-                                              getPersonDetailsResponse: state.fullPersonView,
+                                              user: ThunderUser(
+                                                state.fullPersonView!.personView.person,
+                                                userView: state.fullPersonView!.personView,
+                                              ),
+                                              moderatedCommunities: state.fullPersonView!.moderates.map((e) => ThunderCommunity(e.community)).toList(),
                                               onDismiss: () => setState(() => showUserSidebar = false),
                                             )
                                           : null,

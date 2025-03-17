@@ -1,9 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:intl/intl.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
@@ -21,10 +22,21 @@ import 'package:thunder/utils/navigation.dart';
 const kSidebarWidthFactor = 0.8;
 
 class UserSidebar extends StatefulWidget {
-  final GetPersonDetailsResponse? getPersonDetailsResponse;
+  /// The user to display in the sidebar.
+  final ThunderUser? user;
+
+  /// The communities that the user moderates.
+  final List<ThunderCommunity>? moderatedCommunities;
+
+  /// Callback function that triggers when the sidebar is dismissed.
   final Function onDismiss;
 
-  const UserSidebar({super.key, this.getPersonDetailsResponse, required this.onDismiss});
+  const UserSidebar({
+    super.key,
+    this.user,
+    this.moderatedCommunities,
+    required this.onDismiss,
+  });
 
   @override
   State<UserSidebar> createState() => _UserSidebarState();
@@ -42,12 +54,12 @@ class _UserSidebarState extends State<UserSidebar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
     final currentUserId = authState.account?.userId;
 
-    if (widget.getPersonDetailsResponse == null) return Container();
-
-    PersonView personView = widget.getPersonDetailsResponse!.personView;
+    if (widget.user == null) return Container();
+    assert(widget.user?.admin != null);
 
     return BlocProvider<UserBloc>(
       create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
@@ -60,7 +72,7 @@ class _UserSidebarState extends State<UserSidebar> {
         child: Container(
           alignment: Alignment.centerRight,
           child: Dismissible(
-            key: Key(personView.person.id.toString()),
+            key: Key(widget.user!.id.toString()),
             onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
@@ -71,18 +83,21 @@ class _UserSidebarState extends State<UserSidebar> {
                 alignment: Alignment.topRight,
                 child: Column(
                   children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return SizeTransition(
-                          sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
-                        );
-                      },
-                      child: personView.person.id != currentUserId ? BlockUserButton(personView: personView, isUserLoggedIn: authState.isLoggedIn) : null,
-                    ),
-                    if (personView.person.id != currentUserId) const SizedBox(height: 10.0),
-                    if (personView.person.id != currentUserId) const Divider(height: 1, thickness: 2),
+                    // Note: admin is always defined at this point
+                    if (widget.user!.id != currentUserId && widget.user?.admin == false) ...[
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 150),
+                        transitionBuilder: (Widget child, Animation<double> animation) {
+                          return SizeTransition(
+                            sizeFactor: animation,
+                            child: FadeTransition(opacity: animation, child: child),
+                          );
+                        },
+                        child: widget.user!.id != currentUserId ? BlockUserButton(userId: widget.user!.id, isUserLoggedIn: authState.isLoggedIn) : null,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Divider(height: 1.0, thickness: 2.0),
+                    ],
                     Container(
                       alignment: Alignment.topCenter,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -91,25 +106,31 @@ class _UserSidebarState extends State<UserSidebar> {
                         padding: const EdgeInsets.only(top: 12.0),
                         shrinkWrap: true,
                         children: [
-                          Material(
-                            child: CommonMarkdownBody(
-                              body: personView.person.bio ?? 'Nothing here. This user has not written a bio.',
-                              imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                          SidebarSectionHeader(value: l10n.profileBio),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Material(
+                              child: CommonMarkdownBody(
+                                body: widget.user!.bio ?? '_${l10n.noProfileBioSet}_',
+                                imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                              ),
                             ),
                           ),
-                          const SidebarSectionHeader(value: "Stats"),
+                          SidebarSectionHeader(value: l10n.stats),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: UserStatsList(personView: personView),
+                            child: UserStatsList(user: widget.user!),
                           ),
-                          const SidebarSectionHeader(value: "Activity"),
+                          SidebarSectionHeader(value: l10n.activity),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: UserActivityList(personView: personView),
+                            child: UserActivityList(user: widget.user!),
                           ),
-                          const SidebarSectionHeader(value: "Moderates"),
-                          UserModeratorList(getPersonDetailsResponse: widget.getPersonDetailsResponse!),
-                          const SizedBox(height: 256)
+                          if (widget.moderatedCommunities != null && widget.moderatedCommunities!.isNotEmpty) ...[
+                            SidebarSectionHeader(value: l10n.moderates),
+                            UserModeratorList(moderatedCommunities: widget.moderatedCommunities ?? []),
+                          ],
+                          const SizedBox(height: 256.0)
                         ],
                       ),
                     )
@@ -125,57 +146,66 @@ class _UserSidebarState extends State<UserSidebar> {
 }
 
 class UserStatsList extends StatelessWidget {
-  const UserStatsList({super.key, required this.personView});
+  /// The user to display the stats for.
+  final ThunderUser user;
 
-  final PersonView personView;
+  const UserStatsList({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // TODO Make this use device date format
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: 'Joined ${DateFormat.yMMMMd().format(personView.person.published)} · ${formatTimeToString(dateTime: personView.person.published.toIso8601String())} ago',
+          value: '${l10n.joined(DateFormat.yMMMMd().format(user.created))} · ${l10n.ago(formatTimeToString(dateTime: user.created.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
-        SidebarStat(
-          icon: Icons.wysiwyg_rounded,
-          value: '${NumberFormat("#,###,###,###").format(personView.counts.postCount)} Posts',
-        ),
-        SidebarStat(
-          icon: Icons.chat_rounded,
-          value: '${NumberFormat("#,###,###,###").format(personView.counts.commentCount)} Comments',
-        ),
+        if (user.totalPosts != null)
+          SidebarStat(
+            icon: Icons.wysiwyg_rounded,
+            value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.totalPosts)),
+          ),
+        if (user.totalComments != null)
+          SidebarStat(
+            icon: Icons.chat_rounded,
+            value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.totalComments)),
+          ),
       ],
     );
   }
 }
 
 class UserActivityList extends StatelessWidget {
-  const UserActivityList({super.key, required this.personView});
+  /// The user to display the activity for.
+  final ThunderUser user;
 
-  final PersonView personView;
+  const UserActivityList({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final totalContributions = (personView.counts.postCount + personView.counts.commentCount);
-    Duration accountAge = DateTime.now().difference(personView.person.published);
+    final l10n = AppLocalizations.of(context)!;
+
+    final accountAge = DateTime.now().difference(user.created);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
 
-    final num postsPerMonth;
-    final num commentsPerMonth;
+    final totalContributions = ((user.totalPosts ?? 0) + (user.totalComments ?? 0));
     final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
 
-    if (personView.counts.postCount != 0) {
-      postsPerMonth = (personView.counts.postCount / accountAgeMonths);
+    int postsPerMonth;
+    int commentsPerMonth;
+
+    if (user.totalPosts != null && user.totalPosts != 0) {
+      postsPerMonth = (user.totalPosts! / accountAgeMonths).truncate();
     } else {
       postsPerMonth = 0;
     }
 
-    if (personView.counts.commentCount.toInt() != 0) {
-      commentsPerMonth = (personView.counts.commentCount / accountAgeMonths);
+    if (user.totalComments != null && user.totalComments != 0) {
+      commentsPerMonth = (user.totalComments! / accountAgeMonths).truncate();
     } else {
       commentsPerMonth = 0;
     }
@@ -185,15 +215,15 @@ class UserActivityList extends StatelessWidget {
       children: [
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: '${NumberFormat("#,###,###,###").format(postsPerMonth)} Average Posts/mo',
+          value: l10n.averagePosts(NumberFormat("#,###,###,###").format(postsPerMonth)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Average Comments/mo',
+          value: l10n.averageComments(NumberFormat("#,###,###,###").format(commentsPerMonth)),
         ),
         SidebarStat(
           icon: Icons.score_rounded,
-          value: '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Average Contributions/mo',
+          value: l10n.averageContributions(NumberFormat("#,###,###,###").format(totalContributionsPerMonth)),
         ),
       ],
     );
@@ -201,24 +231,25 @@ class UserActivityList extends StatelessWidget {
 }
 
 class UserModeratorList extends StatelessWidget {
-  const UserModeratorList({super.key, required this.getPersonDetailsResponse});
+  /// The communities that the user moderates.
+  final List<ThunderCommunity> moderatedCommunities;
 
-  final GetPersonDetailsResponse getPersonDetailsResponse;
+  const UserModeratorList({super.key, required this.moderatedCommunities});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        for (CommunityModeratorView mods in getPersonDetailsResponse.moderates)
+        for (final community in moderatedCommunities)
           Material(
             child: InkWell(
-              onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id),
+              onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community.id),
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    CommunityAvatar(community: ThunderCommunity(mods.community), radius: 20.0),
+                    CommunityAvatar(community: community, radius: 20.0),
                     const SizedBox(width: 16.0),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -227,23 +258,18 @@ class UserModeratorList extends StatelessWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.55,
                           child: Text(
-                            mods.community.title,
+                            community.title,
                             overflow: TextOverflow.fade,
                             softWrap: false,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                         ),
                         CommunityFullNameWidget(
                           context,
-                          mods.community.name,
-                          mods.community.title,
-                          fetchInstanceNameFromUrl(mods.community.actorId),
-                          textStyle: const TextStyle(
-                            fontSize: 13,
-                          ),
+                          community.communityName,
+                          community.title,
+                          fetchInstanceNameFromUrl(community.url),
+                          textStyle: const TextStyle(fontSize: 13),
                           transformColor: (color) => color?.withValues(alpha: 0.6),
                           // Override because we're showing display name above
                           useDisplayName: false,
@@ -261,28 +287,30 @@ class UserModeratorList extends StatelessWidget {
 }
 
 class BlockUserButton extends StatelessWidget {
+  /// The id of the user being blocked.
+  final int userId;
+
+  /// Whether the current user is logged in.
+  final bool isUserLoggedIn;
+
   const BlockUserButton({
     super.key,
-    required this.personView,
+    required this.userId,
     required this.isUserLoggedIn,
   });
 
-  final PersonView personView;
-  final bool isUserLoggedIn;
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         bool blocked = false;
 
         if (state.getSiteResponse?.myUser?.personBlocks != null) {
-          for (PersonBlockView personBlockView in state.getSiteResponse!.myUser!.personBlocks) {
-            if (personBlockView.target.id == personView.person.id) {
-              blocked = true;
-              break;
-            }
-          }
+          List<ThunderUser> blockedUsers = state.getSiteResponse!.myUser!.personBlocks.map((block) => ThunderUser(block.target)).toList();
+          final blockedUser = blockedUsers.firstWhereOrNull((blockedUser) => blockedUser.id == userId);
+          if (blockedUser != null) blocked = true;
         }
 
         return Padding(
@@ -291,7 +319,7 @@ class BlockUserButton extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.heavyImpact();
-                    context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: personView.person.id, value: !blocked));
+                    context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: userId, value: !blocked));
                   }
                 : null,
             style: TextButton.styleFrom(
@@ -304,7 +332,7 @@ class BlockUserButton extends StatelessWidget {
               children: [
                 Icon(blocked ? Icons.undo_rounded : Icons.block_rounded, color: Colors.redAccent),
                 const SizedBox(width: 4.0),
-                Text(blocked ? 'Unblock User' : 'Block User'),
+                Text(blocked ? l10n.unblockUser : l10n.blockUser),
               ],
             ),
           ),
@@ -315,12 +343,10 @@ class BlockUserButton extends StatelessWidget {
 }
 
 class SidebarSectionHeader extends StatelessWidget {
-  const SidebarSectionHeader({
-    super.key,
-    required this.value,
-  });
-
+  /// The header title.
   final String value;
+
+  const SidebarSectionHeader({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -337,14 +363,13 @@ class SidebarSectionHeader extends StatelessWidget {
 }
 
 class SidebarStat extends StatelessWidget {
-  const SidebarStat({
-    super.key,
-    required this.icon,
-    required this.value,
-  });
-
+  /// The icon to display for the statistic.
   final IconData icon;
+
+  /// The value of the statistic.
   final String value;
+
+  const SidebarStat({super.key, required this.icon, required this.value});
 
   @override
   Widget build(BuildContext context) {
