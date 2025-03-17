@@ -570,7 +570,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
     return Row(
       spacing: 6.0,
       children: [
-        if (showCommunityIcons)
+        if (showCommunityIcons && feedType != FeedType.community)
           GestureDetector(
             child: CommunityAvatar(community: postView.community, radius: showUsername && showCommunityName ? 14 : 7),
             onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
