@@ -9,6 +9,7 @@ import 'package:thunder/account/models/user_label.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/user_type.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -66,8 +67,7 @@ class CommentHeader extends StatelessWidget {
                     UserChip(
                       person: comment.creator,
                       personAvatar: UserAvatar(
-                        name: comment.creator.displayName ?? comment.creator.name,
-                        icon: comment.creator.avatar,
+                        user: ThunderUser(comment.creator),
                         radius: 10,
                         thumbnailSize: 20,
                         format: 'png',

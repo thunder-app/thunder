@@ -4,8 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:thunder/feed/feed.dart';
 
+import 'package:thunder/core/models/models.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
@@ -95,11 +96,7 @@ class _UserHeaderState extends State<UserHeader> {
                     children: [
                       Row(
                         children: [
-                          UserAvatar(
-                            name: widget.getPersonDetailsResponse.personView.person.displayName ?? widget.getPersonDetailsResponse.personView.person.name,
-                            icon: widget.getPersonDetailsResponse.personView.person.avatar,
-                            radius: 45.0,
-                          ),
+                          UserAvatar(user: ThunderUser(widget.getPersonDetailsResponse.personView.person), radius: 45.0),
                           const SizedBox(width: 20.0),
                           Expanded(
                             child: Column(

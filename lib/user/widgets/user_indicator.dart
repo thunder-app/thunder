@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
@@ -65,10 +67,7 @@ class _UserIndicatorState extends State<UserIndicator> {
             : person != null
                 ? Row(
                     children: [
-                      UserAvatar(
-                        name: person?.displayName ?? person?.name ?? '',
-                        icon: person?.avatar,
-                      ),
+                      UserAvatar(user: ThunderUser(person)),
                       const SizedBox(
                         width: 12.0,
                       ),

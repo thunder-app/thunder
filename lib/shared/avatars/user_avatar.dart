@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:thunder/core/models/models.dart';
+
 /// A user avatar. Displays the associated user icon if available.
 ///
 /// Otherwise, displays the first letter of the user's display name.
 /// If no display name is available, displays the first letter of the user's username.
 class UserAvatar extends StatelessWidget {
-  /// The name of the user
-  final String name;
-
-  /// The link to the user's icon
-  final String? icon;
+  /// The user information to display
+  final ThunderUser user;
 
   /// The radius of the avatar. Defaults to 16
   final double radius;
@@ -24,8 +23,7 @@ class UserAvatar extends StatelessWidget {
 
   const UserAvatar({
     super.key,
-    required this.name,
-    this.icon,
+    required this.user,
     this.radius = 16.0,
     this.thumbnailSize,
     this.format,
@@ -39,15 +37,15 @@ class UserAvatar extends StatelessWidget {
       backgroundColor: theme.colorScheme.secondaryContainer,
       maxRadius: radius,
       child: Text(
-        name[0].toUpperCase(),
+        user.name[0].toUpperCase(),
         semanticsLabel: '',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: radius),
       ),
     );
 
-    if (icon?.isNotEmpty != true) return placeholderIcon;
+    if (user.icon?.isNotEmpty != true) return placeholderIcon;
 
-    Uri imageUri = Uri.parse(icon!);
+    Uri imageUri = Uri.parse(user.icon!);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
 
     Map<String, dynamic> queryParameters = {};

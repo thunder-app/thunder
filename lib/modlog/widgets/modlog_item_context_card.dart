@@ -329,10 +329,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
               spacing: 8.0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                UserAvatar(
-                  name: user?.displayName ?? user?.name ?? l10n.user,
-                  icon: user?.avatar,
-                ),
+                UserAvatar(user: ThunderUser(user)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

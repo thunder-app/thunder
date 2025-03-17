@@ -163,8 +163,7 @@ class UserDrawerItem extends StatelessWidget {
         child: Row(
           children: [
             UserAvatar(
-              name: accountState.personView?.person.displayName ?? accountState.personView?.person.name ?? '',
-              icon: accountState.personView?.person.avatar,
+              user: ThunderUser(accountState.personView?.person),
               radius: 16.0,
             ),
             const SizedBox(width: 16.0),

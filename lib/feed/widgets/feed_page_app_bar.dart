@@ -12,6 +12,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -73,10 +74,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
                       children: [
                         Align(
                           alignment: Alignment.center,
-                          child: UserAvatar(
-                            name: person?.displayName ?? person?.name ?? '',
-                            icon: person?.avatar,
-                          ),
+                          child: UserAvatar(user: ThunderUser(person)),
                         ),
                         Material(
                           color: Colors.transparent,

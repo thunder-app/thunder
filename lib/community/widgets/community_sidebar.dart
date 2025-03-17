@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -241,11 +242,7 @@ class CommunityModeratorList extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    UserAvatar(
-                      name: mods.moderator.displayName ?? mods.moderator.name,
-                      icon: mods.moderator.avatar,
-                      radius: 20.0,
-                    ),
+                    UserAvatar(user: ThunderUser(mods.moderator), radius: 20.0),
                     const SizedBox(width: 16.0),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,

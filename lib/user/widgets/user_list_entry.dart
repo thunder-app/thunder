@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -27,11 +30,7 @@ class UserListEntry extends StatelessWidget {
       )}',
       preferBelow: false,
       child: ListTile(
-        leading: UserAvatar(
-          name: personView.person.displayName ?? personView.person.name,
-          icon: personView.person.avatar,
-          radius: 25,
-        ),
+        leading: UserAvatar(user: ThunderUser(personView.person), radius: 25),
         title: Text(
           personView.person.displayName ?? personView.person.name,
           overflow: TextOverflow.ellipsis,

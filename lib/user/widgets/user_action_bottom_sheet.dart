@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/user_label.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/user_type.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
@@ -192,10 +193,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
             children: [
               UserChip(
                 person: widget.user,
-                personAvatar: UserAvatar(
-                  name: widget.user.displayName ?? widget.user.name,
-                  icon: widget.user.avatar,
-                ),
+                personAvatar: UserAvatar(user: ThunderUser(widget.user)),
                 userGroups: const [UserType.op],
                 includeInstance: true,
               ),
