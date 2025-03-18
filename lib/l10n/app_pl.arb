@@ -1278,5 +1278,25 @@
   "addUserLabel": "Dodaj nazwę użytkownika",
   "@addUserLabel": {
     "description": "Action for adding a user label"
+  },
+  "blue": "Niebieski",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "bot": "Bot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "bannedUser": "Zbanowany użytkownik",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "banFromCommunity": "Ban od społeczności",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "areNotificationsAllowedBySystem": "Powiadomienia są zezwolone przez system: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
   }
 }
