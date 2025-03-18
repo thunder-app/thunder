@@ -1232,5 +1232,51 @@
   "searchTerm": "Wyszukaj określenia",
   "@searchTerm": {},
   "searchPostSearchType": "Wybierz Typ Szukania Wpisu",
-  "@searchPostSearchType": {}
+  "@searchPostSearchType": {},
+  "accountSettingsExportedSuccessfully": "Ustawienia konta Lemmy zostały pomyślnie wyeksportowane do {savedFilePath}!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Ustawienia konta Lemmy zostały pomyślnie zaimportowane!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "alternateSources": "Alternatywne źródła",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "accountBirthday": "Urodziny konta {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "addDiscussionLanguage": "Dodaj język",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "ago": "{time} temu",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "admin": "Administrator",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "actionColorsRedirect": "Chcesz dostosować kolory?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "addAsCommunityModerator": "Dodaj jako Moderator Społeczności",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "accept": "Akceptuj",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "always": "Zawsze",
+  "@always": {},
+  "addUserLabel": "Dodaj nazwę użytkownika",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  }
 }
