@@ -242,13 +242,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   /// Handles comment related actions on a given item within the inbox
   Future<void> _inboxItemActionEvent(InboxItemActionEvent event, Emitter<InboxState> emit) async {
-    assert(!(event.commentReplyId == null && event.personMentionId == null));
+    assert(!(event.commentReplyId == null && event.personMentionId == null && event.privateMessageId == null));
     emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
     int existingIndex = -1;
 
     CommentReplyView? existingCommentReplyView;
     PersonMentionView? existingPersonMentionView;
+    PrivateMessageView? existingPrivateMessageView;
 
     if (event.commentReplyId != null) {
       existingIndex = state.replies.indexWhere((element) => element.commentReply.id == event.commentReplyId);
@@ -256,9 +257,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     } else if (event.personMentionId != null) {
       existingIndex = state.mentions.indexWhere((element) => element.personMention.id == event.personMentionId);
       existingPersonMentionView = state.mentions[existingIndex];
+    } else if (event.privateMessageId != null) {
+      existingIndex = state.privateMessages.indexWhere((element) => element.privateMessage.id == event.privateMessageId);
+      existingPrivateMessageView = state.privateMessages[existingIndex];
     }
 
-    if (existingCommentReplyView == null && existingPersonMentionView == null) return emit(state.copyWith(status: InboxStatus.failure));
+    if (existingCommentReplyView == null && existingPersonMentionView == null && existingPrivateMessageView == null) return emit(state.copyWith(status: InboxStatus.failure));
 
     /// Convert the reply or mention to a comment
     CommentView? commentView;
@@ -307,6 +311,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             } else if (event.value == true) {
               state.mentions.remove(existingPersonMentionView);
             }
+          } else if (existingPrivateMessageView != null) {
+            if (!state.showUnreadOnly) {
+              state.privateMessages[existingIndex] = existingPrivateMessageView.copyWith(privateMessage: existingPrivateMessageView.privateMessage.copyWith(read: event.value));
+            } else if (event.value == true) {
+              state.privateMessages.remove(existingPrivateMessageView);
+            }
           }
 
           Account? account = await fetchActiveProfileAccount();
@@ -324,6 +334,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             await lemmy.run(MarkPersonMentionAsRead(
               auth: account!.jwt!,
               personMentionId: event.personMentionId!,
+              read: event.value,
+            ));
+          } else if (existingPrivateMessageView != null) {
+            await lemmy.run(MarkPrivateMessageAsRead(
+              auth: account!.jwt!,
+              privateMessageId: event.privateMessageId!,
               read: event.value,
             ));
           }

@@ -27,16 +27,19 @@ class InboxItemActionEvent extends InboxEvent {
   /// The action to perform on the inbox item. This is generally a comment.
   final CommentAction action;
 
-  /// The id of the comment reply. Only one of [commentReplyId] or [personMentionId] should be set
+  /// The id of the comment reply. Only one of [commentReplyId], [personMentionId], or [privateMessageId] should be set
   final int? commentReplyId;
 
-  /// The id of the person mention reply. Only one of [commentReplyId] or [personMentionId] should be set
+  /// The id of the person mention reply. Only one of [commentReplyId], [personMentionId], or [privateMessageId] should be set
   final int? personMentionId;
+
+  /// The id of the private message. Only one of [commentReplyId], [personMentionId], or [privateMessageId] should be set
+  final int? privateMessageId;
 
   /// The value to pass to the action
   final dynamic value;
 
-  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.value});
+  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.privateMessageId, this.value});
 }
 
 class MarkAllAsReadEvent extends InboxEvent {}

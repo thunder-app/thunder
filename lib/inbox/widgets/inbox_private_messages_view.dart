@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/divider.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class InboxPrivateMessagesView extends StatefulWidget {
@@ -72,8 +74,29 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                           Text(formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()))
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      CommonMarkdownBody(body: widget.privateMessages[index].privateMessage.content),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: CommonMarkdownBody(body: widget.privateMessages[index].privateMessage.content),
+                      ),
+                      ThunderDivider(sliver: false, padding: false),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () => context.read<InboxBloc>().add(
+                                InboxItemActionEvent(
+                                  action: CommentAction.read,
+                                  privateMessageId: widget.privateMessages[index].privateMessage.id,
+                                  value: !widget.privateMessages[index].privateMessage.read,
+                                ),
+                              ),
+                          icon: Icon(
+                            Icons.check,
+                            semanticLabel: l10n.markAsRead,
+                            color: widget.privateMessages[index].privateMessage.read ? Colors.green : null,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
