@@ -13,54 +13,58 @@ import 'package:thunder/utils/navigation.dart';
 
 /// A widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 class UserListEntry extends StatelessWidget {
-  final PersonView personView;
+  /// The user to display.
+  final ThunderUser user;
+
+  /// The instance to resolve the user on, if different from the current instance.
   final String? resolutionInstance;
 
-  const UserListEntry({super.key, required this.personView, this.resolutionInstance});
+  const UserListEntry({super.key, required this.user, this.resolutionInstance});
 
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(
+      message: '${user.name}\n${generateUserFullName(
         context,
-        personView.person.name,
-        personView.person.displayName,
-        fetchInstanceNameFromUrl(personView.person.actorId),
+        user.username,
+        user.displayName,
+        fetchInstanceNameFromUrl(user.url),
       )}',
       preferBelow: false,
       child: ListTile(
-        leading: UserAvatar(user: ThunderUser(personView.person), radius: 25),
-        title: Text(
-          personView.person.displayName ?? personView.person.name,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(children: [
-          Flexible(
-            child: UserFullNameWidget(
-              context,
-              personView.person.name,
-              personView.person.displayName,
-              fetchInstanceNameFromUrl(personView.person.actorId),
-              // Override because we're showing display name above
-              useDisplayName: false,
+        leading: UserAvatar(user: user, radius: 25),
+        title: Text(user.name, overflow: TextOverflow.ellipsis),
+        subtitle: Row(
+          children: [
+            Flexible(
+              child: UserFullNameWidget(
+                context,
+                user.username,
+                user.displayName,
+                fetchInstanceNameFromUrl(user.url),
+                // Override because we're showing display name above
+                useDisplayName: false,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         onTap: () async {
-          int? personId = personView.person.id;
+          int? userId = user.id;
+
           if (resolutionInstance != null) {
-            final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
             try {
-              final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: personView.person.actorId));
-              personId = resolveObjectResponse.person?.person.id;
+              final lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
+              final response = await lemmy.run(ResolveObject(q: user.url));
+
+              userId = response.person?.person.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about personId being un-navigable
             }
           }
 
           if (context.mounted) {
-            navigateToFeedPage(context, feedType: FeedType.user, userId: personId);
+            navigateToFeedPage(context, feedType: FeedType.user, userId: userId);
           }
         },
       ),

@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
@@ -236,22 +237,18 @@ class _InstancePageState extends State<InstancePage> {
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                   ),
-                                  // This condition can be removed if/when the Search endpoint respects the Local filter for users
-                                  // ignore: dead_code
-                                  if (false) ...[
-                                    const SizedBox(width: 10),
-                                    SearchActionChip(
-                                      backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                      children: [
-                                        Text(l10n.users),
-                                      ],
-                                      onPressed: () async {
-                                        viewType = SearchType.users;
-                                        await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
-                                        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
-                                      },
-                                    ),
-                                  ],
+                                  const SizedBox(width: 10),
+                                  SearchActionChip(
+                                    backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
+                                    children: [
+                                      Text(l10n.users),
+                                    ],
+                                    onPressed: () async {
+                                      viewType = SearchType.users;
+                                      await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
+                                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
+                                    },
+                                  ),
                                   const SizedBox(width: 10),
                                   SearchActionChip(
                                     backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
@@ -335,10 +332,11 @@ class _InstancePageState extends State<InstancePage> {
                               childCount: state.users?.length,
                               (context, index) {
                                 PersonView? user = state.users?[index];
+
                                 return Material(
                                   child: user != null
                                       ? UserListEntry(
-                                          personView: user,
+                                          user: ThunderUser(user.person, userView: user),
                                           resolutionInstance: state.resolutionInstance,
                                         )
                                       : Container(),
