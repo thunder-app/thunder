@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/user/utils/user.dart';
@@ -56,7 +57,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           BlockPersonResponse blockPersonResponse = await blockUser(event.userId, event.value);
           emit(state.copyWith(
             status: UserStatus.success,
-            personView: blockPersonResponse.personView,
+            user: ThunderUser(blockPersonResponse.personView.person, userView: blockPersonResponse.personView),
             message:
                 blockPersonResponse.blocked ? l10n.successfullyBlockedUser(blockPersonResponse.personView.person.name) : l10n.successfullyUnblockedUser(blockPersonResponse.personView.person.name),
           ));
@@ -83,7 +84,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(
             status: UserStatus.success,
-            personView: banFromCommunityResponse.personView,
+            user: ThunderUser(banFromCommunityResponse.personView.person, userView: banFromCommunityResponse.personView),
             message: banFromCommunityResponse.banned
                 ? l10n.successfullyBannedUser(banFromCommunityResponse.personView.person.name)
                 : l10n.successfullyUnbannedUser(banFromCommunityResponse.personView.person.name),

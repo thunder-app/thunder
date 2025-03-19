@@ -70,7 +70,7 @@ enum UserBottomSheetAction {
 /// A bottom sheet that allows the current user to perform actions on another user.
 ///
 /// Given an [onAction] callback, this widget will display a list of actions that can be taken on the user.
-/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [PersonView].
+/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [ThunderUser].
 class UserActionBottomSheet extends StatefulWidget {
   const UserActionBottomSheet({super.key, required this.context, required this.user, this.communityId, this.isUserCommunityModerator, this.isUserBannedFromCommunity, required this.onAction});
 
@@ -91,7 +91,7 @@ class UserActionBottomSheet extends StatefulWidget {
   final bool? isUserBannedFromCommunity;
 
   /// Called when an action is selected
-  final Function(UserAction userAction, PersonView? personView) onAction;
+  final Function(UserAction userAction, ThunderUser? user) onAction;
 
   @override
   State<UserActionBottomSheet> createState() => _UserActionBottomSheetState();
@@ -294,7 +294,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       listener: (context, state) {
         if (state.status == UserStatus.success) {
           Navigator.of(context).pop();
-          if (_userAction != null) widget.onAction(_userAction!, state.personView);
+          if (_userAction != null) widget.onAction(_userAction!, state.user);
           setState(() => _userAction = null);
         }
       },

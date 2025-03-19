@@ -65,7 +65,7 @@ class _UserSidebarState extends State<UserSidebar> {
       create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
-          if (state.status == UserStatus.success && state.personView != null) {
+          if (state.status == UserStatus.success && state.user != null) {
             context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
           }
         },

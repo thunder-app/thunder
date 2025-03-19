@@ -5,27 +5,27 @@ enum UserStatus { initial, fetching, success, failure }
 final class UserState extends Equatable {
   const UserState({
     this.status = UserStatus.initial,
-    this.personView,
+    this.user,
     this.message,
   });
 
   /// The status of the user state
   final UserStatus status;
 
-  /// The person view
-  final PersonView? personView;
+  /// The user that is being acted on
+  final ThunderUser? user;
 
   /// The message to display on failure
   final String? message;
 
   UserState copyWith({
     UserStatus? status,
-    PersonView? personView,
+    ThunderUser? user,
     String? message,
   }) {
     return UserState(
       status: status ?? this.status,
-      personView: personView ?? this.personView,
+      user: user ?? this.user,
       message: message,
     );
   }
@@ -36,5 +36,5 @@ final class UserState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, personView, message];
+  List<dynamic> get props => [status, user, message];
 }

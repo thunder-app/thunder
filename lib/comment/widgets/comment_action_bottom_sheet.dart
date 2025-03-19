@@ -11,6 +11,7 @@ import 'package:thunder/comment/widgets/general_comment_action_bottom_sheet.dart
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
@@ -122,7 +123,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           communityId: widget.commentView.community.id,
           isUserCommunityModerator: widget.commentView.creatorIsModerator,
           isUserBannedFromCommunity: widget.commentView.creatorBannedFromCommunity,
-          onAction: (UserAction userAction, PersonView? updatedPersonView) {
+          onAction: (UserAction userAction, ThunderUser? updatedUser) {
             widget.onAction?.call(userAction: userAction, commentView: widget.commentView);
           },
         ),
