@@ -432,9 +432,12 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   ],
                                   customTapActions: {
                                     MarkdownType.username: () {
-                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                            '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (user) {
+                                        _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                          _bodyTextController.selection.end,
+                                          _bodyTextController.selection.end,
+                                          '[@${user.username}@${fetchInstanceNameFromUrl(user.url)}](${user.url})',
+                                        );
                                       });
                                     },
                                     MarkdownType.community: () {

@@ -88,9 +88,9 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
           showUserInputDialog(
             context,
             title: l10n.username,
-            onUserSelected: (personView) async {
+            onUserSelected: (user) async {
               // Then show the label editor
-              ({UserLabel? userLabel, bool deleted}) result = await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(personView.person.name, personView.person.actorId));
+              ({UserLabel? userLabel, bool deleted}) result = await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(user.username, user.url));
               _updateChangedUserLabel(result);
             },
           );

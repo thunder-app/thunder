@@ -26,24 +26,24 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 /// Shows a dialog which allows typing/search for a user
-void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
-  Future<String?> onSubmitted({PersonView? payload, String? value}) async {
+void showUserInputDialog(BuildContext context, {required String title, required void Function(ThunderUser) onUserSelected}) async {
+  final l10n = AppLocalizations.of(context)!;
+
+  Future<String?> onSubmitted({ThunderUser? payload, String? value}) async {
     if (payload != null) {
       onUserSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
       // Normalize the username
-      final String? normalizedUsername = await getLemmyUser(value);
+      final normalizedUsername = await getLemmyUser(value);
+
       if (normalizedUsername != null) {
         try {
-          Account? account = await fetchActiveProfileAccount();
-          final GetPersonDetailsResponse getPersonDetailsResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
-            auth: account?.jwt,
-            username: normalizedUsername,
-          ));
+          final account = await fetchActiveProfileAccount();
+          final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account?.jwt, username: normalizedUsername));
+          final user = ThunderUser(response.personView.person, userView: response.personView);
 
-          onUserSelected(getPersonDetailsResponse.personView);
-
+          onUserSelected(user);
           Navigator.of(context).pop();
         } catch (e) {
           return AppLocalizations.of(context)!.unableToFindUser;
@@ -55,48 +55,45 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     return null;
   }
 
-  showInputDialog<PersonView>(
+  showInputDialog<ThunderUser>(
     context: context,
     title: title,
-    inputLabel: AppLocalizations.of(context)!.username,
+    inputLabel: l10n.username,
     onSubmitted: onSubmitted,
     getSuggestions: getUserSuggestions,
     suggestionBuilder: (payload) => buildUserSuggestionWidget(context, payload),
   );
 }
 
-Future<List<PersonView>> getUserSuggestions(String query) async {
-  if (query.isNotEmpty != true) {
-    return [];
-  }
-  Account? account = await fetchActiveProfileAccount();
-  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+Future<List<ThunderUser>> getUserSuggestions(String query) async {
+  if (query.isNotEmpty != true) return [];
+
+  final account = await fetchActiveProfileAccount();
+  final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.users,
     limit: 20,
   ));
-  return searchResponse.users;
+
+  final users = response.users.map((pv) => ThunderUser(pv.person, userView: pv)).toList();
+  return users;
 }
 
-Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void Function(PersonView)? onSelected}) {
+Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {void Function(ThunderUser)? onSelected}) {
   return Tooltip(
     message: generateUserFullName(
       context,
-      payload.person.name,
-      payload.person.displayName,
-      fetchInstanceNameFromUrl(payload.person.actorId),
+      payload.username,
+      payload.displayName,
+      fetchInstanceNameFromUrl(payload.url),
     ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: UserAvatar(user: ThunderUser(payload.person)),
-        title: Text(
-          payload.person.displayName ?? payload.person.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        leading: UserAvatar(user: payload),
+        title: Text(payload.name, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Semantics(
           excludeSemantics: true,
           child: Marquee(
@@ -105,9 +102,9 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
             pauseDuration: const Duration(seconds: 1),
             child: UserFullNameWidget(
               context,
-              payload.person.name,
-              payload.person.displayName,
-              fetchInstanceNameFromUrl(payload.person.actorId),
+              payload.username,
+              payload.displayName,
+              fetchInstanceNameFromUrl(payload.url),
               // Override because we're showing display name above
               useDisplayName: false,
             ),

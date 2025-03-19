@@ -188,8 +188,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               showUserInputDialog(
                 context,
                 title: l10n.blockUser,
-                onUserSelected: (personView) {
-                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personView.person.id, unblock: false));
+                onUserSelected: (user) {
+                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: user.id, unblock: false));
                 },
               );
               break;
