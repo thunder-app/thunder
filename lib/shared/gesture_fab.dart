@@ -117,7 +117,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
             child: Material(
               shape: widget.centered ? null : const CircleBorder(),
               clipBehavior: widget.centered ? Clip.none : Clip.antiAlias,
-              color: Colors.transparent,
+              color: widget.centered ? Colors.transparent : null,
               elevation: widget.centered ? 0 : 4,
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
