@@ -106,6 +106,8 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
       height: widget.height,
       width: widget.width,
       fit: widget.fit,
+      color: widget.viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+      colorBlendMode: widget.viewed == true ? BlendMode.modulate : null,
       cache: true,
       clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
       cacheWidth: widget.width != null ? (widget.width! * devicePixelRatio).toInt() : null,
