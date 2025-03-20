@@ -485,7 +485,7 @@
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
   },
-  "confirmMarkAllAsReadBody": "Are you sure you want to mark all messages as read?",
+  "confirmMarkAllAsReadBody": "Are you sure you want to mark all replies, mentions, and messages as read?",
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
