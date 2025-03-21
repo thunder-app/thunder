@@ -1,18 +1,20 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lemmy_api_client/src/v3/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
-import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/links.dart';
 
 /// Holds the app bar for the post page.
@@ -233,8 +235,8 @@ class PostAppBarActions extends StatelessWidget {
     return ('', null);
   }
 
-  final sortTypeItemIndex = CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  ListPickerItem<CommentSortType>? sortTypeItem =
+      CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).firstWhereOrNull((sortTypeItem) => sortTypeItem.payload == state.sortType);
 
   return (sortTypeItem?.label ?? '', sortTypeItem?.icon);
 }
