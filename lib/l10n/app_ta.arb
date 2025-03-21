@@ -1,1 +1,834 @@
-{}
+{
+  "addDiscussionLanguage": "மொழியைச் சேர்க்கவும்",
+  "@addDiscussionLanguage": {
+    "description": "Hint for text field to add language"
+  },
+  "blue": "நீலம்",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "collapsePost": "வீழ்ச்சி இடுகை",
+  "@collapsePost": {},
+  "colorizeCommunityName": "சமூக பெயரை வண்ணமயமாக்கவும்",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "comment": "கருத்து",
+  "@comment": {},
+  "commentBehaviourSettings": "கருத்துகள்",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "comments": "கருத்துகள்",
+  "@comments": {},
+  "communityStyle": "சமூக நடை",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "confirmMarkAllAsReadTitle": "அனைத்தையும் படித்தபடி குறிக்கவும்?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "controversial": "சர்ச்சைக்குரிய",
+  "@controversial": {},
+  "downvoteColor": "வண்ணத்தை குறைக்கிறது",
+  "@downvoteColor": {
+    "description": "Name of downvote color setting"
+  },
+  "actionColorsRedirect": "வண்ணங்களைத் தனிப்பயனாக்க விரும்புகிறீர்களா?",
+  "@actionColorsRedirect": {
+    "description": "Redirect hint to action colors"
+  },
+  "actions": "செயல்கள்",
+  "@actions": {},
+  "active": "செயலில்",
+  "@active": {},
+  "activity": "செய்கைப்பாடு",
+  "@activity": {
+    "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+  },
+  "add": "கூட்டு",
+  "@add": {},
+  "addAccount": "கணக்கைச் சேர்க்கவும்",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "உங்கள் கணக்கைக் காண உள்நுழைக.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "அநாமதேய நிகழ்வைச் சேர்க்கவும்",
+  "@addAnonymousInstance": {},
+  "addAsCommunityModerator": "சமூக மதிப்பீட்டாளராகச் சேர்க்கவும்",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "addKeywordFilter": "முக்கிய சொல்லைச் சேர்க்கவும்",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "பிடித்தவைகளில் சேர்க்கவும்",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addUserLabel": "பயனர் லேபிளைச் சேர்க்கவும்",
+  "@addUserLabel": {
+    "description": "Action for adding a user label"
+  },
+  "addedCommunityToSubscriptions": "சமூகத்திற்கு குழுசேர்ந்தது",
+  "@addedCommunityToSubscriptions": {},
+  "addedInstanceMod": "நிகழ்வு மோட் சேர்க்கப்பட்டது",
+  "@addedInstanceMod": {
+    "description": "Short decription for moderator action to add a mod to an instance"
+  },
+  "addedModToCommunity": "சமூகத்திற்கு மோட் சேர்க்கப்பட்டது",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "admin": "நிர்வாகி",
+  "@admin": {
+    "description": "Role name for admin"
+  },
+  "advanced": "மேம்பட்ட",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "ago": "{time} முன்பு",
+  "@ago": {
+    "description": "Represents a duration in the past"
+  },
+  "all": "அனைத்தும்",
+  "@all": {},
+  "allPosts": "அனைத்து இடுகைகளும்",
+  "@allPosts": {},
+  "allowOpenSupportedLinks": "உதவி இணைப்புகளைத் திறக்க பயன்பாட்டை அனுமதிக்கவும்.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "alreadyPostedTo": "ஏற்கனவே இடுகையிடப்பட்டது",
+  "@alreadyPostedTo": {},
+  "altText": "மாற்று உரை",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "alternateSources": "மாற்று ஆதாரங்கள்",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "always": "எப்போதும்",
+  "@always": {},
+  "averageComments": "{x} கருத்துகள்/மாதம்",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "averageContributions": "{x} பங்களிப்புகள்/மாதம்",
+  "@averageContributions": {
+    "description": "Describes the average number of contributions (both posts and comments) in the past month"
+  },
+  "averagePosts": "{x} இடுகைகள்/மாதம்",
+  "@averagePosts": {
+    "description": "Describes the average number of posts created in the past month"
+  },
+  "blockCommunityInstance": "சமூக உதாரணத்தைத் தடுக்கும்",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "blockInstance": "தொகுதி நிகழ்வு",
+  "@blockInstance": {},
+  "blockManagement": "தொகுதி மேலாண்மை",
+  "@blockManagement": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockSettingLabel": "பயனர்/சமூகம்/நிகழ்வு தொகுதிகள்",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockUser": "தொகுதி பயனர்",
+  "@blockUser": {},
+  "blockUserInstance": "பயனர் உதாரணத்தைத் தடுக்கும்",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "blockedCommunities": "தடுக்கப்பட்ட சமூகங்கள்",
+  "@blockedCommunities": {},
+  "blockedInstances": "தடுக்கப்பட்ட நிகழ்வுகள்",
+  "@blockedInstances": {},
+  "bold": "தடிமான",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "blockedUsers": "தடுக்கப்பட்ட பயனர்கள்",
+  "@blockedUsers": {},
+  "changePassword": "கடவுச்சொல்லை மாற்றவும்",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "changePasswordWarning": "உங்கள் கடவுச்சொல்லை மாற்ற, நீங்கள் உங்கள் நிகழ்வு தளத்திற்கு திருப்பி விடப்படுவீர்கள்.\n\n நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "changeSort": "வரிசைப்படுத்துங்கள்",
+  "@changeSort": {},
+  "clearCache": "தெளிவான தற்காலிக சேமிப்பு ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearCacheLabel": "தெளிவான தற்காலிக சேமிப்பு",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "clearDatabase": "தரவுத்தளத்தை அழிக்கவும்",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "தெளிவான விருப்பத்தேர்வுகள்",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "clearSearch": "தேடலை அழி",
+  "@clearSearch": {},
+  "clearedCache": "கேச் வெற்றிகரமாக அழிக்கப்பட்டது.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "clearedDatabase": "உள்ளக தரவுத்தளம் அழிக்கப்பட்டது. புதிய மாற்றங்கள் நடைமுறைக்கு வர தண்டரை மறுதொடக்கம் செய்யுங்கள்.",
+  "@clearedDatabase": {},
+  "clearedUserPreferences": "அனைத்து பயனர் விருப்பங்களையும் அழித்துவிட்டது",
+  "@clearedUserPreferences": {},
+  "close": "மூடு",
+  "@close": {},
+  "collapse": "சரிவு",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "collapseCommentPreview": "கருத்து முன்னோட்டம்",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "collapseInformation": "தகவல்களை சரிவு",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "collapseParentCommentBodyOnGesture": "சரிந்தபோது பெற்றோரின் கருத்தை மறைக்கவும்",
+  "@collapseParentCommentBodyOnGesture": {
+    "description": "Toggle to collapse parent comment body on gesture."
+  },
+  "collapsePostPreview": "இடுகை முன்னோட்டத்தை வீழ்த்துங்கள்",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "collapseSpoiler": "ச்பாய்லர் சரிவு",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "color": "நிறம்",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "colorizeInstanceName": "நிகழ்வு பெயரை வண்ணமயமாக்குங்கள்",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colorizeUserName": "பயனர் பெயரை வண்ணமயமாக்குங்கள்",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
+  },
+  "colors": "நிறங்கள்",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "combineCommentScores": "கருத்து மதிப்பெண்களை இணைக்கவும்",
+  "@combineCommentScores": {
+    "description": "Toggle to combine comment scores."
+  },
+  "combineCommentScoresLabel": "கருத்து மதிப்பெண்களை இணைக்கவும்",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "combineNavAndFab": "FAB மற்றும் வழிசெலுத்தல் பொத்தான்களை இணைக்கவும்",
+  "@combineNavAndFab": {},
+  "combineNavAndFabDescription": "வழிசெலுத்தல் பொத்தான்களுக்கு இடையில் மிதக்கும் செயல் பொத்தானைக் காண்பிக்கும்.",
+  "@combineNavAndFabDescription": {},
+  "comfortable": "வசதியானது",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "commentShowUserInstance": "பயனர் உதாரணத்தைக் காட்டு",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "commentSortType": "கருத்து வரிசை வகை",
+  "@commentSortType": {},
+  "commentSwipeActions": "கருத்து ச்வைப் செயல்கள்",
+  "@commentSwipeActions": {
+    "description": "Setting for comment swipe actions"
+  },
+  "commentSwipeGesturesHint": "அதற்கு பதிலாக பொத்தான்களைப் பயன்படுத்த விரும்புகிறீர்களா? பொது அமைப்புகளில் கருத்துகள் பிரிவில் அவற்றை இயக்கவும்.",
+  "@commentSwipeGesturesHint": {},
+  "communities": "சமூகங்கள்",
+  "@communities": {},
+  "community": "சமூகம்",
+  "@community": {},
+  "communityActions": "சமூக நடவடிக்கைகள்",
+  "@communityActions": {
+    "description": "Heading for community actions page"
+  },
+  "communityEntry": "சமூகம் '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "communityFormat": "சமூக வடிவம்",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "communityNameColor": "சமூக பெயர் நிறம்",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "communityNameThickness": "சமூக பெயர் தடிமன்",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "compact": "கச்சிதமான",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "compactPostCardMetadataItems": "சிறிய பார்வை மேனிலை தரவு",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "compactView": "சிறிய பார்வை",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "அமைப்புகளை சரிசெய்ய சிறிய பார்வையை இயக்கவும்",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "சிறிய பார்வை அமைப்புகள்",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "condensed": "ஒடுக்கப்பட்ட",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirm": "உறுதிப்படுத்தவும்",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
+  "confirmLogOutBody": "நீங்கள் நிச்சயமாக வெளியேற விரும்புகிறீர்களா?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "வெளியேறு?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "accountSwitchParentCommentNotFound": "தேர்ந்தெடுக்கப்பட்ட கருத்து '{instance}' இல் காணப்படவில்லை. முந்தைய கணக்கிற்கு மாறுகிறது.",
+  "@accountSwitchParentCommentNotFound": {
+    "description": "Error message for when we couldn't resolve comment to reply to"
+  },
+  "actionColors": "செயல் வண்ணங்கள்",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "confirmResetCommentPreferences": "இது அனைத்து கருத்து விருப்பங்களையும் மீட்டமைக்கும். நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "இது அனைத்து இடுகை விருப்பங்களையும் மீட்டமைக்கும். நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "confirmUnsubscription": "நீங்கள் நிச்சயமாக குழுவிலக விரும்புகிறீர்களா?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "connectedToUnifiedPushDistributorApp": "{பயன்பாடு with உடன் இணைக்கப்பட்டுள்ளது",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "contentManagement": "உள்ளடக்க மேலாண்மை",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "contentWarning": "உள்ளடக்க எச்சரிக்கை",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "copiedToClipboard": "இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது",
+  "@copiedToClipboard": {},
+  "copy": "நகலெடு",
+  "@copy": {},
+  "copyComment": "கருத்து நகல்",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "copySelected": "தேர்ந்தெடுக்கப்பட்ட நகல்",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "copyText": "உரையை நகலெடுக்கவும்",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "பிழை: கருத்தை நீக்க இடுகையை தீர்மானிக்க முடியவில்லை.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "பிழை: கருத்து தெரிவிக்க இடுகையை தீர்மானிக்க முடியவில்லை.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "இந்த நேரத்தில் உங்கள் கருத்து அறிக்கையை சமர்ப்பிக்க முடியவில்லை. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்",
+  "@couldntCreateReport": {},
+  "couldntFindPost": "கோரப்பட்ட இடுகையை ஏற்ற முடியவில்லை. இது நீக்கப்பட்டிருக்கலாம் அல்லது அகற்றப்பட்டிருக்கலாம்.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
+  "countComments": "{count} கருத்துகள்",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countLocalSubscribers": "{count} உள்ளக சந்தாதாரர்கள்",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "countPosts": "{count} இடுகைகள்",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countSubscribers": "{count} சந்தாதாரர்கள்",
+  "@countSubscribers": {
+    "description": "Number of subscribers"
+  },
+  "countUsers": "{count} பயனர்கள்",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "countUsersActiveDay": "{count} பயனர்கள்/நாள்",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveHalfYear": "{count} பயனர்கள்/6 மோ",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "countUsersActiveMonth": "{count} பயனர்கள்/மோ",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "countUsersActiveWeek": "{count} பயனர்கள்/WK",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "createAccount": "கணக்கை உருவாக்கவும்",
+  "@createAccount": {},
+  "createComment": "கருத்தை உருவாக்குங்கள்",
+  "@createComment": {},
+  "createNewCrossPost": "புதிய குறுக்கு இடுகையை உருவாக்கவும்",
+  "@createNewCrossPost": {},
+  "createPost": "இடுகையை உருவாக்கவும்",
+  "@createPost": {},
+  "created": "உருவாக்கப்பட்டது {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "createdToday": "இன்று உருவாக்கப்பட்டது",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "creator": "உருவாக்கியவர்",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "crossPostedFrom": "குறுக்கு இடுகையிடப்பட்டது: {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
+  },
+  "crossPostedTo": "குறுக்கு இடுகையிடப்பட்டது",
+  "@crossPostedTo": {},
+  "currentLongPress": "தற்போது நீண்ட பத்திரிகையாக அமைக்கப்பட்டுள்ளது",
+  "@currentLongPress": {},
+  "currentNotificationsMode": "தற்போதைய அறிவிப்புகள் பயன்முறை: {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "currentSinglePress": "தற்போது ஒற்றை பத்திரிகையாக அமைக்கப்பட்டுள்ளது",
+  "@currentSinglePress": {},
+  "customizeSwipeActions": "ச்வைப் செயல்களைத் தனிப்பயனாக்குங்கள் (மாற்றத் தட்டவும்)",
+  "@customizeSwipeActions": {},
+  "dangerZone": "இடர் மண்டலம்",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
+  "dark": "இருண்ட",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "databaseExportWarning": "தரவுத்தளத்தில் உங்கள் லெம்மி கணக்கு தொடர்பான முக்கியமான தகவல்கள் இருக்கலாம். நீங்கள் அதை ஏற்றுமதி செய்தால், அதை யாருடனும் பகிர்ந்து கொள்ளக்கூடாது. நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@databaseExportWarning": {
+    "description": "Message shown to the user when exporting the db"
+  },
+  "databaseExportedSuccessfully": "தரவுத்தளம் வெற்றிகரமாக '{savedFilePath}' க்கு ஏற்றுமதி செய்யப்பட்டது",
+  "@databaseExportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully exported"
+  },
+  "databaseImportedSuccessfully": "தரவுத்தளம் வெற்றிகரமாக இறக்குமதி செய்யப்பட்டது!",
+  "@databaseImportedSuccessfully": {
+    "description": "Message shown to the user when the db was successfully imported"
+  },
+  "databaseNotExportedSuccessfully": "தரவுத்தளம் வெற்றிகரமாக ஏற்றுமதி செய்யப்படவில்லை அல்லது செயல்பாடு ரத்து செய்யப்பட்டது.",
+  "@databaseNotExportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully exported"
+  },
+  "databaseNotImportedSuccessfully": "தரவுத்தளம் வெற்றிகரமாக இறக்குமதி செய்யப்படவில்லை, அல்லது செயல்பாடு ரத்து செய்யப்பட்டது.",
+  "@databaseNotImportedSuccessfully": {
+    "description": "Message shown to the user when the db was unsuccessfully imported"
+  },
+  "dateFormat": "தேதி வடிவம்",
+  "@dateFormat": {
+    "description": "Setting for date format"
+  },
+  "debugDescription": "பின்வரும் பிழைத்திருத்த அமைப்புகள் சரிசெய்தல் நோக்கங்களுக்காக மட்டுமே பயன்படுத்தப்பட வேண்டும்.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "debugNotificationsDescription": "அறிவிப்புகள் தொடர்பான சிக்கல்களை சரிசெய்ய பின்வரும் விருப்பங்களைப் பயன்படுத்தவும்.",
+  "@debugNotificationsDescription": {
+    "description": "A description for the notification debugging section"
+  },
+  "decline": "வீழ்ச்சி",
+  "@decline": {
+    "description": "The ability to decline an option"
+  },
+  "defaultColor": "இயல்புநிலை",
+  "@defaultColor": {
+    "description": "Default setting value (e.g., color)"
+  },
+  "defaultCommentSortType": "இயல்புநிலை கருத்து வரிசை வகை",
+  "@defaultCommentSortType": {
+    "description": "Setting for default comment sort type"
+  },
+  "defaultFeedSortType": "இயல்புநிலை ஊட்ட வரிசை வகை",
+  "@defaultFeedSortType": {
+    "description": "Default sorting type for the feed."
+  },
+  "defaultFeedType": "இயல்புநிலை தீவன வகை",
+  "@defaultFeedType": {
+    "description": "Default listing type for the feed."
+  },
+  "delete": "நீக்கு",
+  "@delete": {},
+  "deleteAccount": "கணக்கை நீக்கு",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deleteAccountDescription": "உங்கள் கணக்கை நிரந்தரமாக நீக்க, நீங்கள் உங்கள் நிகழ்வு தளத்திற்கு திருப்பி விடப்படுவீர்கள்.\n\n நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
+  "deleteComment": "கருத்தை நீக்கு",
+  "@deleteComment": {
+    "description": "Action for deleting a comment"
+  },
+  "deleteImageConfirmMessage": "இந்த படத்தை நீக்க விரும்புகிறீர்களா?",
+  "@deleteImageConfirmMessage": {
+    "description": "Confirmation messages for deleting an image"
+  },
+  "deleteImageConfirmTitle": "நீக்கவா?",
+  "@deleteImageConfirmTitle": {
+    "description": "Confirmation title message for deleting an image"
+  },
+  "deleteLocalDatabase": "உள்ளக தரவுத்தளத்தை நீக்கு",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "இந்த நடவடிக்கை உள்ளக தரவுத்தளத்தை அகற்றும், மேலும் உங்கள் எல்லா கணக்குகளிலிருந்தும் உங்களை உள்நுழைகிறது.\n\n நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "உள்ளக விருப்பங்களை நீக்கு",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "இது உங்கள் பயனர் விருப்பத்தேர்வுகள் மற்றும் அமைப்புகளை இடியில் அழிக்கும்.\n\n நீங்கள் தொடர விரும்புகிறீர்களா?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "deletePost": "இடுகையை நீக்கு",
+  "@deletePost": {
+    "description": "Action for deleting a post"
+  },
+  "deleteUserLabelConfirmation": "நீங்கள் நிச்சயமாக லேபிளை நீக்க விரும்புகிறீர்களா?",
+  "@deleteUserLabelConfirmation": {
+    "description": "Confirmation message for deleting a label"
+  },
+  "deleted": "நீக்கப்பட்டது",
+  "@deleted": {
+    "description": "Status to indicate that an item has been deleted"
+  },
+  "deletedByCreator": "படைப்பாளரால் நீக்கப்பட்டது",
+  "@deletedByCreator": {
+    "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+  },
+  "deletedByModerator": "மதிப்பீட்டாளரால் நீக்கப்பட்டது",
+  "@deletedByModerator": {
+    "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "doNotSupportMultipleUnifiedPushApps": "பல இணக்கமான பயன்பாடுகள் கிடைத்தன; ஒன்றை மட்டும் நிறுவவும்",
+  "@doNotSupportMultipleUnifiedPushApps": {
+    "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+  },
+  "downloadingMedia": "பகிர ஊடகத்தைப் பதிவிறக்குகிறது…",
+  "@downloadingMedia": {},
+  "downvote": "கீழ்நோக்கி",
+  "@downvote": {
+    "description": "Action for downvoting a post/comment"
+  },
+  "downvoted": "கீழ்நோக்கி",
+  "@downvoted": {
+    "description": "Short description for downvoting a post/comment"
+  },
+  "downvotesDisabled": "இந்த நிகழ்வில் டவுன்வோட்டுகள் அணைக்கப்படுகின்றன.",
+  "@downvotesDisabled": {},
+  "edit": "தொகு",
+  "@edit": {},
+  "editComment": "எப்படி திருத்து",
+  "@editComment": {},
+  "editPost": "இடுகையைத் திருத்து",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "enableCommentNavigation": "கருத்து வழிசெலுத்தலை இயக்கவும்",
+  "@enableCommentNavigation": {
+    "description": "Setting for enable comment navigation"
+  },
+  "enableExperimentalFeatures": "சோதனை அம்சங்களை இயக்கவும்",
+  "@enableExperimentalFeatures": {
+    "description": "Setting to enable experimental features"
+  },
+  "enableFeedFab": "ஊட்டங்களில் மிதக்கும் பொத்தானை இயக்கவும்",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "about": "பற்றி",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accept": "ஏற்றுக்கொள்",
+  "@accept": {
+    "description": "The ability to accept an option"
+  },
+  "accessibility": "அணுகல்",
+  "@accessibility": {},
+  "accessibilityProfilesDescription": "அணுகல் சுயவிவரங்கள் ஒரு குறிப்பிட்ட அணுகல் தேவைக்கு ஏற்ப பல அமைப்புகளை ஒரே நேரத்தில் பயன்படுத்த அனுமதிக்கிறது.",
+  "@accessibilityProfilesDescription": {},
+  "account": "{எண்ணிக்கை, பன்மை, பூச்சியம் {Account} ஒன்று {Account} பிற {Accounts}} ",
+  "@account": {
+    "description": "Describes the user account"
+  },
+  "accountBirthday": "கணக்கு பிறந்த நாள் {additionalInfo}",
+  "@accountBirthday": {
+    "description": "User descriptor for accounts created on today's date"
+  },
+  "accountSettingOverrideWarning": "உங்கள் கணக்கு அமைப்புகள் பின்வரும் அமைப்புகளை மீறுகின்றன",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "accountSettings": "கணக்கு அமைப்புகள்",
+  "@accountSettings": {},
+  "accountSettingsExportedSuccessfully": "லெம்மி கணக்கு அமைப்புகள் வெற்றிகரமாக {savedFilePath க்கு க்கு ஏற்றுமதி செய்யப்பட்டன!",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "லெம்மி கணக்கு அமைப்புகள் வெற்றிகரமாக இறக்குமதி செய்யப்படுகின்றன!",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "accountSwitchPostNotFound": "தேர்ந்தெடுக்கப்பட்ட இடுகை '{instance}' இல் காணப்படவில்லை. முந்தைய கணக்கிற்கு மாறுகிறது.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "andXMore": "மேலும் {count} மேலும்",
+  "@andXMore": {},
+  "animations": "அனிமேசன்கள்",
+  "@animations": {},
+  "anonymous": "அநாமதேய",
+  "@anonymous": {},
+  "anonymousInstances": "அநாமதேய நிகழ்வுகள்",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "appLanguage": "பயன்பாட்டு மொழி",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "தோற்றம்",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "applePushNotificationService": "ஆப்பிள் புச் அறிவிப்பு பணி",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "applied": "பயன்படுத்தப்பட்டது",
+  "@applied": {},
+  "apply": "இடு",
+  "@apply": {},
+  "areNotificationsAllowedBySystem": "அறிவிப்புகள் கணினி மூலம் அனுமதிக்கப்படுகின்றன: {yesOrNo}",
+  "@areNotificationsAllowedBySystem": {
+    "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "back": "பின்",
+  "@back": {},
+  "backButton": "பின் பொத்தான்",
+  "@backButton": {},
+  "backToTop": "மீண்டும் மேலே",
+  "@backToTop": {},
+  "backgroundCheckWarning": "அறிவிப்பு காசோலைகள் கூடுதல் பேட்டரியை நுகரும் என்பதை நினைவில் கொள்க",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
+  "banFromCommunity": "சமூகத்திலிருந்து தடை",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "bannedUser": "தடைசெய்யப்பட்ட பயனர்",
+  "@bannedUser": {
+    "description": "Short decription for moderator action to ban a user"
+  },
+  "bannedUserFromCommunity": "சமூகத்திலிருந்து தடைசெய்யப்பட்ட பயனர்",
+  "@bannedUserFromCommunity": {
+    "description": "Short decription for moderator action to ban a user from a community"
+  },
+  "base": "காரம்",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "blockCommunity": "தொகுதி சமூகம்",
+  "@blockCommunity": {},
+  "boldCommunityName": "தைரியமான சமூக பெயர்",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "boldInstanceName": "தைரியமான நிகழ்வு பெயர்",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "boldUserName": "தைரியமான பயனர் பெயர்",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "bot": "போட்",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "browserMode": "இணைப்பு கையாளுதல்",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "browsingAnonymously": "நீங்கள் தற்போது {instance} அநாமதேயமாக உலாவுகிறீர்கள்.",
+  "@browsingAnonymously": {},
+  "cancel": "ரத்துசெய்",
+  "@cancel": {},
+  "cannotReportOwnComment": "உங்கள் சொந்த கருத்துக்கு நீங்கள் ஒரு அறிக்கையை சமர்ப்பிக்கக்கூடாது.",
+  "@cannotReportOwnComment": {},
+  "cantBlockAdmin": "நீங்கள் ஒரு நிகழ்வு நிர்வாகியைத் தடுக்கக்கூடாது.",
+  "@cantBlockAdmin": {},
+  "cantBlockYourself": "நீங்களே தடுக்கக்கூடாது.",
+  "@cantBlockYourself": {},
+  "cardPostCardMetadataItems": "அட்டை பார்வை மேனிலை தரவு",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "cardView": "அட்டை பார்வை",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "அமைப்புகளை சரிசெய்ய அட்டை காட்சியை இயக்கவும்",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "அட்டை காட்சி அமைப்புகள்",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "changeAccountSettingsFor": "கணக்கு அமைப்புகளை மாற்றவும்",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "changeNotificationSettings": "அறிவிப்பு அமைப்புகளை மாற்றவும் ...",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "commentSavedAsDraft": "கருத்து வரைவாக சேமிக்கப்பட்டது",
+  "@commentSavedAsDraft": {},
+  "commentFontScale": "கருத்து உள்ளடக்க எழுத்துரு அளவு",
+  "@commentFontScale": {
+    "description": "Setting for comment font scale"
+  },
+  "commentPreview": "கொடுக்கப்பட்ட அமைப்புகளுடன் கருத்துகளின் முன்னோட்டத்தைக் காட்டுங்கள்",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "commentReported": "கருத்து மதிப்பாய்வுக்காக குறிக்கப்பட்டுள்ளது.",
+  "@commentReported": {},
+  "commentShowUserAvatar": "பயனர் அவதாரத்தைக் காட்டு",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "debug": "பிழைத்திருத்தம்",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "deselectUndeterminedWarning": "நீங்கள் தீர்மானிக்கப்படாமல் தேர்வுசெய்தால், நீங்கள் பெரும்பாலான உள்ளடக்கங்களைக் காண மாட்டீர்கள்.",
+  "@deselectUndeterminedWarning": {},
+  "detailedReason": "காரணம்: {reason}",
+  "@detailedReason": {
+    "description": "The reason for the moderation action"
+  },
+  "dimReadPosts": "மங்கலான இடுகைகள்",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "disable": "முடக்கு",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
+  "disablePushNotifications": "புச் அறிவிப்புகளை முடக்கு",
+  "@disablePushNotifications": {
+    "description": "Description when disabling push notifications"
+  },
+  "disabled": "முடக்கப்பட்டது",
+  "@disabled": {
+    "description": "Describes the state of something that is disabled"
+  },
+  "discussionLanguages": "கலந்துரையாடல் மொழிகள்",
+  "@discussionLanguages": {
+    "description": "Only load posts and communities in your language(s)"
+  },
+  "discussionLanguagesTooltip": "தேர்ந்தெடுக்கப்பட்ட மொழிகளுக்கு உள்ளடக்கம் வடிகட்டப்படுகிறது.",
+  "@discussionLanguagesTooltip": {},
+  "dismissRead": "படித்தல்",
+  "@dismissRead": {},
+  "displayName": "காட்சி பெயர்",
+  "@displayName": {
+    "description": "Label for display name"
+  },
+  "displayUserScore": "பயனர் மதிப்பெண்களைக் காண்பி (கர்மா).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "dividerAppearance": "வகுப்பி தோற்றம்",
+  "@dividerAppearance": {
+    "description": "Divider appearance category"
+  },
+  "doNotShowAgain": "மீண்டும் காட்ட வேண்டாம்",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "email": "மின்னஞ்சல்",
+  "@email": {
+    "description": "Label for email input"
+  },
+  "empty": "காலி",
+  "@empty": {},
+  "emptyInbox": "வெற்று இன்பாக்ச்",
+  "@emptyInbox": {},
+  "emptyUri": "இணைப்பு காலியாக உள்ளது. தொடர சரியான மாறும் இணைப்பை வழங்கவும்.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  }
+}
