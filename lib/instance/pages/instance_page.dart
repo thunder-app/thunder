@@ -317,7 +317,7 @@ class _InstancePageState extends State<InstancePage> {
                                 return Material(
                                   child: communityView != null
                                       ? CommunityListEntry(
-                                          communityView: communityView,
+                                          community: ThunderCommunity(communityView.community, communityView: communityView),
                                           isUserLoggedIn: false,
                                           resolutionInstance: state.resolutionInstance,
                                         )

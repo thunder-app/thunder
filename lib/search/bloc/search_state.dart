@@ -19,8 +19,8 @@ class SearchState extends Equatable {
   });
 
   final SearchStatus status;
-  List<CommunityView>? communities;
-  List<CommunityView>? trendingCommunities;
+  List<ThunderCommunity>? communities;
+  List<ThunderCommunity>? trendingCommunities;
   List<PersonView>? users;
   List<CommentView>? comments;
   List<PostViewMedia>? posts;
@@ -36,8 +36,8 @@ class SearchState extends Equatable {
 
   SearchState copyWith({
     SearchStatus? status,
-    List<CommunityView>? communities,
-    List<CommunityView>? trendingCommunities,
+    List<ThunderCommunity>? communities,
+    List<ThunderCommunity>? trendingCommunities,
     List<PersonView>? users,
     List<CommentView>? comments,
     List<PostViewMedia>? posts,

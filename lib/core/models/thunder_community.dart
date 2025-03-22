@@ -2,28 +2,37 @@ import 'package:lemmy_api_client/v3.dart';
 
 class ThunderCommunity {
   /// The Lemmy API model for the community.
-  Community community;
+  final Community _community;
 
-  ThunderCommunity(this.community);
+  /// The Lemmy API model for the community view.
+  final CommunityView? _communityView;
+
+  ThunderCommunity(this._community, {CommunityView? communityView}) : _communityView = communityView;
 
   /// The ID of the community.
-  int get id => community.id;
+  int get id => _community.id;
 
   /// The name of the community. If the community has a title, it is used. Otherwise, the name is used.
-  String get name => community.title.isNotEmpty == true ? community.title : community.name;
+  String get name => _community.title.isNotEmpty == true ? _community.title : _community.name;
 
   /// The name of the community.
-  String get communityName => community.name;
+  String get communityName => _community.name;
 
   /// The title of the community.
-  String get title => community.title;
+  String get title => _community.title;
 
   /// Whether the community is locked from posting.
-  bool get locked => community.postingRestrictedToMods;
+  bool get locked => _community.postingRestrictedToMods;
 
   /// The icon of the community.
-  String? get icon => community.icon;
+  String? get icon => _community.icon;
 
   /// The URL to the community. This is generally associated with the ActivityPub actor URL.
-  String get url => community.actorId;
+  String get url => _community.actorId;
+
+  /// The number of subscribers to the community.
+  int? get subscribers => _communityView?.counts.subscribers;
+
+  /// The current user subscription status to the community.
+  SubscribedType? get subscribed => _communityView?.subscribed;
 }

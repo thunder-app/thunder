@@ -224,7 +224,9 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
                 ThunderPopupMenuItem(
                   onTap: () async {
-                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                    final cv = context.read<FeedBloc>().state.fullCommunityView!.communityView;
+                    final community = ThunderCommunity(cv.community, communityView: cv);
+
                     bool isFavorite = _getFavoriteStatus(context);
                     await toggleFavoriteCommunity(context, community, isFavorite);
                   },
@@ -396,7 +398,7 @@ void _onSubscribeIconPressed(BuildContext context) async {
   final FeedBloc feedBloc = context.read<FeedBloc>();
   final FeedState feedState = feedBloc.state;
 
-  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
+  final community = ThunderCommunity(feedState.fullCommunityView!.communityView.community, communityView: feedState.fullCommunityView!.communityView);
   final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   final AppLocalizations l10n = AppLocalizations.of(context)!;

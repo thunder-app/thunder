@@ -197,8 +197,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               showCommunityInputDialog(
                 context,
                 title: l10n.blockCommunity,
-                onCommunitySelected: (communityView) {
-                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                onCommunitySelected: (ThunderCommunity community) {
+                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: community.id, unblock: false));
                 },
               );
               break;

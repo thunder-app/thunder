@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -182,7 +183,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse?.communities.toList(), event.favoriteCommunities),
+        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
         comments: searchResponse?.comments,
         posts: await parsePostViews(searchResponse?.posts ?? []),
@@ -236,7 +237,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse?.communities ?? []];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
           state.comments = [...state.comments ?? [], ...searchResponse?.comments ?? []];
           state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse?.posts ?? [])];
@@ -281,20 +282,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      GetCommunityResponse fullCommunityView = await lemmy.run(GetCommunity(
-        auth: account.jwt,
-        id: event.communityId,
-      ));
+      GetCommunityResponse response = await lemmy.run(GetCommunity(auth: account.jwt, id: event.communityId));
+      ThunderCommunity community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
-      List<CommunityView> communities;
+      List<ThunderCommunity> communities;
+
       if (event.query.isNotEmpty || state.viewingAll) {
         communities = state.communities ?? [];
 
-        communities = state.communities?.map((CommunityView communityView) {
-              if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
-              }
-              return communityView;
+        communities = state.communities?.map((ThunderCommunity c) {
+              if (c.id == community.id) return community;
+              return c;
             }).toList() ??
             [];
 
@@ -302,11 +300,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       } else {
         communities = state.trendingCommunities ?? [];
 
-        communities = state.trendingCommunities?.map((CommunityView communityView) {
-              if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
-              }
-              return communityView;
+        communities = state.trendingCommunities?.map((ThunderCommunity c) {
+              if (c.id == community.id) return community;
+              return c;
             }).toList() ??
             [];
 
@@ -316,19 +312,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
 
-      fullCommunityView = await lemmy.run(GetCommunity(
-        auth: account.jwt,
-        id: event.communityId,
-      ));
+      response = await lemmy.run(GetCommunity(auth: account.jwt, id: event.communityId));
+      community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
       if (event.query.isNotEmpty || state.viewingAll) {
         communities = state.communities ?? [];
 
-        communities = state.communities?.map((CommunityView communityView) {
-              if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
-              }
-              return communityView;
+        communities = state.communities?.map((ThunderCommunity c) {
+              if (c.id == community.id) return community;
+              return c;
             }).toList() ??
             [];
 
@@ -336,11 +328,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       } else {
         communities = state.trendingCommunities ?? [];
 
-        communities = state.trendingCommunities?.map((CommunityView communityView) {
-              if (communityView.community.id == fullCommunityView.communityView.community.id) {
-                return fullCommunityView.communityView;
-              }
-              return communityView;
+        communities = state.trendingCommunities?.map((ThunderCommunity c) {
+              if (c.id == community.id) return community;
+              return c;
             }).toList() ??
             [];
 
@@ -356,14 +346,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
 
-      ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(ListCommunities(
+      final response = await lemmy.run(ListCommunities(
         type: ListingType.local,
         sort: SortType.active,
         limit: 5,
         auth: account?.jwt,
       ));
 
-      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: listCommunitiesResponse.communities));
+      final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
     } catch (e) {
       // Not the end of the world if we can't load trending
     }
