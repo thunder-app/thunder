@@ -442,8 +442,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     },
                                     MarkdownType.community: () {
                                       showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                        _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                            '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
+                                        _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                          _bodyTextController.selection.end,
+                                          _bodyTextController.selection.end,
+                                          '!${community.communityName}@${fetchInstanceNameFromUrl(community.url)}',
+                                        );
                                       });
                                     },
                                   },

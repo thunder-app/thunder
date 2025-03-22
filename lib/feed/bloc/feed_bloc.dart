@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
@@ -55,8 +56,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
-    on<FeedCommunityViewUpdatedEvent>(
-      _onFeedCommunityViewUpdated,
+    on<FeedCommunityUpdatedEvent>(
+      _onFeedCommunityUpdated,
       transformer: throttleDroppable(Duration.zero),
     );
 
@@ -443,12 +444,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   /// Handles updating information about a community
-  Future<void> _onFeedCommunityViewUpdated(FeedCommunityViewUpdatedEvent event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedCommunityUpdated(FeedCommunityUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
-
-    GetCommunityResponse? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView);
-
-    emit(state.copyWith(status: FeedStatus.success, fullCommunityView: updatedFullCommunityView));
+    emit(state.copyWith(status: FeedStatus.success, community: event.community));
   }
 
   /// Resets the FeedState to its initial state
@@ -480,7 +478,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
-      fullCommunityView: null,
+      community: null,
+      communityInstance: null,
+      communityModerators: [],
       fullPersonView: null,
       communityId: null,
       communityName: null,
@@ -517,14 +517,20 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (event.reset) {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent(softReset: event.feedType == FeedType.account));
 
-      GetCommunityResponse? fullCommunityView;
+      ThunderCommunity? community;
+      ThunderInstance? communityInstance;
+      List<ThunderUser> communityModerators = [];
+
       GetPersonDetailsResponse? fullPersonView;
 
       switch (event.feedType) {
         case FeedType.community:
           // Fetch community information
           try {
-            fullCommunityView = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
+            final result = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
+            community = result['community'];
+            communityInstance = result['instance'];
+            communityModerators = result['moderators'];
           } catch (e) {
             // If we are given a community feed, but we can't load the community, that's a problem! Emit an error.
             return emit(state.copyWith(
@@ -591,7 +597,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         feedType: event.feedType,
         postListingType: event.postListingType,
         sortType: event.sortType,
-        fullCommunityView: fullCommunityView,
+        community: community,
+        communityInstance: communityInstance,
+        communityModerators: communityModerators,
         fullPersonView: fullPersonView,
         communityId: event.communityId,
         communityName: event.communityName,

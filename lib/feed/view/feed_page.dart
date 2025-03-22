@@ -426,12 +426,12 @@ class _FeedViewState extends State<FeedView> {
                               child: tagline?.isNotEmpty == true ? TagLine(tagline: tagline!) : Container(),
                             ),
                           ),
-                          if (state.fullCommunityView != null)
+                          if (state.community != null)
                             SliverToBoxAdapter(
                               child: Visibility(
                                 visible: state.feedType == FeedType.community,
                                 child: CommunityHeader(
-                                  getCommunityResponse: state.fullCommunityView!,
+                                  community: state.community!,
                                   showCommunitySidebar: showCommunitySidebar,
                                   onToggle: (bool toggled) {
                                     // Scroll to top first before showing the sidebar
@@ -549,7 +549,9 @@ class _FeedViewState extends State<FeedView> {
                                   duration: const Duration(milliseconds: 300),
                                   child: showCommunitySidebar
                                       ? CommunitySidebar(
-                                          getCommunityResponse: state.fullCommunityView,
+                                          community: state.community,
+                                          instance: state.communityInstance,
+                                          moderators: state.communityModerators,
                                           onDismiss: () => setState(() => showCommunitySidebar = false),
                                         )
                                       : showUserSidebar && state.fullPersonView != null

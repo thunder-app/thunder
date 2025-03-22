@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -133,7 +132,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
         ),
       GeneralPostAction.community => CommunityPostActionBottomSheet(
           postViewMedia: widget.postViewMedia,
-          onAction: (CommunityAction communityAction, CommunityView? updatedCommunityView) {
+          onAction: (CommunityAction communityAction, ThunderCommunity? updatedCommunity) {
             widget.onAction?.call(communityAction: communityAction, postViewMedia: widget.postViewMedia);
           },
         ),

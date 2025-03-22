@@ -11,7 +11,7 @@ String getAppBarTitle(FeedState state) {
   }
 
   if (state.communityId != null || state.communityName != null) {
-    return state.fullCommunityView?.communityView.community.title ?? '';
+    return state.community?.title ?? '';
   }
 
   if (state.userId != null || state.username != null) {

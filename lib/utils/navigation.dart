@@ -19,6 +19,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/thunder_community.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -380,7 +381,7 @@ Future<void> navigateToCreatePostPage(
   String? url,
   bool? prePopulated,
   int? communityId,
-  CommunityView? communityView,
+  ThunderCommunity? community,
   PostViewMedia? postViewMedia,
   Function(PostViewMedia, bool)? onPostSuccess,
 }) async {
@@ -400,6 +401,29 @@ Future<void> navigateToCreatePostPage(
       feedBloc = context.read<FeedBloc>();
     } catch (e) {
       // Don't need feed block if we're not opening post in the context of a feed.
+    }
+
+    ThunderCommunity? pvmCommunity;
+
+    if (postViewMedia != null) {
+      final cv = CommunityView(
+        community: postViewMedia.postView.community,
+        subscribed: postViewMedia.postView.subscribed,
+        blocked: false,
+        counts: CommunityAggregates(
+          communityId: postViewMedia.postView.community.id,
+          subscribers: 0,
+          posts: 0,
+          comments: 0,
+          published: DateTime.now(),
+          usersActiveDay: 0,
+          usersActiveWeek: 0,
+          usersActiveMonth: 0,
+          usersActiveHalfYear: 0,
+        ),
+      );
+
+      pvmCommunity = ThunderCommunity(cv.community, communityView: cv);
     }
 
     await Navigator.of(context).push(SwipeablePageRoute(
@@ -422,25 +446,7 @@ Future<void> navigateToCreatePostPage(
             url: url,
             prePopulated: prePopulated,
             communityId: communityId ?? postViewMedia?.postView.community.id,
-            communityView: communityView ??
-                (postViewMedia != null
-                    ? CommunityView(
-                        community: postViewMedia.postView.community,
-                        subscribed: postViewMedia.postView.subscribed,
-                        blocked: false,
-                        counts: CommunityAggregates(
-                          communityId: postViewMedia.postView.community.id,
-                          subscribers: 0,
-                          posts: 0,
-                          comments: 0,
-                          published: DateTime.now(),
-                          usersActiveDay: 0,
-                          usersActiveWeek: 0,
-                          usersActiveMonth: 0,
-                          usersActiveHalfYear: 0,
-                        ),
-                      )
-                    : null),
+            community: community ?? (postViewMedia != null ? pvmCommunity : null),
             postView: postViewMedia?.postView,
             onPostSuccess: (PostViewMedia pvm, bool userChanged) {
               // Update the existing post view media if it exists
@@ -699,7 +705,7 @@ void navigateToSearchPage(BuildContext context) {
           BlocProvider(create: (context) => SearchBloc()),
           BlocProvider.value(value: thunderBloc),
         ],
-        child: SearchPage(communityToSearch: feedBloc.state.fullCommunityView!.communityView, isInitiallyFocused: true),
+        child: SearchPage(communityToSearch: feedBloc.state.community, isInitiallyFocused: true),
       ),
     ),
   );

@@ -75,10 +75,10 @@ final class FeedItemUpdatedEvent extends FeedEvent {
   const FeedItemUpdatedEvent({required this.postViewMedia});
 }
 
-final class FeedCommunityViewUpdatedEvent extends FeedEvent {
-  final CommunityView communityView;
+final class FeedCommunityUpdatedEvent extends FeedEvent {
+  final ThunderCommunity community;
 
-  const FeedCommunityViewUpdatedEvent({required this.communityView});
+  const FeedCommunityUpdatedEvent({required this.community});
 }
 
 final class FeedItemActionedEvent extends FeedEvent {

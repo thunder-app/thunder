@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 
 enum ReportResolveStatus { unresolved, all }
 
 /// A [BottomSheet] that allows the user to filter reports by status and community
-/// When the submit button is pressed, the [onSubmit] function is called with the selected [ReportResolveStatus] and [CommunityView] if any.
+/// When the submit button is pressed, the [onSubmit] function is called with the selected [ReportResolveStatus] and [ThunderCommunity] if any.
 class ReportFilterBottomSheet extends StatefulWidget {
   const ReportFilterBottomSheet({super.key, required this.status, required this.onSubmit});
 
@@ -18,7 +17,7 @@ class ReportFilterBottomSheet extends StatefulWidget {
   final ReportResolveStatus status;
 
   /// The function to call when the submit button is pressed
-  final void Function(ReportResolveStatus reportResolveStatus, CommunityView? communityView) onSubmit;
+  final void Function(ReportResolveStatus reportResolveStatus, ThunderCommunity? community) onSubmit;
 
   @override
   State<ReportFilterBottomSheet> createState() => _ReportFilterBottomSheetState();
@@ -29,7 +28,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
   ReportResolveStatus status = ReportResolveStatus.all;
 
   /// The community to filter by
-  CommunityView? communityView;
+  ThunderCommunity? community;
 
   @override
   void initState() {
@@ -40,7 +39,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
       child: Padding(
@@ -79,16 +78,15 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
             Text(l10n.community, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             CommunitySelector(
-              communityId: communityView?.community.id,
-              communityView: communityView,
-              onCommunitySelected: (CommunityView cv) {
-                setState(() => communityView = cv);
+              community: community,
+              onCommunitySelected: (ThunderCommunity c) {
+                setState(() => community = c);
               },
             ),
             Align(
               alignment: Alignment.bottomRight,
               child: TextButton(
-                onPressed: () => widget.onSubmit(status, communityView),
+                onPressed: () => widget.onSubmit(status, community),
                 child: Text(l10n.apply),
               ),
             ),

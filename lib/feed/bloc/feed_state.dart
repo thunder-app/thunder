@@ -10,7 +10,9 @@ final class FeedState extends Equatable {
     this.hasReachedPostsEnd = false,
     this.hasReachedCommentsEnd = false,
     this.feedType = FeedType.general,
-    this.fullCommunityView,
+    this.community,
+    this.communityInstance,
+    this.communityModerators = const [],
     this.fullPersonView,
     this.postListingType,
     this.sortType,
@@ -56,7 +58,13 @@ final class FeedState extends Equatable {
   final SortType? sortType;
 
   /// The community information if applicable
-  final GetCommunityResponse? fullCommunityView;
+  final ThunderCommunity? community;
+
+  /// The community instance information if applicable
+  final ThunderInstance? communityInstance;
+
+  /// The community moderators if applicable
+  final List<ThunderUser> communityModerators;
 
   /// The person information if applicable
   final GetPersonDetailsResponse? fullPersonView;
@@ -115,7 +123,9 @@ final class FeedState extends Equatable {
     FeedType? feedType,
     ListingType? postListingType,
     SortType? sortType,
-    GetCommunityResponse? fullCommunityView,
+    ThunderCommunity? community,
+    ThunderInstance? communityInstance,
+    List<ThunderUser>? communityModerators,
     GetPersonDetailsResponse? fullPersonView,
     int? communityId,
     String? communityName,
@@ -142,7 +152,9 @@ final class FeedState extends Equatable {
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
-      fullCommunityView: fullCommunityView ?? this.fullCommunityView,
+      community: community ?? this.community,
+      communityInstance: communityInstance ?? this.communityInstance,
+      communityModerators: communityModerators ?? this.communityModerators,
       fullPersonView: fullPersonView ?? this.fullPersonView,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
@@ -170,7 +182,9 @@ final class FeedState extends Equatable {
   @override
   List<dynamic> get props => [
         status,
-        fullCommunityView,
+        community,
+        communityInstance,
+        communityModerators,
         fullPersonView,
         postViewMedias,
         commentViews,

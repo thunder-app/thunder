@@ -365,7 +365,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   navigateToCreatePostPage(
                     context,
                     communityId: postView.community.id,
-                    communityView: getCommunityResponse.communityView,
+                    community: ThunderCommunity(getCommunityResponse.communityView.community, communityView: getCommunityResponse.communityView),
                     postViewMedia: postViewMedia,
                     onPostSuccess: (PostViewMedia pvm, _) {
                       setState(() => postViewMedia = pvm);

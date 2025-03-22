@@ -151,12 +151,12 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
       try {
         FeedState feedState = context.read<FeedBloc>().state;
 
-        subtitle = feedState.fullCommunityView != null
+        subtitle = feedState.community != null
             ? CommunityFullNameWidget(
                 context,
-                feedState.fullCommunityView!.communityView.community.name,
-                feedState.fullCommunityView!.communityView.community.title,
-                fetchInstanceNameFromUrl(feedState.fullCommunityView!.communityView.community.actorId),
+                feedState.community!.communityName,
+                feedState.community!.title,
+                fetchInstanceNameFromUrl(feedState.community!.url),
               )
             : Text(widget.lemmyClient.lemmyApiV3.host);
       } catch (e) {

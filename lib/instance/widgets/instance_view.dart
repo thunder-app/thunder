@@ -1,10 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 
 class InstanceView extends StatelessWidget {
-  final Site site;
+  final ThunderInstance site;
 
   const InstanceView({super.key, required this.site});
 

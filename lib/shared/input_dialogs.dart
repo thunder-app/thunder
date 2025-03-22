@@ -21,7 +21,6 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/marquee_widget.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -46,10 +45,10 @@ void showUserInputDialog(BuildContext context, {required String title, required 
           onUserSelected(user);
           Navigator.of(context).pop();
         } catch (e) {
-          return AppLocalizations.of(context)!.unableToFindUser;
+          return l10n.unableToFindUser;
         }
       } else {
-        return AppLocalizations.of(context)!.unableToFindUser;
+        return l10n.unableToFindUser;
       }
     }
     return null;
@@ -116,59 +115,58 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, List<CommunityView>? emptySuggestions}) async {
+void showCommunityInputDialog(BuildContext context, {required String title, required void Function(ThunderCommunity) onCommunitySelected, List<ThunderCommunity>? emptySuggestions}) async {
+  final l10n = AppLocalizations.of(context)!;
+
   try {
-    final AccountState accountState = context.read<AccountBloc>().state;
-    emptySuggestions ??= accountState.subsciptions;
-    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), accountState.favorites);
+    final state = context.read<AccountBloc>().state;
+    emptySuggestions ??= state.subscriptions;
+    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), state.favorites);
   } catch (e) {
     // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
   }
 
-  Future<String?> onSubmitted({CommunityView? payload, String? value}) async {
+  Future<String?> onSubmitted({ThunderCommunity? payload, String? value}) async {
     if (payload != null) {
       onCommunitySelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
       // Normalize the community name
-      final String? normalizedCommunity = await getLemmyCommunity(value);
+      final normalizedCommunity = await getLemmyCommunity(value);
+
       if (normalizedCommunity != null) {
         try {
-          Account? account = await fetchActiveProfileAccount();
-          final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-            auth: account?.jwt,
-            name: normalizedCommunity,
-          ));
+          final account = await fetchActiveProfileAccount();
+          final response = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(auth: account?.jwt, name: normalizedCommunity));
+          final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
-          onCommunitySelected(getCommunityResponse.communityView);
-
+          onCommunitySelected(community);
           Navigator.of(context).pop();
         } catch (e) {
-          return AppLocalizations.of(context)!.unableToFindCommunity;
+          return l10n.unableToFindCommunity;
         }
       } else {
-        return AppLocalizations.of(context)!.unableToFindCommunity;
+        return l10n.unableToFindCommunity;
       }
     }
     return null;
   }
 
-  showInputDialog<CommunityView>(
+  showInputDialog<ThunderCommunity>(
     context: context,
     title: title,
-    inputLabel: AppLocalizations.of(context)!.community,
+    inputLabel: l10n.community,
     onSubmitted: onSubmitted,
     getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
-    suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
+    suggestionBuilder: (payload) => buildCommunitySuggestionWidget(context, payload),
   );
 }
 
-Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String query, List<CommunityView>? emptySuggestions) async {
-  if (query.isNotEmpty != true) {
-    return emptySuggestions ?? [];
-  }
-  Account? account = await fetchActiveProfileAccount();
-  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
+  if (query.isNotEmpty != true) return emptySuggestions ?? [];
+
+  final account = await fetchActiveProfileAccount();
+  final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.communities,
@@ -176,7 +174,8 @@ Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String
     sort: SortType.topAll,
   ));
 
-  List<CommunityView>? favorites;
+  List<ThunderCommunity>? favorites;
+
   if (context.mounted) {
     try {
       favorites = context.read<AccountBloc>().state.favorites;
@@ -185,29 +184,28 @@ Future<List<CommunityView>> getCommunitySuggestions(BuildContext context, String
     }
   }
 
-  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? [];
+  final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+  return prioritizeFavorites(communities, favorites) ?? [];
 }
 
-Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
-  final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {
+  final l10n = AppLocalizations.of(context)!;
+
+  assert(payload.subscribers != null);
 
   return Tooltip(
     message: generateCommunityFullName(
       context,
-      payload.community.name,
-      payload.community.title,
-      fetchInstanceNameFromUrl(payload.community.actorId),
+      payload.communityName,
+      payload.title,
+      fetchInstanceNameFromUrl(payload.url),
     ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: CommunityAvatar(community: ThunderCommunity(payload.community)),
-        title: Text(
-          payload.community.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        leading: CommunityAvatar(community: payload),
+        title: Text(payload.title, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Semantics(
           excludeSemantics: true,
           child: Column(
@@ -219,9 +217,9 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                 pauseDuration: const Duration(seconds: 1),
                 child: CommunityFullNameWidget(
                   context,
-                  payload.community.name,
-                  payload.community.title,
-                  fetchInstanceNameFromUrl(payload.community.actorId),
+                  payload.communityName,
+                  payload.title,
+                  fetchInstanceNameFromUrl(payload.url),
                   // Override because we're showing display name above
                   useDisplayName: false,
                 ),
@@ -230,7 +228,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                 children: [
                   const Icon(Icons.people_rounded, size: 16),
                   const SizedBox(width: 5),
-                  Text(formatNumberToK(payload.counts.subscribers)),
+                  Text(formatNumberToK(payload.subscribers ?? -1)),
                   if (payload.subscribed != SubscribedType.notSubscribed) ...[
                     Text(' · ${switch (payload.subscribed) {
                       SubscribedType.pending => l10n.pending,
@@ -238,7 +236,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                       _ => '',
                     }}'),
                   ],
-                  if (_getFavoriteStatus(context, payload.community)) ...const [
+                  if (_getFavoriteStatus(context, payload)) ...const [
                     Text(' · '),
                     Icon(Icons.star_rounded, size: 15),
                   ],
@@ -253,9 +251,9 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
 }
 
 /// Checks whether the current community is a favorite of the current user
-bool _getFavoriteStatus(BuildContext context, Community community) {
-  final AccountState accountState = context.read<AccountBloc>().state;
-  return accountState.favorites.any((communityView) => communityView.community.id == community.id);
+bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
+  final state = context.read<AccountBloc>().state;
+  return state.favorites.any((c) => c.id == community.id);
 }
 
 /// Shows a dialog which allows typing/search for an instance

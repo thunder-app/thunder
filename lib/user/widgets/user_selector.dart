@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -21,7 +22,7 @@ class UserSelector extends StatefulWidget {
 
   // Pass these when dealing with a community (i.e., creating a post)
   final String? communityActorId;
-  final void Function(CommunityView?)? onCommunityChanged;
+  final void Function(ThunderCommunity? community)? onCommunityChanged;
 
   // Pass these when dealing with a post (i.e., creating a comment)
   // Unlike posts, where it's valid to have a null community (i.e., you're forced to pick a different one)
@@ -95,7 +96,7 @@ Future<void> temporarilySwitchAccount(
   String? profileModalHeading,
   void Function()? onUserChanged,
   String? communityActorId,
-  void Function(CommunityView?)? onCommunityChanged,
+  void Function(ThunderCommunity? community)? onCommunityChanged,
   String? postActorId,
   void Function(PostViewMedia)? onPostChanged,
   String? parentCommentActorId,
@@ -125,14 +126,16 @@ Future<void> temporarilySwitchAccount(
 
       // If there is a selected community, see if we can resolve it to the new user's instance.
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
-        CommunityView? resolvedCommunity;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: communityActorId!));
-          resolvedCommunity = resolveObjectResponse.community;
+          final response = await LemmyApiV3(newUser.instance).run(ResolveObject(q: communityActorId!));
+
+          if (response.community != null) {
+            final community = ThunderCommunity(response.community!.community, communityView: response.community);
+            onCommunityChanged(community);
+          }
         } catch (e) {
           // We'll just return null if we can't find it.
         }
-        onCommunityChanged(resolvedCommunity);
       }
 
       // If there is a selected post, see if we can resolve it to the new user's instance.

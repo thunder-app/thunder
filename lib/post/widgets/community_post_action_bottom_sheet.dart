@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -47,7 +48,7 @@ enum CommunityPostAction {
 /// A bottom sheet that allows the user to perform actions on a community.
 ///
 /// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the community.
-/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [CommunityView].
+/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [ThunderCommunity].
 class CommunityPostActionBottomSheet extends StatefulWidget {
   const CommunityPostActionBottomSheet({super.key, required this.postViewMedia, required this.onAction});
 
@@ -55,7 +56,7 @@ class CommunityPostActionBottomSheet extends StatefulWidget {
   final PostViewMedia postViewMedia;
 
   /// Called when an action is selected
-  final Function(CommunityAction communityAction, CommunityView? communityView) onAction;
+  final Function(CommunityAction communityAction, ThunderCommunity? community) onAction;
 
   @override
   State<CommunityPostActionBottomSheet> createState() => _CommunityPostActionBottomSheetState();
@@ -127,7 +128,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       listener: (context, state) {
         if (state.status == CommunityStatus.success) {
           Navigator.of(context).pop();
-          if (_communityAction != null) widget.onAction(_communityAction!, state.communityView);
+          if (_communityAction != null) widget.onAction(_communityAction!, state.community);
           setState(() => _communityAction = null);
         }
       },

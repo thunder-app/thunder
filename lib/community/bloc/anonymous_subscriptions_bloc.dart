@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+
 import 'package:thunder/community/helpers/anonymous_subscriptions_helper.dart';
 import 'package:thunder/community/models/anonymous_subscriptions.dart';
+import 'package:thunder/core/models/models.dart';
 
 part 'anonymous_subscriptions_event.dart';
 part 'anonymous_subscriptions_state.dart';
@@ -57,7 +58,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
   Future<void> _getSubscribedCommunities(GetSubscribedCommunitiesEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
     emit(const AnonymousSubscriptionsState(status: AnonymousSubscriptionsStatus.loading));
     try {
-      List<Community> subscribedCommunities = await getSubscriptions();
+      List<ThunderCommunity> subscribedCommunities = await getSubscriptions();
       emit(state.copyWith(
         status: AnonymousSubscriptionsStatus.success,
         subscriptions: subscribedCommunities,

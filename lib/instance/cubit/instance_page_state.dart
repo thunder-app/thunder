@@ -8,7 +8,7 @@ class InstancePageState extends Equatable {
   final int? page;
   final String resolutionInstance;
 
-  final List<CommunityView>? communities;
+  final List<ThunderCommunity>? communities;
   final List<PostViewMedia>? posts;
   final List<PersonView>? users;
   final List<CommentView>? comments;
@@ -27,7 +27,7 @@ class InstancePageState extends Equatable {
   InstancePageState copyWith({
     required InstancePageStatus status,
     String? errorMessage,
-    List<CommunityView>? communities,
+    List<ThunderCommunity>? communities,
     List<PostViewMedia>? posts,
     List<PersonView>? users,
     List<CommentView>? comments,
@@ -46,14 +46,5 @@ class InstancePageState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [
-        status,
-        errorMessage,
-        communities,
-        posts,
-        users,
-        comments,
-        page,
-        resolutionInstance,
-      ];
+  List<dynamic> get props => [status, errorMessage, communities, posts, users, comments, page, resolutionInstance];
 }

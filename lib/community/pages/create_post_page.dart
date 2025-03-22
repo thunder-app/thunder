@@ -46,7 +46,7 @@ import 'package:thunder/utils/media/image.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
-  final CommunityView? communityView;
+  final ThunderCommunity? community;
 
   /// Whether or not to pre-populate the post with the [title], [text], [image], [url], [customThumbnail], and/or [altText]
   final bool? prePopulated;
@@ -78,7 +78,7 @@ class CreatePostPage extends StatefulWidget {
   const CreatePostPage({
     super.key,
     required this.communityId,
-    this.communityView,
+    this.community,
     this.image,
     this.title,
     this.text,
@@ -145,8 +145,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   int? languageId;
 
-  /// The [CommunityView] associated with the post. This is used to display the community information
-  CommunityView? communityView;
+  /// The community associated with the post. This is used to display the community information
+  ThunderCommunity? community;
 
   /// A list of cross posts for the given post. This is determined by the URL parameter
   List<PostView> crossPosts = [];
@@ -174,7 +174,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     communityId = widget.communityId;
-    communityView = widget.communityView;
+
+    if (widget.community != null) {
+      community = widget.community;
+    }
 
     // Set up any text controller listeners
     _titleTextController.addListener(() {
@@ -267,9 +270,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     } else if (widget.communityId != null) {
       draftType = DraftType.postCreate;
       draftReplyId = widget.communityId;
-    } else if (widget.communityView != null) {
+    } else if (widget.community != null) {
       draftType = DraftType.postCreate;
-      draftReplyId = widget.communityView!.community.id;
+      draftReplyId = widget.community!.id;
     } else {
       draftType = DraftType.postCreateGeneral;
     }
@@ -417,12 +420,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
-                              communityId: communityId,
-                              communityView: communityView,
-                              onCommunitySelected: (CommunityView cv) {
+                              community: community,
+                              onCommunitySelected: (ThunderCommunity c) {
                                 setState(() {
-                                  communityId = cv.community.id;
-                                  communityView = cv;
+                                  communityId = c.id;
+                                  community = c;
                                 });
                                 _validateSubmission();
                               },
@@ -430,16 +432,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             const SizedBox(height: 4.0),
                             UserSelector(
                               profileModalHeading: l10n.selectAccountToPostAs,
-                              communityActorId: communityView?.community.actorId,
-                              onCommunityChanged: (CommunityView? cv) {
-                                if (cv == null) {
-                                  showSnackbar(l10n.unableToFindCommunityOnInstance);
-                                }
+                              communityActorId: community?.url,
+                              onCommunityChanged: (community) {
+                                if (community == null) showSnackbar(l10n.unableToFindCommunityOnInstance);
 
                                 setState(() {
-                                  communityId = cv?.community.id;
-                                  communityView = cv;
+                                  communityId = community?.id;
+                                  community = community;
                                 });
+
                                 _validateSubmission();
                               },
                               onUserChanged: () => userChanged = true,
@@ -661,8 +662,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 },
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                        _bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.community.name}@${fetchInstanceNameFromUrl(community.community.actorId)}');
+                                    _bodyTextController.text = _bodyTextController.text
+                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.communityName}@${fetchInstanceNameFromUrl(community.url)}');
                                   });
                                 },
                               },
@@ -804,24 +805,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
 /// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
 ///
-/// Passing in either [communityId] or [communityView] will set the initial state of the widget to display that given community.
+/// Passing in a [community] will set the initial state of the widget to display that given community.
 /// A callback function [onCommunitySelected] will be triggered whenever a new community is selected from the dropdown.
 class CommunitySelector extends StatefulWidget {
   const CommunitySelector({
     super.key,
-    this.communityId,
-    this.communityView,
+    this.community,
     required this.onCommunitySelected,
   });
 
-  /// The initial community id to be passed in
-  final int? communityId;
-
-  /// The initial [CommunityView] to be passed in
-  final CommunityView? communityView;
+  /// The initial community to be passed in
+  final ThunderCommunity? community;
 
   /// A callback function to trigger whenever a community is selected from the dropdown
-  final Function(CommunityView) onCommunitySelected;
+  final Function(ThunderCommunity) onCommunitySelected;
 
   @override
   State<CommunitySelector> createState() => _CommunitySelectorState();
@@ -850,23 +847,19 @@ class _CommunitySelectorState extends State<CommunitySelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                spacing: 12.0,
                 children: [
-                  if (widget.communityView?.community != null)
-                    CommunityAvatar(
-                      community: ThunderCommunity(widget.communityView!.community),
-                      radius: 16,
-                    ),
-                  const SizedBox(width: 12),
-                  widget.communityId != null
+                  if (widget.community != null) CommunityAvatar(community: widget.community!, radius: 16),
+                  widget.community != null
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${widget.communityView?.community.title} '),
+                            Text('${widget.community!.title} '),
                             CommunityFullNameWidget(
                               context,
-                              widget.communityView?.community.name,
-                              widget.communityView?.community.title,
-                              fetchInstanceNameFromUrl(widget.communityView?.community.actorId),
+                              widget.community!.communityName,
+                              widget.community!.title,
+                              fetchInstanceNameFromUrl(widget.community!.url),
                               // Override, because we have the display name right above
                               useDisplayName: false,
                             )

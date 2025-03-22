@@ -5,7 +5,7 @@ enum AccountStatus { initial, loading, refreshing, success, empty, failure }
 class AccountState extends Equatable {
   const AccountState({
     this.status = AccountStatus.initial,
-    this.subsciptions = const [],
+    this.subscriptions = const [],
     this.favorites = const [],
     this.moderates = const [],
     this.personView,
@@ -13,14 +13,17 @@ class AccountState extends Equatable {
     this.reload = true,
   });
 
+  /// The current status of the account
   final AccountStatus status;
+
+  /// The error message if the account failed to load
   final String? errorMessage;
 
   /// The user's subscriptions if logged in
-  final List<CommunityView> subsciptions;
+  final List<ThunderCommunity> subscriptions;
 
   /// The user's favorites if logged in
-  final List<CommunityView> favorites;
+  final List<ThunderCommunity> favorites;
 
   /// The user's moderated communities
   final List<CommunityModeratorView> moderates;
@@ -33,8 +36,8 @@ class AccountState extends Equatable {
 
   AccountState copyWith({
     AccountStatus? status,
-    List<CommunityView>? subsciptions,
-    List<CommunityView>? favorites,
+    List<ThunderCommunity>? subscriptions,
+    List<ThunderCommunity>? favorites,
     List<CommunityModeratorView>? moderates,
     PersonView? personView,
     String? errorMessage,
@@ -42,7 +45,7 @@ class AccountState extends Equatable {
   }) {
     return AccountState(
       status: status ?? this.status,
-      subsciptions: subsciptions ?? this.subsciptions,
+      subscriptions: subscriptions ?? this.subscriptions,
       favorites: favorites ?? this.favorites,
       moderates: moderates ?? this.moderates,
       personView: personView ?? this.personView,
@@ -52,13 +55,5 @@ class AccountState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        subsciptions,
-        favorites,
-        moderates,
-        personView,
-        errorMessage,
-        reload,
-      ];
+  List<Object?> get props => [status, subscriptions, favorites, moderates, personView, errorMessage, reload];
 }

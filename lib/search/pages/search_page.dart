@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,7 +46,7 @@ import 'package:thunder/utils/instance.dart';
 
 class SearchPage extends StatefulWidget {
   /// Allows the search page to limited to searching a specific community
-  final CommunityView? communityToSearch;
+  final ThunderCommunity? communityToSearch;
 
   /// Whether the search field is initially focused upon opening this page
   final bool isInitiallyFocused;
@@ -68,7 +69,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
-  final Set<Community> newAnonymousSubscriptions = {};
+  final Set<ThunderCommunity> newAnonymousSubscriptions = {};
   final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
@@ -139,7 +140,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               sortType: sortType,
               listingType: _currentFeedType,
               searchType: _getSearchTypeToUse(),
-              communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
+              communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
               creatorId: _currentCreatorFilter,
               favoriteCommunities: context.read<AccountBloc>().state.favorites,
             ));
@@ -234,7 +235,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           },
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                            hintText: l10n.searchInstance(widget.communityToSearch?.community.name ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                            hintText: l10n.searchInstance(widget.communityToSearch?.communityName ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50),
@@ -422,14 +423,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       });
                                       _doSearch();
                                     } else {
-                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
+                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (ThunderCommunity community) {
                                         setState(() {
-                                          _currentCommunityFilter = communityView.community.id;
+                                          _currentCommunityFilter = community.id;
                                           _currentCommunityFilterName = generateCommunityFullName(
                                             context,
-                                            communityView.community.name,
-                                            communityView.community.title,
-                                            fetchInstanceNameFromUrl(communityView.community.actorId),
+                                            community.communityName,
+                                            community.title,
+                                            fetchInstanceNameFromUrl(community.url),
                                           );
                                         });
                                         _doSearch();
@@ -552,12 +553,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           shrinkWrap: true,
                           itemCount: context.read<AccountBloc>().state.favorites.length,
                           itemBuilder: (BuildContext context, int index) {
-                            CommunityView communityView = context.read<AccountBloc>().state.favorites[index];
-                            final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                            final community = context.read<AccountBloc>().state.favorites[index];
+                            final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
                             return CommunityListEntry(
-                              communityView: communityView,
+                              community: community,
                               isUserLoggedIn: isUserLoggedIn,
-                              currentSubscriptions: currentSubscriptions,
+                              currentSubscriptions: subscriptions,
                               indicateFavorites: false,
                               getFavoriteStatus: _getFavoriteStatus,
                               getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
@@ -579,12 +581,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         shrinkWrap: true,
                         itemCount: state.trendingCommunities!.length,
                         itemBuilder: (BuildContext context, int index) {
-                          CommunityView communityView = state.trendingCommunities![index];
-                          final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                          final community = state.trendingCommunities![index];
+                          final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
                           return CommunityListEntry(
-                            communityView: communityView,
+                            community: community,
                             isUserLoggedIn: isUserLoggedIn,
-                            currentSubscriptions: currentSubscriptions,
+                            currentSubscriptions: subscriptions,
                             getFavoriteStatus: _getFavoriteStatus,
                             getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
                             onSubscribeIconPressed: _onSubscribeIconPressed,
@@ -691,12 +694,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         )
                       : Container();
                 } else {
-                  CommunityView communityView = state.communities![index];
-                  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                  final community = state.communities![index];
+                  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
                   return CommunityListEntry(
-                    communityView: communityView,
+                    community: community,
                     isUserLoggedIn: isUserLoggedIn,
-                    currentSubscriptions: currentSubscriptions,
+                    currentSubscriptions: subscriptions,
                     getFavoriteStatus: _getFavoriteStatus,
                     getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
                     onSubscribeIconPressed: _onSubscribeIconPressed,
@@ -827,9 +831,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  bool _getFavoriteStatus(BuildContext context, Community community) {
-    final AccountState accountState = context.read<AccountBloc>().state;
-    return accountState.favorites.any((communityView) => communityView.community.id == community.id);
+  bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
+    final state = context.read<AccountBloc>().state;
+    return state.favorites.any((c) => c.id == community.id);
   }
 
   void showSortBottomSheet(BuildContext context) {
@@ -858,35 +862,37 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int>? currentSubscriptions) {
-    if (isUserLoggedIn) {
-      return communityView.subscribed;
-    }
+  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions) {
+    assert(community.subscribed != null);
+    if (isUserLoggedIn) return community.subscribed!;
+
     bool isSubscribed =
-        newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions?.contains(communityView.community.id) == true && !removedSubs.contains(communityView.community.id));
+        newAnonymousSubscriptions.firstWhereOrNull((c) => c.id == community.id) != null || (currentSubscriptions?.contains(community.id) == true && !removedSubs.contains(community.id));
+
     return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
   }
 
-  void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, CommunityView communityView) {
+  void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, ThunderCommunity community) {
     if (isUserLoggedIn) {
       context.read<SearchBloc>().add(ChangeCommunitySubsciptionStatusEvent(
-            communityId: communityView.community.id,
-            follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+            communityId: community.id,
+            follow: community.subscribed == SubscribedType.notSubscribed ? true : false,
             query: _controller.text,
           ));
       return;
     }
 
     Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+
     setState(() {
-      if (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id)) {
-        removedSubs.add(communityView.community.id);
-      } else if (newAnonymousSubscriptions.contains(communityView.community)) {
-        newAnonymousSubscriptions.remove(communityView.community);
-      } else if (removedSubs.contains(communityView.community.id)) {
-        removedSubs.remove(communityView.community.id);
+      if (currentSubscriptions.contains(community.id) && !removedSubs.contains(community.id)) {
+        removedSubs.add(community.id);
+      } else if (newAnonymousSubscriptions.map((c) => c.id).contains(community.id)) {
+        newAnonymousSubscriptions.removeWhere((c) => c.id == community.id);
+      } else if (removedSubs.contains(community.id)) {
+        removedSubs.remove(community.id);
       } else {
-        newAnonymousSubscriptions.add(communityView.community);
+        newAnonymousSubscriptions.add(community);
       }
     });
     return;
@@ -919,7 +925,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         sortType: sortType,
         listingType: _currentFeedType,
         searchType: _getSearchTypeToUse(),
-        communityId: widget.communityToSearch?.community.id ?? _currentCommunityFilter,
+        communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
         creatorId: _currentCreatorFilter,
         favoriteCommunities: context.read<AccountBloc>().state.favorites,
         force: force || searchBloc.state.viewingAll,

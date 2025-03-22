@@ -60,9 +60,9 @@ class FeedFAB extends StatelessWidget {
     bool isPostLocked = false;
 
     if (authState.isLoggedIn && isCommunityFeed) {
-      final CommunityView communityView = feedState.fullCommunityView!.communityView;
+      final community = feedState.community;
 
-      if (communityView.community.postingRestrictedToMods && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == communityView.community.id)) {
+      if (community!.locked && !accountState.moderates.any((CommunityModeratorView cmv) => cmv.community.id == community.id)) {
         isPostLocked = true;
       }
     }
@@ -307,6 +307,6 @@ class FeedFAB extends StatelessWidget {
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, communityView: feedBloc.state.fullCommunityView?.communityView);
+    navigateToCreatePostPage(context, communityId: feedBloc.state.communityId, community: feedBloc.state.community);
   }
 }

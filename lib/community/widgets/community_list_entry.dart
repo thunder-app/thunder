@@ -17,20 +17,33 @@ import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommunityListEntry extends StatelessWidget {
-  final CommunityView communityView;
+  /// The community to display.
+  final ThunderCommunity community;
+
+  /// Whether the user is logged in.
   final bool isUserLoggedIn;
+
+  /// The current user subscriptions.
   final Set<int>? currentSubscriptions;
+
+  /// Whether to indicate that the community is a favorite.
   final bool indicateFavorites;
-  final bool Function(BuildContext context, Community community)? getFavoriteStatus;
-  final SubscribedType Function(bool isUserLoggedIn, CommunityView communityView, Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
-  final void Function(bool isUserLoggedIn, BuildContext context, CommunityView communityView)? onSubscribeIconPressed;
+
+  /// Callback function that occurs when the favorite status is requested.
+  final bool Function(BuildContext context, ThunderCommunity community)? getFavoriteStatus;
+
+  /// Callback function that occurs when the subscription status is requested.
+  final SubscribedType Function(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
+
+  /// Callback function that occurs when the subscribe icon is pressed.
+  final void Function(bool isUserLoggedIn, BuildContext context, ThunderCommunity community)? onSubscribeIconPressed;
 
   /// Whether the community should be resolved to a different instance
   final String? resolutionInstance;
 
   const CommunityListEntry({
     super.key,
-    required this.communityView,
+    required this.community,
     required this.isUserLoggedIn,
     this.currentSubscriptions,
     this.indicateFavorites = true,
@@ -42,67 +55,64 @@ class CommunityListEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
+    assert(community.subscribers != null);
 
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${communityView.community.title}\n${generateCommunityFullName(
+      message: '${community.title}\n${generateCommunityFullName(
         context,
-        communityView.community.name,
-        communityView.community.title,
-        fetchInstanceNameFromUrl(communityView.community.actorId),
+        community.communityName,
+        community.title,
+        fetchInstanceNameFromUrl(community.url),
       )}',
       preferBelow: false,
       child: ListTile(
-        leading: CommunityAvatar(
-          community: ThunderCommunity(communityView.community),
-          radius: 25,
-        ),
-        title: Text(
-          communityView.community.title,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(children: [
-          Flexible(
-            child: CommunityFullNameWidget(
-              context,
-              communityView.community.name,
-              communityView.community.title,
-              fetchInstanceNameFromUrl(communityView.community.actorId),
-              // Override because we're showing display name above
-              useDisplayName: false,
+        leading: CommunityAvatar(community: community, radius: 25),
+        title: Text(community.title, overflow: TextOverflow.ellipsis),
+        subtitle: Row(
+          children: [
+            Flexible(
+              child: CommunityFullNameWidget(
+                context,
+                community.communityName,
+                community.title,
+                fetchInstanceNameFromUrl(community.url),
+                // Override because we're showing display name above
+                useDisplayName: false,
+              ),
             ),
-          ),
-          Text(
-            ' · ${formatLongNumber(communityView.counts.subscribers)}',
-            semanticsLabel: l10n.countSubscribers(communityView.counts.subscribers),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.people_rounded, size: 16.0),
-          if (indicateFavorites &&
-              getFavoriteStatus?.call(context, communityView.community) == true &&
-              getCurrentSubscriptionStatus?.call(isUserLoggedIn, communityView, currentSubscriptions) == SubscribedType.subscribed) ...const [
-            Text(' · '),
-            Icon(Icons.star_rounded, size: 15),
-          ]
-        ]),
+            Text(
+              ' · ${formatLongNumber(community.subscribers!)}',
+              semanticsLabel: l10n.countSubscribers(community.subscribers!),
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.people_rounded, size: 16.0),
+            if (indicateFavorites &&
+                getFavoriteStatus?.call(context, community) == true &&
+                getCurrentSubscriptionStatus?.call(isUserLoggedIn, community, currentSubscriptions) == SubscribedType.subscribed) ...const [
+              Text(' · '),
+              Icon(Icons.star_rounded, size: 15),
+            ]
+          ],
+        ),
         trailing: getCurrentSubscriptionStatus == null
             ? null
             : IconButton(
                 onPressed: () {
-                  SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions);
-                  onSubscribeIconPressed?.call(isUserLoggedIn, context, communityView);
+                  SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions);
+                  onSubscribeIconPressed?.call(isUserLoggedIn, context, community);
                   showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                   context.read<AccountBloc>().add(const GetAccountSubscriptions());
                 },
                 icon: Icon(
-                  switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
+                  switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
                     SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
                     SubscribedType.pending => Icons.pending_outlined,
                     SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                   },
                 ),
-                tooltip: switch (getCurrentSubscriptionStatus!(isUserLoggedIn, communityView, currentSubscriptions)) {
+                tooltip: switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
                   SubscribedType.notSubscribed => l10n.subscribe,
                   SubscribedType.pending => l10n.unsubscribePending,
                   SubscribedType.subscribed => l10n.unsubscribe,
@@ -110,12 +120,14 @@ class CommunityListEntry extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
               ),
         onTap: () async {
-          int? communityId = communityView.community.id;
+          int? communityId = community.id;
+
           if (resolutionInstance != null) {
-            final LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
             try {
-              final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: communityView.community.actorId));
-              communityId = resolveObjectResponse.community?.community.id;
+              final lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
+              final response = await lemmy.run(ResolveObject(q: community.url));
+
+              communityId = response.community?.community.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about communityId being un-navigable
             }

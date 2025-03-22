@@ -57,16 +57,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
 
-    List<Community> subscriptions = [];
+    List<ThunderCommunity> subscriptions = [];
 
     if (isLoggedIn) {
-      Set<int> favoriteCommunityIds = accountState.favorites.map((cv) => cv.community.id).toSet();
-      Set<int> moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
+      final favoriteCommunityIds = accountState.favorites.map((community) => community.id).toSet();
+      final moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
+      final filteredSubscriptions = accountState.subscriptions.where((community) => !favoriteCommunityIds.contains(community.id) && !moderatedCommunityIds.contains(community.id)).toList();
 
-      List<CommunityView> filteredSubscriptions = accountState.subsciptions
-          .where((CommunityView communityView) => !favoriteCommunityIds.contains(communityView.community.id) && !moderatedCommunityIds.contains(communityView.community.id))
-          .toList();
-      subscriptions = filteredSubscriptions.map((CommunityView communityView) => communityView.community).toList();
+      subscriptions = filteredSubscriptions;
     } else {
       subscriptions = subscriptionsBloc.state.subscriptions;
     }
@@ -298,8 +296,8 @@ class FavoriteCommunities extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: accountState.favorites.length,
             itemBuilder: (context, index) {
-              Community community = accountState.favorites[index].community;
-              bool isCommunitySelected = feedState.communityId == community.id;
+              final community = accountState.favorites[index];
+              final isCommunitySelected = feedState.communityId == community.id;
 
               return TextButton(
                 style: TextButton.styleFrom(
@@ -359,7 +357,8 @@ class ModeratedCommunities extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: moderatedCommunities.length,
               itemBuilder: (context, index) {
-                Community community = moderatedCommunities[index].community;
+                final c = moderatedCommunities[index].community;
+                final community = ThunderCommunity(c);
 
                 final bool isCommunitySelected = feedState.communityId == community.id;
 
@@ -472,7 +471,7 @@ class DrawerItem extends StatelessWidget {
 class CommunityItem extends StatelessWidget {
   const CommunityItem({super.key, required this.community, this.showFavoriteAction = true, this.isFavorite = false});
 
-  final Community community;
+  final ThunderCommunity community;
   final bool isFavorite;
   final bool showFavoriteAction;
 
@@ -484,7 +483,7 @@ class CommunityItem extends StatelessWidget {
     return Row(
       children: [
         CommunityAvatar(
-          community: ThunderCommunity(community),
+          community: community,
           radius: 16,
           thumbnailSize: 100,
           format: 'png',
@@ -497,7 +496,7 @@ class CommunityItem extends StatelessWidget {
               context,
               community.name,
               community.title,
-              fetchInstanceNameFromUrl(community.actorId),
+              fetchInstanceNameFromUrl(community.url),
             )}',
             preferBelow: false,
             child: Column(
@@ -510,7 +509,7 @@ class CommunityItem extends StatelessWidget {
                   maxLines: 1,
                 ),
                 Text(
-                  fetchInstanceNameFromUrl(community.actorId) ?? '',
+                  fetchInstanceNameFromUrl(community.url) ?? '',
                   style: theme.textTheme.bodyMedium,
                   overflow: TextOverflow.ellipsis,
                 ),

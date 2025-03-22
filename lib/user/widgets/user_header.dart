@@ -37,7 +37,7 @@ class _UserHeaderState extends State<UserHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final FeedBloc feedBloc = context.watch<FeedBloc>();
+    final state = context.watch<FeedBloc>().state;
 
     return Material(
       elevation: widget.showUserSidebar ? 5.0 : 0,
@@ -135,10 +135,10 @@ class _UserHeaderState extends State<UserHeader> {
                                         icon: const Icon(Icons.chat_rounded),
                                         text: formatNumberToK(widget.user.totalComments!),
                                       ),
-                                    if (feedBloc.state.feedType == FeedType.user)
+                                    if (state.feedType == FeedType.user)
                                       IconText(
-                                        icon: Icon(getSortIcon(feedBloc.state)),
-                                        text: getSortName(feedBloc.state),
+                                        icon: Icon(getSortIcon(state)),
+                                        text: getSortName(state),
                                       ),
                                   ],
                                 ),
@@ -150,7 +150,10 @@ class _UserHeaderState extends State<UserHeader> {
                             child: Icon(
                               Icons.info_outline_rounded,
                               size: 25,
-                              shadows: <Shadow>[Shadow(color: theme.colorScheme.surface, blurRadius: 10.0), Shadow(color: theme.colorScheme.surface, blurRadius: 20.0)],
+                              shadows: <Shadow>[
+                                Shadow(color: theme.colorScheme.surface, blurRadius: 10.0),
+                                Shadow(color: theme.colorScheme.surface, blurRadius: 20.0),
+                              ],
                             ),
                           ),
                         ],

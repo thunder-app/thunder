@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -14,14 +13,19 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommunityHeader extends StatefulWidget {
+  /// Community to display in the header
+  final ThunderCommunity community;
+
+  /// Whether the community sidebar is currently shown
   final bool showCommunitySidebar;
-  final GetCommunityResponse getCommunityResponse;
+
+  /// Callback function when the community sidebar is toggled
   final Function(bool toggled) onToggle;
 
   const CommunityHeader({
     super.key,
+    required this.community,
     required this.showCommunitySidebar,
-    required this.getCommunityResponse,
     required this.onToggle,
   });
 
@@ -33,7 +37,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final FeedBloc feedBloc = context.watch<FeedBloc>();
+    final state = context.watch<FeedBloc>().state;
 
     return Material(
       elevation: widget.showCommunitySidebar ? 5.0 : 0,
@@ -48,8 +52,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
         },
         child: Stack(
           children: [
-            if (widget.getCommunityResponse.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.surface)),
-            if (widget.getCommunityResponse.communityView.community.banner != null)
+            if (widget.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.surface)),
+            if (widget.community.banner != null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -59,7 +63,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.getCommunityResponse.communityView.community.banner!),
+                            image: CachedNetworkImageProvider(widget.community.banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -68,7 +72,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                   ],
                 ),
               ),
-            if (widget.getCommunityResponse.communityView.community.banner != null)
+            if (widget.community.banner != null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -96,11 +100,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                     children: [
                       Row(
                         children: [
-                          CommunityAvatar(
-                            community: ThunderCommunity(widget.getCommunityResponse.communityView.community),
-                            radius: 45.0,
-                            showCommunityStatus: true,
-                          ),
+                          CommunityAvatar(community: widget.community, radius: 45.0, showCommunityStatus: true),
                           const SizedBox(width: 20.0),
                           Expanded(
                             child: Column(
@@ -108,33 +108,34 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  widget.getCommunityResponse.communityView.community.title,
+                                  widget.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 CommunityFullNameWidget(
                                   context,
-                                  widget.getCommunityResponse.communityView.community.name,
-                                  widget.getCommunityResponse.communityView.community.title,
-                                  fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A',
+                                  widget.community.communityName,
+                                  widget.community.title,
+                                  fetchInstanceNameFromUrl(widget.community.url),
                                   // Override because we're showing right above
                                   useDisplayName: false,
                                 ),
                                 const SizedBox(height: 8.0),
                                 Wrap(
+                                  spacing: 8.0,
                                   children: [
+                                    if (widget.community.subscribers != null)
+                                      IconText(
+                                        icon: const Icon(Icons.people_rounded),
+                                        text: formatNumberToK(widget.community.subscribers!),
+                                      ),
+                                    if (widget.community.usersActiveMonth != null)
+                                      IconText(
+                                        icon: const Icon(Icons.calendar_month_rounded),
+                                        text: formatNumberToK(widget.community.usersActiveMonth!),
+                                      ),
                                     IconText(
-                                      icon: const Icon(Icons.people_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.subscribers),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    IconText(
-                                      icon: const Icon(Icons.calendar_month_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    IconText(
-                                      icon: Icon(getSortIcon(feedBloc.state)),
-                                      text: getSortName(feedBloc.state),
+                                      icon: Icon(getSortIcon(state)),
+                                      text: getSortName(state),
                                     ),
                                   ],
                                 ),
@@ -146,7 +147,10 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                             child: Icon(
                               Icons.info_outline_rounded,
                               size: 25,
-                              shadows: <Shadow>[Shadow(color: theme.colorScheme.surface, blurRadius: 10.0), Shadow(color: theme.colorScheme.surface, blurRadius: 20.0)],
+                              shadows: <Shadow>[
+                                Shadow(color: theme.colorScheme.surface, blurRadius: 10.0),
+                                Shadow(color: theme.colorScheme.surface, blurRadius: 20.0),
+                              ],
                             ),
                           ),
                         ],

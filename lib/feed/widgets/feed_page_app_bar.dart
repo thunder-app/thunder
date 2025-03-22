@@ -20,6 +20,7 @@ import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -160,35 +161,38 @@ class FeedAppBarCommunityActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final feedBloc = context.read<FeedBloc>();
-    final thunderBloc = context.read<ThunderBloc>();
+    final isFabOpen = context.read<ThunderBloc>().state.isFabOpen;
+    final community = context.read<FeedBloc>().state.community!;
+    final sortType = context.read<FeedBloc>().state.sortType;
+
+    final favorited = _getFavoriteStatus(context);
+    final subscriptionStatus = _getSubscriptionStatus(context);
 
     return Row(
       children: [
         BlocConsumer<CommunityBloc, CommunityState>(
           listener: (context, state) {
-            if (state.status == CommunityStatus.success && state.communityView != null) {
-              feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+            if (state.status == CommunityStatus.success && state.community != null) {
+              context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: state.community!));
             }
           },
           builder: (context, state) => IconButton(
             icon: Icon(
-                switch (_getSubscriptionStatus(context)) {
+                switch (subscriptionStatus) {
                   SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
                   SubscribedType.pending => Icons.pending_outlined,
                   SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                   _ => Icons.add_circle_outline_rounded,
                 },
-                semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? l10n.subscribe : l10n.unsubscribe),
-            tooltip: switch (_getSubscriptionStatus(context)) {
+                semanticLabel: (subscriptionStatus == SubscribedType.notSubscribed) ? l10n.subscribe : l10n.unsubscribe),
+            tooltip: switch (subscriptionStatus) {
               SubscribedType.notSubscribed => l10n.subscribe,
               SubscribedType.pending => l10n.unsubscribePending,
               SubscribedType.subscribed => l10n.unsubscribe,
               _ => null,
             },
             onPressed: () {
-              if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
-
+              if (isFabOpen) context.read<ThunderBloc>().add(const OnFabToggle(false));
               HapticFeedback.mediumImpact();
               _onSubscribeIconPressed(context);
             },
@@ -205,8 +209,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                previouslySelected: feedBloc.state.sortType,
+                onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+                previouslySelected: sortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
             );
@@ -217,41 +221,30 @@ class FeedAppBarCommunityActions extends StatelessWidget {
           child: PopupMenuButton(
             itemBuilder: (context) => [
               ThunderPopupMenuItem(
-                onTap: () => triggerRefresh(context),
-                icon: Icons.refresh_rounded,
                 title: l10n.refresh,
+                icon: Icons.refresh_rounded,
+                onTap: () => triggerRefresh(context),
               ),
               if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
                 ThunderPopupMenuItem(
-                  onTap: () async {
-                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
-                    bool isFavorite = _getFavoriteStatus(context);
-                    await toggleFavoriteCommunity(context, community, isFavorite);
-                  },
-                  icon: _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
-                  title: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
-                ),
-              if (feedBloc.state.fullCommunityView?.communityView.community.actorId != null)
-                ThunderPopupMenuItem(
-                  onTap: () => showCommunityShareSheet(context, feedBloc.state.fullCommunityView!.communityView),
-                  icon: Icons.share_rounded,
-                  title: l10n.share,
-                ),
-              if (feedBloc.state.fullCommunityView?.communityView != null)
-                ThunderPopupMenuItem(
-                  onTap: () => navigateToSearchPage(context),
-                  icon: Icons.search_rounded,
-                  title: l10n.search,
+                  title: favorited ? l10n.removeFromFavorites : l10n.addToFavorites,
+                  icon: favorited ? Icons.star_rounded : Icons.star_border_rounded,
+                  onTap: () => toggleFavoriteCommunity(context, community, favorited),
                 ),
               ThunderPopupMenuItem(
-                onTap: () {
-                  navigateToModlogPage(
-                    context,
-                    communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
-                  );
-                },
-                icon: Icons.shield_rounded,
+                title: l10n.share,
+                icon: Icons.share_rounded,
+                onTap: () => showCommunityShareSheet(context, community),
+              ),
+              ThunderPopupMenuItem(
+                title: l10n.search,
+                icon: Icons.search_rounded,
+                onTap: () => navigateToSearchPage(context),
+              ),
+              ThunderPopupMenuItem(
                 title: l10n.modlog,
+                icon: Icons.shield_rounded,
+                onTap: () => navigateToModlogPage(context, communityId: community.id),
               ),
             ],
           ),
@@ -373,37 +366,37 @@ class FeedAppBarGeneralActions extends StatelessWidget {
 /// Get the subscription status for the current user and community
 /// The logic works for anonymous accounts and for logged in accounts
 SubscribedType? _getSubscriptionStatus(BuildContext context) {
-  final AuthBloc authBloc = context.read<AuthBloc>();
-  final FeedBloc feedBloc = context.read<FeedBloc>();
-  final AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  final community = context.read<FeedBloc>().state.community;
 
-  if (authBloc.state.isLoggedIn) {
-    return feedBloc.state.fullCommunityView?.communityView.subscribed;
-  }
+  final isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+  if (isLoggedIn) return community?.subscribed;
 
-  return anonymousSubscriptionsBloc.state.ids.contains(feedBloc.state.fullCommunityView?.communityView.community.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+  return subscriptions.contains(community?.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
 }
 
 /// Checks whether the current community is a favorite of the current user
 bool _getFavoriteStatus(BuildContext context) {
-  final AccountState accountState = context.read<AccountBloc>().state;
-  final FeedBloc feedBloc = context.read<FeedBloc>();
-  return accountState.favorites.any((communityView) => communityView.community.id == feedBloc.state.fullCommunityView!.communityView.community.id);
+  final state = context.read<AccountBloc>().state;
+  final community = context.read<FeedBloc>().state.community;
+
+  return state.favorites.any((c) => c.id == community?.id);
 }
 
 void _onSubscribeIconPressed(BuildContext context) async {
-  final AuthBloc authBloc = context.read<AuthBloc>();
-  final FeedBloc feedBloc = context.read<FeedBloc>();
-  final FeedState feedState = feedBloc.state;
+  final l10n = GlobalContext.l10n;
 
-  final Community community = feedBloc.state.fullCommunityView!.communityView.community;
-  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+  final isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+  final community = context.read<FeedBloc>().state.community;
+  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
+  if (community == null) {
+    showSnackbar(l10n.unexpectedError);
+    return;
+  }
 
-  if ((authBloc.state.isLoggedIn && feedState.fullCommunityView?.communityView.subscribed != SubscribedType.notSubscribed) || // If we're logged in and subscribed
-      currentSubscriptions.contains(community.id)) // Or this is an anonymous subscription
-  {
+  // If we're logged in and subscribed or this is an anonymous subscription
+  if ((isLoggedIn && community.subscribed != SubscribedType.notSubscribed) || subscriptions.contains(community.id)) {
     bool result = false;
 
     await showThunderDialog<void>(
@@ -422,22 +415,21 @@ void _onSubscribeIconPressed(BuildContext context) async {
     if (!result) return;
   }
 
-  if (authBloc.state.isLoggedIn) {
-    context.read<CommunityBloc>().add(
+  if (isLoggedIn) {
+    return context.read<CommunityBloc>().add(
           CommunityActionEvent(
-            communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
+            communityId: community.id,
             communityAction: CommunityAction.follow,
-            value: (feedState.fullCommunityView?.communityView.subscribed == SubscribedType.notSubscribed ? true : false),
+            value: (community.subscribed == SubscribedType.notSubscribed ? true : false),
           ),
         );
-    return;
   }
 
-  if (currentSubscriptions.contains(community.id)) {
+  if (subscriptions.contains(community.id)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));
-    showSnackbar(AppLocalizations.of(context)!.unsubscribed);
+    showSnackbar(l10n.unsubscribed);
   } else {
     context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
-    showSnackbar(AppLocalizations.of(context)!.subscribed);
+    showSnackbar(l10n.subscribed);
   }
 }

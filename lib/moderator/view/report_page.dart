@@ -13,6 +13,7 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
@@ -137,13 +138,13 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           context: context,
                           builder: (builderContext) => ReportFilterBottomSheet(
                             status: showResolved ? ReportResolveStatus.all : ReportResolveStatus.unresolved,
-                            onSubmit: (ReportResolveStatus status, CommunityView? communityView) async => {
+                            onSubmit: (ReportResolveStatus status, ThunderCommunity? community) async => {
                               HapticFeedback.mediumImpact(),
                               Navigator.of(context).maybePop(),
                               setState(() => showResolved = status != ReportResolveStatus.unresolved),
                               BlocProvider.of<ReportBloc>(context).add(ReportFeedChangeFilterTypeEvent(
                                 showResolved: status != ReportResolveStatus.unresolved,
-                                communityId: communityView?.community.id,
+                                communityId: community?.id,
                               ))
                             },
                           ),

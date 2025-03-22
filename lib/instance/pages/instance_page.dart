@@ -304,7 +304,7 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: widget.getSiteResponse.siteView.site),
+                                child: InstanceView(site: ThunderInstance(widget.getSiteResponse.siteView.site)),
                               ),
                             ),
                           ),
@@ -313,11 +313,12 @@ class _InstancePageState extends State<InstancePage> {
                             delegate: SliverChildBuilderDelegate(
                               childCount: state.communities?.length,
                               (context, index) {
-                                CommunityView? communityView = state.communities?[index];
+                                final community = state.communities?[index];
+
                                 return Material(
-                                  child: communityView != null
+                                  child: community != null
                                       ? CommunityListEntry(
-                                          communityView: communityView,
+                                          community: community,
                                           isUserLoggedIn: false,
                                           resolutionInstance: state.resolutionInstance,
                                         )

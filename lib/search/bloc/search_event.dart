@@ -14,7 +14,7 @@ class StartSearchEvent extends SearchEvent {
   final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
-  final List<CommunityView>? favoriteCommunities;
+  final List<ThunderCommunity>? favoriteCommunities;
   final bool? force;
 
   const StartSearchEvent({
@@ -46,7 +46,7 @@ class ContinueSearchEvent extends SearchEvent {
   final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
-  final List<CommunityView>? favoriteCommunities;
+  final List<ThunderCommunity>? favoriteCommunities;
 
   const ContinueSearchEvent({
     required this.query,
