@@ -69,7 +69,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
-  final Set<Community> newAnonymousSubscriptions = {};
+  final Set<ThunderCommunity> newAnonymousSubscriptions = {};
   final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
@@ -553,13 +553,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           shrinkWrap: true,
                           itemCount: context.read<AccountBloc>().state.favorites.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final communityView = context.read<AccountBloc>().state.favorites[index];
-                            final currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                            final cv = context.read<AccountBloc>().state.favorites[index];
+                            final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
                             return CommunityListEntry(
-                              community: ThunderCommunity(communityView.community, communityView: communityView),
+                              community: ThunderCommunity(cv.community, communityView: cv),
                               isUserLoggedIn: isUserLoggedIn,
-                              currentSubscriptions: currentSubscriptions,
+                              currentSubscriptions: subscriptions,
                               indicateFavorites: false,
                               getFavoriteStatus: _getFavoriteStatus,
                               getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
@@ -695,12 +695,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   final community = state.communities![index];
-                  final currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
                   return CommunityListEntry(
                     community: community,
                     isUserLoggedIn: isUserLoggedIn,
-                    currentSubscriptions: currentSubscriptions,
+                    currentSubscriptions: subscriptions,
                     getFavoriteStatus: _getFavoriteStatus,
                     getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
                     onSubscribeIconPressed: _onSubscribeIconPressed,
@@ -887,8 +887,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     setState(() {
       if (currentSubscriptions.contains(community.id) && !removedSubs.contains(community.id)) {
         removedSubs.add(community.id);
-      } else if (newAnonymousSubscriptions.contains(community)) {
-        newAnonymousSubscriptions.remove(community);
+      } else if (newAnonymousSubscriptions.map((c) => c.id).contains(community.id)) {
+        newAnonymousSubscriptions.removeWhere((c) => c.id == community.id);
       } else if (removedSubs.contains(community.id)) {
         removedSubs.remove(community.id);
       } else {

@@ -9,8 +9,8 @@ Future<List<ThunderCommunity>> getSubscriptions() async {
 }
 
 Future<void> insertSubscriptions(Set<ThunderCommunity> communities) async {
-  Set<LocalCommunity> newCommunities = communities.map((e) => e.toLocalCommunity).toSet();
-  await AnonymousSubscriptions.insertCommunities(newCommunities);
+  Set<LocalCommunity> subscriptions = communities.map((c) => LocalCommunity(id: c.id, name: c.communityName, title: c.title, actorId: c.url)).toSet();
+  await AnonymousSubscriptions.insertCommunities(subscriptions);
 }
 
 extension on LocalCommunity {
@@ -32,11 +32,5 @@ extension on LocalCommunity {
         instanceId: -1,
       ),
     );
-  }
-}
-
-extension on ThunderCommunity {
-  LocalCommunity get toLocalCommunity {
-    return LocalCommunity(id: id, name: name, title: title, icon: icon, actorId: url);
   }
 }
