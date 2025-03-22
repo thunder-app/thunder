@@ -97,7 +97,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       Row(
                         children: [
                           CommunityAvatar(
-                            community: ThunderCommunity(widget.getCommunityResponse.communityView.community),
+                            community: ThunderCommunity(widget.getCommunityResponse.communityView.community, communityView: widget.getCommunityResponse.communityView),
                             radius: 45.0,
                             showCommunityStatus: true,
                           ),

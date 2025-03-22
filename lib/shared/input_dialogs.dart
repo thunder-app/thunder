@@ -120,8 +120,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
   try {
     final state = context.read<AccountBloc>().state;
-    emptySuggestions ??= state.subsciptions.map((cv) => ThunderCommunity(cv.community)).toList();
-    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), state.favorites.map((cv) => ThunderCommunity(cv.community)).toList());
+    emptySuggestions ??= state.subsciptions.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), state.favorites.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList());
   } catch (e) {
     // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
   }

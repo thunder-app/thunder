@@ -420,7 +420,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
-                              community: ThunderCommunity(widget.communityView!.community, communityView: widget.communityView),
+                              community: community,
                               onCommunitySelected: (ThunderCommunity c) {
                                 setState(() {
                                   communityId = c.id;
@@ -806,7 +806,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
 /// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
 ///
-/// Passing in either [communityId] or [communityView] will set the initial state of the widget to display that given community.
+/// Passing in a [community] will set the initial state of the widget to display that given community.
 /// A callback function [onCommunitySelected] will be triggered whenever a new community is selected from the dropdown.
 class CommunitySelector extends StatefulWidget {
   const CommunitySelector({
@@ -848,13 +848,9 @@ class _CommunitySelectorState extends State<CommunitySelector> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                spacing: 12.0,
                 children: [
-                  if (widget.community != null)
-                    CommunityAvatar(
-                      community: widget.community!,
-                      radius: 16,
-                    ),
-                  const SizedBox(width: 12),
+                  if (widget.community != null) CommunityAvatar(community: widget.community!, radius: 16),
                   widget.community != null
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
