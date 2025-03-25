@@ -78,30 +78,52 @@ class PostPageAppBar extends StatelessWidget {
 }
 
 /// The title of the app bar. This shows the sort type of the comments
-class PostAppBarTitle extends StatelessWidget {
+class PostAppBarTitle extends StatefulWidget {
   const PostAppBarTitle({super.key});
 
+  @override
+  State<PostAppBarTitle> createState() => _PostAppBarTitleState();
+}
+
+class _PostAppBarTitleState extends State<PostAppBarTitle> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final (sortType, sortIcon) = getSort(context);
+    final hasSubtitle = sortType.isNotEmpty && sortIcon != null;
 
-    return ListTile(
-      title: Text(
-        l10n.comments,
-        style: theme.textTheme.titleLarge,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Row(
+    return SizedBox(
+      height: 56,
+      child: Stack(
+        alignment: Alignment.centerLeft,
         children: [
-          Icon(sortIcon, size: 13),
-          const SizedBox(width: 4),
-          Text(sortType),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            top: hasSubtitle ? 2 : 16,
+            left: 0,
+            child: Text(
+              l10n.comments,
+              style: theme.textTheme.titleLarge,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (hasSubtitle)
+            Positioned(
+              left: 0,
+              bottom: 6,
+              child: Row(
+                children: [
+                  Icon(sortIcon, size: 13),
+                  const SizedBox(width: 4),
+                  Text(sortType, style: theme.textTheme.bodyMedium),
+                ],
+              ),
+            ),
         ],
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
     );
   }
 }
