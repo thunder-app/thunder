@@ -1,3 +1,4 @@
+50501.chat
 ani.social
 aussie.zone
 awful.systems
@@ -5,14 +6,11 @@ beehaw.org
 diggita.com
 discuss.online
 discuss.tchncs.de
-endlesstalk.org
 feddit.dk
 feddit.it
 feddit.nl
 feddit.nu
 feddit.org
-feddit.uk
-hexbear.net
 infosec.pub
 jlai.lu
 lemdro.id
