@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/post/widgets/post_card_title.dart';
@@ -14,7 +15,13 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 /// Displays a compact view of a post card. This view is used in the feed related pages.
 class PostCardViewCompact extends StatelessWidget {
   /// The associated post information to display in the card.
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
+
+  /// The creator of the post.
+  final ThunderUser creator;
+
+  /// The community the post belongs to.
+  final ThunderCommunity community;
 
   /// Determines whether the user is logged in or not.
   final bool isUserLoggedIn;
@@ -33,7 +40,9 @@ class PostCardViewCompact extends StatelessWidget {
 
   const PostCardViewCompact({
     super.key,
-    required this.postViewMedia,
+    required this.post,
+    required this.creator,
+    required this.community,
     required this.isUserLoggedIn,
     this.navigateToPost,
     this.indicateRead,
@@ -65,13 +74,13 @@ class PostCardViewCompact extends StatelessWidget {
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
 
     // Post statuses
-    final read = postViewMedia.postView.read;
-    final hidden = postViewMedia.postView.hidden;
-    final removed = postViewMedia.postView.post.removed;
-    final deleted = postViewMedia.postView.post.deleted;
-    final saved = postViewMedia.postView.saved;
-    final locked = postViewMedia.postView.post.locked;
-    final pinned = postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal;
+    final read = post.read;
+    final hidden = post.hidden;
+    final removed = post.removed;
+    final deleted = post.deleted;
+    final saved = post.saved;
+    final locked = post.locked;
+    final pinned = post.featuredCommunity || post.featuredLocal;
 
     final dim = indicateRead && read;
 
@@ -81,8 +90,8 @@ class PostCardViewCompact extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
-              ? CompactThumbnailPreview(media: postViewMedia.media.first, dim: dim, postId: postViewMedia.postView.post.id, navigateToPost: navigateToPost)
+          !showThumbnailPreviewOnRight && showMedia && (post.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
+              ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
               : const SizedBox(width: 8.0),
           Expanded(
             child: Column(
@@ -90,8 +99,8 @@ class PostCardViewCompact extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PostCardTitle(
-                  title: postViewMedia.postView.post.name,
-                  hidden: hidden ?? false,
+                  title: post.title,
+                  hidden: hidden,
                   locked: locked,
                   saved: saved,
                   pinned: pinned,
@@ -99,26 +108,26 @@ class PostCardViewCompact extends StatelessWidget {
                   removed: removed,
                   dim: dim,
                 ),
-                PostCommunityAndAuthor(postView: postViewMedia.postView, dim: dim),
+                PostCommunityAndAuthor(user: creator, community: community, dim: dim),
                 PostCardMetadata(
                   postCardViewType: ViewMode.compact,
-                  score: postViewMedia.postView.counts.score,
-                  upvoteCount: postViewMedia.postView.counts.upvotes,
-                  downvoteCount: postViewMedia.postView.counts.downvotes,
-                  voteType: postViewMedia.postView.myVote ?? 0,
-                  commentCount: postViewMedia.postView.counts.comments,
-                  unreadCommentCount: postViewMedia.postView.unreadComments,
-                  dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
-                  edited: postViewMedia.postView.post.updated != null ? true : false,
-                  url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                  languageId: postViewMedia.postView.post.languageId,
+                  score: post.score,
+                  upvoteCount: post.upvotes,
+                  downvoteCount: post.downvotes,
+                  voteType: post.voteType ?? 0,
+                  commentCount: post.comments,
+                  unreadCommentCount: post.unreadComments,
+                  dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
+                  edited: post.updated != null ? true : false,
+                  url: post.media.firstOrNull != null ? post.media.first.originalUrl : null,
+                  languageId: post.languageId,
                   dim: dim,
                 ),
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && showMedia && (postViewMedia.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
-              ? CompactThumbnailPreview(media: postViewMedia.media.first, dim: dim, postId: postViewMedia.postView.post.id, navigateToPost: navigateToPost)
+          showThumbnailPreviewOnRight && showMedia && (post.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
+              ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
               : const SizedBox(width: 8.0),
         ],
       ),

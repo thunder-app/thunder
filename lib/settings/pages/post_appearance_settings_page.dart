@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -505,12 +506,19 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
+                              final pvm = snapshot.data![index]!;
+                              final post = ThunderPost(pvm.postView.post, postView: pvm.postView, media: pvm.media);
+                              final creator = ThunderUser(pvm.postView.creator);
+                              final community = ThunderCommunity(pvm.postView.community);
+
                               return Column(
                                 children: [
                                   (useCompactView)
                                       ? IgnorePointer(
                                           child: PostCardViewCompact(
-                                            postViewMedia: snapshot.data![index]!,
+                                            post: post,
+                                            creator: creator,
+                                            community: community,
                                             isUserLoggedIn: true,
                                             indicateRead: dimReadPosts,
                                             isLastTapped: false,

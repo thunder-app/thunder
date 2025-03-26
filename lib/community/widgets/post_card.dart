@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
@@ -168,7 +169,9 @@ class _PostCardState extends State<PostCard> {
     // Determine which post card view to use based on the settings
     Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal || (feedType == FeedType.community && widget.postViewMedia.postView.post.featuredCommunity)
         ? PostCardViewCompact(
-            postViewMedia: widget.postViewMedia,
+            post: ThunderPost(widget.postViewMedia.postView.post, postView: widget.postViewMedia.postView, media: widget.postViewMedia.media),
+            creator: ThunderUser(widget.postViewMedia.postView.creator),
+            community: ThunderCommunity(widget.postViewMedia.postView.community),
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,

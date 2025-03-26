@@ -12,7 +12,6 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -228,7 +227,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             padding: const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
-                                              postViewMedia: PostViewMedia(postView: postView, media: [Media(mediaType: MediaType.text)]),
+                                              post: ThunderPost(postView.post, postView: postView, media: [Media(mediaType: MediaType.text)]),
+                                              creator: ThunderUser(postView.creator),
+                                              community: ThunderCommunity(postView.community),
                                               isUserLoggedIn: false,
                                               isLastTapped: false,
                                             ),

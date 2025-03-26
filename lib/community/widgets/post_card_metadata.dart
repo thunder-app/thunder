@@ -548,10 +548,13 @@ class CrossPostMetaData extends StatelessWidget {
 }
 
 class PostCommunityAndAuthor extends StatelessWidget {
-  const PostCommunityAndAuthor({super.key, required this.postView, this.dim});
+  const PostCommunityAndAuthor({super.key, required this.user, required this.community, this.dim});
 
-  /// The post view to display the community and author information for
-  final PostView postView;
+  /// The user to display in the metadata
+  final ThunderUser user;
+
+  /// The community to display in the metadata
+  final ThunderCommunity community;
 
   /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
   final bool? dim;
@@ -573,41 +576,41 @@ class PostCommunityAndAuthor extends StatelessWidget {
       children: [
         if (showCommunityIcons && feedType != FeedType.community)
           GestureDetector(
-            child: CommunityAvatar(community: ThunderCommunity(postView.community), radius: showUsername && showCommunityName ? 14 : 7),
-            onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
+            child: CommunityAvatar(community: community, radius: showUsername && showCommunityName ? 14 : 7),
+            onTap: () => navigateToFeedPage(context, communityId: community.id, feedType: FeedType.community),
           ),
         if (showCommunityName && showUsername)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommunityPostCardMetadata(
-                communityName: postView.community.name,
-                displayName: postView.community.title,
-                actorId: postView.community.actorId,
-                subscribed: postView.subscribed != SubscribedType.notSubscribed,
+                communityName: community.communityName,
+                displayName: community.title,
+                actorId: community.url,
+                subscribed: community.subscribed != SubscribedType.notSubscribed,
                 dim: dim,
               ),
               UserPostCardMetadata(
-                username: postView.creator.name,
-                displayName: postView.creator.displayName,
-                actorId: postView.creator.actorId,
+                username: user.username,
+                displayName: user.displayName,
+                actorId: user.url,
                 dim: dim,
               ),
             ],
           )
         else if (showCommunityName)
           CommunityPostCardMetadata(
-            communityName: postView.community.name,
-            displayName: postView.community.title,
-            actorId: postView.community.actorId,
-            subscribed: postView.subscribed != SubscribedType.notSubscribed,
+            communityName: community.communityName,
+            displayName: community.title,
+            actorId: community.url,
+            subscribed: community.subscribed != SubscribedType.notSubscribed,
             dim: dim,
           )
         else if (showUsername)
           UserPostCardMetadata(
-            username: postView.creator.name,
-            displayName: postView.creator.displayName,
-            actorId: postView.creator.actorId,
+            username: user.username,
+            displayName: user.displayName,
+            actorId: user.url,
             dim: dim,
           ),
       ],

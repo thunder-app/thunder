@@ -6,6 +6,7 @@ import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
@@ -176,7 +177,11 @@ class PostCardViewComfortable extends StatelessWidget {
                     spacing: 8.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PostCommunityAndAuthor(postView: postViewMedia.postView, dim: dim),
+                      PostCommunityAndAuthor(
+                        user: ThunderUser(postViewMedia.postView.creator),
+                        community: ThunderCommunity(postViewMedia.postView.community),
+                        dim: dim,
+                      ),
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
                         score: counts.score,
