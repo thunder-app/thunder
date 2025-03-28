@@ -605,7 +605,8 @@ class _FeedViewState extends State<FeedView> {
                     ),
                     if (Navigator.of(context).canPop() &&
                         (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
-                        thunderBloc.state.enableFeedsFab)
+                        thunderBloc.state.enableFeedsFab &&
+                        state.feedType != FeedType.account)
                       AnimatedOpacity(
                         opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 150),
