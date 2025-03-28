@@ -30,7 +30,7 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-const timeout = Duration(seconds: 10);
+const timeout = Duration(seconds: 30);
 int commentLimit = 50;
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {

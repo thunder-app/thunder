@@ -16,6 +16,7 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -264,6 +265,10 @@ class _PostPageState extends State<PostPage> {
             }
             setState(() {});
           }
+
+          if (state.status == PostStatus.failure) {
+            showSnackbar(state.errorMessage ?? l10n.missingErrorMessage);
+          }
         },
         buildWhen: (previous, current) {
           return !current.didScrollPositionChange;
@@ -505,6 +510,33 @@ class _PostPageState extends State<PostPage> {
                         const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (state.status == PostStatus.failure)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: StatefulBuilder(
+                              builder: (context, setState) => ErrorMessage(
+                                title: l10n.unableToLoadPost,
+                                message: l10n.internetOrInstanceIssues,
+                                actions: [
+                                  (
+                                    text: AppLocalizations.of(context)!.retry,
+                                    action: () {
+                                      context.read<PostBloc>().add(
+                                            GetPostEvent(
+                                              postView: widget.initialPostViewMedia,
+                                              selectedCommentPath: widget.commentPath,
+                                              selectedCommentId: widget.highlightedCommentId,
+                                            ),
+                                          );
+                                    },
+                                    loading: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         )
                       else ...[
                         SliverToBoxAdapter(

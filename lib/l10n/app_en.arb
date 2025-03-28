@@ -2729,6 +2729,10 @@
   },
   "unableToLoadInstance": "Unable to load {instance}",
   "@unableToLoadInstance": {},
+  "unableToLoadPost": "Unable to load post",
+  "@unableToLoadPost": {
+    "description": "Error message shown when we are unable to load a post."
+  },
   "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Unable to load more replies.",
