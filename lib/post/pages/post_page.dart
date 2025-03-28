@@ -521,7 +521,7 @@ class _PostPageState extends State<PostPage> {
                                 message: l10n.internetOrInstanceIssues,
                                 actions: [
                                   (
-                                    text: AppLocalizations.of(context)!.retry,
+                                    text: l10n.retry,
                                     action: () {
                                       context.read<PostBloc>().add(
                                             GetPostEvent(
