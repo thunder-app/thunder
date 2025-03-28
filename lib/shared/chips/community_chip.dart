@@ -20,6 +20,7 @@ class CommunityChip extends StatelessWidget {
     required this.communityName,
     required this.communityTitle,
     required this.communityUrl,
+    this.includeInstance,
   });
 
   /// The ID of the community.
@@ -36,6 +37,9 @@ class CommunityChip extends StatelessWidget {
 
   /// The URL of the community.
   final String communityUrl;
+
+  /// Whether or not to include the instance name
+  final bool? includeInstance;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,7 @@ class CommunityChip extends StatelessWidget {
               communityName,
               communityTitle,
               fetchInstanceNameFromUrl(communityUrl),
-              includeInstance: state.postBodyShowCommunityInstance,
+              includeInstance: includeInstance ?? state.postBodyShowCommunityInstance,
               fontScale: state.metadataFontSizeScale,
               transformColor: (color) => color?.withValues(alpha: 0.75),
             ),

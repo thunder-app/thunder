@@ -250,7 +250,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           format: 'png',
                         ),
                         userGroups: userGroups,
-                        includeInstance: thunderState.postBodyShowCommunityInstance,
+                        includeInstance: thunderState.postBodyShowUserInstance,
                       ),
                       ScalableText(
                         'to',
@@ -270,6 +270,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         communityName: postView.community.name,
                         communityTitle: postView.community.title,
                         communityUrl: postView.community.actorId,
+                        includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),
                     ],
                   ),
