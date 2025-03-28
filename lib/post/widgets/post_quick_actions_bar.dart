@@ -89,6 +89,7 @@ class PostQuickActionsBar extends StatelessWidget {
                       Icons.arrow_upward_rounded,
                       semanticLabel: vote == 1 ? l10n.upvoted : l10n.upvote,
                       color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                      size: 24.0,
                     ),
                     if (showScores)
                       Text(
@@ -118,6 +119,7 @@ class PostQuickActionsBar extends StatelessWidget {
                         Icons.arrow_downward_rounded,
                         semanticLabel: vote == -1 ? l10n.downvoted : l10n.downvote,
                         color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                        size: 24.0,
                       ),
                       if (showScores)
                         Text(
