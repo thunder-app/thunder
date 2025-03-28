@@ -476,7 +476,7 @@ Future<void> navigateToCreatePostPage(
                     l10n.postCreatedSuccessfully,
                     trailingIcon: Icons.remove_red_eye_rounded,
                     trailingAction: () {
-                      navigateToPost(navigatorContext, postViewMedia: pvm);
+                      navigateToPost(context, postViewMedia: pvm);
                     },
                   );
                 } catch (e) {

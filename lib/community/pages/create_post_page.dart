@@ -424,7 +424,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
-                toolbarHeight: 70.0,
                 centerTitle: false,
               ),
               body: SafeArea(
@@ -435,7 +434,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     Expanded(
                       child: SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
                               community: community,
@@ -884,7 +883,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                           ],
                         )
                       : SizedBox(
-                          height: 36,
+                          height: 39,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
