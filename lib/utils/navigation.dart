@@ -390,6 +390,7 @@ Future<void> navigateToCreatePostPage(
     final l10n = AppLocalizations.of(context)!;
 
     FeedBloc? feedBloc;
+    PostBloc? postBloc;
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     AccountBloc accountBloc = context.read<AccountBloc>();
     CreatePostCubit createPostCubit = CreatePostCubit();
@@ -402,6 +403,12 @@ Future<void> navigateToCreatePostPage(
       feedBloc = context.read<FeedBloc>();
     } catch (e) {
       // Don't need feed block if we're not opening post in the context of a feed.
+    }
+
+    try {
+      postBloc = context.read<PostBloc>();
+    } catch (e) {
+      // It's ok if we don't get the PostBloc
     }
 
     ThunderCommunity? pvmCommunity;
@@ -436,6 +443,7 @@ Future<void> navigateToCreatePostPage(
         return MultiBlocProvider(
           providers: [
             feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+            if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
             BlocProvider<AccountBloc>.value(value: accountBloc),
             BlocProvider<CreatePostCubit>.value(value: createPostCubit),
@@ -452,7 +460,14 @@ Future<void> navigateToCreatePostPage(
             isCrossPost: isCrossPost,
             onPostSuccess: (PostViewMedia pvm, bool userChanged) {
               // Update the existing post view media if it exists
-              if (feedBloc != null && postViewMedia != null) feedBloc.add(FeedItemUpdatedEvent(postViewMedia: pvm));
+              if (postViewMedia != null) {
+                if (feedBloc != null) {
+                  feedBloc.add(FeedItemUpdatedEvent(postViewMedia: pvm));
+                }
+                if (postBloc != null) {
+                  postBloc.add(PostUpdatedEvent(postViewMedia: pvm));
+                }
+              }
 
               // Show snackbar message if the post was just created
               if (!userChanged && postViewMedia == null) {

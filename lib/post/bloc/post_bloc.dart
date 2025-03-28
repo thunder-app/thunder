@@ -85,6 +85,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<UpdateCollapsedComment>(
       _onUpdateCollapsedComment,
     );
+    on<PostUpdatedEvent>(
+      _onPostUpdated,
+      transformer: throttleDroppable(Duration.zero),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -655,5 +659,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     List<int> collapsedComments = event.collapsed ? (state.collapsedComments.toList()..add(event.commentId)) : (state.collapsedComments.toList()..remove(event.commentId));
 
     return emit(state.copyWith(status: state.status, collapsedComments: collapsedComments));
+  }
+
+  void _onPostUpdated(PostUpdatedEvent event, Emitter<PostState> emit) {
+    return emit(state.copyWith(status: state.status, postView: event.postViewMedia));
   }
 }

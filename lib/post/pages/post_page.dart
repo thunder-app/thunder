@@ -258,7 +258,7 @@ class _PostPageState extends State<PostPage> {
             return;
           }
 
-          if (state.status == PostStatus.success && state.postView != widget.initialPostViewMedia && state.postView != null) {
+          if (state.status == PostStatus.success && state.postView != null) {
             if (!userChanged) {
               widget.onPostUpdated?.call(state.postView!);
             }
@@ -370,7 +370,7 @@ class _PostPageState extends State<PostPage> {
                                           : singlePressAction == PostFabAction.changeSort
                                               ? () => showSortBottomSheet(context, state)
                                               : singlePressAction == PostFabAction.replyToPost
-                                                  ? () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked)
+                                                  ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
                                                   : singlePressAction == PostFabAction.search
                                                       ? () => startCommentSearch(context)
                                                       : null),
@@ -393,7 +393,7 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked)
+                                              ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
                                               : null),
                               children: [
                                 if (thunderState.postFabEnableRefresh)
@@ -420,7 +420,7 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context, widget.initialPostViewMedia, postLocked: post.locked),
+                                        override: () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),

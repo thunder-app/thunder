@@ -96,12 +96,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   }
 
   @override
-  void didUpdateWidget(covariant PostSubview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    postViewMedia = widget.postViewMedia;
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
@@ -195,7 +189,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
-            if (widget.postViewMedia.postView.post.body?.isNotEmpty == true)
+            if (postViewMedia.postView.post.body?.isNotEmpty == true)
               Expandable(
                 controller: expandableController,
                 collapsed: PostBodyPreview(
@@ -286,12 +280,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
-                  if (widget.showReplyEditorButtons && widget.postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+                  if (widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
                     const ThunderDivider(sliver: false, padding: false),
                     ReplyToPreviewActions(
                       onViewSourceToggled: widget.onViewSourceToggled,
                       viewSource: widget.viewSource,
-                      text: widget.postViewMedia.postView.post.body!,
+                      text: postViewMedia.postView.post.body!,
                     ),
                   ],
                 ],
@@ -301,7 +295,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               const Divider(),
               CrossPosts(
                 crossPosts: sortedCrossPosts,
-                originalPost: widget.postViewMedia,
+                originalPost: postViewMedia,
               ),
             ],
             if (widget.showQuickPostActionBar) ...[
@@ -374,7 +368,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 },
                 onReply: () async => navigateToCreateCommentPage(
                   context,
-                  postViewMedia: widget.postViewMedia,
+                  postViewMedia: postViewMedia,
                   onCommentSuccess: (commentView, userChanged) {
                     if (!userChanged) {
                       context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));

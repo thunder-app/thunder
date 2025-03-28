@@ -101,3 +101,9 @@ class UpdateCollapsedComment extends PostEvent {
 
   const UpdateCollapsedComment({required this.commentId, required this.collapsed});
 }
+
+final class PostUpdatedEvent extends PostEvent {
+  final PostViewMedia postViewMedia;
+
+  const PostUpdatedEvent({required this.postViewMedia});
+}
