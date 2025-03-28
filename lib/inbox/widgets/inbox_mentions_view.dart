@@ -55,7 +55,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
             ),
-          if (widget.mentions.isEmpty)
+          if (state.status != InboxStatus.loading && widget.mentions.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: Text(l10n.noMentions)),
@@ -87,6 +87,10 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
             },
           ),
           if (state.hasReachedInboxMentionEnd && widget.mentions.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          if (widget.mentions.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(height: kBottomNavigationBarHeight),
+            )
         ],
       );
     });

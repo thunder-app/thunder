@@ -57,7 +57,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
             ),
-          if (widget.replies.isEmpty)
+          if (state.status != InboxStatus.loading && widget.replies.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: Text(l10n.noReplies)),
@@ -109,9 +109,10 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
             },
           ),
           if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
-          SliverToBoxAdapter(
-            child: SizedBox(height: kBottomNavigationBarHeight),
-          )
+          if (widget.replies.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(height: kBottomNavigationBarHeight),
+            )
         ],
       );
     });

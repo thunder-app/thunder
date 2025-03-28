@@ -37,7 +37,7 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
             ),
-          if (widget.privateMessages.isEmpty)
+          if (state.status != InboxStatus.loading && widget.privateMessages.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: Text(l10n.noMessages)),
@@ -104,6 +104,10 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
             },
           ),
           if (state.hasReachedInboxMentionEnd && widget.privateMessages.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+          if (widget.privateMessages.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(height: kBottomNavigationBarHeight),
+            )
         ],
       );
     });
