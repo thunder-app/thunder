@@ -3,27 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/utils/colors.dart';
 
-/// A decoration applied to a [Container] that is used to draw the vertical lines that indicate the depth of a comment.
-///
-/// Given the [level] of the comment, this decoration will draw a vertical line for each level of the comment.
-/// When the [level] is 0, no lines will be drawn.
 class CommentDepthIndicatorDecoration extends Decoration {
-  /// The build context to determine the theme and colours.
+  /// The [BuildContext] used to access the theme and colors for rendering.
+  ///
+  /// This is required to determine the appropriate colors based on the current theme.
   final BuildContext context;
 
-  /// The level of the comment.
+  /// The nesting level of the comment.
+  ///
+  /// This determines how many vertical lines are drawn. A value of 0 means no lines are drawn.
   final int level;
 
-  /// The style to use for the nested comment indicator.
+  /// The style of the nested comment indicator.
   ///
-  /// This determines the width of the vertical lines, and whether or not to render all levels of the indicator.
-  /// When [style] is [NestedCommentIndicatorStyle.thick], only the current level of the indicator will be rendered.
-  /// When [style] is [NestedCommentIndicatorStyle.thin], all levels of the indicator will be rendered.
+  /// - [NestedCommentIndicatorStyle.thick]: Only the current level's line is rendered with a thicker stroke.
+  /// - [NestedCommentIndicatorStyle.thin]: All levels' lines are rendered with a thinner stroke.
   final NestedCommentIndicatorStyle style;
 
-  /// The color scheme to use for the nested comment indicator.
+  /// The color scheme of the nested comment indicator.
+  ///
+  /// - [NestedCommentIndicatorColor.monochrome]: Lines are rendered in a single color with reduced opacity.
+  /// - [NestedCommentIndicatorColor.colorful]: Lines are rendered in a sequence of colors based on the level.
   final NestedCommentIndicatorColor scheme;
 
+  /// A decoration that visually represents the depth of a comment in a nested comment structure.
+  ///
+  /// This decoration is applied to a [Container] and draws vertical lines to indicate the nesting level of a comment.
+  /// The number of lines corresponds to the [level] of the comment. If the [level] is 0, no lines are drawn.
+  ///
+  /// The appearance of the lines is controlled by the [style] and [scheme] parameters:
+  /// - [style] determines the thickness of the lines and whether all levels or only the current level are rendered.
+  /// - [scheme] defines the color scheme of the lines, either monochrome or colorful.
+  ///
+  /// This widget is useful for visually organizing nested comments in a discussion thread or similar UI.
   const CommentDepthIndicatorDecoration(
     this.context, {
     this.level = 0,
@@ -91,7 +103,6 @@ class _BoxDecorationPainter extends BoxPainter {
       if (_decoration.scheme == NestedCommentIndicatorColor.monochrome) {
         paint.color = theme.hintColor.withValues(alpha: 0.25);
       } else {
-        // Fixed: Use proper modulo for level color
         paint.color = getCommentLevelColor(_decoration.context, (_decoration.level - 1) % 6);
       }
 
