@@ -518,9 +518,9 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.initial:
                           context.read<AuthBloc>().add(CheckAuth());
                           return Scaffold(
-                            appBar: AppBar(),
+                            appBar: AppBar(toolbarHeight: 70.0),
                             body: Center(
-                              child: Container(),
+                              child: CircularProgressIndicator(),
                             ),
                           );
                         case AuthStatus.contentWarning:
