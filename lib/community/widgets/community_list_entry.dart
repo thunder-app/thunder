@@ -58,6 +58,12 @@ class CommunityListEntry extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     assert(community.subscribers != null);
 
+    String subscriptionButtonLabel = switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
+      SubscribedType.notSubscribed => l10n.subscribe,
+      SubscribedType.pending => l10n.unsubscribePending,
+      SubscribedType.subscribed => l10n.unsubscribe,
+    };
+
     return Tooltip(
       excludeFromSemantics: true,
       message: '${community.title}\n${generateCommunityFullName(
@@ -105,18 +111,17 @@ class CommunityListEntry extends StatelessWidget {
                   showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                   context.read<AccountBloc>().add(const GetAccountSubscriptions());
                 },
-                icon: Icon(
-                  switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
-                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                    SubscribedType.pending => Icons.pending_outlined,
-                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                  },
+                icon: Semantics(
+                  label: subscriptionButtonLabel,
+                  child: Icon(
+                    switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
+                      SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                      SubscribedType.pending => Icons.pending_outlined,
+                      SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                    },
+                  ),
                 ),
-                tooltip: switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
-                  SubscribedType.notSubscribed => l10n.subscribe,
-                  SubscribedType.pending => l10n.unsubscribePending,
-                  SubscribedType.subscribed => l10n.unsubscribe,
-                },
+                tooltip: subscriptionButtonLabel,
                 visualDensity: VisualDensity.compact,
               ),
         onTap: () async {
