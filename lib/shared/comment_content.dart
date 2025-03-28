@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
+import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/divider.dart';
@@ -22,6 +24,9 @@ class CommentContent extends StatefulWidget {
   final bool isHidden;
   final bool excludeSemantics;
   final bool disableActions;
+  final int level;
+
+  final bool dragged;
 
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -53,6 +58,8 @@ class CommentContent extends StatefulWidget {
     this.selectable = false,
     this.showReplyEditorButtons = false,
     this.onSelectionChanged,
+    this.level = 0,
+    this.dragged = false,
   });
 
   @override
@@ -82,101 +89,119 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
     final ThemeData theme = Theme.of(context);
 
-    return ExcludeSemantics(
-      excluding: widget.excludeSemantics,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 250),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CommentHeader(
-              moddingCommentId: widget.moddingCommentId ?? -1,
-              comment: widget.comment,
-              isOwnComment: widget.isOwnComment,
-              isHidden: widget.isHidden,
+    NestedCommentIndicatorStyle nestedCommentIndicatorStyle = state.nestedCommentIndicatorStyle;
+    NestedCommentIndicatorColor nestedCommentIndicatorColor = state.nestedCommentIndicatorColor;
+
+    return Container(
+      decoration: widget.dragged
+          ? null
+          : CommentDepthIndicatorDecoration(
+              context,
+              level: widget.level,
+              style: nestedCommentIndicatorStyle,
+              scheme: nestedCommentIndicatorColor,
             ),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 130),
-              switchInCurve: Curves.easeInOut,
-              switchOutCurve: Curves.easeInOut,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SizeTransition(
-                  sizeFactor: animation,
-                  child: SlideTransition(
-                    position: _offsetAnimation,
-                    child: child,
-                  ),
-                );
-              },
-              child: (widget.isHidden && collapseParentCommentOnGesture)
-                  ? Container()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
-                          child: ConditionalParentWidget(
-                            condition: widget.selectable,
-                            parentBuilder: (child) {
-                              return SelectableRegion(
-                                focusNode: _selectableRegionFocusNode,
-                                // See comments on [SelectableTextModal] regarding the next two properties
-                                selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
-                                contextMenuBuilder: (context, selectableRegionState) {
-                                  return AdaptiveTextSelectionToolbar.buttonItems(
-                                    buttonItems: selectableRegionState.contextMenuButtonItems,
-                                    anchors: selectableRegionState.contextMenuAnchors,
+      child: ExcludeSemantics(
+        excluding: widget.excludeSemantics,
+        child: Container(
+          padding: widget.level > 0 ? EdgeInsets.only(left: (widget.level) * 4.0) : null,
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOutCubicEmphasized,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Divider(height: 1),
+                CommentHeader(
+                  moddingCommentId: widget.moddingCommentId ?? -1,
+                  comment: widget.comment,
+                  isOwnComment: widget.isOwnComment,
+                  isHidden: widget.isHidden,
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 130),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return SizeTransition(
+                      sizeFactor: animation,
+                      child: SlideTransition(
+                        position: _offsetAnimation,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: (widget.isHidden && collapseParentCommentOnGesture)
+                      ? Container()
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
+                              child: ConditionalParentWidget(
+                                condition: widget.selectable,
+                                parentBuilder: (child) {
+                                  return SelectableRegion(
+                                    focusNode: _selectableRegionFocusNode,
+                                    // See comments on [SelectableTextModal] regarding the next two properties
+                                    selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                                    contextMenuBuilder: (context, selectableRegionState) {
+                                      return AdaptiveTextSelectionToolbar.buttonItems(
+                                        buttonItems: selectableRegionState.contextMenuButtonItems,
+                                        anchors: selectableRegionState.contextMenuAnchors,
+                                      );
+                                    },
+                                    onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
+                                    child: child,
                                   );
                                 },
-                                onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
-                                child: child,
-                              );
-                            },
-                            child: widget.viewSource
-                                ? ScalableText(
-                                    cleanCommentContent(widget.comment.comment),
-                                    style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                    fontScale: state.contentFontSizeScale,
-                                  )
-                                : CommonMarkdownBody(
-                                    body: cleanCommentContent(widget.comment.comment),
-                                    isComment: true,
-                                  ),
-                          ),
-                        ),
-                        if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                            child: CommentCardActions(
-                              commentView: widget.comment,
-                              onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
-                              isEdit: widget.isOwnComment,
-                              onSaveAction: widget.onSaveAction,
-                              onDeleteAction: widget.onDeleteAction,
-                              onReplyEditAction: widget.onReplyEditAction,
-                              onViewSourceToggled: widget.onViewSourceToggled,
-                              viewSource: widget.viewSource,
+                                child: widget.viewSource
+                                    ? ScalableText(
+                                        cleanCommentContent(widget.comment.comment),
+                                        style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                        fontScale: state.contentFontSizeScale,
+                                      )
+                                    : CommonMarkdownBody(
+                                        body: cleanCommentContent(widget.comment.comment),
+                                        isComment: true,
+                                      ),
+                              ),
                             ),
-                          ),
-                      ],
-                    ),
-            ),
-            if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                child: ThunderDivider(sliver: false, padding: false),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                child: ReplyToPreviewActions(
-                  onViewSourceToggled: widget.onViewSourceToggled,
-                  viewSource: widget.viewSource,
-                  text: cleanCommentContent(widget.comment.comment),
+                            if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                                child: CommentCardActions(
+                                  commentView: widget.comment,
+                                  onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                                  isEdit: widget.isOwnComment,
+                                  onSaveAction: widget.onSaveAction,
+                                  onDeleteAction: widget.onDeleteAction,
+                                  onReplyEditAction: widget.onReplyEditAction,
+                                  onViewSourceToggled: widget.onViewSourceToggled,
+                                  viewSource: widget.viewSource,
+                                ),
+                              ),
+                          ],
+                        ),
                 ),
-              ),
-            ],
-          ],
+                if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: ThunderDivider(sliver: false, padding: false),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                    child: ReplyToPreviewActions(
+                      onViewSourceToggled: widget.onViewSourceToggled,
+                      viewSource: widget.viewSource,
+                      text: cleanCommentContent(widget.comment.comment),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
