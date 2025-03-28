@@ -31,14 +31,14 @@ class CommentCardHeader extends StatelessWidget {
   List<UserType> _getUserGroups(int? accountId) {
     final List<UserType> groups = [];
 
-    if (comment.creator.botAccount) groups.add(UserType.bot);
+    if (comment.creator?.botAccount == true) groups.add(UserType.bot);
     if (comment.creatorIsModerator) groups.add(UserType.moderator);
     if (comment.creatorIsAdmin) groups.add(UserType.admin);
     if (comment.postCreatorId == comment.creatorId) groups.add(UserType.op);
     if (comment.creatorId == accountId) groups.add(UserType.self);
 
     final now = DateTime.now();
-    final isUserBirthday = comment.creator.published.month == now.month && comment.creator.published.day == now.day;
+    final isUserBirthday = comment.creator?.published.month == now.month && comment.creator?.published.day == now.day;
     if (isUserBirthday) groups.add(UserType.birthday);
 
     return groups;
@@ -46,6 +46,8 @@ class CommentCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(comment.creator != null, 'CommentView must be supplied to ThunderComment');
+
     final theme = Theme.of(context);
 
     final accountId = context.select((AccountBloc bloc) => bloc.state.personView?.person.id);
@@ -70,22 +72,22 @@ class CommentCardHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               UserChip(
-                user: ThunderUser(comment.creator),
-                personAvatar: UserAvatar(user: ThunderUser(comment.creator), radius: 10, thumbnailSize: 20, format: 'png'),
+                user: ThunderUser(comment.creator!),
+                personAvatar: UserAvatar(user: ThunderUser(comment.creator!), radius: 10, thumbnailSize: 20, format: 'png'),
                 userGroups: userGroups,
                 includeInstance: commentShowUserInstance,
                 ignorePointerEvents: hidden && collapseParentCommentOnGesture,
                 opacity: 1.0,
               ),
-              CommentHeaderScore(score: comment.score, upvotes: comment.upvotes, downvotes: comment.downvotes, voteType: comment.myVote),
+              CommentCardHeaderScore(score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
               Spacer(flex: 1),
-              CommentCardHeaderReplyCount(replies: comment.childCount, hidden: hidden),
+              CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden),
               if (saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
               if (updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
               CommentCardHeaderDate(created: created, updated: updated),
             ],
           ),
-          UserLabelChip(username: UserLabel.usernameFromParts(comment.creator.name, comment.creator.actorId))
+          UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.name, comment.creator!.actorId))
         ],
       ),
     );

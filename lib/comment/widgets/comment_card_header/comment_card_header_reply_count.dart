@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+/// A widget that displays the number of replies to a comment.
+///
+/// This widget generally appears when a comment is collapsed.
 class CommentCardHeaderReplyCount extends StatelessWidget {
   /// The number of replies to the comment
   final int replies;
@@ -12,11 +15,7 @@ class CommentCardHeaderReplyCount extends StatelessWidget {
   /// Whether the comment is currently hidden/collapsed
   final bool hidden;
 
-  const CommentCardHeaderReplyCount({
-    super.key,
-    required this.replies,
-    required this.hidden,
-  });
+  const CommentCardHeaderReplyCount({super.key, required this.replies, required this.hidden});
 
   @override
   Widget build(BuildContext context) {

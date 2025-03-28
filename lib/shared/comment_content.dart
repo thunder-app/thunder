@@ -116,7 +116,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
               children: [
                 Divider(height: 1),
                 CommentCardHeader(
-                  comment: ThunderComment(widget.comment),
+                  comment: ThunderComment(comment: widget.comment.comment, commentView: widget.comment),
                   hidden: widget.isHidden,
                 ),
                 AnimatedSwitcher(

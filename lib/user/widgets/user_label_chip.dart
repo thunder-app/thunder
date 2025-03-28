@@ -26,7 +26,6 @@ class UserLabelChip extends StatelessWidget {
     final color = getBackgroundColor(context);
 
     return FutureBuilder<UserLabel?>(
-      key: ValueKey('user-label-$username'),
       future: fetchUserLabel(),
       builder: (context, AsyncSnapshot<UserLabel?> snapshot) {
         if (snapshot.hasError) return const SizedBox.shrink();
@@ -45,7 +44,6 @@ class UserLabelChip extends StatelessWidget {
             child: ScalableText(
               label,
               fontScale: metadataFontSizeScale,
-              key: ValueKey('label-text-$username'),
             ),
           ),
         );

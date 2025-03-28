@@ -10,8 +10,11 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/numbers.dart';
 
 /// A widget that displays voting scores for comments with upvote/downvote indicators
-class CommentHeaderScore extends StatelessWidget {
-  /// The combined score (upvotes - downvotes)
+///
+/// The widget will display the combined score if [combineCommentScores] is true. Otherwise, it will display the votes separately.
+/// If [showScores] is false, only the vote indicator (upvote/downvote) will be shown.
+class CommentCardHeaderScore extends StatelessWidget {
+  /// The combined score
   final int score;
 
   /// The number of upvotes
@@ -23,7 +26,7 @@ class CommentHeaderScore extends StatelessWidget {
   /// The user's vote on this comment: 1 for upvote, -1 for downvote, 0 or null for no vote
   final int? voteType;
 
-  const CommentHeaderScore({
+  const CommentCardHeaderScore({
     super.key,
     required this.score,
     required this.upvotes,
@@ -36,74 +39,96 @@ class CommentHeaderScore extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    final upvoteColor = context.select((ThunderBloc bloc) => bloc.state.upvoteColor);
-    final downvoteColor = context.select((ThunderBloc bloc) => bloc.state.downvoteColor);
     final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
     final showScores = context.select((AuthBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true);
     final combineCommentScores = context.select((ThunderBloc bloc) => bloc.state.combineCommentScores);
 
-    Color getVoteColor(bool isUpvote) {
-      return isUpvote ? upvoteColor.color : downvoteColor.color;
-    }
-
-    Color getScoreColor() {
-      if (voteType == 1) return getVoteColor(true);
-      if (voteType == -1) return getVoteColor(false);
-      return theme.colorScheme.onSurface;
-    }
-
-    Widget buildVoteIcon(bool isUpvote) {
-      return Icon(
-        isUpvote ? Icons.north_rounded : Icons.south_rounded,
-        size: 12.0 * metadataFontSizeScale.textScaleFactor,
-        color: voteType == (isUpvote ? 1 : -1) ? getVoteColor(isUpvote) : theme.colorScheme.onSurface,
-      );
-    }
-
-    Widget buildScoreText() {
-      final displayedScore = combineCommentScores ? score : upvotes;
-      final formattedScore = formatNumberToK(displayedScore);
-
-      return ScalableText(
-        formattedScore,
-        semanticsLabel: combineCommentScores ? l10n.xScore(formattedScore) : l10n.xUpvotes(formattedScore),
-        fontScale: metadataFontSizeScale,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: getScoreColor(),
-        ),
-      );
-    }
-
     // Show only vote indicator if scores are hidden
     if (!showScores) {
-      if (voteType == 0) return Container();
-      return buildVoteIcon(voteType == 1);
+      if (voteType == 1) return VoteIcon(type: voteType!, voteType: voteType);
+      if (voteType == -1) return VoteIcon(type: voteType!, voteType: voteType);
+      return SizedBox.shrink();
     }
 
+    // Show the combined score
+    if (combineCommentScores) {
+      return Row(
+        spacing: 2.0,
+        children: [
+          VoteIcon(type: 1, voteType: voteType),
+          ScalableText(
+            formatNumberToK(score),
+            semanticsLabel: l10n.xScore(formatNumberToK(score)),
+            fontScale: metadataFontSizeScale,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: (voteType != null && voteType != 0) ? VoteIcon.getVoteColor(context, voteType!) : theme.colorScheme.onSurface,
+            ),
+          ),
+          VoteIcon(type: -1, voteType: voteType),
+        ],
+      );
+    }
+
+    // Show upvotes and downvotes separately
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        buildVoteIcon(true),
+        VoteIcon(type: 1, voteType: voteType),
         const SizedBox(width: 2.0),
-        buildScoreText(),
-        SizedBox(width: combineCommentScores ? 2.0 : 10.0),
-        if (downvotes != 0 || combineCommentScores) ...[
-          buildVoteIcon(false),
-          if (!combineCommentScores) ...[
-            const SizedBox(width: 2.0),
-            if (downvotes != 0)
-              ScalableText(
-                formatNumberToK(downvotes),
-                fontScale: metadataFontSizeScale,
-                semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: voteType == -1 ? getVoteColor(false) : theme.colorScheme.onSurface,
-                ),
-              ),
-          ],
+        ScalableText(
+          formatNumberToK(upvotes),
+          semanticsLabel: l10n.xUpvotes(formatNumberToK(upvotes)),
+          fontScale: metadataFontSizeScale,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: (voteType == 1) ? VoteIcon.getVoteColor(context, voteType!) : theme.colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(width: 10.0),
+        if (downvotes != 0) ...[
+          VoteIcon(type: -1, voteType: voteType),
+          const SizedBox(width: 2.0),
+          ScalableText(
+            formatNumberToK(downvotes),
+            semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
+            fontScale: metadataFontSizeScale,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: (voteType == -1) ? VoteIcon.getVoteColor(context, voteType!) : theme.colorScheme.onSurface,
+            ),
+          ),
         ],
       ],
+    );
+  }
+}
+
+class VoteIcon extends StatelessWidget {
+  /// The type of vote to display: 1 for upvote, -1 for downvote
+  final int type;
+
+  /// The vote for the comment by the current user. If [null], then the vote is not set.
+  final int? voteType;
+
+  const VoteIcon({super.key, required this.type, this.voteType});
+
+  static Color getVoteColor(BuildContext context, int type) {
+    final upvoteColor = context.select((ThunderBloc bloc) => bloc.state.upvoteColor);
+    final downvoteColor = context.select((ThunderBloc bloc) => bloc.state.downvoteColor);
+
+    return type == 1 ? upvoteColor.color : downvoteColor.color;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    assert(type != 0);
+
+    final theme = Theme.of(context);
+    final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+
+    return Icon(
+      type == 1 ? Icons.north_rounded : Icons.south_rounded,
+      size: 12.0 * metadataFontSizeScale.textScaleFactor,
+      color: voteType == type ? getVoteColor(context, type) : theme.colorScheme.onSurface,
     );
   }
 }
