@@ -2,20 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/widgets/comment_card_header/comment_card_header.dart';
 import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/models/models.dart';
+import 'package:thunder/shared/comment_card_actions.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
-import 'comment_card_actions.dart';
-import 'comment_header.dart';
 
 class CommentContent extends StatefulWidget {
   final CommentView comment;
@@ -113,11 +115,9 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Divider(height: 1),
-                CommentHeader(
-                  moddingCommentId: widget.moddingCommentId ?? -1,
-                  comment: widget.comment,
-                  isOwnComment: widget.isOwnComment,
-                  isHidden: widget.isHidden,
+                CommentCardHeader(
+                  comment: ThunderComment(widget.comment),
+                  hidden: widget.isHidden,
                 ),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 130),

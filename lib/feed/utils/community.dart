@@ -39,10 +39,7 @@ Future<ThunderCommunity> followCommunity(int communityId, bool follow) async {
 Future<Map<String, dynamic>> fetchCommunityInformation({int? id, String? name}) async {
   assert(!(id == null && name == null));
 
-  final l10n = GlobalContext.l10n;
   final account = await fetchActiveProfileAccount();
-  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
-
   final lemmy = LemmyClient.instance.lemmyApiV3;
   final response = await lemmy.run(GetCommunity(auth: account?.jwt, id: id, name: name));
 

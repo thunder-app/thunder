@@ -1,0 +1,49 @@
+import 'package:lemmy_api_client/v3.dart';
+
+class ThunderComment {
+  final CommentView _commentView;
+
+  ThunderComment(this._commentView);
+
+  /// The ID of the comment
+  int get id => _commentView.comment.id;
+
+  /// The creator of the comment
+  Person get creator => _commentView.creator;
+
+  /// The date and time that the comment was published
+  DateTime get published => _commentView.comment.published;
+
+  /// The date and time that the comment was last updated
+  DateTime? get updated => _commentView.comment.updated;
+
+  /// The score of the comment (upvotes - downvotes)
+  int get score => _commentView.counts.score;
+
+  /// The number of upvotes on the comment
+  int get upvotes => _commentView.counts.upvotes;
+
+  /// The number of downvotes on the comment
+  int get downvotes => _commentView.counts.downvotes;
+
+  /// The vote status of the current user on this comment
+  int? get myVote => _commentView.myVote;
+
+  /// Whether the comment is saved by the current user
+  bool? get saved => _commentView.saved;
+
+  /// The number of child comments
+  int get childCount => _commentView.counts.childCount;
+
+  /// Whether the creator of the comment is a moderator
+  bool get creatorIsModerator => _commentView.creatorIsModerator ?? false;
+
+  /// Whether the creator of the comment is an admin
+  bool get creatorIsAdmin => _commentView.creatorIsAdmin ?? false;
+
+  /// The ID of the post creator
+  int get postCreatorId => _commentView.post.creatorId;
+
+  /// The ID of the comment creator
+  int get creatorId => _commentView.creator.id;
+}
