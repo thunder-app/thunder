@@ -79,7 +79,7 @@ class UserChip extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (showUserAvatar && personAvatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
+                  if (showUserAvatar && personAvatar != null && user.icon != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   UserFullNameWidget(
                     context,
                     user.username,
