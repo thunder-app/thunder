@@ -69,7 +69,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
   );
 
   await Favorite.insertFavorite(favorite);
-  if (context.mounted) context.read<AccountBloc>().add(const RefreshAccountInformation());
+  if (context.mounted) context.read<AccountBloc>().add(const GetFavoritedCommunities());
 }
 
 /// Takes a list of [communities] and returns the list with any [favoriteCommunities] at the beginning of the list
