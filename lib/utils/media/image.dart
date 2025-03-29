@@ -14,6 +14,28 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
 
+/// Givent a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
+///
+/// This is useful for handling thumbnail URLs that are proxied via /image_proxy.
+String fetchProxyImageUrl(String url) {
+  Uri uri;
+
+  try {
+    uri = Uri.parse(url);
+  } catch (e) {
+    return url; // Return the original URL if parsing fails
+  }
+
+  // Handle thumbnail urls that are proxied via /image_proxy
+  if (uri.path == '/api/v3/image_proxy') {
+    Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
+    debugPrint('Parsed URL: $parsedUri');
+    if (parsedUri != null) return parsedUri.toString();
+  }
+
+  return url;
+}
+
 String generateRandomHeroString({int? len}) {
   Random r = Random();
   return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
@@ -21,6 +43,7 @@ String generateRandomHeroString({int? len}) {
 
 bool isImageUrl(String url) {
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'];
+  url = fetchProxyImageUrl(url);
 
   Uri uri;
   try {
@@ -29,16 +52,8 @@ bool isImageUrl(String url) {
     return false;
   }
 
-  String path = uri.path.toLowerCase();
-
-  // Handle thumbnail urls that are proxied via /image_proxy
-  if (uri.path == '/api/v3/image_proxy') {
-    Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
-    if (parsedUri != null) path = parsedUri.path;
-  }
-
   for (final extension in imageExtensions) {
-    if (path.endsWith(extension)) {
+    if (uri.path.toLowerCase().endsWith(extension)) {
       return true;
     }
   }

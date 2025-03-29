@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/utils/media/image.dart';
 
 /// A user avatar. Displays the associated user icon if available.
 ///
@@ -45,7 +46,8 @@ class UserAvatar extends StatelessWidget {
 
     if (user.icon?.isNotEmpty != true) return placeholderIcon;
 
-    Uri imageUri = Uri.parse(user.icon!);
+    String url = fetchProxyImageUrl(user.icon!);
+    Uri imageUri = Uri.parse(url);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
 
     Map<String, dynamic> queryParameters = {};

@@ -37,6 +37,9 @@ class Media {
   /// Includes an alternative text-based description of the image
   String? altText;
 
+  /// The content type of the media
+  String? contentType;
+
   /// Gets the full-size image URL, if any
   String? get imageUrl => isImageUrl(mediaUrl ?? '') ? mediaUrl : thumbnailUrl;
 

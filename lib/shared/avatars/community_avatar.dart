@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/utils/media/image.dart';
 
 /// A community avatar. Displays the associated community icon if available.
 ///
@@ -51,7 +52,8 @@ class CommunityAvatar extends StatelessWidget {
 
     if (community.icon?.isNotEmpty != true) return placeholderIcon;
 
-    Uri imageUri = Uri.parse(community.icon!);
+    String url = fetchProxyImageUrl(community.icon!);
+    Uri imageUri = Uri.parse(url);
     bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
 
     Map<String, dynamic> queryParameters = {};

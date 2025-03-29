@@ -15,6 +15,9 @@ class ImagePreview extends StatefulWidget {
   /// The URL of the image to display.
   final String url;
 
+  /// The content type of the image.
+  final String? contentType;
+
   /// The width of the image.
   final double? width;
 
@@ -39,6 +42,7 @@ class ImagePreview extends StatefulWidget {
   const ImagePreview({
     super.key,
     required this.url,
+    this.contentType,
     this.width,
     this.height,
     this.fit,
@@ -62,7 +66,7 @@ class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
-    _isValidImageUrl = isImageUrl(widget.url);
+    _isValidImageUrl = widget.contentType != null || isImageUrl(widget.url);
 
     _controller = AnimationController(
       vsync: this,

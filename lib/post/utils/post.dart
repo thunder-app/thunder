@@ -363,10 +363,13 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     media.altText = postView.post.altText;
   }
 
-  // Determine the thumbnail url
-  if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
+  if (postView.imageDetails != null) {
+    media.thumbnailUrl = fetchProxyImageUrl(postView.imageDetails!.link);
+    media.contentType = postView.imageDetails!.contentType;
+  } else if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
-    media.thumbnailUrl = thumbnailUrl;
+    // If the thumbnail image is being proxied via /image_proxy, fetch the proper url
+    media.thumbnailUrl = fetchProxyImageUrl(thumbnailUrl);
   } else if (isImage) {
     // If there is no thumbnail image, but the url is an image, we'll use that for the thumbnailUrl
     media.thumbnailUrl = url;

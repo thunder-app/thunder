@@ -328,6 +328,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             children: [
               ImagePreview(
                 url: widget.media.thumbnailUrl ?? widget.media.imageUrl ?? widget.media.originalUrl!,
+                contentType: widget.media.contentType,
                 width: width,
                 height: height,
                 fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
