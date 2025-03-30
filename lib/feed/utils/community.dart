@@ -56,7 +56,7 @@ Future<Map<String, dynamic>> fetchCommunityInformation({int? id, String? name}) 
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   if (isFavorite) {
     await Favorite.deleteFavorite(communityId: community.id);
-    if (context.mounted) context.read<AccountBloc>().add(const RefreshAccountInformation());
+    if (context.mounted) context.read<AccountBloc>().add(const GetFavoritedCommunities());
     return;
   }
 

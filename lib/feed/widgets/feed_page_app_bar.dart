@@ -165,8 +165,10 @@ class FeedAppBarCommunityActions extends StatelessWidget {
     final community = context.read<FeedBloc>().state.community!;
     final sortType = context.read<FeedBloc>().state.sortType;
 
-    final favorited = _getFavoriteStatus(context);
     final subscriptionStatus = _getSubscriptionStatus(context);
+
+    final favorites = context.select<AccountBloc, List<ThunderCommunity>>((bloc) => bloc.state.favorites);
+    final favorited = favorites.any((c) => c.id == community.id);
 
     return Row(
       children: [
@@ -373,14 +375,6 @@ SubscribedType? _getSubscriptionStatus(BuildContext context) {
 
   final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
   return subscriptions.contains(community?.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
-}
-
-/// Checks whether the current community is a favorite of the current user
-bool _getFavoriteStatus(BuildContext context) {
-  final state = context.read<AccountBloc>().state;
-  final community = context.read<FeedBloc>().state.community;
-
-  return state.favorites.any((c) => c.id == community?.id);
 }
 
 void _onSubscribeIconPressed(BuildContext context) async {
