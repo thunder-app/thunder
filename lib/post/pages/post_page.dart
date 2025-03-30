@@ -254,6 +254,17 @@ class _PostPageState extends State<PostPage> {
         }
       },
       child: BlocConsumer<PostBloc, PostState>(
+        listenWhen: (previous, current) {
+          if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.postView != null && current.hasReachedCommentEnd) {
+            // Check if the post's community is blocked by the user. If so, show a message.
+            final blockedCommunities = context.read<AuthBloc>().state.getSiteResponse?.myUser?.communityBlocks;
+            final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.postView?.postView.post.communityId) ?? false;
+
+            if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
+          }
+
+          return true;
+        },
         listener: (context, state) {
           if (state.didScrollPositionChange) {
             return;
@@ -263,12 +274,6 @@ class _PostPageState extends State<PostPage> {
             if (!userChanged) {
               widget.onPostUpdated?.call(state.postView!);
             }
-
-            // Check if the post's community is blocked by the user. If so, show a message.
-            final blockedCommunities = context.read<AuthBloc>().state.getSiteResponse?.myUser?.communityBlocks;
-            final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == state.postView?.postView.post.communityId) ?? false;
-            if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
-
             setState(() {});
           }
 
