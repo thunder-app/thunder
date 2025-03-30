@@ -9,7 +9,6 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
-import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -401,7 +400,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   }
 
   // Determine the scaled size of the image based on the device screen size
-  Size? scaledSize = MediaExtension.getScaledMediaSize(width: size?.width, height: size?.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+  Size? scaledSize = getScaledMediaSize(width: size?.width, height: size?.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
 
   media.width = scaledSize?.width;
   media.height = scaledSize?.height;

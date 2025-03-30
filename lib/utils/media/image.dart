@@ -113,6 +113,21 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
   }
 }
 
+Size? getScaledMediaSize({width, height, offset = 24.0, tabletMode = false}) {
+  if (width == null || height == null) return null;
+  double mediaRatio = width / height;
+
+  FlutterView device = PlatformDispatcher.instance.views.first;
+
+  double screenWidth = (device.physicalSize.width / device.devicePixelRatio) - device.viewPadding.left - device.viewPadding.right - offset;
+  double usableScreenWidth = tabletMode ? screenWidth / 2 - (offset + 8.0) : screenWidth;
+  double widthScale = usableScreenWidth / width;
+  double mediaMaxWidth = widthScale * width;
+  double mediaMaxHeight = mediaMaxWidth / mediaRatio;
+
+  return Size(mediaMaxWidth, mediaMaxHeight);
+}
+
 void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
   final ImagePicker picker = ImagePicker();
   String path;
