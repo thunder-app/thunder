@@ -52,18 +52,20 @@ class CommunityAvatar extends StatelessWidget {
 
     if (community.icon?.isNotEmpty != true) return placeholderIcon;
 
-    String url = fetchProxyImageUrl(community.icon!);
-    Uri imageUri = Uri.parse(url);
-    bool isPictrsImageEndpoint = imageUri.toString().contains('/pictrs/image/');
-
     Map<String, dynamic> queryParameters = {};
-    if (isPictrsImageEndpoint && thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
-    if (isPictrsImageEndpoint && format != null) queryParameters['format'] = format;
+    if (thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
+    if (format != null) queryParameters['format'] = format;
 
-    Uri thumbnailUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
+    Uri imageUri = Uri.parse(community.icon!);
+
+    // Only set pictrs query parameters if the image URL is a pictrs URL and the image is not being proxied
+    if (imageUri.path.contains('/pictrs/image/') && queryParameters.isNotEmpty) {
+      imageUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
+      debugPrint('imageUri with pictrs: $imageUri');
+    }
 
     return CachedNetworkImage(
-      imageUrl: thumbnailUri.toString(),
+      imageUrl: imageUri.toString(),
       imageBuilder: (context, imageProvider) {
         return Stack(
           children: [

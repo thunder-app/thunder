@@ -29,7 +29,6 @@ String fetchProxyImageUrl(String url) {
   // Handle thumbnail urls that are proxied via /image_proxy
   if (uri.path == '/api/v3/image_proxy') {
     Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
-    debugPrint('Parsed URL: $parsedUri');
     if (parsedUri != null) return parsedUri.toString();
   }
 
@@ -43,6 +42,8 @@ String generateRandomHeroString({int? len}) {
 
 bool isImageUrl(String url) {
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'];
+
+  // If image proxying is enabled, we need to determine the original URL to see if that's an image
   url = fetchProxyImageUrl(url);
 
   Uri uri;
@@ -106,7 +107,6 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     final frame = await codec.getNextFrame();
     final uiImage = frame.image;
 
-    debugPrint('width: ${uiImage.width} \t height: ${uiImage.height} \t $imageUrl');
     return Size(uiImage.width.toDouble(), uiImage.height.toDouble());
   } catch (e) {
     throw Exception('Failed to retrieve image dimensions from $imageUrl: $e');

@@ -45,6 +45,17 @@ class Media {
 
   @override
   String toString() {
-    return '''Media { thumbnailUrl: $thumbnailUrl, mediaUrl: $mediaUrl, originalUrl: $originalUrl, width: $width, height: $height, type: $mediaType }''';
+    return '''
+      Media {
+        type: $mediaType,
+        originalUrl: $originalUrl,
+        thumbnailUrl: $thumbnailUrl,
+        mediaUrl: $mediaUrl,
+        width: $width,
+        height: $height,
+        nsfw: $nsfw,
+        contentType: $contentType,
+      }
+      ''';
   }
 }

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 abstract class MediaExtension {
   /// Given a width and height, determine the appropriate re-sized dimensions based on the device screen size.
-  static Size getScaledMediaSize({width, height, offset = 24.0, tabletMode = false}) {
+  static Size? getScaledMediaSize({width, height, offset = 24.0, tabletMode = false}) {
+    if (width == null || height == null) return null;
     double mediaRatio = width / height;
 
     FlutterView device = PlatformDispatcher.instance.views.first;
