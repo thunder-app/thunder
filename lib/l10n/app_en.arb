@@ -1607,6 +1607,10 @@
   },
   "noUsersFound": "No users found.",
   "@noUsersFound": {},
+  "noVisibleComments": "Comments may not be visible because the community is blocked.",
+  "@noVisibleComments": {
+    "description": "A message that shows up when a user navigates to a post but the associated community is blocked."
+  },
   "none": "None",
   "@none": {
     "description": "Describes the notification type when push notifications are disabled"
