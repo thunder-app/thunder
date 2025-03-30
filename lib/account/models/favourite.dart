@@ -33,7 +33,7 @@ class Favorite {
       return favourite.copyWith(id: id.toString());
     } catch (e) {
       debugPrint(e.toString());
-      return null;
+      rethrow;
     }
   }
 
@@ -84,6 +84,7 @@ class Favorite {
       }
     } catch (e) {
       debugPrint(e.toString());
+      rethrow;
     }
   }
 }
