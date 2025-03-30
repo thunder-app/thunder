@@ -92,7 +92,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       bool hasFetchedAllSubsciptions = false;
 
       while (!hasFetchedAllSubsciptions) {
-        final response = await lemmy.run(ListCommunities(auth: account.jwt, page: currentPage, type: ListingType.subscribed));
+        final response = await lemmy.run(ListCommunities(auth: account.jwt, page: currentPage, limit: 50, type: ListingType.subscribed));
         subscriptions.addAll(response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)));
 
         currentPage++;
