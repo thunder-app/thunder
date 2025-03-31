@@ -41,6 +41,7 @@ import 'package:thunder/settings/pages/accessibility_settings_page.dart';
 import 'package:thunder/settings/pages/appearance_settings_page.dart';
 import 'package:thunder/settings/pages/comment_appearance_settings_page.dart';
 import 'package:thunder/settings/pages/debug_settings_page.dart';
+import 'package:thunder/settings/pages/fab_settings_page.dart';
 import 'package:thunder/settings/pages/filter_settings_page.dart';
 import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
@@ -821,7 +822,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
             SETTINGS_APPEARANCE_POSTS_PAGE => PostAppearanceSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_APPEARANCE_COMMENTS_PAGE => CommentAppearanceSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_GESTURES_PAGE => GestureSettingsPage(settingToHighlight: settingToHighlight ?? setting),
-            SETTINGS_FAB_PAGE => GestureSettingsPage(settingToHighlight: settingToHighlight ?? setting),
+            SETTINGS_FAB_PAGE => FabSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_FILTERS_PAGE => FilterSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_ACCOUNT_PAGE => UserSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_ACCOUNT_LANGUAGES_PAGE => DiscussionLanguageSelector(),
