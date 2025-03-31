@@ -319,22 +319,23 @@ class _PostPageState extends State<PostPage> {
             floatingActionButton: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CommentNavigatorFab(
-                        initialIndex: 0,
-                        maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
-                        scrollController: scrollController,
-                        listController: listController,
-                        comments: flattenedComments,
-                        statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+                if (thunderState.enableCommentNavigation)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CommentNavigatorFab(
+                          initialIndex: 0,
+                          maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                          scrollController: scrollController,
+                          listController: listController,
+                          comments: flattenedComments,
+                          statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+                        ),
                       ),
                     ),
                   ),
-                ),
                 if (thunderState.enablePostsFab)
                   Padding(
                     padding: EdgeInsets.only(

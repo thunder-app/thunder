@@ -212,6 +212,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.enableCommentNavigation:
         await prefs.setBool(LocalSettings.enableCommentNavigation.name, value);
         setState(() => enableCommentNavigation = value);
+        if (!value) {
+          // if the user has disabled comment navigation, we can't combine the nav and fab
+          await prefs.setBool(LocalSettings.combineNavAndFab.name, false);
+          setState(() => combineNavAndFab = false);
+        }
         break;
       case LocalSettings.combineNavAndFab:
         await prefs.setBool(LocalSettings.combineNavAndFab.name, value);
