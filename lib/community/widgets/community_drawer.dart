@@ -61,7 +61,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
     if (isLoggedIn) {
       final favoriteCommunityIds = accountState.favorites.map((community) => community.id).toSet();
-      final moderatedCommunityIds = accountState.moderates.map((cmv) => cmv.community.id).toSet();
+      final moderatedCommunityIds = accountState.moderates.map((community) => community.id).toSet();
       final filteredSubscriptions = accountState.subscriptions.where((community) => !favoriteCommunityIds.contains(community.id) && !moderatedCommunityIds.contains(community.id)).toList();
 
       subscriptions = filteredSubscriptions;
@@ -160,11 +160,7 @@ class UserDrawerItem extends StatelessWidget {
         onPressed: () => navigateToAccount?.call(),
         child: Row(
           children: [
-            if (accountState.personView?.person != null)
-              UserAvatar(
-                user: ThunderUser(accountState.personView!.person),
-                radius: 16.0,
-              ),
+            if (accountState.user != null) UserAvatar(user: accountState.user!, radius: 16.0),
             const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +176,7 @@ class UserDrawerItem extends StatelessWidget {
                       const SizedBox(width: 5),
                     ],
                     Text(
-                      isLoggedIn ? accountState.personView?.person.name ?? '' : l10n.anonymous,
+                      isLoggedIn ? accountState.user?.username ?? '' : l10n.anonymous,
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -248,7 +244,7 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (accountState.moderates.isNotEmpty || accountState.personView?.isAdmin == true)
+        if (accountState.moderates.isNotEmpty || accountState.user?.admin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () {
@@ -340,7 +336,7 @@ class ModeratedCommunities extends StatelessWidget {
     AccountState accountState = context.watch<AccountBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    List<CommunityModeratorView> moderatedCommunities = accountState.moderates;
+    List<ThunderCommunity> moderatedCommunities = accountState.moderates;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,10 +353,8 @@ class ModeratedCommunities extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: moderatedCommunities.length,
               itemBuilder: (context, index) {
-                final c = moderatedCommunities[index].community;
-                final community = ThunderCommunity(c);
-
-                final bool isCommunitySelected = feedState.communityId == community.id;
+                final community = moderatedCommunities[index];
+                final isCommunitySelected = feedState.communityId == community.id;
 
                 return TextButton(
                   style: TextButton.styleFrom(

@@ -8,16 +8,16 @@ class AccountState extends Equatable {
     this.subscriptions = const [],
     this.favorites = const [],
     this.moderates = const [],
-    this.personView,
-    this.errorMessage,
+    this.user,
+    this.error,
     this.reload = true,
   });
 
   /// The current status of the account
   final AccountStatus status;
 
-  /// The error message if the account failed to load
-  final String? errorMessage;
+  /// The user's information
+  final ThunderUser? user;
 
   /// The user's subscriptions if logged in
   final List<ThunderCommunity> subscriptions;
@@ -26,21 +26,21 @@ class AccountState extends Equatable {
   final List<ThunderCommunity> favorites;
 
   /// The user's moderated communities
-  final List<CommunityModeratorView> moderates;
-
-  /// The user's information
-  final PersonView? personView;
+  final List<ThunderCommunity> moderates;
 
   /// Whether changes to the account state should force a reload in certain parts of the app
   final bool reload;
+
+  /// The error message if the account failed to load
+  final String? error;
 
   AccountState copyWith({
     AccountStatus? status,
     List<ThunderCommunity>? subscriptions,
     List<ThunderCommunity>? favorites,
-    List<CommunityModeratorView>? moderates,
-    PersonView? personView,
-    String? errorMessage,
+    List<ThunderCommunity>? moderates,
+    ThunderUser? user,
+    String? error,
     bool? reload,
   }) {
     return AccountState(
@@ -48,12 +48,12 @@ class AccountState extends Equatable {
       subscriptions: subscriptions ?? this.subscriptions,
       favorites: favorites ?? this.favorites,
       moderates: moderates ?? this.moderates,
-      personView: personView ?? this.personView,
-      errorMessage: errorMessage ?? this.errorMessage,
+      user: user ?? this.user,
+      error: error ?? this.error,
       reload: reload ?? this.reload,
     );
   }
 
   @override
-  List<Object?> get props => [status, subscriptions, favorites, moderates, personView, errorMessage, reload];
+  List<Object?> get props => [status, subscriptions, favorites, moderates, user, error, reload];
 }

@@ -45,7 +45,7 @@ class FeedPageAppBar extends StatefulWidget {
 }
 
 class _FeedPageAppBarState extends State<FeedPageAppBar> {
-  Person? person;
+  ThunderUser? user;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
     final AuthState authState = context.read<AuthBloc>().state;
     final AccountState accountState = context.read<AccountBloc>().state;
 
-    person = accountState.reload ? accountState.personView?.person : person;
+    user = accountState.reload ? accountState.user : user;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -73,10 +73,10 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
                     label: MaterialLocalizations.of(context).openAppDrawerTooltip,
                     child: Stack(
                       children: [
-                        if (person != null)
+                        if (user != null)
                           Align(
                             alignment: Alignment.center,
-                            child: UserAvatar(user: ThunderUser(person!)),
+                            child: UserAvatar(user: user!),
                           ),
                         Material(
                           color: Colors.transparent,

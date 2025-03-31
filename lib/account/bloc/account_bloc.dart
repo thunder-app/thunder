@@ -3,21 +3,14 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:stream_transform/stream_transform.dart';
-
 import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/error_messages.dart';
 
 part 'account_event.dart';
 part 'account_state.dart';
-
-const throttleDuration = Duration(seconds: 1);
-
-EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
-}
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   AccountBloc() : super(const AccountState()) {
@@ -48,12 +41,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     await _getAccountSubscriptions(GetAccountSubscriptions(reload: event.reload), emit);
   }
 
-  /// Fetches the current account's information. This updates [personView] which holds moderated community information.
+  /// Fetches the current account's information.
   Future<void> _getAccountInformation(GetAccountInformation event, Emitter<AccountState> emit) async {
     final account = await fetchActiveProfileAccount();
 
     if (account == null || account.jwt == null) {
-      return emit(state.copyWith(status: AccountStatus.success, personView: null, moderates: [], reload: event.reload));
+      return emit(state.copyWith(status: AccountStatus.success, user: null, moderates: [], reload: event.reload));
     }
 
     try {
@@ -65,12 +58,19 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.
       if (response.personView.person.id == account.userId) {
-        return emit(state.copyWith(status: AccountStatus.success, personView: response.personView, moderates: response.moderates, reload: event.reload));
+        return emit(
+          state.copyWith(
+            status: AccountStatus.success,
+            user: ThunderUser(response.personView.person, userView: response.personView),
+            moderates: response.moderates.map((cmv) => ThunderCommunity(cmv.community)).toList(),
+            reload: event.reload,
+          ),
+        );
       } else {
-        return emit(state.copyWith(status: AccountStatus.success, personView: null, reload: event.reload));
+        return emit(state.copyWith(status: AccountStatus.success, user: null, reload: event.reload));
       }
     } catch (e) {
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString(), reload: event.reload));
+      emit(state.copyWith(status: AccountStatus.failure, error: getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
@@ -79,7 +79,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     final account = await fetchActiveProfileAccount();
 
     if (account == null || account.jwt == null) {
-      return emit(state.copyWith(status: AccountStatus.success, subscriptions: [], personView: null, reload: event.reload));
+      return emit(state.copyWith(status: AccountStatus.success, subscriptions: [], user: null, reload: event.reload));
     }
 
     try {
@@ -103,7 +103,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       subscriptions.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
       return emit(state.copyWith(status: AccountStatus.success, subscriptions: subscriptions, reload: event.reload));
     } catch (e) {
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString(), reload: event.reload));
+      emit(state.copyWith(status: AccountStatus.failure, error: getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 

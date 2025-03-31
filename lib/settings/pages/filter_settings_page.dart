@@ -197,7 +197,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               ),
               onTap: () {
                 // Can only set discussion language if user is logged in
-                if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.personView != null) {
+                if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.user != null) {
                   navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
                 } else {
                   showThunderDialog(

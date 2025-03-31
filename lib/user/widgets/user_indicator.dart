@@ -27,10 +27,10 @@ class _UserIndicatorState extends State<UserIndicator> {
   void initState() {
     super.initState();
 
-    final person = context.read<AccountBloc>().state.personView?.person;
+    final state = context.read<AccountBloc>().state;
 
-    if (person != null) {
-      setState(() => user = ThunderUser(person));
+    if (state.user != null) {
+      setState(() => user = state.user);
     } else {
       context.read<AccountBloc>().add(const GetAccountInformation());
     }
@@ -44,7 +44,7 @@ class _UserIndicatorState extends State<UserIndicator> {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (listenerContext, state) {
         if (state.status == AccountStatus.success) {
-          if (state.personView?.person != null) setState(() => user = ThunderUser(state.personView!.person));
+          if (state.user != null) setState(() => user = state.user);
         } else if (state.status != AccountStatus.loading) {
           setState(() => error = true);
         }
