@@ -325,343 +325,350 @@ class _PostPageState extends State<PostPage> {
             }
           }
 
-          return Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: Stack(
-              alignment: Alignment.center,
-              children: [
-                if (thunderState.enableCommentNavigation)
-                  Positioned.fill(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: CommentNavigatorFab(
-                          initialIndex: 0,
-                          maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
-                          scrollController: scrollController,
-                          listController: listController,
-                          comments: flattenedComments,
-                          statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+          return RefreshIndicator(
+            onRefresh: () async {
+              HapticFeedback.mediumImpact();
+              context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia, selectedCommentPath: widget.commentPath, selectedCommentId: widget.highlightedCommentId));
+            },
+            edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+            child: Scaffold(
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              floatingActionButton: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (thunderState.enableCommentNavigation)
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: CommentNavigatorFab(
+                            initialIndex: 0,
+                            maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                            scrollController: scrollController,
+                            listController: listController,
+                            comments: flattenedComments,
+                            statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                if (thunderState.enablePostsFab)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: combineNavAndFab ? 0 : 16,
-                      bottom: combineNavAndFab ? 5 : 0,
-                    ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      child: isFabSummoned
-                          ? GestureFab(
-                              centered: combineNavAndFab,
-                              distance: combineNavAndFab ? 45 : 60,
-                              icon: Icon(
-                                state.status == PostStatus.searchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.locked),
-                                semanticLabel: state.status == PostStatus.searchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.locked),
-                                size: 35,
-                              ),
-                              onPressed: state.status == PostStatus.searchInProgress
-                                  ? () {
-                                      context.read<PostBloc>().add(const ContinueCommentSearchEvent());
-                                    }
-                                  : () => singlePressAction.execute(
-                                      context: context,
-                                      postView: state.postView,
-                                      postId: state.postId,
-                                      selectedCommentId: state.selectedCommentId,
-                                      selectedCommentPath: state.selectedCommentPath,
-                                      override: singlePressAction == PostFabAction.backToTop
-                                          ? () => {
-                                                listController.animateToItem(
-                                                  index: 0,
-                                                  scrollController: scrollController,
-                                                  alignment: 0,
-                                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-                                                ),
-                                              }
-                                          : singlePressAction == PostFabAction.changeSort
-                                              ? () => showSortBottomSheet(context, state)
-                                              : singlePressAction == PostFabAction.replyToPost
-                                                  ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
-                                                  : singlePressAction == PostFabAction.search
-                                                      ? () => startCommentSearch(context)
-                                                      : null),
-                              onLongPress: () => longPressAction.execute(
-                                  context: context,
-                                  postView: state.postView,
-                                  postId: state.postId,
-                                  selectedCommentId: state.selectedCommentId,
-                                  selectedCommentPath: state.selectedCommentPath,
-                                  override: longPressAction == PostFabAction.backToTop
-                                      ? () => {
-                                            listController.animateToItem(
-                                              index: 0,
-                                              scrollController: scrollController,
-                                              alignment: 0,
-                                              duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-                                            ),
-                                          }
-                                      : longPressAction == PostFabAction.changeSort
-                                          ? () => showSortBottomSheet(context, state)
-                                          : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
-                                              : null),
-                              children: [
-                                if (thunderState.postFabEnableRefresh)
-                                  ActionButton(
-                                    centered: combineNavAndFab,
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      PostFabAction.refresh.execute(
+                  if (thunderState.enablePostsFab)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: combineNavAndFab ? 0 : 16,
+                        bottom: combineNavAndFab ? 5 : 0,
+                      ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: isFabSummoned
+                            ? GestureFab(
+                                centered: combineNavAndFab,
+                                distance: combineNavAndFab ? 45 : 60,
+                                icon: Icon(
+                                  state.status == PostStatus.searchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.locked),
+                                  semanticLabel: state.status == PostStatus.searchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.locked),
+                                  size: 35,
+                                ),
+                                onPressed: state.status == PostStatus.searchInProgress
+                                    ? () {
+                                        context.read<PostBloc>().add(const ContinueCommentSearchEvent());
+                                      }
+                                    : () => singlePressAction.execute(
                                         context: context,
                                         postView: state.postView,
                                         postId: state.postId,
                                         selectedCommentId: state.selectedCommentId,
                                         selectedCommentPath: state.selectedCommentPath,
-                                      );
-                                    },
-                                    title: PostFabAction.refresh.getTitle(context),
-                                    icon: Icon(
-                                      PostFabAction.refresh.getIcon(),
+                                        override: singlePressAction == PostFabAction.backToTop
+                                            ? () => {
+                                                  listController.animateToItem(
+                                                    index: 0,
+                                                    scrollController: scrollController,
+                                                    alignment: 0,
+                                                    duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                    curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                                  ),
+                                                }
+                                            : singlePressAction == PostFabAction.changeSort
+                                                ? () => showSortBottomSheet(context, state)
+                                                : singlePressAction == PostFabAction.replyToPost
+                                                    ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
+                                                    : singlePressAction == PostFabAction.search
+                                                        ? () => startCommentSearch(context)
+                                                        : null),
+                                onLongPress: () => longPressAction.execute(
+                                    context: context,
+                                    postView: state.postView,
+                                    postId: state.postId,
+                                    selectedCommentId: state.selectedCommentId,
+                                    selectedCommentPath: state.selectedCommentPath,
+                                    override: longPressAction == PostFabAction.backToTop
+                                        ? () => {
+                                              listController.animateToItem(
+                                                index: 0,
+                                                scrollController: scrollController,
+                                                alignment: 0,
+                                                duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                                curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                              ),
+                                            }
+                                        : longPressAction == PostFabAction.changeSort
+                                            ? () => showSortBottomSheet(context, state)
+                                            : longPressAction == PostFabAction.replyToPost
+                                                ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
+                                                : null),
+                                children: [
+                                  if (thunderState.postFabEnableRefresh)
+                                    ActionButton(
+                                      centered: combineNavAndFab,
+                                      onPressed: () {
+                                        HapticFeedback.mediumImpact();
+                                        PostFabAction.refresh.execute(
+                                          context: context,
+                                          postView: state.postView,
+                                          postId: state.postId,
+                                          selectedCommentId: state.selectedCommentId,
+                                          selectedCommentPath: state.selectedCommentPath,
+                                        );
+                                      },
+                                      title: PostFabAction.refresh.getTitle(context),
+                                      icon: Icon(
+                                        PostFabAction.refresh.getIcon(),
+                                      ),
                                     ),
-                                  ),
-                                if (thunderState.postFabEnableReplyToPost)
-                                  ActionButton(
-                                    centered: combineNavAndFab,
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked),
-                                      );
-                                    },
-                                    title: PostFabAction.replyToPost.getTitle(context),
-                                    icon: Icon(post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
-                                  ),
-                                if (thunderState.enableChangeSort)
-                                  ActionButton(
-                                    centered: combineNavAndFab,
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      PostFabAction.changeSort.execute(
-                                        override: () => showSortBottomSheet(context, state),
-                                      );
-                                    },
-                                    title: PostFabAction.changeSort.getTitle(context),
-                                    icon: Icon(
-                                      PostFabAction.changeSort.getIcon(),
+                                  if (thunderState.postFabEnableReplyToPost)
+                                    ActionButton(
+                                      centered: combineNavAndFab,
+                                      onPressed: () {
+                                        HapticFeedback.mediumImpact();
+                                        PostFabAction.replyToPost.execute(
+                                          override: () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked),
+                                        );
+                                      },
+                                      title: PostFabAction.replyToPost.getTitle(context),
+                                      icon: Icon(post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
                                     ),
-                                  ),
-                                if (thunderState.enableBackToTop)
-                                  ActionButton(
-                                    centered: combineNavAndFab,
-                                    onPressed: () {
-                                      PostFabAction.backToTop
-                                          .execute(override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
-                                    },
-                                    title: PostFabAction.backToTop.getTitle(context),
-                                    icon: Icon(
-                                      PostFabAction.backToTop.getIcon(),
+                                  if (thunderState.enableChangeSort)
+                                    ActionButton(
+                                      centered: combineNavAndFab,
+                                      onPressed: () {
+                                        HapticFeedback.mediumImpact();
+                                        PostFabAction.changeSort.execute(
+                                          override: () => showSortBottomSheet(context, state),
+                                        );
+                                      },
+                                      title: PostFabAction.changeSort.getTitle(context),
+                                      icon: Icon(
+                                        PostFabAction.changeSort.getIcon(),
+                                      ),
                                     ),
-                                  ),
-                                if (thunderState.postFabEnableSearch)
-                                  ActionButton(
-                                    centered: combineNavAndFab,
-                                    onPressed: () => startCommentSearch(context),
-                                    title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
-                                    icon: Icon(
-                                      state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
+                                  if (thunderState.enableBackToTop)
+                                    ActionButton(
+                                      centered: combineNavAndFab,
+                                      onPressed: () {
+                                        PostFabAction.backToTop
+                                            .execute(override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
+                                      },
+                                      title: PostFabAction.backToTop.getTitle(context),
+                                      icon: Icon(
+                                        PostFabAction.backToTop.getIcon(),
+                                      ),
                                     ),
-                                  ),
-                              ],
-                            )
-                          : null,
-                    ),
-                  ),
-              ],
-            ),
-            body: SafeArea(
-              top: false,
-              bottom: false,
-              child: Stack(
-                children: [
-                  CustomScrollView(
-                    controller: scrollController,
-                    cacheExtent: 1000,
-                    slivers: [
-                      PostPageAppBar(
-                        key: appBarKey,
-                        viewSource: viewSource,
-                        onViewSource: (value) => setState(() => viewSource = value),
-                        onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
-                        onCreateCrossPost: () {
-                          createCrossPost(
-                            context,
-                            title: state.postView?.postView.post.name ?? '',
-                            url: state.postView?.postView.post.url,
-                            text: state.postView?.postView.post.body,
-                            postUrl: state.postView?.postView.post.apId,
-                          );
-                        },
-                        onSelectText: () {
-                          showSelectableTextModal(
-                            context,
-                            title: state.postView?.postView.post.name ?? '',
-                            text: state.postView?.postView.post.body ?? '',
-                          );
-                        },
-                        onUserChanged: () => userChanged = true,
-                        onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
-                      ),
-                      if (state.status == PostStatus.initial || state.status == PostStatus.loading)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      else if (state.status == PostStatus.failure)
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: StatefulBuilder(
-                              builder: (context, setState) => ErrorMessage(
-                                title: l10n.unableToLoadPost,
-                                message: l10n.internetOrInstanceIssues,
-                                actions: [
-                                  (
-                                    text: l10n.retry,
-                                    action: () {
-                                      context.read<PostBloc>().add(
-                                            GetPostEvent(
-                                              postView: widget.initialPostViewMedia,
-                                              selectedCommentPath: widget.commentPath,
-                                              selectedCommentId: widget.highlightedCommentId,
-                                            ),
-                                          );
-                                    },
-                                    loading: false,
-                                  ),
+                                  if (thunderState.postFabEnableSearch)
+                                    ActionButton(
+                                      centered: combineNavAndFab,
+                                      onPressed: () => startCommentSearch(context),
+                                      title: state.status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
+                                      icon: Icon(
+                                        state.status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon(),
+                                      ),
+                                    ),
                                 ],
-                              ),
-                            ),
-                          ),
-                        )
-                      else ...[
-                        SliverToBoxAdapter(
-                          child: PostSubview(
-                            postViewMedia: state.postView ?? widget.initialPostViewMedia,
-                            crossPosts: state.crossPosts,
-                            viewSource: viewSource,
-                            showCompactPostBody: widget.highlightedCommentId != null,
-                          ),
+                              )
+                            : null,
+                      ),
+                    ),
+                ],
+              ),
+              body: SafeArea(
+                top: false,
+                bottom: false,
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      cacheExtent: 1000,
+                      slivers: [
+                        PostPageAppBar(
+                          key: appBarKey,
+                          viewSource: viewSource,
+                          onViewSource: (value) => setState(() => viewSource = value),
+                          onReset: () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized),
+                          onCreateCrossPost: () {
+                            createCrossPost(
+                              context,
+                              title: state.postView?.postView.post.name ?? '',
+                              url: state.postView?.postView.post.url,
+                              text: state.postView?.postView.post.body,
+                              postUrl: state.postView?.postView.post.apId,
+                            );
+                          },
+                          onSelectText: () {
+                            showSelectableTextModal(
+                              context,
+                              title: state.postView?.postView.post.name ?? '',
+                              text: state.postView?.postView.post.body ?? '',
+                            );
+                          },
+                          onUserChanged: () => userChanged = true,
+                          onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
                         ),
-                        if (state.status != PostStatus.loading && this.highlightedCommentId != null)
-                          SliverToBoxAdapter(
-                            child: InkWell(
-                              child: Container(
-                                height: 60.0,
-                                decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor))),
-                                child: Row(
-                                  spacing: 4.0,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(l10n.viewAllComments, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
-                                    Icon(Icons.arrow_right_alt_rounded),
+                        if (state.status == PostStatus.initial || state.status == PostStatus.loading)
+                          const SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else if (state.status == PostStatus.failure)
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Center(
+                              child: StatefulBuilder(
+                                builder: (context, setState) => ErrorMessage(
+                                  title: l10n.unableToLoadPost,
+                                  message: l10n.internetOrInstanceIssues,
+                                  actions: [
+                                    (
+                                      text: l10n.retry,
+                                      action: () {
+                                        context.read<PostBloc>().add(
+                                              GetPostEvent(
+                                                postView: widget.initialPostViewMedia,
+                                                selectedCommentPath: widget.commentPath,
+                                                selectedCommentId: widget.highlightedCommentId,
+                                              ),
+                                            );
+                                      },
+                                      loading: false,
+                                    ),
                                   ],
                                 ),
                               ),
-                              onTap: () {
-                                context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
-                                setState(() => this.highlightedCommentId = null);
-                              },
+                            ),
+                          )
+                        else ...[
+                          SliverToBoxAdapter(
+                            child: PostSubview(
+                              postViewMedia: state.postView ?? widget.initialPostViewMedia,
+                              crossPosts: state.crossPosts,
+                              viewSource: viewSource,
+                              showCompactPostBody: widget.highlightedCommentId != null,
                             ),
                           ),
-                        SuperSliverList.builder(
-                          itemCount: flattenedComments.length + 1,
-                          listController: listController,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == 0) {
-                              // This is a placeholder widget to allow the comment scroller to work properly for the first comment
-                              // Note: CommentNavigatorFab indexes will be shifted by 1 to account for the placeholder widget
-                              return const SizedBox(height: 1);
-                            }
-
-                            CommentNode commentNode = flattenedComments[index - 1];
-                            CommentView commentView = commentNode.commentView!;
-
-                            final List<int> collapsedComments = context.read<PostBloc>().state.collapsedComments;
-
-                            bool isCollapsed = collapsedComments.contains(commentView.comment.id);
-                            bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
-
-                            return CommentCard(
-                              commentView: commentView,
-                              replyCount: commentNode.replies.length,
-                              level: commentNode.depth,
-                              collapsed: isCollapsed,
-                              hidden: isHidden,
-                              newlyCreatedCommentId: state.newlyCreatedCommentId ?? this.highlightedCommentId,
-                              onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
-                              onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
-                              onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
-                              onReplyEditAction: (CommentView commentView, bool isEdit) {
-                                context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
-                              },
-                              onCollapseCommentChange: (int commentId, bool collapsed) {
-                                context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));
-                                setState(() {});
-                              },
-                            );
-                          },
-                        ),
-                        SliverToBoxAdapter(
-                          child: state.hasReachedCommentEnd == true
-                              ? Container(
-                                  key: reachedEndKey,
-                                  color: theme.dividerColor.withValues(alpha: 0.1),
-                                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                  child: ScalableText(
-                                    flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
-                                    fontScale: thunderState.metadataFontSizeScale,
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                )
-                              : Visibility(
-                                  visible: state.status == PostStatus.success,
-                                  child: Container(
-                                    height: 100.0,
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                    child: const CircularProgressIndicator(),
+                          if (state.status != PostStatus.loading && this.highlightedCommentId != null)
+                            SliverToBoxAdapter(
+                              child: InkWell(
+                                child: Container(
+                                  height: 60.0,
+                                  decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor))),
+                                  child: Row(
+                                    spacing: 4.0,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(l10n.viewAllComments, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+                                      Icon(Icons.arrow_right_alt_rounded),
+                                    ],
                                   ),
                                 ),
-                        ),
+                                onTap: () {
+                                  context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
+                                  setState(() => this.highlightedCommentId = null);
+                                },
+                              ),
+                            ),
+                          SuperSliverList.builder(
+                            itemCount: flattenedComments.length + 1,
+                            listController: listController,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index == 0) {
+                                // This is a placeholder widget to allow the comment scroller to work properly for the first comment
+                                // Note: CommentNavigatorFab indexes will be shifted by 1 to account for the placeholder widget
+                                return const SizedBox(height: 1);
+                              }
+
+                              CommentNode commentNode = flattenedComments[index - 1];
+                              CommentView commentView = commentNode.commentView!;
+
+                              final List<int> collapsedComments = context.read<PostBloc>().state.collapsedComments;
+
+                              bool isCollapsed = collapsedComments.contains(commentView.comment.id);
+                              bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
+
+                              return CommentCard(
+                                commentView: commentView,
+                                replyCount: commentNode.replies.length,
+                                level: commentNode.depth,
+                                collapsed: isCollapsed,
+                                hidden: isHidden,
+                                newlyCreatedCommentId: state.newlyCreatedCommentId ?? this.highlightedCommentId,
+                                onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
+                                onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
+                                onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
+                                onReplyEditAction: (CommentView commentView, bool isEdit) {
+                                  context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+                                },
+                                onCollapseCommentChange: (int commentId, bool collapsed) {
+                                  context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));
+                                  setState(() {});
+                                },
+                              );
+                            },
+                          ),
+                          SliverToBoxAdapter(
+                            child: state.hasReachedCommentEnd == true
+                                ? Container(
+                                    key: reachedEndKey,
+                                    color: theme.dividerColor.withValues(alpha: 0.1),
+                                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                                    child: ScalableText(
+                                      flattenedComments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
+                                      fontScale: thunderState.metadataFontSizeScale,
+                                      textAlign: TextAlign.center,
+                                      style: theme.textTheme.titleSmall,
+                                    ),
+                                  )
+                                : Visibility(
+                                    visible: state.status == PostStatus.success,
+                                    child: Container(
+                                      height: 100.0,
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                                  ),
+                          ),
+                        ],
+                        SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
                       ],
-                      SliverToBoxAdapter(child: SizedBox(height: bottomSpacerHeight)),
-                    ],
-                  ),
-                  if (thunderState.hideTopBarOnScroll)
-                    Positioned(
-                      child: Container(
-                        height: MediaQuery.of(context).padding.top,
-                        color: theme.colorScheme.surface,
-                      ),
                     ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: thunderState.isFabOpen
-                        ? Listener(
-                            onPointerUp: (details) => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95)),
-                          )
-                        : null,
-                  ),
-                ],
+                    if (thunderState.hideTopBarOnScroll)
+                      Positioned(
+                        child: Container(
+                          height: MediaQuery.of(context).padding.top,
+                          color: theme.colorScheme.surface,
+                        ),
+                      ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: thunderState.isFabOpen
+                          ? Listener(
+                              onPointerUp: (details) => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                              child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95)),
+                            )
+                          : null,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
