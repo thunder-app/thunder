@@ -8,6 +8,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Logic to block a community
@@ -73,7 +74,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
     await Favorite.insertFavorite(favorite);
     if (context.mounted) context.read<AccountBloc>().add(const GetFavoritedCommunities());
   } catch (e) {
-    showSnackbar(e.toString());
+    showSnackbar(getExceptionErrorMessage(e));
   }
 }
 
