@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
+import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -404,7 +405,7 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
     return Container(
       decoration: CommentDepthIndicatorDecoration(context, level: widget.depth + 1, style: style, scheme: scheme),
       child: Container(
-        margin: EdgeInsets.only(left: widget.depth * 4.0),
+        margin: EdgeInsets.only(left: (style == NestedCommentIndicatorStyle.thick ? widget.depth + 1 : widget.depth) * 4.0),
         child: InkWell(
           onTap: () {
             setState(() => isLoading = true);

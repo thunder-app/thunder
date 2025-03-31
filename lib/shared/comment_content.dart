@@ -91,8 +91,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
     final ThemeData theme = Theme.of(context);
 
-    NestedCommentIndicatorStyle nestedCommentIndicatorStyle = state.nestedCommentIndicatorStyle;
-    NestedCommentIndicatorColor nestedCommentIndicatorColor = state.nestedCommentIndicatorColor;
+    final style = state.nestedCommentIndicatorStyle;
+    final scheme = state.nestedCommentIndicatorColor;
 
     return Container(
       decoration: widget.dragged
@@ -100,13 +100,13 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
           : CommentDepthIndicatorDecoration(
               context,
               level: widget.level,
-              style: nestedCommentIndicatorStyle,
-              scheme: nestedCommentIndicatorColor,
+              style: style,
+              scheme: scheme,
             ),
       child: ExcludeSemantics(
         excluding: widget.excludeSemantics,
         child: Container(
-          padding: widget.level > 0 ? EdgeInsets.only(left: (widget.level) * 4.0) : null,
+          padding: widget.level > 0 ? EdgeInsets.only(left: (style == NestedCommentIndicatorStyle.thick ? widget.level + 1 : widget.level) * 4.0) : null,
           child: AnimatedSize(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOutCubicEmphasized,
