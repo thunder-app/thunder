@@ -179,7 +179,10 @@ class PostCardViewComfortable extends StatelessWidget {
                     children: [
                       PostCommunityAndAuthor(
                         user: ThunderUser(postViewMedia.postView.creator),
-                        community: ThunderCommunity(postViewMedia.postView.community),
+                        community: ThunderCommunity(
+                          postViewMedia.postView.community,
+                          subscribed: postView.subscribed,
+                        ),
                         dim: dim,
                       ),
                       PostCardMetadata(

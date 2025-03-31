@@ -171,7 +171,10 @@ class _PostCardState extends State<PostCard> {
         ? PostCardViewCompact(
             post: ThunderPost(widget.postViewMedia.postView.post, postView: widget.postViewMedia.postView, media: widget.postViewMedia.media),
             creator: ThunderUser(widget.postViewMedia.postView.creator),
-            community: ThunderCommunity(widget.postViewMedia.postView.community),
+            community: ThunderCommunity(
+              widget.postViewMedia.postView.community,
+              subscribed: widget.postViewMedia.postView.subscribed,
+            ),
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,

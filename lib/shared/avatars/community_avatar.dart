@@ -61,7 +61,6 @@ class CommunityAvatar extends StatelessWidget {
     // Only set pictrs query parameters if the image URL is a pictrs URL and the image is not being proxied
     if (imageUri.path.contains('/pictrs/image/') && queryParameters.isNotEmpty) {
       imageUri = Uri.https(imageUri.host, imageUri.path, queryParameters);
-      debugPrint('imageUri with pictrs: $imageUri');
     }
 
     return CachedNetworkImage(

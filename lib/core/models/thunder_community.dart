@@ -5,9 +5,33 @@ class ThunderCommunity {
   final Community _community;
 
   /// The Lemmy API model for the community view.
-  final CommunityView? _communityView;
+  late CommunityView? _communityView;
 
-  ThunderCommunity(this._community, {CommunityView? communityView}) : _communityView = communityView;
+  ThunderCommunity(this._community, {CommunityView? communityView, SubscribedType? subscribed}) {
+    if (communityView == null && subscribed != null) {
+      // If the community view is not provided, create a new one with the provided subscription status.
+      _communityView = CommunityView(
+        community: _community,
+        subscribed: subscribed,
+        blocked: false,
+        counts: CommunityAggregates(
+          communityId: _community.id,
+          published: _community.published,
+          subscribers: -1,
+          subscribersLocal: -1,
+          usersActiveDay: -1,
+          usersActiveWeek: -1,
+          usersActiveMonth: -1,
+          usersActiveHalfYear: -1,
+          posts: -1,
+          comments: -1,
+        ),
+      );
+    } else {
+      // If the community view is provided, use it.
+      _communityView = communityView;
+    }
+  }
 
   /// The ID of the community.
   int get id => _community.id;
