@@ -127,7 +127,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     return ExpandableNotifier(
       controller: expandableController,
       child: Padding(
-        padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+        padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true ? 0.0 : 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -281,14 +281,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
-                  if (widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
-                    const ThunderDivider(sliver: false, padding: false),
-                    ReplyToPreviewActions(
-                      onViewSourceToggled: widget.onViewSourceToggled,
-                      viewSource: widget.viewSource,
-                      text: postViewMedia.postView.post.body!,
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -376,6 +368,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     }
                   },
                 ),
+              ),
+            ],
+            if (widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+              const ThunderDivider(sliver: false, padding: false),
+              ReplyToPreviewActions(
+                onViewSourceToggled: widget.onViewSourceToggled,
+                viewSource: widget.viewSource,
+                text: postViewMedia.postView.post.body!,
               ),
             ],
           ],

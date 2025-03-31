@@ -1,60 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 /// Defines a widget which provides action buttons for the preview of a post or comment when replying
+///
+/// For example, actions to view the original source or copy the text to the clipboard.
 class ReplyToPreviewActions extends StatelessWidget {
-  final void Function()? onViewSourceToggled;
-  final bool viewSource;
+  /// The text to be copied to the clipboard.
   final String text;
+
+  /// Whether to show the source text or the markdown text.
+  final bool viewSource;
+
+  /// Whether the view source is toggled or not.
+  final void Function()? onViewSourceToggled;
 
   const ReplyToPreviewActions({
     super.key,
-    required this.onViewSourceToggled,
-    required this.viewSource,
     required this.text,
+    required this.viewSource,
+    required this.onViewSourceToggled,
   });
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Material(
       color: Colors.transparent,
       child: Row(
+        spacing: 12.0,
         children: [
           InkWell(
-            onTap: onViewSourceToggled,
             borderRadius: BorderRadius.circular(10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(width: 5),
-                const Icon(Icons.edit_document, size: 15),
-                const SizedBox(width: 5),
-                Text(viewSource ? l10n.viewOriginal : l10n.viewSource),
-                const SizedBox(width: 5),
-              ],
+            onTap: onViewSourceToggled,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+              child: IconText(
+                padding: 5.0,
+                icon: Icon(Icons.edit_document, size: 15.0),
+                text: viewSource ? l10n.viewOriginal : l10n.viewSource,
+              ),
             ),
           ),
-          const SizedBox(width: 12.0),
           InkWell(
-            onTap: () {
-              Clipboard.setData(ClipboardData(text: text)).then((_) {
-                showSnackbar(AppLocalizations.of(context)!.copiedToClipboard);
-              });
-            },
             borderRadius: BorderRadius.circular(10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(width: 5),
-                const Icon(Icons.copy_rounded, size: 15),
-                const SizedBox(width: 5),
-                Text(l10n.copyText),
-                const SizedBox(width: 5),
-              ],
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: text));
+              showSnackbar(l10n.copiedToClipboard);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+              child: IconText(
+                padding: 5.0,
+                icon: Icon(Icons.copy_rounded, size: 15.0),
+                text: l10n.copyText,
+              ),
             ),
           ),
         ],
