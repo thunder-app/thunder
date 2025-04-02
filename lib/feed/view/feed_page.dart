@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,15 +24,14 @@ import 'package:thunder/feed/widgets/feed_comment_card_list.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
+import 'package:thunder/feed/widgets/tagline.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/user/widgets/user_sidebar.dart';
-import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 
@@ -366,11 +363,6 @@ class _FeedViewState extends State<FeedView> {
               List<PostViewMedia> postViewMedias = state.postViewMedias;
               List<CommentView> commentViews = state.commentViews;
 
-              if (state.status == FeedStatus.initial) {
-                final GetSiteResponse? site = context.read<AuthBloc>().state.getSiteResponse;
-                tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
-              }
-
               return RefreshIndicator(
                 onRefresh: () async {
                   HapticFeedback.mediumImpact();
@@ -423,7 +415,7 @@ class _FeedViewState extends State<FeedView> {
                           SliverToBoxAdapter(
                             child: Visibility(
                               visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                              child: tagline?.isNotEmpty == true ? TagLine(tagline: tagline!) : Container(),
+                              child: TagLine(),
                             ),
                           ),
                           if (state.community != null)
@@ -719,132 +711,6 @@ class FeedHeader extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class TagLine extends StatefulWidget {
-  final String tagline;
-
-  const TagLine({super.key, required this.tagline});
-
-  @override
-  State<TagLine> createState() => _TagLineState();
-}
-
-class _TagLineState extends State<TagLine> {
-  final GlobalKey taglineBodyKey = GlobalKey();
-  bool taglineIsLong = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        taglineIsLong = (taglineBodyKey.currentContext?.size?.height ?? 0) > 80;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final state = context.watch<ThunderBloc>().state;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: getBackgroundColor(context),
-          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: AnimatedCrossFade(
-            crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-            sizeCurve: Curves.easeInOutCubicEmphasized,
-            // TODO: Eventually pass in textScalingFactor
-            firstChild: CommonMarkdownBody(key: taglineBodyKey, body: widget.tagline),
-            secondChild: ExpandableNotifier(
-              initialExpanded: state.showExpandedTaglines,
-              child: Column(
-                children: [
-                  Expandable(
-                    collapsed: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Stack(
-                          children: [
-                            LimitedBox(
-                              maxHeight: 60,
-                              // Note: This Wrap is critical to prevent the LimitedBox from having a render overflow
-                              child: Wrap(
-                                children: [
-                                  // TODO: Eventually pass in textScalingFactor
-                                  CommonMarkdownBody(body: widget.tagline),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: const [0.0, 0.5, 1.0],
-                                    colors: [
-                                      getBackgroundColor(context).withValues(alpha: 0.0),
-                                      getBackgroundColor(context),
-                                      getBackgroundColor(context),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              child: ExpandableButton(
-                                theme: const ExpandableThemeData(useInkWell: false),
-                                child: Text(
-                                  AppLocalizations.of(context)!.showMore,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    expanded: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        CommonMarkdownBody(body: widget.tagline),
-                        ExpandableButton(
-                          theme: const ExpandableThemeData(useInkWell: false),
-                          child: Text(
-                            AppLocalizations.of(context)!.showLess,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -44,6 +44,13 @@ class LemmyClient {
     }
   }
 
+  GetSiteResponse? get site {
+    if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) return null;
+
+    final site = _lemmySites[instance.lemmyApiV3.host]!;
+    return site;
+  }
+
   bool supportsSortType(SortType? sortType) => switch (sortType) {
         SortType.controversial => supportsFeature(LemmyFeature.sortTypeControversial),
         SortType.scaled => supportsFeature(LemmyFeature.sortTypeScaled),
