@@ -3,7 +3,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 /// Checks whether there are any results for the current given [searchType] in the [searchState] or the given [searchResponse].
 bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchResponse? searchResponse}) {
@@ -11,7 +10,7 @@ bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchR
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
   final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
   final List<PostView>? posts = searchState?.posts?.map((pvm) => pvm.postView).toList() ?? searchResponse?.posts;
-  final List<GetInstanceInfoResponse>? instances = searchState?.instances;
+  final List<ThunderInstanceInfo>? instances = searchState?.instances;
 
   return switch (searchType) {
     MetaSearchType.communities => communities?.isNotEmpty != true,

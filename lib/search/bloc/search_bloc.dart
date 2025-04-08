@@ -84,7 +84,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       SearchResponse? searchResponse;
-      List<GetInstanceInfoResponse> instances = [];
+      List<ThunderInstanceInfo> instances = [];
+
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
         GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account?.jwt));
@@ -99,16 +100,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
                   instance.domain.contains(event.query),
             ) ??
             []) {
-          instances.add(GetInstanceInfoResponse(success: true, domain: instance.domain, id: instance.id));
+          instances.add(ThunderInstanceInfo(success: true, domain: instance.domain, id: instance.id));
         }
 
         // Put the initial, full list in the UI now
         emit(state.copyWith(status: SearchStatus.success, instances: instances, viewingAll: event.query.isEmpty));
 
         // Now go through and fill the rest of the information about the instances. Periodically update the UI with this info.
-        for (final MapEntry<int, GetInstanceInfoResponse> entry in instances.asMap().entries) {
+        for (final MapEntry<int, ThunderInstanceInfo> entry in instances.asMap().entries) {
           // Use a lower timeout so we're not waiting forever.
-          final GetInstanceInfoResponse newInstanceInfo = await getInstanceInfo(
+          final newInstanceInfo = await getInstanceInfo(
             entry.value.domain,
             id: entry.value.id,
             timeout: const Duration(seconds: 1),
@@ -117,7 +118,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           if (newInstanceInfo.success) {
             instances[entry.key] = newInstanceInfo;
           } else {
-            instances[entry.key] = GetInstanceInfoResponse(success: false, domain: entry.value.domain, id: entry.value.id);
+            instances[entry.key] = ThunderInstanceInfo(success: false, domain: entry.value.domain, id: entry.value.id);
           }
 
           // To avoid rebuilding too often, we'll invoke a rebuild for every 10 instances we process or when we reach the end.

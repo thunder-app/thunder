@@ -3,3 +3,4 @@ export 'thunder_user.dart';
 export 'thunder_instance.dart';
 export 'thunder_post.dart';
 export 'thunder_comment.dart';
+export 'thunder_instance_info.dart';

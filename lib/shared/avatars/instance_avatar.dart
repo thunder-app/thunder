@@ -1,12 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:thunder/utils/instance.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:thunder/core/models/models.dart';
 
 /// An instance avatar. Displays the associated instance icon if available.
 ///
 /// Otherwise, displays the first letter of the instance's name.
 class InstanceAvatar extends StatelessWidget {
-  final GetInstanceInfoResponse instance;
+  final ThunderInstanceInfo instance;
   final double radius;
 
   const InstanceAvatar({super.key, required this.instance, this.radius = 16.0});

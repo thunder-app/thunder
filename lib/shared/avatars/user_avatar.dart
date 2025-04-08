@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/utils/media/image.dart';
 
 /// A user avatar. Displays the associated user icon if available.
 ///

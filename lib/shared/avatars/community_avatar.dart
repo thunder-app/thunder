@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/utils/media/image.dart';
 
 /// A community avatar. Displays the associated community icon if available.
 ///

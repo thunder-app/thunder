@@ -24,7 +24,7 @@ class SearchState extends Equatable {
   List<PersonView>? users;
   List<CommentView>? comments;
   List<PostViewMedia>? posts;
-  List<GetInstanceInfoResponse>? instances;
+  List<ThunderInstanceInfo>? instances;
 
   final String? errorMessage;
 
@@ -41,7 +41,7 @@ class SearchState extends Equatable {
     List<PersonView>? users,
     List<CommentView>? comments,
     List<PostViewMedia>? posts,
-    List<GetInstanceInfoResponse>? instances,
+    List<ThunderInstanceInfo>? instances,
     String? errorMessage,
     int? page,
     SortType? sortType,

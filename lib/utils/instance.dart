@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
@@ -171,47 +172,29 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
   return null;
 }
 
-class GetInstanceInfoResponse {
-  final bool success;
-  final String? icon;
-  final String? version;
-  final String? name;
-  final String? domain;
-  final int? users;
-  final int? id;
-
-  const GetInstanceInfoResponse({
-    required this.success,
-    this.icon,
-    this.version,
-    this.name,
-    this.domain,
-    this.users,
-    this.id,
-  });
-
-  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
-}
-
-Future<GetInstanceInfoResponse> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
-  if (url?.isEmpty ?? true) {
-    return const GetInstanceInfoResponse(success: false);
-  }
+/// Fetches the instance info for a given URL.
+///
+/// This includes the instance name, version, icon, and user count.
+/// If the URL is invalid or the instance is unreachable, it returns a default [ThunderInstanceInfo] with success set to false.
+Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
+  if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
 
   try {
     final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
-    return GetInstanceInfoResponse(
-      success: true,
-      icon: site.siteView.site.icon,
-      version: site.version,
-      name: site.siteView.site.name,
-      domain: fetchInstanceNameFromUrl(site.siteView.site.actorId),
-      users: site.siteView.counts.users,
+    final instance = ThunderInstance(site.siteView.site, instanceView: site.siteView);
+
+    return ThunderInstanceInfo(
       id: id,
+      domain: fetchInstanceNameFromUrl(instance.url),
+      version: site.version,
+      name: instance.name,
+      icon: instance.icon,
+      users: instance.users,
+      success: true,
     );
   } catch (e) {
     // Bad instances will throw an exception, so no icon
-    return const GetInstanceInfoResponse(success: false);
+    return const ThunderInstanceInfo(success: false);
   }
 }
 

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/models/models.dart';
+
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/instance_avatar.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Creates a widget which can display a summary of an instance for a list.
 /// Note that this is only Stateful so that it can be useful within an AnimatedContainer.
 class InstanceListEntry extends StatefulWidget {
-  final GetInstanceInfoResponse instance;
+  final ThunderInstanceInfo instanceInfo;
 
-  const InstanceListEntry({super.key, required this.instance});
+  const InstanceListEntry({super.key, required this.instanceInfo});
 
   @override
   State<InstanceListEntry> createState() => _InstanceListEntryState();
@@ -19,42 +21,37 @@ class InstanceListEntry extends StatefulWidget {
 class _InstanceListEntryState extends State<InstanceListEntry> {
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
+    final instanceInfo = widget.instanceInfo;
+
+    final name = instanceInfo.name;
+    final domain = instanceInfo.domain ?? '';
+    final users = instanceInfo.users ?? 0;
+    final version = instanceInfo.version;
+
+    if (!instanceInfo.success) {
+      return ListTile(
+        leading: InstanceAvatar(instance: instanceInfo),
+        title: Text(name ?? domain, overflow: TextOverflow.ellipsis),
+        subtitle: Wrap(children: [
+          Text(domain, overflow: TextOverflow.ellipsis),
+          Text(' · ${l10n.unreachable}'),
+        ]),
+        onTap: null,
+      );
+    }
 
     return ListTile(
-      leading: InstanceAvatar(instance: widget.instance),
-      title: Text(
-        widget.instance.name ?? widget.instance.domain ?? '',
-        overflow: TextOverflow.ellipsis,
-      ),
+      leading: InstanceAvatar(instance: instanceInfo),
+      title: Text(name ?? domain, overflow: TextOverflow.ellipsis),
       subtitle: Wrap(
         children: [
-          Text(
-            widget.instance.domain ?? '',
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (widget.instance.users != null)
-            Text(
-              ' · ${l10n.countUsers(formatLongNumber(widget.instance.users ?? 0))}',
-              semanticsLabel: l10n.countUsers(widget.instance.users ?? 0),
-            ),
-          if (widget.instance.version?.isNotEmpty == true)
-            Text(
-              ' · v${widget.instance.version}',
-              semanticsLabel: 'v${widget.instance.version}',
-            ),
-          if (!widget.instance.success) Text(' · ${l10n.unreachable}'),
+          Text(domain, overflow: TextOverflow.ellipsis),
+          if (instanceInfo.users != null) Text(' · ${l10n.countUsers(formatLongNumber(users))}', semanticsLabel: l10n.countUsers(users)),
+          if (version?.isNotEmpty == true) Text(' · v$version', semanticsLabel: 'v$version'),
         ],
       ),
-      onTap: widget.instance.success
-          ? () {
-              navigateToInstancePage(
-                context,
-                instanceHost: widget.instance.domain ?? '',
-                instanceId: widget.instance.id,
-              );
-            }
-          : null,
+      onTap: () => navigateToInstancePage(context, instanceHost: domain, instanceId: instanceInfo.id),
     );
   }
 }

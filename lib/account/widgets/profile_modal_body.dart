@@ -11,6 +11,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -743,14 +744,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
   Future<void> fetchInstanceInfo(List<AccountExtended> accountsExtended) async {
     for (final account in accountsExtended) {
-      final GetInstanceInfoResponse instanceinfoResponse = await getInstanceInfo(account.instance).timeout(
+      final instanceInfo = await getInstanceInfo(account.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const GetInstanceInfoResponse(success: false),
+        onTimeout: () => const ThunderInstanceInfo(success: false),
       );
+
       setState(() {
-        account.instanceIcon = instanceinfoResponse.icon;
-        account.version = instanceinfoResponse.version;
-        account.alive = instanceinfoResponse.success;
+        account.instanceIcon = instanceInfo.icon;
+        account.version = instanceInfo.version;
+        account.alive = instanceInfo.success;
       });
     }
   }
@@ -793,14 +795,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
   Future<void> fetchAnonymousInstanceInfo(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
     for (final anonymousInstanceExtended in anonymousInstancesExtended) {
-      final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
+      final instanceInfo = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const GetInstanceInfoResponse(success: false),
+        onTimeout: () => const ThunderInstanceInfo(success: false),
       );
+
       setState(() {
-        anonymousInstanceExtended.instanceIcon = instanceInfoResponse.icon;
-        anonymousInstanceExtended.version = instanceInfoResponse.version;
-        anonymousInstanceExtended.alive = instanceInfoResponse.success;
+        anonymousInstanceExtended.instanceIcon = instanceInfo.icon;
+        anonymousInstanceExtended.version = instanceInfo.version;
+        anonymousInstanceExtended.alive = instanceInfo.success;
       });
     }
   }
