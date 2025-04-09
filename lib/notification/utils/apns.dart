@@ -9,7 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push/push.dart';
 
 // Project imports
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 

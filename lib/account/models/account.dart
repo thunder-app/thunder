@@ -6,24 +6,39 @@ import 'package:thunder/core/database/database.dart';
 import 'package:thunder/main.dart';
 
 class Account {
+  /// The internal id of the account in the database
   final String id;
-  final String? username;
-  final String? displayName;
-  final String? jwt;
-  final String instance;
-  final bool anonymous;
-  final int? userId;
+
+  /// The position of the account in the list of accounts
   final int index;
+
+  /// Whether the account is anonymous or not
+  final bool anonymous;
+
+  /// The instance of the account
+  final String instance;
+
+  /// The username of the account. This is only applicable to non-anonymous accounts
+  final String? username;
+
+  /// The display name of the account. This is only applicable to non-anonymous accounts
+  final String? displayName;
+
+  /// The JWT token of the account. This is only applicable to non-anonymous accounts
+  final String? jwt;
+
+  /// The user id of the account. This is only applicable to non-anonymous accounts
+  final int? userId;
 
   const Account({
     required this.id,
+    required this.index,
+    this.anonymous = false,
+    required this.instance,
     this.username,
     this.displayName,
     this.jwt,
-    this.anonymous = false,
-    required this.instance,
     this.userId,
-    required this.index,
   });
 
   Account copyWith({String? id, int? index}) => Account(

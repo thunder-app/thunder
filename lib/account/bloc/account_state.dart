@@ -16,7 +16,7 @@ class AccountState extends Equatable {
   /// The current status of the account
   final AccountStatus status;
 
-  /// The user's information
+  /// The current active user's information
   final ThunderUser? user;
 
   /// The user's subscriptions if logged in
@@ -36,24 +36,24 @@ class AccountState extends Equatable {
 
   AccountState copyWith({
     AccountStatus? status,
+    ThunderUser? user,
     List<ThunderCommunity>? subscriptions,
     List<ThunderCommunity>? favorites,
     List<ThunderCommunity>? moderates,
-    ThunderUser? user,
-    String? error,
     bool? reload,
+    String? error,
   }) {
     return AccountState(
       status: status ?? this.status,
+      user: user ?? this.user,
       subscriptions: subscriptions ?? this.subscriptions,
       favorites: favorites ?? this.favorites,
       moderates: moderates ?? this.moderates,
-      user: user ?? this.user,
-      error: error ?? this.error,
       reload: reload ?? this.reload,
+      error: error ?? this.error,
     );
   }
 
   @override
-  List<Object?> get props => [status, subscriptions, favorites, moderates, user, error, reload];
+  List<Object?> get props => [status, user, subscriptions, favorites, moderates, reload, error];
 }

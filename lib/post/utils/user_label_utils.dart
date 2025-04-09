@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/account/models/user_label.dart';
+import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

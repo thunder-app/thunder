@@ -13,11 +13,8 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
-import "package:thunder/account/bloc/account_bloc.dart";
-import "package:thunder/account/models/account.dart";
-import "package:thunder/account/widgets/account_placeholder.dart";
+import 'package:thunder/account/account.dart';
 import "package:thunder/core/auth/bloc/auth_bloc.dart";
-import "package:thunder/core/auth/helpers/fetch_account.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
 import "package:thunder/settings/widgets/list_option.dart";
@@ -32,7 +29,6 @@ import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
 import "package:thunder/utils/error_messages.dart";
 import "package:thunder/utils/links.dart";
-import "package:thunder/account/utils/profiles.dart";
 import "package:thunder/utils/navigation.dart";
 import "package:version/version.dart";
 

@@ -13,7 +13,7 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -23,7 +23,6 @@ import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/media/media_type_badge.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/user_type.dart';

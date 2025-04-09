@@ -10,8 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/models/draft.dart';
+import 'package:thunder/account/account.dart';
+import 'package:thunder/drafts/models/draft.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';

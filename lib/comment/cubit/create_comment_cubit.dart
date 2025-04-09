@@ -4,9 +4,8 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:thunder/utils/error_messages.dart';
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 part 'create_comment_state.dart';
 

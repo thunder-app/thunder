@@ -17,11 +17,9 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/account/models/account.dart';
 
-import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:collection/collection.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
@@ -45,8 +43,6 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/account/account.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/search/pages/search_page.dart';

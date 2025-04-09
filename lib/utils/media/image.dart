@@ -9,8 +9,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:image_picker/image_picker.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
 

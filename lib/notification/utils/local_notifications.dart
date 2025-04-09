@@ -14,7 +14,7 @@ import 'package:markdown/markdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';

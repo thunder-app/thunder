@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 /// Restores the previous user that was selected in the app, if it has changed.

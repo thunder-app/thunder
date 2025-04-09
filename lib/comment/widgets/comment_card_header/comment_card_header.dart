@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/user_label.dart';
+import 'package:thunder/account/account.dart';
+import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/comment/widgets/comment_card_header/comment_card_header_date.dart';
 import 'package:thunder/comment/widgets/comment_card_header/comment_card_header_reply_count.dart';
 import 'package:thunder/comment/widgets/comment_card_header/comment_card_header_score.dart';

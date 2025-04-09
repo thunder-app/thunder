@@ -19,7 +19,7 @@ import 'package:unifiedpush/unifiedpush.dart';
 import 'package:markdown/markdown.dart';
 
 // Project imports
-import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';

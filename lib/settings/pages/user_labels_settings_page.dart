@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:thunder/account/models/user_label.dart';
+import 'package:thunder/user/models/user_label.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';

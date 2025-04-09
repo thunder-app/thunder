@@ -8,8 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/pages/login_page.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';

@@ -10,6 +10,10 @@ abstract class AccountEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ResetAccountState extends AccountEvent {
+  const ResetAccountState();
+}
+
 class RefreshAccountInformation extends AccountEvent {
   const RefreshAccountInformation({super.reload});
 }
