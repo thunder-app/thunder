@@ -5,11 +5,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/date_time.dart';
+import 'package:thunder/utils/instance.dart';
 
 class InboxPrivateMessagesView extends StatefulWidget {
   final List<PrivateMessageView> privateMessages;
@@ -26,6 +29,7 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = context.read<InboxBloc>().state;
+    final textStyle = theme.textTheme.bodyMedium;
 
     return Builder(builder: (context) {
       return CustomScrollView(
@@ -52,26 +56,37 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                widget.privateMessages[index].creator.name,
-                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(Icons.arrow_forward_rounded, size: 14),
-                              ),
-                              Text(
-                                widget.privateMessages[index].recipient.name,
-                                style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
-                              ),
-                            ],
+                          Expanded(
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                UserFullNameWidget(
+                                  context,
+                                  widget.privateMessages[index].creator.name,
+                                  widget.privateMessages[index].creator.displayName,
+                                  fetchInstanceNameFromUrl(widget.privateMessages[index].creator.actorId),
+                                  includeInstance: true,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Icon(Icons.arrow_forward_rounded, size: 14),
+                                ),
+                                UserFullNameWidget(
+                                  context,
+                                  widget.privateMessages[index].recipient.name,
+                                  widget.privateMessages[index].recipient.displayName,
+                                  fetchInstanceNameFromUrl(widget.privateMessages[index].recipient.actorId),
+                                  includeInstance: true,
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()))
+                          Text(
+                            formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()),
+                            style: textStyle!.copyWith(fontSize: MediaQuery.textScalerOf(context).scale((textStyle.fontSize!) * (FontScale.base.textScaleFactor))),
+                          )
                         ],
                       ),
                       Padding(
