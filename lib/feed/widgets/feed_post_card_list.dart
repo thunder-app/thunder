@@ -7,8 +7,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/post_card.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -188,7 +188,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   @override
   Widget build(BuildContext context) {
     final state = context.read<FeedBloc>().state;
-    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
 
     bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts);
 

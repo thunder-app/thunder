@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -55,7 +55,7 @@ class _UserSidebarState extends State<UserSidebar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
     final currentUserId = authState.account?.userId;
 
     if (widget.user == null) return Container();
@@ -66,7 +66,7 @@ class _UserSidebarState extends State<UserSidebar> {
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state.status == UserStatus.success && state.user != null) {
-            context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
+            context.read<UserSessionBloc>().add(LemmyAccountSettingUpdated());
           }
         },
         child: Container(
@@ -303,7 +303,7 @@ class BlockUserButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<UserSessionBloc, UserSessionState>(
       builder: (context, state) {
         bool blocked = false;
 

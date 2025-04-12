@@ -5,7 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
@@ -80,7 +80,7 @@ class PostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showScores = context.select((AuthBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
+    final showScores = context.select((UserSessionBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
     final List<PostCardMetadataItem> postCardMetadataItems = postCardViewType == ViewMode.compact
         ? context.select((ThunderBloc bloc) => bloc.state.compactPostCardMetadataItems)
@@ -482,7 +482,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
       _ => theme.textTheme.bodyMedium?.color,
     };
 
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    List<Language> languages = context.read<UserSessionBloc>().state.getSiteResponse?.allLanguages ?? [];
     Language? language = languages.firstWhereOrNull((Language language) => language.id == languageId);
 
     if ((language?.name.isNotEmpty != true || language?.id == 0) && languageId != -1) {

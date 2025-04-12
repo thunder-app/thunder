@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/comment/utils/comment.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/shared/comment_content.dart';
@@ -84,7 +84,7 @@ class _CommentReferenceState extends State<CommentReference> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 

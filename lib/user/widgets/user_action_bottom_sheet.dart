@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/user/models/user_label.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -231,7 +231,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
 
     List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

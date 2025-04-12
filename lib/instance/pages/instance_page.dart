@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -76,8 +76,8 @@ class _InstancePageState extends State<InstancePage> {
     isBlocked ??= widget.isBlocked ?? false;
     final bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
 
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
+    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    final String? accountInstance = context.read<UserSessionBloc>().state.account?.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocListener<InstanceBloc, InstanceState>(

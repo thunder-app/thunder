@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
+import 'package:thunder/account/account.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/shared/comment_reference.dart';
 
@@ -21,7 +21,7 @@ class CommentListEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnComment = commentView.creator.id == context.read<UserSessionBloc>().state.account?.userId;
 
     return BlocProvider<post_bloc.PostBloc>(
       create: (BuildContext context) => post_bloc.PostBloc(),

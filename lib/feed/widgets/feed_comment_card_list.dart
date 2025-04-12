@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/comment_reference.dart';
 
@@ -24,7 +24,7 @@ class FeedCommentCardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<AuthBloc>().state;
+    final state = context.read<UserSessionBloc>().state;
 
     return SliverMasonryGrid.count(
       crossAxisCount: tabletMode ? 2 : 1,

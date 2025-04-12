@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -120,7 +120,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
 
     List<InstanceBottomSheetAction> userActions = InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     // List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

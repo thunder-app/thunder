@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
@@ -122,8 +122,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     final state = context.read<ThunderBloc>().state;
 
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool isOwnComment = widget.commentView.creator.id == context.read<UserSessionBloc>().state.account?.userId;
+    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
 
     final int commentId = widget.commentView.comment.id;
     final bool highlightComment = widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId;

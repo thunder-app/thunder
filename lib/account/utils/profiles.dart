@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/account.dart';
@@ -24,7 +23,7 @@ Future<void> showProfileModalSheet(
   String? customHeading,
   bool reloadOnSwitch = true,
 }) async {
-  final authBloc = context.read<AuthBloc>();
+  final userSessionBloc = context.read<UserSessionBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
   await showModalBottomSheet(
@@ -34,7 +33,7 @@ Future<void> showProfileModalSheet(
     showDragHandle: true,
     builder: (context) {
       return MultiBlocProvider(
-        providers: [BlocProvider.value(value: authBloc), BlocProvider.value(value: thunderBloc)],
+        providers: [BlocProvider.value(value: userSessionBloc), BlocProvider.value(value: thunderBloc)],
         child: FractionallySizedBox(
           heightFactor: 0.8,
           child: ProfileModalBody(

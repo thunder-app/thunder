@@ -9,7 +9,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -117,7 +116,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
   final l10n = AppLocalizations.of(context)!;
 
   try {
-    final state = context.read<AccountBloc>().state;
+    final state = context.read<UserSessionBloc>().state;
     emptySuggestions ??= state.subscriptions;
     emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), state.favorites);
   } catch (e) {
@@ -176,7 +175,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
 
   if (context.mounted) {
     try {
-      favorites = context.read<AccountBloc>().state.favorites;
+      favorites = context.read<UserSessionBloc>().state.favorites;
     } catch (e) {
       // Don't worry if we can't fetch favorites
     }
@@ -250,7 +249,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
 
 /// Checks whether the current community is a favorite of the current user
 bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
-  final state = context.read<AccountBloc>().state;
+  final state = context.read<UserSessionBloc>().state;
   return state.favorites.any((c) => c.id == community.id);
 }
 
@@ -342,7 +341,7 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 /// Shows a dialog which allows typing/search for an language
 void showLanguageInputDialog(BuildContext context,
     {required String title, required void Function(Language) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<Language>? emptySuggestions}) async {
-  AuthState state = context.read<AuthBloc>().state;
+  UserSessionState state = context.read<UserSessionBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];

@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -29,8 +28,7 @@ class FeedFAB extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
     final FeedState feedState = context.watch<FeedBloc>().state;
-    final AuthState authState = context.read<AuthBloc>().state;
-    final AccountState accountState = context.read<AccountBloc>().state;
+    final UserSessionState userSessionState = context.read<UserSessionBloc>().state;
 
     // A list of actions that are not supported through the general feed
     List<FeedFabAction> unsupportedGeneralFeedFabActions = [];
@@ -58,10 +56,10 @@ class FeedFAB extends StatelessWidget {
 
     bool isPostLocked = false;
 
-    if (authState.isLoggedIn && isCommunityFeed) {
+    if (userSessionState.isLoggedIn && isCommunityFeed) {
       final community = feedState.community;
 
-      if (community!.locked && !accountState.moderates.any((c) => c.id == community.id)) {
+      if (community!.locked && !userSessionState.moderates.any((c) => c.id == community.id)) {
         isPostLocked = true;
       }
     }
@@ -297,7 +295,7 @@ class FeedFAB extends StatelessWidget {
   Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {
     final l10n = AppLocalizations.of(context)!;
 
-    if (!context.read<AuthBloc>().state.isLoggedIn) {
+    if (!context.read<UserSessionBloc>().state.isLoggedIn) {
       return showSnackbar(l10n.mustBeLoggedInPost);
     }
 

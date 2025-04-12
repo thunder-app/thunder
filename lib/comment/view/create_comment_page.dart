@@ -16,7 +16,6 @@ import 'package:thunder/drafts/models/draft.dart';
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/widgets/post_view.dart';
@@ -235,7 +234,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    originalUser ??= context.read<AuthBloc>().state.account;
+    originalUser ??= context.read<UserSessionBloc>().state.account;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

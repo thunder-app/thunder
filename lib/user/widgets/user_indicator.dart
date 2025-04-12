@@ -27,12 +27,12 @@ class _UserIndicatorState extends State<UserIndicator> {
   void initState() {
     super.initState();
 
-    final state = context.read<AccountBloc>().state;
+    final state = context.read<UserSessionBloc>().state;
 
     if (state.user != null) {
       setState(() => user = state.user);
     } else {
-      context.read<AccountBloc>().add(const GetAccountInformation());
+      context.read<UserSessionBloc>().add(const GetAccountInformation());
     }
   }
 
@@ -40,12 +40,12 @@ class _UserIndicatorState extends State<UserIndicator> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocConsumer<AccountBloc, AccountState>(
+    return BlocConsumer<UserSessionBloc, UserSessionState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (listenerContext, state) {
-        if (state.status == AccountStatus.success) {
+        if (state.status == UserSessionStatus.success) {
           if (state.user != null) setState(() => user = state.user);
-        } else if (state.status != AccountStatus.loading) {
+        } else if (state.status != UserSessionStatus.loading) {
           setState(() => error = true);
         }
       },
@@ -61,7 +61,7 @@ class _UserIndicatorState extends State<UserIndicator> {
                 label: Text(l10n.retry),
                 icon: const Icon(Icons.refresh_rounded),
                 onPressed: () {
-                  context.read<AccountBloc>().add(const GetAccountInformation());
+                  context.read<UserSessionBloc>().add(const GetAccountInformation());
                   setState(() => error = false);
                 },
               ),

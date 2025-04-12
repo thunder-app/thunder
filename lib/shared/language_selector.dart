@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 
 /// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
@@ -42,7 +42,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     _languageId = widget.languageId;
 
     // Determine the language from the languageId
-    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    List<Language> languages = context.read<UserSessionBloc>().state.getSiteResponse?.allLanguages ?? [];
     _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
   }
 

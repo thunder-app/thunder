@@ -1,10 +1,11 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -53,9 +54,9 @@ class MediaManagementPage extends StatelessWidget {
                       ),
                       subtitle: UserFullNameWidget(
                         context,
-                        context.read<AuthBloc>().state.account?.username,
-                        context.read<AuthBloc>().state.account?.displayName,
-                        context.read<AuthBloc>().state.account?.instance,
+                        context.read<UserSessionBloc>().state.account?.username,
+                        context.read<UserSessionBloc>().state.account?.displayName,
+                        context.read<UserSessionBloc>().state.account?.instance,
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),

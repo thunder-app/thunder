@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -206,7 +206,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
     final isLoggedIn = authState.isLoggedIn;
 
     List<GeneralQuickPostAction> quickActions = GeneralQuickPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();

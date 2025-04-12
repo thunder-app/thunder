@@ -43,7 +43,6 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
@@ -478,19 +477,19 @@ class _ThunderState extends State<Thunder> {
                       });
                     },
                   ),
-                  body: BlocConsumer<AuthBloc, AuthState>(
-                    listenWhen: (AuthState previous, AuthState current) {
-                      if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                  body: BlocConsumer<UserSessionBloc, UserSessionState>(
+                    listenWhen: (UserSessionState previous, UserSessionState current) {
+                      if (previous.isLoggedIn != current.isLoggedIn || previous.status == UserSessionStatus.initial) return true;
                       return false;
                     },
-                    buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                    buildWhen: (previous, current) => current.status != UserSessionStatus.failure && current.status != UserSessionStatus.loading,
                     listener: (context, state) {
                       // Although the buildWhen delegate exlcudes this state,
                       // there seems to be a timing issue where we can end up here anyway.
                       // So just return.
-                      if (state.status == AuthStatus.loading) return;
+                      if (state.status == UserSessionStatus.loading) return;
 
-                      context.read<AccountBloc>().add(RefreshAccountInformation(reload: state.reload));
+                      context.read<UserSessionBloc>().add(RefreshAccountInformation(reload: state.reload));
 
                       // If we have not been requested to reload, don't!
                       if (!state.reload) return;
@@ -511,16 +510,16 @@ class _ThunderState extends State<Thunder> {
                     },
                     builder: (context, state) {
                       switch (state.status) {
-                        case AuthStatus.initial:
-                          context.read<AuthBloc>().add(CheckAuth());
+                        case UserSessionStatus.initial:
+                          context.read<UserSessionBloc>().add(CheckAuth());
                           return Scaffold(
                             appBar: AppBar(toolbarHeight: 70.0),
                             body: Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
-                        case AuthStatus.contentWarning:
-                        case AuthStatus.success:
+                        case UserSessionStatus.contentWarning:
+                        case UserSessionStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
 
@@ -649,10 +648,10 @@ class _ThunderState extends State<Thunder> {
                           );
 
                         // Should never hit these, they're handled by the login page
-                        case AuthStatus.failure:
-                        case AuthStatus.loading:
+                        case UserSessionStatus.failure:
+                        case UserSessionStatus.loading:
                           return Container();
-                        case AuthStatus.failureCheckingInstance:
+                        case UserSessionStatus.failureCheckingInstance:
                           showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
                           errorMessageLoading = false;
                           return StatefulBuilder(
@@ -663,7 +662,7 @@ class _ThunderState extends State<Thunder> {
                                 (
                                   text: AppLocalizations.of(context)!.retry,
                                   action: () {
-                                    context.read<AuthBloc>().add(CheckAuth());
+                                    context.read<UserSessionBloc>().add(CheckAuth());
                                     setState(() => errorMessageLoading = true);
                                   },
                                   loading: errorMessageLoading,
@@ -687,7 +686,7 @@ class _ThunderState extends State<Thunder> {
                   actions: [
                     (
                       text: AppLocalizations.of(context)!.refreshContent,
-                      action: () => context.read<AuthBloc>().add(CheckAuth()),
+                      action: () => context.read<UserSessionBloc>().add(CheckAuth()),
                       loading: false,
                     ),
                   ],

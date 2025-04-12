@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -15,8 +16,8 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
-import 'user_session_event.dart';
-import 'user_session_state.dart';
+part 'user_session_event.dart';
+part 'user_session_state.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
 

@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/account.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
@@ -51,7 +51,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 3);
-    accountId = context.read<AuthBloc>().state.account?.userId;
+    accountId = context.read<UserSessionBloc>().state.account?.userId;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
@@ -101,7 +101,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
           if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
 
-            int? newAccountId = context.read<AuthBloc>().state.account?.userId;
+            int? newAccountId = context.read<UserSessionBloc>().state.account?.userId;
 
             if (newAccountId != accountId) {
               accountId = newAccountId;

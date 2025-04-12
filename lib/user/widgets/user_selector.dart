@@ -4,7 +4,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -103,7 +102,7 @@ Future<void> temporarilySwitchAccount(
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  final Account? originalUser = context.read<AuthBloc>().state.account;
+  final Account? originalUser = context.read<UserSessionBloc>().state.account;
 
   await showProfileModalSheet(
     context,
@@ -116,7 +115,7 @@ Future<void> temporarilySwitchAccount(
   await Future.delayed(const Duration(milliseconds: 1500));
 
   if (context.mounted) {
-    Account? newUser = context.read<AuthBloc>().state.account;
+    Account? newUser = context.read<UserSessionBloc>().state.account;
 
     if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
       // The user changed. Reload the widget.
@@ -152,7 +151,7 @@ Future<void> temporarilySwitchAccount(
         if (resolvedPost == null) {
           // This is not allowed, so we must block the account switch.
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
-          if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+          if (context.mounted) context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }
 
@@ -171,7 +170,7 @@ Future<void> temporarilySwitchAccount(
         if (resolvedComment == null) {
           // This is not allowed, so we must block the accout switch.
           showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance));
-          if (context.mounted) context.read<AuthBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+          if (context.mounted) context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
         }
       }
     }

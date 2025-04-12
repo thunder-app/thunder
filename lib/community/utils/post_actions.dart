@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -27,7 +27,7 @@ void triggerPostAction({
       onVoteAction(postViewMedia.postView.post.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
-      bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+      bool downvotesEnabled = context.read<UserSessionBloc>().state.downvotesEnabled;
 
       if (downvotesEnabled == false) {
         showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);

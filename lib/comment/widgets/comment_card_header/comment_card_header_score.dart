@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -41,7 +41,7 @@ class CommentCardHeaderScore extends StatelessWidget {
 
     final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
-    final showScores = context.select((AuthBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true);
+    final showScores = context.select((UserSessionBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true);
     final combineCommentScores = context.select((ThunderBloc bloc) => bloc.state.combineCommentScores);
 
     // Show only vote indicator if scores are hidden

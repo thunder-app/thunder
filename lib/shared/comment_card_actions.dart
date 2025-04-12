@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -37,7 +37,7 @@ class CommentCardActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int voteType = commentView.myVote ?? 0;
-    bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+    bool downvotesEnabled = context.read<UserSessionBloc>().state.downvotesEnabled;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {

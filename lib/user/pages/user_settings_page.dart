@@ -14,7 +14,6 @@ import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/account.dart';
-import "package:thunder/core/auth/bloc/auth_bloc.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
 import "package:thunder/settings/widgets/list_option.dart";
@@ -94,7 +93,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        child: BlocListener<AccountBloc, AccountState>(
+        child: BlocListener<UserSessionBloc, UserSessionState>(
           listener: (context, state) {
             if (!context.mounted) return;
             context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
@@ -107,7 +106,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               }
 
               if (state.status == UserSettingsStatus.success) {
-                context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
+                context.read<UserSessionBloc>().add(LemmyAccountSettingUpdated());
               }
             },
             builder: (context, state) {

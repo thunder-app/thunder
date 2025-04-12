@@ -9,7 +9,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -137,22 +136,22 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthBloc, AuthState>(
+        BlocListener<UserSessionBloc, UserSessionState>(
           listener: (listenerContext, state) async {
-            if (state.status == AuthStatus.loading) {
+            if (state.status == UserSessionStatus.loading) {
               setState(() {
                 isLoading = true;
               });
-            } else if (state.status == AuthStatus.failure) {
+            } else if (state.status == UserSessionStatus.failure) {
               setState(() {
                 isLoading = false;
               });
 
               showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
-            } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
+            } else if (state.status == UserSessionStatus.success && context.read<UserSessionBloc>().state.isLoggedIn) {
               widget.popModal();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
-            } else if (state.status == AuthStatus.contentWarning) {
+            } else if (state.status == UserSessionStatus.contentWarning) {
               bool acceptedContentWarning = false;
 
               await showThunderDialog<void>(
@@ -174,7 +173,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   _handleLogin(showContentWarning: false);
                 } else {
                   // Cancel the login
-                  context.read<AuthBloc>().add(const CancelLoginAttempt());
+                  context.read<UserSessionBloc>().add(const CancelLoginAttempt());
                 }
               }
             }
@@ -454,7 +453,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   void _handleLogin({bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
     // Perform login authentication
-    context.read<AuthBloc>().add(
+    context.read<UserSessionBloc>().add(
           LoginAttempt(
             username: _usernameTextEditingController.text,
             password: _passwordTextEditingController.text,
@@ -499,7 +498,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         }
 
         if (acceptedContentWarning) {
-          context.read<AuthBloc>().add(const LogOutOfAllAccounts());
+          context.read<UserSessionBloc>().add(const LogOutOfAllAccounts());
           await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
           context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
           widget.popRegister();

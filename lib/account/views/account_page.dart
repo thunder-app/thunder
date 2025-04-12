@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 
 class AccountPage extends StatefulWidget {
@@ -19,7 +18,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<UserSessionBloc, UserSessionState>(
       builder: (context, state) {
         if (state.isLoggedIn != true) return const AccountPlaceholder();
 

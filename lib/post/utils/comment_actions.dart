@@ -7,8 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
+import 'package:thunder/account/account.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -30,7 +30,7 @@ void triggerCommentAction({
       onVoteAction(commentView.comment.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
-      bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+      bool downvotesEnabled = context.read<UserSessionBloc>().state.downvotesEnabled;
 
       if (downvotesEnabled == false) {
         showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);

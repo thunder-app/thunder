@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+part of 'user_session_bloc.dart';
 
 abstract class UserSessionEvent extends Equatable {
   /// Whether to force a reload of the account information

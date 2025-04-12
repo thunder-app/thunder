@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -187,7 +187,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
 
     List<CommentBottomSheetAction> generalActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.all).toList();
     List<CommentBottomSheetAction> userActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/core/models/models.dart';
@@ -10,7 +11,6 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -105,7 +105,7 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     super.initState();
-    isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
   }
 
   void _updateOverridingSwipe(bool override) {

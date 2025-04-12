@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/media/media_type_badge.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/shared/media/media_view.dart';
@@ -37,7 +37,7 @@ class CompactThumbnailPreview extends StatelessWidget {
     final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
     final markPostReadOnMediaView = context.select((ThunderBloc bloc) => bloc.state.markPostReadOnMediaView);
 
-    final isUserLoggedIn = context.select((AuthBloc bloc) => bloc.state.isLoggedIn);
+    final isUserLoggedIn = context.select((UserSessionBloc bloc) => bloc.state.isLoggedIn);
 
     return ExcludeSemantics(
       child: Stack(

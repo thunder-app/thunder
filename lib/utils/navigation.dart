@@ -14,7 +14,6 @@ import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/thunder_community.dart';
@@ -79,7 +78,7 @@ Future<void> navigateToInstancePage(
 
   final l10n = AppLocalizations.of(context)!;
 
-  final authBloc = context.read<AuthBloc>();
+  final userSessionBloc = context.read<UserSessionBloc>();
   final thunderBloc = context.read<ThunderBloc>();
   final state = thunderBloc.state;
 
@@ -94,7 +93,7 @@ Future<void> navigateToInstancePage(
     getSiteResponse = await LemmyApiV3(instanceHost).run(const GetSite()).timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
-    isBlocked = authBloc.state.getSiteResponse?.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost);
+    isBlocked = userSessionBloc.state.getSiteResponse?.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost);
   } catch (e) {
     // Continue if we can't get the site
   }
@@ -145,8 +144,7 @@ Future<void> navigateToPost(
   assert((postId != null || postViewMedia != null), 'One of the parameters must be provided');
 
   // Required blocs
-  final accountBloc = context.read<AccountBloc>();
-  final authBloc = context.read<AuthBloc>();
+  final userSessionBloc = context.read<UserSessionBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
   // Optional blocs
@@ -172,7 +170,7 @@ Future<void> navigateToPost(
   }
 
   // Mark post as read when tapped
-  if (authBloc.state.isLoggedIn) {
+  if (userSessionBloc.state.isLoggedIn) {
     feedBloc?.add(FeedItemActionedEvent(postId: pvm.postView.post.id, postAction: PostAction.read, value: true));
   }
 
@@ -198,12 +196,11 @@ Future<void> navigateToPost(
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: userSessionBloc.state.isLoggedIn, state: state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
     builder: (_) {
       return MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
+          BlocProvider.value(value: userSessionBloc),
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: postBloc),
           BlocProvider(create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance)),
@@ -280,8 +277,7 @@ Future<void> navigateToModlogPage(
 }
 
 Future<void> navigateToComment(BuildContext context, CommentView commentView) async {
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
+  UserSessionBloc userSessionBloc = context.read<UserSessionBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
   final ThunderState state = context.read<ThunderBloc>().state;
@@ -309,11 +305,10 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: userSessionBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: accountBloc),
-        BlocProvider.value(value: authBloc),
+        BlocProvider.value(value: userSessionBloc),
         BlocProvider.value(value: thunderBloc),
         BlocProvider(create: (context) => PostBloc()),
       ],
@@ -339,7 +334,7 @@ Future<void> navigateToCreateCommentPage(
   assert(!(postViewMedia == null && parentCommentView == null && commentView == null));
   assert(!(postViewMedia != null && (parentCommentView != null || commentView != null)));
 
-  final accountBloc = context.read<AccountBloc>();
+  final userSessionBloc = context.read<UserSessionBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
   final state = thunderBloc.state;
@@ -358,7 +353,7 @@ Future<void> navigateToCreateCommentPage(
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider<ThunderBloc>.value(value: thunderBloc),
-        BlocProvider<AccountBloc>.value(value: accountBloc),
+        BlocProvider<UserSessionBloc>.value(value: userSessionBloc),
       ],
       child: CreateCommentPage(
         postViewMedia: postViewMedia,
@@ -391,7 +386,7 @@ Future<void> navigateToCreatePostPage(
     FeedBloc? feedBloc;
     PostBloc? postBloc;
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
+    UserSessionBloc userSessionBloc = context.read<UserSessionBloc>();
     CreatePostCubit createPostCubit = CreatePostCubit();
 
     final ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -444,7 +439,7 @@ Future<void> navigateToCreatePostPage(
             feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
             if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
-            BlocProvider<AccountBloc>.value(value: accountBloc),
+            BlocProvider<UserSessionBloc>.value(value: userSessionBloc),
             BlocProvider<CreatePostCubit>.value(value: createPostCubit),
           ],
           child: CreatePostPage(
@@ -508,7 +503,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   if (account?.id != accountId && accountId != null && context.mounted) {
     // Switch to the notification's account without reloading the app
-    context.read<AuthBloc>().add(SwitchAccount(accountId: accountId, reload: false));
+    context.read<UserSessionBloc>().add(SwitchAccount(accountId: accountId, reload: false));
 
     // Set the account locally here so we don't have to wait for the event to complete
     account = await Account.fetchAccount(accountId);
@@ -569,12 +564,12 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
       if (switchedAccount) {
         if (originalAccount != null) {
           // We switched from an account, so switch back
-          context.read<AuthBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
+          context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
         } else if (originalAnonymousInstance != null) {
           // We switched from anonymous, so switch back
-          context.read<AuthBloc>().add(const LogOutOfAllAccounts());
+          context.read<UserSessionBloc>().add(const LogOutOfAllAccounts());
           context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(originalAnonymousInstance));
-          context.read<AuthBloc>().add(InstanceChanged(instance: originalAnonymousInstance));
+          context.read<UserSessionBloc>().add(InstanceChanged(instance: originalAnonymousInstance));
         }
       }
 
@@ -634,8 +629,7 @@ Future<void> navigateToFeedPage(
   int? userId,
 }) async {
   // Push navigation
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
+  UserSessionBloc userSessionBloc = context.read<UserSessionBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
   CommunityBloc communityBloc = context.read<CommunityBloc>();
   InstanceBloc instanceBloc = context.read<InstanceBloc>();
@@ -649,7 +643,7 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+            sortType: sortType ?? userSessionBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -669,11 +663,10 @@ Future<void> navigateToFeedPage(
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: userSessionBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: accountBloc),
-        BlocProvider.value(value: authBloc),
+        BlocProvider.value(value: userSessionBloc),
         BlocProvider.value(value: thunderBloc),
         BlocProvider.value(value: instanceBloc),
         BlocProvider.value(value: anonymousSubscriptionsBloc),
@@ -682,7 +675,7 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: sortType ?? userSessionBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           communityName: communityName,
           communityId: communityId,
           userId: userId,
@@ -732,7 +725,7 @@ void navigateToSearchPage(BuildContext context) {
 /// Additionally, the [settingToHighlight] parameter can be used to highlight a specific setting when the page is opened.
 void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSettings? settingToHighlight}) {
   final thunderBloc = context.read<ThunderBloc>();
-  final accountBloc = context.read<AccountBloc>();
+  final userSessionBloc = context.read<UserSessionBloc>();
 
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;
@@ -760,8 +753,6 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
       SETTINGS_GENERAL_PAGE;
 
   if (pageToNav == SETTINGS_ABOUT_PAGE) {
-    final authBloc = context.read<AuthBloc>();
-
     Navigator.of(context).push(
       SwipeablePageRoute(
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
@@ -769,9 +760,8 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: accountBloc),
+            BlocProvider.value(value: userSessionBloc),
             BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: authBloc),
           ],
           child: AboutSettingsPage(settingToHighlight: settingToHighlight ?? setting),
         ),
@@ -781,7 +771,6 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
     final hasUserSettingsBloc = context.findAncestorWidgetOfExactType<BlocProvider<UserSettingsBloc>>() != null;
 
     final userSettingsBloc = hasUserSettingsBloc ? context.read<UserSettingsBloc>() : UserSettingsBloc();
-    final authBloc = context.read<AuthBloc>();
 
     userSettingsBloc.add(const ListMediaEvent());
 
@@ -793,7 +782,6 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: authBloc),
             BlocProvider.value(value: userSettingsBloc),
           ],
           child: MediaManagementPage(),
@@ -811,7 +799,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: accountBloc),
+            BlocProvider.value(value: userSessionBloc),
             BlocProvider.value(value: thunderBloc),
             BlocProvider.value(value: userSettingsBloc),
           ],

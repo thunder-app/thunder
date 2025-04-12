@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
@@ -91,7 +91,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
 
     List<CommunityPostAction> userActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

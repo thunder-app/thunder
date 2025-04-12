@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/account.dart';
 
 import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
@@ -199,8 +199,8 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
-    final isLoggedIn = authState.isLoggedIn;
+    final userSessionState = context.read<UserSessionBloc>().state;
+    final isLoggedIn = userSessionState.isLoggedIn;
 
     List<GeneralQuickCommentAction> quickActions = GeneralQuickCommentAction.values.where((element) => element.permissionType == PermissionType.user).toList();
 
@@ -208,12 +208,12 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
       // Hide downvoted if instance does not support it
-      if (!authState.downvotesEnabled) {
+      if (!userSessionState.downvotesEnabled) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.downvote).toList();
       }
 
       // Hide edit if the comment is not made by the current user
-      if (widget.commentView.creator.actorId != authState.account?.actorId) {
+      if (widget.commentView.creator.actorId != userSessionState.account?.actorId) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.edit).toList();
       }
     }

@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:thunder/account/account.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
@@ -88,8 +87,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    AuthState authState = context.read<AuthBloc>().state;
-    AccountState accountState = context.read<AccountBloc>().state;
+    UserSessionState userSessionState = context.read<UserSessionBloc>().state;
 
     return Scaffold(
       body: CustomScrollView(
@@ -197,7 +195,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               ),
               onTap: () {
                 // Can only set discussion language if user is logged in
-                if (authState.isLoggedIn && accountState.status == AccountStatus.success && accountState.user != null) {
+                if (userSessionState.isLoggedIn && userSessionState.status == UserSessionStatus.success && userSessionState.user != null) {
                   navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
                 } else {
                   showThunderDialog(

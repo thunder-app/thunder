@@ -22,7 +22,6 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -379,7 +378,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    originalUser ??= context.read<AuthBloc>().state.account;
+    originalUser ??= context.read<UserSessionBloc>().state.account;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

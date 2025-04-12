@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -198,7 +198,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.read<UserSessionBloc>().state;
 
     List<PostPostAction> userActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

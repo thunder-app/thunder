@@ -7,9 +7,9 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -57,7 +57,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final isLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
 
     if (widget.community == null) return Container();
 
@@ -301,7 +301,7 @@ class BlockCommunityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<UserSessionBloc, UserSessionState>(
       builder: (context, state) {
         bool blocked = false;
 

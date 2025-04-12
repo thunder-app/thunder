@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/account.dart';
 
 // Project imports
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
@@ -72,7 +72,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 children: [
                   CommentReference(
                     comment: commentReplyView.toCommentView(),
-                    isOwnComment: commentReplyView.creator.id == context.read<AuthBloc>().state.account?.userId,
+                    isOwnComment: commentReplyView.creator.id == context.read<UserSessionBloc>().state.account?.userId,
                     onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
                           InboxItemActionEvent(
                             action: CommentAction.vote,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -63,7 +63,7 @@ class PostQuickActionsBar extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<UserSessionBloc, UserSessionState>(
       buildWhen: (previous, current) => previous.isLoggedIn != current.isLoggedIn,
       builder: (context, state) {
         bool isUserLoggedIn = state.isLoggedIn;
