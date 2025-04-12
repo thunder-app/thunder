@@ -42,8 +42,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
     int limit = 20;
 
-    Account? account = await fetchActiveProfileAccount();
-    if (account?.jwt == null) {
+    final account = await fetchActiveProfileAccount();
+    if (account.jwt == null) {
       return emit(state.copyWith(
         status: InboxStatus.empty,
         privateMessages: [],
@@ -77,7 +77,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           case InboxType.replies:
             getRepliesResponse = await lemmy.run(
               GetReplies(
-                auth: account!.jwt!,
+                auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
                 sort: event.commentSortType,
@@ -88,7 +88,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           case InboxType.mentions:
             getPersonMentionsResponse = await lemmy.run(
               GetPersonMentions(
-                auth: account!.jwt!,
+                auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 sort: event.commentSortType,
                 limit: limit,
@@ -99,7 +99,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           case InboxType.messages:
             privateMessagesResponse = await lemmy.run(
               GetPrivateMessages(
-                auth: account!.jwt!,
+                auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
                 page: 1,
@@ -109,7 +109,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           case InboxType.all:
             getRepliesResponse = await lemmy.run(
               GetReplies(
-                auth: account!.jwt!,
+                auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
                 sort: event.commentSortType,
@@ -138,7 +138,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             break;
         }
 
-        GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account!.jwt!));
+        GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account.jwt!));
         int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
         return emit(
@@ -172,7 +172,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           getRepliesResponse = await lemmy.run(
             GetReplies(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               unreadOnly: state.showUnreadOnly,
               limit: limit,
               sort: event.commentSortType,
@@ -185,7 +185,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           getPersonMentionsResponse = await lemmy.run(
             GetPersonMentions(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               unreadOnly: state.showUnreadOnly,
               sort: event.commentSortType,
               limit: limit,
@@ -197,7 +197,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           if (state.hasReachedInboxPrivateMessageEnd) return;
           privateMessagesResponse = await lemmy.run(
             GetPrivateMessages(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               unreadOnly: state.showUnreadOnly,
               limit: limit,
               page: state.inboxPrivateMessagePage,
@@ -318,32 +318,33 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             }
           }
 
-          Account? account = await fetchActiveProfileAccount();
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+          final l10n = AppLocalizations.of(GlobalContext.context)!;
+          final account = await fetchActiveProfileAccount();
+          if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-          if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           if (existingCommentReplyView != null) {
             await lemmy.run(MarkCommentReplyAsRead(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               commentReplyId: event.commentReplyId!,
               read: event.value,
             ));
           } else if (existingPersonMentionView != null) {
             await lemmy.run(MarkPersonMentionAsRead(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               personMentionId: event.personMentionId!,
               read: event.value,
             ));
           } else if (existingPrivateMessageView != null) {
             await lemmy.run(MarkPrivateMessageAsRead(
-              auth: account!.jwt!,
+              auth: account.jwt!,
               privateMessageId: event.privateMessageId!,
               read: event.value,
             ));
           }
 
-          GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account!.jwt!));
+          GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account.jwt!));
           int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
 
           return emit(state.copyWith(
@@ -453,11 +454,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     try {
       emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      final l10n = AppLocalizations.of(GlobalContext.context)!;
+      final account = await fetchActiveProfileAccount();
+      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      if (account?.jwt == null) return emit(state.copyWith(status: InboxStatus.success));
-      await lemmy.run(MarkAllAsRead(auth: account!.jwt!));
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      await lemmy.run(MarkAllAsRead(auth: account.jwt!));
 
       // Update all the replies, mentions, and messages to be read locally
       List<CommentReplyView> updatedReplies = state.replies.map((commentReplyView) => commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: true))).toList();

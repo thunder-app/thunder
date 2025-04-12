@@ -7,13 +7,14 @@ import 'package:thunder/utils/global_context.dart';
 
 /// Logic to block a user
 Future<BlockPersonResponse> blockUser(int userId, bool block) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   BlockPersonResponse blockPersonResponse = await lemmy.run(BlockPerson(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     personId: userId,
     block: block,
   ));
@@ -26,14 +27,14 @@ Future<BlockPersonResponse> blockUser(int userId, bool block) async {
 /// Can optionally provide a reason and expiration date (in seconds)
 /// If [removeData] is true, posts and comments from the user will also be deleted
 Future<BanFromCommunityResponse> banUserFromCommunity(int userId, bool ban, {required int communityId, String? reason, int? expires, bool removeData = false}) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
   final lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   BanFromCommunityResponse banFromCommunityResponse = await lemmy.run(BanFromCommunity(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     communityId: communityId,
     personId: userId,
     ban: ban,
@@ -47,14 +48,14 @@ Future<BanFromCommunityResponse> banUserFromCommunity(int userId, bool ban, {req
 
 /// Logic to add or remove moderator for a given community (moderator action)
 Future<AddModToCommunityResponse> addModerator(int userId, bool added, {required int communityId}) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
   final lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   AddModToCommunityResponse addModToCommunityResponse = await lemmy.run(AddModToCommunity(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     communityId: communityId,
     personId: userId,
     added: added,

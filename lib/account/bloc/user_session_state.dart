@@ -70,12 +70,12 @@ class UserSessionState extends Equatable {
   }) {
     return UserSessionState(
       status: status ?? this.status,
-      isLoggedIn: isLoggedIn ?? false,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       errorMessage: errorMessage,
-      account: account,
+      account: account ?? this.account,
       downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
       getSiteResponse: getSiteResponse ?? this.getSiteResponse,
-      contentWarning: contentWarning,
+      contentWarning: contentWarning ?? this.contentWarning,
       user: user ?? this.user,
       subscriptions: subscriptions ?? this.subscriptions,
       favorites: favorites ?? this.favorites,

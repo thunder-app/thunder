@@ -17,7 +17,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   int? commentId,
   required LemmyClient lemmyClient,
 }) async {
-  Account? account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfileAccount();
 
   bool hasReachedEnd = false;
 
@@ -28,7 +28,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   // Guarantee that we fetch at least x events (unless we reach the end of the feed)
   do {
     GetModlogResponse getModlogResponse = await lemmyClient.lemmyApiV3.run(GetModlog(
-      auth: account?.jwt,
+      auth: account.jwt,
       page: currentPage,
       type: modlogActionType,
       communityId: communityId,

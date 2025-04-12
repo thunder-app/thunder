@@ -50,13 +50,14 @@ CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
 
 /// Logic to vote on a comment
 Future<CommentView> voteComment(int commentId, int score) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   CommentResponse commentResponse = await lemmy.run(CreateCommentLike(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     commentId: commentId,
     score: score,
   ));
@@ -72,13 +73,14 @@ CommentView optimisticallySaveComment(CommentView commentView, bool saved) {
 
 /// Logic to save a comment
 Future<CommentView> saveComment(int commentId, bool save) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   CommentResponse commentResponse = await lemmy.run(SaveComment(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     commentId: commentId,
     save: save,
   ));
@@ -94,13 +96,14 @@ CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
 
 /// Logic to delete a comment
 Future<CommentView> deleteComment(int commentId, bool deleted) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception(AppLocalizations.of(GlobalContext.context)!.userNotLoggedIn);
-
   CommentResponse commentResponse = await lemmy.run(DeleteComment(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     commentId: commentId,
     deleted: deleted,
   ));

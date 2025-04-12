@@ -22,13 +22,8 @@ class LemmyClient {
     if (_lemmySites.containsKey(instance.lemmyApiV3.host)) return;
 
     // Retrieve the site so we can look up metadata about it later
-    Account? account = await fetchActiveProfileAccount();
-
-    _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(
-      GetSite(
-        auth: account?.jwt,
-      ),
-    );
+    final account = await fetchActiveProfileAccount();
+    _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(GetSite(auth: account.jwt));
   }
 
   Version? get version {

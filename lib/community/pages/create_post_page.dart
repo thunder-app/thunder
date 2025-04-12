@@ -757,14 +757,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (url == text) {
       try {
         // Fetch cross-posts
-        final Account? account = await fetchActiveProfileAccount();
+        final account = await fetchActiveProfileAccount();
+
         searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
           q: url,
           type: SearchType.url,
           sort: SortType.topAll,
           listingType: ListingType.all,
           limit: 20,
-          auth: account?.jwt,
+          auth: account.jwt,
         ));
       } catch (e) {
         // Ignore

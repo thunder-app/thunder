@@ -2,12 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 
 part 'create_post_state.dart';
 
@@ -19,8 +21,9 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   Future<void> uploadImages(List<String> imageFiles, {bool isPostImage = false}) async {
-    Account? account = await fetchActiveProfileAccount();
-    if (account == null) return;
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     PictrsApi pictrs = PictrsApi(account.instance);
     List<String> urls = [];

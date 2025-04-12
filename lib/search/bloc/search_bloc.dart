@@ -79,7 +79,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         return emit(state.copyWith(status: SearchStatus.initial));
       }
 
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       SearchResponse? searchResponse;
@@ -87,7 +87,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account?.jwt));
+        GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account.jwt));
 
         // Filter the instances down
         for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
@@ -128,7 +128,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       } else {
         searchResponse = await lemmy.run(Search(
-          auth: account?.jwt,
+          auth: account.jwt,
           q: event.query,
           page: 1,
           limit: 15,
@@ -148,11 +148,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         String? communityName = await getLemmyCommunity(event.query);
         if (communityName != null) {
           try {
-            Account? account = await fetchActiveProfileAccount();
+            final account = await fetchActiveProfileAccount();
 
             final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
               name: communityName,
-              auth: account?.jwt,
+              auth: account.jwt,
             ));
 
             searchResponse = searchResponse?.copyWith(communities: [getCommunityResponse.communityView]);
@@ -167,11 +167,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
-            Account? account = await fetchActiveProfileAccount();
+            final account = await fetchActiveProfileAccount();
 
             final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
               username: userName,
-              auth: account?.jwt,
+              auth: account.jwt,
             ));
 
             searchResponse = searchResponse?.copyWith(users: [getCommunityResponse.personView]);
@@ -211,7 +211,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             instances: state.instances,
           ));
 
-          Account? account = await fetchActiveProfileAccount();
+          final account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           SearchResponse? searchResponse;
@@ -220,7 +220,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             //
           } else {
             searchResponse = await lemmy.run(Search(
-              auth: account?.jwt,
+              auth: account.jwt,
               q: event.query,
               page: state.page,
               limit: 15,
@@ -270,13 +270,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
       }
 
-      Account? account = await fetchActiveProfileAccount();
+      final l10n = AppLocalizations.of(GlobalContext.context)!;
+      final account = await fetchActiveProfileAccount();
+      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      if (account?.jwt == null) return;
-
       await lemmy.run(FollowCommunity(
-        auth: account!.jwt!,
+        auth: account.jwt!,
         communityId: event.communityId,
         follow: event.follow,
       ));
@@ -344,13 +345,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent event, Emitter<SearchState> emit) async {
     try {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       final response = await lemmy.run(ListCommunities(
         type: ListingType.local,
         sort: SortType.active,
         limit: 5,
-        auth: account?.jwt,
+        auth: account.jwt,
       ));
 
       final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();

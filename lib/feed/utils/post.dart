@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -9,6 +10,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
@@ -25,7 +27,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   bool showSaved = false,
   void Function()? notifyExcessiveApiCalls,
 }) async {
-  Account? account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
@@ -44,7 +46,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   if (communityId != null || communityName != null || postListingType != null) {
     do {
       GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
-        auth: account?.jwt,
+        auth: account.jwt,
         page: currentPage,
         sort: sortType,
         type: postListingType,
@@ -98,7 +100,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   if (userId != null || username != null) {
     do {
       GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
-        auth: account?.jwt,
+        auth: account.jwt,
         personId: userId,
         username: username,
         page: currentPage,
@@ -139,15 +141,16 @@ Future<PostView> createPost({
   int? postIdBeingEdited,
   int? languageId,
 }) async {
-  Account? account = await fetchActiveProfileAccount();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  if (account?.jwt == null) throw Exception('User not logged in');
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   PostResponse postResponse;
   if (postIdBeingEdited != null) {
     postResponse = await lemmy.run(EditPost(
-      auth: account!.jwt!,
+      auth: account.jwt!,
       name: name,
       body: body,
       url: url?.isEmpty == true ? null : url,
@@ -159,7 +162,7 @@ Future<PostView> createPost({
     ));
   } else {
     postResponse = await lemmy.run(CreatePost(
-      auth: account!.jwt!,
+      auth: account.jwt!,
       communityId: communityId,
       name: name,
       body: body,

@@ -137,7 +137,7 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
 void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-  Account? account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfileAccount();
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
@@ -174,7 +174,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
       GetPostResponse post = await lemmy.run(GetPost(
         id: postId,
-        auth: account?.jwt,
+        auth: account.jwt,
       ));
 
       if (context.mounted) {
@@ -195,7 +195,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
       CommentResponse fullCommentView = await lemmy.run(GetComment(
         id: commentId,
-        auth: account?.jwt,
+        auth: account.jwt,
       ));
 
       if (context.mounted) {
@@ -289,8 +289,8 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    Account? account = await fetchActiveProfileAccount();
-    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account?.jwt));
+    final account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account.jwt));
     return true;
   } catch (e) {
     // Ignore and return false below.
@@ -318,8 +318,8 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    Account? account = await fetchActiveProfileAccount();
-    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account?.jwt));
+    final account = await fetchActiveProfileAccount();
+    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account.jwt));
     return true;
   } catch (e) {
     // Ignore and return false below.

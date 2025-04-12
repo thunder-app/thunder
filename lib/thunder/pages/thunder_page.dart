@@ -258,12 +258,12 @@ class _ThunderState extends State<Thunder> {
     final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       try {
         GetPostResponse fullPostView = await lemmy.run(GetPost(
           id: postId,
-          auth: account?.jwt,
+          auth: account.jwt,
         ));
         if (context.mounted) {
           navigateToPost(context, postViewMedia: (await parsePostViews([fullPostView.postView])).first);
@@ -331,12 +331,12 @@ class _ThunderState extends State<Thunder> {
     final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       try {
         CommentResponse fullCommentView = await lemmy.run(GetComment(
           id: commentId,
-          auth: account?.jwt,
+          auth: account.jwt,
         ));
         if (context.mounted) {
           navigateToComment(context, fullCommentView.commentView);

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 // Package imports
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
@@ -13,6 +14,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Sends a request to the push notification server, including the [NotificationType], [jwt], and [instance].
 ///
@@ -80,13 +82,15 @@ Future<bool> requestTestNotification() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
-    final Account? account = await fetchActiveProfileAccount();
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     // Send POST request to notification server
     http.Response response = await http.post(
       Uri.parse('$pushNotificationServer/test'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode({'jwt': account?.jwt}),
+      body: jsonEncode({'jwt': account.jwt}),
     );
 
     // Check if the request was successful

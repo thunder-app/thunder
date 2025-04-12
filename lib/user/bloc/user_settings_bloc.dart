@@ -73,11 +73,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _getUserSettingsEvent(GetUserSettingsEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
 
-    if (account == null) {
-      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
-    }
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
@@ -97,11 +96,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _updateUserSettingsEvent(UpdateUserSettingsEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
 
-    if (account == null) {
-      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
-    }
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     GetSiteResponse? originalGetSiteResponse = state.getSiteResponse;
     if (originalGetSiteResponse == null) emit(state.copyWith(status: UserSettingsStatus.failure));
@@ -164,11 +162,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _getUserBlocksEvent(GetUserBlocksEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
 
-    if (account == null) {
-      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
-    }
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
       GetSiteResponse getSiteResponse = await lemmy.run(
@@ -215,13 +212,16 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _unblockCommunityEvent(UnblockCommunityEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
+
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
-        auth: account!.jwt!,
+        auth: account.jwt!,
         communityId: event.communityId,
         block: !event.unblock,
       ));
@@ -248,13 +248,16 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _unblockPersonEvent(UnblockPersonEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
+
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final blockPerson = await lemmy.run(BlockPerson(
-        auth: account!.jwt!,
+        auth: account.jwt!,
         personId: event.personId,
         block: !event.unblock,
       ));
@@ -281,7 +284,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   Future<void> _listMediaEvent(ListMediaEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
+
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.listingMedia));
 
@@ -291,7 +297,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       List<LocalImageView>? lastResponse;
 
       while (lastResponse?.isEmpty != true) {
-        ListMediaResponse listMediaResponse = await lemmy.run(ListMedia(page: page, auth: account?.jwt));
+        ListMediaResponse listMediaResponse = await lemmy.run(ListMedia(page: page, auth: account.jwt));
         images.addAll(lastResponse = listMediaResponse.images);
         ++page;
       }
@@ -309,11 +315,11 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       // Optimistically remove the media from the list
       state.images?.removeWhere((localImageView) => localImageView.localImage.pictrsAlias == event.id);
 
-      Account? account = await fetchActiveProfileAccount();
+      final l10n = AppLocalizations.of(GlobalContext.context)!;
+      final account = await fetchActiveProfileAccount();
+      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      if (account?.jwt == null) return;
-
-      await PictrsApi(account!.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
+      await PictrsApi(account.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
     } catch (e) {
@@ -331,14 +337,14 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 
       List<PostView> posts = (await lemmy.run(Search(
         q: url,
         type: SearchType.posts,
-        auth: account?.jwt,
+        auth: account.jwt,
       )))
           .posts
           .toList(); // Copy so we can modify
@@ -346,7 +352,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       List<PostView> postsByUrl = (await lemmy.run(Search(
         q: url,
         type: SearchType.url,
-        auth: account?.jwt,
+        auth: account.jwt,
       )))
           .posts;
 
@@ -356,7 +362,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       final List<CommentView> comments = (await lemmy.run(Search(
         q: url,
         type: SearchType.comments,
-        auth: account?.jwt,
+        auth: account.jwt,
       )))
           .comments;
 

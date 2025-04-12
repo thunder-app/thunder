@@ -7,14 +7,14 @@ import 'package:thunder/utils/global_context.dart';
 
 /// Logic to block a instance
 Future<BlockInstanceResponse> blockInstance(int instanceId, bool block) async {
-  Account? account = await fetchActiveProfileAccount();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-  AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   BlockInstanceResponse blockedInstance = await lemmy.run(BlockInstance(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     instanceId: instanceId,
     block: block,
   ));

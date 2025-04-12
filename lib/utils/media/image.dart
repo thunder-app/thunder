@@ -12,6 +12,7 @@ import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// Givent a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
 ///
@@ -140,8 +141,11 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
   }
 
   try {
-    Account? account = await fetchActiveProfileAccount();
-    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance, jwt: account.jwt!, postImage: postImage));
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account.instance, jwt: account.jwt!, postImage: postImage));
   } catch (e) {
     showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }

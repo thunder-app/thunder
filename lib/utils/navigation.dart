@@ -159,7 +159,7 @@ Future<void> navigateToPost(
 
     GetPostResponse getPostResponse = await client.run(
       GetPost(
-        auth: account?.jwt,
+        auth: account.jwt,
         id: postId,
       ),
     );
@@ -288,7 +288,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
 
   GetPostResponse getPostResponse = await client.run(
     GetPost(
-      auth: account?.jwt,
+      auth: account.jwt,
       id: commentView.post.id,
       commentId: commentView.comment.id,
     ),
@@ -498,10 +498,10 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   Account? account = await fetchActiveProfileAccount();
 
   bool switchedAccount = false;
-  String? originalAccount = account?.id;
+  String? originalAccount = account.id;
   String? originalAnonymousInstance = context.mounted ? context.read<ThunderBloc>().state.currentAnonymousInstance : null;
 
-  if (account?.id != accountId && accountId != null && context.mounted) {
+  if (account.id != accountId && accountId != null && context.mounted) {
     // Switch to the notification's account without reloading the app
     context.read<UserSessionBloc>().add(SwitchAccount(accountId: accountId, reload: false));
 
@@ -513,7 +513,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   }
 
   // If account is still null, we can't do anything.
-  if (account == null) return;
+  if (account == null || account.anonymous) return;
 
   List<CommentReplyView> allReplies = [];
   CommentReplyView? specificReply;
@@ -562,15 +562,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
     pushOnTopOfLoadingPage(context, route).then((_) {
       // If needed, switch back to the original account or anonymous instance
       if (switchedAccount) {
-        if (originalAccount != null) {
-          // We switched from an account, so switch back
-          context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
-        } else if (originalAnonymousInstance != null) {
-          // We switched from anonymous, so switch back
-          context.read<UserSessionBloc>().add(const LogOutOfAllAccounts());
-          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(originalAnonymousInstance));
-          context.read<UserSessionBloc>().add(InstanceChanged(instance: originalAnonymousInstance));
-        }
+        // We switched from an account, so switch back
+        context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
       }
 
       context.read<InboxBloc>().add(const GetInboxEvent(reset: true, inboxType: InboxType.all));

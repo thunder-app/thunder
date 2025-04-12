@@ -25,11 +25,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
-        auth: account?.jwt,
+        auth: account.jwt,
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
@@ -52,11 +52,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
-        auth: account?.jwt,
+        auth: account.jwt,
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
@@ -79,11 +79,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
-        auth: account?.jwt,
+        auth: account.jwt,
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
@@ -106,11 +106,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
-        auth: account?.jwt,
+        auth: account.jwt,
         q: '',
         page: page ?? 1,
         limit: _pageLimit,

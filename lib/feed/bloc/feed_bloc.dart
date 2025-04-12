@@ -543,11 +543,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case FeedType.account:
           // Fetch user information
           try {
-            Account? account = await fetchActiveProfileAccount();
+            final account = await fetchActiveProfileAccount();
             LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
             fullPersonView = await lemmy.run(GetPersonDetails(
-              auth: account?.jwt,
+              auth: account.jwt,
               personId: event.userId,
               username: event.username,
             ));

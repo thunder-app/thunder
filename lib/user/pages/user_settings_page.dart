@@ -27,6 +27,7 @@ import "package:thunder/user/bloc/user_settings_bloc.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
 import "package:thunder/utils/error_messages.dart";
+import "package:thunder/utils/global_context.dart";
 import "package:thunder/utils/links.dart";
 import "package:thunder/utils/navigation.dart";
 import "package:version/version.dart";
@@ -439,8 +440,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 onTap: () async {
                                   dynamic exportSettings;
                                   try {
-                                    Account? account = await fetchActiveProfileAccount();
-                                    exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account?.jwt));
+                                    final l10n = AppLocalizations.of(GlobalContext.context)!;
+                                    final account = await fetchActiveProfileAccount();
+                                    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+                                    exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account.jwt));
                                   } catch (e) {
                                     // Catch rate-limit errors
                                     showSnackbar(getExceptionErrorMessage(e));
@@ -509,8 +513,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   }
 
                                   try {
-                                    Account? account = await fetchActiveProfileAccount();
-                                    SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account?.jwt, data: importSettings));
+                                    final l10n = AppLocalizations.of(GlobalContext.context)!;
+                                    final account = await fetchActiveProfileAccount();
+                                    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+                                    SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account.jwt, data: importSettings));
 
                                     if (response.success) {
                                       showSnackbar(l10n.accountSettingsImportedSuccessfully);

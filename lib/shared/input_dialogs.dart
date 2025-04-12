@@ -36,7 +36,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
       if (normalizedUsername != null) {
         try {
           final account = await fetchActiveProfileAccount();
-          final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account?.jwt, username: normalizedUsername));
+          final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account.jwt, username: normalizedUsername));
           final user = ThunderUser(response.personView.person, userView: response.personView);
 
           onUserSelected(user);
@@ -67,7 +67,7 @@ Future<List<ThunderUser>> getUserSuggestions(String query) async {
   final account = await fetchActiveProfileAccount();
   final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
-    auth: account?.jwt,
+    auth: account.jwt,
     type: SearchType.users,
     limit: 20,
   ));
@@ -134,7 +134,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
       if (normalizedCommunity != null) {
         try {
           final account = await fetchActiveProfileAccount();
-          final response = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(auth: account?.jwt, name: normalizedCommunity));
+          final response = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(auth: account.jwt, name: normalizedCommunity));
           final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
           onCommunitySelected(community);
@@ -165,7 +165,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
   final account = await fetchActiveProfileAccount();
   final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
-    auth: account?.jwt,
+    auth: account.jwt,
     type: SearchType.communities,
     limit: 20,
     sort: SortType.topAll,
@@ -264,7 +264,7 @@ void showInstanceInputDialog(
 
   GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
     GetFederatedInstances(
-      auth: account?.jwt,
+      auth: account.jwt,
     ),
   );
 

@@ -1,16 +1,37 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/account.dart';
 
-/// Fetches the currently active profile account.
-Future<Account?> fetchActiveProfileAccount() async {
+/// Fetches the currently active profile. This includes logged in and anonymous accounts.
+///
+/// It will first try to find an active account. If that fails, then it will check for an anonymous account.
+/// If no anonymous account is found, it will create a new default anonymous account.
+Future<Account> fetchActiveProfileAccount() async {
   final prefs = (await UserPreferences.instance).sharedPreferences;
   final accountId = prefs.getString('active_profile_id');
-  final account = await Account.fetchAccount(accountId ?? '');
+
+  Account? account = await Account.fetchAccount(accountId ?? '');
+  if (account != null) return account;
+
+  // The user is not logged in. Let's check if there is an anonymous account.
+  final instance = prefs.getString(LocalSettings.currentAnonymousInstance.name);
+
+  if (instance != null) {
+    final anonymousAccounts = await Account.anonymousInstances();
+
+    account = anonymousAccounts.firstWhereOrNull((account) => account.instance == instance);
+    if (account != null) return account;
+  }
+
+  // No anonymous account found. Let's create a new default one. TODO: Allow changing of default instance.
+  account = await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
+  if (account == null) throw Exception("Failed to create default profile");
 
   return account;
 }

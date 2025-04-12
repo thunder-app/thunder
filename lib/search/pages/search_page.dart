@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     _currentSearchType = widget.communityToSearch == null ? MetaSearchType.communities : MetaSearchType.posts;
     _scrollController.addListener(_onScroll);
     initPrefs();
-    fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
+    fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile.userId);
     context.read<SearchBloc>().add(GetTrendingCommunitiesEvent());
 
     if (widget.isInitiallyFocused) {
@@ -184,16 +184,16 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
           }),
           BlocListener<UserSessionBloc, UserSessionState>(listener: (context, state) async {
-            final Account? activeProfile = await fetchActiveProfileAccount();
+            final activeProfile = await fetchActiveProfileAccount();
 
             // When account changes, that means our instance most likely changed, so reset search.
             if (state.status == UserSessionStatus.success &&
-                    ((activeProfile?.userId == null && _previousUserId != null) || state.user?.id == activeProfile?.userId && _previousUserId != state.user?.id) ||
+                    ((activeProfile.userId == null && _previousUserId != null) || state.user?.id == activeProfile.userId && _previousUserId != state.user?.id) ||
                 (state.favorites.length != _previousFavoritesCount && _controller.text.isEmpty)) {
               _controller.clear();
               if (context.mounted) context.read<SearchBloc>().add(ResetSearch());
               setState(() {});
-              _previousUserId = activeProfile?.userId;
+              _previousUserId = activeProfile.userId;
               _previousFavoritesCount = state.favorites.length;
             }
           }),

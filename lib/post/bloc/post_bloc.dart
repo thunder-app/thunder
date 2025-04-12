@@ -101,7 +101,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
       defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
         try {
@@ -115,7 +115,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // Retrieve the full post for moderators and cross-posts
           int? postId = event.postId ?? event.postView?.postView.post.id;
           if (postId != null) {
-            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account.jwt)).timeout(timeout, onTimeout: () {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
@@ -137,7 +137,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // If we can't get mods from the post response, fallback to getting the whole community.
           if (moderators == null && postView != null) {
             try {
-              moderators = (await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+              moderators = (await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account.jwt)).timeout(timeout, onTimeout: () {
                 throw Exception();
               }))
                   .moderators;
@@ -170,7 +170,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
             page: event.selectedCommentId == null ? 1 : null,
-            auth: account?.jwt,
+            auth: account.jwt,
             communityId: postView?.postView.post.communityId,
             maxDepth: COMMENT_MAX_DEPTH,
             postId: postView?.postView.post.id,
@@ -235,7 +235,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       Object? exception;
 
-      Account? account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
         try {
@@ -250,7 +250,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             GetCommentsResponse getCommentsResponse = await lemmy
                 .run(GetComments(
-              auth: account?.jwt,
+              auth: account.jwt,
               communityId: state.communityId,
               parentId: event.commentParentId,
               postId: state.postId,
@@ -302,7 +302,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
-            auth: account?.jwt,
+            auth: account.jwt,
             communityId: state.communityId,
             postId: state.postId,
             parentId: event.commentParentId,
@@ -522,17 +522,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
-      Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      final l10n = AppLocalizations.of(GlobalContext.context)!;
+      final account = await fetchActiveProfileAccount();
+      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
-            selectedCommentId: state.selectedCommentId,
-            selectedCommentPath: state.selectedCommentPath));
-      }
-      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account!.jwt!));
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account.jwt!));
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));

@@ -23,22 +23,23 @@ extension on MarkPostAsReadResponse {
 
 /// Logic to mark post as read
 Future<bool> markPostAsRead(int postId, bool read) async {
-  Account? account = await fetchActiveProfileAccount();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  if (account?.jwt == null) throw Exception('User not logged in');
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   MarkPostAsReadResponse markPostAsReadResponse;
 
   if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
     markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
-      auth: account!.jwt!,
+      auth: account.jwt!,
       postIds: [postId],
       read: read,
     ));
   } else {
     markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
-      auth: account!.jwt!,
+      auth: account.jwt!,
       postId: postId,
       read: read,
     ));
@@ -49,16 +50,17 @@ Future<bool> markPostAsRead(int postId, bool read) async {
 
 /// Logic to mark multiple posts as read
 Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
-  Account? account = await fetchActiveProfileAccount();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  if (account?.jwt == null) throw Exception('User not logged in');
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   List<int> failed = [];
 
   if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
     MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
-      auth: account!.jwt!,
+      auth: account.jwt!,
       postIds: postIds,
       read: read,
     ));
@@ -69,7 +71,7 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
   } else {
     for (int i = 0; i < postIds.length; i++) {
       MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
-        auth: account!.jwt!,
+        auth: account.jwt!,
         postId: postIds[i],
         read: read,
       ));
@@ -84,15 +86,16 @@ Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
 
 /// Logic to mark post as hidden
 Future<bool> markPostAsHidden(int postId, bool hide) async {
-  Account? account = await fetchActiveProfileAccount();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  if (account?.jwt == null) throw Exception('User not logged in');
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   SuccessResponse markPostAsHiddenResponse;
 
   markPostAsHiddenResponse = await lemmy.run(HidePost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postIds: [postId],
     hide: hide,
   ));
@@ -102,13 +105,14 @@ Future<bool> markPostAsHidden(int postId, bool hide) async {
 
 /// Logic to delete post
 Future<bool> deletePost(int postId, bool delete) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(DeletePost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     deleted: delete,
   ));
@@ -182,13 +186,14 @@ PostView optimisticallyLockPost(PostView postView, bool lock) {
 
 /// Logic to lock a post
 Future<bool> lockPost(int postId, bool lock) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(LockPost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     locked: lock,
   ));
@@ -203,13 +208,14 @@ PostView optimisticallyPinPostToCommunity(PostView postView, bool pin) {
 
 /// Logic to pin a post to a community
 Future<bool> pinPostToCommunity(int postId, bool pin) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(FeaturePost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     featured: pin,
     featureType: PostFeatureType.community,
@@ -225,13 +231,14 @@ PostView optimisticallyRemovePost(PostView postView, bool remove) {
 
 /// Logic to remove a post to a community (moderator action)
 Future<bool> removePost(int postId, bool remove, String reason) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(RemovePost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     removed: remove,
     reason: reason,
@@ -246,10 +253,10 @@ Future<PostReportResponse> reportPost(int postId, String reason) async {
   final account = await fetchActiveProfileAccount();
   final lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception(l10n.userNotLoggedIn);
+  if (account.jwt == null) throw Exception(l10n.userNotLoggedIn);
 
   PostReportResponse postReportResponse = await lemmy.run(CreatePostReport(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     reason: reason,
   ));
@@ -259,13 +266,14 @@ Future<PostReportResponse> reportPost(int postId, String reason) async {
 
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, int score) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(CreatePostLike(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     score: score,
   ));
@@ -276,13 +284,14 @@ Future<PostView> votePost(int postId, int score) async {
 
 /// Logic to save a post
 Future<PostView> savePost(int postId, bool save) async {
-  Account? account = await fetchActiveProfileAccount();
+  final l10n = AppLocalizations.of(GlobalContext.context)!;
+  final account = await fetchActiveProfileAccount();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  if (account?.jwt == null) throw Exception('User not logged in');
-
   PostResponse postResponse = await lemmy.run(SavePost(
-    auth: account!.jwt!,
+    auth: account.jwt!,
     postId: postId,
     save: save,
   ));

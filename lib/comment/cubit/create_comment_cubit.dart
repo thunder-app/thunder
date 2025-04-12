@@ -2,10 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:lemmy_api_client/pictrs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/global_context.dart';
 
 part 'create_comment_state.dart';
 
@@ -17,8 +19,9 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
   }
 
   Future<void> uploadImages(List<String> imageFiles) async {
-    Account? account = await fetchActiveProfileAccount();
-    if (account == null) return;
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfileAccount();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     PictrsApi pictrs = PictrsApi(account.instance);
     List<String> urls = [];
@@ -49,7 +52,10 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
     emit(state.copyWith(status: CreateCommentStatus.submitting));
 
     try {
-      Account? account = await fetchActiveProfileAccount();
+      final l10n = AppLocalizations.of(GlobalContext.context)!;
+      final account = await fetchActiveProfileAccount();
+      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       CommentResponse commentResponse;
@@ -59,7 +65,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
           commentId: commentIdBeingEdited,
           content: content,
           languageId: languageId,
-          auth: account!.jwt!,
+          auth: account.jwt!,
         ));
       } else {
         commentResponse = await lemmy.run(CreateComment(
@@ -67,7 +73,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
           content: content,
           parentId: parentCommentId,
           languageId: languageId,
-          auth: account!.jwt!,
+          auth: account.jwt!,
         ));
       }
 
