@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/utils/settings_utils.dart';
+import 'package:thunder/settings/settings.dart';
 
 class SettingsListTile extends StatelessWidget {
   // Appearance

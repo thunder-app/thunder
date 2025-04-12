@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/settings/settings.dart';
 
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/utils/settings_utils.dart';
 
 class ListOption<T> extends StatelessWidget {
   // Appearance
