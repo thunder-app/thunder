@@ -73,9 +73,7 @@ class _ThunderState extends State<Thunder> {
 
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
-  late final StreamSubscription mediaIntentDataStreamSubscription;
-
-  late final StreamSubscription textIntentDataStreamSubscription;
+  late final StreamSubscription? mediaIntentDataStreamSubscription;
 
   final ScrollController _changelogScrollController = ScrollController();
 
@@ -113,8 +111,7 @@ class _ThunderState extends State<Thunder> {
 
   @override
   void dispose() {
-    textIntentDataStreamSubscription.cancel();
-    mediaIntentDataStreamSubscription.cancel();
+    mediaIntentDataStreamSubscription?.cancel();
     BackButtonInterceptor.remove(_handleBackButtonPress);
     super.dispose();
   }
@@ -258,7 +255,7 @@ class _ThunderState extends State<Thunder> {
     final postId = await getLemmyPostId(context, link);
     if (context.mounted && postId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
 
       try {
         GetPostResponse fullPostView = await lemmy.run(GetPost(
@@ -331,7 +328,7 @@ class _ThunderState extends State<Thunder> {
     final commentId = await getLemmyCommentId(context, link);
     if (context.mounted && commentId != null) {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
 
       try {
         CommentResponse fullCommentView = await lemmy.run(GetComment(
@@ -489,13 +486,14 @@ class _ThunderState extends State<Thunder> {
                       // So just return.
                       if (state.status == UserSessionStatus.loading) return;
 
-                      context.read<UserSessionBloc>().add(RefreshAccountInformation(reload: state.reload));
-
                       // If we have not been requested to reload, don't!
                       if (!state.reload) return;
 
                       // Add a bit of artificial delay to allow preferences to set the proper active profile
-                      Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        if (context.mounted) context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
+                      });
+
                       if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
                         context.read<FeedBloc>().add(
                               FeedFetchedEvent(
@@ -511,7 +509,7 @@ class _ThunderState extends State<Thunder> {
                     builder: (context, state) {
                       switch (state.status) {
                         case UserSessionStatus.initial:
-                          context.read<UserSessionBloc>().add(CheckAuth());
+                          context.read<UserSessionBloc>().add(InitializeAuth());
                           return Scaffold(
                             appBar: AppBar(toolbarHeight: 70.0),
                             body: Center(
@@ -652,7 +650,7 @@ class _ThunderState extends State<Thunder> {
                         case UserSessionStatus.loading:
                           return Container();
                         case UserSessionStatus.failureCheckingInstance:
-                          showSnackbar(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                          showSnackbar(state.error ?? AppLocalizations.of(context)!.missingErrorMessage);
                           errorMessageLoading = false;
                           return StatefulBuilder(
                             builder: (context, setState) => ErrorMessage(
@@ -662,7 +660,7 @@ class _ThunderState extends State<Thunder> {
                                 (
                                   text: AppLocalizations.of(context)!.retry,
                                   action: () {
-                                    context.read<UserSessionBloc>().add(CheckAuth());
+                                    context.read<UserSessionBloc>().add(InitializeAuth());
                                     setState(() => errorMessageLoading = true);
                                   },
                                   loading: errorMessageLoading,
@@ -686,7 +684,7 @@ class _ThunderState extends State<Thunder> {
                   actions: [
                     (
                       text: AppLocalizations.of(context)!.refreshContent,
-                      action: () => context.read<UserSessionBloc>().add(CheckAuth()),
+                      action: () => context.read<UserSessionBloc>().add(InitializeAuth()),
                       loading: false,
                     ),
                   ],

@@ -14,7 +14,7 @@ import 'package:thunder/utils/global_context.dart';
 /// Logic to block a community
 Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -30,7 +30,7 @@ Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async
 
 Future<ThunderCommunity> followCommunity(int communityId, bool follow) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   final lemmy = LemmyClient.instance.lemmyApiV3;
@@ -42,7 +42,7 @@ Future<ThunderCommunity> followCommunity(int communityId, bool follow) async {
 Future<Map<String, dynamic>> fetchCommunityInformation({int? id, String? name}) async {
   assert(!(id == null && name == null));
 
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   final lemmy = LemmyClient.instance.lemmyApiV3;
   final response = await lemmy.run(GetCommunity(auth: account.jwt, id: id, name: name));
 
@@ -55,15 +55,15 @@ Future<Map<String, dynamic>> fetchCommunityInformation({int? id, String? name}) 
 
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   try {
+    final l10n = AppLocalizations.of(GlobalContext.context)!;
+    final account = await fetchActiveProfile();
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
     if (isFavorite) {
       await Favorite.deleteFavorite(communityId: community.id);
-      if (context.mounted) context.read<UserSessionBloc>().add(const GetFavoritedCommunities());
+      if (context.mounted) context.read<UserSessionBloc>().add(const FetchProfileFavorites());
       return;
     }
-
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     Favorite favorite = Favorite(
       id: '',
@@ -72,7 +72,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
     );
 
     await Favorite.insertFavorite(favorite);
-    if (context.mounted) context.read<UserSessionBloc>().add(const GetFavoritedCommunities());
+    if (context.mounted) context.read<UserSessionBloc>().add(const FetchProfileFavorites());
   } catch (e) {
     showSnackbar(getExceptionErrorMessage(e));
   }

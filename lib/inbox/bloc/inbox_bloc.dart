@@ -42,7 +42,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
     int limit = 20;
 
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.jwt == null) {
       return emit(state.copyWith(
         status: InboxStatus.empty,
@@ -319,7 +319,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           }
 
           final l10n = AppLocalizations.of(GlobalContext.context)!;
-          final account = await fetchActiveProfileAccount();
+          final account = await fetchActiveProfile();
           if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -455,7 +455,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
 
       final l10n = AppLocalizations.of(GlobalContext.context)!;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

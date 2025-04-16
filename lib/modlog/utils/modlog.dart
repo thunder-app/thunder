@@ -17,7 +17,7 @@ Future<Map<String, dynamic>> fetchModlogEvents({
   int? commentId,
   required LemmyClient lemmyClient,
 }) async {
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
 
   bool hasReachedEnd = false;
 

@@ -109,7 +109,7 @@ class CommunityListEntry extends StatelessWidget {
                   SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions);
                   onSubscribeIconPressed?.call(isUserLoggedIn, context, community);
                   showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-                  context.read<UserSessionBloc>().add(const GetAccountSubscriptions());
+                  context.read<UserSessionBloc>().add(const FetchProfileSubscriptions());
                 },
                 icon: Semantics(
                   label: subscriptionButtonLabel,

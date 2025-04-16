@@ -66,7 +66,7 @@ class _UserSidebarState extends State<UserSidebar> {
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state.status == UserStatus.success && state.user != null) {
-            context.read<UserSessionBloc>().add(LemmyAccountSettingUpdated());
+            context.read<UserSessionBloc>().add(FetchProfileSettings());
           }
         },
         child: Container(

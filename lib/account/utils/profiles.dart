@@ -12,7 +12,7 @@ import 'package:thunder/account/account.dart';
 ///
 /// It will first try to find an active account. If that fails, then it will check for an anonymous account.
 /// If no anonymous account is found, it will create a new default anonymous account.
-Future<Account> fetchActiveProfileAccount() async {
+Future<Account> fetchActiveProfile() async {
   final prefs = (await UserPreferences.instance).sharedPreferences;
   final accountId = prefs.getString('active_profile_id');
 
@@ -21,17 +21,25 @@ Future<Account> fetchActiveProfileAccount() async {
 
   // The user is not logged in. Let's check if there is an anonymous account.
   final instance = prefs.getString(LocalSettings.currentAnonymousInstance.name);
+  final anonymousAccounts = await Account.anonymousInstances();
 
   if (instance != null) {
-    final anonymousAccounts = await Account.anonymousInstances();
-
     account = anonymousAccounts.firstWhereOrNull((account) => account.instance == instance);
     if (account != null) return account;
+  }
+
+  // No default instance set. Check if there are any anonymous accounts.
+  if (anonymousAccounts.isNotEmpty) {
+    account = anonymousAccounts.first;
+    return account;
   }
 
   // No anonymous account found. Let's create a new default one. TODO: Allow changing of default instance.
   account = await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
   if (account == null) throw Exception("Failed to create default profile");
+
+  // Set this instance as the default anonymous instance.
+  await prefs.setString(LocalSettings.currentAnonymousInstance.name, account.instance);
 
   return account;
 }

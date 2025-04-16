@@ -52,7 +52,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
   }
 
   void popModal() {
-    Navigator.of(context).pop();
+    Navigator.of(context).maybePop();
   }
 
   @override
@@ -250,7 +250,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                           onTap: (currentAccountId == accounts![index].account.id)
                               ? null
                               : () {
-                                  context.read<UserSessionBloc>().add(SwitchAccount(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
+                                  context.read<UserSessionBloc>().add(SwitchProfile(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
                                   Navigator.of(context, rootNavigator: true).pop();
                                 },
                           borderRadius: BorderRadius.circular(50),
@@ -404,13 +404,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                       semanticLabel: AppLocalizations.of(context)!.removeAccount,
                                                     ),
                                               onPressed: () async {
-                                                context.read<UserSessionBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
+                                                context.read<UserSessionBloc>().add(RemoveProfile(accountId: accounts![index].account.id));
 
                                                 setState(() => loggingOutId = accounts![index].account.id);
 
                                                 if (currentAccountId != null) {
                                                   await Future.delayed(const Duration(milliseconds: 1000), () {
-                                                    context.read<UserSessionBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                                    context.read<UserSessionBloc>().add(SwitchProfile(accountId: currentAccountId));
                                                   });
                                                 }
 
@@ -504,9 +504,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
                             onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
                                 ? null
                                 : () async {
-                                    context.read<UserSessionBloc>().add(const LogOutOfAllAccounts());
+                                    context.read<UserSessionBloc>().add(SwitchProfile(accountId: anonymousInstances![index].anonymousInstance.instance));
                                     context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
-                                    context.read<UserSessionBloc>().add(InstanceChanged(instance: anonymousInstances![index].anonymousInstance.instance));
                                     Navigator.of(context, rootNavigator: true).pop();
                                   },
                             borderRadius: BorderRadius.circular(50),
@@ -640,9 +639,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                         context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(
                                                             anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
                                                         context.read<UserSessionBloc>().add(
-                                                            InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
+                                                            SwitchProfile(accountId: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![index]).anonymousInstance.instance));
                                                       } else {
-                                                        context.read<UserSessionBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
+                                                        context.read<UserSessionBloc>().add(SwitchProfile(accountId: accounts!.last.account.id));
                                                       }
 
                                                       setState(() => anonymousInstances = null);
@@ -705,15 +704,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
       await Future.delayed(const Duration(milliseconds: 1000), () async {
         if ((anonymousInstances?.length ?? 0) > 0) {
           thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.anonymousInstance.instance));
-          userSessionBloc.add(InstanceChanged(instance: anonymousInstances!.last.anonymousInstance.instance));
+          userSessionBloc.add(SwitchProfile(accountId: anonymousInstances!.last.anonymousInstance.instance));
         } else if (accountsNotCurrent.isNotEmpty) {
-          userSessionBloc.add(SwitchAccount(accountId: accountsNotCurrent.last.id));
+          userSessionBloc.add(SwitchProfile(accountId: accountsNotCurrent.last.id));
         } else {
           // No accounts and no anonymous instances left. Create a new one.
-          userSessionBloc.add(const LogOutOfAllAccounts());
           await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
           thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
+          userSessionBloc.add(SwitchProfile(accountId: 'lemmy.ml'));
         }
 
         setState(() {

@@ -10,7 +10,7 @@ class LemmyClient {
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
-    lemmyApiV3 = LemmyApiV3(baseUrl);
+    lemmyApiV3 = LemmyApiV3(baseUrl, debug: true);
     _populateSiteInfo(); // Do NOT await this. Let it populate in the background.
   }
 
@@ -22,7 +22,7 @@ class LemmyClient {
     if (_lemmySites.containsKey(instance.lemmyApiV3.host)) return;
 
     // Retrieve the site so we can look up metadata about it later
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(GetSite(auth: account.jwt));
   }
 

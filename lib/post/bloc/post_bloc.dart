@@ -101,7 +101,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
       defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
 
       while (attemptCount < 2) {
         try {
@@ -235,7 +235,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       Object? exception;
 
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
 
       while (attemptCount < 2) {
         try {
@@ -523,7 +523,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       final l10n = AppLocalizations.of(GlobalContext.context)!;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

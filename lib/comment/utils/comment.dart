@@ -51,7 +51,7 @@ CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
 /// Logic to vote on a comment
 Future<CommentView> voteComment(int commentId, int score) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -74,7 +74,7 @@ CommentView optimisticallySaveComment(CommentView commentView, bool saved) {
 /// Logic to save a comment
 Future<CommentView> saveComment(int commentId, bool save) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -97,7 +97,7 @@ CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
 /// Logic to delete a comment
 Future<CommentView> deleteComment(int commentId, bool deleted) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

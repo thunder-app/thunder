@@ -10,6 +10,6 @@ void restoreUser(BuildContext context, Account? originalUser) {
   final Account? newUser = context.read<UserSessionBloc>().state.account;
 
   if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-    context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalUser.id, reload: false));
+    context.read<UserSessionBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
   }
 }

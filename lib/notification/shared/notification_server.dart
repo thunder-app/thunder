@@ -83,7 +83,7 @@ Future<bool> requestTestNotification() async {
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     // Send POST request to notification server

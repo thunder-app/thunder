@@ -757,7 +757,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (url == text) {
       try {
         // Fetch cross-posts
-        final account = await fetchActiveProfileAccount();
+        final account = await fetchActiveProfile();
 
         searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
           q: url,

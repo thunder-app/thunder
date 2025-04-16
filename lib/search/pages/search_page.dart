@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     _currentSearchType = widget.communityToSearch == null ? MetaSearchType.communities : MetaSearchType.posts;
     _scrollController.addListener(_onScroll);
     initPrefs();
-    fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile.userId);
+    fetchActiveProfile().then((activeProfile) => _previousUserId = activeProfile.userId);
     context.read<SearchBloc>().add(GetTrendingCommunitiesEvent());
 
     if (widget.isInitiallyFocused) {
@@ -184,7 +184,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
           }),
           BlocListener<UserSessionBloc, UserSessionState>(listener: (context, state) async {
-            final activeProfile = await fetchActiveProfileAccount();
+            final activeProfile = await fetchActiveProfile();
 
             // When account changes, that means our instance most likely changed, so reset search.
             if (state.status == UserSessionStatus.success &&

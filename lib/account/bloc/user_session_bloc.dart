@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -31,51 +30,53 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
   UserSessionBloc() : super(const UserSessionState()) {
     // This event should be triggered during the start of the app, or when there is a change in the active account
-    on<CheckAuth>(_checkAuth, transformer: throttleDroppable(throttleDuration));
+    on<InitializeAuth>(_initializeAuth, transformer: throttleDroppable(throttleDuration));
 
-    /// This event should be triggered whenever the user removes an account
-    on<RemoveAccount>(_removeAccount);
+    /// This event should be triggered whenever the user removes a profile
+    /// This could be either a log out event, or a removal of a profile
+    on<RemoveProfile>(_removeProfile);
 
-    /// This event occurs whenever you switch to a different authenticated account
-    on<SwitchAccount>(_switchAccount);
+    /// This event occurs whenever you switch to a different profile
+    on<SwitchProfile>(_switchProfile);
 
-    /// This event should be triggered when the user logs in with a username/password
-    on<LoginAttempt>(_loginAttempt);
+    /// This event should be triggered whenever the user adds a profile.
+    /// This could be addition of a anonymous or non-anonymous account.
+    on<AddProfile>(_addProfile);
+
+    /// This event handles fetching a given profile's information.
+    /// For non-anonymous accounts, this includes user information, subscriptions, and favourites.
+    /// For anonymous accounts, this will not do anything.
+    on<FetchProfileInformation>(_fetchProfileInformation, transformer: restartable());
 
     /// This event should be triggered when the user cancels a login attempt
     on<CancelLoginAttempt>(_cancelLoginAttempt);
 
-    /// When we log out of all accounts, clear the instance information
-    on<LogOutOfAllAccounts>(_logOutOfAllAccounts);
-
-    /// When the given instance changes, re-fetch the instance information and preferences.
-    on<InstanceChanged>(_instanceChanged);
-
     /// When any account setting synced with Lemmy is updated, re-fetch the instance information and preferences.
-    on<LemmyAccountSettingUpdated>(_lemmyAccountSettingUpdated);
+    on<FetchProfileSettings>(_fetchProfileSettings);
 
-    on<ResetAccountState>(_resetAccountState, transformer: restartable());
-    on<RefreshAccountInformation>(_refreshAccountInformation, transformer: restartable());
-    on<GetAccountInformation>(_getAccountInformation, transformer: restartable());
-    on<GetAccountSubscriptions>(_getAccountSubscriptions, transformer: restartable());
-    on<GetFavoritedCommunities>(_getFavoritedCommunities, transformer: restartable());
+    /// Fetches the current profile's subscribed communities. This is only applicable for non-anonymous profiles.
+    on<FetchProfileSubscriptions>(_fetchProfileSubscriptions, transformer: restartable());
+
+    /// Fetches the current profile's favourited communities. This is only applicable for non-anonymous profiles.
+    on<FetchProfileFavorites>(_fetchProfileFavorites, transformer: restartable());
   }
 
+  /// Resets the entire state the the initial state.
   Future<void> _resetState(emit) async {
     return emit(UserSessionState());
   }
 
-  Future<void> _checkAuth(CheckAuth event, Emitter<UserSessionState> emit) async {
+  Future<void> _initializeAuth(InitializeAuth event, Emitter<UserSessionState> emit) async {
     _resetState(emit);
 
     // Check to see what the current active profile is.
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
 
     // Set lemmy client to use the instance
     LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
 
     // Check to see the instance settings (for checking if downvotes are enabled)
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    final lemmy = LemmyClient.instance.lemmyApiV3;
 
     bool downvotesEnabled = true;
     GetSiteResponse? getSiteResponse;
@@ -85,194 +86,152 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
       downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
     } catch (e) {
-      return emit(state.copyWith(status: UserSessionStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
+      return emit(state.copyWith(status: UserSessionStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
     }
 
-    return emit(
+    emit(
       state.copyWith(
         status: UserSessionStatus.success,
-        account: account.anonymous ? null : account,
-        isLoggedIn: true,
+        account: account.anonymous ? null : () => account,
+        isLoggedIn: !account.anonymous,
         downvotesEnabled: downvotesEnabled,
-        getSiteResponse: getSiteResponse,
+        getSiteResponse: () => getSiteResponse!,
       ),
     );
+
+    // Do not use add(BlocEvent) here, as we want all these to happen sequentially.
+    await _fetchProfileInformation(FetchProfileInformation(reload: false), emit);
+    await _fetchProfileSettings(FetchProfileSettings(), emit);
+    await _fetchProfileSubscriptions(FetchProfileSubscriptions(reload: false), emit);
+
+    return;
   }
 
-  Future<void> _removeAccount(RemoveAccount event, Emitter<UserSessionState> emit) async {
-    emit(state.copyWith(status: UserSessionStatus.loading, isLoggedIn: false));
-
-    await Account.deleteAccount(event.accountId);
-
-    await Future.delayed(const Duration(seconds: 1), () {
-      return emit(state.copyWith(status: UserSessionStatus.success, isLoggedIn: false));
-    });
-  }
-
-  Future<void> _switchAccount(SwitchAccount event, Emitter<UserSessionState> emit) async {
-    emit(state.copyWith(status: UserSessionStatus.loading, isLoggedIn: false, reload: event.reload));
-
-    Account? account = await Account.fetchAccount(event.accountId);
-    if (account == null) return emit(state.copyWith(status: UserSessionStatus.success, account: null, isLoggedIn: false));
-
-    // Set this account as the active account
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setString('active_profile_id', event.accountId);
-
-    // Check to see the instance settings (for checking if downvotes are enabled)
-    LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-    GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
-    bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
-
-    return emit(state.copyWith(
-      status: UserSessionStatus.success,
-      account: account,
-      isLoggedIn: true,
-      downvotesEnabled: downvotesEnabled,
-      getSiteResponse: getSiteResponse,
-      reload: event.reload,
-    ));
-  }
-
-  Future<void> _loginAttempt(LoginAttempt event, Emitter<UserSessionState> emit) async {
-    LemmyClient lemmyClient = LemmyClient.instance;
-    String originalBaseUrl = lemmyClient.lemmyApiV3.host;
+  Future<void> _addProfile(AddProfile event, Emitter<UserSessionState> emit) async {
+    final originalBaseUrl = LemmyClient.instance.lemmyApiV3.host;
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading, account: null, isLoggedIn: false));
+      emit(state.copyWith(status: UserSessionStatus.loading));
 
-      String instance = event.instance;
-      if (instance.startsWith('https://')) instance = instance.replaceAll('https://', '');
+      String instance = event.instance.replaceAll('https://', '');
+      LemmyClient.instance.changeBaseUrl(instance);
 
-      lemmyClient.changeBaseUrl(instance);
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      final lemmy = LemmyClient.instance.lemmyApiV3;
 
-      LoginResponse loginResponse = await lemmy.run(Login(
+      final response = await lemmy.run(Login(
         usernameOrEmail: event.username,
         password: event.password,
         totp2faToken: event.totp,
       ));
 
-      if (loginResponse.jwt == null) {
-        return emit(state.copyWith(status: UserSessionStatus.failure, account: null, isLoggedIn: false));
-      }
+      if (response.jwt == null) return emit(state.copyWith(status: UserSessionStatus.failure));
 
-      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: response.jwt));
 
       if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-        return emit(state.copyWith(status: UserSessionStatus.contentWarning, contentWarning: getSiteResponse.siteView.site.contentWarning));
+        return emit(state.copyWith(status: UserSessionStatus.contentWarning, contentWarning: () => getSiteResponse.siteView.site.contentWarning!));
       }
 
       // Create a new account in the database
       Account? account = Account(
         id: '',
         username: getSiteResponse.myUser?.localUserView.person.name,
-        jwt: loginResponse.jwt,
+        jwt: response.jwt,
         instance: instance,
         userId: getSiteResponse.myUser?.localUserView.person.id,
         index: -1,
       );
 
       account = await Account.insertAccount(account);
-
-      if (account == null) {
-        return emit(state.copyWith(status: UserSessionStatus.failure, account: null, isLoggedIn: false));
-      }
+      if (account == null) return emit(state.copyWith(status: UserSessionStatus.failure));
 
       // Set this account as the active account
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      final prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', account.id);
 
-      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
-
-      return emit(state.copyWith(status: UserSessionStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
+      // Run the CheckAuth event to reset everything
+      return await _initializeAuth(InitializeAuth(), emit);
     } on LemmyApiException catch (e) {
-      return emit(state.copyWith(status: UserSessionStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => e.toString()));
     } catch (e) {
       try {
-        // Restore the original baseUrl
-        lemmyClient.changeBaseUrl(originalBaseUrl);
+        LemmyClient.instance.changeBaseUrl(originalBaseUrl);
       } catch (e, s) {
-        return emit(state.copyWith(status: UserSessionStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
+        return emit(state.copyWith(status: UserSessionStatus.failure, error: () => s.toString()));
       }
-      return emit(state.copyWith(status: UserSessionStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+
+      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => e.toString()));
     }
   }
 
+  Future<void> _switchProfile(SwitchProfile event, Emitter<UserSessionState> emit) async {
+    emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
+
+    Account? account = await Account.fetchAccount(event.accountId);
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    if (account != null) {
+      // Set this account as the active account
+      prefs.setString('active_profile_id', event.accountId);
+    } else {
+      // Account was not found - this indicates is an anonymous account. Find the corresponding account
+      final anonymousAccounts = await Account.anonymousInstances();
+      final anonymousAccount = anonymousAccounts.firstWhereOrNull((element) => element.instance == event.accountId);
+      account = anonymousAccount;
+
+      await prefs.remove('active_profile_id');
+    }
+
+    if (account == null) {
+      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.unexpectedError));
+    }
+
+    add(InitializeAuth());
+  }
+
+  Future<void> _removeProfile(RemoveProfile event, Emitter<UserSessionState> emit) async {
+    emit(state.copyWith(status: UserSessionStatus.loading));
+
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    final account = await fetchActiveProfile();
+    await Account.deleteAccount(event.accountId);
+
+    if (!account.anonymous && account.id == event.accountId) {
+      // The removed profile is the currently active profile. Remove this.
+      prefs.remove('active_profile_id');
+      add(InitializeAuth());
+    } else if (account.anonymous && account.instance == event.accountId) {
+      // The removed profile is the current anonymous profile.
+      add(InitializeAuth());
+    }
+
+    // Check to see if the removed profile is the current profile. If so, we need to switch to an anonymous profile.
+
+    return emit(state.copyWith(status: UserSessionStatus.success));
+  }
+
   Future<void> _cancelLoginAttempt(CancelLoginAttempt event, Emitter<UserSessionState> emit) async {
-    return emit(state.copyWith(status: UserSessionStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
+    return emit(state.copyWith(status: UserSessionStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
   }
 
-  Future<void> _logOutOfAllAccounts(LogOutOfAllAccounts event, Emitter<UserSessionState> emit) async {
-    emit(state.copyWith(status: UserSessionStatus.initial));
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    prefs.setString('active_profile_id', '');
-    return emit(state.copyWith(status: UserSessionStatus.success, isLoggedIn: false, getSiteResponse: null));
-  }
+  /// Fetches the current profile's information, including the user's information and moderated communities.
+  /// This is only applicable for non-anonymous profiles.
+  Future<void> _fetchProfileInformation(FetchProfileInformation event, Emitter<UserSessionState> emit) async {
+    final account = await fetchActiveProfile();
 
-  Future<void> _instanceChanged(InstanceChanged event, Emitter<UserSessionState> emit) async {
-    // Copy everything from the state as is during loading
-    emit(state.copyWith(status: UserSessionStatus.loading, isLoggedIn: state.isLoggedIn, account: state.account));
-
-    // When the instance changes, update the fullSiteView
-    LemmyClient.instance.changeBaseUrl(event.instance.replaceAll('https://', ''));
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-    // Check to see if there is an active, non-anonymous account
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    String? activeProfileId = prefs.getString('active_profile_id');
-    Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
-
-    GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-    bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
-
-    return emit(
-        state.copyWith(status: UserSessionStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
-  }
-
-  Future<void> _lemmyAccountSettingUpdated(LemmyAccountSettingUpdated event, Emitter<UserSessionState> emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-    // Check to see if there is an active, non-anonymous account
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    String? activeProfileId = prefs.getString('active_profile_id');
-    Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
-
-    GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
-    return emit(state.copyWith(
-      status: UserSessionStatus.success,
-      account: account,
-      isLoggedIn: activeProfileId?.isNotEmpty == true,
-      getSiteResponse: getSiteResponse,
-      reload: false,
-    ));
-  }
-
-  /// Resets the account state to its initial state.
-  Future<void> _resetAccountState(ResetAccountState event, Emitter<UserSessionState> emit) async {
-    return emit(state.copyWith(
-      status: UserSessionStatus.success,
-      subscriptions: [],
-      favorites: [],
-      moderates: [],
-      user: null,
-      error: null,
-    ));
-  }
-
-  /// Refreshes the account information, subscriptions, and favorites.
-  Future<void> _refreshAccountInformation(RefreshAccountInformation event, Emitter<UserSessionState> emit) async {
-    await _getFavoritedCommunities(GetFavoritedCommunities(reload: event.reload), emit);
-    await _getAccountInformation(GetAccountInformation(reload: event.reload), emit);
-    await _getAccountSubscriptions(GetAccountSubscriptions(reload: event.reload), emit);
-  }
-
-  /// Fetches the current account's information, including the user's profile and moderated communities.
-  Future<void> _getAccountInformation(GetAccountInformation event, Emitter<UserSessionState> emit) async {
-    final account = await fetchActiveProfileAccount();
-    if (account.anonymous) return _resetAccountState(ResetAccountState(), emit);
+    if (account.anonymous) {
+      return emit(
+        state.copyWith(
+          status: UserSessionStatus.success,
+          reload: event.reload,
+          user: null,
+          subscriptions: [],
+          favorites: [],
+          moderates: [],
+        ),
+      );
+    }
 
     try {
       emit(state.copyWith(status: UserSessionStatus.loading, user: null, moderates: [], reload: event.reload));
@@ -285,19 +244,37 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.
       if (user.id == account.userId) {
-        return emit(state.copyWith(status: UserSessionStatus.success, user: user, moderates: moderates, reload: event.reload));
+        return emit(state.copyWith(status: UserSessionStatus.success, user: () => user, moderates: moderates, reload: event.reload));
       } else {
         return emit(state.copyWith(status: UserSessionStatus.success, user: null, moderates: [], reload: event.reload));
       }
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, error: getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: UserSessionStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
-  /// Fetches the current account's subscriptions.
-  Future<void> _getAccountSubscriptions(GetAccountSubscriptions event, Emitter<UserSessionState> emit) async {
-    final account = await fetchActiveProfileAccount();
-    if (account.anonymous) return _resetAccountState(ResetAccountState(), emit);
+  /// Fetches the current profile's account settings. This is only applicable for non-anonymous profiles.
+  Future<void> _fetchProfileSettings(FetchProfileSettings event, Emitter<UserSessionState> emit) async {
+    final account = await fetchActiveProfile();
+    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success));
+
+    try {
+      emit(state.copyWith(status: UserSessionStatus.loading));
+
+      // Refresh the site information, which includes the user's settings
+      final lemmy = LemmyClient.instance.lemmyApiV3;
+      final response = await lemmy.run(GetSite(auth: account.jwt));
+
+      return emit(state.copyWith(status: UserSessionStatus.success, getSiteResponse: () => response));
+    } catch (e) {
+      emit(state.copyWith(status: UserSessionStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
+    }
+  }
+
+  /// Fetches the current profile's subscribed communities. This is only applicable for non-anonymous profiles.
+  Future<void> _fetchProfileSubscriptions(FetchProfileSubscriptions event, Emitter<UserSessionState> emit) async {
+    final account = await fetchActiveProfile();
+    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, subscriptions: [], favorites: []));
 
     try {
       emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
@@ -318,16 +295,19 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
       // Sort subscriptions by their name
       subscriptions.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-      return emit(state.copyWith(status: UserSessionStatus.success, subscriptions: subscriptions, reload: event.reload));
+      emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, subscriptions: subscriptions));
+
+      // Refresh the favourited communities as it might've changed.
+      add(FetchProfileFavorites(reload: event.reload));
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, error: getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: UserSessionStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 
-  /// Fetches the current account's favorited communities.
-  Future<void> _getFavoritedCommunities(GetFavoritedCommunities event, Emitter<UserSessionState> emit) async {
-    final account = await fetchActiveProfileAccount();
-    if (account.anonymous) return _resetAccountState(ResetAccountState(), emit);
+  /// Fetches the current profile's favourited communities. This is only applicable for non-anonymous profiles.
+  Future<void> _fetchProfileFavorites(FetchProfileFavorites event, Emitter<UserSessionState> emit) async {
+    final account = await fetchActiveProfile();
+    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, favorites: []));
 
     try {
       emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
@@ -335,9 +315,9 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       final favorites = await Favorite.favorites(account.id);
       final communities = state.subscriptions.where((community) => favorites.any((favorite) => favorite.communityId == community.id)).toList();
 
-      return emit(state.copyWith(status: UserSessionStatus.success, favorites: communities, reload: event.reload));
+      return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, favorites: communities));
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, error: getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: UserSessionStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 }

@@ -27,7 +27,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   bool showSaved = false,
   void Function()? notifyExcessiveApiCalls,
 }) async {
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
@@ -142,7 +142,7 @@ Future<PostView> createPost({
   int? languageId,
 }) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

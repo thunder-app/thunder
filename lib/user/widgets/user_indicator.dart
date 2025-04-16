@@ -32,7 +32,7 @@ class _UserIndicatorState extends State<UserIndicator> {
     if (state.user != null) {
       setState(() => user = state.user);
     } else {
-      context.read<UserSessionBloc>().add(const GetAccountInformation());
+      context.read<UserSessionBloc>().add(const FetchProfileInformation());
     }
   }
 
@@ -61,7 +61,7 @@ class _UserIndicatorState extends State<UserIndicator> {
                 label: Text(l10n.retry),
                 icon: const Icon(Icons.refresh_rounded),
                 onPressed: () {
-                  context.read<UserSessionBloc>().add(const GetAccountInformation());
+                  context.read<UserSessionBloc>().add(const FetchProfileInformation());
                   setState(() => error = false);
                 },
               ),

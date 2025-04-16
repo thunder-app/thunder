@@ -155,7 +155,7 @@ Future<void> navigateToPost(
 
   if (pvm == null) {
     final client = LemmyClient.instance.lemmyApiV3;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
 
     GetPostResponse getPostResponse = await client.run(
       GetPost(
@@ -284,7 +284,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
   final bool reduceAnimations = state.reduceAnimations;
 
   final client = LemmyClient.instance.lemmyApiV3;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
 
   GetPostResponse getPostResponse = await client.run(
     GetPost(
@@ -495,7 +495,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-  Account? account = await fetchActiveProfileAccount();
+  Account? account = await fetchActiveProfile();
 
   bool switchedAccount = false;
   String? originalAccount = account.id;
@@ -503,7 +503,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   if (account.id != accountId && accountId != null && context.mounted) {
     // Switch to the notification's account without reloading the app
-    context.read<UserSessionBloc>().add(SwitchAccount(accountId: accountId, reload: false));
+    context.read<UserSessionBloc>().add(SwitchProfile(accountId: accountId, reload: false));
 
     // Set the account locally here so we don't have to wait for the event to complete
     account = await Account.fetchAccount(accountId);
@@ -563,7 +563,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
       // If needed, switch back to the original account or anonymous instance
       if (switchedAccount) {
         // We switched from an account, so switch back
-        context.read<UserSessionBloc>().add(SwitchAccount(accountId: originalAccount, reload: false));
+        context.read<UserSessionBloc>().add(SwitchProfile(accountId: originalAccount, reload: false));
       }
 
       context.read<InboxBloc>().add(const GetInboxEvent(reset: true, inboxType: InboxType.all));

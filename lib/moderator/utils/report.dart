@@ -17,7 +17,7 @@ Future<Map<String, dynamic>> fetchReports({
   ReportFeedType reportFeedType = ReportFeedType.post,
 }) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -75,7 +75,7 @@ PostReport optimisticallyResolvePostReport(PostReport postReport, bool resolved)
 /// Logic to resolve a post report
 Future<bool> resolvePostReport(int postReportId, bool resolved) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -97,7 +97,7 @@ CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bo
 /// Logic to resolve a comment report
 Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

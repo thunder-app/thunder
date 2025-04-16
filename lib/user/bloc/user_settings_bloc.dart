@@ -75,7 +75,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
@@ -98,7 +98,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     GetSiteResponse? originalGetSiteResponse = state.getSiteResponse;
@@ -164,7 +164,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
@@ -214,7 +214,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
@@ -250,7 +250,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
@@ -286,7 +286,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     emit(state.copyWith(status: UserSettingsStatus.listingMedia));
@@ -316,7 +316,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       state.images?.removeWhere((localImageView) => localImageView.localImage.pictrsAlias == event.id);
 
       final l10n = AppLocalizations.of(GlobalContext.context)!;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
       await PictrsApi(account.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
@@ -337,7 +337,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
 
       String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 

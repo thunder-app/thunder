@@ -137,7 +137,7 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
 void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
@@ -289,7 +289,7 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account.jwt));
     return true;
   } catch (e) {
@@ -318,7 +318,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account.jwt));
     return true;
   } catch (e) {

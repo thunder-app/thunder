@@ -25,7 +25,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
@@ -52,7 +52,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
@@ -79,7 +79,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(
@@ -106,7 +106,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final account = await fetchActiveProfileAccount();
+      final account = await fetchActiveProfile();
       LemmyApiV3 lemmy = (LemmyClient()..changeBaseUrl(instance)).lemmyApiV3;
 
       SearchResponse searchResponse = await lemmy.run(Search(

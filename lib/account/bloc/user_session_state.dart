@@ -13,10 +13,13 @@ class UserSessionState extends Equatable {
   final UserSessionStatus status;
 
   final bool isLoggedIn;
-  final String? errorMessage;
+
   final Account? account;
+
   final bool downvotesEnabled;
+
   final GetSiteResponse? getSiteResponse;
+
   final String? contentWarning;
 
   /// The current active user's information
@@ -40,7 +43,6 @@ class UserSessionState extends Equatable {
   const UserSessionState({
     this.status = UserSessionStatus.initial,
     this.isLoggedIn = false,
-    this.errorMessage,
     this.account,
     this.downvotesEnabled = true,
     this.getSiteResponse,
@@ -56,32 +58,30 @@ class UserSessionState extends Equatable {
   UserSessionState copyWith({
     UserSessionStatus? status,
     bool? isLoggedIn,
-    String? errorMessage,
-    Account? account,
+    ValueGetter<Account>? account,
     bool? downvotesEnabled,
-    GetSiteResponse? getSiteResponse,
-    String? contentWarning,
-    ThunderUser? user,
+    ValueGetter<GetSiteResponse>? getSiteResponse,
+    ValueGetter<String>? contentWarning,
+    ValueGetter<ThunderUser>? user,
     List<ThunderCommunity>? subscriptions,
     List<ThunderCommunity>? favorites,
     List<ThunderCommunity>? moderates,
     bool? reload,
-    String? error,
+    ValueGetter<String>? error,
   }) {
     return UserSessionState(
       status: status ?? this.status,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
-      errorMessage: errorMessage,
-      account: account ?? this.account,
+      account: account != null ? account() : this.account,
       downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
-      getSiteResponse: getSiteResponse ?? this.getSiteResponse,
-      contentWarning: contentWarning ?? this.contentWarning,
-      user: user ?? this.user,
+      getSiteResponse: getSiteResponse != null ? getSiteResponse() : this.getSiteResponse,
+      contentWarning: contentWarning != null ? contentWarning() : this.contentWarning,
+      user: user != null ? user() : this.user,
       subscriptions: subscriptions ?? this.subscriptions,
       favorites: favorites ?? this.favorites,
       moderates: moderates ?? this.moderates,
       reload: reload ?? this.reload,
-      error: error ?? this.error,
+      error: error != null ? error() : this.error,
     );
   }
 
@@ -89,7 +89,6 @@ class UserSessionState extends Equatable {
   List<Object?> get props => [
         status,
         isLoggedIn,
-        errorMessage,
         account,
         downvotesEnabled,
         getSiteResponse,

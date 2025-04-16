@@ -137,6 +137,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     return MultiBlocListener(
       listeners: [
         BlocListener<UserSessionBloc, UserSessionState>(
+          listenWhen: (previous, current) {
+            if (previous.status == UserSessionStatus.initial && current.status == UserSessionStatus.success) {
+              widget.popModal();
+              showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
+            }
+            return true;
+          },
           listener: (listenerContext, state) async {
             if (state.status == UserSessionStatus.loading) {
               setState(() {
@@ -147,10 +154,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 isLoading = false;
               });
 
-              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
-            } else if (state.status == UserSessionStatus.success && context.read<UserSessionBloc>().state.isLoggedIn) {
-              widget.popModal();
-              showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
+              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.error ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == UserSessionStatus.contentWarning) {
               bool acceptedContentWarning = false;
 
@@ -454,7 +458,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     TextInput.finishAutofillContext();
     // Perform login authentication
     context.read<UserSessionBloc>().add(
-          LoginAttempt(
+          AddProfile(
             username: _usernameTextEditingController.text,
             password: _passwordTextEditingController.text,
             instance: _instanceTextEditingController.text.trim(),
@@ -498,9 +502,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         }
 
         if (acceptedContentWarning) {
-          context.read<UserSessionBloc>().add(const LogOutOfAllAccounts());
           await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
           context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
+          context.read<UserSessionBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
           widget.popRegister();
         }
       }

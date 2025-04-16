@@ -107,7 +107,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               }
 
               if (state.status == UserSettingsStatus.success) {
-                context.read<UserSessionBloc>().add(LemmyAccountSettingUpdated());
+                context.read<UserSessionBloc>().add(FetchProfileSettings());
               }
             },
             builder: (context, state) {
@@ -441,7 +441,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   dynamic exportSettings;
                                   try {
                                     final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                    final account = await fetchActiveProfileAccount();
+                                    final account = await fetchActiveProfile();
                                     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
                                     exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account.jwt));
@@ -514,7 +514,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                                   try {
                                     final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                    final account = await fetchActiveProfileAccount();
+                                    final account = await fetchActiveProfile();
                                     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
                                     SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account.jwt, data: importSettings));

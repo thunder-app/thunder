@@ -35,7 +35,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 
       if (normalizedUsername != null) {
         try {
-          final account = await fetchActiveProfileAccount();
+          final account = await fetchActiveProfile();
           final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account.jwt, username: normalizedUsername));
           final user = ThunderUser(response.personView.person, userView: response.personView);
 
@@ -64,7 +64,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 Future<List<ThunderUser>> getUserSuggestions(String query) async {
   if (query.isNotEmpty != true) return [];
 
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account.jwt,
@@ -133,7 +133,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
       if (normalizedCommunity != null) {
         try {
-          final account = await fetchActiveProfileAccount();
+          final account = await fetchActiveProfile();
           final response = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(auth: account.jwt, name: normalizedCommunity));
           final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
@@ -162,7 +162,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
   if (query.isNotEmpty != true) return emptySuggestions ?? [];
 
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   final response = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account.jwt,
@@ -260,7 +260,7 @@ void showInstanceInputDialog(
   required void Function(InstanceWithFederationState) onInstanceSelected,
   Iterable<InstanceWithFederationState>? emptySuggestions,
 }) async {
-  Account? account = await fetchActiveProfileAccount();
+  Account? account = await fetchActiveProfile();
 
   GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
     GetFederatedInstances(

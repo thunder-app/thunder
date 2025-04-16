@@ -341,7 +341,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   );
                 },
                 onEdit: () async {
-                  final account = await fetchActiveProfileAccount();
+                  final account = await fetchActiveProfile();
 
                   final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                     auth: account.jwt,

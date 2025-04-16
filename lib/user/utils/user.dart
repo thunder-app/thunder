@@ -8,7 +8,7 @@ import 'package:thunder/utils/global_context.dart';
 /// Logic to block a user
 Future<BlockPersonResponse> blockUser(int userId, bool block) async {
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -30,7 +30,7 @@ Future<BanFromCommunityResponse> banUserFromCommunity(int userId, bool ban, {req
   final lemmy = LemmyClient.instance.lemmyApiV3;
 
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   BanFromCommunityResponse banFromCommunityResponse = await lemmy.run(BanFromCommunity(
@@ -51,7 +51,7 @@ Future<AddModToCommunityResponse> addModerator(int userId, bool added, {required
   final lemmy = LemmyClient.instance.lemmyApiV3;
 
   final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfileAccount();
+  final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   AddModToCommunityResponse addModToCommunityResponse = await lemmy.run(AddModToCommunity(

@@ -142,7 +142,7 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
 
   try {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfileAccount();
+    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     imageBloc.add(ImageUploadEvent(imageFile: path, instance: account.instance, jwt: account.jwt!, postImage: postImage));
