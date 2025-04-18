@@ -18,7 +18,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
 
-    return BlocBuilder<UserSessionBloc, UserSessionState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         if (state.isLoggedIn != true) return const AccountPlaceholder();
 

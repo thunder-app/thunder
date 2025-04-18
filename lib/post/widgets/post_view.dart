@@ -103,14 +103,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     PostView postView = postViewMedia.postView;
     Post post = postView.post;
 
-    final bool isUserLoggedIn = context.watch<UserSessionBloc>().state.isLoggedIn;
+    final bool isUserLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    final ProfileState profileState = context.watch<ProfileBloc>().state;
 
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
-    final bool isOwnPost = postView.creator.id == context.read<UserSessionBloc>().state.account?.userId;
+    final bool isOwnPost = postView.creator.id == context.read<ProfileBloc>().state.account?.userId;
 
     final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
 
@@ -119,7 +119,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     if (postView.creator.botAccount) userGroups.add(UserType.bot);
     if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (postView.creator.id == userSessionState.account?.userId) userGroups.add(UserType.self);
+    if (postView.creator.id == profileState.account?.userId) userGroups.add(UserType.self);
     if (postView.creator.published.month == DateTime.now().month && postView.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(

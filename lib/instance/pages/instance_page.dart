@@ -76,8 +76,8 @@ class _InstancePageState extends State<InstancePage> {
     isBlocked ??= widget.isBlocked ?? false;
     final bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
 
-    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<UserSessionBloc>().state.account?.instance;
+    final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
+    final String? accountInstance = context.read<ProfileBloc>().state.account?.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocListener<InstanceBloc, InstanceState>(

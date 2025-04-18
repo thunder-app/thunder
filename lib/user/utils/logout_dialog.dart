@@ -12,8 +12,8 @@ Future<bool> showLogOutDialog(BuildContext context) async {
   bool result = false;
   await showThunderDialog<bool>(
     context: context,
-    customBuilder: (alertDialog) => BlocProvider<UserSessionBloc>.value(
-      value: context.read<UserSessionBloc>(),
+    customBuilder: (alertDialog) => BlocProvider<ProfileBloc>.value(
+      value: context.read<ProfileBloc>(),
       child: alertDialog,
     ),
     title: l10n.confirmLogOutTitle,
@@ -25,7 +25,7 @@ Future<bool> showLogOutDialog(BuildContext context) async {
     secondaryButtonText: l10n.cancel,
     onPrimaryButtonPressed: (dialogContext, _) {
       result = true;
-      dialogContext.read<UserSessionBloc>().add(RemoveProfile(accountId: dialogContext.read<UserSessionBloc>().state.account!.id));
+      dialogContext.read<ProfileBloc>().add(RemoveProfile(accountId: dialogContext.read<ProfileBloc>().state.account!.id));
       Navigator.of(dialogContext).pop();
     },
     primaryButtonText: l10n.logOut,

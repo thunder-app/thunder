@@ -639,7 +639,7 @@ class _FeedViewState extends State<FeedView> {
       return true;
     }
 
-    UserSessionBloc authBloc = context.read<UserSessionBloc>();
+    ProfileBloc authBloc = context.read<ProfileBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 

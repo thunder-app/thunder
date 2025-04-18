@@ -206,7 +206,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
     final isLoggedIn = authState.isLoggedIn;
 
     List<GeneralQuickPostAction> quickActions = GeneralQuickPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();

@@ -61,7 +61,7 @@ class PostCardActions extends StatelessWidget {
                 label: upvoted ? l10n.upvoted : l10n.upvote,
                 onPressed: () => onVoteAction(upvoted ? 0 : 1),
               ),
-              BlocSelector<UserSessionBloc, UserSessionState, bool>(
+              BlocSelector<ProfileBloc, ProfileState, bool>(
                 selector: (state) => state.downvotesEnabled,
                 builder: (context, downvotesEnabled) {
                   if (!downvotesEnabled) return const SizedBox.shrink();

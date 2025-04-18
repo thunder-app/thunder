@@ -37,7 +37,7 @@ class CompactThumbnailPreview extends StatelessWidget {
     final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
     final markPostReadOnMediaView = context.select((ThunderBloc bloc) => bloc.state.markPostReadOnMediaView);
 
-    final isUserLoggedIn = context.select((UserSessionBloc bloc) => bloc.state.isLoggedIn);
+    final isUserLoggedIn = context.select((ProfileBloc bloc) => bloc.state.isLoggedIn);
 
     return ExcludeSemantics(
       child: Stack(

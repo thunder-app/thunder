@@ -198,7 +198,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
 
     List<PostPostAction> userActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

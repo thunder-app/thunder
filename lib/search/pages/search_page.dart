@@ -139,7 +139,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               searchType: _getSearchTypeToUse(),
               communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
               creatorId: _currentCreatorFilter,
-              favoriteCommunities: context.read<UserSessionBloc>().state.favorites,
+              favoriteCommunities: context.read<ProfileBloc>().state.favorites,
             ));
       }
     }
@@ -170,8 +170,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
 
-    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<UserSessionBloc>().state.account?.instance;
+    final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
+    final String? accountInstance = context.read<ProfileBloc>().state.account?.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocProvider(
@@ -183,12 +183,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           BlocListener<SearchBloc, SearchState>(listener: (context, state) {
             context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
           }),
-          BlocListener<UserSessionBloc, UserSessionState>(listener: (context, state) async {
+          BlocListener<ProfileBloc, ProfileState>(listener: (context, state) async {
             final activeProfile = await fetchActiveProfile();
 
             // When account changes, that means our instance most likely changed, so reset search.
-            if (state.status == UserSessionStatus.success &&
-                    ((activeProfile.userId == null && _previousUserId != null) || state.user?.id == activeProfile.userId && _previousUserId != state.user?.id) ||
+            if (state.status == ProfileStatus.success && ((activeProfile.userId == null && _previousUserId != null) || state.user?.id == activeProfile.userId && _previousUserId != state.user?.id) ||
                 (state.favorites.length != _previousFavoritesCount && _controller.text.isEmpty)) {
               _controller.clear();
               if (context.mounted) context.read<SearchBloc>().add(ResetSearch());
@@ -537,7 +536,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (context.read<UserSessionBloc>().state.favorites.isNotEmpty) ...[
+                      if (context.read<ProfileBloc>().state.favorites.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           child: Text(
@@ -548,9 +547,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: context.read<UserSessionBloc>().state.favorites.length,
+                          itemCount: context.read<ProfileBloc>().state.favorites.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final community = context.read<UserSessionBloc>().state.favorites[index];
+                            final community = context.read<ProfileBloc>().state.favorites[index];
                             final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
                             return CommunityListEntry(
@@ -829,7 +828,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
-    final state = context.read<UserSessionBloc>().state;
+    final state = context.read<ProfileBloc>().state;
     return state.favorites.any((c) => c.id == community.id);
   }
 
@@ -924,7 +923,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         searchType: _getSearchTypeToUse(),
         communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
         creatorId: _currentCreatorFilter,
-        favoriteCommunities: context.read<UserSessionBloc>().state.favorites,
+        favoriteCommunities: context.read<ProfileBloc>().state.favorites,
         force: force || searchBloc.state.viewingAll,
       ));
     } else {

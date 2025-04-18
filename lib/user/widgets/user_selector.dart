@@ -102,7 +102,7 @@ Future<void> temporarilySwitchAccount(
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  final Account? originalUser = context.read<UserSessionBloc>().state.account;
+  final Account? originalUser = context.read<ProfileBloc>().state.account;
 
   await showProfileModalSheet(
     context,
@@ -115,7 +115,7 @@ Future<void> temporarilySwitchAccount(
   await Future.delayed(const Duration(milliseconds: 1500));
 
   if (context.mounted) {
-    Account? newUser = context.read<UserSessionBloc>().state.account;
+    Account? newUser = context.read<ProfileBloc>().state.account;
 
     if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
       // The user changed. Reload the widget.
@@ -151,7 +151,7 @@ Future<void> temporarilySwitchAccount(
         if (resolvedPost == null) {
           // This is not allowed, so we must block the account switch.
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
-          if (context.mounted) context.read<UserSessionBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
+          if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
         }
       }
 
@@ -170,7 +170,7 @@ Future<void> temporarilySwitchAccount(
         if (resolvedComment == null) {
           // This is not allowed, so we must block the accout switch.
           showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance));
-          if (context.mounted) context.read<UserSessionBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
+          if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
         }
       }
     }

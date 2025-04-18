@@ -70,7 +70,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                 children: [
                   CommentReference(
                     comment: personMentionView.toCommentView(),
-                    isOwnComment: personMentionView.creator.id == context.read<UserSessionBloc>().state.account?.userId,
+                    isOwnComment: personMentionView.creator.id == context.read<ProfileBloc>().state.account?.userId,
                     child: IconButton(
                       onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),
                       icon: Icon(

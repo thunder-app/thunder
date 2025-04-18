@@ -52,7 +52,7 @@ Future<void> showProfileModalSheet(
   String? customHeading,
   bool reloadOnSwitch = true,
 }) async {
-  final userSessionBloc = context.read<UserSessionBloc>();
+  final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
   await showModalBottomSheet(
@@ -62,7 +62,7 @@ Future<void> showProfileModalSheet(
     showDragHandle: true,
     builder: (context) {
       return MultiBlocProvider(
-        providers: [BlocProvider.value(value: userSessionBloc), BlocProvider.value(value: thunderBloc)],
+        providers: [BlocProvider.value(value: profileBloc), BlocProvider.value(value: thunderBloc)],
         child: FractionallySizedBox(
           heightFactor: 0.8,
           child: ProfileModalBody(

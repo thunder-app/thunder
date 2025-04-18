@@ -61,7 +61,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
 
     if (isFavorite) {
       await Favorite.deleteFavorite(communityId: community.id);
-      if (context.mounted) context.read<UserSessionBloc>().add(const FetchProfileFavorites());
+      if (context.mounted) context.read<ProfileBloc>().add(const FetchProfileFavorites());
       return;
     }
 
@@ -72,7 +72,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
     );
 
     await Favorite.insertFavorite(favorite);
-    if (context.mounted) context.read<UserSessionBloc>().add(const FetchProfileFavorites());
+    if (context.mounted) context.read<ProfileBloc>().add(const FetchProfileFavorites());
   } catch (e) {
     showSnackbar(getExceptionErrorMessage(e));
   }

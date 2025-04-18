@@ -27,7 +27,7 @@ void triggerPostAction({
       onVoteAction(postViewMedia.postView.post.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
-      bool downvotesEnabled = context.read<UserSessionBloc>().state.downvotesEnabled;
+      bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
 
       if (downvotesEnabled == false) {
         showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);

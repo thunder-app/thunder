@@ -50,9 +50,9 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
-    final UserSessionState userSessionState = context.read<UserSessionBloc>().state;
+    final ProfileState profileState = context.read<ProfileBloc>().state;
 
-    user = userSessionState.reload ? userSessionState.user : user;
+    user = profileState.reload ? profileState.user : user;
 
     return SliverAppBar(
       pinned: !thunderBloc.state.hideTopBarOnScroll,
@@ -61,10 +61,10 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       toolbarHeight: 70.0,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
-      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && userSessionState.isLoggedIn ? 50 : null,
+      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn ? 50 : null,
       leading: feedBloc.state.status == FeedStatus.initial
           ? null
-          : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && userSessionState.isLoggedIn
+          : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn
               ? Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Semantics(
@@ -165,7 +165,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
     final subscriptionStatus = _getSubscriptionStatus(context);
 
-    final favorites = context.select<UserSessionBloc, List<ThunderCommunity>>((bloc) => bloc.state.favorites);
+    final favorites = context.select<ProfileBloc, List<ThunderCommunity>>((bloc) => bloc.state.favorites);
     final favorited = favorites.any((c) => c.id == community.id);
 
     return Row(
@@ -368,7 +368,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
 SubscribedType? _getSubscriptionStatus(BuildContext context) {
   final community = context.read<FeedBloc>().state.community;
 
-  final isLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+  final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
   if (isLoggedIn) return community?.subscribed;
 
   final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
@@ -378,7 +378,7 @@ SubscribedType? _getSubscriptionStatus(BuildContext context) {
 void _onSubscribeIconPressed(BuildContext context) async {
   final l10n = GlobalContext.l10n;
 
-  final isLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+  final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
   final community = context.read<FeedBloc>().state.community;
   final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 

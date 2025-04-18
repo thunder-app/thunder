@@ -35,8 +35,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
   void initState() {
     super.initState();
 
-    context.read<UserSessionBloc>().add(const FetchProfileSubscriptions());
-    context.read<UserSessionBloc>().add(const FetchProfileFavorites());
+    context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
+    context.read<ProfileBloc>().add(const FetchProfileFavorites());
   }
 
   @override
@@ -44,7 +44,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
 
     ThunderState thunderState = context.read<ThunderBloc>().state;
@@ -52,14 +52,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
 
-    bool isLoggedIn = context.watch<UserSessionBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
     List<ThunderCommunity> subscriptions = [];
 
     if (isLoggedIn) {
-      final favoriteCommunityIds = userSessionState.favorites.map((community) => community.id).toSet();
-      final moderatedCommunityIds = userSessionState.moderates.map((community) => community.id).toSet();
-      final filteredSubscriptions = userSessionState.subscriptions.where((community) => !favoriteCommunityIds.contains(community.id) && !moderatedCommunityIds.contains(community.id)).toList();
+      final favoriteCommunityIds = profileState.favorites.map((community) => community.id).toSet();
+      final moderatedCommunityIds = profileState.moderates.map((community) => community.id).toSet();
+      final filteredSubscriptions = profileState.subscriptions.where((community) => !favoriteCommunityIds.contains(community.id) && !moderatedCommunityIds.contains(community.id)).toList();
 
       subscriptions = filteredSubscriptions;
     } else {
@@ -100,7 +100,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
-                                      sortType: userSessionState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                                      sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                                       communityId: community.id,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
@@ -140,9 +140,9 @@ class UserDrawerItem extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    ProfileState profileState = context.watch<ProfileBloc>().state;
 
-    bool isLoggedIn = context.watch<UserSessionBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
     String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     return Container(
@@ -156,7 +156,7 @@ class UserDrawerItem extends StatelessWidget {
         onPressed: () => navigateToAccount?.call(),
         child: Row(
           children: [
-            if (userSessionState.user != null) UserAvatar(user: userSessionState.user!, radius: 16.0),
+            if (profileState.user != null) UserAvatar(user: profileState.user!, radius: 16.0),
             const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +172,7 @@ class UserDrawerItem extends StatelessWidget {
                       const SizedBox(width: 5),
                     ],
                     Text(
-                      isLoggedIn ? userSessionState.user?.username ?? '' : l10n.anonymous,
+                      isLoggedIn ? profileState.user?.username ?? '' : l10n.anonymous,
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -180,7 +180,7 @@ class UserDrawerItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  isLoggedIn ? userSessionState.account?.instance ?? '' : anonymousInstance ?? '',
+                  isLoggedIn ? profileState.account?.instance ?? '' : anonymousInstance ?? '',
                   style: theme.textTheme.bodyMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -213,9 +213,9 @@ class FeedDrawerItems extends StatelessWidget {
     final feedBloc = context.watch<FeedBloc>();
 
     FeedState feedState = feedBloc.state;
-    UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    ProfileState profileState = context.watch<ProfileBloc>().state;
 
-    bool isLoggedIn = context.watch<UserSessionBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +240,7 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (userSessionState.moderates.isNotEmpty || userSessionState.user?.admin == true)
+        if (profileState.moderates.isNotEmpty || profileState.user?.admin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () {
@@ -265,13 +265,13 @@ class FavoriteCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    bool isLoggedIn = context.watch<UserSessionBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
-    if (!isLoggedIn || userSessionState.favorites.isEmpty) return Container();
+    if (!isLoggedIn || profileState.favorites.isEmpty) return Container();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,9 +285,9 @@ class FavoriteCommunities extends StatelessWidget {
           child: ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: userSessionState.favorites.length,
+            itemCount: profileState.favorites.length,
             itemBuilder: (context, index) {
-              final community = userSessionState.favorites[index];
+              final community = profileState.favorites[index];
               final isCommunitySelected = feedState.communityId == community.id;
 
               return TextButton(
@@ -301,7 +301,7 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: userSessionState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                          sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                           showHidden: thunderState.showHiddenPosts,
@@ -326,11 +326,11 @@ class ModeratedCommunities extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    UserSessionState userSessionState = context.watch<UserSessionBloc>().state;
+    ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
     ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    List<ThunderCommunity> moderatedCommunities = userSessionState.moderates;
+    List<ThunderCommunity> moderatedCommunities = profileState.moderates;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,7 +361,7 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: userSessionState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                            sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                             showHidden: thunderState.showHiddenPosts,

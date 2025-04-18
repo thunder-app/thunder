@@ -54,9 +54,9 @@ class MediaManagementPage extends StatelessWidget {
                       ),
                       subtitle: UserFullNameWidget(
                         context,
-                        context.read<UserSessionBloc>().state.account?.username,
-                        context.read<UserSessionBloc>().state.account?.displayName,
-                        context.read<UserSessionBloc>().state.account?.instance,
+                        context.read<ProfileBloc>().state.account?.username,
+                        context.read<ProfileBloc>().state.account?.displayName,
+                        context.read<ProfileBloc>().state.account?.instance,
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),

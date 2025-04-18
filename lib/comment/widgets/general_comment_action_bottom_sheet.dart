@@ -199,8 +199,8 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
   @override
   Widget build(BuildContext context) {
-    final userSessionState = context.read<UserSessionBloc>().state;
-    final isLoggedIn = userSessionState.isLoggedIn;
+    final profileState = context.read<ProfileBloc>().state;
+    final isLoggedIn = profileState.isLoggedIn;
 
     List<GeneralQuickCommentAction> quickActions = GeneralQuickCommentAction.values.where((element) => element.permissionType == PermissionType.user).toList();
 
@@ -208,12 +208,12 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
       // Hide downvoted if instance does not support it
-      if (!userSessionState.downvotesEnabled) {
+      if (!profileState.downvotesEnabled) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.downvote).toList();
       }
 
       // Hide edit if the comment is not made by the current user
-      if (widget.commentView.creator.actorId != userSessionState.account?.actorId) {
+      if (widget.commentView.creator.actorId != profileState.account?.actorId) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.edit).toList();
       }
     }

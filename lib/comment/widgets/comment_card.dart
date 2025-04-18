@@ -122,8 +122,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     final state = context.read<ThunderBloc>().state;
 
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.commentView.creator.id == context.read<UserSessionBloc>().state.account?.userId;
-    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    final bool isOwnComment = widget.commentView.creator.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     final int commentId = widget.commentView.comment.id;
     final bool highlightComment = widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId;

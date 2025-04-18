@@ -231,7 +231,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
 
     List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

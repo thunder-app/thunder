@@ -149,7 +149,7 @@ class _PostPageState extends State<PostPage> {
 
   void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.read<UserSessionBloc>().state;
+    final state = context.read<ProfileBloc>().state;
 
     if (postLocked) return showSnackbar(l10n.postLocked);
     if (!state.isLoggedIn) return showSnackbar(l10n.mustBeLoggedInComment);
@@ -239,7 +239,7 @@ class _PostPageState extends State<PostPage> {
     final thunderState = context.read<ThunderBloc>().state;
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    originalUser ??= context.read<UserSessionBloc>().state.account;
+    originalUser ??= context.read<ProfileBloc>().state.account;
 
     if (bottomSpacerHeight == null) {
       if (_calculateBottomSpacerTimer != null) _calculateBottomSpacerTimer!.cancel();
@@ -256,7 +256,7 @@ class _PostPageState extends State<PostPage> {
         listenWhen: (previous, current) {
           if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.postView != null && current.hasReachedCommentEnd) {
             // Check if the post's community is blocked by the user. If so, show a message.
-            final blockedCommunities = context.read<UserSessionBloc>().state.getSiteResponse?.myUser?.communityBlocks;
+            final blockedCommunities = context.read<ProfileBloc>().state.getSiteResponse?.myUser?.communityBlocks;
             final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.postView?.postView.post.communityId) ?? false;
 
             if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);

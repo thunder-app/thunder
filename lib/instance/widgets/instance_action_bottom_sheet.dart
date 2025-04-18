@@ -120,7 +120,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
 
     List<InstanceBottomSheetAction> userActions = InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     // List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

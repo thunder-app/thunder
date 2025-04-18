@@ -91,7 +91,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
 
     List<CommunityPostAction> userActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();

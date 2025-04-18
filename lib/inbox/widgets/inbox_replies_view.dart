@@ -72,7 +72,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 children: [
                   CommentReference(
                     comment: commentReplyView.toCommentView(),
-                    isOwnComment: commentReplyView.creator.id == context.read<UserSessionBloc>().state.account?.userId,
+                    isOwnComment: commentReplyView.creator.id == context.read<ProfileBloc>().state.account?.userId,
                     onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
                           InboxItemActionEvent(
                             action: CommentAction.vote,

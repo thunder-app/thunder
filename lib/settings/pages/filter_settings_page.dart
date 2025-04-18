@@ -87,7 +87,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    UserSessionState userSessionState = context.read<UserSessionBloc>().state;
+    ProfileState profileState = context.read<ProfileBloc>().state;
 
     return Scaffold(
       body: CustomScrollView(
@@ -195,7 +195,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               ),
               onTap: () {
                 // Can only set discussion language if user is logged in
-                if (userSessionState.isLoggedIn && userSessionState.status == UserSessionStatus.success && userSessionState.user != null) {
+                if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {
                   navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
                 } else {
                   showThunderDialog(

@@ -84,7 +84,7 @@ class _CommentReferenceState extends State<CommentReference> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 

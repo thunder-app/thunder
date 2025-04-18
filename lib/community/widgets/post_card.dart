@@ -105,7 +105,7 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     super.initState();
-    isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
   }
 
   void _updateOverridingSwipe(bool override) {

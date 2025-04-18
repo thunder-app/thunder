@@ -187,7 +187,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<UserSessionBloc>().state;
+    final authState = context.read<ProfileBloc>().state;
 
     List<CommentBottomSheetAction> generalActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.all).toList();
     List<CommentBottomSheetAction> userActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();

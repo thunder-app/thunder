@@ -28,7 +28,7 @@ class FeedFAB extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
     final FeedState feedState = context.watch<FeedBloc>().state;
-    final UserSessionState userSessionState = context.read<UserSessionBloc>().state;
+    final ProfileState profileState = context.read<ProfileBloc>().state;
 
     // A list of actions that are not supported through the general feed
     List<FeedFabAction> unsupportedGeneralFeedFabActions = [];
@@ -56,10 +56,10 @@ class FeedFAB extends StatelessWidget {
 
     bool isPostLocked = false;
 
-    if (userSessionState.isLoggedIn && isCommunityFeed) {
+    if (profileState.isLoggedIn && isCommunityFeed) {
       final community = feedState.community;
 
-      if (community!.locked && !userSessionState.moderates.any((c) => c.id == community.id)) {
+      if (community!.locked && !profileState.moderates.any((c) => c.id == community.id)) {
         isPostLocked = true;
       }
     }
@@ -295,7 +295,7 @@ class FeedFAB extends StatelessWidget {
   Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {
     final l10n = AppLocalizations.of(context)!;
 
-    if (!context.read<UserSessionBloc>().state.isLoggedIn) {
+    if (!context.read<ProfileBloc>().state.isLoggedIn) {
       return showSnackbar(l10n.mustBeLoggedInPost);
     }
 

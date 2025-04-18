@@ -37,7 +37,7 @@ class CommentCardActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int voteType = commentView.myVote ?? 0;
-    bool downvotesEnabled = context.read<UserSessionBloc>().state.downvotesEnabled;
+    bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {

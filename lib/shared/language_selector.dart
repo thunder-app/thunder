@@ -42,7 +42,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     _languageId = widget.languageId;
 
     // Determine the language from the languageId
-    List<Language> languages = context.read<UserSessionBloc>().state.getSiteResponse?.allLanguages ?? [];
+    List<Language> languages = context.read<ProfileBloc>().state.getSiteResponse?.allLanguages ?? [];
     _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
   }
 

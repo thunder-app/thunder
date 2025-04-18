@@ -94,7 +94,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        child: BlocListener<UserSessionBloc, UserSessionState>(
+        child: BlocListener<ProfileBloc, ProfileState>(
           listener: (context, state) {
             if (!context.mounted) return;
             context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
@@ -107,7 +107,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               }
 
               if (state.status == UserSettingsStatus.success) {
-                context.read<UserSessionBloc>().add(FetchProfileSettings());
+                context.read<ProfileBloc>().add(FetchProfileSettings());
               }
             },
             builder: (context, state) {

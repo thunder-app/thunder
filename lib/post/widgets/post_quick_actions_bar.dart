@@ -63,7 +63,7 @@ class PostQuickActionsBar extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<UserSessionBloc, UserSessionState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       buildWhen: (previous, current) => previous.isLoggedIn != current.isLoggedIn,
       builder: (context, state) {
         bool isUserLoggedIn = state.isLoggedIn;

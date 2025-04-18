@@ -16,8 +16,8 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
-part 'user_session_event.dart';
-part 'user_session_state.dart';
+part 'profile_event.dart';
+part 'profile_state.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
 
@@ -27,8 +27,8 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
-  UserSessionBloc() : super(const UserSessionState()) {
+class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  ProfileBloc() : super(const ProfileState()) {
     // This event should be triggered during the start of the app, or when there is a change in the active account
     on<InitializeAuth>(_initializeAuth, transformer: throttleDroppable(throttleDuration));
 
@@ -63,10 +63,10 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
   /// Resets the entire state the the initial state.
   Future<void> _resetState(emit) async {
-    return emit(UserSessionState());
+    return emit(ProfileState());
   }
 
-  Future<void> _initializeAuth(InitializeAuth event, Emitter<UserSessionState> emit) async {
+  Future<void> _initializeAuth(InitializeAuth event, Emitter<ProfileState> emit) async {
     _resetState(emit);
 
     // Check to see what the current active profile is.
@@ -86,12 +86,12 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
       downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
     } catch (e) {
-      return emit(state.copyWith(status: UserSessionStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
+      return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
     }
 
     emit(
       state.copyWith(
-        status: UserSessionStatus.success,
+        status: ProfileStatus.success,
         account: account.anonymous ? null : () => account,
         isLoggedIn: !account.anonymous,
         downvotesEnabled: downvotesEnabled,
@@ -107,11 +107,11 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
     return;
   }
 
-  Future<void> _addProfile(AddProfile event, Emitter<UserSessionState> emit) async {
+  Future<void> _addProfile(AddProfile event, Emitter<ProfileState> emit) async {
     final originalBaseUrl = LemmyClient.instance.lemmyApiV3.host;
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading));
+      emit(state.copyWith(status: ProfileStatus.loading));
 
       String instance = event.instance.replaceAll('https://', '');
       LemmyClient.instance.changeBaseUrl(instance);
@@ -124,12 +124,12 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
         totp2faToken: event.totp,
       ));
 
-      if (response.jwt == null) return emit(state.copyWith(status: UserSessionStatus.failure));
+      if (response.jwt == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: response.jwt));
 
       if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-        return emit(state.copyWith(status: UserSessionStatus.contentWarning, contentWarning: () => getSiteResponse.siteView.site.contentWarning!));
+        return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => getSiteResponse.siteView.site.contentWarning!));
       }
 
       // Create a new account in the database
@@ -143,7 +143,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       );
 
       account = await Account.insertAccount(account);
-      if (account == null) return emit(state.copyWith(status: UserSessionStatus.failure));
+      if (account == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       // Set this account as the active account
       final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -152,20 +152,20 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       // Run the CheckAuth event to reset everything
       return await _initializeAuth(InitializeAuth(), emit);
     } on LemmyApiException catch (e) {
-      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => e.toString()));
+      return emit(state.copyWith(status: ProfileStatus.failure, error: () => e.toString()));
     } catch (e) {
       try {
         LemmyClient.instance.changeBaseUrl(originalBaseUrl);
       } catch (e, s) {
-        return emit(state.copyWith(status: UserSessionStatus.failure, error: () => s.toString()));
+        return emit(state.copyWith(status: ProfileStatus.failure, error: () => s.toString()));
       }
 
-      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => e.toString()));
+      return emit(state.copyWith(status: ProfileStatus.failure, error: () => e.toString()));
     }
   }
 
-  Future<void> _switchProfile(SwitchProfile event, Emitter<UserSessionState> emit) async {
-    emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
+  Future<void> _switchProfile(SwitchProfile event, Emitter<ProfileState> emit) async {
+    emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
 
     Account? account = await Account.fetchAccount(event.accountId);
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -183,14 +183,14 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
     }
 
     if (account == null) {
-      return emit(state.copyWith(status: UserSessionStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.unexpectedError));
+      return emit(state.copyWith(status: ProfileStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.unexpectedError));
     }
 
     add(InitializeAuth());
   }
 
-  Future<void> _removeProfile(RemoveProfile event, Emitter<UserSessionState> emit) async {
-    emit(state.copyWith(status: UserSessionStatus.loading));
+  Future<void> _removeProfile(RemoveProfile event, Emitter<ProfileState> emit) async {
+    emit(state.copyWith(status: ProfileStatus.loading));
 
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -208,22 +208,22 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
     // Check to see if the removed profile is the current profile. If so, we need to switch to an anonymous profile.
 
-    return emit(state.copyWith(status: UserSessionStatus.success));
+    return emit(state.copyWith(status: ProfileStatus.success));
   }
 
-  Future<void> _cancelLoginAttempt(CancelLoginAttempt event, Emitter<UserSessionState> emit) async {
-    return emit(state.copyWith(status: UserSessionStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
+  Future<void> _cancelLoginAttempt(CancelLoginAttempt event, Emitter<ProfileState> emit) async {
+    return emit(state.copyWith(status: ProfileStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.loginAttemptCanceled));
   }
 
   /// Fetches the current profile's information, including the user's information and moderated communities.
   /// This is only applicable for non-anonymous profiles.
-  Future<void> _fetchProfileInformation(FetchProfileInformation event, Emitter<UserSessionState> emit) async {
+  Future<void> _fetchProfileInformation(FetchProfileInformation event, Emitter<ProfileState> emit) async {
     final account = await fetchActiveProfile();
 
     if (account.anonymous) {
       return emit(
         state.copyWith(
-          status: UserSessionStatus.success,
+          status: ProfileStatus.success,
           reload: event.reload,
           user: null,
           subscriptions: [],
@@ -234,7 +234,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
     }
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading, user: null, moderates: [], reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
 
       final lemmy = LemmyClient.instance.lemmyApiV3;
       final response = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1));
@@ -244,40 +244,40 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.
       if (user.id == account.userId) {
-        return emit(state.copyWith(status: UserSessionStatus.success, user: () => user, moderates: moderates, reload: event.reload));
+        return emit(state.copyWith(status: ProfileStatus.success, user: () => user, moderates: moderates, reload: event.reload));
       } else {
-        return emit(state.copyWith(status: UserSessionStatus.success, user: null, moderates: [], reload: event.reload));
+        return emit(state.copyWith(status: ProfileStatus.success, user: null, moderates: [], reload: event.reload));
       }
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
   /// Fetches the current profile's account settings. This is only applicable for non-anonymous profiles.
-  Future<void> _fetchProfileSettings(FetchProfileSettings event, Emitter<UserSessionState> emit) async {
+  Future<void> _fetchProfileSettings(FetchProfileSettings event, Emitter<ProfileState> emit) async {
     final account = await fetchActiveProfile();
-    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success));
+    if (account.anonymous) return emit(state.copyWith(status: ProfileStatus.success));
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading));
+      emit(state.copyWith(status: ProfileStatus.loading));
 
       // Refresh the site information, which includes the user's settings
       final lemmy = LemmyClient.instance.lemmyApiV3;
       final response = await lemmy.run(GetSite(auth: account.jwt));
 
-      return emit(state.copyWith(status: UserSessionStatus.success, getSiteResponse: () => response));
+      return emit(state.copyWith(status: ProfileStatus.success, getSiteResponse: () => response));
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
   /// Fetches the current profile's subscribed communities. This is only applicable for non-anonymous profiles.
-  Future<void> _fetchProfileSubscriptions(FetchProfileSubscriptions event, Emitter<UserSessionState> emit) async {
+  Future<void> _fetchProfileSubscriptions(FetchProfileSubscriptions event, Emitter<ProfileState> emit) async {
     final account = await fetchActiveProfile();
-    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, subscriptions: [], favorites: []));
+    if (account.anonymous) return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, subscriptions: [], favorites: []));
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
 
       final lemmy = LemmyClient.instance.lemmyApiV3;
       List<ThunderCommunity> subscriptions = [];
@@ -295,29 +295,29 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
       // Sort subscriptions by their name
       subscriptions.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-      emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, subscriptions: subscriptions));
+      emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, subscriptions: subscriptions));
 
       // Refresh the favourited communities as it might've changed.
       add(FetchProfileFavorites(reload: event.reload));
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 
   /// Fetches the current profile's favourited communities. This is only applicable for non-anonymous profiles.
-  Future<void> _fetchProfileFavorites(FetchProfileFavorites event, Emitter<UserSessionState> emit) async {
+  Future<void> _fetchProfileFavorites(FetchProfileFavorites event, Emitter<ProfileState> emit) async {
     final account = await fetchActiveProfile();
-    if (account.anonymous) return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, favorites: []));
+    if (account.anonymous) return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, favorites: []));
 
     try {
-      emit(state.copyWith(status: UserSessionStatus.loading, reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
 
       final favorites = await Favorite.favorites(account.id);
       final communities = state.subscriptions.where((community) => favorites.any((favorite) => favorite.communityId == community.id)).toList();
 
-      return emit(state.copyWith(status: UserSessionStatus.success, reload: event.reload, favorites: communities));
+      return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, favorites: communities));
     } catch (e) {
-      emit(state.copyWith(status: UserSessionStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 }

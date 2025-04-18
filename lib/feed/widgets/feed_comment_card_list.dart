@@ -24,7 +24,7 @@ class FeedCommentCardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<UserSessionBloc>().state;
+    final state = context.read<ProfileBloc>().state;
 
     return SliverMasonryGrid.count(
       crossAxisCount: tabletMode ? 2 : 1,

@@ -136,26 +136,26 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<UserSessionBloc, UserSessionState>(
+        BlocListener<ProfileBloc, ProfileState>(
           listenWhen: (previous, current) {
-            if (previous.status == UserSessionStatus.initial && current.status == UserSessionStatus.success) {
+            if (previous.status == ProfileStatus.initial && current.status == ProfileStatus.success) {
               widget.popModal();
               showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             }
             return true;
           },
           listener: (listenerContext, state) async {
-            if (state.status == UserSessionStatus.loading) {
+            if (state.status == ProfileStatus.loading) {
               setState(() {
                 isLoading = true;
               });
-            } else if (state.status == UserSessionStatus.failure) {
+            } else if (state.status == ProfileStatus.failure) {
               setState(() {
                 isLoading = false;
               });
 
               showSnackbar(AppLocalizations.of(context)!.loginFailed(state.error ?? AppLocalizations.of(context)!.missingErrorMessage));
-            } else if (state.status == UserSessionStatus.contentWarning) {
+            } else if (state.status == ProfileStatus.contentWarning) {
               bool acceptedContentWarning = false;
 
               await showThunderDialog<void>(
@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   _handleLogin(showContentWarning: false);
                 } else {
                   // Cancel the login
-                  context.read<UserSessionBloc>().add(const CancelLoginAttempt());
+                  context.read<ProfileBloc>().add(const CancelLoginAttempt());
                 }
               }
             }
@@ -457,7 +457,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   void _handleLogin({bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
     // Perform login authentication
-    context.read<UserSessionBloc>().add(
+    context.read<ProfileBloc>().add(
           AddProfile(
             username: _usernameTextEditingController.text,
             password: _passwordTextEditingController.text,
@@ -504,7 +504,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         if (acceptedContentWarning) {
           await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
           context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
-          context.read<UserSessionBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
+          context.read<ProfileBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
           widget.popRegister();
         }
       }

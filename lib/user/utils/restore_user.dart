@@ -7,9 +7,9 @@ import 'package:thunder/account/account.dart';
 /// Restores the previous user that was selected in the app, if it has changed.
 /// Useful to call after invoking a page that may change the currently selected user.
 void restoreUser(BuildContext context, Account? originalUser) {
-  final Account? newUser = context.read<UserSessionBloc>().state.account;
+  final Account? newUser = context.read<ProfileBloc>().state.account;
 
   if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
-    context.read<UserSessionBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
+    context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
   }
 }

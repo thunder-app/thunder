@@ -27,12 +27,12 @@ class _UserIndicatorState extends State<UserIndicator> {
   void initState() {
     super.initState();
 
-    final state = context.read<UserSessionBloc>().state;
+    final state = context.read<ProfileBloc>().state;
 
     if (state.user != null) {
       setState(() => user = state.user);
     } else {
-      context.read<UserSessionBloc>().add(const FetchProfileInformation());
+      context.read<ProfileBloc>().add(const FetchProfileInformation());
     }
   }
 
@@ -40,12 +40,12 @@ class _UserIndicatorState extends State<UserIndicator> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocConsumer<UserSessionBloc, UserSessionState>(
+    return BlocConsumer<ProfileBloc, ProfileState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (listenerContext, state) {
-        if (state.status == UserSessionStatus.success) {
+        if (state.status == ProfileStatus.success) {
           if (state.user != null) setState(() => user = state.user);
-        } else if (state.status != UserSessionStatus.loading) {
+        } else if (state.status != ProfileStatus.loading) {
           setState(() => error = true);
         }
       },
@@ -61,7 +61,7 @@ class _UserIndicatorState extends State<UserIndicator> {
                 label: Text(l10n.retry),
                 icon: const Icon(Icons.refresh_rounded),
                 onPressed: () {
-                  context.read<UserSessionBloc>().add(const FetchProfileInformation());
+                  context.read<ProfileBloc>().add(const FetchProfileInformation());
                   setState(() => error = false);
                 },
               ),

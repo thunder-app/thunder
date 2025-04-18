@@ -57,7 +57,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final isLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     if (widget.community == null) return Container();
 
@@ -301,7 +301,7 @@ class BlockCommunityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<UserSessionBloc, UserSessionState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         bool blocked = false;
 

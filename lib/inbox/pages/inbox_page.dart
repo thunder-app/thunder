@@ -51,7 +51,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 3);
-    accountId = context.read<UserSessionBloc>().state.account?.userId;
+    accountId = context.read<ProfileBloc>().state.account?.userId;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
@@ -101,7 +101,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
           if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
 
-            int? newAccountId = context.read<UserSessionBloc>().state.account?.userId;
+            int? newAccountId = context.read<ProfileBloc>().state.account?.userId;
 
             if (newAccountId != accountId) {
               accountId = newAccountId;

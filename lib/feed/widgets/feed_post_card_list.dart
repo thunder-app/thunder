@@ -188,7 +188,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   @override
   Widget build(BuildContext context) {
     final state = context.read<FeedBloc>().state;
-    final isUserLoggedIn = context.read<UserSessionBloc>().state.isLoggedIn;
+    final isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts);
 

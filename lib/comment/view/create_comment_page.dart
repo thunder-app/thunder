@@ -234,7 +234,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    originalUser ??= context.read<UserSessionBloc>().state.account;
+    originalUser ??= context.read<ProfileBloc>().state.account;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

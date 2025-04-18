@@ -1,6 +1,6 @@
-part of 'user_session_bloc.dart';
+part of 'profile_bloc.dart';
 
-enum UserSessionStatus {
+enum ProfileStatus {
   initial,
   loading,
   success,
@@ -9,8 +9,8 @@ enum UserSessionStatus {
   contentWarning,
 }
 
-class UserSessionState extends Equatable {
-  final UserSessionStatus status;
+class ProfileState extends Equatable {
+  final ProfileStatus status;
 
   final bool isLoggedIn;
 
@@ -40,8 +40,8 @@ class UserSessionState extends Equatable {
   /// The error message if the account failed to load
   final String? error;
 
-  const UserSessionState({
-    this.status = UserSessionStatus.initial,
+  const ProfileState({
+    this.status = ProfileStatus.initial,
     this.isLoggedIn = false,
     this.account,
     this.downvotesEnabled = true,
@@ -55,8 +55,8 @@ class UserSessionState extends Equatable {
     this.reload = true,
   });
 
-  UserSessionState copyWith({
-    UserSessionStatus? status,
+  ProfileState copyWith({
+    ProfileStatus? status,
     bool? isLoggedIn,
     ValueGetter<Account>? account,
     bool? downvotesEnabled,
@@ -69,7 +69,7 @@ class UserSessionState extends Equatable {
     bool? reload,
     ValueGetter<String>? error,
   }) {
-    return UserSessionState(
+    return ProfileState(
       status: status ?? this.status,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       account: account != null ? account() : this.account,

@@ -50,7 +50,7 @@ class CommentCardHeader extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    final accountId = context.select((UserSessionBloc bloc) => bloc.state.user?.id);
+    final accountId = context.select((ProfileBloc bloc) => bloc.state.user?.id);
     final collapseParentCommentOnGesture = context.select((ThunderBloc bloc) => bloc.state.collapseParentCommentOnGesture);
     final commentShowUserInstance = context.select((ThunderBloc bloc) => bloc.state.commentShowUserInstance);
     final saveColor = context.select((ThunderBloc bloc) => bloc.state.saveColor);
