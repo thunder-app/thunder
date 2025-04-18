@@ -91,525 +91,526 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      body: SafeArea(
-        top: false,
-        child: BlocListener<ProfileBloc, ProfileState>(
-          listener: (context, state) {
-            if (!context.mounted) return;
-            context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-            context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
-          },
-          child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) context.read<ProfileBloc>().add(FetchProfileSettings());
+      },
+      child: Scaffold(
+        body: SafeArea(
+          top: false,
+          child: BlocListener<ProfileBloc, ProfileState>(
             listener: (context, state) {
-              if (state.status == UserSettingsStatus.failure) {
-                showSnackbar(state.errorMessage ?? l10n.unexpectedError);
-              }
-
-              if (state.status == UserSettingsStatus.success) {
-                context.read<ProfileBloc>().add(FetchProfileSettings());
-              }
+              if (!context.mounted) return;
+              context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+              context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
             },
-            builder: (context, state) {
-              GetSiteResponse? getSiteResponse = state.getSiteResponse;
+            child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+              listener: (context, state) {
+                if (state.status == UserSettingsStatus.failure) {
+                  showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+                }
+              },
+              builder: (context, state) {
+                GetSiteResponse? getSiteResponse = state.getSiteResponse;
 
-              MyUserInfo? myUserInfo = getSiteResponse?.myUser;
-              LocalUser? localUser = myUserInfo?.localUserView.localUser;
-              Person? person = myUserInfo?.localUserView.person;
+                MyUserInfo? myUserInfo = getSiteResponse?.myUser;
+                LocalUser? localUser = myUserInfo?.localUserView.localUser;
+                Person? person = myUserInfo?.localUserView.person;
 
-              return CustomScrollView(
-                physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
-                slivers: [
-                  SliverAppBar(
-                    pinned: true,
-                    floating: true,
-                    centerTitle: false,
-                    toolbarHeight: 70.0,
-                    title: Text(l10n.accountSettings),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.people_alt_rounded),
-                        onPressed: () => showProfileModalSheet(context),
-                      ),
-                    ],
-                  ),
-                  switch (state.status) {
-                    UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
-                    UserSettingsStatus.initial => const SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                return CustomScrollView(
+                  physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
+                  slivers: [
+                    SliverAppBar(
+                      pinned: true,
+                      floating: true,
+                      centerTitle: false,
+                      toolbarHeight: 70.0,
+                      title: Text(l10n.accountSettings),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.people_alt_rounded),
+                          onPressed: () => showProfileModalSheet(context),
                         ),
-                      ),
-                    _ => SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const UserIndicator(),
-                                  IconButton(
-                                    icon: const Icon(Icons.logout_rounded),
-                                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
-                              child: Text(
-                                l10n.userSettingDescription,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
-                            ),
-                            SettingsListTile(
-                              icon: Icons.person_rounded,
-                              description: l10n.displayName,
-                              subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                displayNameTextController.text = person?.displayName ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.displayName,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: displayNameTextController,
-                                    decoration: InputDecoration(hintText: l10n.displayName),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDisplayName,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.note_rounded,
-                              description: l10n.profileBio,
-                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
-                              subtitleMaxLines: 1,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                bioTextController.text = person?.bio ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.profileBio,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: bioTextController,
-                                    minLines: 8,
-                                    maxLines: 8,
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(),
-                                      hintText: l10n.profileBio,
-                                    ),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountProfileBio,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.email_rounded,
-                              description: l10n.email,
-                              subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                emailTextController.text = localUser?.email ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.email,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: emailTextController,
-                                    decoration: InputDecoration(hintText: l10n.email),
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountEmail,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.person_rounded,
-                              description: l10n.matrixUser,
-                              subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                matrixUserTextController.text = person?.matrixUserId ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.matrixUser,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: matrixUserTextController,
-                                    decoration: const InputDecoration(hintText: "@user:instance"),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountMatrixUser,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
-                              child: Text(
-                                l10n.settingOverrideLabel,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                                ),
-                              ),
-                            ),
-                            ListOption(
-                              description: l10n.defaultFeedType,
-                              value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: localUser.defaultListingType),
-                              options: [
-                                ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
-                                ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                                ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
-                              ],
-                              icon: Icons.filter_alt_rounded,
-                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDefaultFeedType,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ListOption(
-                              description: l10n.defaultFeedSortType,
-                              value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
-                              options: [
-                                ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                                ...topSortTypeItems
-                              ],
-                              icon: Icons.sort_rounded,
-                              onChanged: (_) async {},
-                              isBottomModalScrollControlled: true,
-                              customListPicker: SortPicker(
-                                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
-                                title: l10n.defaultFeedSortType,
-                                onSelect: (value) async {
-                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
-                                },
-                                previouslySelected: localUser.defaultSortType,
-                              ),
-                              valueDisplay: Row(
-                                children: [
-                                  Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                ],
-                              ),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDefaultFeedSortType,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showNsfwContent,
-                              value: localUser.showNsfw,
-                              iconEnabled: Icons.no_adult_content,
-                              iconDisabled: Icons.no_adult_content,
-                              onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowNsfwContent,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showScores,
-                              value: localUser.showScores,
-                              iconEnabled: Icons.onetwothree_rounded,
-                              iconDisabled: Icons.onetwothree_rounded,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowScores,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showReadPosts,
-                              value: localUser.showReadPosts,
-                              iconEnabled: Icons.fact_check_rounded,
-                              iconDisabled: Icons.fact_check_outlined,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowReadPosts,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.bot,
-                              value: person?.botAccount,
-                              iconEnabled: Thunder.robot,
-                              iconDisabled: Thunder.robot,
-                              iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountIsBot,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showBotAccounts,
-                              value: localUser.showBotAccounts,
-                              iconEnabled: Thunder.robot,
-                              iconDisabled: Thunder.robot,
-                              iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowBotAccounts,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
-                            ),
-                            SettingsListTile(
-                              icon: Icons.language_rounded,
-                              description: l10n.discussionLanguages,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.discussionLanguages,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.block_rounded,
-                              description: l10n.blockSettingLabel,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountBlocks,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            if (LemmyClient.instance.supportsFeature(LemmyFeature.importExportSettings)) ...[
+                      ],
+                    ),
+                    switch (state.status) {
+                      UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                      UserSettingsStatus.initial => const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      _ => SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
-                                    Text(l10n.importExportLemmyAccountSettingsSubtitle),
+                                    const UserIndicator(),
+                                    IconButton(
+                                      icon: const Icon(Icons.logout_rounded),
+                                      onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
+                                    ),
                                   ],
                                 ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                                child: Text(
+                                  l10n.userSettingDescription,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                              ),
                               SettingsListTile(
-                                icon: Icons.file_download_rounded,
-                                description: l10n.exportLemmyAccountSettingsDescription,
-                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                                onTap: () async {
-                                  dynamic exportSettings;
-                                  try {
-                                    final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                    final account = await fetchActiveProfile();
-                                    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-                                    exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account.jwt));
-                                  } catch (e) {
-                                    // Catch rate-limit errors
-                                    showSnackbar(getExceptionErrorMessage(e));
-                                    return;
-                                  }
-
-                                  try {
-                                    final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
-                                    // Use the same naming convention as the web UI
-                                    String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
-                                    final filePath = '$initialFilePath/$initialFileName';
-
-                                    final File file = File(filePath);
-                                    await file.writeAsString(jsonEncode(exportSettings));
-
-                                    final String? savedFilePath = await FlutterFileDialog.saveFile(
-                                      params: SaveFileDialogParams(
-                                        mimeTypesFilter: ['application/json'],
-                                        sourceFilePath: filePath,
-                                        fileName: initialFileName,
-                                      ),
-                                    );
-
-                                    if (savedFilePath?.isNotEmpty == true) {
-                                      showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
-                                    } else {
-                                      showSnackbar(l10n.errorSavingAccountSettings);
-                                    }
-                                  } catch (e) {
-                                    showSnackbar('${l10n.errorSavingAccountSettings} $e');
-                                  }
+                                icon: Icons.person_rounded,
+                                description: l10n.displayName,
+                                subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
+                                widget: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  displayNameTextController.text = person?.displayName ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.displayName,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: displayNameTextController,
+                                      decoration: InputDecoration(hintText: l10n.displayName),
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
                                 },
                                 highlightKey: settingToHighlightKey,
-                                setting: LocalSettings.accountExportSettings,
+                                setting: LocalSettings.accountDisplayName,
                                 highlightedSetting: settingToHighlight,
                               ),
                               SettingsListTile(
-                                icon: Icons.file_upload_rounded,
-                                description: l10n.importLemmyAccountSettingsDescription,
-                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                                onTap: () async {
-                                  String importSettings;
-
-                                  try {
-                                    final filePath = await FlutterFileDialog.pickFile(
-                                      params: const OpenFileDialogParams(
-                                        fileExtensionsFilter: ['json'],
+                                icon: Icons.note_rounded,
+                                description: l10n.profileBio,
+                                subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                                subtitleMaxLines: 1,
+                                widget: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  bioTextController.text = person?.bio ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.profileBio,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: bioTextController,
+                                      minLines: 8,
+                                      maxLines: 8,
+                                      keyboardType: TextInputType.multiline,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(),
+                                        hintText: l10n.profileBio,
                                       ),
-                                    );
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountProfileBio,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              SettingsListTile(
+                                icon: Icons.email_rounded,
+                                description: l10n.email,
+                                subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
+                                widget: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  emailTextController.text = localUser?.email ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.email,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: emailTextController,
+                                      decoration: InputDecoration(hintText: l10n.email),
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountEmail,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              SettingsListTile(
+                                icon: Icons.person_rounded,
+                                description: l10n.matrixUser,
+                                subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
+                                widget: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  matrixUserTextController.text = person?.matrixUserId ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.matrixUser,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: matrixUserTextController,
+                                      decoration: const InputDecoration(hintText: "@user:instance"),
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountMatrixUser,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                                child: Text(
+                                  l10n.settingOverrideLabel,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+                                  ),
+                                ),
+                              ),
+                              ListOption(
+                                description: l10n.defaultFeedType,
+                                value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: localUser.defaultListingType),
+                                options: [
+                                  ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                                  ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                                  ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                                ],
+                                icon: Icons.filter_alt_rounded,
+                                onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultListingType: value.payload)),
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountDefaultFeedType,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ListOption(
+                                description: l10n.defaultFeedSortType,
+                                value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                                options: [
+                                  ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                                  ...topSortTypeItems
+                                ],
+                                icon: Icons.sort_rounded,
+                                onChanged: (_) async {},
+                                isBottomModalScrollControlled: true,
+                                customListPicker: SortPicker(
+                                  minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
+                                  title: l10n.defaultFeedSortType,
+                                  onSelect: (value) async {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
+                                  },
+                                  previouslySelected: localUser.defaultSortType,
+                                ),
+                                valueDisplay: Row(
+                                  children: [
+                                    Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
+                                      style: theme.textTheme.titleSmall,
+                                    ),
+                                  ],
+                                ),
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountDefaultFeedSortType,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ToggleOption(
+                                description: l10n.showNsfwContent,
+                                value: localUser.showNsfw,
+                                iconEnabled: Icons.no_adult_content,
+                                iconDisabled: Icons.no_adult_content,
+                                onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountShowNsfwContent,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ToggleOption(
+                                description: l10n.showScores,
+                                value: localUser.showScores,
+                                iconEnabled: Icons.onetwothree_rounded,
+                                iconDisabled: Icons.onetwothree_rounded,
+                                onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountShowScores,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ToggleOption(
+                                description: l10n.showReadPosts,
+                                value: localUser.showReadPosts,
+                                iconEnabled: Icons.fact_check_rounded,
+                                iconDisabled: Icons.fact_check_outlined,
+                                onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountShowReadPosts,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ToggleOption(
+                                description: l10n.bot,
+                                value: person?.botAccount,
+                                iconEnabled: Thunder.robot,
+                                iconDisabled: Thunder.robot,
+                                iconSpacing: 14.0,
+                                onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountIsBot,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              ToggleOption(
+                                description: l10n.showBotAccounts,
+                                value: localUser.showBotAccounts,
+                                iconEnabled: Thunder.robot,
+                                iconDisabled: Thunder.robot,
+                                iconSpacing: 14.0,
+                                onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountShowBotAccounts,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
+                              ),
+                              SettingsListTile(
+                                icon: Icons.language_rounded,
+                                description: l10n.discussionLanguages,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.discussionLanguages,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              SettingsListTile(
+                                icon: Icons.block_rounded,
+                                description: l10n.blockSettingLabel,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
+                                highlightKey: settingToHighlightKey,
+                                setting: LocalSettings.accountBlocks,
+                                highlightedSetting: settingToHighlight,
+                              ),
+                              if (LemmyClient.instance.supportsFeature(LemmyFeature.importExportSettings)) ...[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+                                      Text(l10n.importExportLemmyAccountSettingsSubtitle),
+                                    ],
+                                  ),
+                                ),
+                                SettingsListTile(
+                                  icon: Icons.file_download_rounded,
+                                  description: l10n.exportLemmyAccountSettingsDescription,
+                                  widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                  onTap: () async {
+                                    dynamic exportSettings;
+                                    try {
+                                      final l10n = AppLocalizations.of(GlobalContext.context)!;
+                                      final account = await fetchActiveProfile();
+                                      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-                                    if (filePath != null) {
-                                      importSettings = await File(filePath).readAsString();
-                                    } else {
-                                      showSnackbar(l10n.errorLoadingAccountSettings);
+                                      exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account.jwt));
+                                    } catch (e) {
+                                      // Catch rate-limit errors
+                                      showSnackbar(getExceptionErrorMessage(e));
                                       return;
                                     }
-                                  } catch (e) {
-                                    if (e is FormatException) {
-                                      showSnackbar(l10n.errorParsingJson);
-                                    } else if ((e as PlatformException?)?.code == "invalid_file_extension") {
-                                      showSnackbar(l10n.youMustSelectAJsonFile);
-                                    } else {
-                                      showSnackbar('${l10n.errorLoadingAccountSettings} $e');
+
+                                    try {
+                                      final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
+                                      // Use the same naming convention as the web UI
+                                      String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
+                                      final filePath = '$initialFilePath/$initialFileName';
+
+                                      final File file = File(filePath);
+                                      await file.writeAsString(jsonEncode(exportSettings));
+
+                                      final String? savedFilePath = await FlutterFileDialog.saveFile(
+                                        params: SaveFileDialogParams(
+                                          mimeTypesFilter: ['application/json'],
+                                          sourceFilePath: filePath,
+                                          fileName: initialFileName,
+                                        ),
+                                      );
+
+                                      if (savedFilePath?.isNotEmpty == true) {
+                                        showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
+                                      } else {
+                                        showSnackbar(l10n.errorSavingAccountSettings);
+                                      }
+                                    } catch (e) {
+                                      showSnackbar('${l10n.errorSavingAccountSettings} $e');
                                     }
-                                    return;
-                                  }
+                                  },
+                                  highlightKey: settingToHighlightKey,
+                                  setting: LocalSettings.accountExportSettings,
+                                  highlightedSetting: settingToHighlight,
+                                ),
+                                SettingsListTile(
+                                  icon: Icons.file_upload_rounded,
+                                  description: l10n.importLemmyAccountSettingsDescription,
+                                  widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                  onTap: () async {
+                                    String importSettings;
 
-                                  try {
-                                    final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                    final account = await fetchActiveProfile();
-                                    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+                                    try {
+                                      final filePath = await FlutterFileDialog.pickFile(
+                                        params: const OpenFileDialogParams(
+                                          fileExtensionsFilter: ['json'],
+                                        ),
+                                      );
 
-                                    SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account.jwt, data: importSettings));
-
-                                    if (response.success) {
-                                      showSnackbar(l10n.accountSettingsImportedSuccessfully);
-
-                                      // Reload the current page we're on to reflect changes to account settings
-                                      context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-                                      context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
-                                    } else {
-                                      showSnackbar(l10n.errorImportingAccountSettings);
+                                      if (filePath != null) {
+                                        importSettings = await File(filePath).readAsString();
+                                      } else {
+                                        showSnackbar(l10n.errorLoadingAccountSettings);
+                                        return;
+                                      }
+                                    } catch (e) {
+                                      if (e is FormatException) {
+                                        showSnackbar(l10n.errorParsingJson);
+                                      } else if ((e as PlatformException?)?.code == "invalid_file_extension") {
+                                        showSnackbar(l10n.youMustSelectAJsonFile);
+                                      } else {
+                                        showSnackbar('${l10n.errorLoadingAccountSettings} $e');
+                                      }
+                                      return;
                                     }
-                                  } catch (e) {
-                                    showSnackbar(getExceptionErrorMessage(e));
-                                  }
+
+                                    try {
+                                      final l10n = AppLocalizations.of(GlobalContext.context)!;
+                                      final account = await fetchActiveProfile();
+                                      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+                                      SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account.jwt, data: importSettings));
+
+                                      if (response.success) {
+                                        showSnackbar(l10n.accountSettingsImportedSuccessfully);
+
+                                        // Reload the current page we're on to reflect changes to account settings
+                                        context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+                                        context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+                                      } else {
+                                        showSnackbar(l10n.errorImportingAccountSettings);
+                                      }
+                                    } catch (e) {
+                                      showSnackbar(getExceptionErrorMessage(e));
+                                    }
+                                  },
+                                  highlightKey: settingToHighlightKey,
+                                  setting: LocalSettings.accountImportSettings,
+                                  highlightedSetting: settingToHighlight,
+                                ),
+                              ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                              ),
+                              SettingsListTile(
+                                icon: Icons.password,
+                                description: l10n.changePassword,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () async {
+                                  showThunderDialog<void>(
+                                    context: context,
+                                    title: l10n.changePassword,
+                                    contentText: l10n.changePasswordWarning,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                    secondaryButtonText: l10n.cancel,
+                                    onPrimaryButtonPressed: (dialogContext, _) async {
+                                      if (context.mounted) {
+                                        Navigator.of(context).pop();
+                                        handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                      }
+                                    },
+                                    primaryButtonText: l10n.confirm,
+                                  );
                                 },
                                 highlightKey: settingToHighlightKey,
-                                setting: LocalSettings.accountImportSettings,
+                                setting: LocalSettings.accountChangePassword,
                                 highlightedSetting: settingToHighlight,
                               ),
-                            ],
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
-                            ),
-                            SettingsListTile(
-                              icon: Icons.password,
-                              description: l10n.changePassword,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () async {
-                                showThunderDialog<void>(
-                                  context: context,
-                                  title: l10n.changePassword,
-                                  contentText: l10n.changePasswordWarning,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                  secondaryButtonText: l10n.cancel,
-                                  onPrimaryButtonPressed: (dialogContext, _) async {
-                                    if (context.mounted) {
-                                      Navigator.of(context).pop();
-                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
-                                    }
-                                  },
-                                  primaryButtonText: l10n.confirm,
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountChangePassword,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.delete_forever_rounded,
-                              description: l10n.deleteAccount,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () async {
-                                showThunderDialog<void>(
-                                  context: context,
-                                  title: l10n.deleteAccount,
-                                  contentText: l10n.deleteAccountDescription,
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                  primaryButtonText: l10n.confirm,
-                                  onPrimaryButtonPressed: (dialogContext, _) async {
-                                    if (context.mounted) {
-                                      Navigator.of(context).pop();
-                                      handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
-                                    }
-                                  },
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDeleteAccount,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
                               SettingsListTile(
-                                icon: Icons.hide_image_rounded,
-                                description: l10n.manageMedia,
-                                widget: const SizedBox(
-                                  height: 42.0,
-                                  child: Icon(Icons.chevron_right_rounded),
-                                ),
-                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
+                                icon: Icons.delete_forever_rounded,
+                                description: l10n.deleteAccount,
+                                widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () async {
+                                  showThunderDialog<void>(
+                                    context: context,
+                                    title: l10n.deleteAccount,
+                                    contentText: l10n.deleteAccountDescription,
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                    primaryButtonText: l10n.confirm,
+                                    onPrimaryButtonPressed: (dialogContext, _) async {
+                                      if (context.mounted) {
+                                        Navigator.of(context).pop();
+                                        handleLink(context, url: "https://${LemmyClient.instance.lemmyApiV3.host}/settings");
+                                      }
+                                    },
+                                  );
+                                },
                                 highlightKey: settingToHighlightKey,
-                                setting: LocalSettings.accountManageMedia,
+                                setting: LocalSettings.accountDeleteAccount,
                                 highlightedSetting: settingToHighlight,
                               ),
-                            const SizedBox(height: 100.0),
-                          ],
-                        ),
-                      )
-                  }
-                ],
-              );
-            },
+                              if (LemmyClient.instance.supportsFeature(LemmyFeature.listMedia))
+                                SettingsListTile(
+                                  icon: Icons.hide_image_rounded,
+                                  description: l10n.manageMedia,
+                                  widget: const SizedBox(
+                                    height: 42.0,
+                                    child: Icon(Icons.chevron_right_rounded),
+                                  ),
+                                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
+                                  highlightKey: settingToHighlightKey,
+                                  setting: LocalSettings.accountManageMedia,
+                                  highlightedSetting: settingToHighlight,
+                                ),
+                              const SizedBox(height: 100.0),
+                            ],
+                          ),
+                        )
+                    }
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
