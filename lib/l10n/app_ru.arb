@@ -709,7 +709,7 @@
   "@replyToPost": {},
   "replyingTo": "Ответ {author}",
   "@replyingTo": {},
-  "report": "Пожаловаться",
+  "report": "{count, plural, one {Жалоба о нарушении} few {Жалобы о нарушении} other {Жалоба о нарушении}} ",
   "@report": {},
   "reportComment": "Пожаловаться на комментарий",
   "@reportComment": {},
