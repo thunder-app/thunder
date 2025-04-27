@@ -1416,5 +1416,105 @@
   "unhide": "Раскрыть",
   "@unhide": {
     "description": "The action to unhide a post"
+  },
+  "collapse": "Свернуть",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "locked": "Заблокировано",
+  "@locked": {
+    "description": "Status to indicate that an item has been locked"
+  },
+  "pinned": "Прикреплено",
+  "@pinned": {
+    "description": "Status to indicate that an item has been pinned"
+  },
+  "settingsPageAccountBlocks": "Чёрные списки",
+  "@settingsPageAccountBlocks": {
+    "description": "Account blocklist (user/community/instance) page"
+  },
+  "removedComment": "Удаленный комментарий",
+  "@removedComment": {
+    "description": "Short decription for moderator action to remove a comment"
+  },
+  "removed": "Удалено",
+  "@removed": {
+    "description": "Status to indicate that an item has been removed"
+  },
+  "deleted": "Удалено",
+  "@deleted": {
+    "description": "Status to indicate that an item has been deleted"
+  },
+  "expand": "Раскрыть",
+  "@expand": {
+    "description": "Action to expand something"
+  },
+  "settingsPageAccount": "Аккаунт",
+  "@settingsPageAccount": {
+    "description": "Account settings page"
+  },
+  "settingsPageAppearanceComments": "Комментарии",
+  "@settingsPageAppearanceComments": {
+    "description": "Theming comments page"
+  },
+  "settingsPageGeneral": "Главное",
+  "@settingsPageGeneral": {
+    "description": "General settings page"
+  },
+  "settingsPageVideo": "Видео",
+  "@settingsPageVideo": {
+    "description": "Video settings page"
+  },
+  "settingsPageAccessibility": "Специальные возможности",
+  "@settingsPageAccessibility": {
+    "description": "Accessibility settings page"
+  },
+  "restoredComment": "Восстановленный комментарий",
+  "@restoredComment": {
+    "description": "Short decription for moderator action to restore a comment"
+  },
+  "menu": "Меню",
+  "@menu": {
+    "description": "Menu button description"
+  },
+  "settingsPageGestures": "Жесты",
+  "@settingsPageGestures": {
+    "description": "Gestures settings page"
+  },
+  "restoredCommunity": "Восстановленное сообщество",
+  "@restoredCommunity": {
+    "description": "Short decription for moderator action to restore a community"
+  },
+  "removedPost": "Удаленный пост",
+  "@removedPost": {
+    "description": "Short decription for moderator action to remove a post"
+  },
+  "modRemovePost": "Удалить/вернуть посты",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
+  },
+  "names": "Имена",
+  "@names": {
+    "description": "Heading for name-related settings"
+  },
+  "settingsPageAppearancePosts": "Посты",
+  "@settingsPageAppearancePosts": {
+    "description": "Theming posts page"
+  },
+  "settingsPageAppearance": "Внешний вид",
+  "@settingsPageAppearance": {
+    "description": "Appearance settings page"
+  },
+  "settingsPageDebug": "Отладка",
+  "@settingsPageDebug": {
+    "description": "Debug settings page"
+  },
+  "settingsPageFilters": "Фильтры",
+  "@settingsPageFilters": {
+    "description": "Filters settings page"
+  },
+  "settingsPageAppearanceTheming": "Темы",
+  "@settingsPageAppearanceTheming": {
+    "description": "Theming settings page"
   }
 }
