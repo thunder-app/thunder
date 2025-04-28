@@ -58,16 +58,16 @@ class ModlogFeedPage extends StatefulWidget {
 class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ModlogBloc>(
-      create: (_) => ModlogBloc(lemmyClient: widget.lemmyClient ?? LemmyClient.instance)
-        ..add(ModlogFeedFetchedEvent(
+    return BlocProvider<ModlogCubit>(
+      create: (_) => ModlogCubit(client: widget.lemmyClient ?? LemmyClient.instance)
+        ..fetchModlogFeed(
           modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,
           userId: widget.userId,
           moderatorId: widget.moderatorId,
           commentId: widget.commentId,
           reset: true,
-        )),
+        ),
       child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance, subtitle: widget.subtitle),
     );
   }
@@ -105,8 +105,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
       }
 
       // Fetches new modlog events when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<ModlogBloc>().state.status != ModlogStatus.fetching) {
-        context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
+      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<ModlogCubit>().state.status != ModlogStatus.fetching) {
+        context.read<ModlogCubit>().fetchModlogFeed();
       }
     });
   }
@@ -168,7 +168,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: BlocConsumer<ModlogBloc, ModlogState>(
+        child: BlocConsumer<ModlogCubit, ModlogState>(
           listenWhen: (previous, current) {
             if (current.status == ModlogStatus.initial) {
               setState(() => showAppBarTitle = false);
@@ -183,13 +183,13 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 // Wait until the layout is complete before performing check
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                if (!isScrollable) context.read<ModlogBloc>().add(const ModlogFeedFetchedEvent());
+                if (!isScrollable) context.read<ModlogCubit>().fetchModlogFeed();
               });
             }
 
             if ((state.status == ModlogStatus.failure) && state.message != null) {
               showSnackbar(state.message!);
-              context.read<ModlogBloc>().add(ModlogFeedClearMessageEvent()); // Clear the message so that it does not spam
+              context.read<ModlogCubit>().clearMessage(); // Clear the message so that it does not spam
             }
           },
           builder: (context, state) {
@@ -198,14 +198,14 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             return RefreshIndicator(
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
-                context.read<ModlogBloc>().add(ModlogFeedFetchedEvent(
+                context.read<ModlogCubit>().fetchModlogFeed(
                       modlogActionType: state.modlogActionType,
                       communityId: state.communityId,
                       userId: state.userId,
                       moderatorId: state.moderatorId,
                       commentId: state.commentId,
                       reset: true,
-                    ));
+                    );
               },
               edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(

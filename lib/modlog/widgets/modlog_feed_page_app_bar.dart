@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/modlog/modlog.dart';
 
-import 'package:thunder/modlog/bloc/modlog_bloc.dart';
-import 'package:thunder/modlog/widgets/modlog_filter_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// The app bar for the modlog feed page
@@ -59,8 +58,8 @@ class ModlogFeedPageAppBar extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => ModlogActionTypePicker(
                 title: l10n.filters,
-                onSelect: (selected) async => context.read<ModlogBloc>().add(ModlogFeedChangeFilterTypeEvent(modlogActionType: selected.payload)),
-                previouslySelected: context.read<ModlogBloc>().state.modlogActionType,
+                onSelect: (selected) async => context.read<ModlogCubit>().changeFilterType(selected.payload),
+                previouslySelected: context.read<ModlogCubit>().state.modlogActionType,
               ),
             );
           },
