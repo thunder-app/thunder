@@ -869,6 +869,10 @@
   "@errorImportingAccountSettings": {
     "description": "Message shown to user when account there was an error importing the settings"
   },
+  "errorInitializingClient": "Error initializing client",
+  "@errorInitializingClient": {
+    "description": "Error message for initializing client"
+  },
   "errorLoadingAccountSettings": "There was an error loading the settings file or the operation was canceled.",
   "@errorLoadingAccountSettings": {
     "description": "Message shown to user when there was an error loading the settings file"
@@ -880,6 +884,10 @@
   "errorMarkingReplyUnread": "There was an error marking the reply as unread.",
   "@errorMarkingReplyUnread": {
     "description": "Error message for marking a reply unread"
+  },
+  "errorNoActiveInstance": "No active instance found",
+  "@errorNoActiveInstance": {
+    "description": "Error message for no active instance found"
   },
   "errorParsingJson": "There was an error parsing the selected file. It may not be valid JSON.",
   "@errorParsingJson": {
@@ -1223,6 +1231,10 @@
   },
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
+  "invalidUrl": "Invalid URL format",
+  "@invalidUrl": {
+    "description": "Error message for invalid URL format"
+  },
   "joined": "Joined {x}",
   "@joined": {
     "description": "Describes the time when a user joined the site (or was created)"
@@ -2790,7 +2802,9 @@
     "description": "Action for acknowledging and enabling something"
   },
   "unexpectedError": "Unexpected Error",
-  "@unexpectedError": {},
+  "@unexpectedError": {
+    "description": "Error message for unexpected error"
+  },
   "unfeaturedPost": "Unfeatured Post",
   "@unfeaturedPost": {
     "description": "Short decription for moderator action to unfeature a post"

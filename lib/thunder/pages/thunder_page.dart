@@ -12,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
@@ -20,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:collection/collection.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 
@@ -29,16 +27,14 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/thunder/utils/deep_link.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
-import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/constants.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
@@ -193,199 +189,6 @@ class _ThunderState extends State<Thunder> {
     }
   }
 
-  Future<void> _handleDeepLinkNavigation(
-    BuildContext context, {
-    required LinkType linkType,
-    String? link,
-  }) async {
-    // Start by retrieving the active account, if any, and setting the Lemmy base domain
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    String? activeProfileId = prefs.getString('active_profile_id');
-    List<Account> accounts = await Account.accounts();
-    Account? activeAccount = accounts.firstWhereOrNull((Account account) => account.id == activeProfileId);
-
-    if (activeAccount?.username != null && activeAccount?.jwt != null && activeAccount?.instance != null) {
-      // Set lemmy client to use the instance
-      LemmyClient.instance.changeBaseUrl(activeAccount!.instance.replaceAll('https://', ''));
-    }
-
-    // If the incoming link is a custom URL, replace it back with https://
-    link = link?.replaceAll('thunder://', 'https://') ?? "";
-
-    switch (linkType) {
-      case LinkType.comment:
-        if (context.mounted) await _navigateToComment(link);
-      case LinkType.user:
-        if (context.mounted) await _navigateToUser(link);
-      case LinkType.post:
-        if (context.mounted) await _navigateToPost(link);
-      case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(link);
-      case LinkType.modlog:
-        if (context.mounted) await _navigateToModlog(link);
-      case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(link);
-      case LinkType.thunder:
-        if (context.mounted) await _navigateToInternal(link);
-      case LinkType.unknown:
-        if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link);
-        }
-    }
-  }
-
-  Future<void> _navigateToInstance(String link) async {
-    try {
-      await navigateToInstancePage(
-        context,
-        instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''),
-        // We have no context here to determine what the id of this instance would be on our server.
-        // It just means we can't block through this flow, which is ok.
-        instanceId: null,
-      );
-    } catch (e) {
-      if (context.mounted) {
-        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-        Navigator.of(context).pop();
-      }
-    }
-  }
-
-  Future<void> _navigateToPost(String link) async {
-    final postId = await getLemmyPostId(context, link);
-    if (context.mounted && postId != null) {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfile();
-
-      try {
-        GetPostResponse fullPostView = await lemmy.run(GetPost(
-          id: postId,
-          auth: account.jwt,
-        ));
-        if (context.mounted) {
-          navigateToPost(context, postViewMedia: (await parsePostViews([fullPostView.postView])).first);
-          return;
-        }
-      } catch (e) {
-        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
-      }
-    }
-
-    // postId not found or could not resolve link.
-    // show a snackbar with option to open link
-    if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _navigateToCommunity(String link) async {
-    final String? communityName = await getLemmyCommunity(link);
-    if (context.mounted && communityName != null) {
-      try {
-        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
-        return;
-      } catch (e) {
-        // Ignore exception, if it's not a valid community, we'll perform the next fallback
-      }
-    }
-
-    // community not found or could not resolve link.
-    // show a snackbar with option to open link
-    if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _navigateToModlog(String link) async {
-    try {
-      Uri? uri = Uri.tryParse(link);
-      if (uri != null) {
-        final lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
-
-        await navigateToModlogPage(
-          context,
-          modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
-          communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
-          userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
-          moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
-          lemmyClient: lemmyClient,
-        );
-        return;
-      }
-    } catch (e) {
-      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
-    }
-
-    // Show an error for any issues processing the link
-    if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-    }
-  }
-
-  Future<void> _navigateToComment(String link) async {
-    final commentId = await getLemmyCommentId(context, link);
-    if (context.mounted && commentId != null) {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfile();
-
-      try {
-        CommentResponse fullCommentView = await lemmy.run(GetComment(
-          id: commentId,
-          auth: account.jwt,
-        ));
-        if (context.mounted) {
-          navigateToComment(context, fullCommentView.commentView);
-          return;
-        }
-      } catch (e) {
-        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
-      }
-    }
-
-    // commentId not found or could not resolve link.
-    // show a snackbar with option to open link
-    if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _navigateToUser(String link) async {
-    final String? username = await getLemmyUser(link);
-    if (context.mounted && username != null) {
-      try {
-        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
-        return;
-      } catch (e) {
-        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
-      }
-    }
-
-    if (context.mounted) {
-      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _navigateToInternal(String link) async {
-    link = link.replaceFirst('https://', '');
-    if (link.startsWith('setting-')) {
-      String setting = link.replaceFirst('setting-', '');
-      navigateToSettingPage(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
-    }
-  }
-
-  void _showLinkProcessingError(BuildContext context, String error, String link) {
-    showSnackbar(
-      error,
-      trailingIcon: Icons.open_in_browser_rounded,
-      duration: const Duration(seconds: 10),
-      trailingAction: () => handleLink(context, url: link),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -418,9 +221,9 @@ class _ThunderState extends State<Thunder> {
 
                 case DeepLinkStatus.success:
                   try {
-                    _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                    handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
                   } catch (e) {
-                    _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+                    showNavigationError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
                   }
 
                 case DeepLinkStatus.unknown:
