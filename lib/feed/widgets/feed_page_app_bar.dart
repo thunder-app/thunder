@@ -11,6 +11,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -244,7 +246,16 @@ class FeedAppBarCommunityActions extends StatelessWidget {
               ThunderPopupMenuItem(
                 title: l10n.modlog,
                 icon: Icons.shield_rounded,
-                onTap: () => navigateToModlogPage(context, communityId: community.id),
+                onTap: () => navigateToModlogPage(
+                  context,
+                  communityId: community.id,
+                  subtitle: generateCommunityFullName(
+                    context,
+                    community.communityName,
+                    community.title,
+                    fetchInstanceNameFromUrl(community.url),
+                  ),
+                ),
               ),
             ],
           ),
@@ -350,7 +361,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               ThunderPopupMenuItem(
                 onTap: () async {
                   HapticFeedback.mediumImpact();
-                  await navigateToModlogPage(context);
+                  await navigateToModlogPage(context, subtitle: LemmyClient.instance.lemmyApiV3.host);
                 },
                 icon: Icons.shield_rounded,
                 title: l10n.modlog,

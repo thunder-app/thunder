@@ -193,6 +193,7 @@ class _InstancePageState extends State<InstancePage> {
                                     navigateToModlogPage(
                                       context,
                                       lemmyClient: feedBloc.lemmyClient,
+                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
                                     );
                                   },
                                   icon: Icons.shield_rounded,

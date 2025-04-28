@@ -220,6 +220,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
         moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
         lemmyClient: lemmyClient,
+        subtitle: lemmyClient.lemmyApiV3.host,
       );
       return;
     } catch (e) {

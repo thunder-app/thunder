@@ -291,6 +291,7 @@ Future<DeepLinkResult> _navigateToModlog(BuildContext context, String link) asyn
       userId: userId,
       moderatorId: moderatorId,
       lemmyClient: lemmyClient,
+      subtitle: lemmyClient.lemmyApiV3.host,
     );
 
     return DeepLinkResult.successful();

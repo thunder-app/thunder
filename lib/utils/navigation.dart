@@ -178,10 +178,10 @@ Future<void> navigateToPost(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == postViewMedia!.postView.post.apId
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm.postView.post.apId
       ? _cachedPostBloc!.postBloc
       : (_cachedPostBloc = (
-          postApId: postViewMedia.postView.post.apId,
+          postApId: pvm.postView.post.apId,
           postBloc: post_bloc.PostBloc(),
         ))
           .postBloc;
@@ -235,7 +235,7 @@ Future<void> navigateToModlogPage(
   int? moderatorId,
   int? commentId,
   LemmyClient? lemmyClient,
-  Widget? subtitle,
+  required String subtitle,
 }) async {
   final thunderBloc = context.read<ThunderBloc>();
 

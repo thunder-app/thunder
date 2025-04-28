@@ -94,7 +94,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         Navigator.of(context).pop();
         await navigateToModlogPage(
           context,
-          subtitle: Text(GlobalContext.l10n.removedComment),
+          subtitle: GlobalContext.l10n.removedComment,
           modlogActionType: ModlogActionType.modRemoveComment,
           commentId: widget.commentView.comment.id,
         );

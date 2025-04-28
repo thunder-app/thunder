@@ -1717,6 +1717,10 @@
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
   },
+  "performedBy": "Performed by: {user}",
+  "@performedBy": {
+    "description": "Describes the user who performed an action (e.g., moderator)"
+  },
   "permissionDenied": "Thunder has not been granted permission to display notifications. Please enable in system settings.",
   "@permissionDenied": {
     "description": "Title for error when user denies OS permissions"
