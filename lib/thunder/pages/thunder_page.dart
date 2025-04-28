@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter
-import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,30 +10,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 
+// Internal
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
-
-// Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/thunder/utils/deep_link.dart';
+import 'package:thunder/thunder/utils/share_intent_handler.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
-import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
@@ -69,7 +65,7 @@ class _ThunderState extends State<Thunder> {
 
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
-  late final StreamSubscription? mediaIntentDataStreamSubscription;
+  ShareIntentHandler? _shareIntentHandler;
 
   final ScrollController _changelogScrollController = ScrollController();
 
@@ -93,7 +89,8 @@ class _ThunderState extends State<Thunder> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        handleSharedFilesAndText();
+        _shareIntentHandler = ShareIntentHandler(context);
+        _shareIntentHandler?.handleSharedFilesAndText(currentIntent);
       }
 
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
@@ -107,42 +104,9 @@ class _ThunderState extends State<Thunder> {
 
   @override
   void dispose() {
-    mediaIntentDataStreamSubscription?.cancel();
+    _shareIntentHandler?.dispose();
     BackButtonInterceptor.remove(_handleBackButtonPress);
     super.dispose();
-  }
-
-  // Handle sharing media (image/text/url)
-  void handleSharedFilesAndText() async {
-    try {
-      // For sharing files from outside the app while the app is closed
-      List<SharedFile> sharedFiles = await FlutterSharingIntent.instance.getInitialSharing();
-      if (sharedFiles.isNotEmpty && currentIntent != ANDROID_INTENT_ACTION_VIEW) handleSharedItems(sharedFiles.first);
-
-      // For sharing files while the app is in the memory
-      mediaIntentDataStreamSubscription = FlutterSharingIntent.instance.getMediaStream().listen((List<SharedFile> sharedFiles) {
-        if (!context.mounted || sharedFiles.isEmpty || currentIntent == ANDROID_INTENT_ACTION_VIEW) return;
-        handleSharedItems(sharedFiles.first);
-      });
-    } catch (e) {
-      if (context.mounted) showSnackbar(AppLocalizations.of(context)!.unexpectedError);
-    }
-  }
-
-  void handleSharedItems(SharedFile sharedFile) {
-    switch (sharedFile.type) {
-      case SharedMediaType.IMAGE:
-        navigateToCreatePostPage(context, image: File(sharedFile.value!), prePopulated: true);
-        break;
-      case SharedMediaType.URL:
-        navigateToCreatePostPage(context, url: sharedFile.value!, prePopulated: true);
-        break;
-      case SharedMediaType.TEXT:
-        navigateToCreatePostPage(context, text: sharedFile.value, prePopulated: true);
-        break;
-      default:
-        break;
-    }
   }
 
   void _showExitWarning() {
