@@ -7,7 +7,7 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Les profils d'accessibilité permettent d'appliquer plusieurs paramètres à la fois pour répondre à une exigence d'accessibilité particulière.",
   "@accessibilityProfilesDescription": {},
-  "account": "Compte",
+  "account": "{count, plural, zero {Comptes} one {Compte} other {Comptes} } ",
   "@account": {},
   "accountSettings": "Paramètres de compte",
   "@accountSettings": {},
@@ -93,15 +93,15 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "Vous ne pouvez pas vous bloquer vous-même.",
   "@cantBlockYourself": {},
-  "cardView": "Carte de visite",
+  "cardView": "Affichage en fiches",
   "@cardView": {
     "description": "Label for the card view option in Setting -> Appearance -> Posts"
   },
-  "cardViewDescription": "Activer l'affichage des cartes pour ajuster les paramètres",
+  "cardViewDescription": "Activez l'affichage en fiches pour ajuster les paramètres",
   "@cardViewDescription": {
     "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
   },
-  "cardViewSettings": "Configuration de l'affichage des cartes",
+  "cardViewSettings": "Configuration de l'affichage en fiches",
   "@cardViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
@@ -179,15 +179,15 @@
   "@communityFormat": {
     "description": "Setting for community full name format"
   },
-  "compactView": "Vue compacte",
+  "compactView": "Affichage en liste",
   "@compactView": {
     "description": "Label for the compact view option in Setting -> Appearance -> Posts"
   },
-  "compactViewDescription": "Appliquer la vue compacte pour modifier les paramètres",
+  "compactViewDescription": "Activez l'affichage en liste pour modifier les paramètres",
   "@compactViewDescription": {
     "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
   },
-  "compactViewSettings": "Configurations de la vue compacte",
+  "compactViewSettings": "Paramètres de l'affichage en liste",
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
@@ -203,7 +203,7 @@
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
   },
-  "confirmMarkAllAsReadBody": "Êtes-vous sûr de vouloir marquer tous les messages comme lu ?",
+  "confirmMarkAllAsReadBody": "Êtes-vous sûr de vouloir marquer toutes les réponses, toutes les mentions, et tous les messages comme lu ?",
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
   },
@@ -233,7 +233,7 @@
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Votre signalement de commentaire n'a pas pu être transmis pour le moment. Veuillez réessayer plus tard",
   "@couldntCreateReport": {},
-  "countSubscribers": "{count} abonnés",
+  "countSubscribers": "{count} Abonnés",
   "@countSubscribers": {},
   "countUsers": "{count} utilisateurs",
   "@countUsers": {
@@ -537,7 +537,7 @@
   "@noCommentsFound": {},
   "noCommunitiesFound": "Aucune communauté trouvée",
   "@noCommunitiesFound": {},
-  "noCommunityBlocks": "Pas de communautés bloquées.",
+  "noCommunityBlocks": "Aucune communautés bloquées",
   "@noCommunityBlocks": {},
   "noFavoritedCommunities": "Pas de communautés préférées",
   "@noFavoritedCommunities": {
@@ -775,7 +775,7 @@
   "@searchTerm": {},
   "searchUsersFederatedWith": "Rechercher les utilisateurs fédérés avec {instance}",
   "@searchUsersFederatedWith": {},
-  "selectCommunity": "Sélectionnez une communauté",
+  "selectCommunity": "Sélectionnez une communauté (obligatoire)",
   "@selectCommunity": {},
   "selectFeedType": "Sélectionnez le type de fil",
   "@selectFeedType": {},
@@ -1139,7 +1139,7 @@
   "@tappableAuthorCommunity": {
     "description": "Toggle to make authors and communities tappable."
   },
-  "unsubscribeFromCommunity": "Se désabonner de la Communauté",
+  "unsubscribeFromCommunity": "Se désabonner de la communauté",
   "@unsubscribeFromCommunity": {
     "description": "Action for unsubscribing from a community"
   },
@@ -1259,7 +1259,7 @@
   "@trySearchingFor": {
     "description": "Suggestion for the user to try searching for a different type"
   },
-  "collapseParentCommentBodyOnGesture": "Masque les commentaires parents lorsque réduit",
+  "collapseParentCommentBodyOnGesture": "Masquer les commentaires parents lorsqu'ils sont réduit",
   "@collapseParentCommentBodyOnGesture": {
     "description": "Toggle to collapse parent comment body on gesture."
   },
@@ -1333,7 +1333,7 @@
   "@applePushNotificationService": {
     "description": "Describes the notification type for Apple Push Notification Service"
   },
-  "bannedUserFromCommunity": "Utilisateur banni de la Communauté",
+  "bannedUserFromCommunity": "Utilisateur banni de la communauté",
   "@bannedUserFromCommunity": {
     "description": "Short decription for moderator action to ban a user from a community"
   },
@@ -1344,5 +1344,253 @@
   "actionColors": "Couleurs d'action",
   "@actionColors": {
     "description": "Setting heading for action colors"
+  },
+  "activity": "Activité",
+  "@activity": {
+    "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+  },
+  "averagePosts": "{x} publications/mois",
+  "@averagePosts": {
+    "description": "Describes the average number of posts created in the past month"
+  },
+  "averageComments": "{x} commentaires/mois",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "copySelected": "Copier la sélection",
+  "@copySelected": {
+    "description": "Action for copying selected text"
+  },
+  "countPosts": "{count} Publications",
+  "@countPosts": {
+    "description": "Number of posts"
+  },
+  "countComments": "{count} Commentaires",
+  "@countComments": {
+    "description": "Number of comments"
+  },
+  "countUsersActiveMonth": "{count} utilisateurs/mois",
+  "@countUsersActiveMonth": {
+    "description": "Number of users active in the last month"
+  },
+  "color": "Couleur",
+  "@color": {
+    "description": "Describes a color"
+  },
+  "accountSettingsExportedSuccessfully": "Les paramètres du compte Lemmy ont été exportés vers {savedFilePath} !",
+  "@accountSettingsExportedSuccessfully": {
+    "description": "Message shown to user when account settings are exported successfully"
+  },
+  "accountSettingsImportedSuccessfully": "Les paramètres du compte Lemmy ont été importés !",
+  "@accountSettingsImportedSuccessfully": {
+    "description": "Message shown to user when account settings are imported successfully"
+  },
+  "addAsCommunityModerator": "Ajouter comme modérateur de la communauté",
+  "@addAsCommunityModerator": {
+    "description": "Moderator action to add a user as community moderator"
+  },
+  "addedModToCommunity": "Mod ajouté à la communauté",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "bold": "Gras",
+  "@bold": {
+    "description": "Bold name thickness/weight"
+  },
+  "changeNotificationSettings": "Modifier les paramètres de notification…",
+  "@changeNotificationSettings": {
+    "description": "A shortcut to navigate to the notification settings"
+  },
+  "changePassword": "Changer de mot de passe",
+  "@changePassword": {
+    "description": "Label for action to change password"
+  },
+  "changePasswordWarning": "Pour changer votre mot de passe, vous allez être redirigé vers le site de votre instance. \n\nÊtes-vous sûr de vouloir continuer ?",
+  "@changePasswordWarning": {
+    "description": "Warning label for changing password"
+  },
+  "compact": "Compact",
+  "@compact": {
+    "description": "Describes a compact visual density"
+  },
+  "compactPostCardMetadataItems": "Métadonnées de l'affichage en liste",
+  "@compactPostCardMetadataItems": {
+    "description": "Name of setting for compact post card metadata items"
+  },
+  "contentWarning": "Avertissements sur le contenu",
+  "@contentWarning": {
+    "description": "Heading for content warning dialog"
+  },
+  "countUsersActiveHalfYear": "{count} utilisateurs/6 mois",
+  "@countUsersActiveHalfYear": {
+    "description": "Number of users active in the last half year"
+  },
+  "countUsersActiveDay": "{count} utilisateurs/jour",
+  "@countUsersActiveDay": {
+    "description": "Number of users active in the last day"
+  },
+  "countUsersActiveWeek": "{count} utilisateurs/semaine",
+  "@countUsersActiveWeek": {
+    "description": "Number of users active in the last week"
+  },
+  "blue": "Bleu",
+  "@blue": {
+    "description": "The color blue"
+  },
+  "boldUserName": "Nom de l'utilisateur en gras",
+  "@boldUserName": {
+    "description": "Setting for bolding the username"
+  },
+  "boldInstanceName": "Nom de l'instance en gras",
+  "@boldInstanceName": {
+    "description": "Setting for bolding the instance name"
+  },
+  "bot": "Robot",
+  "@bot": {
+    "description": "Label for a bot user."
+  },
+  "connectedToUnifiedPushDistributorApp": "Connecté à {app}",
+  "@connectedToUnifiedPushDistributorApp": {
+    "description": "Tell the user which UnifiedPush app we're connected to"
+  },
+  "copyComment": "Copier le commentaire",
+  "@copyComment": {
+    "description": "Action for copying a whole comment"
+  },
+  "clearedCache": "Le cache a été vidé.",
+  "@clearedCache": {
+    "description": "Message indicating that cache was cleared successfully"
+  },
+  "clearCache": "Vider le cache ({cacheSize})",
+  "@clearCache": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "communityNameThickness": "Densité du nom de la communauté",
+  "@communityNameThickness": {
+    "description": "Setting for community name thickness"
+  },
+  "communityStyle": "Style de la communauté",
+  "@communityStyle": {
+    "description": "Heading for community style setting"
+  },
+  "clearCacheLabel": "Vider le cache",
+  "@clearCacheLabel": {
+    "description": "Label for action to clear cache in the dialog"
+  },
+  "commentShowUserAvatar": "Afficher la photo d'avatar de l'utilisateur",
+  "@commentShowUserAvatar": {
+    "description": "Settings toggle to display user avatar alongside their display name in comments"
+  },
+  "created": "Créé(e) le {date}",
+  "@created": {
+    "description": "The date that something was created"
+  },
+  "addOriginalPostBody": "Ajouter le texte accompagnant la publication d'origine ?",
+  "@addOriginalPostBody": {
+    "description": "Prompt to add the original post body to a cross post"
+  },
+  "alternateSources": "Sources alternatives",
+  "@alternateSources": {
+    "description": "Action for viewing a link from alternate sources"
+  },
+  "averageContributions": "{x} participations/mois",
+  "@averageContributions": {
+    "description": "Describes the average number of contributions (both posts and comments) in the past month"
+  },
+  "banFromCommunity": "Bannir de la communauté",
+  "@banFromCommunity": {
+    "description": "Moderator action to ban a user from a community"
+  },
+  "blockCommunityInstance": "Bloquer l'instance de la communauté",
+  "@blockCommunityInstance": {
+    "description": "Action to block the instance of a community"
+  },
+  "boldCommunityName": "Nom de la communauté en gras",
+  "@boldCommunityName": {
+    "description": "Setting for bolding the community name"
+  },
+  "collapse": "Minimiser",
+  "@collapse": {
+    "description": "Action to collapse something"
+  },
+  "colorizeInstanceName": "Coloriser le nom de l'instance",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "colors": "Couleurs",
+  "@colors": {
+    "description": "Heading for colors"
+  },
+  "comfortable": "Large",
+  "@comfortable": {
+    "description": "Describes a comfortable visual density"
+  },
+  "communityEntry": "Communauté '{community}'",
+  "@communityEntry": {
+    "description": "Entry in list for a community to perform further actions"
+  },
+  "communityNameColor": "Couleur du nom de la communauté",
+  "@communityNameColor": {
+    "description": "Setting for community name color"
+  },
+  "confirmUnsubscription": "Êtes-vous sûr de vouloir vous désabonner ?",
+  "@confirmUnsubscription": {
+    "description": "Ask the user to confirm that they want to unsubscribe"
+  },
+  "contentManagement": "Gestion du contenu",
+  "@contentManagement": {
+    "description": "Setting for content management (languages/blocking)"
+  },
+  "couldntFindPost": "Impossible de charger la publication. Elle a peut-être été supprimée ou retirée.",
+  "@couldntFindPost": {
+    "description": "Error message for when we can't load a post."
+  },
+  "countLocalSubscribers": "{count} Abonnés locaux",
+  "@countLocalSubscribers": {
+    "description": "Number of local subscribers"
+  },
+  "createdToday": "Créé(e) aujourd'hui",
+  "@createdToday": {
+    "description": "An account descriptor for an account with a birthday today"
+  },
+  "currentNotificationsMode": "Mode de notification actuel : {mode}",
+  "@currentNotificationsMode": {
+    "description": "A status indicator for the current notifications mode"
+  },
+  "dark": "Sombre",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "browserMode": "Ouverture des liens",
+  "@browserMode": {
+    "description": "Title for link handling setting (called browserMode internally)"
+  },
+  "blockSettingLabel": "Utilisateurs / Communautés / Instances bloqué(e)s",
+  "@blockSettingLabel": {
+    "description": "Setting for user, community, and instance block settings"
+  },
+  "blockUserInstance": "Bloquer l'instance de l'utilisateur",
+  "@blockUserInstance": {
+    "description": "Action to block the instance of a user"
+  },
+  "changeAccountSettingsFor": "Modifier les paramètres de compte pour",
+  "@changeAccountSettingsFor": {
+    "description": "Heading for the profiler modal when changing account settings"
+  },
+  "colorizeCommunityName": "Coloriser le nom de la communauté",
+  "@colorizeCommunityName": {
+    "description": "Setting for colorizing community name"
+  },
+  "altText": "Texte alt",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
+  },
+  "cardPostCardMetadataItems": "Métadonnées dans l'affichage en Fiches",
+  "@cardPostCardMetadataItems": {
+    "description": "Name of setting for card post card metadata items"
+  },
+  "colorizeUserName": "Coloriser le nom de l'utilisateur",
+  "@colorizeUserName": {
+    "description": "Setting for colorizing username"
   }
 }
