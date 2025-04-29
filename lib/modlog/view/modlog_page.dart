@@ -167,10 +167,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: <Widget>[
-                      ModlogFeedPageAppBar(
-                        showAppBarTitle: state.status != ModlogStatus.initial ? true : showAppBarTitle,
-                        subtitle: Text(widget.subtitle),
-                      ),
+                      ModlogFeedPageAppBar(subtitle: Text(widget.subtitle)),
                       // Display loading indicator until the feed is fetched
                       if (state.status == ModlogStatus.initial)
                         const SliverFillRemaining(

@@ -155,7 +155,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemovePost.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         reason: event.modRemovePost.reason,
         post: ThunderPost(event.post),
         community: ThunderCommunity(event.community),
@@ -165,7 +165,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modLockPost.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         post: ThunderPost(event.post),
         community: ThunderCommunity(event.community),
         actioned: event.modLockPost.locked,
@@ -174,7 +174,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modFeaturePost.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         post: ThunderPost(event.post),
         community: ThunderCommunity(event.community),
         actioned: event.modFeaturePost.featured,
@@ -183,9 +183,9 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemoveComment.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         reason: event.modRemoveComment.reason,
-        user: ThunderUser(event.commenter),
+        user: event.commenter != null ? ThunderUser(event.commenter) : null,
         post: ThunderPost(event.post),
         comment: ThunderComment(comment: event.comment),
         community: ThunderCommunity(event.community),
@@ -195,7 +195,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemoveCommunity.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         reason: event.modRemoveCommunity.reason,
         community: ThunderCommunity(event.community),
         actioned: event.modRemoveCommunity.removed,
@@ -204,9 +204,9 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modBanFromCommunity.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         reason: event.modBanFromCommunity.reason,
-        user: ThunderUser(event.bannedPerson),
+        user: event.bannedPerson != null ? ThunderUser(event.bannedPerson) : null,
         community: ThunderCommunity(event.community),
         actioned: event.modBanFromCommunity.banned,
       );
@@ -214,17 +214,17 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modBan.when,
-        moderator: ThunderUser(event.moderator),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
         reason: event.modBan.reason,
-        user: ThunderUser(event.bannedPerson),
+        user: event.bannedPerson != null ? ThunderUser(event.bannedPerson) : null,
         actioned: event.modBan.banned,
       );
     case ModlogActionType.modAddCommunity:
       return ModlogEventItem(
         type: type,
         dateTime: event.modAddCommunity.when,
-        moderator: ThunderUser(event.moderator),
-        user: ThunderUser(event.moddedPerson),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
         community: ThunderCommunity(event.community),
         actioned: !event.modAddCommunity.removed,
       );
@@ -232,8 +232,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modTransferCommunity.when,
-        moderator: ThunderUser(event.moderator),
-        user: ThunderUser(event.moddedPerson),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
         community: ThunderCommunity(event.community),
         actioned: true,
       );
@@ -241,15 +241,15 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modAdd.when,
-        moderator: ThunderUser(event.moderator),
-        user: ThunderUser(event.moddedPerson),
+        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
         actioned: !event.modAdd.removed,
       );
     case ModlogActionType.adminPurgePerson:
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgePerson.when,
-        admin: ThunderUser(event.admin),
+        admin: event.admin != null ? ThunderUser(event.admin) : null,
         reason: event.adminPurgePerson.reason,
         actioned: true,
       );
@@ -257,7 +257,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgeCommunity.when,
-        admin: ThunderUser(event.admin),
+        admin: event.admin != null ? ThunderUser(event.admin) : null,
         reason: event.adminPurgeCommunity.reason,
         actioned: true,
       );
@@ -265,7 +265,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgePost.when,
-        admin: ThunderUser(event.admin),
+        admin: event.admin != null ? ThunderUser(event.admin) : null,
         reason: event.adminPurgePost.reason,
         actioned: true,
       );
@@ -273,7 +273,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgeComment.when,
-        admin: ThunderUser(event.admin),
+        admin: event.admin != null ? ThunderUser(event.admin) : null,
         reason: event.adminPurgeComment.reason,
         actioned: true,
       );
@@ -281,7 +281,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modHideCommunity.when,
-        admin: ThunderUser(event.admin),
+        admin: event.admin != null ? ThunderUser(event.admin) : null,
         reason: event.modHideCommunity.reason,
         community: ThunderCommunity(event.community),
         actioned: event.modHideCommunity.hidden,

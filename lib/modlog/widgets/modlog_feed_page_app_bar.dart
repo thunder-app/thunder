@@ -8,30 +8,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 
 /// The app bar for the modlog feed page
 class ModlogFeedPageAppBar extends StatelessWidget {
-  const ModlogFeedPageAppBar({super.key, required this.showAppBarTitle, required this.subtitle});
-
-  /// Boolean which indicates whether the title on the app bar should be shown
-  final bool showAppBarTitle;
+  const ModlogFeedPageAppBar({super.key, required this.subtitle});
 
   /// The subtitle to display below "Modlog" on the app bar
   final Widget? subtitle;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.read<ThunderBloc>().state;
+
+    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
 
     return SliverAppBar(
-      pinned: !state.hideTopBarOnScroll,
+      pinned: !hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: ModlogFeedAppBarTitle(visible: showAppBarTitle, subtitle: subtitle),
+      surfaceTintColor: hideTopBarOnScroll ? Colors.transparent : null,
+      title: ListTile(
+        title: Text(
+          l10n.modlog,
+          style: theme.textTheme.titleLarge,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: subtitle,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+      ),
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
             ? Icon(
@@ -46,10 +54,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       ),
       actions: <Widget>[
         IconButton(
-          icon: Icon(
-            Icons.filter_alt_rounded,
-            semanticLabel: l10n.filters,
-          ),
+          icon: Icon(Icons.filter_alt_rounded, semanticLabel: l10n.filters),
           onPressed: () {
             HapticFeedback.mediumImpact();
 
@@ -66,41 +71,6 @@ class ModlogFeedPageAppBar extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-}
-
-class ModlogFeedAppBarTitle extends StatelessWidget {
-  const ModlogFeedAppBarTitle({
-    super.key,
-    this.visible = true,
-    required this.subtitle,
-  });
-
-  /// Boolean which indicates whether the title on the app bar should be shown
-  final bool visible;
-
-  /// The subtitle to display below "Modlog" on the app bar
-  final Widget? subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: visible ? 1.0 : 0.0,
-      child: ListTile(
-        title: Text(
-          l10n.modlog,
-          style: theme.textTheme.titleLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: subtitle,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-      ),
     );
   }
 }
