@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/modlog/enums/modlog_action_type.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -33,16 +33,16 @@ class ModlogItemContextCard extends StatelessWidget {
   final ModlogActionType type;
 
   /// The post related to the event
-  final Post? post;
+  final ThunderPost? post;
 
   /// The comment related to the event
-  final Comment? comment;
+  final ThunderComment? comment;
 
   /// The community related to the event
-  final Community? community;
+  final ThunderCommunity? community;
 
   /// The user related to the event
-  final Person? user;
+  final ThunderUser? user;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +83,10 @@ class ModlogPostItemContextCard extends StatelessWidget {
   });
 
   /// The post related to the event
-  final Post post;
+  final ThunderPost post;
 
   /// The community related to the event
-  final Community? community;
+  final ThunderCommunity? community;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ScalableText(
-                    HtmlUnescape().convert(post.name),
+                    HtmlUnescape().convert(post.title),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     fontScale: state.titleFontSizeScale,
                   ),
@@ -125,7 +125,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         context,
                         community?.name,
                         community?.title,
-                        fetchInstanceNameFromUrl(community?.actorId),
+                        fetchInstanceNameFromUrl(community?.url),
                         fontScale: state.metadataFontSizeScale,
                         transformColor: (color) => color?.withValues(alpha: 0.75),
                       ),
@@ -155,16 +155,16 @@ class ModlogCommentItemContextCard extends StatefulWidget {
   });
 
   /// The comment related to the event
-  final Comment comment;
+  final ThunderComment comment;
 
   /// The post related to the event
-  final Post? post;
+  final ThunderPost? post;
 
   /// The user related to the event
-  final Person? user;
+  final ThunderUser? user;
 
   /// The community related to the event
-  final Community? community;
+  final ThunderCommunity? community;
 
   @override
   State<ModlogCommentItemContextCard> createState() => _ModlogCommentItemContextCardState();
@@ -215,7 +215,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           ),
                         ),
                         TextSpan(
-                          text: HtmlUnescape().convert(widget.post!.name),
+                          text: HtmlUnescape().convert(widget.post!.title),
                         )
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -229,7 +229,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                   AnimatedSize(
                     duration: const Duration(milliseconds: 100),
                     child: showSensitiveContent
-                        ? CommonMarkdownBody(body: widget.comment.content, isComment: true)
+                        ? CommonMarkdownBody(body: widget.comment.body, isComment: true)
                         : InkWell(
                             borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                             onTap: () => setState(() {
@@ -281,7 +281,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             context,
                             widget.community?.name,
                             widget.community?.title,
-                            fetchInstanceNameFromUrl(widget.community?.actorId),
+                            fetchInstanceNameFromUrl(widget.community?.url),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: textStyleCommunityAndAuthor,
                           ),
@@ -304,7 +304,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
   const ModlogUserItemContextCard({super.key, this.user});
 
   /// The user related to the event
-  final Person? user;
+  final ThunderUser? user;
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +329,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
               spacing: 8.0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (user != null) UserAvatar(user: ThunderUser(user!)),
+                if (user != null) UserAvatar(user: user!),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -342,7 +342,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       context,
                       user?.name,
                       user?.displayName,
-                      fetchInstanceNameFromUrl(user?.actorId),
+                      fetchInstanceNameFromUrl(user?.url),
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],
@@ -361,7 +361,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
   const ModlogCommunityItemContextCard({super.key, this.community});
 
   /// The community related to the event
-  final Community? community;
+  final ThunderCommunity? community;
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +386,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
               spacing: 8.0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (community != null) CommunityAvatar(community: ThunderCommunity(community!)),
+                if (community != null) CommunityAvatar(community: community!),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -399,7 +399,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       context,
                       community?.name,
                       community?.title,
-                      fetchInstanceNameFromUrl(community?.actorId),
+                      fetchInstanceNameFromUrl(community?.url),
                       fontScale: state.metadataFontSizeScale,
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),

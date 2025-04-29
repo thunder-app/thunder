@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -9,6 +8,7 @@ import 'package:thunder/feed/feed.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/modlog/repository/modlog_repository.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -53,8 +53,11 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ModlogCubit>(
-      create: (_) => ModlogCubit(client: widget.lemmyClient ?? LemmyClient.instance)
-        ..fetchModlogFeed(
+      create: (_) => ModlogCubit(
+        repository: ModlogRepositoryImpl(
+          client: widget.lemmyClient ?? LemmyClient.instance,
+        ),
+      )..fetchModlogFeed(
           modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,
           userId: widget.userId,

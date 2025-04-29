@@ -3,26 +3,28 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/message_format.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_player_mode.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -215,7 +217,10 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
       await navigateToModlogPage(
         context,
-        modlogActionType: ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value),
+        modlogActionType: ModlogActionType.values.firstWhere(
+          (type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(),
+          orElse: () => ModlogActionType.all,
+        ),
         communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
         moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),

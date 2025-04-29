@@ -1,17 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/modlog/repository/modlog_repository.dart';
 
 part 'modlog_state.dart';
 part 'modlog_cubit.freezed.dart';
 
 class ModlogCubit extends Cubit<ModlogState> {
-  final LemmyClient client;
+  final ModlogRepository repository;
 
-  ModlogCubit({required this.client}) : super(const ModlogState());
+  ModlogCubit({required this.repository}) : super(const ModlogState());
 
   /// Changes the current filter type of the modlog feed
   Future<void> changeFilterType(ModlogActionType modlogActionType) async {
@@ -47,20 +46,19 @@ class ModlogCubit extends Cubit<ModlogState> {
       if (reset) {
         emit(const ModlogState());
 
-        final result = await fetchModlogEvents(
+        final feed = await repository.getModlogEvents(
           page: 1,
           modlogActionType: modlogActionType,
           communityId: communityId,
           userId: userId,
           moderatorId: moderatorId,
           commentId: commentId,
-          lemmyClient: client,
         );
 
         // Extract information from the response
-        List<ModlogEventItem> modlogEventItems = result['modLogEventItems'];
-        bool hasReachedEnd = result['hasReachedEnd'];
-        int currentPage = result['currentPage'];
+        List<ModlogEventItem> modlogEventItems = feed.items;
+        bool hasReachedEnd = feed.hasReachedEnd;
+        int currentPage = feed.currentPage;
 
         // Sort the modlog events by date
         modlogEventItems.sort((a, b) => b.dateTime.compareTo(a.dateTime));
@@ -88,20 +86,19 @@ class ModlogCubit extends Cubit<ModlogState> {
 
       List<ModlogEventItem> modlogEventItems = List.from(state.modlogEventItems);
 
-      final result = await fetchModlogEvents(
+      final feed = await repository.getModlogEvents(
         page: state.currentPage,
         modlogActionType: state.modlogActionType,
         communityId: state.communityId,
         userId: state.userId,
         moderatorId: state.moderatorId,
         commentId: state.commentId,
-        lemmyClient: client,
       );
 
       // Extract information from the response
-      List<ModlogEventItem> newModLogEventItems = result['modLogEventItems'];
-      bool hasReachedEnd = result['hasReachedEnd'];
-      int currentPage = result['currentPage'];
+      List<ModlogEventItem> newModLogEventItems = feed.items;
+      bool hasReachedEnd = feed.hasReachedEnd;
+      int currentPage = feed.currentPage;
 
       // Add the new modlog events
       modlogEventItems.addAll(newModLogEventItems);

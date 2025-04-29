@@ -20,6 +20,12 @@ class ThunderComment {
   /// The ID of the post creator
   int? get postCreatorId => _commentView?.post.creatorId;
 
+  /// The path that resolves to this comment
+  String get path => _comment.path;
+
+  /// The content of the comment
+  String get body => _comment.content;
+
   /// The creator of the comment
   Person? get creator => _commentView?.creator;
 

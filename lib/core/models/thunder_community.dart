@@ -60,6 +60,9 @@ class ThunderCommunity {
   /// The banner of the community.
   String? get banner => _community.banner;
 
+  /// Whether the community is removed.
+  bool get removed => _community.removed;
+
   /// The URL to the community. This is generally associated with the ActivityPub actor URL.
   String get url => _community.actorId;
 

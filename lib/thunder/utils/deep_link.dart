@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
@@ -275,7 +276,10 @@ Future<DeepLinkResult> _navigateToModlog(BuildContext context, String link) asyn
 
     ModlogActionType actionType;
     try {
-      actionType = ModlogActionType.fromJson(uri.queryParameters['actionType'] ?? ModlogActionType.all.value);
+      actionType = ModlogActionType.values.firstWhere(
+        (type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(),
+        orElse: () => ModlogActionType.all,
+      );
     } catch (_) {
       actionType = ModlogActionType.all;
     }

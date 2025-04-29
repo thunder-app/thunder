@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/models/models.dart';
+import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Represents a modlog event based on [ModlogActionType].
@@ -28,25 +29,25 @@ class ModlogEventItem {
   final String dateTime;
 
   /// The moderator who performed the action.
-  final Person? moderator;
+  final ThunderUser? moderator;
 
   /// The admin who performed the action.
-  final Person? admin;
+  final ThunderUser? admin;
 
   /// The reason for the action.
   final String? reason;
 
   /// The user associated with the action.
-  final Person? user;
+  final ThunderUser? user;
 
   /// The post associated with the action.
-  final Post? post;
+  final ThunderPost? post;
 
   /// The comment associated with the action.
-  final Comment? comment;
+  final ThunderComment? comment;
 
   /// The community associated with the action.
-  final Community? community;
+  final ThunderCommunity? community;
 
   /// Whether the action has been performed or reverted.
   /// If `true`, the action has been performed. If `false`, the action has been reverted.

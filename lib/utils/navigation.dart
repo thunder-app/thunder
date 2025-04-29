@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,7 +25,7 @@ import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/pages/instance_page.dart';
 import 'package:thunder/moderator/view/report_page.dart';
-import 'package:thunder/modlog/view/modlog_page.dart';
+import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/modlog/models/modlog_event_item.dart';
-import 'package:thunder/modlog/widgets/modlog_item_context_card.dart';
+import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';

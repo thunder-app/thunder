@@ -1,0 +1,18 @@
+enum ModlogActionType {
+  all,
+  modRemovePost,
+  modLockPost,
+  modFeaturePost,
+  modRemoveComment,
+  modRemoveCommunity,
+  modBanFromCommunity,
+  modAddCommunity,
+  modTransferCommunity,
+  modAdd,
+  modBan,
+  modHideCommunity,
+  adminPurgePerson,
+  adminPurgeCommunity,
+  adminPurgePost,
+  adminPurgeComment,
+}
