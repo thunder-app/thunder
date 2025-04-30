@@ -329,7 +329,7 @@ class BlockCommunityButton extends StatelessWidget {
               spacing: 4.0,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(blocked ? Icons.undo_rounded : Icons.block_rounded),
+                Icon(blocked ? Icons.undo_rounded : Icons.block_rounded, color: Colors.redAccent),
                 Text(blocked ? l10n.unblockCommunity : l10n.blockCommunity),
               ],
             ),
