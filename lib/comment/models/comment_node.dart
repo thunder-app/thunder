@@ -46,11 +46,11 @@ class CommentNode {
   static void insertCommentNode(CommentNode root, String parentId, CommentNode commentNode) {
     CommentNode? parent = findCommentNode(root, parentId);
 
-    if (parent == null) {
+    if (parent == null && parentId == "0") {
       return root.addReply(commentNode);
     }
 
-    parent.addReply(commentNode);
+    parent?.addReply(commentNode);
   }
 
   /// A static helper method to find a comment node in the tree given its [id]. The [id] comes from [comment.path]
