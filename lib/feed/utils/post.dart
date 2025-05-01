@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -16,7 +17,7 @@ import 'package:thunder/utils/global_context.dart';
 /// This includes posts and user information (posts/comments)
 Future<Map<String, dynamic>> fetchFeedItems({
   int page = 1,
-  ListingType? postListingType,
+  FeedListType? feedListType,
   SortType? sortType,
   int? communityId,
   String? communityName,
@@ -43,13 +44,13 @@ Future<Map<String, dynamic>> fetchFeedItems({
   int startingPage = page, currentPage = page;
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
-  if (communityId != null || communityName != null || postListingType != null) {
+  if (communityId != null || communityName != null || feedListType != null) {
     do {
       GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
         auth: account.jwt,
         page: currentPage,
         sort: sortType,
-        type: postListingType,
+        type: feedListType?.toLemmyType(),
         communityId: communityId,
         communityName: communityName,
         showHidden: showHidden,

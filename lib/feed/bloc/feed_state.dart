@@ -14,7 +14,7 @@ final class FeedState extends Equatable {
     this.communityInstance,
     this.communityModerators = const [],
     this.fullPersonView,
-    this.postListingType,
+    this.feedListType,
     this.sortType,
     this.communityId,
     this.communityName,
@@ -52,7 +52,7 @@ final class FeedState extends Equatable {
   final FeedType? feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final ListingType? postListingType;
+  final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
@@ -121,7 +121,7 @@ final class FeedState extends Equatable {
     bool? hasReachedPostsEnd,
     bool? hasReachedCommentsEnd,
     FeedType? feedType,
-    ListingType? postListingType,
+    FeedListType? feedListType,
     SortType? sortType,
     ThunderCommunity? community,
     ThunderInstance? communityInstance,
@@ -150,7 +150,7 @@ final class FeedState extends Equatable {
       hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
       hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
       feedType: feedType ?? this.feedType,
-      postListingType: postListingType ?? this.postListingType,
+      feedListType: feedListType ?? this.feedListType,
       sortType: sortType ?? this.sortType,
       community: community ?? this.community,
       communityInstance: communityInstance ?? this.communityInstance,
@@ -191,7 +191,7 @@ final class FeedState extends Equatable {
         hasReachedPostsEnd,
         hasReachedCommentsEnd,
         feedType,
-        postListingType,
+        feedListType,
         sortType,
         communityId,
         communityName,

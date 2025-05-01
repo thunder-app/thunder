@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/models/favourite.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -286,7 +287,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       bool hasFetchedAllSubscriptions = false;
 
       while (!hasFetchedAllSubscriptions) {
-        final response = await lemmy.run(ListCommunities(auth: account.jwt, page: page, limit: 50, type: ListingType.subscribed));
+        final response = await lemmy.run(ListCommunities(auth: account.jwt, page: page, limit: 50, type: FeedListType.subscribed.toLemmyType()));
         subscriptions.addAll(response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)));
 
         page++;

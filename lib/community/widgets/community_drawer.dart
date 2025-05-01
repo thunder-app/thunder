@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -228,11 +228,11 @@ class FeedDrawerItems extends StatelessWidget {
           children: destinations.map(
             (Destination destination) {
               return DrawerItem(
-                disabled: destination.listingType == ListingType.subscribed && isLoggedIn == false,
-                isSelected: destination.listingType == feedState.postListingType,
+                disabled: destination.listingType == FeedListType.subscribed && isLoggedIn == false,
+                isSelected: destination.listingType == feedState.feedListType,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
+                  navigateToFeedPage(context, feedType: FeedType.general, feedListType: destination.listingType);
                 },
                 label: destination.label,
                 icon: destination.icon,
@@ -383,14 +383,14 @@ class Destination {
   const Destination(this.label, this.listingType, this.icon);
 
   final String label;
-  final ListingType listingType;
+  final FeedListType listingType;
   final IconData icon;
 }
 
 List<Destination> destinations = <Destination>[
-  Destination(AppLocalizations.of(GlobalContext.context)!.subscriptions, ListingType.subscribed, Icons.view_list_rounded),
-  Destination(AppLocalizations.of(GlobalContext.context)!.localPosts, ListingType.local, Icons.home_rounded),
-  Destination(AppLocalizations.of(GlobalContext.context)!.allPosts, ListingType.all, Icons.grid_view_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.subscriptions, FeedListType.subscribed, Icons.view_list_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.localPosts, FeedListType.local, Icons.home_rounded),
+  Destination(AppLocalizations.of(GlobalContext.context)!.allPosts, FeedListType.all, Icons.grid_view_rounded),
 ];
 
 class DrawerItem extends StatelessWidget {

@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -475,7 +476,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       hasReachedPostsEnd: false,
       hasReachedCommentsEnd: false,
       feedType: FeedType.general,
-      postListingType: null,
+      feedListType: null,
       sortType: null,
       community: null,
       communityInstance: null,
@@ -493,7 +494,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedChangeSortType(FeedChangeSortTypeEvent event, Emitter<FeedState> emit) async {
     add(FeedFetchedEvent(
       feedType: state.feedType,
-      postListingType: state.postListingType,
+      feedListType: state.feedListType,
       sortType: event.sortType,
       communityId: state.communityId,
       communityName: state.communityName,
@@ -510,7 +511,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (event.reset) assert(event.feedType != null);
     if (event.reset && event.feedType == FeedType.community) assert(!(event.communityId == null && event.communityName == null));
     if (event.reset && event.feedType == FeedType.user) assert(!(event.userId != null && event.username != null));
-    if (event.reset && event.feedType == FeedType.general) assert(event.postListingType != null);
+    if (event.reset && event.feedType == FeedType.general) assert(event.feedListType != null);
 
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
@@ -568,7 +569,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       Map<String, dynamic> feedItemResult = await fetchFeedItems(
         page: 1,
-        postListingType: event.postListingType,
+        feedListType: event.feedListType,
         sortType: event.sortType,
         communityId: event.communityId,
         communityName: event.communityName,
@@ -594,7 +595,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         hasReachedPostsEnd: hasReachedPostsEnd,
         hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
-        postListingType: event.postListingType,
+        feedListType: event.feedListType,
         sortType: event.sortType,
         community: community,
         communityInstance: communityInstance,
@@ -621,7 +622,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     Map<String, dynamic> feedItemResult = await fetchFeedItems(
       page: state.currentPage,
-      postListingType: state.postListingType,
+      feedListType: state.feedListType,
       sortType: state.sortType,
       communityId: state.communityId,
       communityName: state.communityName,

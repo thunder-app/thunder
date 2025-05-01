@@ -13,6 +13,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -88,13 +89,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
-      ListingType defaultListingType = DEFAULT_LISTING_TYPE;
+      FeedListType defaultFeedListType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -270,7 +271,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Feed Related Settings --------------------------
         // Default Listing/Sort Settings
-        defaultListingType: defaultListingType,
+        defaultFeedListType: defaultFeedListType,
         defaultSortType: defaultSortType,
         useProfilePictureForDrawer: useProfilePictureForDrawer,
 

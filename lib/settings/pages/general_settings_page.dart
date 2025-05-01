@@ -14,6 +14,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -60,7 +61,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool useProfilePictureForDrawer = false;
 
   /// Default listing type for posts on the feed (subscribed, all, local)
-  ListingType defaultListingType = DEFAULT_LISTING_TYPE;
+  FeedListType defaultFeedListType = DEFAULT_LISTING_TYPE;
 
   /// Default sort type for comments on the feed
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
@@ -152,9 +153,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      case LocalSettings.defaultFeedListingType:
-        await prefs.setString(LocalSettings.defaultFeedListingType.name, value);
-        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+      case LocalSettings.defaultFeedListType:
+        await prefs.setString(LocalSettings.defaultFeedListType.name, value);
+        setState(() => defaultFeedListType = FeedListType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
@@ -273,10 +274,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     setState(() {
       // Default Sorts and Listing
       try {
-        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -379,15 +380,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ),
                 ListOption(
                   description: l10n.defaultFeedType,
-                  value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
+                  value: ListPickerItem(label: defaultFeedListType.value, icon: Icons.feed, payload: defaultFeedListType),
                   options: [
-                    ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
-                    ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
+                    ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
+                    ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
                   ],
                   icon: Icons.filter_alt_rounded,
-                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
+                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListType, value.payload.name),
                   highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.defaultFeedListingType,
+                  setting: LocalSettings.defaultFeedListType,
                   highlightedSetting: settingToHighlight,
                 ),
                 ListOption(

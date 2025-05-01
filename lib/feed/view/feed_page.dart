@@ -12,6 +12,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -42,14 +43,14 @@ enum FeedType { community, user, general, account }
 ///
 /// If [FeedType.community] is provided, one of [communityId] or [communityName] must be provided. If both are provided, [communityId] will take precedence.
 /// If [FeedType.user] is provided, one of [userId] or [username] must be provided. If both are provided, [userId] will take precedence.
-/// If [FeedType.general] is provided, [postListingType] must be provided.
+/// If [FeedType.general] is provided, [feedListType] must be provided.
 /// If [FeedType.account] is provided, then it should show the currently logged in user's posts/comments.
 class FeedPage extends StatefulWidget {
   const FeedPage({
     super.key,
     this.useGlobalFeedBloc = false,
     required this.feedType,
-    this.postListingType,
+    this.feedListType,
     required this.sortType,
     this.communityId,
     this.communityName,
@@ -63,7 +64,7 @@ class FeedPage extends StatefulWidget {
   final FeedType feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final ListingType? postListingType;
+  final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
@@ -110,7 +111,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
       if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
-          postListingType: widget.postListingType,
+          feedListType: widget.feedListType,
           sortType: widget.sortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
@@ -144,7 +145,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
       create: (_) => FeedBloc(lemmyClient: LemmyClient.instance)
         ..add(FeedFetchedEvent(
           feedType: widget.feedType,
-          postListingType: widget.postListingType,
+          feedListType: widget.feedListType,
           sortType: widget.sortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
@@ -382,7 +383,7 @@ class _FeedViewState extends State<FeedView> {
                                   context.read<FeedBloc>().add(
                                         FeedFetchedEvent(
                                           feedType: FeedType.account,
-                                          postListingType: state.postListingType,
+                                          feedListType: state.feedListType,
                                           sortType: state.sortType,
                                           communityId: state.communityId,
                                           communityName: state.communityName,
@@ -651,8 +652,8 @@ class _FeedViewState extends State<FeedView> {
     }
 
     // Get the desired post listing so we can check against current
-    final desiredListingType = authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultListingType;
-    final currentListingType = feedBloc.state.postListingType;
+    final desiredFeedListType = FeedListType.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBloc.state.defaultFeedListType;
+    final currentFeedListType = feedBloc.state.feedListType;
 
     // See if we're in a community
     final communityMode = feedBloc.state.feedType == FeedType.community;
@@ -662,12 +663,12 @@ class _FeedViewState extends State<FeedView> {
     // - We're not on the desired listing type OR
     // - We're on a community
     // THEN navigate to the desired listing type
-    if (!canPop && (desiredListingType != currentListingType || communityMode)) {
+    if (!canPop && (desiredFeedListType != currentFeedListType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
           sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
           reset: true,
-          postListingType: desiredListingType,
+          feedListType: desiredFeedListType,
           feedType: FeedType.general,
           communityId: null,
           showHidden: thunderBloc.state.showHiddenPosts,

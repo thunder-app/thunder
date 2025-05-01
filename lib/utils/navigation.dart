@@ -14,6 +14,7 @@ import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/thunder_community.dart';
@@ -606,7 +607,7 @@ void navigateToReportPage(BuildContext context) {
 /// Navigates to a [FeedPage] with the given parameters
 ///
 /// [feedType] must be provided.
-/// If [feedType] is [FeedType.general], [postListingType] must be provided
+/// If [feedType] is [FeedType.general], [feedListType] must be provided
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
 /// If [feedType] is [FeedType.user], one of [userId] or [username] must be provided
 ///
@@ -614,7 +615,7 @@ void navigateToReportPage(BuildContext context) {
 Future<void> navigateToFeedPage(
   BuildContext context, {
   required FeedType feedType,
-  ListingType? postListingType,
+  FeedListType? feedListType,
   SortType? sortType,
   String? communityName,
   int? communityId,
@@ -635,7 +636,7 @@ Future<void> navigateToFeedPage(
     return context.read<FeedBloc>().add(
           FeedFetchedEvent(
             feedType: feedType,
-            postListingType: postListingType,
+            feedListType: feedListType,
             sortType: sortType ?? profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
             communityId: communityId,
             communityName: communityName,
@@ -673,7 +674,7 @@ Future<void> navigateToFeedPage(
           communityId: communityId,
           userId: userId,
           username: username,
-          postListingType: postListingType,
+          feedListType: feedListType,
           showHidden: thunderBloc.state.showHiddenPosts,
         ),
       ),

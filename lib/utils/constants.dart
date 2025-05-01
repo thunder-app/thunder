@@ -3,11 +3,12 @@
 import 'dart:ui';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 
-const ListingType DEFAULT_LISTING_TYPE = ListingType.all;
+const FeedListType DEFAULT_LISTING_TYPE = FeedListType.all;
 
 const SortType DEFAULT_SORT_TYPE = SortType.hot;
 

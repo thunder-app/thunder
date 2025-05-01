@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -133,7 +134,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           page: 1,
           limit: 15,
           sort: event.sortType,
-          listingType: event.listingType,
+          listingType: event.feedListType.toLemmyType(),
           type: event.searchType.searchType,
           communityId: event.communityId,
           creatorId: event.creatorId,
@@ -225,7 +226,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               page: state.page,
               limit: 15,
               sort: event.sortType,
-              listingType: event.listingType,
+              listingType: event.feedListType.toLemmyType(),
               type: event.searchType.searchType,
               communityId: event.communityId,
               creatorId: event.creatorId,

@@ -141,7 +141,7 @@ enum LocalSettings {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
 
-  defaultFeedListingType(name: 'setting_general_default_listing_type', key: 'defaultFeedType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+  defaultFeedListType(name: 'setting_general_default_listing_type', key: 'defaultFeedType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   defaultFeedSortType(name: 'setting_general_default_sort_type', key: 'defaultFeedSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
 
   // NSFW Settings

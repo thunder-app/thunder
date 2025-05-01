@@ -18,6 +18,7 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 // Internal
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -265,7 +266,7 @@ class _ThunderState extends State<Thunder> {
                         context.read<FeedBloc>().add(
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
-                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
+                                feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
                                 sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 reset: true,
                                 showHidden: thunderBlocState.showHiddenPosts,
@@ -400,7 +401,7 @@ class _ThunderState extends State<Thunder> {
                               FeedPage(
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
-                                postListingType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultListingType,
+                                feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
                                 sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
                                 showHidden: thunderBlocState.showHiddenPosts,

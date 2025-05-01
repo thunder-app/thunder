@@ -18,6 +18,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/widgets/comment_list_entry.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
+import 'package:thunder/core/enums/feed_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
@@ -74,7 +75,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int? _previousFavoritesCount;
 
   late MetaSearchType _currentSearchType;
-  ListingType _currentFeedType = ListingType.all;
+  FeedListType _currentFeedType = FeedListType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.all;
   bool _searchByUrl = false;
@@ -135,7 +136,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         context.read<SearchBloc>().add(ContinueSearchEvent(
               query: _controller.text,
               sortType: sortType,
-              listingType: _currentFeedType,
+              feedListType: _currentFeedType,
               searchType: _getSearchTypeToUse(),
               communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
               creatorId: _currentCreatorFilter,
@@ -376,19 +377,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       builder: (ctx) => BottomSheetListPicker(
                                         title: l10n.selectFeedType,
                                         items: [
-                                          ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
-                                          ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
-                                          ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                                          ListPickerItem(label: l10n.subscribed, payload: FeedListType.subscribed, icon: Icons.view_list_rounded),
+                                          ListPickerItem(label: l10n.local, payload: FeedListType.local, icon: Icons.home_rounded),
+                                          ListPickerItem(label: l10n.all, payload: FeedListType.all, icon: Icons.grid_view_rounded)
                                         ],
                                         onSelect: (value) async {
                                           setState(() {
-                                            if (value.payload == ListingType.subscribed) {
+                                            if (value.payload == FeedListType.subscribed) {
                                               _feedTypeLabel = l10n.subscribed;
                                               _feedTypeIcon = Icons.view_list_rounded;
-                                            } else if (value.payload == ListingType.local) {
+                                            } else if (value.payload == FeedListType.local) {
                                               _feedTypeLabel = l10n.local;
                                               _feedTypeIcon = Icons.home_rounded;
-                                            } else if (value.payload == ListingType.all) {
+                                            } else if (value.payload == FeedListType.all) {
                                               _feedTypeLabel = l10n.all;
                                               _feedTypeIcon = Icons.grid_view_rounded;
                                             }
@@ -919,7 +920,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       searchBloc.add(StartSearchEvent(
         query: _controller.text,
         sortType: sortType,
-        listingType: _currentFeedType,
+        feedListType: _currentFeedType,
         searchType: _getSearchTypeToUse(),
         communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
         creatorId: _currentCreatorFilter,

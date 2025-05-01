@@ -15,7 +15,7 @@ final class FeedFetchedEvent extends FeedEvent {
   final FeedTypeSubview feedTypeSubview;
 
   /// The type of general feed to display: all, local, subscribed.
-  final ListingType? postListingType;
+  final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
@@ -44,7 +44,7 @@ final class FeedFetchedEvent extends FeedEvent {
   const FeedFetchedEvent({
     this.feedType,
     this.feedTypeSubview = FeedTypeSubview.post,
-    this.postListingType,
+    this.feedListType,
     this.sortType,
     this.communityId,
     this.communityName,

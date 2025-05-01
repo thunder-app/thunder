@@ -29,7 +29,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
   final String? matrixUserId;
 
   /// The default listing type for the feed
-  final ListingType? defaultListingType;
+  final FeedListType? defaultFeedListType;
 
   /// The default sort type for the feed
   final SortType? defaultSortType;
@@ -57,7 +57,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
     this.bio,
     this.email,
     this.matrixUserId,
-    this.defaultListingType,
+    this.defaultFeedListType,
     this.defaultSortType,
     this.showNsfw,
     this.showReadPosts,

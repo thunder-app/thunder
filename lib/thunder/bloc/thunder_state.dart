@@ -12,7 +12,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    this.defaultListingType = DEFAULT_LISTING_TYPE,
+    this.defaultFeedListType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
     this.useProfilePictureForDrawer = false,
 
@@ -183,7 +183,7 @@ class ThunderState extends Equatable {
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  final ListingType defaultListingType;
+  final FeedListType defaultFeedListType;
   final SortType defaultSortType;
   SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
   final bool useProfilePictureForDrawer;
@@ -364,7 +364,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    ListingType? defaultListingType,
+    FeedListType? defaultFeedListType,
     SortType? defaultSortType,
     bool? useProfilePictureForDrawer,
 
@@ -536,7 +536,7 @@ class ThunderState extends Equatable {
 
       /// -------------------------- Feed Related Settings --------------------------
       /// Default Listing/Sort Settings
-      defaultListingType: defaultListingType ?? this.defaultListingType,
+      defaultFeedListType: defaultFeedListType ?? this.defaultFeedListType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
       useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
@@ -718,7 +718,7 @@ class ThunderState extends Equatable {
 
         /// -------------------------- Feed Related Settings --------------------------
         /// Default Listing/Sort Settings
-        defaultListingType,
+        defaultFeedListType,
         defaultSortType,
         useProfilePictureForDrawer,
 

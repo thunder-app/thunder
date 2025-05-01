@@ -10,7 +10,7 @@ abstract class SearchEvent extends Equatable {
 class StartSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
-  final ListingType listingType;
+  final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
@@ -20,7 +20,7 @@ class StartSearchEvent extends SearchEvent {
   const StartSearchEvent({
     required this.query,
     required this.sortType,
-    required this.listingType,
+    required this.feedListType,
     required this.searchType,
     this.communityId,
     this.creatorId,
@@ -42,7 +42,7 @@ class ResetSearch extends SearchEvent {}
 class ContinueSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
-  final ListingType listingType;
+  final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;
   final int? creatorId;
@@ -51,7 +51,7 @@ class ContinueSearchEvent extends SearchEvent {
   const ContinueSearchEvent({
     required this.query,
     required this.sortType,
-    required this.listingType,
+    required this.feedListType,
     required this.searchType,
     this.communityId,
     this.creatorId,

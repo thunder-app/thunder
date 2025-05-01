@@ -18,7 +18,7 @@ String getAppBarTitle(FeedState state) {
     return state.fullPersonView?.personView.person.displayName ?? state.fullPersonView?.personView.person.name ?? '';
   }
 
-  return (state.postListingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.postListingType).label) : '';
+  return (state.feedListType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.feedListType).label) : '';
 }
 
 String getSortName(FeedState state) {
@@ -49,7 +49,7 @@ Future<void> triggerRefresh(BuildContext context) async {
   context.read<FeedBloc>().add(
         FeedFetchedEvent(
           feedType: state.feedType,
-          postListingType: state.postListingType,
+          feedListType: state.feedListType,
           sortType: state.sortType,
           communityId: state.communityId,
           communityName: state.communityName,
