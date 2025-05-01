@@ -3,8 +3,8 @@
 import 'dart:ui';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/enums/feed_type.dart';
 
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
 

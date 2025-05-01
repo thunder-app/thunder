@@ -14,7 +14,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';

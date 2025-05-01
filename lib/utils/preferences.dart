@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/view/create_comment_page.dart';
 import 'package:thunder/community/pages/create_post_page.dart';

@@ -18,7 +18,7 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 // Internal
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';

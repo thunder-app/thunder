@@ -9,7 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';

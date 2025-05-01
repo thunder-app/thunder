@@ -14,7 +14,7 @@ import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/account/account.dart';
-import "package:thunder/core/enums/feed_type.dart";
+import "package:thunder/core/enums/enums.dart";
 import "package:thunder/core/enums/local_settings.dart";
 import "package:thunder/core/singletons/lemmy_client.dart";
 import "package:thunder/settings/widgets/list_option.dart";

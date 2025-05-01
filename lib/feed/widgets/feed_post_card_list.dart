@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:thunder/core/enums/feed_type.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';

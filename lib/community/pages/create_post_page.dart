@@ -16,7 +16,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';

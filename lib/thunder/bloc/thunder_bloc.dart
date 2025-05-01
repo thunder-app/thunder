@@ -13,7 +13,7 @@ import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';
-import 'package:thunder/core/enums/feed_type.dart';
+import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
