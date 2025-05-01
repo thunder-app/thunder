@@ -18,7 +18,6 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
@@ -329,8 +328,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   }
 
   /// Generates an example post to show in the post preview
-  Future<List<PostViewMedia?>> getExamplePosts() async {
-    PostViewMedia? postViewMediaText = await createExamplePost(
+  Future<List<ThunderPost?>> getExamplePosts() async {
+    ThunderPost? postText = await createExamplePost(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
       personInstance: 'lemmy.world',
@@ -341,7 +340,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4,
     );
 
-    PostViewMedia? postViewMediaImage = await createExamplePost(
+    ThunderPost? postImage = await createExamplePost(
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -354,7 +353,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4230,
     );
 
-    PostViewMedia? postViewMediaLink = await createExamplePost(
+    ThunderPost? postLink = await createExamplePost(
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -366,7 +365,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 543,
     );
 
-    return [postViewMediaText, postViewMediaLink, postViewMediaImage].whereNotNull().toList();
+    return [postText, postLink, postImage].whereNotNull().toList();
   }
 
   @override
@@ -494,7 +493,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Expandable(
                     controller: expandableController,
                     collapsed: Container(),
-                    expanded: FutureBuilder<List<PostViewMedia?>>(
+                    expanded: FutureBuilder<List<ThunderPost?>>(
                       future: getExamplePosts(),
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return Container();
@@ -506,10 +505,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              final pvm = snapshot.data![index]!;
-                              final post = ThunderPost(pvm.postView.post, postView: pvm.postView, media: pvm.media);
-                              final creator = ThunderUser(pvm.postView.creator);
-                              final community = ThunderCommunity(pvm.postView.community);
+                              final post = snapshot.data![index]!;
+                              final creator = ThunderUser(post.creator!);
+                              final community = ThunderCommunity(post.community!);
 
                               return Column(
                                 children: [
@@ -526,7 +524,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                         )
                                       : IgnorePointer(
                                           child: PostCardViewComfortable(
-                                            postViewMedia: snapshot.data![index]!,
+                                            post: snapshot.data![index]!,
                                             hideThumbnails: hideThumbnails,
                                             showPostAuthor: showPostAuthor,
                                             hideNsfwPreviews: hideNsfwPreviews,

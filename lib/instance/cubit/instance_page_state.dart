@@ -9,7 +9,7 @@ class InstancePageState extends Equatable {
   final String resolutionInstance;
 
   final List<ThunderCommunity>? communities;
-  final List<PostViewMedia>? posts;
+  final List<ThunderPost>? posts;
   final List<PersonView>? users;
   final List<CommentView>? comments;
 
@@ -28,7 +28,7 @@ class InstancePageState extends Equatable {
     required InstancePageStatus status,
     String? errorMessage,
     List<ThunderCommunity>? communities,
-    List<PostViewMedia>? posts,
+    List<ThunderPost>? posts,
     List<PersonView>? users,
     List<CommentView>? comments,
     int? page,

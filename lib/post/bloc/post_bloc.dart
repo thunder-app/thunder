@@ -15,7 +15,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -37,7 +37,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class PostBloc extends Bloc<PostEvent, PostState> {
-  PostBloc() : super(const PostState()) {
+  PostBloc() : super(PostState()) {
     on<GetPostEvent>(
       _getPostEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -113,31 +113,31 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           GetPostResponse? getPostResponse;
 
           // Retrieve the full post for moderators and cross-posts
-          int? postId = event.postId ?? event.postView?.postView.post.id;
+          int? postId = event.postId ?? event.post?.id;
           if (postId != null) {
             getPostResponse = await lemmy.run(GetPost(id: postId, auth: account.jwt)).timeout(timeout, onTimeout: () {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
 
-          PostViewMedia? postView = event.postView;
+          ThunderPost? post = event.post;
           List<CommunityModeratorView>? moderators;
-          List<PostView>? crossPosts;
+          List<ThunderPost>? crossPosts;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+            List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
 
-            postView = posts.first;
+            post = posts.first;
 
             moderators = getPostResponse.moderators;
-            crossPosts = getPostResponse.crossPosts;
+            crossPosts = getPostResponse.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
           }
 
           // If we can't get mods from the post response, fallback to getting the whole community.
-          if (moderators == null && postView != null) {
+          if (moderators == null && post != null) {
             try {
-              moderators = (await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account.jwt)).timeout(timeout, onTimeout: () {
+              moderators = (await lemmy.run(GetCommunity(id: post.community?.id, auth: account.jwt)).timeout(timeout, onTimeout: () {
                 throw Exception();
               }))
                   .moderators;
@@ -148,9 +148,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           emit(state.copyWith(
               status: PostStatus.success,
-              postId: postView?.postView.post.id,
-              postView: postView,
-              communityId: postView?.postView.post.communityId,
+              postId: post?.id,
+              post: post,
+              communityId: post?.community?.id,
               moderators: moderators,
               crossPosts: crossPosts,
               selectedCommentPath: event.selectedCommentPath,
@@ -171,9 +171,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               .run(GetComments(
             page: event.selectedCommentId == null ? 1 : null,
             auth: account.jwt,
-            communityId: postView?.postView.post.communityId,
+            communityId: post?.community?.id,
             maxDepth: COMMENT_MAX_DEPTH,
-            postId: postView?.postView.post.id,
+            postId: post?.id,
             sort: sortType,
             limit: commentLimit,
             type: ListingType.all,
@@ -195,15 +195,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           return emit(
             state.copyWith(
                 status: PostStatus.success,
-                postId: postView?.postView.post.id,
-                postView: postView,
+                postId: post?.id,
+                post: post,
                 comments: commentTree,
                 commentNodes: comments,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.comments.length,
                 hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
-                communityId: postView?.postView.post.communityId,
+                communityId: post?.community?.id,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
                 selectedCommentPath: event.selectedCommentPath,
@@ -290,8 +290,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
-            if (!state.hasReachedCommentEnd && state.commentCount >= state.postView!.postView.counts.comments) {
+          if (state.commentCount >= state.post!.comments! || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+            if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
             if (event.commentParentId == null) {
@@ -374,21 +374,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       // Optimistically update the post
-      PostView originalPostView = state.postView!.postView;
+      ThunderPost? post = state.post;
 
-      PostView updatedPostView = optimisticallyVotePost(state.postView!, event.score);
-      state.postView?.postView = updatedPostView;
+      ThunderPost updatedPost = optimisticallyVotePost(state.post!, event.score);
+      state.post = updatedPost;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
       emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
-      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
-        state.postView?.postView = originalPostView;
+      updatedPost = await votePost(state.post!, event.score).timeout(timeout, onTimeout: () {
+        state.post = post;
         throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutVotingPost);
       });
 
-      state.postView?.postView = postView;
+      state.post = updatedPost;
 
       return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e) {
@@ -400,11 +400,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
+      ThunderPost postView = await savePost(state.post!, event.save).timeout(timeout, onTimeout: () {
         throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSavingPost);
       });
 
-      state.postView?.postView = postView;
+      state.post = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e) {
@@ -572,7 +572,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
-      postView: null,
+      post: null,
       newlyCreatedCommentId: event.commentMatches.first.id,
       commentMatches: event.commentMatches,
       navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment.id)) + 1,
@@ -602,7 +602,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
-      postView: null,
+      post: null,
       newlyCreatedCommentId: newSelectedCommentId,
       navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment!.id)) + 1,
       navigateCommentId: state.navigateCommentId + 1,
@@ -656,6 +656,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   void _onPostUpdated(PostUpdatedEvent event, Emitter<PostState> emit) {
-    return emit(state.copyWith(status: state.status, postView: event.postViewMedia));
+    return emit(state.copyWith(status: state.status, post: event.post));
   }
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -12,8 +10,8 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 
 /// Widget which displays a post's cross-posts
 class CrossPosts extends StatefulWidget {
-  final List<PostView> crossPosts;
-  final PostViewMedia? originalPost;
+  final List<ThunderPost> crossPosts;
+  final ThunderPost? originalPost;
   final bool? isNewPost;
 
   const CrossPosts({
@@ -79,7 +77,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                           children: [
                             InkWell(
                               borderRadius: BorderRadius.circular(5),
-                              onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index]])).first),
+                              onTap: () async => navigateToPost(context, postId: widget.crossPosts[index].id),
                               child: Row(
                                 children: [
                                   Icon(
@@ -93,9 +91,9 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   ),
                                   CommunityFullNameWidget(
                                     context,
-                                    widget.crossPosts[index].community.name,
-                                    widget.crossPosts[index].community.title,
-                                    fetchInstanceNameFromUrl(widget.crossPosts[index].community.actorId),
+                                    widget.crossPosts[index].community?.name,
+                                    widget.crossPosts[index].community?.title,
+                                    fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
                                     textStyle: crossPostLinkTextStyle,
                                   ),
                                   const Spacer(),
@@ -138,9 +136,9 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                           WidgetSpan(
                             child: CommunityFullNameWidget(
                               context,
-                              widget.crossPosts[0].community.name,
-                              widget.crossPosts[0].community.title,
-                              fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId),
+                              widget.crossPosts[0].community?.name,
+                              widget.crossPosts[0].community?.title,
+                              fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
                               textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
                             ),
                           ),

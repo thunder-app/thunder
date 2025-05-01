@@ -349,7 +349,7 @@ class _InstancePageState extends State<InstancePage> {
                         if (viewType == SearchType.posts)
                           FeedPostCardList(
                             markPostReadOnScroll: false,
-                            postViewMedias: state.posts ?? [],
+                            posts: state.posts ?? [],
                             tabletMode: tabletMode,
                           ),
                         if (viewType == SearchType.comments)

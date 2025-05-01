@@ -23,7 +23,7 @@ class SearchState extends Equatable {
   List<ThunderCommunity>? trendingCommunities;
   List<PersonView>? users;
   List<CommentView>? comments;
-  List<PostViewMedia>? posts;
+  List<ThunderPost>? posts;
   List<ThunderInstanceInfo>? instances;
 
   final String? errorMessage;
@@ -40,7 +40,7 @@ class SearchState extends Equatable {
     List<ThunderCommunity>? trendingCommunities,
     List<PersonView>? users,
     List<CommentView>? comments,
-    List<PostViewMedia>? posts,
+    List<ThunderPost>? posts,
     List<ThunderInstanceInfo>? instances,
     String? errorMessage,
     int? page,

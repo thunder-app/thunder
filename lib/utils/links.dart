@@ -180,7 +180,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       ));
 
       if (context.mounted) {
-        navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
+        navigateToPost(context, post: (await parsePosts([post.postView])).first);
         return;
       }
     } catch (e) {

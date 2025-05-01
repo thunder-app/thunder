@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -59,19 +59,19 @@ enum PostPostAction {
 
 /// A bottom sheet that allows the user to perform actions on the post.
 ///
-/// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the post.
+/// Given a [post] and a [onAction] callback, this widget will display a list of actions that can be taken on the post.
 /// The [onAction] callback will be triggered when an action is performed.
 class PostPostActionBottomSheet extends StatefulWidget {
-  const PostPostActionBottomSheet({super.key, required this.context, required this.postViewMedia, required this.onAction});
+  const PostPostActionBottomSheet({super.key, required this.context, required this.post, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
   /// The post information
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
   /// Called when an action is selected
-  final Function(PostAction postAction, PostViewMedia? postViewMedia) onAction;
+  final Function(PostAction postAction, ThunderPost? post) onAction;
 
   @override
   State<PostPostActionBottomSheet> createState() => _PostPostActionBottomSheetState();
@@ -79,7 +79,7 @@ class PostPostActionBottomSheet extends StatefulWidget {
 
 class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   void performAction(PostPostAction action) async {
-    final postViewMedia = widget.postViewMedia;
+    final post = widget.post;
 
     switch (action) {
       case PostPostAction.reportPost:
@@ -87,23 +87,23 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         return;
       case PostPostAction.editPost:
         Navigator.of(context).pop();
-        navigateToCreatePostPage(context, communityId: postViewMedia.postView.community.id, postViewMedia: postViewMedia);
+        navigateToCreatePostPage(context, communityId: post.community?.id, post: post);
         return;
       case PostPostAction.deletePost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: true));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: post.id, value: true));
         break;
       case PostPostAction.restorePost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: postViewMedia.postView.post.id, value: false));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: post.id, value: false));
         break;
       case PostPostAction.lockPost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: true));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: post.id, value: true));
         break;
       case PostPostAction.unlockPost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: postViewMedia.postView.post.id, value: false));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: post.id, value: false));
         break;
       case PostPostAction.removePost:
         showRemovePostReasonDialog();
@@ -113,11 +113,11 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         break;
       case PostPostAction.pinPostToCommunity:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: true));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: post.id, value: true));
         break;
       case PostPostAction.unpinPostFromCommunity:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: postViewMedia.postView.post.id, value: false));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: post.id, value: false));
         break;
       // case PostPostAction.pinPostToInstance:
       //   Navigator.of(context).pop();
@@ -140,7 +140,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         widget.context.read<FeedBloc>().add(
               FeedItemActionedEvent(
                 postAction: PostAction.report,
-                postId: widget.postViewMedia.postView.post.id,
+                postId: widget.post.id,
                 value: messageController.text,
               ),
             );
@@ -166,15 +166,15 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: widget.postViewMedia.postView.post.removed ? GlobalContext.l10n.restorePost : GlobalContext.l10n.removalReason,
-      primaryButtonText: widget.postViewMedia.postView.post.removed ? GlobalContext.l10n.restore : GlobalContext.l10n.remove,
+      title: widget.post.removed ? GlobalContext.l10n.restorePost : GlobalContext.l10n.removalReason,
+      primaryButtonText: widget.post.removed ? GlobalContext.l10n.restore : GlobalContext.l10n.remove,
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
         widget.context.read<FeedBloc>().add(
               FeedItemActionedEvent(
                 postAction: PostAction.remove,
-                postId: widget.postViewMedia.postView.post.id,
+                postId: widget.post.id,
                 value: {
-                  'remove': !widget.postViewMedia.postView.post.removed,
+                  'remove': !widget.post.removed,
                   'reason': messageController.text,
                 },
               ),
@@ -206,20 +206,20 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
-    final isPostLocked = widget.postViewMedia.postView.post.locked;
-    final isPostPinnedToCommunity = widget.postViewMedia.postView.post.featuredCommunity; // Pin to community
+    final isPostLocked = widget.post.locked;
+    final isPostPinnedToCommunity = widget.post.featuredCommunity; // Pin to community
     // final isPostPinnedToInstance = widget.postViewMedia.postView.post.featuredLocal; // Pin to instance
-    final isPostDeleted = widget.postViewMedia.postView.post.deleted; // Deleted by the user
-    final isPostRemoved = widget.postViewMedia.postView.post.removed; // Removed by a moderator
+    final isPostDeleted = widget.post.deleted; // Deleted by the user
+    final isPostRemoved = widget.post.removed; // Removed by a moderator
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.postViewMedia.postView.creator.actorId) {
+      if (account?.actorId == widget.post.creator?.actorId) {
         userActions = userActions.where((action) => action != PostPostAction.reportPost).toList();
       } else {
         userActions = userActions.where((action) => action != PostPostAction.editPost && action != PostPostAction.deletePost && action != PostPostAction.restorePost).toList();

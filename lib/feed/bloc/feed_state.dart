@@ -5,7 +5,7 @@ enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity, 
 final class FeedState extends Equatable {
   const FeedState({
     this.status = FeedStatus.initial,
-    this.postViewMedias = const <PostViewMedia>[],
+    this.posts = const <ThunderPost>[],
     this.commentViews = const <CommentView>[],
     this.hasReachedPostsEnd = false,
     this.hasReachedCommentsEnd = false,
@@ -37,7 +37,7 @@ final class FeedState extends Equatable {
   final FeedStatus status;
 
   /// The posts to display on the feed
-  final List<PostViewMedia> postViewMedias;
+  final List<ThunderPost> posts;
 
   /// The comments to display on the feed
   final List<CommentView> commentViews;
@@ -116,7 +116,7 @@ final class FeedState extends Equatable {
 
   FeedState copyWith({
     FeedStatus? status,
-    List<PostViewMedia>? postViewMedias,
+    List<ThunderPost>? posts,
     List<CommentView>? commentViews,
     bool? hasReachedPostsEnd,
     bool? hasReachedCommentsEnd,
@@ -145,7 +145,7 @@ final class FeedState extends Equatable {
   }) {
     return FeedState(
       status: status ?? this.status,
-      postViewMedias: postViewMedias ?? this.postViewMedias,
+      posts: posts ?? this.posts,
       commentViews: commentViews ?? this.commentViews,
       hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
       hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
@@ -176,7 +176,7 @@ final class FeedState extends Equatable {
 
   @override
   String toString() {
-    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
+    return '''FeedState { status: $status, posts: ${posts.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
   }
 
   @override
@@ -186,7 +186,7 @@ final class FeedState extends Equatable {
         communityInstance,
         communityModerators,
         fullPersonView,
-        postViewMedias,
+        posts,
         commentViews,
         hasReachedPostsEnd,
         hasReachedCommentsEnd,

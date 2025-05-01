@@ -15,8 +15,31 @@ class ThunderPost {
       : _postView = postView,
         _media = media;
 
+  Post get internalPost => _post;
+
+  PostView? get internalPostView => _postView;
+
   /// The ID of the post.
   int get id => _post.id;
+
+  /// The url associated with the post
+  String? get link => _post.url;
+
+  String? get thumbnail => _post.thumbnailUrl;
+
+  String? get altText => _post.altText;
+
+  String? get body => _post.body;
+
+  bool get nsfw => _post.nsfw;
+
+  bool? get creatorIsModerator => _postView?.creatorIsModerator;
+
+  bool? get creatorIsAdmin => _postView?.creatorIsAdmin;
+
+  bool? get creatorBannedFromCommunity => _postView?.creatorBannedFromCommunity;
+
+  SubscribedType? get subscribed => _postView?.subscribed;
 
   /// The title of the post.
   String get title => _post.name;
@@ -74,4 +97,26 @@ class ThunderPost {
 
   /// The language of the post.
   int? get languageId => _post.languageId;
+
+  /// The creator of the post
+  Person? get creator => _postView?.creator;
+
+  /// The community associated with the post
+  Community? get community => _postView?.community;
+
+  /// The url for the post. This is generally associated with the ActivityPub actor URL.
+  String get url => _post.apId;
+
+  /// Creates a new instance of [ThunderPost] with the given fields replaced with the new values.
+  ThunderPost copyWith({
+    Post? post,
+    PostView? postView,
+    List<Media>? media,
+  }) {
+    return ThunderPost(
+      post ?? _post,
+      postView: postView ?? _postView,
+      media: media ?? _media,
+    );
+  }
 }

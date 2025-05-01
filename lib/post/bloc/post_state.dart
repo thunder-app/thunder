@@ -11,10 +11,10 @@ enum PostStatus {
 }
 
 class PostState extends Equatable {
-  const PostState({
+  PostState({
     this.status = PostStatus.initial,
     this.postId,
-    this.postView,
+    this.post,
     this.comments = const [],
     this.commentNodes,
     this.commentResponseMap = const <int, CommentView>{},
@@ -50,8 +50,8 @@ class PostState extends Equatable {
   final int? postId;
   final int? communityId;
   final List<CommunityModeratorView>? moderators;
-  final List<PostView>? crossPosts;
-  final PostViewMedia? postView;
+  final List<ThunderPost>? crossPosts;
+  ThunderPost? post;
 
   // Comment related data
   final List<CommentViewTree> comments;
@@ -90,7 +90,7 @@ class PostState extends Equatable {
   PostState copyWith({
     required PostStatus status,
     int? postId,
-    PostViewMedia? postView,
+    ThunderPost? post,
     List<CommentViewTree>? comments,
     CommentNode? commentNodes,
     Map<int, CommentView>? commentResponseMap,
@@ -99,7 +99,7 @@ class PostState extends Equatable {
     bool? hasReachedCommentEnd,
     int? communityId,
     List<CommunityModeratorView>? moderators,
-    List<PostView>? crossPosts,
+    List<ThunderPost>? crossPosts,
     String? errorMessage,
     CommentSortType? sortType,
     IconData? sortTypeIcon,
@@ -118,7 +118,7 @@ class PostState extends Equatable {
     return PostState(
       status: status,
       postId: postId ?? this.postId,
-      postView: postView ?? this.postView,
+      post: post ?? this.post,
       comments: comments ?? this.comments,
       commentNodes: commentNodes ?? this.commentNodes,
       commentResponseMap: commentResponseMap ?? this.commentResponseMap,
@@ -149,7 +149,7 @@ class PostState extends Equatable {
   List<Object?> get props => [
         status,
         postId,
-        postView,
+        post,
         comments,
         commentNodes,
         commentPage,

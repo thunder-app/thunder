@@ -184,7 +184,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                     shrinkWrap: true,
                                                                     slivers: [
                                                                       FeedPostCardList(
-                                                                        postViewMedias: state.imageSearchPosts!,
+                                                                        posts: state.imageSearchPosts!,
                                                                         tabletMode: false,
                                                                         markPostReadOnScroll: false,
                                                                         disableSwiping: true,

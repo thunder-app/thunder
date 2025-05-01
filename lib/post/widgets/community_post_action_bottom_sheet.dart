@@ -7,7 +7,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
@@ -47,13 +46,13 @@ enum CommunityPostAction {
 
 /// A bottom sheet that allows the user to perform actions on a community.
 ///
-/// Given a [postViewMedia] and a [onAction] callback, this widget will display a list of actions that can be taken on the community.
+/// Given a [post] and a [onAction] callback, this widget will display a list of actions that can be taken on the community.
 /// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [ThunderCommunity].
 class CommunityPostActionBottomSheet extends StatefulWidget {
-  const CommunityPostActionBottomSheet({super.key, required this.postViewMedia, required this.onAction});
+  const CommunityPostActionBottomSheet({super.key, required this.post, required this.onAction});
 
   /// The post information
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
   /// Called when an action is selected
   final Function(CommunityAction communityAction, ThunderCommunity? community) onAction;
@@ -69,21 +68,21 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     switch (action) {
       case CommunityPostAction.viewCommunity:
         Navigator.of(context).pop();
-        navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.postViewMedia.postView.community.id);
+        navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.post.community!.id);
         break;
       case CommunityPostAction.subscribeToCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.follow, value: true));
+        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.follow, value: true));
         setState(() => _communityAction = CommunityAction.follow);
         break;
       case CommunityPostAction.unsubscribeFromCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.follow, value: false));
+        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.follow, value: false));
         break;
       case CommunityPostAction.blockCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.block, value: true));
+        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.block, value: true));
         setState(() => _communityAction = CommunityAction.block);
         break;
       case CommunityPostAction.unblockCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.postViewMedia.postView.community.id, communityAction: CommunityAction.block, value: false));
+        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.block, value: false));
         break;
     }
   }
@@ -99,14 +98,14 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
 
     // final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
 
-    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
-    final isSubscribedToCommunity = widget.postViewMedia.postView.subscribed != SubscribedType.notSubscribed;
+    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isSubscribedToCommunity = widget.post.subscribed != SubscribedType.notSubscribed;
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();

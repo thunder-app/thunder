@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/models/models.dart';
 
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -107,7 +107,7 @@ enum PostFabAction {
     }
   }
 
-  void execute({BuildContext? context, void Function()? override, PostViewMedia? postView, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
+  void execute({BuildContext? context, void Function()? override, ThunderPost? post, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
     if (override != null) {
       override();
     }
@@ -125,7 +125,7 @@ enum PostFabAction {
         // Invoked via override
         break;
       case PostFabAction.refresh:
-        context?.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
+        context?.read<PostBloc>().add(GetPostEvent(post: post, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
       case PostFabAction.search:
         // Invoked via override
         break;

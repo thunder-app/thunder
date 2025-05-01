@@ -42,7 +42,7 @@ class ImageViewer extends StatefulWidget {
     this.isPeek = false,
   }) : assert(url != null || bytes != null);
 
-  get postViewMedia => null;
+  get post => null;
 
   @override
   State<ImageViewer> createState() => _ImageViewerState();

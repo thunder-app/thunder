@@ -10,7 +10,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -187,7 +186,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
         comments: searchResponse?.comments,
-        posts: await parsePostViews(searchResponse?.posts ?? []),
+        posts: await parsePosts(searchResponse?.posts ?? []),
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,
@@ -241,7 +240,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
           state.comments = [...state.comments ?? [], ...searchResponse?.comments ?? []];
-          state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse?.posts ?? [])];
+          state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts ?? [])];
 
           return emit(state.copyWith(
             status: SearchStatus.success,

@@ -238,7 +238,7 @@ Future<DeepLinkResult> _navigateToPost(BuildContext context, String link) async 
 
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
 
-    navigateToPost(context, postViewMedia: (await parsePostViews([response.postView])).first);
+    navigateToPost(context, post: (await parsePosts([response.postView])).first);
     return DeepLinkResult.successful();
   } catch (e) {
     throw DeepLinkException(GlobalContext.l10n.exceptionProcessingUri, url: link, type: DeepLinkErrorType.entityResolution);

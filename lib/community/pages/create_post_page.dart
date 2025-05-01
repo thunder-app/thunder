@@ -24,7 +24,6 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
@@ -68,14 +67,14 @@ class CreatePostPage extends StatefulWidget {
   /// Alternative text for the image
   final String? altText;
 
-  /// [postView] is passed in when editing an existing post
-  final PostView? postView;
+  /// [post] is passed in when editing an existing post
+  final ThunderPost? post;
 
   /// Whether or not this post is a cross post
   final bool isCrossPost;
 
   /// Callback function that is triggered whenever the post is successfully created or updated
-  final Function(PostViewMedia postViewMedia, bool userChanged)? onPostSuccess;
+  final Function(ThunderPost post, bool userChanged)? onPostSuccess;
 
   const CreatePostPage({
     super.key,
@@ -88,7 +87,7 @@ class CreatePostPage extends StatefulWidget {
     this.customThumbnail,
     this.altText,
     this.prePopulated = false,
-    this.postView,
+    this.post,
     this.isCrossPost = false,
     this.onPostSuccess,
   });
@@ -99,7 +98,7 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   /// Holds the draft type associated with the post. This type is determined by the input parameters passed in.
-  /// If [postView] is passed in, this will be a [DraftType.postEdit].
+  /// If [post] is passed in, this will be a [DraftType.postEdit].
   /// If [communityId] or [communityView] is passed in, this will be a [DraftType.postCreate].
   /// Otherwise it will be a [DraftType.postCreateGeneral].
   late DraftType draftType;
@@ -152,7 +151,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   ThunderCommunity? community;
 
   /// A list of cross posts for the given post. This is determined by the URL parameter
-  List<PostView> crossPosts = [];
+  List<ThunderPost> crossPosts = [];
 
   /// The corresponding controllers for the title, body and url text fields
   final TextEditingController _bodyTextController = TextEditingController();
@@ -238,14 +237,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
 
     // Logic for pre-populating the post with the [postView] for edits
-    if (widget.postView != null) {
-      _titleTextController.text = widget.postView!.post.name;
-      _urlTextController.text = widget.postView!.post.url ?? '';
-      _customThumbnailTextController.text = widget.postView!.post.thumbnailUrl ?? '';
-      _altTextTextController.text = widget.postView!.post.altText ?? '';
-      _bodyTextController.text = widget.postView!.post.body ?? '';
-      isNSFW = widget.postView!.post.nsfw;
-      languageId = widget.postView!.post.languageId;
+    if (widget.post != null) {
+      _titleTextController.text = widget.post!.title;
+      _urlTextController.text = widget.post!.link ?? '';
+      _customThumbnailTextController.text = widget.post!.thumbnail ?? '';
+      _altTextTextController.text = widget.post!.altText ?? '';
+      _bodyTextController.text = widget.post!.body ?? '';
+      isNSFW = widget.post!.nsfw;
+      languageId = widget.post!.languageId;
     }
 
     // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
@@ -281,9 +280,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
-    if (widget.postView != null) {
+    if (widget.post != null) {
       draftType = DraftType.postEdit;
-      draftExistingId = widget.postView?.post.id;
+      draftExistingId = widget.post?.id;
     } else if (widget.communityId != null) {
       draftType = DraftType.postCreate;
       draftReplyId = widget.communityId;
@@ -320,11 +319,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
           Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-          _titleTextController.text = widget.postView?.post.name ?? '';
-          _urlTextController.text = widget.postView?.post.url ?? '';
-          _customThumbnailTextController.text = widget.postView?.post.thumbnailUrl ?? '';
-          _altTextTextController.text = widget.postView?.post.altText ?? '';
-          _bodyTextController.text = widget.postView?.post.body ?? '';
+          _titleTextController.text = widget.post?.title ?? '';
+          _urlTextController.text = widget.post?.link ?? '';
+          _customThumbnailTextController.text = widget.post?.thumbnail ?? '';
+          _altTextTextController.text = widget.post?.altText ?? '';
+          _bodyTextController.text = widget.post?.body ?? '';
         },
       );
     }
@@ -347,15 +346,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// Checks whether we are potentially saving a draft of an edit and, if so,
   /// whether the draft contains different contents from the edit
   bool _draftDiffersFromEdit(Draft draft) {
-    if (widget.postView == null) {
+    if (widget.post == null) {
       return true;
     }
 
-    return draft.title != widget.postView!.post.name ||
-        draft.url != (widget.postView!.post.url ?? '') ||
-        draft.customThumbnail != (widget.postView!.post.thumbnailUrl ?? '') ||
-        draft.altText != (widget.postView!.post.altText ?? '') ||
-        draft.body != (widget.postView!.post.body ?? '');
+    return draft.title != widget.post!.title ||
+        draft.url != (widget.post!.link ?? '') ||
+        draft.customThumbnail != (widget.post!.thumbnail ?? '') ||
+        draft.altText != (widget.post!.altText ?? '') ||
+        draft.body != (widget.post!.body ?? '');
   }
 
   /// Attempts to get the suggested title for a given link
@@ -389,8 +388,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
-          if (state.status == CreatePostStatus.success && state.postViewMedia != null) {
-            widget.onPostSuccess?.call(state.postViewMedia!, userChanged);
+          if (state.status == CreatePostStatus.success && state.post != null) {
+            widget.onPostSuccess?.call(state.post!, userChanged);
             Navigator.of(context).pop();
           }
 
@@ -422,7 +421,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
-                title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
+                title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
                 centerTitle: false,
               ),
               body: SafeArea(
@@ -460,7 +459,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 _validateSubmission();
                               },
                               onUserChanged: () => userChanged = true,
-                              enableAccountSwitching: widget.postView == null,
+                              enableAccountSwitching: widget.post == null,
                             ),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
@@ -576,7 +575,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               ),
                             ),
-                            if (crossPosts.isNotEmpty && widget.postView == null) const SizedBox(height: 6),
+                            if (crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
                             Visibility(
                               visible: url.isNotEmpty && crossPosts.isNotEmpty,
                               child: CrossPosts(
@@ -725,9 +724,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                         child: CircularProgressIndicator(),
                                       )
                                     : Icon(
-                                        widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                        widget.post != null ? Icons.edit_rounded : Icons.send_rounded,
                                         color: theme.colorScheme.onSecondary,
-                                        semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                                        semanticLabel: widget.post != null ? l10n.editPost : l10n.createPost,
                                       ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: theme.colorScheme.secondary,
@@ -774,7 +773,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
 
     setState(() {
-      crossPosts = searchResponse?.posts ?? [];
+      crossPosts = searchResponse?.posts.map((pv) => ThunderPost(pv.post, postView: pv)).toList() ?? [];
     });
   }
 
@@ -814,7 +813,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           url: url,
           customThumbnail: customThumbnail,
           altText: altText,
-          postIdBeingEdited: widget.postView?.post.id,
+          postIdBeingEdited: widget.post?.id,
           languageId: languageId,
         );
   }

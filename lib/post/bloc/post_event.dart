@@ -9,13 +9,13 @@ abstract class PostEvent extends Equatable {
 
 class GetPostEvent extends PostEvent {
   final int? postId;
-  final PostViewMedia? postView;
+  final ThunderPost? post;
   final CommentSortType? sortType;
   final String? selectedCommentPath;
   final int? selectedCommentId;
   final int? newlyCreatedCommentId;
 
-  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, this.newlyCreatedCommentId});
+  const GetPostEvent({this.sortType, this.post, this.postId, this.selectedCommentPath, this.selectedCommentId, this.newlyCreatedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
@@ -103,7 +103,7 @@ class UpdateCollapsedComment extends PostEvent {
 }
 
 final class PostUpdatedEvent extends PostEvent {
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
-  const PostUpdatedEvent({required this.postViewMedia});
+  const PostUpdatedEvent({required this.post});
 }

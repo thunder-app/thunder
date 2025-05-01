@@ -6,10 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/community/widgets/post_card.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -26,7 +26,7 @@ class FeedPostCardList extends StatefulWidget {
   final List<int>? queuedForRemoval;
 
   /// The list of posts to show on the feed
-  final List<PostViewMedia> postViewMedias;
+  final List<ThunderPost> posts;
 
   /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderBloc]
   final bool? dimReadPosts;
@@ -39,7 +39,7 @@ class FeedPostCardList extends StatefulWidget {
 
   const FeedPostCardList({
     super.key,
-    required this.postViewMedias,
+    required this.posts,
     required this.tabletMode,
     required this.markPostReadOnScroll,
     this.queuedForRemoval,
@@ -79,20 +79,17 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     super.dispose();
   }
 
-  /// Builds an individual post card with the given [postViewMedia] and [index].
+  /// Builds an individual post card with the given [post] and [index].
   Widget _buildPostCard({
-    required PostViewMedia postViewMedia,
+    required ThunderPost post,
     required int index,
     FeedType? feedType,
     bool dim = false,
     FeedListType? feedListType,
     bool isUserLoggedIn = false,
   }) {
-    final postView = postViewMedia.postView;
-    final post = postView.post;
-
     Widget child = PostCard(
-      postViewMedia: postViewMedia,
+      post: post,
       onVoteAction: (int voteType) {
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, value: voteType));
       },
@@ -127,7 +124,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
     if (isUserLoggedIn && widget.markPostReadOnScroll) {
       child = VisibilityDetector(
-        key: Key(post.apId),
+        key: Key(post.url),
         onVisibilityChanged: (info) {
           if (!isScrollingDown) return;
 
@@ -138,14 +135,13 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
             debounceTimer = Timer(const Duration(milliseconds: 500), () {
               // TODO: Improve logic here so that we don't have to iterate through all posts if possible.
               for (int i = index; i >= 0; i--) {
-                final postView = widget.postViewMedias[i].postView;
-                final post = postView.post;
+                final post = widget.posts[i];
 
                 // If we already checked this post's read status, or we already marked it as read, skip it
                 if (readPostIds.contains(post.id) || markReadPostIds.contains(post.id)) continue;
 
                 // Otherwise, check the post read status. If it's unread, queue it for marking as read
-                if (postView.read == false) markReadPostIds.add(post.id);
+                if (post.read == false) markReadPostIds.add(post.id);
                 readPostIds.add(post.id);
               }
 
@@ -199,7 +195,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
         mainAxisSpacing: 0,
         itemBuilder: (BuildContext context, int index) {
           return _buildPostCard(
-            postViewMedia: widget.postViewMedias[index],
+            post: widget.posts[index],
             index: index,
             dim: widget.indicateRead ?? dimReadPosts,
             feedType: state.feedType,
@@ -207,14 +203,14 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
             isUserLoggedIn: isUserLoggedIn,
           );
         },
-        childCount: widget.postViewMedias.length,
+        childCount: widget.posts.length,
       );
     }
 
     return SliverList.builder(
       itemBuilder: (context, index) {
         return _buildPostCard(
-          postViewMedia: widget.postViewMedias[index],
+          post: widget.posts[index],
           index: index,
           dim: widget.indicateRead ?? dimReadPosts,
           feedType: state.feedType,
@@ -222,7 +218,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
           isUserLoggedIn: isUserLoggedIn,
         );
       },
-      itemCount: widget.postViewMedias.length,
+      itemCount: widget.posts.length,
     );
   }
 }

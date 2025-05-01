@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -71,21 +71,21 @@ enum GeneralQuickPostAction {
 }
 
 /// Defines the general top-levelactions that can be taken on a post.
-/// Given a [postViewMedia] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the post.
+/// Given a [post] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the post.
 class GeneralPostActionBottomSheetPage extends StatefulWidget {
-  const GeneralPostActionBottomSheetPage({super.key, required this.context, required this.postViewMedia, required this.onSwitchActivePage, required this.onAction});
+  const GeneralPostActionBottomSheetPage({super.key, required this.context, required this.post, required this.onSwitchActivePage, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
   /// The post information
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
   /// Called when the active page is changed
   final Function(GeneralPostAction page) onSwitchActivePage;
 
   /// Called when an action is selected
-  final Function(PostAction postAction, PostViewMedia? postViewMedia) onAction;
+  final Function(PostAction postAction, ThunderPost? post) onAction;
 
   @override
   State<GeneralPostActionBottomSheetPage> createState() => _GeneralPostActionBottomSheetPageState();
@@ -93,16 +93,16 @@ class GeneralPostActionBottomSheetPage extends StatefulWidget {
 
 class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBottomSheetPage> {
   String? generateSubtitle(GeneralPostAction page) {
-    PostViewMedia postViewMedia = widget.postViewMedia;
+    ThunderPost post = widget.post;
 
-    String? communityInstance = fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId);
-    String? userInstance = fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId);
+    String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
+    String? userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, postViewMedia.postView.creator.name, postViewMedia.postView.creator.displayName, fetchInstanceNameFromUrl(postViewMedia.postView.creator.actorId));
+        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.actorId));
       case GeneralPostAction.community:
-        return generateCommunityFullName(context, postViewMedia.postView.community.name, postViewMedia.postView.community.title, fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId));
+        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
       case GeneralPostAction.instance:
         return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
       default:
@@ -111,24 +111,24 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   }
 
   void performAction(GeneralQuickPostAction action) {
-    final postViewMedia = widget.postViewMedia;
+    final post = widget.post;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == 1 ? 0 : 1));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.voteType == 1 ? 0 : 1));
         break;
       case GeneralQuickPostAction.downvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == -1 ? 0 : -1));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.voteType == -1 ? 0 : -1));
         break;
       case GeneralQuickPostAction.save:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.saved));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: post.id, value: !post.saved));
         break;
       case GeneralQuickPostAction.read:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.read));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: post.id, value: !post.read));
         break;
       case GeneralQuickPostAction.hide:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.hide, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.hidden == true ? false : true));
-        widget.onAction(PostAction.hide, postViewMedia);
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.hide, postId: post.id, value: post.hidden == true ? false : true));
+        widget.onAction(PostAction.hide, post);
         break;
     }
 
@@ -136,36 +136,36 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   }
 
   IconData getIcon(GeneralQuickPostAction action) {
-    final postViewMedia = widget.postViewMedia;
+    final post = widget.post;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return postViewMedia.postView.myVote == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
+        return post.voteType == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
       case GeneralQuickPostAction.downvote:
-        return postViewMedia.postView.myVote == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
+        return post.voteType == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
       case GeneralQuickPostAction.save:
-        return postViewMedia.postView.saved ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
+        return post.saved ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
       case GeneralQuickPostAction.read:
-        return postViewMedia.postView.read ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
+        return post.read ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
       case GeneralQuickPostAction.hide:
-        return postViewMedia.postView.hidden == true ? GeneralQuickPostAction.hide.enabledIcon : GeneralQuickPostAction.hide.disabledIcon;
+        return post.hidden == true ? GeneralQuickPostAction.hide.enabledIcon : GeneralQuickPostAction.hide.disabledIcon;
     }
   }
 
   String getLabel(GeneralQuickPostAction action) {
-    final postViewMedia = widget.postViewMedia;
+    final post = widget.post;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return postViewMedia.postView.myVote == 1 ? l10n.upvoted : l10n.upvote;
+        return post.voteType == 1 ? l10n.upvoted : l10n.upvote;
       case GeneralQuickPostAction.downvote:
-        return postViewMedia.postView.myVote == -1 ? l10n.downvoted : l10n.downvote;
+        return post.voteType == -1 ? l10n.downvoted : l10n.downvote;
       case GeneralQuickPostAction.save:
-        return postViewMedia.postView.saved ? l10n.saved : l10n.save;
+        return post.saved ? l10n.saved : l10n.save;
       case GeneralQuickPostAction.read:
-        return postViewMedia.postView.read ? l10n.read : l10n.markAsRead;
+        return post.read ? l10n.read : l10n.markAsRead;
       case GeneralQuickPostAction.hide:
-        return postViewMedia.postView.hidden == true ? l10n.hidden : l10n.hide;
+        return post.hidden == true ? l10n.hidden : l10n.hide;
     }
   }
 
@@ -188,19 +188,19 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
   Color? getForegroundColor(GeneralQuickPostAction action) {
     final state = context.read<ThunderBloc>().state;
-    final postViewMedia = widget.postViewMedia;
+    final post = widget.post;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return postViewMedia.postView.myVote == 1 ? state.upvoteColor.color : null;
+        return post.voteType == 1 ? state.upvoteColor.color : null;
       case GeneralQuickPostAction.downvote:
-        return postViewMedia.postView.myVote == -1 ? state.downvoteColor.color : null;
+        return post.voteType == -1 ? state.downvoteColor.color : null;
       case GeneralQuickPostAction.save:
-        return postViewMedia.postView.saved ? state.saveColor.color : null;
+        return post.saved ? state.saveColor.color : null;
       case GeneralQuickPostAction.read:
-        return postViewMedia.postView.read ? state.markReadColor.color : null;
+        return post.read ? state.markReadColor.color : null;
       case GeneralQuickPostAction.hide:
-        return postViewMedia.postView.hidden == true ? state.hideColor.color : null;
+        return post.hidden == true ? state.hideColor.color : null;
     }
   }
 

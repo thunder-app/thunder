@@ -15,7 +15,6 @@ import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
@@ -234,12 +233,12 @@ class _FeedViewState extends State<FeedView> {
     ThunderState state = context.read<ThunderBloc>().state;
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+    List<ThunderPost> posts = feedBloc.state.posts;
 
-    if (postViewMedias.isNotEmpty) {
-      for (PostViewMedia postViewMedia in postViewMedias) {
-        if (postViewMedia.postView.read) {
-          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+    if (posts.isNotEmpty) {
+      for (ThunderPost post in posts) {
+        if (post.read) {
+          setState(() => queuedForRemoval.add(post.id));
           await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
@@ -255,12 +254,12 @@ class _FeedViewState extends State<FeedView> {
     ThunderState state = context.read<ThunderBloc>().state;
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+    List<ThunderPost> posts = feedBloc.state.posts;
 
-    if (postViewMedias.isNotEmpty) {
-      for (PostViewMedia postViewMedia in postViewMedias) {
-        if (postViewMedia.postView.creator.id == userId || postViewMedia.postView.community.id == communityId) {
-          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+    if (posts.isNotEmpty) {
+      for (ThunderPost post in posts) {
+        if (post.creator?.id == userId || post.community?.id == communityId) {
+          setState(() => queuedForRemoval.add(post.id));
           await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
@@ -276,12 +275,12 @@ class _FeedViewState extends State<FeedView> {
     ThunderState state = context.read<ThunderBloc>().state;
 
     FeedBloc feedBloc = context.read<FeedBloc>();
-    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+    List<ThunderPost> posts = feedBloc.state.posts;
 
-    if (postViewMedias.isNotEmpty) {
-      for (PostViewMedia postViewMedia in postViewMedias) {
-        if (postViewMedia.postView.post.id == postId) {
-          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+    if (posts.isNotEmpty) {
+      for (ThunderPost post in posts) {
+        if (post.id == postId) {
+          setState(() => queuedForRemoval.add(post.id));
           await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
       }
@@ -360,7 +359,7 @@ class _FeedViewState extends State<FeedView> {
             },
             builder: (context, state) {
               final theme = Theme.of(context);
-              List<PostViewMedia> postViewMedias = state.postViewMedias;
+              List<ThunderPost> posts = state.posts;
               List<CommentView> commentViews = state.commentViews;
 
               return RefreshIndicator(
@@ -492,7 +491,7 @@ class _FeedViewState extends State<FeedView> {
                                   :
                                   // Widget representing the list of posts on the feed
                                   FeedPostCardList(
-                                      postViewMedias: postViewMedias,
+                                      posts: posts,
                                       tabletMode: tabletMode,
                                       markPostReadOnScroll: markPostReadOnScroll,
                                       queuedForRemoval: queuedForRemoval,

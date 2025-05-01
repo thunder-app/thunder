@@ -13,7 +13,6 @@ import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/widgets/post_card_title.dart';
@@ -26,7 +25,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
 
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
   final bool hideThumbnails;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
@@ -38,13 +37,13 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
-  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
+  final void Function({ThunderPost? post})? navigateToPost;
   final bool? indicateRead;
   final bool isLastTapped;
 
   const PostCardViewComfortable({
     super.key,
-    required this.postViewMedia,
+    required this.post,
     required this.hideThumbnails,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
@@ -84,14 +83,11 @@ class PostCardViewComfortable extends StatelessWidget {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    final postView = postViewMedia.postView;
-    final post = postView.post;
-    final counts = postView.counts;
-    final media = postViewMedia.media.firstOrNull;
+    final media = post.media.firstOrNull;
 
     bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
     final textContent = post.body ?? "";
-    final readColor = indicateRead && postView.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
+    final readColor = indicateRead && post.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
 
     Widget mediaView;
 
@@ -108,16 +104,16 @@ class PostCardViewComfortable extends StatelessWidget {
         markPostReadOnMediaView: markPostReadOnMediaView,
         isUserLoggedIn: isUserLoggedIn,
         navigateToPost: navigateToPost,
-        read: indicateRead && postView.read,
+        read: indicateRead && post.read,
       );
     }
 
     // Post statuses
-    final read = postView.read;
-    final hidden = postView.hidden;
+    final read = post.read;
+    final hidden = post.hidden;
     final removed = post.removed;
     final deleted = post.deleted;
-    final saved = postView.saved;
+    final saved = post.saved;
     final locked = post.locked;
     final pinned = post.featuredCommunity || post.featuredLocal;
 
@@ -126,8 +122,8 @@ class PostCardViewComfortable extends StatelessWidget {
     Widget postCardTitle = Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
       child: PostCardTitle(
-        title: post.name,
-        hidden: hidden ?? false,
+        title: post.title,
+        hidden: hidden,
         locked: locked,
         saved: saved,
         pinned: pinned,
@@ -162,7 +158,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: postView.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
+                  color: post.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),
               ),
             ),
@@ -178,22 +174,22 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
-                        user: ThunderUser(postViewMedia.postView.creator),
+                        user: ThunderUser(post.creator!),
                         community: ThunderCommunity(
-                          postViewMedia.postView.community,
-                          subscribed: postView.subscribed,
+                          post.community!,
+                          subscribed: post.subscribed,
                         ),
                         dim: dim,
                       ),
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
-                        score: counts.score,
-                        upvoteCount: counts.upvotes,
-                        downvoteCount: counts.downvotes,
-                        voteType: postView.myVote ?? 0,
-                        commentCount: counts.comments,
-                        unreadCommentCount: postView.unreadComments,
-                        dateTime: post.updated != null ? post.updated?.toIso8601String() : post.published.toIso8601String(),
+                        score: post.score,
+                        upvoteCount: post.upvotes,
+                        downvoteCount: post.downvotes,
+                        voteType: post.voteType ?? 0,
+                        commentCount: post.comments,
+                        unreadCommentCount: post.unreadComments,
+                        dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
                         edited: post.updated != null ? true : false,
                         url: media?.originalUrl,
                         languageId: post.languageId,
@@ -208,13 +204,13 @@ class PostCardViewComfortable extends StatelessWidget {
                     onPressed: () {
                       showPostActionBottomModalSheet(
                         context,
-                        postViewMedia,
-                        onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                        post,
+                        onAction: ({postAction, userAction, communityAction, post}) {
                           if (postAction == null && userAction == null && communityAction == null) return;
 
                           switch (postAction) {
                             case PostAction.hide:
-                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
+                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
                               break;
                             default:
                               break;
@@ -222,7 +218,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                           switch (userAction) {
                             case UserAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postView.creator.id));
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
                               break;
                             default:
                               break;
@@ -230,7 +226,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                           switch (communityAction) {
                             case CommunityAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postView.community.id));
+                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
                               break;
                             default:
                               break;
@@ -240,7 +236,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
                       HapticFeedback.mediumImpact();
                     }),
-                if (isUserLoggedIn) PostCardActions(voteType: postView.myVote ?? 0, saved: postView.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
+                if (isUserLoggedIn) PostCardActions(voteType: post.voteType ?? 0, saved: post.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
           )

@@ -7,7 +7,6 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -119,10 +118,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedHidePostsFromView(FeedHidePostsFromViewEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
-    postViewMedias.removeWhere((PostViewMedia postViewMedia) => event.postIds.contains(postViewMedia.postView.post.id));
+    List<ThunderPost> posts = List.from(state.posts);
+    posts.removeWhere((ThunderPost post) => event.postIds.contains(post.id));
 
-    emit(state.copyWith(status: FeedStatus.success, postViewMedias: postViewMedias));
+    emit(state.copyWith(status: FeedStatus.success, posts: posts));
   }
 
   /// Handles dismissing read posts from the feed
@@ -152,87 +151,79 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles post related actions on a given item within the feed
   Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
-    assert(!(event.postViewMedia == null && event.postId == null && event.postIds == null));
+    assert(!(event.post == null && event.postId == null && event.postIds == null));
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    // TODO: Check if the current account has permission to perform the PostAction
     switch (event.postAction) {
       case PostAction.vote:
         // Optimistically update the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyVotePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          PostView postView = await votePost(originalPostView.post.id, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+          updatedPost = await votePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           emit(state.copyWith(status: FeedStatus.success));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.save:
         // Optimistically save the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallySavePost(postViewMedia, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallySavePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          PostView postView = await savePost(originalPostView.post.id, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+          updatedPost = await savePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           emit(state.copyWith(status: FeedStatus.success));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.read:
         // Optimistically read the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-        if (existingPostViewMediaIndex == -1) return emit(state.copyWith(status: FeedStatus.failure));
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         // Give a slight delay to have the UI perform any navigation first
         await Future.delayed(const Duration(milliseconds: 250));
 
         try {
-          PostView updatedPostView = optimisticallyReadPost(postViewMedia, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyReadPost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await markPostAsRead(originalPostView.post.id, event.value);
+          bool success = await markPostAsRead(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.multiRead:
@@ -240,23 +231,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         if (eventPostIds.isNotEmpty) {
           // Optimistically read the posts
-          List<int> existingPostViewMediaIndexes = [];
+          List<int> existingPostIndexes = [];
           List<int> postIds = [];
-          List<PostViewMedia> postViewMedias = [];
-          List<PostView> originalPostViews = [];
-          for (int i = 0; i < state.postViewMedias.length; i++) {
-            if (eventPostIds.contains(state.postViewMedias[i].postView.post.id)) {
-              existingPostViewMediaIndexes.add(i);
-              postIds.add(state.postViewMedias[i].postView.post.id);
-              postViewMedias.add(state.postViewMedias[i]);
-              originalPostViews.add(state.postViewMedias[i].postView);
+          List<ThunderPost> posts = [];
+          List<ThunderPost> originalPosts = [];
+
+          for (int i = 0; i < state.posts.length; i++) {
+            if (eventPostIds.contains(state.posts[i].id)) {
+              existingPostIndexes.add(i);
+              postIds.add(state.posts[i].id);
+              posts.add(state.posts[i]);
+              originalPosts.add(state.posts[i]);
             }
           }
 
           try {
-            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
-              PostView updatedPostView = optimisticallyReadPost(postViewMedias[i], event.value);
-              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = updatedPostView;
+            for (int i = 0; i < existingPostIndexes.length; i++) {
+              ThunderPost updatedPost = optimisticallyReadPost(posts[i], event.value);
+              state.posts[existingPostIndexes[i]] = updatedPost;
             }
 
             // Emit the state to update UI immediately
@@ -268,165 +260,152 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
             // Restore the original post contents if not successful
             for (int i = 0; i < failed.length; i++) {
-              state.postViewMedias[existingPostViewMediaIndexes[failed[i]]].postView = originalPostViews[failed[i]];
+              state.posts[existingPostIndexes[failed[i]]] = originalPosts[failed[i]];
             }
             return emit(state.copyWith(status: FeedStatus.failure));
           } catch (e) {
             // Restore the original post contents
             // They will all be restored, but this is an unlikely scenario
-            for (int i = 0; i < existingPostViewMediaIndexes.length; i++) {
-              state.postViewMedias[existingPostViewMediaIndexes[i]].postView = originalPostViews[i];
+            for (int i = 0; i < existingPostIndexes.length; i++) {
+              state.posts[existingPostIndexes[i]] = originalPosts[i];
             }
             return emit(state.copyWith(status: FeedStatus.failure));
           }
         }
       case PostAction.hide:
         // Optimistically hide the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-        if (existingPostViewMediaIndex == -1) return emit(state.copyWith(status: FeedStatus.failure));
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyHidePost(postViewMedia, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyHidePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await markPostAsHidden(originalPostView.post.id, event.value);
+          bool success = await markPostAsHidden(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.delete:
         // Optimistically delete the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyDeletePost(postViewMedia.postView, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyDeletePost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await deletePost(originalPostView.post.id, event.value);
+          bool success = await deletePost(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.report:
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          await reportPost(postViewMedia.postView.post.id, event.value);
+          await reportPost(post.id, event.value);
           return emit(state.copyWith(status: FeedStatus.success));
         } catch (e) {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.lock:
         // Optimistically lock the post
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyLockPost(postViewMedia.postView, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyLockPost(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await lockPost(originalPostView.post.id, event.value);
+          bool success = await lockPost(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.pinCommunity:
         // Optimistically pin the post to the community
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyPinPostToCommunity(postViewMedia.postView, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyPinPostToCommunity(post, event.value);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await pinPostToCommunity(originalPostView.post.id, event.value);
+          bool success = await pinPostToCommunity(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.remove:
         // Optimistically remove the post from the community
-        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
-
-        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
-        PostView originalPostView = postViewMedia.postView;
+        int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        final post = state.posts[existingPostIndex];
 
         try {
-          PostView updatedPostView = optimisticallyRemovePost(postViewMedia.postView, event.value['remove']);
-          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+          ThunderPost updatedPost = optimisticallyRemovePost(post, event.value['remove']);
+          state.posts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await removePost(originalPostView.post.id, event.value['remove'], event.value['reason']);
+          bool success = await removePost(post.id, event.value['remove'], event.value['reason']);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
-          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          state.posts[existingPostIndex] = post;
           return emit(state.copyWith(status: FeedStatus.failure));
         }
       case PostAction.pinInstance:
       case PostAction.purge:
         break;
     }
-
-    // TODO: Add support for comment actions (for user profile)
   }
 
   /// Handles updating a given item within the feed
@@ -434,13 +413,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     // TODO: Add support for updating comments (for user profile)
-    for (final (index, postViewMedia) in state.postViewMedias.indexed) {
-      if (postViewMedia.postView.post.id == event.postViewMedia.postView.post.id) {
-        state.postViewMedias[index] = event.postViewMedia;
+    for (final (index, post) in state.posts.indexed) {
+      if (post.id == event.post.id) {
+        state.posts[index] = event.post;
       }
     }
 
-    emit(state.copyWith(status: FeedStatus.success, postViewMedias: state.postViewMedias));
+    emit(state.copyWith(status: FeedStatus.success, posts: state.posts));
   }
 
   /// Handles updating information about a community
@@ -456,7 +435,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       emit(FeedState(
         status: FeedStatus.fetching,
         feedType: FeedType.account,
-        postViewMedias: const <PostViewMedia>[],
+        posts: const <ThunderPost>[],
         commentViews: const <CommentView>[],
         hasReachedPostsEnd: false,
         hasReachedCommentsEnd: false,
@@ -471,7 +450,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     emit(const FeedState(
       status: FeedStatus.initial,
-      postViewMedias: <PostViewMedia>[],
+      posts: <ThunderPost>[],
       commentViews: <CommentView>[],
       hasReachedPostsEnd: false,
       hasReachedCommentsEnd: false,
@@ -582,7 +561,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
 
       // Extract information from the response
-      List<PostViewMedia> postViewMedias = feedItemResult['postViewMedias'];
+      List<ThunderPost> posts = feedItemResult['posts'];
       List<CommentView> commentViews = feedItemResult['commentViews'];
       bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
       bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
@@ -590,7 +569,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       return emit(state.copyWith(
         status: FeedStatus.success,
-        postViewMedias: postViewMedias,
+        posts: posts,
         commentViews: commentViews,
         hasReachedPostsEnd: hasReachedPostsEnd,
         hasReachedCommentsEnd: hasReachedCommentsEnd,
@@ -617,7 +596,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+    List<ThunderPost> posts = List.from(state.posts);
     List<CommentView> commentViews = List.from(state.commentViews);
 
     Map<String, dynamic> feedItemResult = await fetchFeedItems(
@@ -634,31 +613,31 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     );
 
     // Extract information from the response
-    List<PostViewMedia> newPostViewMedias = feedItemResult['postViewMedias'];
+    List<ThunderPost> newPosts = feedItemResult['posts'];
     List<CommentView> newCommentViews = feedItemResult['commentViews'];
     bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
     bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
     int currentPage = feedItemResult['currentPage'];
 
     Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
-    List<PostViewMedia> filteredPostViewMedias = [];
+    List<ThunderPost> filteredPosts = [];
 
     // Ensure we don't add existing posts to view
-    for (PostViewMedia postViewMedia in newPostViewMedias) {
-      int id = postViewMedia.postView.post.id;
+    for (ThunderPost post in newPosts) {
+      int id = post.id;
       if (!newInsertedPostIds.contains(id)) {
         newInsertedPostIds.add(id);
-        filteredPostViewMedias.add(postViewMedia);
+        filteredPosts.add(post);
       }
     }
 
-    postViewMedias.addAll(filteredPostViewMedias);
+    posts.addAll(filteredPosts);
     commentViews.addAll(newCommentViews);
 
     return emit(state.copyWith(
       status: FeedStatus.success,
       insertedPostIds: newInsertedPostIds.toList(),
-      postViewMedias: postViewMedias,
+      posts: posts,
       commentViews: commentViews,
       hasReachedPostsEnd: hasReachedPostsEnd,
       hasReachedCommentsEnd: hasReachedCommentsEnd,
@@ -680,19 +659,19 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
 
       // Parse the newly created post
-      List<PostViewMedia> formattedPost = await parsePostViews([postView]);
+      List<ThunderPost> formattedPost = await parsePosts([postView]);
 
       // Add the post to the state
-      List<PostViewMedia> updatedPostViewMedias = List.from(state.postViewMedias);
-      updatedPostViewMedias.insert(0, formattedPost[0]);
+      List<ThunderPost> updatedPosts = List.from(state.posts);
+      updatedPosts.insert(0, formattedPost[0]);
 
-      emit(state.copyWith(status: FeedStatus.success, postViewMedias: updatedPostViewMedias));
+      emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
     } catch (e) {
       return emit(state.copyWith(status: FeedStatus.failure, message: e.toString()));
     }
   }
 
   Future<void> _onPopulatePosts(PopulatePostsEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(postViewMedias: event.posts));
+    emit(state.copyWith(posts: event.posts));
   }
 }

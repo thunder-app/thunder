@@ -11,12 +11,12 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/drafts/models/draft.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
 import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/shared/comment_content.dart';
@@ -31,9 +31,9 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
-  /// [postViewMedia] is passed in when replying to a post. [commentView] and [parentCommentView] must be null if this is passed in.
+  /// [post] is passed in when replying to a post. [commentView] and [parentCommentView] must be null if this is passed in.
   /// When this is passed in, a post preview will be shown.
-  final PostViewMedia? postViewMedia;
+  final ThunderPost? post;
 
   /// If this is passed in, it indicates that we are trying to edit a comment
   final CommentView? commentView;
@@ -46,7 +46,7 @@ class CreateCommentPage extends StatefulWidget {
 
   const CreateCommentPage({
     super.key,
-    this.postViewMedia,
+    this.post,
     this.commentView,
     this.parentCommentView,
     this.onCommentSuccess,
@@ -59,7 +59,7 @@ class CreateCommentPage extends StatefulWidget {
 class _CreateCommentPageState extends State<CreateCommentPage> {
   /// Holds the draft type associated with the comment. This type is determined by the input parameters passed in.
   /// If [commentView], it will be [DraftType.commentEdit].
-  /// If [postViewMedia] or [parentCommentView] is passed in, it will be [DraftType.commentCreate].
+  /// If [post] or [parentCommentView] is passed in, it will be [DraftType.commentCreate].
   late DraftType draftType;
 
   /// The ID of the comment we are editing, to find a corresponding draft, if any
@@ -117,14 +117,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   void initState() {
     super.initState();
 
-    postId = widget.postViewMedia?.postView.post.id ?? widget.parentCommentView?.post.id;
+    postId = widget.post?.id ?? widget.parentCommentView?.post.id;
     parentCommentId = widget.parentCommentView?.comment.id;
 
     _bodyTextController.addListener(() {
       _validateSubmission();
     });
 
-    // Logic for pre-populating the comment with the [postView] for edits
+    // Logic for pre-populating the comment with the [post] for edits
     if (widget.commentView != null) {
       _bodyTextController.text = widget.commentView!.comment.content;
       languageId = widget.commentView!.comment.languageId;
@@ -167,9 +167,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     if (widget.commentView != null) {
       draftType = DraftType.commentEdit;
       draftExistingId = widget.commentView!.comment.id;
-    } else if (widget.postViewMedia != null) {
+    } else if (widget.post != null) {
       draftType = DraftType.commentCreate;
-      draftReplyId = widget.postViewMedia!.postView.post.id;
+      draftReplyId = widget.post!.id;
     } else if (widget.parentCommentView != null) {
       draftType = DraftType.commentCreate;
       draftReplyId = widget.parentCommentView!.comment.id;
@@ -289,7 +289,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              if (widget.postViewMedia != null)
+                              if (widget.post != null)
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                   child: Container(
@@ -299,7 +299,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
                                     child: PostSubview(
-                                      postViewMedia: widget.postViewMedia!,
+                                      post: widget.post!,
                                       crossPosts: const [],
                                       viewSource: viewSource,
                                       onViewSourceToggled: () => setState(() => viewSource = !viewSource),
@@ -345,8 +345,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
-                                      postActorId: widget.postViewMedia?.postView.post.apId,
-                                      onPostChanged: (postViewMedia) => postId = postViewMedia.postView.post.id,
+                                      postActorId: widget.post?.url,
+                                      onPostChanged: (post) => postId = post.id,
                                       parentCommentActorId: widget.parentCommentView?.comment.apId,
                                       onParentCommentChanged: (parentCommentView) {
                                         postId = parentCommentView.post.id;

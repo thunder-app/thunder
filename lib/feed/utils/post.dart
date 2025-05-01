@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
@@ -38,7 +38,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   bool hasReachedPostsEnd = false;
   bool hasReachedCommentsEnd = false;
 
-  List<PostViewMedia> postViewMedias = [];
+  List<ThunderPost> posts = [];
   List<CommentView> commentViews = [];
 
   int startingPage = page, currentPage = page;
@@ -75,12 +75,12 @@ Future<Map<String, dynamic>> fetchFeedItems({
       );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
-      postViewMedias.addAll(formattedPosts);
+      List<ThunderPost> formattedPosts = await parsePosts(getPostsResponse.posts);
+      posts.addAll(formattedPosts);
 
       if (keywordFilters.isNotEmpty) {
         // Add some debugging logging so we can see what's going on when we're loading a feed with filters.
-        debugPrint('postViewMedias.length is ${postViewMedias.length} and postResponseLength is $postResponseLength and currentPage is $currentPage');
+        debugPrint('posts.length is ${posts.length} and postResponseLength is $postResponseLength and currentPage is $currentPage');
       }
 
       if (postResponseLength == 0) hasReachedPostsEnd = true;
@@ -94,7 +94,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         notifyExcessiveApiCalls?.call();
         notifyExcessiveApiCalls = null;
       }
-    } while (!hasReachedPostsEnd && postViewMedias.length < desiredPosts);
+    } while (!hasReachedPostsEnd && posts.length < desiredPosts);
   }
 
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
@@ -116,18 +116,18 @@ Future<Map<String, dynamic>> fetchFeedItems({
       );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<PostViewMedia> formattedPosts = await parsePostViews(getPersonDetailsResponse.posts);
-      postViewMedias.addAll(formattedPosts);
+      List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts);
+      posts.addAll(formattedPosts);
 
       commentViews.addAll(getPersonDetailsResponse.comments);
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
-    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && postViewMedias.length < desiredPosts) : (!hasReachedCommentsEnd && commentViews.length < desiredPosts));
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && commentViews.length < desiredPosts));
   }
 
-  return {'postViewMedias': postViewMedias, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
+  return {'posts': posts, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
 }
 
 /// Logic to create a post
@@ -180,7 +180,7 @@ Future<PostView> createPost({
 
 /// Creates a placeholder post from the given parameters. This is mainly used to display a preview of the post
 /// with the applied settings on Settings -> Appearance -> Posts page.
-Future<PostViewMedia?> createExamplePost({
+Future<ThunderPost?> createExamplePost({
   String? postTitle,
   String? postUrl,
   String? postBody,
@@ -263,7 +263,7 @@ Future<PostViewMedia?> createExamplePost({
     unreadComments: 0,
   );
 
-  List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
+  List<ThunderPost> posts = await parsePosts([postView]);
 
-  return Future.value(postViewMedias.firstOrNull);
+  return Future.value(posts.firstOrNull);
 }

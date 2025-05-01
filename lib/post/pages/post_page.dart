@@ -14,6 +14,7 @@ import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/comment/models/comment_node.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
@@ -22,7 +23,6 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_view.dart';
@@ -35,13 +35,13 @@ import 'package:thunder/user/utils/restore_user.dart';
 
 /// A page that displays the post details and comments associated with a post.
 class PostPage extends StatefulWidget {
-  /// The initial [PostViewMedia] that should be displayed in the page.
-  /// When a post action is performed, the post bloc's [postView] is updated.
+  /// The initial [ThunderPost] that should be displayed in the page.
+  /// When a post action is performed, the post bloc's [post] is updated.
   /// Additionally, the [onPostUpdated] function is called to update the post in the feed.
-  final PostViewMedia initialPostViewMedia;
+  final ThunderPost initialPost;
 
   /// Called whenever the post is updated. Used to update the post in the feed.
-  final Function(PostViewMedia)? onPostUpdated;
+  final Function(ThunderPost post)? onPostUpdated;
 
   /// The ID of the comment that should be initially highlighted.
   final int? highlightedCommentId;
@@ -51,7 +51,7 @@ class PostPage extends StatefulWidget {
 
   const PostPage({
     super.key,
-    required this.initialPostViewMedia,
+    required this.initialPost,
     this.onPostUpdated,
     this.highlightedCommentId,
     this.commentPath,
@@ -147,7 +147,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context, PostViewMedia? postViewMedia, {bool postLocked = false}) async {
+  void replyToPost(BuildContext context, ThunderPost? post, {bool postLocked = false}) async {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ProfileBloc>().state;
 
@@ -156,7 +156,7 @@ class _PostPageState extends State<PostPage> {
 
     navigateToCreateCommentPage(
       context,
-      postViewMedia: postViewMedia,
+      post: post,
       onCommentSuccess: (commentView, userChanged) {
         if (!userChanged) {
           context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
@@ -254,10 +254,10 @@ class _PostPageState extends State<PostPage> {
       },
       child: BlocConsumer<PostBloc, PostState>(
         listenWhen: (previous, current) {
-          if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.postView != null && current.hasReachedCommentEnd) {
+          if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.post != null && current.hasReachedCommentEnd) {
             // Check if the post's community is blocked by the user. If so, show a message.
             final blockedCommunities = context.read<ProfileBloc>().state.getSiteResponse?.myUser?.communityBlocks;
-            final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.postView?.postView.post.communityId) ?? false;
+            final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.post?.community?.id) ?? false;
 
             if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
           }
@@ -269,9 +269,9 @@ class _PostPageState extends State<PostPage> {
             return;
           }
 
-          if (state.status == PostStatus.success && state.postView != null) {
+          if (state.status == PostStatus.success && state.post != null) {
             if (!userChanged) {
-              widget.onPostUpdated?.call(state.postView!);
+              widget.onPostUpdated?.call(state.post!);
             }
             setState(() {});
           }
@@ -288,7 +288,7 @@ class _PostPageState extends State<PostPage> {
             // This is required because listener does not get called on initial build
             context.read<PostBloc>().add(
                   GetPostEvent(
-                    postView: widget.initialPostViewMedia,
+                    post: widget.initialPost,
                     selectedCommentPath: widget.commentPath,
                     selectedCommentId: widget.highlightedCommentId,
                   ),
@@ -303,7 +303,7 @@ class _PostPageState extends State<PostPage> {
           final singlePressAction = thunderState.postFabSinglePressAction;
           final longPressAction = thunderState.postFabLongPressAction;
 
-          final post = state.postView?.postView.post ?? widget.initialPostViewMedia.postView.post;
+          final post = state.post ?? widget.initialPost;
 
           // Check to see if there is a highlighted comment. If there is, check to see if it is visible.
           // If it is not visible, scroll to it.
@@ -327,7 +327,7 @@ class _PostPageState extends State<PostPage> {
           return RefreshIndicator(
             onRefresh: () async {
               HapticFeedback.mediumImpact();
-              context.read<PostBloc>().add(GetPostEvent(postView: widget.initialPostViewMedia, selectedCommentPath: widget.commentPath, selectedCommentId: widget.highlightedCommentId));
+              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, selectedCommentId: widget.highlightedCommentId));
             },
             edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
             child: Scaffold(
@@ -375,7 +375,7 @@ class _PostPageState extends State<PostPage> {
                                       }
                                     : () => singlePressAction.execute(
                                         context: context,
-                                        postView: state.postView,
+                                        post: state.post,
                                         postId: state.postId,
                                         selectedCommentId: state.selectedCommentId,
                                         selectedCommentPath: state.selectedCommentPath,
@@ -392,13 +392,13 @@ class _PostPageState extends State<PostPage> {
                                             : singlePressAction == PostFabAction.changeSort
                                                 ? () => showSortBottomSheet(context, state)
                                                 : singlePressAction == PostFabAction.replyToPost
-                                                    ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
+                                                    ? () => replyToPost(context, state.post ?? widget.initialPost, postLocked: post.locked)
                                                     : singlePressAction == PostFabAction.search
                                                         ? () => startCommentSearch(context)
                                                         : null),
                                 onLongPress: () => longPressAction.execute(
                                     context: context,
-                                    postView: state.postView,
+                                    post: state.post,
                                     postId: state.postId,
                                     selectedCommentId: state.selectedCommentId,
                                     selectedCommentPath: state.selectedCommentPath,
@@ -415,7 +415,7 @@ class _PostPageState extends State<PostPage> {
                                         : longPressAction == PostFabAction.changeSort
                                             ? () => showSortBottomSheet(context, state)
                                             : longPressAction == PostFabAction.replyToPost
-                                                ? () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked)
+                                                ? () => replyToPost(context, state.post ?? widget.initialPost, postLocked: post.locked)
                                                 : null),
                                 children: [
                                   if (thunderState.postFabEnableRefresh)
@@ -425,7 +425,7 @@ class _PostPageState extends State<PostPage> {
                                         HapticFeedback.mediumImpact();
                                         PostFabAction.refresh.execute(
                                           context: context,
-                                          postView: state.postView,
+                                          post: state.post,
                                           postId: state.postId,
                                           selectedCommentId: state.selectedCommentId,
                                           selectedCommentPath: state.selectedCommentPath,
@@ -442,7 +442,7 @@ class _PostPageState extends State<PostPage> {
                                       onPressed: () {
                                         HapticFeedback.mediumImpact();
                                         PostFabAction.replyToPost.execute(
-                                          override: () => replyToPost(context, state.postView ?? widget.initialPostViewMedia, postLocked: post.locked),
+                                          override: () => replyToPost(context, state.post ?? widget.initialPost, postLocked: post.locked),
                                         );
                                       },
                                       title: PostFabAction.replyToPost.getTitle(context),
@@ -507,21 +507,21 @@ class _PostPageState extends State<PostPage> {
                           onCreateCrossPost: () {
                             createCrossPost(
                               context,
-                              title: state.postView?.postView.post.name ?? '',
-                              url: state.postView?.postView.post.url,
-                              text: state.postView?.postView.post.body,
-                              postUrl: state.postView?.postView.post.apId,
+                              title: state.post?.title ?? '',
+                              url: state.post?.link,
+                              text: state.post?.body,
+                              postUrl: state.post?.url,
                             );
                           },
                           onSelectText: () {
                             showSelectableTextModal(
                               context,
-                              title: state.postView?.postView.post.name ?? '',
-                              text: state.postView?.postView.post.body ?? '',
+                              title: state.post?.title ?? '',
+                              text: state.post?.body ?? '',
                             );
                           },
                           onUserChanged: () => userChanged = true,
-                          onPostChanged: (newPostViewMedia) => context.read<PostBloc>().add(GetPostEvent(postView: newPostViewMedia)),
+                          onPostChanged: (post) => context.read<PostBloc>().add(GetPostEvent(post: post)),
                         ),
                         if (state.status == PostStatus.initial || state.status == PostStatus.loading)
                           const SliverFillRemaining(
@@ -542,7 +542,7 @@ class _PostPageState extends State<PostPage> {
                                       action: () {
                                         context.read<PostBloc>().add(
                                               GetPostEvent(
-                                                postView: widget.initialPostViewMedia,
+                                                post: widget.initialPost,
                                                 selectedCommentPath: widget.commentPath,
                                                 selectedCommentId: widget.highlightedCommentId,
                                               ),
@@ -558,7 +558,7 @@ class _PostPageState extends State<PostPage> {
                         else ...[
                           SliverToBoxAdapter(
                             child: PostSubview(
-                              postViewMedia: state.postView ?? widget.initialPostViewMedia,
+                              post: state.post ?? widget.initialPost,
                               crossPosts: state.crossPosts,
                               viewSource: viewSource,
                               showCompactPostBody: widget.highlightedCommentId != null,

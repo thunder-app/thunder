@@ -48,7 +48,7 @@ class UserSettingsState extends Equatable {
 
   final String? errorMessage;
   final List<LocalImageView>? images;
-  final List<PostViewMedia>? imageSearchPosts;
+  final List<ThunderPost>? imageSearchPosts;
   final List<CommentView>? imageSearchComments;
 
   UserSettingsState copyWith({
@@ -62,7 +62,7 @@ class UserSettingsState extends Equatable {
     GetSiteResponse? getSiteResponse,
     String? errorMessage,
     List<LocalImageView>? images,
-    List<PostViewMedia>? imageSearchPosts,
+    List<ThunderPost>? imageSearchPosts,
     List<CommentView>? imageSearchComments,
   }) {
     return UserSettingsState(

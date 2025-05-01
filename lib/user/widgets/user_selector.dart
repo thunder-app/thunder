@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
@@ -27,7 +26,7 @@ class UserSelector extends StatefulWidget {
   // It's not valid to have a null parent post/comment. Therefore if we can't resolve the objects,
   // we will block the account switch, and the onChanged methods will never pass a null value.
   final String? postActorId;
-  final void Function(PostViewMedia)? onPostChanged;
+  final void Function(ThunderPost post)? onPostChanged;
   final String? parentCommentActorId;
   final void Function(CommentView)? onParentCommentChanged;
 
@@ -96,7 +95,7 @@ Future<void> temporarilySwitchAccount(
   String? communityActorId,
   void Function(ThunderCommunity? community)? onCommunityChanged,
   String? postActorId,
-  void Function(PostViewMedia)? onPostChanged,
+  void Function(ThunderPost post)? onPostChanged,
   String? parentCommentActorId,
   void Function(CommentView)? onParentCommentChanged,
 }) async {
@@ -143,7 +142,7 @@ Future<void> temporarilySwitchAccount(
           final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: postActorId!));
           resolvedPost = resolveObjectResponse.post;
           if (resolvedPost != null) {
-            onPostChanged((await parsePostViews([resolvedPost])).first);
+            onPostChanged((await parsePosts([resolvedPost])).first);
           }
         } catch (e) {
           // We will handle this below.

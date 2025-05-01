@@ -16,8 +16,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/models/thunder_community.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -130,19 +129,19 @@ Future<void> navigateToInstancePage(
   }
 }
 
-/// Navigates to the post page with the given [postViewMedia] or [postId].
+/// Navigates to the post page with the given [post] or [postId].
 ///
-/// One of [postViewMedia] or [postId] must be provided. If [postViewMedia] is provided, the post page will use that data to display the post.
+/// One of [post] or [postId] must be provided. If [post] is provided, the post page will use that data to display the post.
 /// Otherwise, the post page will fetch the post with the given [postId].
 Future<void> navigateToPost(
   BuildContext context, {
   int? postId,
-  PostViewMedia? postViewMedia,
+  ThunderPost? post,
   int? selectedCommentId,
   String? selectedCommentPath,
-  Function(PostViewMedia)? onPostUpdated,
+  Function(ThunderPost post)? onPostUpdated,
 }) async {
-  assert((postId != null || postViewMedia != null), 'One of the parameters must be provided');
+  assert((postId != null || post != null), 'One of the parameters must be provided');
 
   // Required blocs
   final profileBloc = context.read<ProfileBloc>();
@@ -152,7 +151,7 @@ Future<void> navigateToPost(
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
   final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : null;
 
-  PostViewMedia? pvm = postViewMedia;
+  ThunderPost? pvm = post;
 
   if (pvm == null) {
     final client = LemmyClient.instance.lemmyApiV3;
@@ -165,24 +164,24 @@ Future<void> navigateToPost(
       ),
     );
 
-    List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
+    List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
 
-    pvm = postViewMedias.first;
+    pvm = posts.first;
   }
 
   // Mark post as read when tapped
   if (profileBloc.state.isLoggedIn) {
-    feedBloc?.add(FeedItemActionedEvent(postId: pvm.postView.post.id, postAction: PostAction.read, value: true));
+    feedBloc?.add(FeedItemActionedEvent(postId: pvm.id, postAction: PostAction.read, value: true));
   }
 
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm.postView.post.apId
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm.url
       ? _cachedPostBloc!.postBloc
       : (_cachedPostBloc = (
-          postApId: pvm.postView.post.apId,
+          postApId: pvm.url,
           postBloc: post_bloc.PostBloc(),
         ))
           .postBloc;
@@ -209,15 +208,10 @@ Future<void> navigateToPost(
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
-          initialPostViewMedia: postBloc.state.postView ?? pvm!,
-          onPostUpdated: (PostViewMedia postViewMedia) {
+          initialPost: postBloc.state.post ?? pvm!,
+          onPostUpdated: (ThunderPost post) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-            feedBloc?.add(FeedItemUpdatedEvent(
-              postViewMedia: PostViewMedia(
-                postView: postViewMedia.postView.copyWith(read: true),
-                media: postViewMedia.media,
-              ),
-            ));
+            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(postView: post.internalPostView?.copyWith(read: true))));
           },
         ),
       );
@@ -295,7 +289,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
     ),
   );
 
-  List<PostViewMedia> postViewMedias = await parsePostViews([getPostResponse.postView]);
+  List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -314,10 +308,10 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
         BlocProvider(create: (context) => PostBloc()),
       ],
       child: PostPage(
-        initialPostViewMedia: postViewMedias.first,
+        initialPost: posts.first,
         highlightedCommentId: commentView.comment.id,
         commentPath: commentView.comment.path,
-        onPostUpdated: (PostViewMedia postViewMedia) {},
+        onPostUpdated: (ThunderPost post) {},
       ),
     ),
   );
@@ -327,13 +321,13 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
 
 Future<void> navigateToCreateCommentPage(
   BuildContext context, {
-  PostViewMedia? postViewMedia,
+  ThunderPost? post,
   CommentView? commentView,
   CommentView? parentCommentView,
   Function(CommentView commentView, bool userChanged)? onCommentSuccess,
 }) async {
-  assert(!(postViewMedia == null && parentCommentView == null && commentView == null));
-  assert(!(postViewMedia != null && (parentCommentView != null || commentView != null)));
+  assert(!(post == null && parentCommentView == null && commentView == null));
+  assert(!(post != null && (parentCommentView != null || commentView != null)));
 
   final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
@@ -357,7 +351,7 @@ Future<void> navigateToCreateCommentPage(
         BlocProvider<ProfileBloc>.value(value: profileBloc),
       ],
       child: CreateCommentPage(
-        postViewMedia: postViewMedia,
+        post: post,
         commentView: commentView,
         parentCommentView: parentCommentView,
         onCommentSuccess: onCommentSuccess,
@@ -377,9 +371,9 @@ Future<void> navigateToCreatePostPage(
   bool? prePopulated,
   int? communityId,
   ThunderCommunity? community,
-  PostViewMedia? postViewMedia,
+  ThunderPost? post,
   bool isCrossPost = false,
-  Function(PostViewMedia, bool)? onPostSuccess,
+  Function(ThunderPost post, bool)? onPostSuccess,
 }) async {
   try {
     final l10n = AppLocalizations.of(context)!;
@@ -408,13 +402,13 @@ Future<void> navigateToCreatePostPage(
 
     ThunderCommunity? pvmCommunity;
 
-    if (postViewMedia != null) {
+    if (post != null) {
       final cv = CommunityView(
-        community: postViewMedia.postView.community,
-        subscribed: postViewMedia.postView.subscribed,
+        community: post.community!,
+        subscribed: post.subscribed!,
         blocked: false,
         counts: CommunityAggregates(
-          communityId: postViewMedia.postView.community.id,
+          communityId: post.community!.id,
           subscribers: 0,
           posts: 0,
           comments: 0,
@@ -449,29 +443,27 @@ Future<void> navigateToCreatePostPage(
             image: image,
             url: url,
             prePopulated: prePopulated,
-            communityId: communityId ?? postViewMedia?.postView.community.id,
-            community: community ?? (postViewMedia != null ? pvmCommunity : null),
-            postView: postViewMedia?.postView,
+            communityId: communityId ?? post?.community!.id,
+            community: community ?? (post != null ? pvmCommunity : null),
+            post: post,
             isCrossPost: isCrossPost,
-            onPostSuccess: (PostViewMedia pvm, bool userChanged) {
+            onPostSuccess: (ThunderPost post, bool userChanged) {
               // Update the existing post view media if it exists
-              if (postViewMedia != null) {
-                if (feedBloc != null) {
-                  feedBloc.add(FeedItemUpdatedEvent(postViewMedia: pvm));
-                }
-                if (postBloc != null) {
-                  postBloc.add(PostUpdatedEvent(postViewMedia: pvm));
-                }
+              if (feedBloc != null) {
+                feedBloc.add(FeedItemUpdatedEvent(post: post));
+              }
+              if (postBloc != null) {
+                postBloc.add(PostUpdatedEvent(post: post));
               }
 
               // Show snackbar message if the post was just created
-              if (!userChanged && postViewMedia == null) {
+              if (!userChanged && post == null) {
                 try {
                   showSnackbar(
                     l10n.postCreatedSuccessfully,
                     trailingIcon: Icons.remove_red_eye_rounded,
                     trailingAction: () {
-                      navigateToPost(context, postViewMedia: pvm);
+                      navigateToPost(context, post: post);
                     },
                   );
                 } catch (e) {
@@ -479,7 +471,7 @@ Future<void> navigateToCreatePostPage(
                 }
               }
 
-              if (onPostSuccess != null) onPostSuccess(pvm, userChanged);
+              if (onPostSuccess != null) onPostSuccess(post, userChanged);
             },
           ),
         );

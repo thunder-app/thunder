@@ -7,7 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/share/advanced_share_sheet.dart';
@@ -52,15 +52,15 @@ enum ShareBottomSheetAction {
 
 /// A bottom sheet that allows the user to perform share actions.
 ///
-/// Given a [postViewMedia] or a [commentView], and a [onAction] callback, this widget will display a list of share actions that can be taken.
+/// Given a [post] or a [commentView], and a [onAction] callback, this widget will display a list of share actions that can be taken.
 class ShareActionBottomSheet extends StatefulWidget {
-  const ShareActionBottomSheet({super.key, required this.context, this.postViewMedia, this.commentView, required this.onAction});
+  const ShareActionBottomSheet({super.key, required this.context, this.post, this.commentView, required this.onAction});
 
   /// The parent context
   final BuildContext context;
 
   /// The post information
-  final PostViewMedia? postViewMedia;
+  final ThunderPost? post;
 
   /// The comment information
   final CommentView? commentView;
@@ -93,7 +93,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
   }
 
   void performAction(ShareBottomSheetAction action) {
-    PostViewMedia? postViewMedia = widget.postViewMedia;
+    ThunderPost? post = widget.post;
     CommentView? commentView = widget.commentView;
 
     switch (action) {
@@ -104,28 +104,28 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         Share.share(LemmyClient.instance.generateCommentUrl(commentView!.comment.id));
         break;
       case ShareBottomSheetAction.sharePost:
-        Share.share(postViewMedia!.postView.post.apId);
+        Share.share(post!.url);
         break;
       case ShareBottomSheetAction.sharePostLocal:
-        Share.share(LemmyClient.instance.generatePostUrl(postViewMedia!.postView.post.id));
+        Share.share(LemmyClient.instance.generatePostUrl(post!.id));
         break;
       case ShareBottomSheetAction.shareImage:
-        retrieveMedia(postViewMedia!.media.first.imageUrl!);
+        retrieveMedia(post!.media.first.imageUrl!);
         break;
       case ShareBottomSheetAction.shareMedia:
-        Share.share(postViewMedia!.media.first.mediaUrl!);
+        Share.share(post!.media.first.mediaUrl!);
         break;
       case ShareBottomSheetAction.shareLink:
-        if (postViewMedia!.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
+        if (post!.media.first.originalUrl != null) Share.share(post.media.first.originalUrl!);
         break;
       case ShareBottomSheetAction.shareAdvanced:
-        showAdvancedShareSheet(widget.context, postViewMedia!);
+        showAdvancedShareSheet(widget.context, post!);
         break;
     }
   }
 
   String? generateSubtitle(ShareBottomSheetAction action) {
-    PostViewMedia? postViewMedia = widget.postViewMedia;
+    ThunderPost? post = widget.post;
     CommentView? commentView = widget.commentView;
 
     switch (action) {
@@ -134,15 +134,15 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       case ShareBottomSheetAction.shareCommentLocal:
         return LemmyClient.instance.generateCommentUrl(commentView!.comment.id);
       case ShareBottomSheetAction.sharePost:
-        return postViewMedia!.postView.post.apId;
+        return post!.url;
       case ShareBottomSheetAction.sharePostLocal:
-        return LemmyClient.instance.generatePostUrl(postViewMedia!.postView.post.id);
+        return LemmyClient.instance.generatePostUrl(post!.id);
       case ShareBottomSheetAction.shareImage:
-        return postViewMedia!.media.first.imageUrl;
+        return post!.media.first.imageUrl;
       case ShareBottomSheetAction.shareMedia:
-        return postViewMedia!.media.first.mediaUrl;
+        return post!.media.first.mediaUrl;
       case ShareBottomSheetAction.shareLink:
-        return postViewMedia!.media.first.originalUrl;
+        return post!.media.first.originalUrl;
       case ShareBottomSheetAction.shareAdvanced:
         return GlobalContext.l10n.useAdvancedShareSheet;
     }
@@ -160,29 +160,29 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       if (widget.commentView!.comment.apId == LemmyClient.instance.generateCommentUrl(widget.commentView!.comment.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareCommentLocal);
       }
-    } else if (widget.postViewMedia != null) {
+    } else if (widget.post != null) {
       userActions = ShareBottomSheetAction.values.where((element) => element != ShareBottomSheetAction.shareComment && element != ShareBottomSheetAction.shareCommentLocal).toList();
 
       // Remove the share link option if there is no link or if the media link is the same as the external link
-      if (widget.postViewMedia!.media.isEmpty ||
-          widget.postViewMedia!.media.first.mediaType == MediaType.text ||
-          widget.postViewMedia!.media.first.originalUrl == widget.postViewMedia!.media.first.imageUrl ||
-          widget.postViewMedia!.media.first.originalUrl == widget.postViewMedia!.media.first.mediaUrl) {
+      if (widget.post!.media.isEmpty ||
+          widget.post!.media.first.mediaType == MediaType.text ||
+          widget.post!.media.first.originalUrl == widget.post!.media.first.imageUrl ||
+          widget.post!.media.first.originalUrl == widget.post!.media.first.mediaUrl) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareLink);
       }
 
       // Remove the share image option if there is no image
-      if (widget.postViewMedia!.media.isEmpty || widget.postViewMedia!.media.first.imageUrl?.isNotEmpty != true) {
+      if (widget.post!.media.isEmpty || widget.post!.media.first.imageUrl?.isNotEmpty != true) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareImage);
       }
 
       // Remove the share media option if there is no media
-      if (widget.postViewMedia!.media.isEmpty || widget.postViewMedia!.media.first.mediaUrl?.isNotEmpty != true) {
+      if (widget.post!.media.isEmpty || widget.post!.media.first.mediaUrl?.isNotEmpty != true) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareMedia);
       }
 
       // Remove the share local option if it is the same as the original
-      if (widget.postViewMedia!.postView.post.apId == LemmyClient.instance.generatePostUrl(widget.postViewMedia!.postView.post.id)) {
+      if (widget.post!.url == LemmyClient.instance.generatePostUrl(widget.post!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.sharePostLocal);
       }
     }

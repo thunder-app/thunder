@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -369,7 +369,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,
-        imageSearchPosts: await parsePostViews(posts),
+        imageSearchPosts: await parsePosts(posts),
         imageSearchComments: comments,
       ));
     } catch (e) {

@@ -510,7 +510,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
 /// Display metadata for a cross-post, used in the expanded cross-posts view
 class CrossPostMetaData extends StatelessWidget {
   /// Accepts the PostView of a cross-post
-  final PostView crossPost;
+  final ThunderPost crossPost;
 
   const CrossPostMetaData({
     super.key,
@@ -525,20 +525,20 @@ class CrossPostMetaData extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ScorePostCardMetaData(
-              score: crossPost.counts.score,
-              voteType: crossPost.myVote,
+              score: crossPost.score,
+              voteType: crossPost.voteType,
               dim: true,
             ),
             const SizedBox(width: 10.0),
             CommentCountPostCardMetaData(
-              commentCount: crossPost.counts.comments,
-              unreadCommentCount: crossPost.unreadComments,
+              commentCount: crossPost.comments,
+              unreadCommentCount: crossPost.unreadComments ?? 0,
               dim: true,
             ),
             const SizedBox(width: 10.0),
             DateTimePostCardMetaData(
-              dateTime: crossPost.post.published.toIso8601String(),
-              edited: crossPost.post.updated != null ? true : false,
+              dateTime: crossPost.created.toIso8601String(),
+              edited: crossPost.updated != null ? true : false,
               dim: true,
             ),
           ],

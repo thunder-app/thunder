@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -20,11 +20,11 @@ void triggerPostAction({
   bool? saved,
   bool? read,
   bool? hidden,
-  required PostViewMedia postViewMedia,
+  required ThunderPost post,
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(postViewMedia.postView.post.id, voteType == 1 ? 0 : 1);
+      onVoteAction(post.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
       bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
@@ -34,20 +34,20 @@ void triggerPostAction({
         return;
       }
 
-      onVoteAction(postViewMedia.postView.post.id, voteType == -1 ? 0 : -1);
+      onVoteAction(post.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
       showSnackbar(AppLocalizations.of(context)!.replyNotSupported);
       break;
     case SwipeAction.save:
-      onSaveAction(postViewMedia.postView.post.id, !(saved ?? false));
+      onSaveAction(post.id, !(saved ?? false));
       break;
     case SwipeAction.toggleRead:
-      onToggleReadAction(postViewMedia.postView.post.id, !(read ?? false));
+      onToggleReadAction(post.id, !(read ?? false));
       break;
     case SwipeAction.hide:
-      onHideAction(postViewMedia.postView.post.id, !(hidden ?? false));
+      onHideAction(post.id, !(hidden ?? false));
       break;
     default:
       break;

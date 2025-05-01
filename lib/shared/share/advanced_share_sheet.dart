@@ -11,7 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/image_preview.dart';
@@ -52,28 +52,25 @@ class AdvancedShareSheetOptions {
       );
 }
 
-bool _hasImage(PostViewMedia postViewMedia) => postViewMedia.media.isNotEmpty && postViewMedia.media.first.thumbnailUrl != null;
+bool _hasImage(ThunderPost post) => post.media.isNotEmpty && post.media.first.thumbnailUrl != null;
 
-bool _hasText(PostViewMedia postViewMedia) => postViewMedia.postView.post.body?.isNotEmpty == true;
+bool _hasText(ThunderPost post) => post.body?.isNotEmpty == true;
 
-bool _hasExternalLink(PostViewMedia postViewMedia) => postViewMedia.media.first.mediaType != MediaType.text;
+bool _hasExternalLink(ThunderPost post) => post.media.first.mediaType != MediaType.text;
 
-bool _canShare(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
-  return options.includePostLink || (options.includeExternalLink && _hasExternalLink(postViewMedia)) || _canShareImage(options, postViewMedia);
+bool _canShare(AdvancedShareSheetOptions options, ThunderPost post) {
+  return options.includePostLink || (options.includeExternalLink && _hasExternalLink(post)) || _canShareImage(options, post);
 }
 
-bool _canShareImage(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
-  return (options.includeImage && _hasImage(postViewMedia)) || _isImageCustomized(options, postViewMedia);
+bool _canShareImage(AdvancedShareSheetOptions options, ThunderPost post) {
+  return (options.includeImage && _hasImage(post)) || _isImageCustomized(options, post);
 }
 
-bool _isImageCustomized(AdvancedShareSheetOptions options, PostViewMedia postViewMedia) {
-  return options.includeTitle ||
-      options.includeCommnity ||
-      (options.includeText && _hasText(postViewMedia)) ||
-      (options.includeImage && _hasImage(postViewMedia) && (options.includeTitle || options.includeCommnity));
+bool _isImageCustomized(AdvancedShareSheetOptions options, ThunderPost post) {
+  return options.includeTitle || options.includeCommnity || (options.includeText && _hasText(post)) || (options.includeImage && _hasImage(post) && (options.includeTitle || options.includeCommnity));
 }
 
-Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOptions options, PostViewMedia postViewMedia) async {
+Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOptions options, ThunderPost post) async {
   Uint8List result = Uint8List(0);
   ScreenshotController screenshotController = ScreenshotController();
 
@@ -97,19 +94,19 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  postViewMedia.postView.post.name,
+                  post.title,
                   textAlign: TextAlign.left,
                   style: const TextStyle(color: Colors.black, fontSize: 20),
                 ),
               ),
               const SizedBox(height: 10),
             ],
-            if (options.includeImage && _hasImage(postViewMedia))
+            if (options.includeImage && _hasImage(post))
               Image.network(
-                postViewMedia.media.first.thumbnailUrl!,
+                post.media.first.thumbnailUrl!,
               ),
-            if (options.includeText && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
-              if (_hasImage(postViewMedia)) const SizedBox(height: 10),
+            if (options.includeText && post.body?.isNotEmpty == true) ...[
+              if (_hasImage(post)) const SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -118,7 +115,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    postViewMedia.postView.post.body!,
+                    post.body!,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
@@ -129,7 +126,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  postViewMedia.postView.community.actorId,
+                  post.community!.actorId,
                   style: const TextStyle(color: Colors.black, fontSize: 10),
                 ),
               ),
@@ -143,7 +140,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
   return result;
 }
 
-void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) async {
+void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
   final ThemeData theme = Theme.of(context);
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -162,9 +159,9 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
         return StatefulBuilder(
           builder: (context, setState) {
             return FutureBuilder(
-              future: generateShareImage(context, options, postViewMedia),
+              future: generateShareImage(context, options, post),
               builder: (context, snapshot) {
-                if (!_isImageCustomized(options, postViewMedia) || snapshot.connectionState == ConnectionState.done) {
+                if (!_isImageCustomized(options, post) || snapshot.connectionState == ConnectionState.done) {
                   isGeneratingImage = false;
                 }
 
@@ -187,20 +184,20 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               ),
                             ),
                           ),
-                          if (!_canShare(options, postViewMedia))
+                          if (!_canShare(options, post))
                             Text(
                               AppLocalizations.of(context)!.nothingToShare,
                               style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
                             ),
-                          if (!_isImageCustomized(options, postViewMedia) && options.includeImage && _hasImage(postViewMedia))
+                          if (!_isImageCustomized(options, post) && options.includeImage && _hasImage(post))
                             ImagePreview(
-                              url: postViewMedia.media.first.thumbnailUrl.toString(),
+                              url: post.media.first.thumbnailUrl.toString(),
                               isExpandable: true,
                               isComment: true,
                               showFullHeightImages: true,
-                              altText: postViewMedia.media.first.altText,
+                              altText: post.media.first.altText,
                             ),
-                          if (_isImageCustomized(options, postViewMedia))
+                          if (_isImageCustomized(options, post))
                             snapshot.hasData && !isGeneratingImage
                                 ? ImagePreview(
                                     bytes: snapshot.data!,
@@ -211,12 +208,12 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                                 : const CircularProgressIndicator(),
                           if (options.includePostLink)
                             Text(
-                              postViewMedia.postView.post.apId,
+                              post.url,
                               style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
                             ),
-                          if (options.includeExternalLink && _hasExternalLink(postViewMedia))
+                          if (options.includeExternalLink && _hasExternalLink(post))
                             Text(
-                              postViewMedia.media.first.originalUrl!,
+                              post.media.first.originalUrl!,
                               style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
                             ),
                           const SizedBox(height: 20),
@@ -243,7 +240,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             setting: null,
                             highlightedSetting: null,
                           ),
-                          if (_hasImage(postViewMedia))
+                          if (_hasImage(post))
                             ToggleOption(
                               description: AppLocalizations.of(context)!.includeImage,
                               iconEnabled: Icons.image_rounded,
@@ -257,7 +254,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               setting: null,
                               highlightedSetting: null,
                             ),
-                          if (_hasText(postViewMedia))
+                          if (_hasText(post))
                             ToggleOption(
                               description: AppLocalizations.of(context)!.includeText,
                               iconEnabled: Icons.comment_rounded,
@@ -305,7 +302,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                             setting: null,
                             highlightedSetting: null,
                           ),
-                          if (_hasExternalLink(postViewMedia))
+                          if (_hasExternalLink(post))
                             ToggleOption(
                               description: AppLocalizations.of(context)!.includeExternalLink,
                               iconEnabled: Icons.link_rounded,
@@ -326,7 +323,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                               ),
                               const SizedBox(width: 5),
                               FilledButton(
-                                onPressed: _canShare(options, postViewMedia) && !isGeneratingImage
+                                onPressed: _canShare(options, post) && !isGeneratingImage
                                     ? () async {
                                         // Save the share settings
                                         prefs.setString(LocalSettings.advancedShareOptions.name, jsonEncode(options.toJson()));
@@ -334,19 +331,19 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                                         // Generate the text to share
                                         String? text;
                                         if (options.includePostLink) {
-                                          text = postViewMedia.postView.post.apId;
+                                          text = post.url;
                                         }
-                                        if (options.includeExternalLink && _hasExternalLink(postViewMedia)) {
-                                          text == null ? text = postViewMedia.media.first.originalUrl! : text = '$text\n${postViewMedia.media.first.originalUrl!}';
+                                        if (options.includeExternalLink && _hasExternalLink(post)) {
+                                          text == null ? text = post.media.first.originalUrl! : text = '$text\n${post.media.first.originalUrl!}';
                                         }
 
                                         // Do the actual sharing
-                                        if (_canShareImage(options, postViewMedia)) {
-                                          if (_isImageCustomized(options, postViewMedia)) {
+                                        if (_canShareImage(options, post)) {
+                                          if (_isImageCustomized(options, post)) {
                                             Share.shareXFiles([XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text);
                                           } else {
                                             setState(() => isDownloading = true);
-                                            final File file = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.thumbnailUrl!);
+                                            final File file = await DefaultCacheManager().getSingleFile(post.media.first.thumbnailUrl!);
                                             setState(() => isDownloading = false);
                                             Share.shareXFiles([XFile(file.path)], text: text);
                                           }

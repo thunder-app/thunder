@@ -26,7 +26,6 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_metadata.dart';
@@ -46,9 +45,9 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
 class PostSubview extends StatefulWidget {
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
   final int? selectedCommentId;
-  final List<PostView>? crossPosts;
+  final List<ThunderPost>? crossPosts;
   final bool viewSource;
   final void Function()? onViewSourceToggled;
   final bool showQuickPostActionBar;
@@ -61,7 +60,7 @@ class PostSubview extends StatefulWidget {
   const PostSubview({
     super.key,
     this.selectedCommentId,
-    required this.postViewMedia,
+    required this.post,
     required this.crossPosts,
     required this.viewSource,
     this.onViewSourceToggled,
@@ -82,7 +81,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   bool get wantKeepAlive => true;
 
   late ExpandableController expandableController;
-  late PostViewMedia postViewMedia;
+  late ThunderPost post;
   final FocusNode _selectableRegionFocusNode = FocusNode();
 
   @override
@@ -90,7 +89,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     super.initState();
 
     expandableController = ExpandableController(initialExpanded: !widget.showCompactPostBody);
-    postViewMedia = widget.postViewMedia;
+    post = widget.post;
   }
 
   @override
@@ -100,9 +99,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
     final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
 
-    PostView postView = postViewMedia.postView;
-    Post post = postView.post;
-
     final bool isUserLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
     final ProfileState profileState = context.watch<ProfileBloc>().state;
@@ -110,22 +106,22 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
-    final bool isOwnPost = postView.creator.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isOwnPost = post.creator?.id == context.read<ProfileBloc>().state.account?.userId;
 
-    final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
+    final List<ThunderPost> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.upvotes!.compareTo(a.upvotes!));
 
     List<UserType> userGroups = [];
 
-    if (postView.creator.botAccount) userGroups.add(UserType.bot);
-    if (postView.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
-    if (postView.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (postView.creator.id == profileState.account?.userId) userGroups.add(UserType.self);
-    if (postView.creator.published.month == DateTime.now().month && postView.creator.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
+    if (post.creator?.botAccount == true) userGroups.add(UserType.bot);
+    if (post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
+    if (post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
+    if (post.creator?.id == profileState.account?.userId) userGroups.add(UserType.self);
+    if (post.creator?.published.month == DateTime.now().month && post.creator?.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(
       controller: expandableController,
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true ? 0.0 : 8.0),
+        padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: widget.showReplyEditorButtons && post.body?.isNotEmpty == true ? 0.0 : 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -134,7 +130,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && post.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: Column(
@@ -143,11 +139,11 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ScalableText(
-                          HtmlUnescape().convert(post.name),
+                          HtmlUnescape().convert(post.title),
                           fontScale: thunderState.titleFontSizeScale,
                           style: theme.textTheme.titleMedium,
                         ),
-                        if (postViewMedia.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
+                        if (post.media.first.mediaType == MediaType.link && thunderState.postBodyViewType == PostBodyViewType.condensed)
                           Text(
                             Uri.tryParse(post.url ?? '')?.host.replaceFirst('www.', '') ?? '',
                             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
@@ -155,9 +151,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ],
                     ),
                   ),
-                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.first.mediaType != MediaType.text)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && post.media.first.mediaType != MediaType.text)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if ((thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.first.mediaType == MediaType.text) && widget.showExpandableButton)
+                  if ((thunderState.postBodyViewType != PostBodyViewType.condensed || post.media.first.mediaType == MediaType.text) && widget.showExpandableButton)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -172,14 +168,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ],
               ),
             ),
-            if (thunderState.postBodyViewType != PostBodyViewType.condensed && postViewMedia.media.first.mediaType != MediaType.text)
+            if (thunderState.postBodyViewType != PostBodyViewType.condensed && post.media.first.mediaType != MediaType.text)
               Expandable(
                 controller: expandableController,
                 collapsed: Container(),
                 expanded: MediaView(
                   viewMode: ViewMode.comfortable,
-                  media: postViewMedia.media.first,
-                  postId: postViewMedia.postView.post.id,
+                  media: post.media.first,
+                  postId: post.id,
                   showFullHeightImages: true,
                   allowUnconstrainedImageHeight: true,
                   hideNsfwPreviews: hideNsfwPreviews,
@@ -187,7 +183,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   isUserLoggedIn: isUserLoggedIn,
                 ),
               ),
-            if (postViewMedia.postView.post.body?.isNotEmpty == true)
+            if (post.body?.isNotEmpty == true)
               Expandable(
                 controller: expandableController,
                 collapsed: PostBodyPreview(
@@ -221,9 +217,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                             fontScale: thunderState.contentFontSizeScale,
                           )
-                        : CommonMarkdownBody(
-                            body: post.body ?? '',
-                          ),
+                        : CommonMarkdownBody(body: post.body ?? ''),
                   ),
                 ),
               ),
@@ -240,9 +234,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
-                        user: ThunderUser(postView.creator),
+                        user: ThunderUser(post.creator!),
                         personAvatar: UserAvatar(
-                          user: ThunderUser(postView.creator),
+                          user: ThunderUser(post.creator!),
                           radius: 10,
                           thumbnailSize: 20,
                           format: 'png',
@@ -258,26 +252,26 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         ),
                       ),
                       CommunityChip(
-                        communityId: postView.community.id,
+                        communityId: post.community!.id,
                         communityAvatar: CommunityAvatar(
-                          community: ThunderCommunity(postView.community),
+                          community: ThunderCommunity(post.community!),
                           radius: 10,
                           thumbnailSize: 20,
                           format: 'png',
                         ),
-                        communityName: postView.community.name,
-                        communityTitle: postView.community.title,
-                        communityUrl: postView.community.actorId,
+                        communityName: post.community!.name,
+                        communityTitle: post.community!.title,
+                        communityUrl: post.community!.actorId,
                         includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),
                     ],
                   ),
                   PostMetadata(
-                    commentCount: postViewMedia.postView.counts.comments,
-                    unreadCommentCount: postViewMedia.postView.unreadComments,
-                    dateTime: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated?.toIso8601String() : postViewMedia.postView.post.published.toIso8601String(),
-                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                    url: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                    commentCount: post.comments,
+                    unreadCommentCount: post.unreadComments,
+                    dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
+                    hasBeenEdited: post.updated != null ? true : false,
+                    url: post.media.firstOrNull != null ? post.media.first.originalUrl : null,
                   ),
                 ],
               ),
@@ -286,17 +280,17 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               const Divider(),
               CrossPosts(
                 crossPosts: sortedCrossPosts,
-                originalPost: postViewMedia,
+                originalPost: post,
               ),
             ],
             if (widget.showQuickPostActionBar) ...[
               const Divider(),
               PostQuickActionsBar(
-                vote: postView.myVote,
-                upvotes: postView.counts.upvotes,
-                downvotes: postView.counts.downvotes,
-                saved: postView.saved,
-                locked: postView.post.locked,
+                vote: post.voteType,
+                upvotes: post.upvotes,
+                downvotes: post.downvotes,
+                saved: post.saved,
+                locked: post.locked,
                 isOwnPost: isOwnPost,
                 onVote: (int score) {
                   HapticFeedback.mediumImpact();
@@ -309,14 +303,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 onShare: () {
                   showPostActionBottomModalSheet(
                     context,
-                    postViewMedia,
+                    post,
                     page: GeneralPostAction.share,
-                    onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+                    onAction: ({postAction, userAction, communityAction, post}) {
                       if (postAction == null && userAction == null && communityAction == null) return;
 
                       switch (postAction) {
                         case PostAction.hide:
-                          context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: postViewMedia.postView.post.id));
+                          context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
                           break;
                         default:
                           break;
@@ -324,7 +318,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
                       switch (userAction) {
                         case UserAction.block:
-                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: postViewMedia.postView.creator.id));
+                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
                           break;
                         default:
                           break;
@@ -332,7 +326,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
                       switch (communityAction) {
                         case CommunityAction.block:
-                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: postViewMedia.postView.community.id));
+                          context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
                           break;
                         default:
                           break;
@@ -345,22 +339,22 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
                   final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                     auth: account.jwt,
-                    id: postViewMedia.postView.community.id,
+                    id: post.community?.id,
                   ));
 
                   navigateToCreatePostPage(
                     context,
-                    communityId: postView.community.id,
+                    communityId: post.community?.id,
                     community: ThunderCommunity(getCommunityResponse.communityView.community, communityView: getCommunityResponse.communityView),
-                    postViewMedia: postViewMedia,
-                    onPostSuccess: (PostViewMedia pvm, _) {
-                      setState(() => postViewMedia = pvm);
+                    post: post,
+                    onPostSuccess: (ThunderPost pvm, _) {
+                      setState(() => post = pvm);
                     },
                   );
                 },
                 onReply: () async => navigateToCreateCommentPage(
                   context,
-                  postViewMedia: postViewMedia,
+                  post: post,
                   onCommentSuccess: (commentView, userChanged) {
                     if (!userChanged) {
                       context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
@@ -369,12 +363,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ),
               ),
             ],
-            if (widget.showReplyEditorButtons && postViewMedia.postView.post.body?.isNotEmpty == true) ...[
+            if (widget.showReplyEditorButtons && post.body?.isNotEmpty == true) ...[
               const ThunderDivider(sliver: false, padding: false),
               ReplyToPreviewActions(
                 onViewSourceToggled: widget.onViewSourceToggled,
                 viewSource: widget.viewSource,
-                text: postViewMedia.postView.post.body!,
+                text: post.body!,
               ),
             ],
           ],
@@ -393,8 +387,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             vertical: 4,
           ),
           child: MediaView(
-            media: postViewMedia.media.first,
-            postId: postViewMedia.postView.post.id,
+            media: post.media.first,
+            postId: post.id,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
@@ -405,7 +399,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
           child: MediaTypeBadge(
-            mediaType: postViewMedia.media.firstOrNull?.mediaType ?? MediaType.text,
+            mediaType: post.media.firstOrNull?.mediaType ?? MediaType.text,
             dim: false,
           ),
         ),
@@ -425,7 +419,7 @@ class PostBodyPreview extends StatelessWidget {
   });
 
   /// The post to display the preview of
-  final Post post;
+  final ThunderPost post;
 
   /// The expandable controller used to toggle the expanded/collapsed state of the post
   final ExpandableController expandableController;

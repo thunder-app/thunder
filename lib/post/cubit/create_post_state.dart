@@ -18,7 +18,7 @@ enum CreatePostStatus {
 class CreatePostState extends Equatable {
   const CreatePostState({
     this.status = CreatePostStatus.initial,
-    this.postViewMedia,
+    this.post,
     this.imageUrls,
     this.message,
   });
@@ -27,7 +27,7 @@ class CreatePostState extends Equatable {
   final CreatePostStatus status;
 
   /// The result of the created or edited post
-  final PostViewMedia? postViewMedia;
+  final ThunderPost? post;
 
   /// The urls of the uploaded images
   final List<String>? imageUrls;
@@ -37,18 +37,18 @@ class CreatePostState extends Equatable {
 
   CreatePostState copyWith({
     required CreatePostStatus status,
-    PostViewMedia? postViewMedia,
+    ThunderPost? post,
     List<String>? imageUrls,
     String? message,
   }) {
     return CreatePostState(
       status: status,
-      postViewMedia: postViewMedia ?? this.postViewMedia,
+      post: post ?? this.post,
       imageUrls: imageUrls ?? this.imageUrls,
       message: message ?? this.message,
     );
   }
 
   @override
-  List<dynamic> get props => [status, postViewMedia, imageUrls, message];
+  List<dynamic> get props => [status, post, imageUrls, message];
 }

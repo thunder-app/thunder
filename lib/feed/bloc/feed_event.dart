@@ -70,9 +70,9 @@ final class ResetFeedEvent extends FeedEvent {
 }
 
 final class FeedItemUpdatedEvent extends FeedEvent {
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
-  const FeedItemUpdatedEvent({required this.postViewMedia});
+  const FeedItemUpdatedEvent({required this.post});
 }
 
 final class FeedCommunityUpdatedEvent extends FeedEvent {
@@ -82,11 +82,11 @@ final class FeedCommunityUpdatedEvent extends FeedEvent {
 }
 
 final class FeedItemActionedEvent extends FeedEvent {
-  /// This is the original PostViewMedia to perform the action upon. One of [postViewMedia] or [postId] must be provided
+  /// This is the original ThunderPost to perform the action upon. One of [post] or [postId] must be provided
   /// If both are provided, [postId] will take precedence.
-  final PostViewMedia? postViewMedia;
+  final ThunderPost? post;
 
-  /// This is the post id to perform the action upon. One of [postViewMedia] or [postId] must be provided
+  /// This is the post id to perform the action upon. One of [post] or [postId] must be provided
   /// If both are provided, [postId] will take precedence
   final int? postId;
 
@@ -99,7 +99,7 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
-  const FeedItemActionedEvent({this.postViewMedia, this.postId, this.postIds, required this.postAction, this.value});
+  const FeedItemActionedEvent({this.post, this.postId, this.postIds, required this.postAction, this.value});
 }
 
 final class FeedClearMessageEvent extends FeedEvent {}
@@ -138,7 +138,7 @@ final class CreatePostEvent extends FeedEvent {
 }
 
 final class PopulatePostsEvent extends FeedEvent {
-  final List<PostViewMedia> posts;
+  final List<ThunderPost> posts;
 
   const PopulatePostsEvent(this.posts);
 }

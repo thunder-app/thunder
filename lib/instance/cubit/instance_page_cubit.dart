@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/error_messages.dart';
@@ -94,7 +93,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       emit(state.copyWith(
         status: searchResponse.posts.isEmpty || searchResponse.posts.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        posts: [...(state.posts ?? []), ...(await parsePostViews(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
+        posts: [...(state.posts ?? []), ...(await parsePosts(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
         page: page ?? 1,
       ));
     } catch (e) {

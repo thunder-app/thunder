@@ -12,7 +12,6 @@ import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
@@ -23,7 +22,7 @@ import 'package:thunder/user/enums/user_action.dart';
 
 class PostCard extends StatefulWidget {
   /// The associated post information to display in the card.
-  final PostViewMedia postViewMedia;
+  final ThunderPost post;
 
   /// Determines whether the post should be dimmed or not. This is usually to indicate when a post has been read.
   final bool indicateRead;
@@ -57,7 +56,7 @@ class PostCard extends StatefulWidget {
 
   const PostCard({
     super.key,
-    required this.postViewMedia,
+    required this.post,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onReadAction,
@@ -114,10 +113,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _onPointerUp() {
-    final int? myVote = widget.postViewMedia.postView.myVote;
-    final bool saved = widget.postViewMedia.postView.saved;
-    final bool read = widget.postViewMedia.postView.read;
-    final bool? hidden = widget.postViewMedia.postView.hidden;
+    final int? myVote = widget.post.voteType;
+    final bool saved = widget.post.saved;
+    final bool read = widget.post.read;
+    final bool hidden = widget.post.hidden;
 
     _updateOverridingSwipe(false);
 
@@ -133,7 +132,7 @@ class _PostCardState extends State<PostCard> {
         saved: saved,
         read: read,
         hidden: hidden,
-        postViewMedia: widget.postViewMedia,
+        post: widget.post,
       );
     }
 
@@ -167,25 +166,25 @@ class _PostCardState extends State<PostCard> {
     final feedType = context.read<FeedBloc>().state.feedType;
 
     // Determine which post card view to use based on the settings
-    Widget child = state.useCompactView || widget.postViewMedia.postView.post.featuredLocal || (feedType == FeedType.community && widget.postViewMedia.postView.post.featuredCommunity)
+    Widget child = state.useCompactView || widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity)
         ? PostCardViewCompact(
-            post: ThunderPost(widget.postViewMedia.postView.post, postView: widget.postViewMedia.postView, media: widget.postViewMedia.media),
-            creator: ThunderUser(widget.postViewMedia.postView.creator),
+            post: widget.post,
+            creator: ThunderUser(widget.post.creator!),
             community: ThunderCommunity(
-              widget.postViewMedia.postView.community,
-              subscribed: widget.postViewMedia.postView.subscribed,
+              widget.post.community!,
+              subscribed: widget.post.subscribed,
             ),
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
             showMedia: !state.hideThumbnails,
-            navigateToPost: ({PostViewMedia? postViewMedia}) async {
+            navigateToPost: ({ThunderPost? post}) async {
               widget.onTap();
-              await navigateToPost(context, postViewMedia: widget.postViewMedia);
+              await navigateToPost(context, post: widget.post);
             },
           )
         : PostCardViewComfortable(
-            postViewMedia: widget.postViewMedia,
+            post: widget.post,
             hideThumbnails: state.hideThumbnails,
             hideNsfwPreviews: state.hideNsfwPreviews,
             markPostReadOnMediaView: state.markPostReadOnMediaView,
@@ -199,9 +198,9 @@ class _PostCardState extends State<PostCard> {
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
-            navigateToPost: ({PostViewMedia? postViewMedia}) async {
+            navigateToPost: ({ThunderPost? post}) async {
               widget.onTap();
-              await navigateToPost(context, postViewMedia: widget.postViewMedia);
+              await navigateToPost(context, post: widget.post);
             },
             onVoteAction: widget.onVoteAction,
             onSaveAction: widget.onSaveAction,
@@ -212,28 +211,24 @@ class _PostCardState extends State<PostCard> {
       child: InkWell(
         onTap: () async {
           widget.onTap();
-          await navigateToPost(context, postViewMedia: widget.postViewMedia);
+          await navigateToPost(context, post: widget.post);
         },
         onLongPress: () => showPostActionBottomModalSheet(
           context,
-          widget.postViewMedia,
-          onAction: ({postAction, userAction, communityAction, required postViewMedia}) async {
+          widget.post,
+          onAction: ({postAction, userAction, communityAction, post}) {
             if (postAction == null && userAction == null && communityAction == null) return;
 
-            final post = postViewMedia.postView.post;
-            final creator = postViewMedia.postView.creator;
-            final community = postViewMedia.postView.community;
-
             if (postAction == PostAction.hide) {
-              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
+              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
             }
 
             if (userAction == UserAction.block) {
-              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: creator.id));
+              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
             }
 
             if (communityAction == CommunityAction.block) {
-              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: community.id));
+              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
             }
           },
         ),
@@ -243,8 +238,8 @@ class _PostCardState extends State<PostCard> {
 
     // Wrap the post card in a Dismissible to handle swipe actions if swipe gestures are enabled
     if (currentSwipeDirection != DismissDirection.none) {
-      final read = widget.postViewMedia.postView.read;
-      final hidden = widget.postViewMedia.postView.hidden;
+      final read = widget.post.read;
+      final hidden = widget.post.hidden;
 
       final leftPrimary = state.leftPrimaryPostGesture;
       final leftSecondary = state.leftSecondaryPostGesture;
@@ -254,7 +249,7 @@ class _PostCardState extends State<PostCard> {
       bool shouldTriggerHaptic = false;
 
       child = Dismissible(
-        key: ObjectKey(widget.postViewMedia.postView.post.id),
+        key: ObjectKey(widget.post.id),
         direction: isOverridingSwipeGestureAction ? DismissDirection.none : currentSwipeDirection,
         resizeDuration: Duration.zero,
         dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
@@ -293,7 +288,7 @@ class _PostCardState extends State<PostCard> {
           firstActionThreshold: firstActionThreshold,
           dismissDirection: dismissDirection ?? DismissDirection.startToEnd,
           read: read,
-          hidden: hidden ?? false,
+          hidden: hidden,
         ),
         child: child,
       );

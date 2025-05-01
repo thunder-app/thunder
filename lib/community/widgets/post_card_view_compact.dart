@@ -6,7 +6,6 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/post/widgets/post_card_title.dart';
 import 'package:thunder/shared/media/compact_thumbnail_preview.dart';
@@ -27,7 +26,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool isUserLoggedIn;
 
   /// The callback function to navigate to the post.
-  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
+  final void Function({ThunderPost? post})? navigateToPost;
 
   /// Determines whether the post should be dimmed or not. This is usually to indicate when a post has been read.
   final bool? indicateRead;

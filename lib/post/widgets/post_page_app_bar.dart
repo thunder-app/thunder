@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/src/v3/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/models/models.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -38,7 +38,7 @@ class PostPageAppBar extends StatelessWidget {
   final void Function()? onUserChanged;
 
   /// Callback for when the post changes
-  final void Function(PostViewMedia)? onPostChanged;
+  final void Function(ThunderPost post)? onPostChanged;
 
   const PostPageAppBar({
     super.key,
@@ -149,7 +149,7 @@ class PostAppBarActions extends StatelessWidget {
   final void Function()? onUserChanged;
 
   /// Callback for when the post changes
-  final void Function(PostViewMedia)? onPostChanged;
+  final void Function(ThunderPost post)? onPostChanged;
 
   const PostAppBarActions({
     super.key,
@@ -174,7 +174,7 @@ class PostAppBarActions extends StatelessWidget {
           onPressed: () async {
             HapticFeedback.mediumImpact();
             await onReset?.call();
-            if (context.mounted) context.read<PostBloc>().add(GetPostEvent(postView: state.postView));
+            if (context.mounted) context.read<PostBloc>().add(GetPostEvent(post: state.post));
           },
         ),
         IconButton(
@@ -222,20 +222,20 @@ class PostAppBarActions extends StatelessWidget {
                     context,
                     profileModalHeading: l10n.viewPostAsDifferentAccount,
                     onUserChanged: onUserChanged,
-                    postActorId: context.read<PostBloc>().state.postView?.postView.post.apId,
+                    postActorId: context.read<PostBloc>().state.post?.url,
                     onPostChanged: onPostChanged,
                   );
                 },
                 icon: Icons.people_alt_rounded,
                 title: l10n.viewPostAsDifferentAccount,
               ),
-              if (state.postView?.media.first.mediaType == MediaType.link && state.postView!.media.first.originalUrl?.isNotEmpty == true)
+              if (state.post?.media.first.mediaType == MediaType.link && state.post!.media.first.originalUrl?.isNotEmpty == true)
                 ThunderPopupMenuItem(
                   onTap: () {
                     handleLinkLongPress(
                       context,
-                      state.postView!.media.first.originalUrl!,
-                      state.postView!.media.first.originalUrl!,
+                      state.post!.media.first.originalUrl!,
+                      state.post!.media.first.originalUrl!,
                       initialPage: LinkBottomSheetPage.alternateLinks,
                     );
                   },
