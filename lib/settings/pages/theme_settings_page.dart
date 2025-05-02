@@ -105,7 +105,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   LocalSettings? settingToHighlight;
 
   Future<void> setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       /// -------------------------- Theme Related Settings --------------------------
@@ -237,7 +237,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       /// -------------------------- Theme Related Settings --------------------------

@@ -82,7 +82,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.enableFeedsFab:
@@ -164,7 +164,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;

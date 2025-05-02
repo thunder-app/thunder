@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -234,7 +233,7 @@ Future<ThunderPost> savePost(ThunderPost post, bool save) async {
 
 /// Parse a post with media
 Future<List<ThunderPost>> parsePosts(List<PostView> postViews, {String? resolutionInstance}) async {
-  final prefs = (await UserPreferences.instance).sharedPreferences;
+  final prefs = UserPreferences.instance.preferences;
   final fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
   final edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   final tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
@@ -324,8 +323,7 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
   if (fetchImageDimensions && media.thumbnailUrl != null) {
     // If the instance does not contain image metadata, we'll do some additional checks
     try {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      int imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+      int imageDimensionTimeout = UserPreferences.getLocalSetting(LocalSettings.imageDimensionTimeout) ?? 2;
 
       size = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {

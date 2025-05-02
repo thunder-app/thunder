@@ -80,7 +80,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   }
 
   Future<void> setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
     switch (attribute) {
       case LocalSettings.videoAutoMute:
         await prefs.setBool(LocalSettings.videoAutoMute.name, value);
@@ -115,7 +115,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
     setState(() {
       videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
       videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;

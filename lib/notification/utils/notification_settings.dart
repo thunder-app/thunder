@@ -28,7 +28,7 @@ Future<bool> updateNotificationSettings(
   Function? onUpdate,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final prefs = (await UserPreferences.instance).sharedPreferences;
+  final prefs = UserPreferences.instance.preferences;
 
   // Disable background fetch and unregister unified push. This is only applied to Android. For iOS, simply deleting the token is enough.
   // The user should be aware that restarting the app is required to update their push notification settings

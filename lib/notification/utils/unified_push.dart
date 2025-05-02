@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
@@ -34,12 +33,13 @@ import 'package:thunder/utils/instance.dart';
 ///
 /// The [controller] is passed in so that we can react to push notifications when the user taps on the notification.
 void initUnifiedPushNotifications({required StreamController<NotificationResponse> controller}) async {
+  final prefs = UserPreferences.instance.preferences;
+
   UnifiedPush.initialize(
     onNewEndpoint: (String endpoint, String instance) async {
       debugPrint("Connected to new UnifiedPush endpoint: $instance @ $endpoint");
 
       // Save the endpoint to preferences so we can retrieve it later for troubleshooting
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('unified_push_endpoint', endpoint);
 
       List<Account> accounts = await Account.accounts();
@@ -58,7 +58,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       debugPrint("UnifiedPush registration failed for $instance");
 
       // Clear the endpoint from preferences
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.remove('unified_push_endpoint');
 
       // We should remove any previously sent tokens, and send them again
@@ -69,7 +68,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       debugPrint("UnifiedPush unregistered from $instance");
 
       // Clear the endpoint from preferences
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.remove('unified_push_endpoint');
 
       // We should remove any previously sent tokens, and send them again
@@ -80,11 +78,10 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Ensure that the db is initialized before attempting to access below.
       await initializeDatabase();
 
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-      final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
+      final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+      final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
+      final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+      final bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
 
       final String decodedMessage = utf8.decode(message);
 

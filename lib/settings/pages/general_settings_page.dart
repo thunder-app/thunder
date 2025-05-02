@@ -150,7 +150,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool enableExperimentalFeatures = false;
 
   Future<void> setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.defaultFeedListType:
@@ -266,7 +266,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     // Get all currently active accounts
     List<Account> accountList = await Account.accounts();

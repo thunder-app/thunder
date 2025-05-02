@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/expandable_option.dart';
@@ -58,11 +57,10 @@ class SettingProfile extends StatelessWidget {
                   ? null
                   : () async {
                       bool success = true;
-                      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
                       for (MapEntry<LocalSettings, Object> entry in settingsToChange.entries) {
                         if (entry.value is bool) {
-                          await prefs.setBool(entry.key.name, entry.value as bool);
+                          await UserPreferences.instance.preferences.setBool(entry.key.name, entry.value as bool);
                         } else {
                           // This should never happen in production, since we should add support for any unsupported types
                           // before adding a profile containing those types.

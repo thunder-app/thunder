@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 
 // Package imports
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/core/enums/local_settings.dart';
@@ -22,8 +21,7 @@ import 'package:thunder/notification/utils/unified_push.dart';
 ///
 /// The [controller] is passed in so that we can react to push notifications.
 Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
-  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  NotificationType notificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+  NotificationType notificationType = NotificationType.values.byName(UserPreferences.getLocalSetting(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
 
   debugPrint("Initializing push notifications for type: ${notificationType.name}");
 

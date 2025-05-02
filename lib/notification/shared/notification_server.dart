@@ -27,7 +27,7 @@ Future<bool> sendAuthTokenToNotificationServer({
   required String instance,
 }) async {
   try {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
     // Send POST request to notification server
@@ -56,7 +56,7 @@ Future<bool> sendAuthTokenToNotificationServer({
 /// This is generally called when the user changes push notification types, or disables all push notifications.
 Future<bool> deleteAccountFromNotificationServer() async {
   try {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
     List<Account> accounts = await Account.accounts();
@@ -79,7 +79,7 @@ Future<bool> deleteAccountFromNotificationServer() async {
 
 Future<bool> requestTestNotification() async {
   try {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;

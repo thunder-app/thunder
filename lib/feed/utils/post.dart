@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -31,8 +30,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   final account = await fetchActiveProfile();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+  List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
   int desiredPosts = 20;
   bool hasReachedPostsEnd = false;

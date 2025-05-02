@@ -11,7 +11,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown/markdown.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
@@ -50,11 +49,12 @@ Future<void> pollRepliesAndShowNotifications() async {
   // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
 
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-  final bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-  final bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
+  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
+  final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+  final bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+
+  final prefs = UserPreferences.instance.preferences;
 
   // Ensure that the db is initialized before attempting to access below.
   await initializeDatabase();

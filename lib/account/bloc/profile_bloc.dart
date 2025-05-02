@@ -147,7 +147,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (account == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       // Set this account as the active account
-      final prefs = (await UserPreferences.instance).sharedPreferences;
+      final prefs = UserPreferences.instance.preferences;
       prefs.setString('active_profile_id', account.id);
 
       // Run the CheckAuth event to reset everything
@@ -169,7 +169,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
 
     Account? account = await Account.fetchAccount(event.accountId);
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     if (account != null) {
       // Set this account as the active account
@@ -193,7 +193,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _removeProfile(RemoveProfile event, Emitter<ProfileState> emit) async {
     emit(state.copyWith(status: ProfileStatus.loading));
 
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     final account = await fetchActiveProfile();
     await Account.deleteAccount(event.accountId);

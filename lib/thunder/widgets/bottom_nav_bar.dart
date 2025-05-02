@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -46,8 +45,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDragEnd(DragEndDetails details, BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
+    bool bottomNavBarSwipeGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarSwipeGesture) ?? true;
     if (bottomNavBarSwipeGestures == false) return;
 
     double delta = _dragEndX - _dragStartX;
@@ -66,8 +64,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDoubleTap(BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
+    bool bottomNavBarDoubleTapGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarDoubleTapGesture) ?? false;
     if (bottomNavBarDoubleTapGestures == false) return;
 
     bool isDrawerOpen = context.mounted ? Scaffold.of(context).isDrawerOpen : false;

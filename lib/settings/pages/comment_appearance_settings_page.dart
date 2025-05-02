@@ -62,7 +62,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -78,7 +78,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.showCommentActionButtons:
@@ -112,7 +112,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Reset the comment preferences to their defaults
   void resetCommentPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     await prefs.remove(LocalSettings.showCommentActionButtons.name);
     await prefs.remove(LocalSettings.combineCommentScores.name);

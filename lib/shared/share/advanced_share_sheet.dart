@@ -8,7 +8,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/models.dart';
@@ -142,9 +141,8 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
 
 void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
   final ThemeData theme = Theme.of(context);
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  String? optionsJson = prefs.getString(LocalSettings.advancedShareOptions.name);
+  String? optionsJson = UserPreferences.getLocalSetting(LocalSettings.advancedShareOptions);
   AdvancedShareSheetOptions options = optionsJson != null ? AdvancedShareSheetOptions.fromJson(jsonDecode(optionsJson)) : AdvancedShareSheetOptions();
 
   bool isDownloading = false;
@@ -326,7 +324,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                                 onPressed: _canShare(options, post) && !isGeneratingImage
                                     ? () async {
                                         // Save the share settings
-                                        prefs.setString(LocalSettings.advancedShareOptions.name, jsonEncode(options.toJson()));
+                                        UserPreferences.setSetting(LocalSettings.advancedShareOptions, jsonEncode(options.toJson()));
 
                                         // Generate the text to share
                                         String? text;

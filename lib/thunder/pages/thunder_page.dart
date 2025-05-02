@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 
 // Internal
@@ -306,7 +305,7 @@ class _ThunderState extends State<Thunder> {
                             // If the last known version is not null (meaning we've run before)
                             // and the current version is different (meaning we've updated)
                             // show the changelog (if we are configured to do so).
-                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                            final prefs = UserPreferences.instance.preferences;
                             String? lastKnownVersion = prefs.getString('current_version');
                             String currentVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
 

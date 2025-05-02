@@ -11,7 +11,6 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -63,7 +62,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   final _scrollController = ScrollController(initialScrollOffset: 0);
   // This exists only because it is required by FadingEdgeScrollView
   final ScrollController _searchFiltersScrollController = ScrollController();
-  SharedPreferences? prefs;
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
@@ -102,9 +100,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   Future<void> initPrefs() async {
-    prefs = (await UserPreferences.instance).sharedPreferences;
     setState(() {
-      sortType = SortType.values.byName(prefs!.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
+      sortType = SortType.values.byName(UserPreferences.instance.preferences.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
       final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == sortType);
       sortTypeIcon = sortTypeItem.icon;
       sortTypeLabel = sortTypeItem.label;
@@ -849,7 +846,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             sortTypeLabel = selected.label;
           });
 
-          prefs!.setString("search_default_sort_type", selected.payload.name);
+          UserPreferences.instance.preferences.setString("search_default_sort_type", selected.payload.name);
 
           _doSearch();
         },

@@ -41,7 +41,7 @@ Future<bool> migrateToSQLite(AppDatabase database, {Database? originalDB, bool d
       // Check if there's an active user, and switch the account if so
       SharedPreferences? prefs;
 
-      if (Platform.isAndroid || Platform.isIOS) prefs = (await UserPreferences.instance).sharedPreferences;
+      if (Platform.isAndroid || Platform.isIOS) prefs = UserPreferences.instance.preferences;
 
       for (Map<String, dynamic> record in data['accounts']) {
         int accountId = await database.into(database.accounts).insert(AccountsCompanion.insert(

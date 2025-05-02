@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/core/enums/action_color.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
@@ -85,186 +84,187 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
       FeedListType defaultFeedListType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultFeedListType) ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultFeedSortType) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
         defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
-      bool useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+      bool useProfilePictureForDrawer = UserPreferences.getLocalSetting(LocalSettings.useProfilePictureForDrawer) ?? false;
 
       // NSFW Settings
-      bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      bool hideNsfwPosts = UserPreferences.getLocalSetting(LocalSettings.hideNsfwPosts) ?? false;
+      bool hideNsfwPreviews = UserPreferences.getLocalSetting(LocalSettings.hideNsfwPreviews) ?? true;
 
       // Tablet Settings
-      bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+      bool tabletMode = UserPreferences.getLocalSetting(LocalSettings.useTabletMode) ?? false;
 
       // General Settings
-      bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
-      bool useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-      bool useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
-      bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      bool markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
-      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
-      bool showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      NotificationType inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
-      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name) ?? 'en';
-      FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      NameThickness userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
-      NameColor userFullNameUserNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameUserNameColor.name) ?? NameColor.defaultColor);
-      NameThickness userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      NameColor userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      NameThickness communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameCommunityNameThickness.name) ?? NameThickness.normal.name);
-      NameColor communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
-      NameThickness communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      NameColor communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
-      bool showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
-      bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
-      bool showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
-      bool showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
+      bool openInReaderMode = UserPreferences.getLocalSetting(LocalSettings.openLinksInReaderMode) ?? false;
+      bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+      bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+      bool markPostReadOnMediaView = UserPreferences.getLocalSetting(LocalSettings.markPostAsReadOnMediaView) ?? false;
+      bool markPostReadOnScroll = UserPreferences.getLocalSetting(LocalSettings.markPostAsReadOnScroll) ?? false;
+      bool showInAppUpdateNotification = UserPreferences.getLocalSetting(LocalSettings.showInAppUpdateNotification) ?? false;
+      bool showUpdateChangelogs = UserPreferences.getLocalSetting(LocalSettings.showUpdateChangelogs) ?? true;
+      NotificationType inboxNotificationType = NotificationType.values.byName(UserPreferences.getLocalSetting(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
+      String? appLanguageCode = UserPreferences.getLocalSetting(LocalSettings.appLanguageCode) ?? 'en';
+      FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+      NameThickness userFullNameUserNameThickness = NameThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFullNameUserNameThickness) ?? NameThickness.normal.name);
+      NameColor userFullNameUserNameColor = NameColor.fromString(color: UserPreferences.getLocalSetting(LocalSettings.userFullNameUserNameColor) ?? NameColor.defaultColor);
+      NameThickness userFullNameInstanceNameThickness = NameThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFullNameInstanceNameThickness) ?? NameThickness.light.name);
+      NameColor userFullNameInstanceNameColor = NameColor.fromString(color: UserPreferences.getLocalSetting(LocalSettings.userFullNameInstanceNameColor) ?? NameColor.defaultColor);
+      FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
+      NameThickness communityFullNameCommunityNameThickness =
+          NameThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFullNameCommunityNameThickness) ?? NameThickness.normal.name);
+      NameColor communityFullNameCommunityNameColor = NameColor.fromString(color: UserPreferences.getLocalSetting(LocalSettings.communityFullNameCommunityNameColor) ?? NameColor.defaultColor);
+      NameThickness communityFullNameInstanceNameThickness =
+          NameThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFullNameInstanceNameThickness) ?? NameThickness.light.name);
+      NameColor communityFullNameInstanceNameColor = NameColor.fromString(color: UserPreferences.getLocalSetting(LocalSettings.communityFullNameInstanceNameColor) ?? NameColor.defaultColor);
+      ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(UserPreferences.getLocalSetting(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
+      bool showNavigationLabels = UserPreferences.getLocalSetting(LocalSettings.showNavigationLabels) ?? true;
+      bool hideTopBarOnScroll = UserPreferences.getLocalSetting(LocalSettings.hideTopBarOnScroll) ?? false;
+      bool showHiddenPosts = UserPreferences.getLocalSetting(LocalSettings.showHiddenPosts) ?? false;
+      bool showExpandedTaglines = UserPreferences.getLocalSetting(LocalSettings.showExpandedTaglines) ?? false;
 
-      BrowserMode browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
+      BrowserMode browserMode = BrowserMode.values.byName(UserPreferences.getLocalSetting(LocalSettings.browserMode) ?? BrowserMode.customTabs.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
-      bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      bool hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
-      bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
-      bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
-      bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      bool useCompactView = UserPreferences.getLocalSetting(LocalSettings.useCompactView) ?? false;
+      bool showTitleFirst = UserPreferences.getLocalSetting(LocalSettings.showPostTitleFirst) ?? false;
+      bool hideThumbnails = UserPreferences.getLocalSetting(LocalSettings.hideThumbnails) ?? false;
+      bool showThumbnailPreviewOnRight = UserPreferences.getLocalSetting(LocalSettings.showThumbnailPreviewOnRight) ?? false;
+      bool showTextPostIndicator = UserPreferences.getLocalSetting(LocalSettings.showTextPostIndicator) ?? false;
+      bool tappableAuthorCommunity = UserPreferences.getLocalSetting(LocalSettings.tappableAuthorCommunity) ?? false;
 
       // General Settings
-      bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      bool showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      bool showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
-      bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? true;
-      bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      bool postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
-      bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
-      bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      bool showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
-      DateFormat dateFormat = DateFormat(prefs.getString(LocalSettings.dateFormat.name) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
-      FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
-      Color feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
+      bool showVoteActions = UserPreferences.getLocalSetting(LocalSettings.showPostVoteActions) ?? true;
+      bool showSaveAction = UserPreferences.getLocalSetting(LocalSettings.showPostSaveAction) ?? true;
+      bool showCommunityIcons = UserPreferences.getLocalSetting(LocalSettings.showPostCommunityIcons) ?? false;
+      bool showFullHeightImages = UserPreferences.getLocalSetting(LocalSettings.showPostFullHeightImages) ?? true;
+      bool showEdgeToEdgeImages = UserPreferences.getLocalSetting(LocalSettings.showPostEdgeToEdgeImages) ?? false;
+      bool showTextContent = UserPreferences.getLocalSetting(LocalSettings.showPostTextContentPreview) ?? false;
+      bool showPostAuthor = UserPreferences.getLocalSetting(LocalSettings.showPostAuthor) ?? false;
+      bool postShowUserInstance = UserPreferences.getLocalSetting(LocalSettings.postShowUserInstance) ?? false;
+      bool scoreCounters = UserPreferences.getLocalSetting(LocalSettings.scoreCounters) ?? false;
+      bool dimReadPosts = UserPreferences.getLocalSetting(LocalSettings.dimReadPosts) ?? true;
+      bool showFullPostDate = UserPreferences.getLocalSetting(LocalSettings.showFullPostDate) ?? false;
+      DateFormat dateFormat = DateFormat(UserPreferences.getLocalSetting(LocalSettings.dateFormat) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
+      FeedCardDividerThickness feedCardDividerThickness =
+          FeedCardDividerThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerThickness) ?? FeedCardDividerThickness.compact.name);
+      Color feedCardDividerColor = Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) ?? Colors.transparent.value);
       List<PostCardMetadataItem> compactPostCardMetadataItems =
-          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+          UserPreferences.getLocalSetting(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =
-          prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+          UserPreferences.getLocalSetting(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
 
       // Post body settings
-      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
-      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
-      bool postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
-      bool postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
-      bool postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
+      bool showCrossPosts = UserPreferences.getLocalSetting(LocalSettings.showCrossPosts) ?? true;
+      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(UserPreferences.getLocalSetting(LocalSettings.postBodyViewType) ?? PostBodyViewType.expanded.name);
+      bool postBodyShowUserInstance = UserPreferences.getLocalSetting(LocalSettings.postBodyShowUserInstance) ?? false;
+      bool postBodyShowCommunityInstance = UserPreferences.getLocalSetting(LocalSettings.postBodyShowCommunityInstance) ?? false;
+      bool postBodyShowCommunityAvatar = UserPreferences.getLocalSetting(LocalSettings.postBodyShowCommunityAvatar) ?? false;
 
-      List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+      List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
-      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
-      bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
-      bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
-      bool commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
-      bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      bool collapseParentCommentOnGesture = UserPreferences.getLocalSetting(LocalSettings.collapseParentCommentBodyOnGesture) ?? true;
+      bool showCommentButtonActions = UserPreferences.getLocalSetting(LocalSettings.showCommentActionButtons) ?? false;
+      bool commentShowUserInstance = UserPreferences.getLocalSetting(LocalSettings.commentShowUserInstance) ?? false;
+      bool commentShowUserAvatar = UserPreferences.getLocalSetting(LocalSettings.commentShowUserAvatar) ?? false;
+      bool combineCommentScores = UserPreferences.getLocalSetting(LocalSettings.combineCommentScores) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
-          NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+          NestedCommentIndicatorStyle.values.byName(UserPreferences.getLocalSetting(LocalSettings.nestedCommentIndicatorStyle) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
-          NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+          NestedCommentIndicatorColor.values.byName(UserPreferences.getLocalSetting(LocalSettings.nestedCommentIndicatorColor) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
-      ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
-      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
-      bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      ThemeType themeType = ThemeType.values[UserPreferences.getLocalSetting(LocalSettings.appTheme) ?? ThemeType.system.index];
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(UserPreferences.getLocalSetting(LocalSettings.appThemeAccentColor) ?? CustomThemeType.deepBlue.name);
+      bool useMaterialYouTheme = UserPreferences.getLocalSetting(LocalSettings.useMaterialYouTheme) ?? false;
 
       // Color Settings
-      ActionColor upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
-      ActionColor downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
-      ActionColor saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
-      ActionColor markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
-      ActionColor replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
-      ActionColor hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
+      ActionColor upvoteColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.upvoteColor) ?? ActionColor.orange);
+      ActionColor downvoteColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.downvoteColor) ?? ActionColor.blue);
+      ActionColor saveColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.saveColor) ?? ActionColor.purple);
+      ActionColor markReadColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.markReadColor) ?? ActionColor.teal);
+      ActionColor replyColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.replyColor) ?? ActionColor.green);
+      ActionColor hideColor = ActionColor.fromString(colorRaw: UserPreferences.getLocalSetting(LocalSettings.hideColor) ?? ActionColor.red);
 
       // Font Settings
-      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
-      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
-      FontScale commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
-      FontScale metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
+      FontScale titleFontSizeScale = FontScale.values.byName(UserPreferences.getLocalSetting(LocalSettings.titleFontSizeScale) ?? FontScale.base.name);
+      FontScale contentFontSizeScale = FontScale.values.byName(UserPreferences.getLocalSetting(LocalSettings.contentFontSizeScale) ?? FontScale.base.name);
+      FontScale commentFontSizeScale = FontScale.values.byName(UserPreferences.getLocalSetting(LocalSettings.commentFontSizeScale) ?? FontScale.base.name);
+      FontScale metadataFontSizeScale = FontScale.values.byName(UserPreferences.getLocalSetting(LocalSettings.metadataFontSizeScale) ?? FontScale.base.name);
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
-      bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
-      bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
+      bool bottomNavBarSwipeGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarSwipeGesture) ?? true;
+      bool bottomNavBarDoubleTapGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarDoubleTapGesture) ?? false;
 
       // Post Gestures
-      bool enablePostGestures = prefs.getBool(LocalSettings.enablePostGestures.name) ?? true;
-      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightPrimary.name) ?? SwipeAction.save.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightSecondary.name) ?? SwipeAction.toggleRead.name);
+      bool enablePostGestures = UserPreferences.getLocalSetting(LocalSettings.enablePostGestures) ?? true;
+      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postGestureLeftPrimary) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postGestureLeftSecondary) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postGestureRightPrimary) ?? SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postGestureRightSecondary) ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
-      bool enableCommentGestures = prefs.getBool(LocalSettings.enableCommentGestures.name) ?? true;
-      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
-      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
+      bool enableCommentGestures = UserPreferences.getLocalSetting(LocalSettings.enableCommentGestures) ?? true;
+      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.commentGestureLeftPrimary) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.commentGestureLeftSecondary) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.commentGestureRightPrimary) ?? SwipeAction.reply.name);
+      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.commentGestureRightSecondary) ?? SwipeAction.save.name);
 
-      bool enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+      bool enableFullScreenSwipeNavigationGesture = UserPreferences.getLocalSetting(LocalSettings.enableFullScreenSwipeNavigationGesture) ?? true;
 
       /// -------------------------- FAB Related Settings --------------------------
-      bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
-      bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
+      bool enableFeedsFab = UserPreferences.getLocalSetting(LocalSettings.enableFeedsFab) ?? true;
+      bool enablePostsFab = UserPreferences.getLocalSetting(LocalSettings.enablePostsFab) ?? true;
 
-      bool enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
-      bool enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
-      bool enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
-      bool enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
-      bool enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
-      bool enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+      bool enableBackToTop = UserPreferences.getLocalSetting(LocalSettings.enableBackToTop) ?? true;
+      bool enableSubscriptions = UserPreferences.getLocalSetting(LocalSettings.enableSubscriptions) ?? true;
+      bool enableRefresh = UserPreferences.getLocalSetting(LocalSettings.enableRefresh) ?? true;
+      bool enableDismissRead = UserPreferences.getLocalSetting(LocalSettings.enableDismissRead) ?? true;
+      bool enableChangeSort = UserPreferences.getLocalSetting(LocalSettings.enableChangeSort) ?? true;
+      bool enableNewPost = UserPreferences.getLocalSetting(LocalSettings.enableNewPost) ?? true;
 
-      bool postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
-      bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
-      bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
-      bool postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
-      bool postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
+      bool postFabEnableBackToTop = UserPreferences.getLocalSetting(LocalSettings.postFabEnableBackToTop) ?? true;
+      bool postFabEnableChangeSort = UserPreferences.getLocalSetting(LocalSettings.postFabEnableChangeSort) ?? true;
+      bool postFabEnableReplyToPost = UserPreferences.getLocalSetting(LocalSettings.postFabEnableReplyToPost) ?? true;
+      bool postFabEnableRefresh = UserPreferences.getLocalSetting(LocalSettings.postFabEnableRefresh) ?? true;
+      bool postFabEnableSearch = UserPreferences.getLocalSetting(LocalSettings.postFabEnableSearch) ?? true;
 
-      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.newPost.name);
-      FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
-      PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
-      PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
+      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedFabSinglePressAction) ?? FeedFabAction.newPost.name);
+      FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedFabLongPressAction) ?? FeedFabAction.openFab.name);
+      PostFabAction postFabSinglePressAction = PostFabAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postFabSinglePressAction) ?? PostFabAction.replyToPost.name);
+      PostFabAction postFabLongPressAction = PostFabAction.values.byName(UserPreferences.getLocalSetting(LocalSettings.postFabLongPressAction) ?? PostFabAction.openFab.name);
 
-      bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
-      bool combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
+      bool enableCommentNavigation = UserPreferences.getLocalSetting(LocalSettings.enableCommentNavigation) ?? true;
+      bool combineNavAndFab = UserPreferences.getLocalSetting(LocalSettings.combineNavAndFab) ?? true;
 
       /// -------------------------- Accessibility Related Settings --------------------------
-      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      bool reduceAnimations = UserPreferences.getLocalSetting(LocalSettings.reduceAnimations) ?? false;
 
       /// ------------------ VIDEO PLAYER SETTINGS -----------------------------------------
-      bool videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
-      bool videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
-      bool videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
-      VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
-      VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
-      VideoPlayerMode videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
+      bool videoAutoFullscreen = UserPreferences.getLocalSetting(LocalSettings.videoAutoFullscreen) ?? false;
+      bool videoAutoLoop = UserPreferences.getLocalSetting(LocalSettings.videoAutoLoop) ?? false;
+      bool videoAutoMute = UserPreferences.getLocalSetting(LocalSettings.videoAutoMute) ?? true;
+      VideoAutoPlay videoAutoPlay = VideoAutoPlay.values.byName(UserPreferences.getLocalSetting(LocalSettings.videoAutoPlay) ?? VideoAutoPlay.never.name);
+      VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(UserPreferences.getLocalSetting(LocalSettings.videoDefaultPlaybackSpeed) ?? VideoPlayBackSpeed.normal.name);
+      VideoPlayerMode videoPlayerMode = VideoPlayerMode.values.byName(UserPreferences.getLocalSetting(LocalSettings.videoPlayerMode) ?? VideoPlayerMode.inApp.name);
 
-      String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+      String currentAnonymousInstance = UserPreferences.getLocalSetting(LocalSettings.currentAnonymousInstance) ?? 'lemmy.ml';
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -448,13 +448,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   }
 
   void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
     if (event.instance != null) {
       LemmyClient.instance.changeBaseUrl(event.instance!);
-      prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance!);
+      UserPreferences.setSetting(LocalSettings.currentAnonymousInstance, event.instance!);
     } else {
-      prefs.remove(LocalSettings.currentAnonymousInstance.name);
+      UserPreferences.removeSetting(LocalSettings.currentAnonymousInstance);
     }
 
     emit(state.copyWith(currentAnonymousInstance: event.instance));

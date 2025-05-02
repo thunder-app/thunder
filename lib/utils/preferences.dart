@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/drafts/models/draft.dart';
@@ -17,7 +16,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 
 Future<void> performSharedPreferencesMigration() async {
-  final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  final prefs = UserPreferences.instance.preferences;
 
   // Migrate the openInExternalBrowser setting, if found.
   bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);

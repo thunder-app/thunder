@@ -32,7 +32,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.keywordFilters:
@@ -47,7 +47,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];

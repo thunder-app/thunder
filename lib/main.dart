@@ -20,7 +20,6 @@ import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
@@ -76,6 +75,9 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  // Initializes the UserPreferences singleton
+  await UserPreferences.instance.initialize();
+
   try {
     ByteData data = await PlatformAssetBundle().load('assets/ca/isrgrootx1.pem');
     SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
@@ -96,7 +98,7 @@ void main() async {
     DartPingIOS.register();
   }
 
-  final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+  final String initialInstance = UserPreferences.getLocalSetting(LocalSettings.currentAnonymousInstance) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   // Perform preference migrations
@@ -128,8 +130,7 @@ class _ThunderAppState extends State<ThunderApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      String? inboxNotificationType = prefs.getString(LocalSettings.inboxNotificationType.name);
+      String? inboxNotificationType = UserPreferences.getLocalSetting(LocalSettings.inboxNotificationType);
 
       // If notification type is null, then don't perform any logic
       if (inboxNotificationType == null) return;
@@ -144,7 +145,7 @@ class _ThunderAppState extends State<ThunderApp> {
         bool success = await deleteAccountFromNotificationServer();
 
         if (success) {
-          prefs.remove(LocalSettings.inboxNotificationType.name);
+          UserPreferences.removeSetting(LocalSettings.inboxNotificationType);
           debugPrint('Removed tokens from notification server');
         }
       }

@@ -13,7 +13,7 @@ import 'package:thunder/account/account.dart';
 /// It will first try to find an active account. If that fails, then it will check for an anonymous account.
 /// If no anonymous account is found, it will create a new default anonymous account.
 Future<Account> fetchActiveProfile() async {
-  final prefs = (await UserPreferences.instance).sharedPreferences;
+  final prefs = UserPreferences.instance.preferences;
   final accountId = prefs.getString('active_profile_id');
 
   Account? account = await Account.fetchAccount(accountId ?? '');

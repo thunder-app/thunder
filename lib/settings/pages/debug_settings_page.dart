@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -67,7 +66,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   List<int> imageDimensionTimeouts = List.generate(10, (index) => index + 1);
 
   Future<void> setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.enableExperimentalFeatures:
@@ -86,7 +85,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      final prefs = UserPreferences.instance.preferences;
       inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
 
       if (!kIsWeb && Platform.isAndroid) {
@@ -208,15 +207,15 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   contentText: l10n.deleteLocalPreferencesDescription,
                   onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                   secondaryButtonText: l10n.cancel,
-                  onPrimaryButtonPressed: (dialogContext, _) {
-                    SharedPreferences.getInstance().then((prefs) async {
-                      await prefs.clear();
+                  onPrimaryButtonPressed: (dialogContext, _) async {
+                    final cleared = await UserPreferences.clearAllPreferences();
 
-                      if (context.mounted) {
-                        context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
-                        showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
-                      }
-                    });
+                    if (cleared) {
+                      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                      showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
+                    } else {
+                      showSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
+                    }
 
                     Navigator.of(dialogContext).pop();
                   },

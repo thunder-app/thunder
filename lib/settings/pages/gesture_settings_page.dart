@@ -68,7 +68,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       /// -------------------------- Gesture Related Settings --------------------------
@@ -136,7 +136,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       /// -------------------------- Gesture Related Settings --------------------------

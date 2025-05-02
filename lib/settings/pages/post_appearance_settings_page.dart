@@ -133,7 +133,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       // General Settings
@@ -175,7 +175,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.useCompactView:
@@ -291,7 +291,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Reset the posts preferences to their defaults
   void resetPostPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);

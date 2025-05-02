@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -33,24 +32,22 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     try {
       emit(state.copyWith(status: ThemeStatus.loading));
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
       // Fetch the ThemeType from preferences (system, light, dark)
-      ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      ThemeType themeType = ThemeType.values[UserPreferences.getLocalSetting(LocalSettings.appTheme) ?? ThemeType.system.index];
       Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
 
       // Check if the user has selected to use a pure black theme, if so override the themeType to pureBlack
-      bool usePureBlackTheme = prefs.getBool(LocalSettings.usePureBlackTheme.name) ?? false;
+      bool usePureBlackTheme = UserPreferences.getLocalSetting(LocalSettings.usePureBlackTheme) ?? false;
       if (usePureBlackTheme && (themeType == ThemeType.dark || (themeType == ThemeType.system && brightness == Brightness.dark))) themeType = ThemeType.pureBlack;
 
       bool useDarkTheme = themeType == ThemeType.dark || themeType == ThemeType.pureBlack || (themeType == ThemeType.system && brightness == Brightness.dark);
 
-      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(UserPreferences.getLocalSetting(LocalSettings.appThemeAccentColor) ?? CustomThemeType.deepBlue.name);
 
-      bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      bool useMaterialYouTheme = UserPreferences.getLocalSetting(LocalSettings.useMaterialYouTheme) ?? false;
 
       // Fetch reduce animations preferences to remove overscrolling effects
-      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      bool reduceAnimations = UserPreferences.getLocalSetting(LocalSettings.reduceAnimations) ?? false;
 
       return emit(
         state.copyWith(

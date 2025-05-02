@@ -30,7 +30,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   LocalSettings? settingToHighlight;
 
   void setPreferences(attribute, value) async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.reduceAnimations:
@@ -46,7 +46,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   }
 
   void _initPreferences() async {
-    final prefs = (await UserPreferences.instance).sharedPreferences;
+    final prefs = UserPreferences.instance.preferences;
 
     setState(() {
       reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
