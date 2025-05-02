@@ -81,7 +81,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
   bool get wantKeepAlive => true;
 
   late ExpandableController expandableController;
-  late ThunderPost post;
   final FocusNode _selectableRegionFocusNode = FocusNode();
 
   @override
@@ -89,7 +88,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     super.initState();
 
     expandableController = ExpandableController(initialExpanded: !widget.showCompactPostBody);
-    post = widget.post;
   }
 
   @override
@@ -106,6 +104,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
+    final post = widget.post;
     final bool isOwnPost = post.creator?.id == context.read<ProfileBloc>().state.account?.userId;
 
     final List<ThunderPost> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.upvotes!.compareTo(a.upvotes!));
@@ -347,8 +346,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     communityId: post.community?.id,
                     community: ThunderCommunity(getCommunityResponse.communityView.community, communityView: getCommunityResponse.communityView),
                     post: post,
-                    onPostSuccess: (ThunderPost pvm, _) {
-                      setState(() => post = pvm);
+                    onPostSuccess: (ThunderPost post, _) {
+                      context.read<PostBloc>().add(PostUpdatedEvent(post: post));
                     },
                   );
                 },
@@ -387,8 +386,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             vertical: 4,
           ),
           child: MediaView(
-            media: post.media.first,
-            postId: post.id,
+            media: widget.post.media.first,
+            postId: widget.post.id,
             showFullHeightImages: false,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
@@ -399,7 +398,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 0),
           child: MediaTypeBadge(
-            mediaType: post.media.firstOrNull?.mediaType ?? MediaType.text,
+            mediaType: widget.post.media.firstOrNull?.mediaType ?? MediaType.text,
             dim: false,
           ),
         ),

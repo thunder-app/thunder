@@ -42,52 +42,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _getPostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<VotePostEvent>(
-      _votePostEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
-    );
-    on<SavePostEvent>(
-      _savePostEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
-    );
     on<GetPostCommentsEvent>(
       _getPostCommentsEvent,
       transformer: throttleDroppable(throttleDuration),
-    );
-    on<CommentActionEvent>(
-      _commentActionEvent,
-      transformer: throttleDroppable(Duration.zero),
-    );
-    on<CommentItemUpdatedEvent>(
-      _commentItemUpdatedEvent,
-      transformer: throttleDroppable(Duration.zero),
-    );
-    on<NavigateCommentEvent>(
-      _navigateCommentEvent,
-    );
-    on<StartCommentSearchEvent>(
-      _startCommentSearchEvent,
-    );
-    on<ContinueCommentSearchEvent>(
-      _continueCommentSearchEvent,
-    );
-    on<EndCommentSearchEvent>(
-      _endCommentSearchEvent,
     );
     on<ReportCommentEvent>(
       _reportCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<UpdateScrollPosition>(
-      _onUpdateScrollPosition,
-    );
-    on<UpdateCollapsedComment>(
-      _onUpdateCollapsedComment,
-    );
-    on<PostUpdatedEvent>(
-      _onPostUpdated,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<VotePostEvent>(_votePostEvent);
+    on<SavePostEvent>(_savePostEvent);
+    on<CommentActionEvent>(_commentActionEvent);
+    on<CommentItemUpdatedEvent>(_commentItemUpdatedEvent);
+    on<NavigateCommentEvent>(_navigateCommentEvent);
+    on<StartCommentSearchEvent>(_startCommentSearchEvent);
+    on<ContinueCommentSearchEvent>(_continueCommentSearchEvent);
+    on<EndCommentSearchEvent>(_endCommentSearchEvent);
+    on<UpdateScrollPosition>(_onUpdateScrollPosition);
+    on<UpdateCollapsedComment>(_onUpdateCollapsedComment);
+    on<PostUpdatedEvent>(_onPostUpdated);
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -217,6 +190,68 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(exception)));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _onPostUpdated(PostUpdatedEvent event, Emitter<PostState> emit) async {
+    return emit(state.copyWith(status: state.status, post: event.post));
+  }
+
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
+    final l10n = GlobalContext.l10n;
+    final originalPost = state.post;
+    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+
+    try {
+      // Optimistically update the post
+      ThunderPost updatedPost = optimisticallyVotePost(originalPost, event.score);
+
+      // Immediately set the status with optimistic update
+      emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+      updatedPost = await votePost(originalPost, event.score).timeout(timeout, onTimeout: () {
+        throw Exception(l10n.timeoutVotingPost);
+      });
+
+      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } catch (e) {
+      return emit(state.copyWith(
+        status: PostStatus.failure,
+        post: originalPost,
+        errorMessage: getExceptionErrorMessage(e),
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
+    }
+  }
+
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<PostState> emit) async {
+    final l10n = GlobalContext.l10n;
+    final originalPost = state.post;
+    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+
+    try {
+      // Optimistically update the post
+      ThunderPost updatedPost = optimisticallySavePost(originalPost, event.save);
+
+      // Immediately set the status with optimistic update
+      emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+      updatedPost = await savePost(originalPost, event.save).timeout(timeout, onTimeout: () {
+        throw Exception(l10n.timeoutSavingPost);
+      });
+
+      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } catch (e) {
+      return emit(state.copyWith(
+        status: PostStatus.failure,
+        post: originalPost,
+        errorMessage: getExceptionErrorMessage(e),
+        selectedCommentId: state.selectedCommentId,
+        selectedCommentPath: state.selectedCommentPath,
+      ));
     }
   }
 
@@ -364,49 +399,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: ''));
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
-    } catch (e) {
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
-  Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-
-      // Optimistically update the post
-      ThunderPost? post = state.post;
-
-      ThunderPost updatedPost = optimisticallyVotePost(state.post!, event.score);
-      state.post = updatedPost;
-
-      // Immediately set the status, and continue
-      emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-
-      updatedPost = await votePost(state.post!, event.score).timeout(timeout, onTimeout: () {
-        state.post = post;
-        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutVotingPost);
-      });
-
-      state.post = updatedPost;
-
-      return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-    } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
-  Future<void> _savePostEvent(SavePostEvent event, Emitter<PostState> emit) async {
-    try {
-      emit(state.copyWith(status: PostStatus.refreshing));
-
-      ThunderPost postView = await savePost(state.post!, event.save).timeout(timeout, onTimeout: () {
-        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSavingPost);
-      });
-
-      state.post = postView;
-
-      return emit(state.copyWith(status: PostStatus.success));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
@@ -653,9 +645,5 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     List<int> collapsedComments = event.collapsed ? (state.collapsedComments.toList()..add(event.commentId)) : (state.collapsedComments.toList()..remove(event.commentId));
 
     return emit(state.copyWith(status: state.status, collapsedComments: collapsedComments));
-  }
-
-  void _onPostUpdated(PostUpdatedEvent event, Emitter<PostState> emit) {
-    return emit(state.copyWith(status: state.status, post: event.post));
   }
 }

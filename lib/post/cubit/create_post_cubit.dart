@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/error_messages.dart';
