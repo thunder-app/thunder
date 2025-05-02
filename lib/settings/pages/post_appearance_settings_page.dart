@@ -506,8 +506,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final post = snapshot.data![index]!;
-                              final creator = ThunderUser(post.creator!);
-                              final community = ThunderCommunity(post.community!);
+                              final creator = post.creator!;
+                              final community = post.community!;
 
                               return Column(
                                 children: [

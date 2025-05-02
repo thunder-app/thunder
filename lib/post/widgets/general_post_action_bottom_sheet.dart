@@ -95,14 +95,14 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   String? generateSubtitle(GeneralPostAction page) {
     ThunderPost post = widget.post;
 
-    String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
-    String? userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
+    String? communityInstance = fetchInstanceNameFromUrl(post.community?.url);
+    String? userInstance = fetchInstanceNameFromUrl(post.creator?.url);
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.actorId));
+        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.url));
       case GeneralPostAction.community:
-        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
+        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.url));
       case GeneralPostAction.instance:
         return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
       default:

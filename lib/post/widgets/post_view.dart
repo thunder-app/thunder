@@ -111,11 +111,11 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
     List<UserType> userGroups = [];
 
-    if (post.creator?.botAccount == true) userGroups.add(UserType.bot);
+    if (post.creator?.bot == true) userGroups.add(UserType.bot);
     if (post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (post.creator?.id == profileState.account?.userId) userGroups.add(UserType.self);
-    if (post.creator?.published.month == DateTime.now().month && post.creator?.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
+    if (post.creator?.created.month == DateTime.now().month && post.creator?.created.day == DateTime.now().day) userGroups.add(UserType.birthday);
 
     return ExpandableNotifier(
       controller: expandableController,
@@ -233,9 +233,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       UserChip(
-                        user: ThunderUser(post.creator!),
+                        user: post.creator!,
                         personAvatar: UserAvatar(
-                          user: ThunderUser(post.creator!),
+                          user: post.creator!,
                           radius: 10,
                           thumbnailSize: 20,
                           format: 'png',
@@ -253,14 +253,14 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       CommunityChip(
                         communityId: post.community!.id,
                         communityAvatar: CommunityAvatar(
-                          community: ThunderCommunity(post.community!),
+                          community: post.community!,
                           radius: 10,
                           thumbnailSize: 20,
                           format: 'png',
                         ),
                         communityName: post.community!.name,
                         communityTitle: post.community!.title,
-                        communityUrl: post.community!.actorId,
+                        communityUrl: post.community!.url,
                         includeInstance: thunderState.postBodyShowCommunityInstance,
                       ),
                     ],

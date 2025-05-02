@@ -98,4 +98,7 @@ class ThunderCommunity {
 
   /// Whether the community is local to the instance, or federated.
   bool? get local => _community.local;
+
+  /// The instance ID of the community.
+  int get instanceId => _community.instanceId;
 }

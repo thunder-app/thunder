@@ -44,4 +44,10 @@ class ThunderUser {
 
   /// Whether the user is an admin.
   bool? get admin => userView?.isAdmin == true;
+
+  /// Whether the user is marked as a bot.
+  bool get bot => user.botAccount;
+
+  /// The instance ID of the user.
+  int get instanceId => user.instanceId;
 }

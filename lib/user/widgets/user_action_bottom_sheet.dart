@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/user/models/user_label.dart';
@@ -78,7 +77,7 @@ class UserActionBottomSheet extends StatefulWidget {
   final BuildContext context;
 
   /// The user that we are interacting with
-  final Person user;
+  final ThunderUser user;
 
   /// The community that the user has interacted with
   /// This is useful for community-specific actions such as banning/unbanning the user from a community, or adding/removing them as a moderator of a community
@@ -115,7 +114,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         setState(() => _userAction = UserAction.block);
         break;
       case UserBottomSheetAction.addUserLabel:
-        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.actorId));
+        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.url));
         widget.onAction(UserAction.setUserLabel, null);
         Navigator.of(context).pop();
         break;
@@ -192,8 +191,8 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               UserChip(
-                user: ThunderUser(widget.user),
-                personAvatar: UserAvatar(user: ThunderUser(widget.user)),
+                user: widget.user,
+                personAvatar: UserAvatar(user: widget.user),
                 userGroups: const [UserType.op],
                 includeInstance: true,
               ),
@@ -245,7 +244,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     final isLoggedIn = authState.isLoggedIn;
     final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
 
-    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.actorId).isNotEmpty;
+    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.url).isNotEmpty;
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
     final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;
     // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
@@ -254,7 +253,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.user.actorId) {
+      if (account?.actorId == widget.user.url) {
         userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
       }
 

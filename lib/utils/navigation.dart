@@ -403,24 +403,7 @@ Future<void> navigateToCreatePostPage(
     ThunderCommunity? pvmCommunity;
 
     if (post != null) {
-      final cv = CommunityView(
-        community: post.community!,
-        subscribed: post.subscribed!,
-        blocked: false,
-        counts: CommunityAggregates(
-          communityId: post.community!.id,
-          subscribers: 0,
-          posts: 0,
-          comments: 0,
-          published: DateTime.now(),
-          usersActiveDay: 0,
-          usersActiveWeek: 0,
-          usersActiveMonth: 0,
-          usersActiveHalfYear: 0,
-        ),
-      );
-
-      pvmCommunity = ThunderCommunity(cv.community, communityView: cv);
+      pvmCommunity = post.community;
     }
 
     await Navigator.of(context).push(SwipeablePageRoute(

@@ -174,11 +174,8 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
-                        user: ThunderUser(post.creator!),
-                        community: ThunderCommunity(
-                          post.community!,
-                          subscribed: post.subscribed,
-                        ),
+                        user: post.creator!,
+                        community: post.community!,
                         dim: dim,
                       ),
                       PostCardMetadata(

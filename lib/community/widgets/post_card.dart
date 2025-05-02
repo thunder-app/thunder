@@ -169,11 +169,8 @@ class _PostCardState extends State<PostCard> {
     Widget child = state.useCompactView || widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity)
         ? PostCardViewCompact(
             post: widget.post,
-            creator: ThunderUser(widget.post.creator!),
-            community: ThunderCommunity(
-              widget.post.community!,
-              subscribed: widget.post.subscribed,
-            ),
+            creator: widget.post.creator!,
+            community: widget.post.community!,
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,

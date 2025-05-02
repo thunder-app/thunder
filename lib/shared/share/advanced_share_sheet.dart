@@ -126,7 +126,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  post.community!.actorId,
+                  post.community!.url,
                   style: const TextStyle(color: Colors.black, fontSize: 10),
                 ),
               ),

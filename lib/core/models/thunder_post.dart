@@ -1,5 +1,7 @@
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/models/media.dart';
+import 'package:thunder/core/models/models.dart';
 
 class ThunderPost {
   /// The Lemmy API model for the post.
@@ -15,8 +17,23 @@ class ThunderPost {
       : _postView = postView,
         _media = media;
 
+  /// Creates a new instance of [ThunderPost] with the given fields replaced with the new values.
+  ThunderPost copyWith({
+    Post? post,
+    PostView? postView,
+    List<Media>? media,
+  }) {
+    return ThunderPost(
+      post ?? _post,
+      postView: postView ?? _postView,
+      media: media ?? _media,
+    );
+  }
+
+  /// The internal post model. ONLY use this in special cases where the raw model is required.
   Post get internalPost => _post;
 
+  /// The internal post view model. ONLY use this in special cases where the raw model is required.
   PostView? get internalPostView => _postView;
 
   /// The ID of the post.
@@ -25,20 +42,28 @@ class ThunderPost {
   /// The url associated with the post
   String? get link => _post.url;
 
+  /// The thumbnail associated with the post.
   String? get thumbnail => _post.thumbnailUrl;
 
+  /// The alternate text associated with the post's media.
   String? get altText => _post.altText;
 
+  /// The content of the post.
   String? get body => _post.body;
 
+  /// Whether the post is marked as NSFW.
   bool get nsfw => _post.nsfw;
 
+  /// Whether the post's creator is a moderator of the community.
   bool? get creatorIsModerator => _postView?.creatorIsModerator;
 
+  /// Whether the post's creator is an admin of the instance.
   bool? get creatorIsAdmin => _postView?.creatorIsAdmin;
 
+  /// Whether the post's creator is banned from the community.
   bool? get creatorBannedFromCommunity => _postView?.creatorBannedFromCommunity;
 
+  /// The subscribed status of the post.
   SubscribedType? get subscribed => _postView?.subscribed;
 
   /// The title of the post.
@@ -99,24 +124,11 @@ class ThunderPost {
   int? get languageId => _post.languageId;
 
   /// The creator of the post
-  Person? get creator => _postView?.creator;
+  ThunderUser? get creator => _postView?.creator != null ? ThunderUser(_postView!.creator) : null;
 
   /// The community associated with the post
-  Community? get community => _postView?.community;
+  ThunderCommunity? get community => _postView?.community != null ? ThunderCommunity(_postView!.community, subscribed: _postView?.subscribed) : null;
 
   /// The url for the post. This is generally associated with the ActivityPub actor URL.
   String get url => _post.apId;
-
-  /// Creates a new instance of [ThunderPost] with the given fields replaced with the new values.
-  ThunderPost copyWith({
-    Post? post,
-    PostView? postView,
-    List<Media>? media,
-  }) {
-    return ThunderPost(
-      post ?? _post,
-      postView: postView ?? _postView,
-      media: media ?? _media,
-    );
-  }
 }

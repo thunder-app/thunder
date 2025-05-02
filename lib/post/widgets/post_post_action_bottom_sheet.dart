@@ -206,7 +206,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.url).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
@@ -219,7 +219,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.post.creator?.actorId) {
+      if (account?.actorId == widget.post.creator?.url) {
         userActions = userActions.where((action) => action != PostPostAction.reportPost).toList();
       } else {
         userActions = userActions.where((action) => action != PostPostAction.editPost && action != PostPostAction.deletePost && action != PostPostAction.restorePost).toList();
