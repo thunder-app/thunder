@@ -202,6 +202,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       case PostAction.read:
         // Optimistically read the post
         int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
+        if (existingPostIndex == -1) return; // Unable to find the post
+
         final post = state.posts[existingPostIndex];
 
         // Give a slight delay to have the UI perform any navigation first
