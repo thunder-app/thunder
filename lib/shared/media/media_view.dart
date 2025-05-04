@@ -15,6 +15,7 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 
 class MediaView extends StatefulWidget {
@@ -159,9 +160,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    bool isImage = isImageUrl(widget.media.imageUrl ?? widget.media.mediaUrl ?? widget.media.originalUrl!);
+
     // If hiding thumbnails is enabled or if the media has no image URL (e.g., text or links with no images), we should display a link preview instead
     // This only applies for [ViewMode.comfortable]
-    if (widget.viewMode == ViewMode.comfortable && (widget.hideThumbnails || widget.media.imageUrl == null)) {
+    if (widget.viewMode == ViewMode.comfortable && (widget.hideThumbnails || !isImage)) {
       return LinkInformation(
         viewMode: widget.viewMode,
         originURL: widget.media.originalUrl,
@@ -308,7 +311,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           constraints: BoxConstraints(
               maxHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
-                ViewMode.comfortable => getMaxHeight(),
+                ViewMode.comfortable => getMaxHeight() ?? double.infinity,
               },
               minHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
