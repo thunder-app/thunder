@@ -311,7 +311,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           constraints: BoxConstraints(
               maxHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
-                ViewMode.comfortable => getMaxHeight() ?? double.infinity,
+                ViewMode.comfortable => getMaxHeight(),
               },
               minHeight: switch (widget.viewMode) {
                 ViewMode.compact => ViewMode.compact.height,
