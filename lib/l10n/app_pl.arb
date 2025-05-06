@@ -1298,5 +1298,41 @@
   "areNotificationsAllowedBySystem": "Powiadomienia są zezwolone przez system: {yesOrNo}",
   "@areNotificationsAllowedBySystem": {
     "description": "A status indicator for whether notifications are allowed by OS permissions"
+  },
+  "activity": "Aktywność",
+  "@activity": {
+    "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+  },
+  "anonymousInstances": "Instancja anonimowa",
+  "@anonymousInstances": {
+    "description": "Heading for the anonymous instances section of the login page"
+  },
+  "actionColors": "Kolory akcji",
+  "@actionColors": {
+    "description": "Setting heading for action colors"
+  },
+  "applePushNotificationService": "Usługa powiadomień Apple",
+  "@applePushNotificationService": {
+    "description": "Describes the notification type for Apple Push Notification Service"
+  },
+  "averageComments": "{x} komentarze/miesiąc",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "accountSettingOverrideWarning": "Preferencje twojego konta napiszą obecne ustawienia",
+  "@accountSettingOverrideWarning": {
+    "description": "Warning for account settings override"
+  },
+  "accountSwitchPostNotFound": "Wybrany wpis nie został znaleziony na '{instance}'. Powrót do poprzedniego konta.",
+  "@accountSwitchPostNotFound": {
+    "description": "Error message for when we couldn't resolve post to reply to"
+  },
+  "addedModToCommunity": "Dodano moderatora do społeczności",
+  "@addedModToCommunity": {
+    "description": "Short decription for moderator action to add a mod to a community"
+  },
+  "altText": "Alternatywny tekst",
+  "@altText": {
+    "description": "Create/edit post field for adding alt text to an image post"
   }
 }
