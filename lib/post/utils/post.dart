@@ -234,7 +234,7 @@ Future<ThunderPost> savePost(ThunderPost post, bool save) async {
 /// Parse a post with media
 Future<List<ThunderPost>> parsePosts(List<PostView> postViews, {String? resolutionInstance}) async {
   final prefs = UserPreferences.instance.preferences;
-  final fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
+  final fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) != false && prefs.getBool(LocalSettings.useCompactView.name) != true;
   final edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   final tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   final hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
