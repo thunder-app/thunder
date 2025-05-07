@@ -29,7 +29,7 @@ class PostStatusIcon extends StatelessWidget {
 
   static Color getDimmedColor(Color color) => color.withValues(alpha: 0.55);
 
-  Widget _buildStatusIcon(BuildContext context, PostStatus status, bool isActive, double textScaleFactor) {
+  Widget _buildStatusIcon(BuildContext context, PostStatusType status, bool isActive, double textScaleFactor) {
     if (!isActive) return const SizedBox.shrink();
 
     final color = dim ? getDimmedColor(status.getColor(context)) : status.getColor(context);
@@ -47,12 +47,12 @@ class PostStatusIcon extends StatelessWidget {
     final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
 
     final statusMap = {
-      PostStatus.hidden: hidden,
-      PostStatus.locked: locked,
-      PostStatus.saved: saved,
-      PostStatus.pinned: pinned,
-      PostStatus.deleted: deleted,
-      PostStatus.removed: removed,
+      PostStatusType.hidden: hidden,
+      PostStatusType.locked: locked,
+      PostStatusType.saved: saved,
+      PostStatusType.pinned: pinned,
+      PostStatusType.deleted: deleted,
+      PostStatusType.removed: removed,
     };
 
     final List<Widget> statuses = statusMap.entries
