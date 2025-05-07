@@ -25,7 +25,7 @@ import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/comment/widgets/comment_card.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
-import 'package:thunder/post/widgets/post_view.dart';
+import 'package:thunder/post/widgets/post_body/post_body.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -557,7 +557,7 @@ class _PostPageState extends State<PostPage> {
                           )
                         else ...[
                           SliverToBoxAdapter(
-                            child: PostSubview(
+                            child: PostBody(
                               post: state.post ?? widget.initialPost,
                               crossPosts: state.crossPosts,
                               viewSource: viewSource,

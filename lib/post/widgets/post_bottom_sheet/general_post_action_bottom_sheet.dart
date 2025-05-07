@@ -7,7 +7,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';

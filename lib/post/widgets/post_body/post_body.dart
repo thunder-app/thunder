@@ -18,18 +18,13 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/widgets/general_post_action_bottom_sheet.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/media/media_type_badge.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/post_metadata.dart';
-import 'package:thunder/post/widgets/post_quick_actions_bar.dart';
+import 'package:thunder/post/post.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/community_chip.dart';
@@ -44,7 +39,10 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 
-class PostSubview extends StatefulWidget {
+/// A widget that displays the body of a post. This includes the title, body, media, and metadata.
+///
+/// This is typically used in the post page, but can also be used in other places where a post is displayed (e.g., create comment page).
+class PostBody extends StatefulWidget {
   final ThunderPost post;
   final int? selectedCommentId;
   final List<ThunderPost>? crossPosts;
@@ -57,7 +55,7 @@ class PostSubview extends StatefulWidget {
   final void Function(String? selection)? onSelectionChanged;
   final bool showCompactPostBody;
 
-  const PostSubview({
+  const PostBody({
     super.key,
     this.selectedCommentId,
     required this.post,
@@ -73,10 +71,10 @@ class PostSubview extends StatefulWidget {
   });
 
   @override
-  State<PostSubview> createState() => _PostSubviewState();
+  State<PostBody> createState() => _PostBodyState();
 }
 
-class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -403,85 +401,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Provides a preview of the post body when the post is collapsed.
-class PostBodyPreview extends StatelessWidget {
-  const PostBodyPreview({
-    super.key,
-    required this.post,
-    required this.expandableController,
-    required this.onTapped,
-    required this.viewSource,
-  });
-
-  /// The post to display the preview of
-  final ThunderPost post;
-
-  /// The expandable controller used to toggle the expanded/collapsed state of the post
-  final ExpandableController expandableController;
-
-  /// Callback function which triggers when the post preview is tapped
-  final Function() onTapped;
-
-  /// Whether to view the raw post source
-  final bool viewSource;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-
-    return LimitedBox(
-      maxHeight: 80.0,
-      child: GestureDetector(
-        onTap: () {
-          expandableController.toggle();
-          onTapped();
-        },
-        child: Stack(
-          children: [
-            Wrap(
-              direction: Axis.horizontal,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: viewSource
-                      ? ScalableText(
-                          post.body ?? '',
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                          fontScale: thunderState.contentFontSizeScale,
-                        )
-                      : CommonMarkdownBody(
-                          body: post.body ?? '',
-                        ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 70,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0.0, 1.0],
-                    colors: [
-                      theme.scaffoldBackgroundColor.withValues(alpha: 0.0),
-                      theme.scaffoldBackgroundColor,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

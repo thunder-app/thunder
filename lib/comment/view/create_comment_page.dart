@@ -16,9 +16,9 @@ import 'package:thunder/drafts/models/draft.dart';
 
 // Project imports
 import 'package:thunder/comment/cubit/create_comment_cubit.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
-import 'package:thunder/post/widgets/post_view.dart';
+import 'package:thunder/post/widgets/post_body/post_body.dart';
 import 'package:thunder/shared/comment_content.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
@@ -298,7 +298,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       color: getBackgroundColor(context),
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
-                                    child: PostSubview(
+                                    child: PostBody(
                                       post: widget.post!,
                                       crossPosts: const [],
                                       viewSource: viewSource,

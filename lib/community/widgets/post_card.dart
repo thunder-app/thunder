@@ -8,7 +8,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/swipe_action.dart';

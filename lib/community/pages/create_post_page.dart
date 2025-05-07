@@ -22,7 +22,7 @@ import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/drafts/draft_type.dart';

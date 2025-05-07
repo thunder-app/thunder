@@ -7,7 +7,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/widgets/post_action_bottom_sheet.dart';
+import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
