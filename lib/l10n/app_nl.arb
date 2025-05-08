@@ -1374,5 +1374,77 @@
   "accountSettingsExportedSuccessfully": "Lemmy-account­instellingen zijn succesvol geëxporteerd naar {savedFilePath}!",
   "@accountSettingsExportedSuccessfully": {
     "description": "Message shown to user when account settings are exported successfully"
+  },
+  "activity": "Activiteit",
+  "@activity": {
+    "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+  },
+  "deleted": "Verwĳderd",
+  "@deleted": {
+    "description": "Status to indicate that an item has been deleted"
+  },
+  "settingsPageAppearancePosts": "Berichten",
+  "@settingsPageAppearancePosts": {
+    "description": "Theming posts page"
+  },
+  "removed": "Verwĳderd",
+  "@removed": {
+    "description": "Status to indicate that an item has been removed"
+  },
+  "menu": "Menu",
+  "@menu": {
+    "description": "Menu button description"
+  },
+  "settingsPageAccountBlocks": "Blokkerings­lĳsten",
+  "@settingsPageAccountBlocks": {
+    "description": "Account blocklist (user/community/instance) page"
+  },
+  "settingsPageAppearance": "Uiterlĳk",
+  "@settingsPageAppearance": {
+    "description": "Appearance settings page"
+  },
+  "settingsPageGeneral": "Algemeen",
+  "@settingsPageGeneral": {
+    "description": "General settings page"
+  },
+  "settingsPageGestures": "Gebaren",
+  "@settingsPageGestures": {
+    "description": "Gestures settings page"
+  },
+  "settingsPageVideo": "Video",
+  "@settingsPageVideo": {
+    "description": "Video settings page"
+  },
+  "settingsPageAbout": "Over",
+  "@settingsPageAbout": {
+    "description": "About settings page"
+  },
+  "settingsPageAccessibility": "Toegankelĳkheid",
+  "@settingsPageAccessibility": {
+    "description": "Accessibility settings page"
+  },
+  "settingsPageAccount": "Account",
+  "@settingsPageAccount": {
+    "description": "Account settings page"
+  },
+  "settingsPageDebug": "Fout­opsporing",
+  "@settingsPageDebug": {
+    "description": "Debug settings page"
+  },
+  "settingsPageAppearanceComments": "Opmerkingen",
+  "@settingsPageAppearanceComments": {
+    "description": "Theming comments page"
+  },
+  "settingsPageFilters": "Filters",
+  "@settingsPageFilters": {
+    "description": "Filters settings page"
+  },
+  "locked": "Vergrendeld",
+  "@locked": {
+    "description": "Status to indicate that an item has been locked"
+  },
+  "moderates": "Moderator van",
+  "@moderates": {
+    "description": "A heading describing the communities that a user moderates"
   }
 }
