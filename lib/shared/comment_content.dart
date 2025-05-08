@@ -14,7 +14,6 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/comment_card_actions.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
-import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/reply_to_preview_actions.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -185,11 +184,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                           ],
                         ),
                 ),
-                if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true) ...[
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: ThunderDivider(sliver: false, padding: false),
-                  ),
+                if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                     child: ReplyToPreviewActions(
@@ -198,7 +193,6 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                       text: cleanCommentContent(widget.comment.comment),
                     ),
                   ),
-                ],
               ],
             ),
           ),
