@@ -62,17 +62,25 @@ class PostBodyPreview extends StatelessWidget {
 
     return LimitedBox(
       maxHeight: maxHeight,
-      child: GestureDetector(
-        onTap: () => onTap(),
-        behavior: HitTestBehavior.opaque,
-        child: Stack(
-          children: [
-            Wrap(
-              direction: Axis.horizontal,
-              children: [content],
-            ),
-            Positioned.fill(child: DecoratedBox(decoration: BoxDecoration(gradient: gradient))),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: GestureDetector(
+          onTap: () => onTap(),
+          behavior: HitTestBehavior.opaque,
+          child: Stack(
+            children: [
+              Wrap(
+                direction: Axis.horizontal,
+                children: [content],
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                height: maxHeight,
+                child: DecoratedBox(decoration: BoxDecoration(gradient: gradient)),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -36,14 +36,31 @@ import 'package:thunder/user/enums/user_action.dart';
 ///
 /// This is typically used in the post page, but can also be used in other places where a post is displayed (e.g., create comment page).
 class PostBody extends StatefulWidget {
+  /// The post to display
   final ThunderPost post;
+
+  /// The cross posts related to the post
   final List<ThunderPost>? crossPosts;
+
+  /// Whether to show the source of the post
   final bool viewSource;
+
+  /// Callback function which triggers when the view source is toggled
   final void Function()? onViewSourceToggled;
+
+  /// Whether to show the quick post action bar
   final bool showQuickPostActionBar;
+
+  /// Whether the post body is selectable
   final bool selectable;
+
+  /// Whether to show the reply editor buttons (e.g., "Reply" and "View Source")
   final bool showReplyEditorButtons;
+
+  /// Callback function which triggers when the selection changes
   final void Function(String? selection)? onSelectionChanged;
+
+  /// Whether to show the post body in compact mode initially
   final bool showCompactPostBody;
 
   const PostBody({
@@ -63,10 +80,7 @@ class PostBody extends StatefulWidget {
   State<PostBody> createState() => _PostBodyState();
 }
 
-class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin {
   late ExpandableController expandableController;
   final FocusNode _selectableRegionFocusNode = FocusNode();
 
@@ -111,45 +125,42 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     final theme = Theme.of(context);
-    final isUserLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
-    final state = context.read<ThunderBloc>().state;
-    final hideNsfwPreviews = state.hideNsfwPreviews;
-    final markPostReadOnMediaView = state.markPostReadOnMediaView;
-    final showCrossPosts = state.showCrossPosts;
+    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
+    final showCrossPosts = context.select((ThunderBloc bloc) => bloc.state.showCrossPosts);
+    final postBodyViewType = context.select((ThunderBloc bloc) => bloc.state.postBodyViewType);
+    final contentFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.contentFontSizeScale);
 
     final post = widget.post;
-
-    final postBodyViewType = state.postBodyViewType;
+    final media = post.media.first;
 
     List<Widget> children = [
       PostBodyTitle(
         post: post,
         postBodyViewType: postBodyViewType,
-        expandableController: expandableController,
-        onToggleExpand: () => setState(() {}),
+        expanded: expandableController.expanded,
+        onToggleExpand: () {
+          expandableController.toggle();
+          setState(() {});
+        },
       ),
     ];
 
-    if (postBodyViewType != PostBodyViewType.condensed && post.media.first.mediaType != MediaType.text) {
+    if (postBodyViewType != PostBodyViewType.condensed && media.mediaType != MediaType.text) {
       children.add(
         Expandable(
           controller: expandableController,
-          collapsed: Container(),
+          collapsed: SizedBox.shrink(),
           expanded: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
             child: MediaView(
               viewMode: ViewMode.comfortable,
-              media: post.media.first,
+              media: media,
               postId: post.id,
               showFullHeightImages: true,
               allowUnconstrainedImageHeight: true,
               hideNsfwPreviews: hideNsfwPreviews,
-              markPostReadOnMediaView: markPostReadOnMediaView,
-              isUserLoggedIn: isUserLoggedIn,
             ),
           ),
         ),
@@ -160,17 +171,14 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       children.add(
         Expandable(
           controller: expandableController,
-          collapsed: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: PostBodyPreview(
-              post: post,
-              viewSource: widget.viewSource,
-              gradientBackgroundColor: widget.showReplyEditorButtons ? getBackgroundColor(context) : null,
-              onTap: () {
-                expandableController.toggle();
-                setState(() {});
-              },
-            ),
+          collapsed: PostBodyPreview(
+            post: post,
+            viewSource: widget.viewSource,
+            gradientBackgroundColor: widget.showReplyEditorButtons ? getBackgroundColor(context) : null,
+            onTap: () {
+              expandableController.toggle();
+              setState(() {});
+            },
           ),
           expanded: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -195,7 +203,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
                   ? ScalableText(
                       post.body ?? '',
                       style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                      fontScale: state.contentFontSizeScale,
+                      fontScale: contentFontSizeScale,
                     )
                   : CommonMarkdownBody(body: post.body ?? ''),
             ),
@@ -208,28 +216,19 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       PostBodyMetadata(
         commentCount: post.comments,
         unreadCommentCount: post.unreadComments,
-        dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
-        hasBeenEdited: post.updated != null ? true : false,
-        url: post.media.first.mediaType != MediaType.image ? post.link : null,
+        dateTime: post.updated?.toIso8601String() ?? post.created.toIso8601String(),
+        hasBeenEdited: post.updated != null,
+        url: media.mediaType != MediaType.image ? post.link : null,
       ),
     );
 
     if (showCrossPosts && sortedCrossPosts.isNotEmpty) {
-      children.addAll([
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: CrossPosts(
-            crossPosts: sortedCrossPosts,
-            originalPost: post,
-          ),
-        ),
-      ]);
+      children.add(CrossPosts(originalPost: post, crossPosts: sortedCrossPosts));
     }
 
     if (widget.showQuickPostActionBar) {
       children.addAll([
-        const Divider(),
+        (showCrossPosts && sortedCrossPosts.isNotEmpty) ? SizedBox(height: 8.0) : Divider(),
         PostBodyActionsBar(
           vote: post.voteType,
           upvotes: post.upvotes,
@@ -306,9 +305,9 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     if (widget.showReplyEditorButtons && post.body?.isNotEmpty == true) {
       children.add(
         ReplyToPreviewActions(
-          onViewSourceToggled: widget.onViewSourceToggled,
-          viewSource: widget.viewSource,
           text: post.body!,
+          viewSource: widget.viewSource,
+          onViewSourceToggled: widget.onViewSourceToggled,
         ),
       );
     }

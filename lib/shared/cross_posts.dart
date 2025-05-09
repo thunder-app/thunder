@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/core/models/models.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
-
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 
 /// Widget which displays a post's cross-posts
@@ -25,97 +26,79 @@ class CrossPosts extends StatefulWidget {
   State<CrossPosts> createState() => _CrossPostsState();
 }
 
-class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateMixin {
+class _CrossPostsState extends State<CrossPosts> {
   bool _areCrossPostsExpanded = false;
-
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
-
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final TextStyle? crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4));
-    final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(
-      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75),
-    );
+    final theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
+
+    final crossPostTextStyle = theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4));
+    final crossPostLinkTextStyle = crossPostTextStyle?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.75));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.easeInOut,
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return SizeTransition(
-              sizeFactor: animation,
-              child: SlideTransition(position: _offsetAnimation, child: child),
-            );
-          },
+        SizedBox(height: 8.0),
+        const Divider(height: 1.0),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeInOutCubicEmphasized,
           child: _areCrossPostsExpanded
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(5),
-                              onTap: () async => navigateToPost(context, postId: widget.crossPosts[index].id),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.repeat_rounded,
-                                    size: 14.0,
-                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () async => navigateToPost(context, postId: widget.crossPosts[index].id),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.repeat_rounded,
+                                        size: 14.0,
+                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
+                                      ),
+                                      SizedBox(width: 4.0),
+                                      Flexible(
+                                        child: CommunityFullNameWidget(
+                                          context,
+                                          widget.crossPosts[index].community?.name,
+                                          widget.crossPosts[index].community?.title,
+                                          fetchInstanceNameFromUrl(widget.crossPosts[index].community?.url),
+                                          textStyle: crossPostLinkTextStyle,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    ' to ',
-                                    style: crossPostTextStyle,
-                                  ),
-                                  CommunityFullNameWidget(
-                                    context,
-                                    widget.crossPosts[index].community?.name,
-                                    widget.crossPosts[index].community?.title,
-                                    fetchInstanceNameFromUrl(widget.crossPosts[index].community?.url),
-                                    textStyle: crossPostLinkTextStyle,
-                                  ),
-                                  const Spacer(),
-                                  CrossPostMetaData(crossPost: widget.crossPosts[index]),
-                                ],
-                              ),
+                                ),
+                                CrossPostMetaData(post: widget.crossPosts[index]),
+                              ],
                             ),
-                            const Divider(),
-                          ],
-                        );
-                      },
-                      itemCount: widget.crossPosts.length,
-                    ),
-                  ],
+                          ),
+                        ),
+                        const Divider(height: 1.0),
+                      ],
+                    );
+                  },
+                  itemCount: widget.crossPosts.length,
                 )
-              : Container(),
+              : SizedBox(width: MediaQuery.sizeOf(context).width),
         ),
-        Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+        InkWell(
+          onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
             child: Row(
               children: [
                 Expanded(
@@ -155,6 +138,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
             ),
           ),
         ),
+        Divider(height: 1.0),
       ],
     );
   }

@@ -509,41 +509,21 @@ class LanguagePostCardMetaData extends StatelessWidget {
 
 /// Display metadata for a cross-post, used in the expanded cross-posts view
 class CrossPostMetaData extends StatelessWidget {
-  /// Accepts the PostView of a cross-post
-  final ThunderPost crossPost;
+  /// The post to display metadata for
+  final ThunderPost post;
 
-  const CrossPostMetaData({
-    super.key,
-    required this.crossPost,
-  });
+  const CrossPostMetaData({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThunderBloc, ThunderState>(
-      builder: (context, state) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ScorePostCardMetaData(
-              score: crossPost.score,
-              voteType: crossPost.voteType,
-              dim: true,
-            ),
-            const SizedBox(width: 10.0),
-            CommentCountPostCardMetaData(
-              commentCount: crossPost.comments,
-              unreadCommentCount: crossPost.unreadComments ?? 0,
-              dim: true,
-            ),
-            const SizedBox(width: 10.0),
-            DateTimePostCardMetaData(
-              dateTime: crossPost.created.toIso8601String(),
-              edited: crossPost.updated != null ? true : false,
-              dim: true,
-            ),
-          ],
-        );
-      },
+    return Row(
+      spacing: 6.0,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ScorePostCardMetaData(score: post.score, voteType: post.voteType, dim: true),
+        CommentCountPostCardMetaData(commentCount: post.comments, unreadCommentCount: post.unreadComments ?? 0, dim: true),
+        DateTimePostCardMetaData(dateTime: post.created.toIso8601String(), edited: post.updated != null, dim: true),
+      ],
     );
   }
 }

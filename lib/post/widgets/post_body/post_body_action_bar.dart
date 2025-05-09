@@ -70,45 +70,17 @@ class PostBodyActionsBar extends StatelessWidget {
         bool downvotesEnabled = state.downvotesEnabled;
         bool showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
-        return Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: isUserLoggedIn ? () => onVote?.call(vote == 1 ? 0 : 1) : null,
-                style: TextButton.styleFrom(
-                  fixedSize: const Size.fromHeight(40),
-                  foregroundColor: vote == 1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.upvoteColor.color,
-                  padding: EdgeInsets.zero,
-                ),
-                child: Wrap(
-                  spacing: 4.0,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.arrow_upward_rounded,
-                      semanticLabel: vote == 1 ? l10n.upvoted : l10n.upvote,
-                      color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
-                      size: 24.0,
-                    ),
-                    if (showScores)
-                      Text(
-                        formatNumberToK(upvotes ?? 0),
-                        style: TextStyle(
-                          color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            if (downvotesEnabled)
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
               Expanded(
                 child: TextButton(
-                  onPressed: isUserLoggedIn ? () => onVote?.call(vote == -1 ? 0 : -1) : null,
+                  onPressed: isUserLoggedIn ? () => onVote?.call(vote == 1 ? 0 : 1) : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: vote == -1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.downvoteColor.color,
+                    foregroundColor: vote == 1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.upvoteColor.color,
                     padding: EdgeInsets.zero,
                   ),
                   child: Wrap(
@@ -116,61 +88,92 @@ class PostBodyActionsBar extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Icon(
-                        Icons.arrow_downward_rounded,
-                        semanticLabel: vote == -1 ? l10n.downvoted : l10n.downvote,
-                        color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                        Icons.arrow_upward_rounded,
+                        semanticLabel: vote == 1 ? l10n.upvoted : l10n.upvote,
+                        color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                         size: 24.0,
                       ),
                       if (showScores)
                         Text(
-                          formatNumberToK(downvotes ?? 0),
+                          formatNumberToK(upvotes ?? 0),
                           style: TextStyle(
-                            color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                            color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                           ),
                         ),
                     ],
                   ),
                 ),
               ),
-            Expanded(
-              child: IconButton(
-                onPressed: isUserLoggedIn ? () => onSave?.call(!saved) : null,
-                style: IconButton.styleFrom(foregroundColor: saved ? null : context.read<ThunderBloc>().state.saveColor.color),
-                icon: Icon(
-                  saved ? Icons.star_rounded : Icons.star_border_rounded,
-                  semanticLabel: saved ? l10n.saved : l10n.save,
-                  color: isUserLoggedIn ? (saved ? context.read<ThunderBloc>().state.saveColor.color : theme.textTheme.bodyMedium?.color) : null,
+              if (downvotesEnabled)
+                Expanded(
+                  child: TextButton(
+                    onPressed: isUserLoggedIn ? () => onVote?.call(vote == -1 ? 0 : -1) : null,
+                    style: TextButton.styleFrom(
+                      fixedSize: const Size.fromHeight(40),
+                      foregroundColor: vote == -1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.downvoteColor.color,
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Wrap(
+                      spacing: 4.0,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.arrow_downward_rounded,
+                          semanticLabel: vote == -1 ? l10n.downvoted : l10n.downvote,
+                          color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                          size: 24.0,
+                        ),
+                        if (showScores)
+                          Text(
+                            formatNumberToK(downvotes ?? 0),
+                            style: TextStyle(
+                              color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            if (locked)
               Expanded(
                 child: IconButton(
-                  onPressed: () => showSnackbar(l10n.postLocked),
-                  icon: Icon(Icons.lock, semanticLabel: l10n.postLocked, color: theme.colorScheme.error),
+                  onPressed: isUserLoggedIn ? () => onSave?.call(!saved) : null,
+                  style: IconButton.styleFrom(foregroundColor: saved ? null : context.read<ThunderBloc>().state.saveColor.color),
+                  icon: Icon(
+                    saved ? Icons.star_rounded : Icons.star_border_rounded,
+                    semanticLabel: saved ? l10n.saved : l10n.save,
+                    color: isUserLoggedIn ? (saved ? context.read<ThunderBloc>().state.saveColor.color : theme.textTheme.bodyMedium?.color) : null,
+                  ),
                 ),
               ),
-            if (!locked && isOwnPost)
+              if (locked)
+                Expanded(
+                  child: IconButton(
+                    onPressed: () => showSnackbar(l10n.postLocked),
+                    icon: Icon(Icons.lock, semanticLabel: l10n.postLocked, color: theme.colorScheme.error),
+                  ),
+                ),
+              if (!locked && isOwnPost)
+                Expanded(
+                  child: IconButton(
+                    onPressed: isUserLoggedIn ? () => onEdit?.call() : null,
+                    icon: Icon(Icons.edit_rounded, semanticLabel: l10n.edit),
+                  ),
+                ),
+              if (!locked && !isOwnPost)
+                Expanded(
+                  child: IconButton(
+                    onPressed: isUserLoggedIn ? () => onReply?.call() : null,
+                    icon: Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
+                  ),
+                ),
               Expanded(
                 child: IconButton(
-                  onPressed: isUserLoggedIn ? () => onEdit?.call() : null,
-                  icon: Icon(Icons.edit_rounded, semanticLabel: l10n.edit),
+                  onPressed: () => onShare?.call(),
+                  icon: Icon(Icons.share_rounded, semanticLabel: l10n.share),
                 ),
               ),
-            if (!locked && !isOwnPost)
-              Expanded(
-                child: IconButton(
-                  onPressed: isUserLoggedIn ? () => onReply?.call() : null,
-                  icon: Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
-                ),
-              ),
-            Expanded(
-              child: IconButton(
-                onPressed: () => onShare?.call(),
-                icon: Icon(Icons.share_rounded, semanticLabel: l10n.share),
-              ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

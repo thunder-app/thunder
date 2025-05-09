@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 
@@ -29,8 +28,8 @@ class PostBodyTitle extends StatelessWidget {
   /// The type of view for the post body
   final PostBodyViewType postBodyViewType;
 
-  /// The controller for the expandable widget
-  final ExpandableController expandableController;
+  /// Whether the post body is in expanded mode
+  final bool expanded;
 
   /// Callback function which triggers when the post title is tapped
   final Function onToggleExpand;
@@ -39,7 +38,7 @@ class PostBodyTitle extends StatelessWidget {
     super.key,
     required this.post,
     required this.postBodyViewType,
-    required this.expandableController,
+    required this.expanded,
     required this.onToggleExpand,
   });
 
@@ -134,13 +133,10 @@ class PostBodyTitle extends StatelessWidget {
     return IconButton(
       visualDensity: VisualDensity.compact,
       icon: Icon(
-        expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-        semanticLabel: expandableController.expanded ? l10n.collapsePost : l10n.expandPost,
+        expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+        semanticLabel: expanded ? l10n.collapsePost : l10n.expandPost,
       ),
-      onPressed: () {
-        expandableController.toggle();
-        onToggleExpand();
-      },
+      onPressed: () => onToggleExpand(),
     );
   }
 }
