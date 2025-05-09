@@ -304,7 +304,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       viewSource: viewSource,
                                       onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                                       showQuickPostActionBar: false,
-                                      showExpandableButton: false,
                                       selectable: true,
                                       showReplyEditorButtons: true,
                                       onSelectionChanged: (selection) => replyViewSelection = selection,
