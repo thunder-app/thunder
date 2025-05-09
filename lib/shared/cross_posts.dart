@@ -57,7 +57,7 @@ class _CrossPostsState extends State<CrossPosts> {
                         InkWell(
                           onTap: () async => navigateToPost(context, postId: widget.crossPosts[index].id),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -98,7 +98,7 @@ class _CrossPostsState extends State<CrossPosts> {
         InkWell(
           onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
