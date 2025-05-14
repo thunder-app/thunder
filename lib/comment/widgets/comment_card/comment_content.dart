@@ -11,7 +11,7 @@ import 'package:thunder/comment/widgets/comment_card/comment_card_header.dart';
 import 'package:thunder/comment/widgets/comment_card/comment_depth_indicator.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/shared/comment_card_actions.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_card_actions.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/conditional_parent_widget.dart';
 import 'package:thunder/shared/reply_to_preview_actions.dart';

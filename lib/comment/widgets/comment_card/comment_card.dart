@@ -14,7 +14,7 @@ import 'package:thunder/comment/widgets/comment_bottom_sheet/comment_action_bott
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
-import 'package:thunder/shared/comment_content.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_content.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -79,7 +79,7 @@ class CommentCard extends StatefulWidget {
   State<CommentCard> createState() => _CommentCardState();
 }
 
-class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
+class _CommentCardState extends State<CommentCard> {
   /// The current point at which the user drags the comment
   double dismissThreshold = 0;
 
@@ -101,21 +101,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// Whether we should display the comment's raw markdown source
   bool viewSource = false;
 
-  /// Animation controller for AdditionalCommentCard
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
-
-  /// Animation for AdditionalCommentCard
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -128,243 +113,233 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     final int commentId = widget.commentView.comment.id;
     final bool highlightComment = widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId;
 
-    // Hide the comment if it is hidden - this happens when a parent comment is collapsed
-    if (widget.hidden) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Listener(
-          behavior: HitTestBehavior.opaque,
-          onPointerUp: (event) {
-            if (isOverridingSwipeGestureAction) {
-              setState(() => isOverridingSwipeGestureAction = false);
-            }
-
-            if (swipeAction != null && swipeAction != SwipeAction.none) {
-              triggerCommentAction(
-                context: context,
-                swipeAction: swipeAction,
-                onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
-                onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                voteType: widget.commentView.myVote ?? 0,
-                saved: widget.commentView.saved,
-                commentView: widget.commentView,
-                selectedCommentId: widget.selectCommentId,
-                selectedCommentPath: widget.selectedCommentPath,
-              );
-            }
-          },
-          onPointerMove: (PointerMoveEvent event) {
-            // Get the horizontal drag distance
-            double horizontalDragDistance = event.delta.dx;
-
-            // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
-            // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
-            if (horizontalDragDistance > 0) {
-              if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
-                setState(() => isOverridingSwipeGestureAction = true);
-              }
-            } else {
-              if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+    return AnimatedCrossFade(
+      sizeCurve: Curves.easeInOutCubicEmphasized,
+      firstChild: SizedBox(width: MediaQuery.sizeOf(context).width),
+      secondChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.opaque,
+            onPointerUp: (event) {
+              if (isOverridingSwipeGestureAction) {
                 setState(() => isOverridingSwipeGestureAction = false);
               }
-            }
-          },
-          child: Dismissible(
-            key: ObjectKey(widget.commentView.comment.id),
-            direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
-            resizeDuration: Duration.zero,
-            dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-            confirmDismiss: (DismissDirection direction) async => false,
-            onUpdate: (DismissUpdateDetails details) {
-              SwipeAction? updatedSwipeAction;
 
-              if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                updatedSwipeAction = state.leftPrimaryCommentGesture;
-
-                // Change the swipe action to edit for comments
-                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                  updatedSwipeAction = SwipeAction.edit;
-                }
-
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                if (state.leftSecondaryCommentGesture != SwipeAction.none) {
-                  updatedSwipeAction = state.leftSecondaryCommentGesture;
-                } else {
-                  updatedSwipeAction = state.leftPrimaryCommentGesture;
-                }
-
-                // Change the swipe action to edit for comments
-                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                  updatedSwipeAction = SwipeAction.edit;
-                }
-
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                updatedSwipeAction = state.rightPrimaryCommentGesture;
-
-                // Change the swipe action to edit for comments
-                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                  updatedSwipeAction = SwipeAction.edit;
-                }
-
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                if (state.rightSecondaryCommentGesture != SwipeAction.none) {
-                  updatedSwipeAction = state.rightSecondaryCommentGesture;
-                } else {
-                  updatedSwipeAction = state.rightPrimaryCommentGesture;
-                }
-
-                // Change the swipe action to edit for comments
-                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                  updatedSwipeAction = SwipeAction.edit;
-                }
-
-                if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-              } else {
-                updatedSwipeAction = null;
+              if (swipeAction != null && swipeAction != SwipeAction.none) {
+                triggerCommentAction(
+                  context: context,
+                  swipeAction: swipeAction,
+                  onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
+                  onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
+                  onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                  voteType: widget.commentView.myVote ?? 0,
+                  saved: widget.commentView.saved,
+                  commentView: widget.commentView,
+                  selectedCommentId: widget.selectCommentId,
+                  selectedCommentPath: widget.selectedCommentPath,
+                );
               }
-
-              setState(() {
-                dismissThreshold = details.progress;
-                dismissDirection = details.direction;
-                swipeAction = updatedSwipeAction;
-              });
             },
-            background: dismissDirection == DismissDirection.startToEnd
-                ? AnimatedContainer(
-                    alignment: Alignment.centerLeft,
-                    color: swipeAction == null
-                        ? state.leftPrimaryCommentGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
-                        : (swipeAction ?? SwipeAction.none).getColor(context),
-                    duration: const Duration(milliseconds: 200),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+            onPointerMove: (PointerMoveEvent event) {
+              // Get the horizontal drag distance
+              double horizontalDragDistance = event.delta.dx;
+
+              // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
+              // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
+              if (horizontalDragDistance > 0) {
+                if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                  setState(() => isOverridingSwipeGestureAction = true);
+                }
+              } else {
+                if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+                  setState(() => isOverridingSwipeGestureAction = false);
+                }
+              }
+            },
+            child: Dismissible(
+              key: ObjectKey(commentId),
+              direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+              resizeDuration: Duration.zero,
+              dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+              confirmDismiss: (DismissDirection direction) async => false,
+              onUpdate: (DismissUpdateDetails details) {
+                SwipeAction? updatedSwipeAction;
+
+                if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  updatedSwipeAction = state.leftPrimaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  if (state.leftSecondaryCommentGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.leftSecondaryCommentGesture;
+                  } else {
+                    updatedSwipeAction = state.leftPrimaryCommentGesture;
+                  }
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  updatedSwipeAction = state.rightPrimaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  if (state.rightSecondaryCommentGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.rightSecondaryCommentGesture;
+                  } else {
+                    updatedSwipeAction = state.rightPrimaryCommentGesture;
+                  }
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else {
+                  updatedSwipeAction = null;
+                }
+
+                setState(() {
+                  dismissThreshold = details.progress;
+                  dismissDirection = details.direction;
+                  swipeAction = updatedSwipeAction;
+                });
+              },
+              background: dismissDirection == DismissDirection.startToEnd
+                  ? AnimatedContainer(
+                      alignment: Alignment.centerLeft,
+                      color: swipeAction == null
+                          ? state.leftPrimaryCommentGesture.getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
+                          : (swipeAction ?? SwipeAction.none).getColor(context),
+                      duration: const Duration(milliseconds: 200),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * dismissThreshold,
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                      ),
+                    )
+                  : AnimatedContainer(
+                      alignment: Alignment.centerRight,
+                      color: swipeAction == null
+                          ? (state.rightPrimaryCommentGesture).getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
+                          : (swipeAction ?? SwipeAction.none).getColor(context),
+                      duration: const Duration(milliseconds: 200),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * dismissThreshold,
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                      ),
                     ),
-                  )
-                : AnimatedContainer(
-                    alignment: Alignment.centerRight,
-                    color: swipeAction == null
-                        ? (state.rightPrimaryCommentGesture).getColor(context).withValues(alpha: dismissThreshold / firstActionThreshold)
-                        : (swipeAction ?? SwipeAction.none).getColor(context),
-                    duration: const Duration(milliseconds: 200),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * dismissThreshold,
-                      child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
-                    ),
-                  ),
-            child: Material(
-              color: highlightComment ? theme.highlightColor : null,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onLongPress: () {
-                      HapticFeedback.mediumImpact();
-                      showCommentActionBottomModalSheet(
-                        context,
-                        widget.commentView,
-                        isShowingSource: viewSource,
-                        onAction: ({commentAction, required commentView, communityAction, userAction, value}) async {
-                          if (commentAction != null) {
-                            switch (commentAction) {
-                              case CommentAction.vote:
-                                widget.onVoteAction?.call(commentView.comment.id, value);
-                                break;
-                              case CommentAction.save:
-                                widget.onSaveAction?.call(commentView.comment.id, value);
-                                break;
-                              case CommentAction.reply:
-                                return navigateToCreateCommentPage(
-                                  context,
-                                  commentView: null,
-                                  parentCommentView: commentView,
-                                  onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                                );
-                              case CommentAction.edit:
-                                return navigateToCreateCommentPage(
-                                  context,
-                                  commentView: commentView,
-                                  parentCommentView: null,
-                                  onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                                );
-                              case CommentAction.delete:
-                                widget.onDeleteAction?.call(commentView.comment.id, value);
-                                break;
-                              case CommentAction.report:
-                                context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
-                                break;
-                              case CommentAction.viewSource:
-                                setState(() => viewSource = !viewSource);
-                                break;
-                              default:
-                                break;
-                            }
-                          } else if (communityAction != null) {
-                            // @todo - implement community actions
-                          } else if (userAction != null) {
-                            setState(() {});
+              child: Material(
+                color: highlightComment ? theme.highlightColor : null,
+                child: InkWell(
+                  onLongPress: () {
+                    HapticFeedback.mediumImpact();
+                    showCommentActionBottomModalSheet(
+                      context,
+                      widget.commentView,
+                      isShowingSource: viewSource,
+                      onAction: ({commentAction, required commentView, communityAction, userAction, value}) async {
+                        if (commentAction != null) {
+                          switch (commentAction) {
+                            case CommentAction.vote:
+                              widget.onVoteAction?.call(commentView.comment.id, value);
+                              break;
+                            case CommentAction.save:
+                              widget.onSaveAction?.call(commentView.comment.id, value);
+                              break;
+                            case CommentAction.reply:
+                              return navigateToCreateCommentPage(
+                                context,
+                                commentView: null,
+                                parentCommentView: commentView,
+                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                              );
+                            case CommentAction.edit:
+                              return navigateToCreateCommentPage(
+                                context,
+                                commentView: commentView,
+                                parentCommentView: null,
+                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                              );
+                            case CommentAction.delete:
+                              widget.onDeleteAction?.call(commentView.comment.id, value);
+                              break;
+                            case CommentAction.report:
+                              context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
+                              break;
+                            case CommentAction.viewSource:
+                              setState(() => viewSource = !viewSource);
+                              break;
+                            default:
+                              break;
                           }
-                        },
+                        } else if (communityAction != null) {
+                          // @todo - implement community actions
+                        } else if (userAction != null) {
+                          setState(() {});
+                        }
+                      },
+                    );
+                  },
+                  onTap: () {
+                    widget.onCollapseCommentChange?.call(commentId, !widget.collapsed);
+                  },
+                  child: CommentContent(
+                    level: widget.level,
+                    comment: widget.commentView,
+                    dragged: dismissThreshold > 0,
+                    isUserLoggedIn: isUserLoggedIn,
+                    onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
+                    onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
+                    onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
+                    onReplyEditAction: (CommentView commentView, bool isEdit) {
+                      return navigateToCreateCommentPage(
+                        context,
+                        commentView: isEdit ? commentView : null,
+                        parentCommentView: isEdit ? null : commentView,
+                        onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
                       );
                     },
-                    onTap: () {
-                      widget.onCollapseCommentChange?.call(widget.commentView.comment.id, !widget.collapsed);
-                    },
-                    child: CommentContent(
-                      level: widget.level,
-                      comment: widget.commentView,
-                      dragged: dismissThreshold > 0,
-                      isUserLoggedIn: isUserLoggedIn,
-                      onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
-                      onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                      onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                      onReplyEditAction: (CommentView commentView, bool isEdit) {
-                        return navigateToCreateCommentPage(
-                          context,
-                          commentView: isEdit ? commentView : null,
-                          parentCommentView: isEdit ? null : commentView,
-                          onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                        );
-                      },
-                      isOwnComment: isOwnComment,
-                      isHidden: widget.collapsed,
-                      viewSource: viewSource,
-                      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-                    ),
+                    isOwnComment: isOwnComment,
+                    isHidden: widget.collapsed,
+                    viewSource: viewSource,
+                    onViewSourceToggled: () => setState(() => viewSource = !viewSource),
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-        if (widget.replyCount == 0 && widget.commentView.counts.childCount > 0)
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            switchInCurve: Curves.easeInOutCubicEmphasized,
-            switchOutCurve: Curves.easeInOutCubicEmphasized,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: SlideTransition(position: _offsetAnimation, child: child),
-              );
-            },
-            child: widget.collapsed
-                ? Container()
-                : AdditionalCommentCard(
-                    depth: widget.level,
-                    replies: widget.commentView.counts.childCount,
-                    onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentView.comment.id)),
-                  ),
-          ),
-      ],
+          if (widget.replyCount == 0 && widget.commentView.counts.childCount > 0)
+            AnimatedCrossFade(
+              duration: Duration(milliseconds: 350),
+              sizeCurve: Curves.easeInOutCubicEmphasized,
+              firstChild: SizedBox(width: MediaQuery.sizeOf(context).width),
+              secondChild: AdditionalCommentCard(
+                depth: widget.level,
+                replies: widget.commentView.counts.childCount,
+                onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: commentId)),
+              ),
+              crossFadeState: widget.collapsed ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            )
+        ],
+      ),
+      crossFadeState: widget.hidden ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      duration: Duration(milliseconds: 350 - (widget.replyCount * 20)),
     );
   }
 }

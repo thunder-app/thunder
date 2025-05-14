@@ -9,7 +9,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/utils/comment.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
-import 'package:thunder/shared/comment_content.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_content.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
