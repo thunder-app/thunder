@@ -57,7 +57,7 @@ class PostBodyTitle extends StatelessWidget {
     final media = post.media.first;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: media.mediaType == MediaType.text ? 12.0 : 0.0).copyWith(top: 8.0, right: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: media.mediaType == MediaType.text || showThumbnailPreviewOnRight ? 12.0 : 0.0).copyWith(top: 8.0, right: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

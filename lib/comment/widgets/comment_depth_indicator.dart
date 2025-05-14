@@ -68,7 +68,7 @@ class _BoxDecorationPainter extends BoxPainter {
   final CommentDepthIndicatorDecoration _decoration;
 
   static const double _spacing = 4.0;
-  static const double _offset = 4.0;
+  static const double _offset = 2.0;
 
   /// Paint the box decoration into the given location on the given canvas.
   @override
