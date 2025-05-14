@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/widgets/comment_list_entry.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';

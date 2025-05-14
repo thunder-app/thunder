@@ -10,7 +10,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';

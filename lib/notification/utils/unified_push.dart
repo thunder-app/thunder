@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/notification_utils.dart';

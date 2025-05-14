@@ -10,8 +10,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/models.dart';
@@ -22,7 +21,6 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_card.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_body/post_body.dart';

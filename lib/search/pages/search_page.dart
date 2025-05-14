@@ -14,7 +14,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/widgets/comment_list_entry.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/enums/enums.dart';

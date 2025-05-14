@@ -4,9 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/user/models/user_label.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_card_header_date.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_card_header_reply_count.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_card_header_score.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/user_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';

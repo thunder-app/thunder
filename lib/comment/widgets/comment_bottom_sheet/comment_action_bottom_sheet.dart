@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/widgets/comment_bottom_sheet/comment_comment_action_bottom_sheet.dart';
-import 'package:thunder/comment/widgets/comment_bottom_sheet/general_comment_action_bottom_sheet.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';

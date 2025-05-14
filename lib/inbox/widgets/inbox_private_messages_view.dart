@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';

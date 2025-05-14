@@ -15,11 +15,10 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/drafts/models/draft.dart';
 
 // Project imports
-import 'package:thunder/comment/cubit/create_comment_cubit.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/widgets/post_body/post_body.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_content.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';

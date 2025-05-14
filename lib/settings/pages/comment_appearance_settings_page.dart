@@ -6,8 +6,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/comment/models/comment_node.dart';
-import 'package:thunder/comment/widgets/comment_card/comment_card.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -19,7 +17,7 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 

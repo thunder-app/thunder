@@ -6,8 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/utils/global_context.dart';

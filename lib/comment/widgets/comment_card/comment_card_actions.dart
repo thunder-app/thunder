@@ -5,8 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/widgets/comment_bottom_sheet/comment_action_bottom_sheet.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 

@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 
 // Project imports
-import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';

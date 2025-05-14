@@ -14,7 +14,7 @@ import 'package:markdown/markdown.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/utils/comment.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';

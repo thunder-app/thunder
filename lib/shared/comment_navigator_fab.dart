@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/comment/models/comment_node.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 class CommentNavigatorFab extends StatefulWidget {

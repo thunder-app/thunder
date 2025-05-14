@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/drafts/models/draft.dart';
-import 'package:thunder/comment/view/create_comment_page.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name.dart';

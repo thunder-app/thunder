@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/comment/enums/comment_action.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/enums/post_action.dart';
