@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/models/comment_node.dart';
-import 'package:thunder/comment/widgets/comment_card.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_card.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';

@@ -7,10 +7,10 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/enums/comment_action.dart';
-import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_depth_indicator.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/comment/widgets/comment_action_bottom_sheet.dart';
+import 'package:thunder/comment/widgets/comment_bottom_sheet/comment_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';

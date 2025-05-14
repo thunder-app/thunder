@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/utils/comment.dart';
-import 'package:thunder/comment/widgets/comment_card_header/comment_card_header.dart';
-import 'package:thunder/comment/widgets/comment_depth_indicator.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_card_header.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_depth_indicator.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/comment_card_actions.dart';

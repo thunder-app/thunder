@@ -22,7 +22,7 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/comment/widgets/comment_card.dart';
+import 'package:thunder/comment/widgets/comment_card/comment_card.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
 import 'package:thunder/post/widgets/post_body/post_body.dart';
