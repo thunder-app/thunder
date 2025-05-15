@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/utils/comment_actions.dart';
+import 'package:thunder/post/post.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 
 class CommentCard extends StatefulWidget {
   /// The [CommentView] containing the comment information
@@ -367,7 +366,7 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
     final style = context.select((ThunderBloc bloc) => bloc.state.nestedCommentIndicatorStyle);
