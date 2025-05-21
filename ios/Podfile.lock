@@ -1,13 +1,12 @@
 PODS:
   - app_links (0.0.2):
     - Flutter
-  - background_fetch (1.3.7):
+  - background_fetch (1.3.8):
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
-    - FlutterMacOS
   - Flutter (1.0.0)
-  - flutter_custom_tabs_ios (2.0.0):
+  - flutter_custom_tabs_ios (2.4.0):
     - Flutter
   - flutter_file_dialog (0.0.1):
     - Flutter
@@ -51,23 +50,26 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.47.2):
-    - sqlite3/common (= 3.47.2)
-  - sqlite3/common (3.47.2)
-  - sqlite3/dbstatvtab (3.47.2):
+  - sqlite3 (3.49.1):
+    - sqlite3/common (= 3.49.1)
+  - sqlite3/common (3.49.1)
+  - sqlite3/dbstatvtab (3.49.1):
     - sqlite3/common
-  - sqlite3/fts5 (3.47.2):
+  - sqlite3/fts5 (3.49.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.47.2):
+  - sqlite3/math (3.49.1):
     - sqlite3/common
-  - sqlite3/rtree (3.47.2):
+  - sqlite3/perf-threadsafe (3.49.1):
+    - sqlite3/common
+  - sqlite3/rtree (3.49.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.47.2)
+    - sqlite3 (~> 3.49.1)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
+    - sqlite3/math
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
   - url_launcher_ios (0.0.1):
@@ -82,7 +84,7 @@ PODS:
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_custom_tabs_ios (from `.symlinks/plugins/flutter_custom_tabs_ios/ios`)
   - flutter_file_dialog (from `.symlinks/plugins/flutter_file_dialog/ios`)
@@ -117,7 +119,7 @@ EXTERNAL SOURCES:
   background_fetch:
     :path: ".symlinks/plugins/background_fetch/ios"
   connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/darwin"
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   Flutter:
     :path: Flutter
   flutter_custom_tabs_ios:
@@ -164,11 +166,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  app_links: 3da4c36b46cac3bf24eb897f1a6ce80bda109874
-  background_fetch: 94b36ee293e82972852dba8ede1fbcd3bd3d9d57
-  connectivity_plus: 2256d3e20624a7749ed21653aafe291a46446fee
+  app_links: 76b66b60cc809390ca1ad69bfd66b998d2387ac7
+  background_fetch: 851122c99dc3f25a011a6aebec5379ccdf4ab5eb
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_custom_tabs_ios: dd647919edd75e82ba6b00009eb3460a28c011b8
+  flutter_custom_tabs_ios: 87333f36c33a5971502766aca2f6ff4823b09bda
   flutter_file_dialog: ca8d7fbd1772d4f0c2777b4ab20a7787ef4e7dd8
   flutter_icmp_ping: 47c1df3440c18ddd39fc457e607bb3b42d4a339f
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
@@ -186,11 +188,11 @@ SPEC CHECKSUMS:
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  sqlite3: 7559e33dae4c78538df563795af3a86fc887ee71
-  sqlite3_flutter_libs: 5235ce0546528db87927a3ef1baff8b7d5107f0e
+  sqlite3: fc1400008a9b3525f5914ed715a5d1af0b8f4983
+  sqlite3_flutter_libs: f6acaa2172e6bb3e2e70c771661905080e8ebcf2
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
-  webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
 PODFILE CHECKSUM: 8d23d5c4d896af3a5f2a08e0206462ca9882e556
 

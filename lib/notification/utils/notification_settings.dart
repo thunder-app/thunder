@@ -3,7 +3,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 
 // Package imports
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';

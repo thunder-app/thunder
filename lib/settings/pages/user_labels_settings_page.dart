@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/user/models/user_label.dart';
 

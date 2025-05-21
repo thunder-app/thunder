@@ -14,7 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/shared/snackbar.dart';

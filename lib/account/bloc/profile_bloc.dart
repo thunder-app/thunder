@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
@@ -14,6 +13,7 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 

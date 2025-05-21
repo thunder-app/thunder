@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';

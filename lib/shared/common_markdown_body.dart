@@ -5,7 +5,7 @@ import 'package:expandable/expandable.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/utils/colors.dart';

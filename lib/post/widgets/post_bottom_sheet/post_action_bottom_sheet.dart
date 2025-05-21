@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';

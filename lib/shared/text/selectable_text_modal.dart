@@ -9,7 +9,7 @@ import 'package:html_unescape/html_unescape_small.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 

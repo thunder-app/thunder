@@ -5,7 +5,7 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment

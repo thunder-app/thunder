@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';

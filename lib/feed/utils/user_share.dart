@@ -4,7 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 enum UserShareOptions {
   link,

@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:thunder/core/models/version.dart';
 import 'package:version/version.dart' as version_parser;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 String getCurrentVersion({bool removeInternalBuildNumber = false, bool trimV = false}) {
   RegExp regex = RegExp(r'(.+)\+.*');

@@ -1,6 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 /// A wrapper around [SearchType] that includes instances
 class MetaSearchType {

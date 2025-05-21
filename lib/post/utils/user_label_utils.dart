@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/shared/dialogs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 /// Shows a dialog which allows the user to create/modify/edit a label for the given [username].
 /// Tip: Call `UserLabel.usernameFromParts` to generate a [username] in the right format.

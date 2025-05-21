@@ -15,7 +15,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 
 /// Creates a widget which can display a list of accounts and anonymous instances.
 /// By default, when logging out of an account, a confirmation dialog is shown. To suppress this, pass [showLogoutDialog] as `false`.

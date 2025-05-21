@@ -3,7 +3,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:version/version.dart';
 
