@@ -13,7 +13,7 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 

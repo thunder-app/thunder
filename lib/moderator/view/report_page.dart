@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/utils/global_context.dart';
 

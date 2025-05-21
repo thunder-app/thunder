@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/shared/image/image_preview.dart';

@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';

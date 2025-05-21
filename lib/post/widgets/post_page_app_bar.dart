@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:lemmy_api_client/src/v3/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/models.dart';

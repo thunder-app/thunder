@@ -9,7 +9,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 

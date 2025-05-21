@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/action_color.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';

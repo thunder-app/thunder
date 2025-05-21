@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 
 // Package imports
 import 'package:http/http.dart' as http;
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';

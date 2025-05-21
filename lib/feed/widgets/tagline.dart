@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/common_markdown_body.dart';

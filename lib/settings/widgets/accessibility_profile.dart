@@ -6,7 +6,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/expandable_option.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 class SettingProfile extends StatelessWidget {
   final IconData icon;

@@ -1,5 +1,5 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/full_name_widgets.dart';

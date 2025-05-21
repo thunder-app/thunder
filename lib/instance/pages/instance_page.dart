@@ -24,7 +24,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_list_entry.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class InstancePage extends StatefulWidget {

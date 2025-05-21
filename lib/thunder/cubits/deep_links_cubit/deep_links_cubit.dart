@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/utils/global_context.dart';

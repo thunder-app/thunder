@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/moderator/enums/report_action.dart';

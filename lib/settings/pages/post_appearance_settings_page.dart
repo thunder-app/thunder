@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:expandable/expandable.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/app_localizations.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
