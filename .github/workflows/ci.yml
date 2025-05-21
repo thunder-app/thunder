@@ -56,6 +56,9 @@ jobs:
         # We'll ignore info and warnings when performing this step
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      - name: Pre-format Localizations
+        run: dart format lib/l10n -l 200
+
       - name: Formatting
         run: dart format -o none --set-exit-if-changed -l 200 lib
 
