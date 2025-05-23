@@ -227,6 +227,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get base => 'Base';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'Blocca Comunità';
 
   @override
@@ -2812,6 +2815,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get unbannedUserFromCommunity => 'Sbanna Utente dalla Comunità';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Comunità Sbloccata';

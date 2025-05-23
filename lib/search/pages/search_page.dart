@@ -28,7 +28,7 @@ import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/search/widgets/search_action_chip.dart';
+import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/input_dialogs.dart';
@@ -278,22 +278,17 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         child: Row(
                           children: [
                             if (state.viewingAll) ...[
-                              SearchActionChip(
+                              ThunderActionChip(
                                 backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
-                                children: [
-                                  Text(l10n.viewingAll),
-                                  const SizedBox(width: 5),
-                                  const Icon(Icons.close_rounded, size: 15),
-                                ],
+                                trailingIcon: Icons.close_rounded,
+                                label: l10n.viewingAll,
                                 onPressed: () => context.read<SearchBloc>().add(ResetSearch()),
                               ),
                               const SizedBox(width: 10),
                             ],
-                            SearchActionChip(
-                              children: [
-                                Text(_currentSearchType.name.capitalize),
-                                const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                              ],
+                            ThunderActionChip(
+                              trailingIcon: Icons.arrow_drop_down_rounded,
+                              label: _currentSearchType.name.capitalize,
                               onPressed: () {
                                 showModalBottomSheet(
                                   context: context,
@@ -317,13 +312,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                             ),
                             const SizedBox(width: 10),
                             if (_currentSearchType == MetaSearchType.posts) ...[
-                              SearchActionChip(
-                                children: [
-                                  const Icon(Icons.link_rounded, size: 15),
-                                  const SizedBox(width: 5),
-                                  Text(_searchUrlLabel),
-                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                ],
+                              ThunderActionChip(
+                                icon: Icons.link_rounded,
+                                trailingIcon: Icons.arrow_drop_down_rounded,
+                                label: _searchUrlLabel,
                                 onPressed: () {
                                   showModalBottomSheet(
                                     context: context,
@@ -349,24 +341,18 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               const SizedBox(width: 10),
                             ],
                             if (_currentSearchType != MetaSearchType.instances) ...[
-                              SearchActionChip(
-                                children: [
-                                  Icon(sortTypeIcon, size: 15),
-                                  const SizedBox(width: 5),
-                                  Text(sortTypeLabel ?? l10n.sortBy),
-                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                ],
+                              ThunderActionChip(
+                                icon: sortTypeIcon,
+                                trailingIcon: Icons.arrow_drop_down_rounded,
+                                label: sortTypeLabel ?? l10n.sortBy,
                                 onPressed: () => showSortBottomSheet(context),
                               ),
                               if (widget.communityToSearch == null) ...[
                                 const SizedBox(width: 10),
-                                SearchActionChip(
-                                  children: [
-                                    Icon(_feedTypeIcon, size: 15),
-                                    const SizedBox(width: 5),
-                                    Text(_feedTypeLabel ?? l10n.feed),
-                                    const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                  ],
+                                ThunderActionChip(
+                                  icon: _feedTypeIcon,
+                                  trailingIcon: Icons.arrow_drop_down_rounded,
+                                  label: _feedTypeLabel ?? l10n.feed,
                                   onPressed: () {
                                     showModalBottomSheet(
                                       context: context,
@@ -400,15 +386,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   },
                                 ),
                                 const SizedBox(width: 10),
-                                SearchActionChip(
+                                ThunderActionChip(
                                   backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
-                                  children: [
-                                    const Icon(Icons.people_rounded, size: 15),
-                                    const SizedBox(width: 5),
-                                    Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
-                                    if (_currentCommunityFilter != null) const SizedBox(width: 5),
-                                    Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCommunityFilter == null ? 20 : 15),
-                                  ],
+                                  icon: Icons.people_rounded,
+                                  trailingIcon: _currentCommunityFilter != null ? Icons.close_rounded : Icons.arrow_drop_down_rounded,
+                                  label: _currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? ''),
                                   onPressed: () {
                                     if (_currentCommunityFilter != null) {
                                       setState(() {
@@ -434,15 +416,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                 ),
                               ],
                               const SizedBox(width: 10),
-                              SearchActionChip(
+                              ThunderActionChip(
                                 backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
-                                children: [
-                                  const Icon(Icons.person_rounded, size: 15),
-                                  const SizedBox(width: 5),
-                                  Text(_currentCreatorFilter == null ? l10n.creator : l10n.filteringBy(_currentCreatorFilterName ?? '')),
-                                  if (_currentCreatorFilter != null) const SizedBox(width: 5),
-                                  Icon(_currentCreatorFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: _currentCreatorFilter == null ? 20 : 15),
-                                ],
+                                icon: Icons.person_rounded,
+                                trailingIcon: _currentCreatorFilter != null ? Icons.close_rounded : Icons.arrow_drop_down_rounded,
+                                label: _currentCreatorFilter == null ? l10n.creator : l10n.filteringBy(_currentCreatorFilterName ?? ''),
                                 onPressed: () {
                                   if (_currentCreatorFilter != null) {
                                     setState(() {
@@ -522,8 +500,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               ],
               if (_controller.text.isEmpty) ...[
                 const SizedBox(height: 30),
-                SearchActionChip(
-                  children: [Text(l10n.viewAll)],
+                ThunderActionChip(
+                  label: l10n.viewAll,
                   onPressed: () => _doSearch(force: true),
                 ),
               ],
@@ -592,13 +570,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SearchActionChip(
-                            children: [Text(l10n.viewAll)],
+                          ThunderActionChip(
+                            label: l10n.viewAll,
                             onPressed: () => _doSearch(force: true),
                           ),
                           const SizedBox(width: 10),
-                          SearchActionChip(
-                            children: [Text(l10n.exploreInstance), const Icon(Icons.chevron_right_rounded, size: 21)],
+                          ThunderActionChip(
+                            trailingIcon: Icons.chevron_right_rounded,
+                            label: l10n.exploreInstance,
                             onPressed: () => navigateToInstancePage(context, instanceHost: (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? '', instanceId: null),
                           ),
                         ],
@@ -636,15 +615,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (_currentSearchType != MetaSearchType.communities && widget.communityToSearch == null) ...[
-                      SearchActionChip(
-                        children: [Text(l10n.communities)],
+                      ThunderActionChip(
+                        label: l10n.communities,
                         onPressed: () => _setCurrentSearchType(MetaSearchType.communities),
                       ),
                       const SizedBox(width: 5),
                     ],
                     if (_currentSearchType != MetaSearchType.users && widget.communityToSearch == null)
-                      SearchActionChip(
-                        children: [Text(l10n.users)],
+                      ThunderActionChip(
+                        label: l10n.users,
                         onPressed: () => _setCurrentSearchType(MetaSearchType.users),
                       ),
                   ],
@@ -654,15 +633,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (_currentSearchType != MetaSearchType.posts) ...[
-                      SearchActionChip(
-                        children: [Text(l10n.posts)],
+                      ThunderActionChip(
+                        label: l10n.posts,
                         onPressed: () => _setCurrentSearchType(MetaSearchType.posts),
                       ),
                       const SizedBox(width: 5),
                     ],
                     if (_currentSearchType != MetaSearchType.comments)
-                      SearchActionChip(
-                        children: [Text(l10n.comments)],
+                      ThunderActionChip(
+                        label: l10n.comments,
                         onPressed: () => _setCurrentSearchType(MetaSearchType.comments),
                       ),
                   ],

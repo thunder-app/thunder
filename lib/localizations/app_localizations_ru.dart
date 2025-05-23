@@ -226,6 +226,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get base => 'База';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'Заблокировать сообщество';
 
   @override
@@ -2807,6 +2810,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get unbannedUserFromCommunity => 'Unbanned User from Community';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Unblock Community';

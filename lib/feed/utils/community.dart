@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -7,6 +9,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -97,4 +100,34 @@ List<ThunderCommunity>? prioritizeFavorites(List<ThunderCommunity>? communities,
 
   // Combine them together, with favorites at the top
   return List<ThunderCommunity>.from(sortedFavorites)..addAll(sortedNonFavorites);
+}
+
+/// Handles the subscription/unsubscription process for authenticated users.
+/// Requires a [CommunityBloc] to be provided in the context.
+///
+/// When subcribed, shows a confirmation dialog for unsubscription.
+Future<void> handleSubscription(BuildContext context, ThunderCommunity community) async {
+  final l10n = GlobalContext.l10n;
+  final isSubscribed = community.subscribed != SubscribedType.notSubscribed;
+
+  if (isSubscribed) {
+    bool shouldUnsubscribe = false;
+
+    await showThunderDialog<void>(
+      context: context,
+      title: l10n.confirm,
+      contentText: l10n.confirmUnsubscription,
+      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+      secondaryButtonText: l10n.cancel,
+      onPrimaryButtonPressed: (dialogContext, _) async {
+        Navigator.of(dialogContext).pop();
+        shouldUnsubscribe = true;
+      },
+      primaryButtonText: l10n.confirm,
+    );
+
+    if (!shouldUnsubscribe) return;
+  }
+
+  context.read<CommunityBloc>().add(CommunityActionEvent(communityId: community.id, communityAction: CommunityAction.follow, value: !isSubscribed));
 }

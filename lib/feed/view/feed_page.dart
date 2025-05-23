@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/widgets/community_header.dart';
-import 'package:thunder/community/widgets/community_sidebar.dart';
+import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
@@ -25,13 +22,12 @@ import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/feed/widgets/tagline.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/user/widgets/user_header.dart';
-import 'package:thunder/user/widgets/user_sidebar.dart';
-import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/user/widgets/user_header/user_header.dart';
 import 'package:thunder/utils/navigation.dart';
 
 enum FeedType { community, user, general, account }
@@ -177,20 +173,8 @@ class _FeedViewState extends State<FeedView> {
   /// Boolean which indicates whether the title on the app bar should be shown
   bool showAppBarTitle = false;
 
-  /// Boolean which indicates whether the community sidebar should be shown
-  bool showCommunitySidebar = false;
-
-  /// Boolean which indicates whether the user sidebar should be shown
-  bool showUserSidebar = false;
-
   /// Indicates which "tab" is selected. This is used for user profiles, where we can switch between posts and comments
   List<bool> selectedUserOption = [true, false];
-
-  /// List of tabs for user profiles
-  List<Widget> userOptionTypes = <Widget>[
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
-  ];
 
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
@@ -371,7 +355,6 @@ class _FeedViewState extends State<FeedView> {
                 child: Stack(
                   children: [
                     CustomScrollView(
-                      physics: (showCommunitySidebar || showUserSidebar) ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
                       controller: _scrollController,
                       slivers: <Widget>[
                         widget.feedType == FeedType.account
@@ -417,148 +400,45 @@ class _FeedViewState extends State<FeedView> {
                               child: TagLine(),
                             ),
                           ),
-                          if (state.community != null)
+                          if (state.community != null && state.feedType == FeedType.community)
                             SliverToBoxAdapter(
-                              child: Visibility(
-                                visible: state.feedType == FeedType.community,
-                                child: CommunityHeader(
-                                  community: state.community!,
-                                  showCommunitySidebar: showCommunitySidebar,
-                                  onToggle: (bool toggled) {
-                                    // Scroll to top first before showing the sidebar
-                                    _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                    setState(() => showCommunitySidebar = toggled);
-                                  },
-                                ),
+                              child: CommunityHeader(
+                                community: state.community!,
+                                instance: state.communityInstance!,
+                                moderators: state.communityModerators,
+                                condensed: false,
                               ),
                             ),
-                          if (state.fullPersonView != null)
+                          if (state.fullPersonView != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
                             SliverToBoxAdapter(
-                              child: Visibility(
-                                visible: state.feedType == FeedType.user || state.feedType == FeedType.account,
-                                child: Column(
-                                  children: [
-                                    UserHeader(
-                                      user: ThunderUser(
-                                        state.fullPersonView!.personView.person,
-                                        userView: state.fullPersonView!.personView,
-                                      ),
-                                      showUserSidebar: showUserSidebar,
-                                      onToggle: (bool toggled) {
-                                        // Scroll to top first before showing the sidebar
-                                        _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                        setState(() => showUserSidebar = toggled);
-                                      },
-                                    ),
-                                    AnimatedSize(
-                                      duration: const Duration(milliseconds: 100),
-                                      curve: Curves.easeInOut,
-                                      child: Container(
-                                        height: showUserSidebar ? 0 : null,
-                                        margin: showUserSidebar ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: ToggleButtons(
-                                          constraints: showUserSidebar
-                                              ? const BoxConstraints(minHeight: 0.0, maxHeight: 0.0, minWidth: 0.0, maxWidth: 0.0)
-                                              : BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length)) - 12.0),
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          direction: Axis.horizontal,
-                                          onPressed: (int index) {
-                                            setState(() {
-                                              // The button that is tapped is set to true, and the others to false.
-                                              for (int i = 0; i < selectedUserOption.length; i++) {
-                                                selectedUserOption[i] = i == index;
-                                              }
-                                            });
-                                          },
-                                          borderRadius: showUserSidebar ? null : const BorderRadius.all(Radius.circular(8)),
-                                          isSelected: selectedUserOption,
-                                          children: userOptionTypes,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: UserHeader(
+                                user: ThunderUser(state.fullPersonView!.personView.person, userView: state.fullPersonView!.personView),
+                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity(e.community)).toList(),
+                                feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
+                                onChangeFeedType: (feedType) {
+                                  setState(() {
+                                    selectedUserOption[0] = feedType == FeedTypeSubview.post;
+                                    selectedUserOption[1] = feedType == FeedTypeSubview.comment;
+                                  });
+                                },
+                                condensed: false,
                               ),
                             ),
-                          SliverStack(
-                            children: [
-                              selectedUserOption[1]
-                                  // Widget representing the list of user comments on the feed
-                                  ? FeedCommentCardList(
-                                      commentViews: commentViews,
-                                      tabletMode: tabletMode,
-                                    )
-                                  :
-                                  // Widget representing the list of posts on the feed
-                                  FeedPostCardList(
-                                      posts: posts,
-                                      tabletMode: tabletMode,
-                                      markPostReadOnScroll: markPostReadOnScroll,
-                                      queuedForRemoval: queuedForRemoval,
-                                      dimReadPosts: state.feedType == FeedType.account ? false : null,
-                                    ),
-                              // Widgets to display on the feed when feedType == FeedType.community or feedType == FeedType.user
-                              SliverToBoxAdapter(
-                                child: AnimatedSwitcher(
-                                  switchInCurve: Curves.easeOut,
-                                  switchOutCurve: Curves.easeOut,
-                                  transitionBuilder: (child, animation) {
-                                    return FadeTransition(
-                                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                        CurvedAnimation(parent: animation, curve: const Interval(0, 1.0)),
-                                      ),
-                                      child: child,
-                                    );
-                                  },
-                                  duration: const Duration(milliseconds: 300),
-                                  child: (showCommunitySidebar || showUserSidebar)
-                                      ? GestureDetector(
-                                          onTap: () => setState(() {
-                                            if (state.feedType == FeedType.community) showCommunitySidebar = !showCommunitySidebar;
-                                            if (state.feedType == FeedType.user) showUserSidebar = !showUserSidebar;
-                                          }),
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height,
-                                            width: MediaQuery.of(context).size.width,
-                                            color: Colors.black.withValues(alpha: 0.5),
-                                          ),
-                                        )
-                                      : null,
+                          selectedUserOption[1]
+                              // Widget representing the list of user comments on the feed
+                              ? FeedCommentCardList(
+                                  commentViews: commentViews,
+                                  tabletMode: tabletMode,
+                                )
+                              :
+                              // Widget representing the list of posts on the feed
+                              FeedPostCardList(
+                                  posts: posts,
+                                  tabletMode: tabletMode,
+                                  markPostReadOnScroll: markPostReadOnScroll,
+                                  queuedForRemoval: queuedForRemoval,
+                                  dimReadPosts: state.feedType == FeedType.account ? false : null,
                                 ),
-                              ),
-                              // Contains the widget for the community/user sidebar
-                              SliverToBoxAdapter(
-                                child: AnimatedSwitcher(
-                                  switchInCurve: Curves.easeOut,
-                                  switchOutCurve: Curves.easeOut,
-                                  transitionBuilder: (child, animation) {
-                                    return SlideTransition(
-                                      position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                      child: child,
-                                    );
-                                  },
-                                  duration: const Duration(milliseconds: 300),
-                                  child: showCommunitySidebar
-                                      ? CommunitySidebar(
-                                          community: state.community,
-                                          instance: state.communityInstance,
-                                          moderators: state.communityModerators,
-                                          onDismiss: () => setState(() => showCommunitySidebar = false),
-                                        )
-                                      : showUserSidebar && state.fullPersonView != null
-                                          ? UserSidebar(
-                                              user: ThunderUser(
-                                                state.fullPersonView!.personView.person,
-                                                userView: state.fullPersonView!.personView,
-                                              ),
-                                              moderatedCommunities: state.fullPersonView!.moderates.map((e) => ThunderCommunity(e.community)).toList(),
-                                              onDismiss: () => setState(() => showUserSidebar = false),
-                                            )
-                                          : null,
-                                ),
-                              ),
-                            ],
-                          ),
                           // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                           if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
                             SliverToBoxAdapter(
@@ -625,20 +505,6 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
-    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
-
-    // If the community sidebar is open, close it
-    if (topOfNavigationStack && showCommunitySidebar) {
-      setState(() => showCommunitySidebar = false);
-      return true;
-    }
-
-    // If the user sidebar is open, close it
-    if (topOfNavigationStack && showUserSidebar) {
-      setState(() => showUserSidebar = false);
-      return true;
-    }
-
     ProfileBloc authBloc = context.read<ProfileBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();

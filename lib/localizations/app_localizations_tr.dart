@@ -226,6 +226,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get base => 'Taban';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'Blok Topluluğu';
 
   @override
@@ -2833,6 +2836,9 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get unbannedUserFromCommunity =>
       'Topluluktan Engeli Kaldırılan Kullanıcı';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Topluluğun Engelini Kaldır';

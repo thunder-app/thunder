@@ -199,6 +199,10 @@
   "@base": {
     "description": "Description for base font scale"
   },
+  "block": "Block",
+  "@block": {
+    "description": "Action for blocking an item"
+  },
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
   "blockCommunityInstance": "Block Community Instance",
@@ -2780,6 +2784,10 @@
   "unbannedUserFromCommunity": "Unbanned User from Community",
   "@unbannedUserFromCommunity": {
     "description": "Short decription for moderator action to unban a user from a community"
+  },
+  "unblock": "Unblock",
+  "@unblock": {
+    "description": "Action for unblocking an item"
   },
   "unblockCommunity": "Unblock Community",
   "@unblockCommunity": {

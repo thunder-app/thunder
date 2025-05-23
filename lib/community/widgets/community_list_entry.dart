@@ -58,10 +58,11 @@ class CommunityListEntry extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     assert(community.subscribers != null);
 
-    String subscriptionButtonLabel = switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
+    String subscriptionButtonLabel = switch (getCurrentSubscriptionStatus?.call(isUserLoggedIn, community, currentSubscriptions)) {
       SubscribedType.notSubscribed => l10n.subscribe,
       SubscribedType.pending => l10n.unsubscribePending,
       SubscribedType.subscribed => l10n.unsubscribe,
+      _ => '',
     };
 
     return Tooltip(

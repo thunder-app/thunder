@@ -14,7 +14,7 @@ import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:thunder/search/widgets/search_action_chip.dart';
+import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/persistent_header.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -79,6 +79,8 @@ class _InstancePageState extends State<InstancePage> {
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
     final String? accountInstance = context.read<ProfileBloc>().state.account?.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+
+    final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
 
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
@@ -218,61 +220,53 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15, right: 15),
                               child: Row(
+                                spacing: 10.0,
                                 children: [
-                                  SearchActionChip(
-                                    backgroundColor: viewType == SearchType.all ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                    children: [
-                                      Text(l10n.about),
-                                    ],
+                                  ThunderActionChip(
+                                    backgroundColor: viewType == SearchType.all ? chipColor : null,
+                                    icon: Icons.info_rounded,
                                     onPressed: () => setState(() => viewType = SearchType.all),
+                                    label: l10n.about,
                                   ),
-                                  const SizedBox(width: 10),
-                                  SearchActionChip(
-                                    backgroundColor: viewType == SearchType.communities ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                    children: [
-                                      Text(l10n.communities),
-                                    ],
+                                  ThunderActionChip(
+                                    backgroundColor: viewType == SearchType.communities ? chipColor : null,
+                                    icon: Icons.people_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.communities;
                                       await context.read<InstancePageCubit>().loadCommunities(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
+                                    label: l10n.communities,
                                   ),
-                                  const SizedBox(width: 10),
-                                  SearchActionChip(
-                                    backgroundColor: viewType == SearchType.users ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                    children: [
-                                      Text(l10n.users),
-                                    ],
+                                  ThunderActionChip(
+                                    backgroundColor: viewType == SearchType.users ? chipColor : null,
+                                    icon: Icons.person_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.users;
                                       await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
+                                    label: l10n.users,
                                   ),
-                                  const SizedBox(width: 10),
-                                  SearchActionChip(
-                                    backgroundColor: viewType == SearchType.posts ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                    children: [
-                                      Text(l10n.posts),
-                                    ],
+                                  ThunderActionChip(
+                                    backgroundColor: viewType == SearchType.posts ? chipColor : null,
+                                    icon: Icons.article_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.posts;
                                       await context.read<InstancePageCubit>().loadPosts(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
+                                    label: l10n.posts,
                                   ),
-                                  const SizedBox(width: 10),
-                                  SearchActionChip(
-                                    backgroundColor: viewType == SearchType.comments ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                                    children: [
-                                      Text(l10n.comments),
-                                    ],
+                                  ThunderActionChip(
+                                    backgroundColor: viewType == SearchType.comments ? chipColor : null,
+                                    icon: Icons.comment_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.comments;
                                       await context.read<InstancePageCubit>().loadComments(page: 1, sortType: sortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
+                                    label: l10n.comments,
                                   ),
                                 ],
                               ),

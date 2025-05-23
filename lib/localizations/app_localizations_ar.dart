@@ -218,6 +218,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get base => 'الأساسي';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'احظر المجتمع';
 
   @override
@@ -2807,6 +2810,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unbannedUserFromCommunity => 'Unbanned User from Community';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Unblock Community';

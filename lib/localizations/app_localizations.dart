@@ -506,6 +506,12 @@ abstract class AppLocalizations {
   /// **'Base'**
   String get base;
 
+  /// Action for blocking an item
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get block;
+
   /// No description provided for @blockCommunity.
   ///
   /// In en, this message translates to:
@@ -5083,6 +5089,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unbanned User from Community'**
   String get unbannedUserFromCommunity;
+
+  /// Action for unblocking an item
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get unblock;
 
   /// Action to unblock a community
   ///

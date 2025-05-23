@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/search/widgets/search_action_chip.dart';
+import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
@@ -24,6 +24,8 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
   final GlobalKey selectableRegionKey = GlobalKey();
 
   bool isAnythingSelected = false;
+
+  final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
 
   showModalBottomSheet(
     context: context,
@@ -47,28 +49,21 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                     scrollDirection: Axis.horizontal,
                     controller: actionsScrollController,
                     child: Row(
+                      spacing: 10.0,
                       children: [
-                        const SizedBox(width: 26),
-                        SearchActionChip(
+                        ThunderActionChip(
+                          backgroundColor: viewSource ? chipColor : null,
+                          trailingIcon: viewSource ? Icons.close_rounded : null,
                           onPressed: () => setState(() => viewSource = !viewSource),
-                          backgroundColor: viewSource ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                          children: [
-                            Text(l10n.viewSource),
-                            if (viewSource) ...[
-                              const SizedBox(width: 5),
-                              const Icon(Icons.close_rounded, size: 15),
-                            ],
-                          ],
+                          label: l10n.viewSource,
                         ),
-                        const SizedBox(width: 10),
-                        SearchActionChip(
-                          children: [Text(l10n.selectAll)],
-                          onPressed: () {
-                            (selectableRegionKey.currentState as SelectableRegionState).selectAll();
-                          },
+                        ThunderActionChip(
+                          onPressed: () => (selectableRegionKey.currentState as SelectableRegionState).selectAll(),
+                          label: l10n.selectAll,
                         ),
-                        const SizedBox(width: 10),
-                        SearchActionChip(
+                        ThunderActionChip(
+                          backgroundColor: copySuccess ? chipColor : null,
+                          trailingIcon: copySuccess ? Icons.check_rounded : null,
                           onPressed: isAnythingSelected
                               ? () async {
                                   (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
@@ -77,16 +72,8 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                   setState(() => copySuccess = false);
                                 }
                               : null,
-                          backgroundColor: copySuccess ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
-                          children: [
-                            Text(l10n.copySelected),
-                            if (copySuccess) ...[
-                              const SizedBox(width: 5),
-                              const Icon(Icons.check_rounded, size: 15),
-                            ],
-                          ],
+                          label: l10n.copySelected,
                         ),
-                        const SizedBox(width: 16),
                       ],
                     ),
                   ),

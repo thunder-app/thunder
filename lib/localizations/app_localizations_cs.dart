@@ -227,6 +227,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get base => 'Normální';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'Zablokovat Komunitu';
 
   @override
@@ -2813,6 +2816,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get unbannedUserFromCommunity => 'Unbanned User from Community';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Unblock Community';

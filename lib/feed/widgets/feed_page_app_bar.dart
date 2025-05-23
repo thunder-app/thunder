@@ -3,29 +3,18 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/utils/community.dart';
-import 'package:thunder/feed/utils/community_share.dart';
-import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
-import 'package:thunder/shared/dialogs.dart';
-import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -159,108 +148,39 @@ class FeedAppBarCommunityActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final isFabOpen = context.read<ThunderBloc>().state.isFabOpen;
-    final community = context.read<FeedBloc>().state.community!;
+    final l10n = GlobalContext.l10n;
     final sortType = context.read<FeedBloc>().state.sortType;
 
-    final subscriptionStatus = _getSubscriptionStatus(context);
-
-    final favorites = context.select<ProfileBloc, List<ThunderCommunity>>((bloc) => bloc.state.favorites);
-    final favorited = favorites.any((c) => c.id == community.id);
-
-    return Row(
-      children: [
-        BlocConsumer<CommunityBloc, CommunityState>(
-          listener: (context, state) {
-            if (state.status == CommunityStatus.success && state.community != null) {
-              context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: state.community!));
-            }
-          },
-          builder: (context, state) => IconButton(
-            icon: Icon(
-                switch (subscriptionStatus) {
-                  SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                  SubscribedType.pending => Icons.pending_outlined,
-                  SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                  _ => Icons.add_circle_outline_rounded,
-                },
-                semanticLabel: (subscriptionStatus == SubscribedType.notSubscribed) ? l10n.subscribe : l10n.unsubscribe),
-            tooltip: switch (subscriptionStatus) {
-              SubscribedType.notSubscribed => l10n.subscribe,
-              SubscribedType.pending => l10n.unsubscribePending,
-              SubscribedType.subscribed => l10n.unsubscribe,
-              _ => null,
-            },
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
             onPressed: () {
-              if (isFabOpen) context.read<ThunderBloc>().add(const OnFabToggle(false));
               HapticFeedback.mediumImpact();
-              _onSubscribeIconPressed(context);
+              triggerRefresh(context);
             },
           ),
-        ),
-        IconButton(
-          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-
-            showModalBottomSheet<void>(
-              showDragHandle: true,
-              context: context,
-              isScrollControlled: true,
-              builder: (builderContext) => SortPicker(
-                title: l10n.sortOptions,
-                onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
-                previouslySelected: sortType,
-                minimumVersion: LemmyClient.instance.version,
-              ),
-            );
-          },
-        ),
-        Semantics(
-          label: l10n.menu,
-          child: PopupMenuButton(
-            itemBuilder: (context) => [
-              ThunderPopupMenuItem(
-                title: l10n.refresh,
-                icon: Icons.refresh_rounded,
-                onTap: () => triggerRefresh(context),
-              ),
-              if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
-                ThunderPopupMenuItem(
-                  title: favorited ? l10n.removeFromFavorites : l10n.addToFavorites,
-                  icon: favorited ? Icons.star_rounded : Icons.star_border_rounded,
-                  onTap: () => toggleFavoriteCommunity(context, community, favorited),
+          IconButton(
+            icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              showModalBottomSheet<void>(
+                showDragHandle: true,
+                context: context,
+                isScrollControlled: true,
+                builder: (builderContext) => SortPicker(
+                  title: l10n.sortOptions,
+                  onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+                  previouslySelected: sortType,
+                  minimumVersion: LemmyClient.instance.version,
                 ),
-              ThunderPopupMenuItem(
-                title: l10n.share,
-                icon: Icons.share_rounded,
-                onTap: () => showCommunityShareSheet(context, community),
-              ),
-              ThunderPopupMenuItem(
-                title: l10n.search,
-                icon: Icons.search_rounded,
-                onTap: () => navigateToSearchPage(context),
-              ),
-              ThunderPopupMenuItem(
-                title: l10n.modlog,
-                icon: Icons.shield_rounded,
-                onTap: () => navigateToModlogPage(
-                  context,
-                  communityId: community.id,
-                  subtitle: generateCommunityFullName(
-                    context,
-                    community.communityName,
-                    community.title,
-                    fetchInstanceNameFromUrl(community.url),
-                  ),
-                ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -271,48 +191,40 @@ class FeedAppBarUserActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
     final feedBloc = context.read<FeedBloc>();
 
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-
-            showModalBottomSheet<void>(
-              showDragHandle: true,
-              context: context,
-              isScrollControlled: true,
-              builder: (builderContext) => SortPicker(
-                title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                previouslySelected: feedBloc.state.sortType,
-                minimumVersion: LemmyClient.instance.version,
-              ),
-            );
-          },
-        ),
-        Semantics(
-          label: l10n.menu,
-          child: PopupMenuButton(
-            itemBuilder: (context) => [
-              ThunderPopupMenuItem(
-                onTap: () => triggerRefresh(context),
-                icon: Icons.refresh_rounded,
-                title: l10n.refresh,
-              ),
-              if (feedBloc.state.fullPersonView?.personView.person.actorId != null)
-                ThunderPopupMenuItem(
-                  onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
-                  icon: Icons.share_rounded,
-                  title: l10n.share,
-                ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              triggerRefresh(context);
+            },
           ),
-        ),
-      ],
+          IconButton(
+            icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+
+              showModalBottomSheet<void>(
+                showDragHandle: true,
+                context: context,
+                isScrollControlled: true,
+                builder: (builderContext) => SortPicker(
+                  title: l10n.sortOptions,
+                  onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                  previouslySelected: feedBloc.state.sortType,
+                  minimumVersion: LemmyClient.instance.version,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -323,7 +235,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
     final feedBloc = context.read<FeedBloc>();
 
     return Row(
@@ -371,68 +283,5 @@ class FeedAppBarGeneralActions extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-/// Get the subscription status for the current user and community
-/// The logic works for anonymous accounts and for logged in accounts
-SubscribedType? _getSubscriptionStatus(BuildContext context) {
-  final community = context.read<FeedBloc>().state.community;
-
-  final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-  if (isLoggedIn) return community?.subscribed;
-
-  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-  return subscriptions.contains(community?.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
-}
-
-void _onSubscribeIconPressed(BuildContext context) async {
-  final l10n = GlobalContext.l10n;
-
-  final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-  final community = context.read<FeedBloc>().state.community;
-  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-
-  if (community == null) {
-    showSnackbar(l10n.unexpectedError);
-    return;
-  }
-
-  // If we're logged in and subscribed or this is an anonymous subscription
-  if ((isLoggedIn && community.subscribed != SubscribedType.notSubscribed) || subscriptions.contains(community.id)) {
-    bool result = false;
-
-    await showThunderDialog<void>(
-      context: context,
-      title: l10n.confirm,
-      contentText: l10n.confirmUnsubscription,
-      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-      secondaryButtonText: l10n.cancel,
-      onPrimaryButtonPressed: (dialogContext, _) async {
-        Navigator.of(dialogContext).pop();
-        result = true;
-      },
-      primaryButtonText: l10n.confirm,
-    );
-
-    if (!result) return;
-  }
-
-  if (isLoggedIn) {
-    return context.read<CommunityBloc>().add(
-          CommunityActionEvent(
-            communityId: community.id,
-            communityAction: CommunityAction.follow,
-            value: (community.subscribed == SubscribedType.notSubscribed ? true : false),
-          ),
-        );
-  }
-
-  if (subscriptions.contains(community.id)) {
-    context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {community.id}));
-    showSnackbar(l10n.unsubscribed);
-  } else {
-    context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
-    showSnackbar(l10n.subscribed);
   }
 }

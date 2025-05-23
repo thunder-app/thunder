@@ -219,6 +219,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get base => 'Base';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'Estä Yhteisö';
 
   @override
@@ -2800,6 +2803,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get unbannedUserFromCommunity => 'Unbanned User from Community';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'Unblock Community';

@@ -227,6 +227,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get base => 'காரம்';
 
   @override
+  String get block => 'Block';
+
+  @override
   String get blockCommunity => 'தொகுதி சமூகம்';
 
   @override
@@ -2860,6 +2863,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get unbannedUserFromCommunity =>
       'சமூகத்திலிருந்து தடைசெய்யப்படாத பயனர்';
+
+  @override
+  String get unblock => 'Unblock';
 
   @override
   String get unblockCommunity => 'சமூகத்தைத் தடைசெய்க';
