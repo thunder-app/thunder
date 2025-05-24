@@ -117,7 +117,10 @@ class CommonMarkdownBody extends StatelessWidget {
         'sub': SubscriptElementBuilder(),
         'sup': SuperscriptElementBuilder(),
       },
-      imageBuilder: (uri, title, alt) {
+      sizedImageBuilder: (config) {
+        final uri = config.uri;
+        final alt = config.alt;
+
         if (hideContent) return Container();
 
         String decodedUri = Uri.decodeFull(uri.toString());
