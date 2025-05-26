@@ -10,7 +10,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -139,8 +138,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         parentId: parentId,
       ));
 
-      // Build the tree view from the flattened comments
-      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
       CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
       Map<int, CommentView> responseMap = {};
@@ -152,7 +149,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: PostStatus.success,
           post: post,
-          comments: commentTree,
           commentNodes: comments,
           commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
           commentResponseMap: responseMap,
@@ -260,8 +256,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           type: ListingType.all,
         ));
 
-        // Build the tree view from the flattened comments
-        List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
         CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
         Map<int, CommentView> responseMap = {};
@@ -274,12 +268,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               selectedCommentPath: null,
               highlightedCommentId: state.highlightedCommentId,
               status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
-              comments: commentTree,
               commentNodes: comments,
               commentResponseMap: responseMap,
               commentPage: 1,
               commentCount: responseMap.length,
-              hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || commentTree.length < commentLimit,
+              hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
               sortType: sortType),
         );
       }
@@ -323,8 +316,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       for (CommentView comment in getCommentsResponse.comments) {
         state.commentResponseMap[comment.comment.id] = comment;
       }
-      // Build the tree view from the flattened comments
-      List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
+
       CommentNode comments = buildCommentTree(fullCommentResponseList);
 
       // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
@@ -333,7 +325,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
         selectedCommentPath: null,
         highlightedCommentId: state.highlightedCommentId,
-        comments: commentViewTree,
         commentNodes: comments,
         commentResponseMap: state.commentResponseMap,
         commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
@@ -461,8 +452,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account.jwt!));
 
-      return emit(
-          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+      return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
     } on LemmyApiException catch (e) {
       return emit(state.copyWith(
         status: PostStatus.failure,

@@ -1,10 +1,8 @@
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -127,130 +125,6 @@ CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false})
   }
 
   return root;
-}
-
-/// Builds a tree of comments given a flattened list
-@Deprecated('This function is used only for the legacy PostPage. Use buildCommentTree instead.')
-List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
-  Map<String, CommentViewTree> commentMap = {};
-
-  // Create a map of CommentView objects using the comment path as the key
-  for (CommentView commentView in comments) {
-    bool hasBeenEdited = commentView.comment.updated != null ? true : false;
-    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String() : commentView.comment.published.toIso8601String();
-
-    commentMap[commentView.comment.path] = CommentViewTree(
-      datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-      commentView: commentView,
-      replies: [],
-      level: commentView.comment.path.split('.').length - 2,
-    );
-  }
-
-  if (flatten) {
-    return commentMap.values.toList();
-  }
-
-  // Build the tree structure by assigning children to their parent comments
-  for (CommentViewTree commentView in commentMap.values) {
-    List<String> pathIds = commentView.commentView!.comment.path.split('.');
-    String parentPath = pathIds.getRange(0, pathIds.length - 1).join('.');
-
-    CommentViewTree? parentCommentView = commentMap[parentPath];
-
-    if (parentCommentView != null) {
-      parentCommentView.replies.add(commentView);
-    }
-  }
-
-  // Return the root comments (those with an empty or "0" path)
-  return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
-}
-
-@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.insertCommentNode instead.')
-List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentView commentView) {
-  List<String> parentIds = commentView.comment.path.split('.');
-  String commentTime = commentView.comment.published.toIso8601String();
-
-  CommentViewTree newCommentTree = CommentViewTree(
-    datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-    commentView: commentView,
-    replies: [],
-    level: commentView.comment.path.split('.').length - 2,
-  );
-
-  if (parentIds[1] == commentView.comment.id.toString()) {
-    comments.insert(0, newCommentTree);
-    return comments;
-  }
-
-  String parentId = parentIds[parentIds.length - 2];
-  CommentViewTree? parentComment = findParentComment(1, parentIds, parentId.toString(), comments);
-
-  // TODO: surface some sort of error maybe if for some reason we fail to find parent comment
-  if (parentComment != null) {
-    parentComment.replies.insert(0, newCommentTree);
-  }
-
-  return comments;
-}
-
-@Deprecated('This function is used only for the legacy PostPage. Use CommentNode.findCommentNode instead.')
-CommentViewTree? findParentComment(int index, List<String> parentIds, String targetId, List<CommentViewTree> comments) {
-  for (CommentViewTree existing in comments) {
-    if (existing.commentView?.comment.id.toString() != parentIds[index]) {
-      continue;
-    }
-
-    if (targetId == existing.commentView?.comment.id.toString()) {
-      return existing;
-    }
-
-    return findParentComment(index + 1, parentIds, targetId, existing.replies);
-  }
-
-  return null;
-}
-
-@Deprecated('This function is used only for the legacy PostPage')
-List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
-  indexes ??= [];
-
-  for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].commentView!.comment.id == commentId) {
-      return [...indexes, i]; // Return a copy of the indexes list with the current index added
-    }
-
-    indexes.add(i); // Add the current index to the indexes list
-
-    List<int> foundIndexes = findCommentIndexesFromCommentViewTree(commentTrees[i].replies, commentId, indexes);
-
-    if (foundIndexes.isNotEmpty) {
-      return foundIndexes;
-    }
-
-    indexes.removeLast(); // Remove the last index when backtracking
-  }
-
-  return []; // Return an empty list if the target ID is not found
-}
-
-// Used for modifying the comment current comment tree so we don't have to refresh the whole thing
-@Deprecated('This function is used only for the legacy PostPage')
-bool updateModifiedComment(List<CommentViewTree> commentTrees, CommentView commentView) {
-  for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].commentView!.comment.id == commentView.comment.id) {
-      commentTrees[i].commentView = commentView;
-      return true;
-    }
-
-    bool done = updateModifiedComment(commentTrees[i].replies, commentView);
-    if (done) {
-      return done;
-    }
-  }
-
-  return false;
 }
 
 String cleanCommentContent(Comment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
