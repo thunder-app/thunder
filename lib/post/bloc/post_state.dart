@@ -27,9 +27,8 @@ class PostState extends Equatable {
     this.errorMessage,
     this.sortType,
     this.sortTypeIcon,
-    this.selectedCommentId,
+    this.highlightedCommentId,
     this.selectedCommentPath,
-    this.newlyCreatedCommentId,
     this.moddingCommentId = -1,
     this.viewAllCommentsRefresh = false,
     this.navigateCommentIndex = 0,
@@ -60,8 +59,7 @@ class PostState extends Equatable {
   final int commentPage;
   final int commentCount;
   final bool hasReachedCommentEnd;
-  final int? selectedCommentId;
-  final int? newlyCreatedCommentId;
+  final int? highlightedCommentId;
   final String? selectedCommentPath;
 
   // This is to track what comment is being restored or deleted so we can
@@ -103,9 +101,8 @@ class PostState extends Equatable {
     String? errorMessage,
     CommentSortType? sortType,
     IconData? sortTypeIcon,
-    int? selectedCommentId,
+    int? highlightedCommentId,
     String? selectedCommentPath,
-    int? newlyCreatedCommentId,
     int? moddingCommentId,
     bool? viewAllCommentsRefresh = false,
     int? navigateCommentIndex,
@@ -131,9 +128,8 @@ class PostState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       sortType: sortType ?? this.sortType,
       sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
-      selectedCommentId: selectedCommentId,
+      highlightedCommentId: highlightedCommentId,
       selectedCommentPath: selectedCommentPath,
-      newlyCreatedCommentId: newlyCreatedCommentId,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
       viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
       navigateCommentIndex: navigateCommentIndex ?? 0,
@@ -161,9 +157,8 @@ class PostState extends Equatable {
         hasReachedCommentEnd,
         sortType,
         sortTypeIcon,
-        selectedCommentId,
+        highlightedCommentId,
         selectedCommentPath,
-        newlyCreatedCommentId,
         viewAllCommentsRefresh,
         moddingCommentId,
         navigateCommentIndex,

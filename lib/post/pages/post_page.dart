@@ -288,7 +288,7 @@ class _PostPageState extends State<PostPage> {
                   GetPostEvent(
                     post: widget.initialPost,
                     selectedCommentPath: widget.commentPath,
-                    selectedCommentId: widget.highlightedCommentId,
+                    highlightedCommentId: widget.highlightedCommentId,
                   ),
                 );
           }
@@ -305,7 +305,7 @@ class _PostPageState extends State<PostPage> {
 
           // Check to see if there is a highlighted comment. If there is, check to see if it is visible.
           // If it is not visible, scroll to it.
-          final highlightedCommentId = state.newlyCreatedCommentId;
+          final highlightedCommentId = state.highlightedCommentId;
           final highlightedCommentIndex = flattenedComments.indexWhere((element) => element.commentView!.comment.id == highlightedCommentId);
 
           if (listController.isAttached && highlightedCommentIndex != -1) {
@@ -325,7 +325,7 @@ class _PostPageState extends State<PostPage> {
           return RefreshIndicator(
             onRefresh: () async {
               HapticFeedback.mediumImpact();
-              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, selectedCommentId: widget.highlightedCommentId));
+              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
             },
             edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
             child: Scaffold(
@@ -375,7 +375,7 @@ class _PostPageState extends State<PostPage> {
                                         context: context,
                                         post: state.post,
                                         postId: state.postId,
-                                        selectedCommentId: state.selectedCommentId,
+                                        highlightedCommentId: state.highlightedCommentId,
                                         selectedCommentPath: state.selectedCommentPath,
                                         override: singlePressAction == PostFabAction.backToTop
                                             ? () => {
@@ -398,7 +398,7 @@ class _PostPageState extends State<PostPage> {
                                     context: context,
                                     post: state.post,
                                     postId: state.postId,
-                                    selectedCommentId: state.selectedCommentId,
+                                    highlightedCommentId: state.highlightedCommentId,
                                     selectedCommentPath: state.selectedCommentPath,
                                     override: longPressAction == PostFabAction.backToTop
                                         ? () => {
@@ -425,7 +425,7 @@ class _PostPageState extends State<PostPage> {
                                           context: context,
                                           post: state.post,
                                           postId: state.postId,
-                                          selectedCommentId: state.selectedCommentId,
+                                          highlightedCommentId: state.highlightedCommentId,
                                           selectedCommentPath: state.selectedCommentPath,
                                         );
                                       },
@@ -542,7 +542,7 @@ class _PostPageState extends State<PostPage> {
                                               GetPostEvent(
                                                 post: widget.initialPost,
                                                 selectedCommentPath: widget.commentPath,
-                                                selectedCommentId: widget.highlightedCommentId,
+                                                highlightedCommentId: widget.highlightedCommentId,
                                               ),
                                             );
                                       },
@@ -607,7 +607,7 @@ class _PostPageState extends State<PostPage> {
                                 level: commentNode.depth,
                                 collapsed: isCollapsed,
                                 hidden: isHidden,
-                                newlyCreatedCommentId: state.newlyCreatedCommentId ?? this.highlightedCommentId,
+                                highlightedCommentId: state.highlightedCommentId,
                                 onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                                 onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                                 onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),

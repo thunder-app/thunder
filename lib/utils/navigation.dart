@@ -137,8 +137,7 @@ Future<void> navigateToPost(
   BuildContext context, {
   int? postId,
   ThunderPost? post,
-  int? selectedCommentId,
-  String? selectedCommentPath,
+  int? highlightedCommentId,
   Function(ThunderPost post)? onPostUpdated,
 }) async {
   assert((postId != null || post != null), 'One of the parameters must be provided');

@@ -22,8 +22,7 @@ void triggerCommentAction({
   required int voteType,
   bool? saved,
   required CommentView commentView,
-  int? selectedCommentId,
-  String? selectedCommentPath,
+  int? highlightedCommentId,
 }) async {
   switch (swipeAction) {
     case SwipeAction.upvote:

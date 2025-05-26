@@ -12,10 +12,9 @@ class GetPostEvent extends PostEvent {
   final ThunderPost? post;
   final CommentSortType? sortType;
   final String? selectedCommentPath;
-  final int? selectedCommentId;
-  final int? newlyCreatedCommentId;
+  final int? highlightedCommentId;
 
-  const GetPostEvent({this.sortType, this.post, this.postId, this.selectedCommentPath, this.selectedCommentId, this.newlyCreatedCommentId});
+  const GetPostEvent({this.sortType, this.post, this.postId, this.selectedCommentPath, this.highlightedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {

@@ -75,8 +75,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(
-              status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
+          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -117,18 +116,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           emit(state.copyWith(
-              status: PostStatus.success,
-              postId: post?.id,
-              post: post,
-              communityId: post?.community?.id,
-              moderators: moderators,
-              crossPosts: crossPosts,
-              selectedCommentPath: event.selectedCommentPath,
-              selectedCommentId: event.selectedCommentId,
-              newlyCreatedCommentId: event.newlyCreatedCommentId));
+            status: PostStatus.success,
+            postId: post?.id,
+            post: post,
+            communityId: post?.community?.id,
+            moderators: moderators,
+            crossPosts: crossPosts,
+            selectedCommentPath: event.selectedCommentPath,
+            highlightedCommentId: event.highlightedCommentId,
+          ));
 
-          emit(state.copyWith(
-              status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
+          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -139,7 +137,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
-            page: event.selectedCommentId == null ? 1 : null,
+            page: event.highlightedCommentId == null ? 1 : null,
             auth: account.jwt,
             communityId: post?.community?.id,
             maxDepth: COMMENT_MAX_DEPTH,
@@ -164,20 +162,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(
             state.copyWith(
-                status: PostStatus.success,
-                postId: post?.id,
-                post: post,
-                comments: commentTree,
-                commentNodes: comments,
-                commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
-                commentResponseMap: responseMap,
-                commentCount: getCommentsResponse.comments.length,
-                hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
-                communityId: post?.community?.id,
-                sortType: sortType,
-                selectedCommentId: event.selectedCommentId,
-                selectedCommentPath: event.selectedCommentPath,
-                newlyCreatedCommentId: event.newlyCreatedCommentId),
+              status: PostStatus.success,
+              postId: post?.id,
+              post: post,
+              comments: commentTree,
+              commentNodes: comments,
+              commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
+              commentResponseMap: responseMap,
+              commentCount: getCommentsResponse.comments.length,
+              hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
+              communityId: post?.community?.id,
+              sortType: sortType,
+              highlightedCommentId: event.highlightedCommentId,
+              selectedCommentPath: event.selectedCommentPath,
+            ),
           );
         } catch (e) {
           exception = e;
@@ -204,20 +202,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ThunderPost updatedPost = optimisticallyVotePost(originalPost, event.score);
 
       // Immediately set the status with optimistic update
-      emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.success, post: updatedPost, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       updatedPost = await votePost(originalPost, event.score).timeout(timeout, onTimeout: () {
         throw Exception(l10n.timeoutVotingPost);
       });
 
-      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e) {
       return emit(state.copyWith(
         status: PostStatus.failure,
         post: originalPost,
         errorMessage: getExceptionErrorMessage(e),
-        selectedCommentId: state.selectedCommentId,
+        highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
     }
@@ -233,20 +231,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ThunderPost updatedPost = optimisticallySavePost(originalPost, event.save);
 
       // Immediately set the status with optimistic update
-      emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.success, post: updatedPost, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       updatedPost = await savePost(originalPost, event.save).timeout(timeout, onTimeout: () {
         throw Exception(l10n.timeoutSavingPost);
       });
 
-      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      return emit(state.copyWith(status: PostStatus.success, post: updatedPost, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e) {
       return emit(state.copyWith(
         status: PostStatus.failure,
         post: originalPost,
         errorMessage: getExceptionErrorMessage(e),
-        selectedCommentId: state.selectedCommentId,
+        highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
     }
@@ -274,7 +272,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           if (event.reset || event.viewAllCommentsRefresh) {
             if (event.viewAllCommentsRefresh) {
-              emit(state.copyWith(status: PostStatus.loading, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
+              emit(state.copyWith(status: PostStatus.loading, highlightedCommentId: state.highlightedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
             } else {
               emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
             }
@@ -306,9 +304,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             return emit(
               state.copyWith(
-                  selectedCommentId: null,
                   selectedCommentPath: null,
-                  newlyCreatedCommentId: state.newlyCreatedCommentId,
+                  highlightedCommentId: state.highlightedCommentId,
                   status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
                   comments: commentTree,
                   commentNodes: comments,
@@ -329,7 +326,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               return;
             }
           }
-          emit(state.copyWith(status: PostStatus.refreshing, newlyCreatedCommentId: state.newlyCreatedCommentId));
+          emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId));
 
           GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
@@ -372,8 +369,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sortType: sortType,
             status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
             selectedCommentPath: null,
-            selectedCommentId: null,
-            newlyCreatedCommentId: state.newlyCreatedCommentId,
+            highlightedCommentId: state.highlightedCommentId,
             comments: commentViewTree,
             commentNodes: comments,
             commentResponseMap: state.commentResponseMap,
@@ -402,7 +398,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Handles comment related actions on a given item within the post
   Future<void> _commentActionEvent(CommentActionEvent event, Emitter<PostState> emit) async {
-    emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
     if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
 
@@ -419,8 +415,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
           await voteComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if vote fails
@@ -428,7 +424,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
           });
 
-          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
           return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
         }
@@ -438,8 +434,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
           await saveComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if vote fails
@@ -447,7 +443,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
           });
 
-          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
           return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
         }
@@ -457,8 +453,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
+          emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
           await deleteComment(event.commentId, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if vote fails
@@ -466,7 +462,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
           });
 
-          return emit(state.copyWith(status: PostStatus.success, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
           return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
         }
@@ -489,9 +485,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(
         status: PostStatus.success,
-        selectedCommentId: null,
+        highlightedCommentId: event.commentView.comment.id,
         selectedCommentPath: null,
-        newlyCreatedCommentId: event.commentView.comment.id,
       ));
     }
 
@@ -501,14 +496,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return emit(state.copyWith(
       status: PostStatus.success,
       moddingCommentId: -1,
-      selectedCommentId: state.selectedCommentId,
+      highlightedCommentId: state.highlightedCommentId,
       selectedCommentPath: state.selectedCommentPath,
     ));
   }
 
   Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
     try {
-      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       final l10n = AppLocalizations.of(GlobalContext.context)!;
       final account = await fetchActiveProfile();
@@ -518,7 +513,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account.jwt!));
 
       return emit(
-          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
     } on LemmyApiException catch (e) {
       return emit(state.copyWith(
         status: PostStatus.failure,
@@ -536,7 +531,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         status: PostStatus.success,
         navigateCommentIndex: max(0, event.targetIndex),
         navigateCommentId: state.navigateCommentId + 1,
-        selectedCommentId: state.selectedCommentId,
+        highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
     } else {
@@ -544,7 +539,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         status: PostStatus.success,
         navigateCommentIndex: event.targetIndex,
         navigateCommentId: state.navigateCommentId + 1,
-        selectedCommentId: state.selectedCommentId,
+        highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
     }
@@ -561,7 +556,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
       post: null,
-      newlyCreatedCommentId: event.commentMatches.first.id,
+      highlightedCommentId: event.commentMatches.first.id,
       commentMatches: event.commentMatches,
       navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment.id)) + 1,
       navigateCommentId: state.navigateCommentId + 1,
@@ -577,8 +572,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     Comment? parentComment = findParent(state.commentMatches!.first);
 
     // Try to select and navigate to the next match
-    Comment? existingSelectedComment = state.commentMatches!.firstWhereOrNull((c) => c.id == state.newlyCreatedCommentId);
-    if (state.newlyCreatedCommentId != null && existingSelectedComment != null) {
+    Comment? existingSelectedComment = state.commentMatches!.firstWhereOrNull((c) => c.id == state.highlightedCommentId);
+    if (state.highlightedCommentId != null && existingSelectedComment != null) {
       int index = state.commentMatches!.indexOf(existingSelectedComment);
       if (index + 1 < state.commentMatches!.length && index + 1 >= 0) {
         newSelectedCommentId = state.commentMatches![index + 1].id;
@@ -591,7 +586,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
       post: null,
-      newlyCreatedCommentId: newSelectedCommentId,
+      highlightedCommentId: newSelectedCommentId,
       navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment!.id)) + 1,
       navigateCommentId: state.navigateCommentId + 1,
     ));
@@ -600,7 +595,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _endCommentSearchEvent(EndCommentSearchEvent event, Emitter<PostState> emit) async {
     return emit(state.copyWith(
       status: PostStatus.success,
-      newlyCreatedCommentId: null,
+      highlightedCommentId: null,
       commentMatches: null,
     ));
   }

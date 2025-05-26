@@ -30,14 +30,8 @@ class CommentCard extends StatefulWidget {
   /// Whether the comment is hidden. This happens when a parent comment is collapsed
   final bool hidden;
 
-  /// The id of the selected comment
-  final int? selectCommentId;
-
-  /// The path of the selected comment
-  final String? selectedCommentPath;
-
-  /// The id of the newly created comment
-  final int? newlyCreatedCommentId;
+  /// The id of the highlighted comment (either selected or newly created)
+  final int? highlightedCommentId;
 
   /// Callback function for when a comment is voted on.
   final Function(int commentId, int voteType)? onVoteAction;
@@ -61,9 +55,7 @@ class CommentCard extends StatefulWidget {
     this.replyCount = 0,
     this.collapsed = false,
     this.hidden = false,
-    this.selectCommentId,
-    this.selectedCommentPath,
-    this.newlyCreatedCommentId,
+    this.highlightedCommentId,
     this.onVoteAction,
     this.onSaveAction,
     this.onCollapseCommentChange,
@@ -107,7 +99,7 @@ class _CommentCardState extends State<CommentCard> {
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     final int commentId = widget.commentView.comment.id;
-    final bool highlightComment = widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId;
+    final bool highlightComment = widget.highlightedCommentId == commentId;
 
     return AnimatedCrossFade(
       sizeCurve: Curves.easeInOutCubicEmphasized,
@@ -133,8 +125,7 @@ class _CommentCardState extends State<CommentCard> {
                   voteType: widget.commentView.myVote ?? 0,
                   saved: widget.commentView.saved,
                   commentView: widget.commentView,
-                  selectedCommentId: widget.selectCommentId,
-                  selectedCommentPath: widget.selectedCommentPath,
+                  highlightedCommentId: widget.highlightedCommentId,
                 );
               }
             },

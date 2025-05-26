@@ -188,7 +188,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
           if (widget.post == null) {
             return showSnackbar(l10n.unableToFindPost);
           }
-          navigateToPost(context, postId: widget.post!.id, selectedCommentId: widget.comment.id, selectedCommentPath: widget.comment.path);
+          navigateToPost(context, postId: widget.post!.id, highlightedCommentId: widget.comment.id);
         } catch (e) {
           showSnackbar(l10n.unableToFindPost);
         }

@@ -187,8 +187,7 @@ class _CommentReferenceState extends State<CommentReference> {
                           voteType: widget.comment.myVote ?? 0,
                           saved: widget.comment.saved,
                           commentView: widget.comment,
-                          selectedCommentId: widget.comment.comment.id,
-                          selectedCommentPath: widget.comment.comment.path,
+                          highlightedCommentId: widget.comment.comment.id,
                         );
                       }
                     },

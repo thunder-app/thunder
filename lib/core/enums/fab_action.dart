@@ -107,27 +107,18 @@ enum PostFabAction {
     }
   }
 
-  void execute({BuildContext? context, void Function()? override, ThunderPost? post, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
+  void execute({BuildContext? context, void Function()? override, ThunderPost? post, int? postId, int? highlightedCommentId, String? selectedCommentPath}) {
     if (override != null) {
       override();
+      return;
     }
 
     switch (this) {
       case PostFabAction.openFab:
         context?.read<ThunderBloc>().add(const OnFabToggle(true));
-      case PostFabAction.backToTop:
-        // Invoked via override
-        break;
-      case PostFabAction.changeSort:
-        // Invoked via override
-        break;
-      case PostFabAction.replyToPost:
-        // Invoked via override
-        break;
       case PostFabAction.refresh:
-        context?.read<PostBloc>().add(GetPostEvent(post: post, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
-      case PostFabAction.search:
-        // Invoked via override
+        context?.read<PostBloc>().add(GetPostEvent(post: post, postId: postId, highlightedCommentId: highlightedCommentId, selectedCommentPath: selectedCommentPath));
+      default:
         break;
     }
   }
