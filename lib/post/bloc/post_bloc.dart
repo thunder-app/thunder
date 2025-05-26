@@ -20,7 +20,6 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/network_errors.dart';
 import 'package:thunder/post/utils/post.dart';
 
 part 'post_event.dart';
@@ -63,128 +62,105 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Fetches the post, along with the initial set of comments
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
-    int attemptCount = 0;
-
     try {
-      Object? exception;
-
       CommentSortType defaultSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
       defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
       final account = await fetchActiveProfile();
 
-      while (attemptCount < 2) {
+      emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
+
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      GetPostResponse? getPostResponse;
+
+      // Retrieve the full post for moderators and cross-posts
+      int? postId = event.postId ?? event.post?.id;
+      if (postId != null) {
+        getPostResponse = await lemmy.run(GetPost(id: postId, auth: account.jwt));
+      }
+
+      ThunderPost? post = event.post;
+      List<CommunityModeratorView>? moderators;
+      List<ThunderPost>? crossPosts;
+
+      if (getPostResponse != null) {
+        // Parse the posts and add in media information which is used elsewhere in the app
+        List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
+
+        post = posts.first;
+
+        moderators = getPostResponse.moderators;
+        crossPosts = getPostResponse.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+      }
+
+      // If we can't get mods from the post response, fallback to getting the whole community.
+      if (moderators == null && post != null) {
         try {
-          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
-
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-          GetPostResponse? getPostResponse;
-
-          // Retrieve the full post for moderators and cross-posts
-          int? postId = event.postId ?? event.post?.id;
-          if (postId != null) {
-            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account.jwt)).timeout(timeout, onTimeout: () {
-              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
-            });
-          }
-
-          ThunderPost? post = event.post;
-          List<CommunityModeratorView>? moderators;
-          List<ThunderPost>? crossPosts;
-
-          if (getPostResponse != null) {
-            // Parse the posts and add in media information which is used elsewhere in the app
-            List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
-
-            post = posts.first;
-
-            moderators = getPostResponse.moderators;
-            crossPosts = getPostResponse.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
-          }
-
-          // If we can't get mods from the post response, fallback to getting the whole community.
-          if (moderators == null && post != null) {
-            try {
-              moderators = (await lemmy.run(GetCommunity(id: post.community?.id, auth: account.jwt)).timeout(timeout, onTimeout: () {
-                throw Exception();
-              }))
-                  .moderators;
-            } catch (e) {
-              // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
-            }
-          }
-
-          emit(state.copyWith(
-            status: PostStatus.success,
-            postId: post?.id,
-            post: post,
-            communityId: post?.community?.id,
-            moderators: moderators,
-            crossPosts: crossPosts,
-            selectedCommentPath: event.selectedCommentPath,
-            highlightedCommentId: event.highlightedCommentId,
-          ));
-
-          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
-
-          CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
-
-          int? parentId;
-          if (event.selectedCommentPath != null) {
-            parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
-          }
-
-          GetCommentsResponse getCommentsResponse = await lemmy
-              .run(GetComments(
-            page: event.highlightedCommentId == null ? 1 : null,
-            auth: account.jwt,
-            communityId: post?.community?.id,
-            maxDepth: COMMENT_MAX_DEPTH,
-            postId: post?.id,
-            sort: sortType,
-            limit: commentLimit,
-            type: ListingType.all,
-            parentId: parentId,
-          ))
-              .timeout(timeout, onTimeout: () {
-            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
-          });
-
-          // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
-          CommentNode comments = buildCommentTree(getCommentsResponse.comments);
-
-          Map<int, CommentView> responseMap = {};
-          for (CommentView comment in getCommentsResponse.comments) {
-            responseMap[comment.comment.id] = comment;
-          }
-
-          return emit(
-            state.copyWith(
-              status: PostStatus.success,
-              postId: post?.id,
-              post: post,
-              comments: commentTree,
-              commentNodes: comments,
-              commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
-              commentResponseMap: responseMap,
-              commentCount: getCommentsResponse.comments.length,
-              hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
-              communityId: post?.community?.id,
-              sortType: sortType,
-              highlightedCommentId: event.highlightedCommentId,
-              selectedCommentPath: event.selectedCommentPath,
-            ),
-          );
+          moderators = (await lemmy.run(GetCommunity(id: post.community?.id, auth: account.jwt))).moderators;
         } catch (e) {
-          exception = e;
-          attemptCount++;
+          // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
         }
       }
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(exception)));
+
+      emit(state.copyWith(
+        status: PostStatus.success,
+        post: post,
+        communityId: post?.community?.id,
+        moderators: moderators,
+        crossPosts: crossPosts,
+        selectedCommentPath: event.selectedCommentPath,
+        highlightedCommentId: event.highlightedCommentId,
+      ));
+
+      emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
+
+      CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
+      int? parentId;
+      if (event.selectedCommentPath != null) {
+        parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
+      }
+
+      GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
+        page: event.highlightedCommentId == null ? 1 : null,
+        auth: account.jwt,
+        communityId: post?.community?.id,
+        maxDepth: COMMENT_MAX_DEPTH,
+        postId: post?.id,
+        sort: sortType,
+        limit: commentLimit,
+        type: ListingType.all,
+        parentId: parentId,
+      ));
+
+      // Build the tree view from the flattened comments
+      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+      CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+
+      Map<int, CommentView> responseMap = {};
+      for (CommentView comment in getCommentsResponse.comments) {
+        responseMap[comment.comment.id] = comment;
+      }
+
+      return emit(
+        state.copyWith(
+          status: PostStatus.success,
+          post: post,
+          comments: commentTree,
+          commentNodes: comments,
+          commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
+          commentResponseMap: responseMap,
+          commentCount: getCommentsResponse.comments.length,
+          hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
+          communityId: post?.community?.id,
+          sortType: sortType,
+          highlightedCommentId: event.highlightedCommentId,
+          selectedCommentPath: event.selectedCommentPath,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
@@ -254,145 +230,113 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
     bool searchWasInProgress = state.status == PostStatus.searchInProgress;
 
-    int attemptCount = 0;
-
     CommentSortType defaultSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
     defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
     try {
-      Object? exception;
-
       final account = await fetchActiveProfile();
 
-      while (attemptCount < 2) {
-        try {
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          if (event.reset || event.viewAllCommentsRefresh) {
-            if (event.viewAllCommentsRefresh) {
-              emit(state.copyWith(status: PostStatus.loading, highlightedCommentId: state.highlightedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
-            } else {
-              emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
-            }
+      if (event.reset) {
+        emit(state.copyWith(status: PostStatus.loading, highlightedCommentId: state.highlightedCommentId, sortType: sortType));
 
-            GetCommentsResponse getCommentsResponse = await lemmy
-                .run(GetComments(
-              auth: account.jwt,
-              communityId: state.communityId,
-              parentId: event.commentParentId,
-              postId: state.postId,
-              sort: sortType,
-              limit: commentLimit,
-              maxDepth: COMMENT_MAX_DEPTH,
-              page: 1,
-              type: ListingType.all,
-            ))
-                .timeout(timeout, onTimeout: () {
-              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
-            });
+        GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
+          auth: account.jwt,
+          communityId: state.post?.community?.id,
+          parentId: event.commentParentId,
+          postId: state.post?.id,
+          sort: sortType,
+          limit: commentLimit,
+          maxDepth: COMMENT_MAX_DEPTH,
+          page: 1,
+          type: ListingType.all,
+        ));
 
-            // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
-            CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+        // Build the tree view from the flattened comments
+        List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+        CommentNode comments = buildCommentTree(getCommentsResponse.comments);
 
-            Map<int, CommentView> responseMap = {};
-            for (CommentView comment in getCommentsResponse.comments) {
-              responseMap[comment.comment.id] = comment;
-            }
+        Map<int, CommentView> responseMap = {};
+        for (CommentView comment in getCommentsResponse.comments) {
+          responseMap[comment.comment.id] = comment;
+        }
 
-            return emit(
-              state.copyWith(
-                  selectedCommentPath: null,
-                  highlightedCommentId: state.highlightedCommentId,
-                  status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
-                  comments: commentTree,
-                  commentNodes: comments,
-                  commentResponseMap: responseMap,
-                  commentPage: 1,
-                  commentCount: responseMap.length,
-                  hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || commentTree.length < commentLimit,
-                  sortType: sortType),
-            );
-          }
+        return emit(
+          state.copyWith(
+              selectedCommentPath: null,
+              highlightedCommentId: state.highlightedCommentId,
+              status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
+              comments: commentTree,
+              commentNodes: comments,
+              commentResponseMap: responseMap,
+              commentPage: 1,
+              commentCount: responseMap.length,
+              hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || commentTree.length < commentLimit,
+              sortType: sortType),
+        );
+      }
 
-          // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.post!.comments! || (event.commentParentId == null && state.hasReachedCommentEnd)) {
-            if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
-              emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
-            }
-            if (event.commentParentId == null) {
-              return;
-            }
-          }
-          emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId));
+      // Prevent duplicate requests if we're done fetching comments
+      if (state.commentCount >= state.post!.comments! || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+        if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
+          emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
+        }
+        if (event.commentParentId == null) {
+          return;
+        }
+      }
+      emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId));
 
-          GetCommentsResponse getCommentsResponse = await lemmy
-              .run(GetComments(
-            auth: account.jwt,
-            communityId: state.communityId,
-            postId: state.postId,
-            parentId: event.commentParentId,
-            sort: sortType,
-            limit: commentLimit,
-            maxDepth: COMMENT_MAX_DEPTH,
-            page: state.commentPage,
-            //event.commentParentId != null ? 1 : state.commentPage,
-            type: ListingType.all,
-          ))
-              .timeout(timeout, onTimeout: () {
-            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
-          });
+      GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
+        auth: account.jwt,
+        communityId: state.post?.community?.id,
+        postId: state.post?.id,
+        parentId: event.commentParentId,
+        sort: sortType,
+        limit: commentLimit,
+        maxDepth: COMMENT_MAX_DEPTH,
+        page: state.commentPage,
+        //event.commentParentId != null ? 1 : state.commentPage,
+        type: ListingType.all,
+      ));
 
-          // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
-          // so we should display an error
-          if (event.commentParentId != null) {
-            final bool anyDirectChildren = getCommentsResponse.comments.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
-            if (!anyDirectChildren) {
-              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
-            }
-          }
-
-          // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
-
-          for (CommentView comment in getCommentsResponse.comments) {
-            state.commentResponseMap[comment.comment.id] = comment;
-          }
-          // Build the tree view from the flattened comments
-          List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
-          CommentNode comments = buildCommentTree(fullCommentResponseList);
-
-          // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
-          return emit(state.copyWith(
-            sortType: sortType,
-            status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
-            selectedCommentPath: null,
-            highlightedCommentId: state.highlightedCommentId,
-            comments: commentViewTree,
-            commentNodes: comments,
-            commentResponseMap: state.commentResponseMap,
-            commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
-            commentCount: state.commentResponseMap.length,
-            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
-          ));
-        } catch (e) {
-          exception = e;
-          attemptCount++;
+      // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
+      // so we should display an error
+      if (event.commentParentId != null) {
+        final bool anyDirectChildren = getCommentsResponse.comments.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+        if (!anyDirectChildren) {
+          throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
         }
       }
 
-      if (is50xError(exception.toString()) != null) {
-        emit(state.copyWith(status: PostStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.serverErrorComments('${is50xError(exception.toString())}')));
-      } else {
-        // In case there are two errors in a row without the status changing,
-        // emit a blank error then the real error so that the widget detects a change and rebuilds.
-        emit(state.copyWith(status: PostStatus.failure, errorMessage: ''));
-        emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
+      // Combine all of the previous comments list
+      List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
+
+      for (CommentView comment in getCommentsResponse.comments) {
+        state.commentResponseMap[comment.comment.id] = comment;
       }
+      // Build the tree view from the flattened comments
+      List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
+      CommentNode comments = buildCommentTree(fullCommentResponseList);
+
+      // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
+      return emit(state.copyWith(
+        sortType: sortType,
+        status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
+        selectedCommentPath: null,
+        highlightedCommentId: state.highlightedCommentId,
+        comments: commentViewTree,
+        commentNodes: comments,
+        commentResponseMap: state.commentResponseMap,
+        commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
+        commentCount: state.commentResponseMap.length,
+        hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
+      ));
     } catch (e) {
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
   }
 

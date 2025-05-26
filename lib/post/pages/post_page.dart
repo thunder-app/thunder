@@ -374,7 +374,7 @@ class _PostPageState extends State<PostPage> {
                                     : () => singlePressAction.execute(
                                         context: context,
                                         post: state.post,
-                                        postId: state.postId,
+                                        postId: state.post?.id,
                                         highlightedCommentId: state.highlightedCommentId,
                                         selectedCommentPath: state.selectedCommentPath,
                                         override: singlePressAction == PostFabAction.backToTop
@@ -397,7 +397,7 @@ class _PostPageState extends State<PostPage> {
                                 onLongPress: () => longPressAction.execute(
                                     context: context,
                                     post: state.post,
-                                    postId: state.postId,
+                                    postId: state.post?.id,
                                     highlightedCommentId: state.highlightedCommentId,
                                     selectedCommentPath: state.selectedCommentPath,
                                     override: longPressAction == PostFabAction.backToTop
@@ -424,7 +424,7 @@ class _PostPageState extends State<PostPage> {
                                         PostFabAction.refresh.execute(
                                           context: context,
                                           post: state.post,
-                                          postId: state.postId,
+                                          postId: state.post?.id,
                                           highlightedCommentId: state.highlightedCommentId,
                                           selectedCommentPath: state.selectedCommentPath,
                                         );
@@ -578,7 +578,7 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                 ),
                                 onTap: () {
-                                  context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null, viewAllCommentsRefresh: true));
+                                  context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null));
                                   setState(() => this.highlightedCommentId = null);
                                 },
                               ),

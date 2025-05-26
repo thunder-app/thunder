@@ -13,24 +13,20 @@ enum PostStatus {
 class PostState extends Equatable {
   PostState({
     this.status = PostStatus.initial,
-    this.postId,
     this.post,
     this.comments = const [],
     this.commentNodes,
     this.commentResponseMap = const <int, CommentView>{},
     this.commentPage = 1,
     this.commentCount = 0,
-    this.communityId,
     this.moderators,
     this.crossPosts,
     this.hasReachedCommentEnd = false,
     this.errorMessage,
     this.sortType,
-    this.sortTypeIcon,
     this.highlightedCommentId,
     this.selectedCommentPath,
     this.moddingCommentId = -1,
-    this.viewAllCommentsRefresh = false,
     this.navigateCommentIndex = 0,
     this.navigateCommentId = 0,
     this.commentMatches,
@@ -39,15 +35,12 @@ class PostState extends Equatable {
     this.collapsedComments = const [],
   });
 
+  /// The current status of the post
   final PostStatus status;
 
-  final bool viewAllCommentsRefresh;
-
+  /// The sort type of the post comments
   final CommentSortType? sortType;
-  final IconData? sortTypeIcon;
 
-  final int? postId;
-  final int? communityId;
   final List<CommunityModeratorView>? moderators;
   final List<ThunderPost>? crossPosts;
   ThunderPost? post;
@@ -87,7 +80,6 @@ class PostState extends Equatable {
 
   PostState copyWith({
     required PostStatus status,
-    int? postId,
     ThunderPost? post,
     List<CommentViewTree>? comments,
     CommentNode? commentNodes,
@@ -104,7 +96,6 @@ class PostState extends Equatable {
     int? highlightedCommentId,
     String? selectedCommentPath,
     int? moddingCommentId,
-    bool? viewAllCommentsRefresh = false,
     int? navigateCommentIndex,
     int? navigateCommentId,
     List<Comment>? commentMatches,
@@ -114,7 +105,6 @@ class PostState extends Equatable {
   }) {
     return PostState(
       status: status,
-      postId: postId ?? this.postId,
       post: post ?? this.post,
       comments: comments ?? this.comments,
       commentNodes: commentNodes ?? this.commentNodes,
@@ -122,16 +112,13 @@ class PostState extends Equatable {
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
-      communityId: communityId ?? this.communityId,
       moderators: moderators ?? this.moderators,
       crossPosts: crossPosts ?? this.crossPosts,
       errorMessage: errorMessage ?? this.errorMessage,
       sortType: sortType ?? this.sortType,
-      sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
       highlightedCommentId: highlightedCommentId,
       selectedCommentPath: selectedCommentPath,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
-      viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
       navigateCommentIndex: navigateCommentIndex ?? 0,
       navigateCommentId: navigateCommentId ?? 0,
       commentMatches: commentMatches ?? this.commentMatches,
@@ -144,22 +131,18 @@ class PostState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        postId,
         post,
         comments,
         commentNodes,
         commentPage,
         commentCount,
-        communityId,
         moderators,
         crossPosts,
         errorMessage,
         hasReachedCommentEnd,
         sortType,
-        sortTypeIcon,
         highlightedCommentId,
         selectedCommentPath,
-        viewAllCommentsRefresh,
         moddingCommentId,
         navigateCommentIndex,
         navigateCommentId,

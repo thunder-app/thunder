@@ -21,10 +21,9 @@ class GetPostCommentsEvent extends PostEvent {
   final int? postId;
   final int? commentParentId;
   final bool reset;
-  final bool viewAllCommentsRefresh;
   final CommentSortType? sortType;
 
-  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.viewAllCommentsRefresh = false, this.sortType});
+  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.sortType});
 }
 
 class VotePostEvent extends PostEvent {
