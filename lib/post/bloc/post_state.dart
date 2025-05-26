@@ -28,8 +28,7 @@ class PostState extends Equatable {
     this.selectedCommentPath,
     this.moddingCommentId = -1,
     this.navigateCommentIndex = 0,
-    this.navigateCommentId = 0,
-    this.commentMatches,
+    this.commentSearchResults,
     this.scrollPosition,
     this.didScrollPositionChange = false,
     this.collapsedComments = const [],
@@ -62,11 +61,7 @@ class PostState extends Equatable {
   final String? errorMessage;
 
   final int navigateCommentIndex;
-  final List<Comment>? commentMatches;
-
-  // This exists purely for forcing the bloc to refire
-  // even if the comment index doesn't change
-  final int navigateCommentId;
+  final Map<int, int>? commentSearchResults;
 
   /// Saves the position of the user's scrolling while viewing a post
   final double? scrollPosition;
@@ -92,13 +87,11 @@ class PostState extends Equatable {
     List<ThunderPost>? crossPosts,
     String? errorMessage,
     CommentSortType? sortType,
-    IconData? sortTypeIcon,
     int? highlightedCommentId,
     String? selectedCommentPath,
     int? moddingCommentId,
     int? navigateCommentIndex,
-    int? navigateCommentId,
-    List<Comment>? commentMatches,
+    Map<int, int>? commentSearchResults,
     double? scrollPosition,
     bool? didScrollPositionChange,
     List<int>? collapsedComments,
@@ -120,8 +113,7 @@ class PostState extends Equatable {
       selectedCommentPath: selectedCommentPath,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
       navigateCommentIndex: navigateCommentIndex ?? 0,
-      navigateCommentId: navigateCommentId ?? 0,
-      commentMatches: commentMatches ?? this.commentMatches,
+      commentSearchResults: commentSearchResults ?? this.commentSearchResults,
       scrollPosition: scrollPosition ?? this.scrollPosition,
       didScrollPositionChange: didScrollPositionChange ?? false,
       collapsedComments: collapsedComments ?? this.collapsedComments,
@@ -145,8 +137,7 @@ class PostState extends Equatable {
         selectedCommentPath,
         moddingCommentId,
         navigateCommentIndex,
-        navigateCommentId,
-        commentMatches,
+        commentSearchResults,
         scrollPosition,
         didScrollPositionChange,
         collapsedComments,

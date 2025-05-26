@@ -12,7 +12,7 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
+
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
@@ -20,6 +20,7 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/post_page_app_bar.dart';
@@ -164,48 +165,48 @@ class _PostPageState extends State<PostPage> {
   }
 
   void startCommentSearch(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final state = context.read<PostBloc>().state;
-
     PostFabAction.search.execute(
       override: () {
-        if (state.status == PostStatus.searchInProgress) {
+        final l10n = GlobalContext.l10n;
+        final status = context.read<PostBloc>().state.status;
+
+        if (status == PostStatus.searchInProgress) {
           context.read<PostBloc>().add(const EndCommentSearchEvent());
-        } else {
-          showInputDialog<String>(
-            context: context,
-            title: l10n.searchComments,
-            inputLabel: l10n.searchTerm,
-            onSubmitted: ({payload, value}) {
-              Navigator.of(context).pop();
+          return;
+        }
 
-              List<Comment> commentMatches = [];
+        showInputDialog<String>(
+          context: context,
+          title: l10n.searchComments,
+          inputLabel: l10n.searchTerm,
+          onSubmitted: ({payload, value}) {
+            Navigator.of(context).pop();
+            Map<int, int> commentSearchResults = {};
 
-              /// Recursive function which checks if any child of the given [commentViewTrees] contains the query
-              void findMatches(List<CommentViewTree> commentViewTrees) {
-                for (CommentViewTree commentViewTree in commentViewTrees) {
-                  if (commentViewTree.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
-                    commentMatches.add(commentViewTree.commentView!.comment);
-                  }
-                  findMatches(commentViewTree.replies);
+            final commentNodes = context.read<PostBloc>().state.commentNodes;
+
+            if (commentNodes != null) {
+              final comments = CommentNode.flattenCommentTree(commentNodes);
+
+              for (int index = 0; index < comments.length; index++) {
+                final comment = comments[index];
+                if (comment.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
+                  commentSearchResults[index] = comment.commentView!.comment.id;
                 }
               }
+            }
 
-              // Find all comments which contain the query
-              findMatches(state.comments);
+            if (commentSearchResults.isEmpty) {
+              showSnackbar(l10n.noResultsFound);
+            } else {
+              context.read<PostBloc>().add(StartCommentSearchEvent(commentSearchResults: commentSearchResults));
+            }
 
-              if (commentMatches.isEmpty) {
-                showSnackbar(l10n.noResultsFound);
-              } else {
-                context.read<PostBloc>().add(StartCommentSearchEvent(commentMatches: commentMatches));
-              }
-
-              return Future.value(null);
-            },
-            getSuggestions: (_) => [],
-            suggestionBuilder: (payload) => Container(),
-          );
-        }
+            return Future.value(null);
+          },
+          getSuggestions: (_) => [],
+          suggestionBuilder: (payload) => Container(),
+        );
       },
     );
   }

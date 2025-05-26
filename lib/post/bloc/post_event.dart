@@ -64,9 +64,9 @@ class NavigateCommentEvent extends PostEvent {
 }
 
 class StartCommentSearchEvent extends PostEvent {
-  final List<Comment> commentMatches;
+  final Map<int, int> commentSearchResults;
 
-  const StartCommentSearchEvent({required this.commentMatches});
+  const StartCommentSearchEvent({required this.commentSearchResults});
 }
 
 class ContinueCommentSearchEvent extends PostEvent {

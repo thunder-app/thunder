@@ -1,14 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stream_transform/stream_transform.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -17,10 +13,11 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/post/utils/post.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';
@@ -68,7 +65,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       final account = await fetchActiveProfile();
 
-      emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
+      emit(state.copyWith(
+        status: PostStatus.loading,
+        selectedCommentPath: event.selectedCommentPath,
+        highlightedCommentId: event.highlightedCommentId,
+      ));
 
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -113,7 +114,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         highlightedCommentId: event.highlightedCommentId,
       ));
 
-      emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, highlightedCommentId: event.highlightedCommentId));
+      emit(state.copyWith(
+        status: PostStatus.loading,
+        selectedCommentPath: event.selectedCommentPath,
+        highlightedCommentId: event.highlightedCommentId,
+      ));
 
       CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -160,18 +165,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         ),
       );
     } catch (e) {
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: event.highlightedCommentId, errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
   Future<void> _onPostUpdated(PostUpdatedEvent event, Emitter<PostState> emit) async {
-    return emit(state.copyWith(status: state.status, post: event.post));
+    return emit(state.copyWith(status: state.status, highlightedCommentId: state.highlightedCommentId, post: event.post));
   }
 
   Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
     final l10n = GlobalContext.l10n;
     final originalPost = state.post;
-    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: l10n.failedToPerformAction));
 
     try {
       // Optimistically update the post
@@ -200,7 +205,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _savePostEvent(SavePostEvent event, Emitter<PostState> emit) async {
     final l10n = GlobalContext.l10n;
     final originalPost = state.post;
-    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: l10n.failedToPerformAction));
 
     try {
       // Optimistically update the post
@@ -282,7 +287,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // Prevent duplicate requests if we're done fetching comments
       if (state.commentCount >= state.post!.comments! || (event.commentParentId == null && state.hasReachedCommentEnd)) {
         if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
-          emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
+          emit(state.copyWith(status: state.status, highlightedCommentId: state.highlightedCommentId, hasReachedCommentEnd: true));
         }
         if (event.commentParentId == null) {
           return;
@@ -336,7 +341,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
       ));
     } catch (e) {
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: getExceptionErrorMessage(e)));
     }
   }
 
@@ -344,10 +349,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _commentActionEvent(CommentActionEvent event, Emitter<PostState> emit) async {
     emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
 
-    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId));
 
     CommentNode? existingCommentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentId.toString());
-    if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId));
 
     List<String> commentPath = existingCommentNode.commentView!.comment.path.split('.');
     String parentId = commentPath[commentPath.length - 2];
@@ -370,7 +375,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
-          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+          return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: e.toString()));
         }
       case CommentAction.save:
         try {
@@ -389,7 +394,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
-          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+          return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: e.toString()));
         }
       case CommentAction.delete:
         try {
@@ -408,16 +413,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: state.highlightedCommentId, selectedCommentPath: state.selectedCommentPath));
         } catch (e) {
-          return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+          return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: e.toString()));
         }
       default:
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Unsupported action: ${event.action}'));
+        return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId, errorMessage: 'Unsupported action: ${event.action}'));
     }
   }
 
   Future<void> _commentItemUpdatedEvent(CommentItemUpdatedEvent event, Emitter<PostState> emit) async {
-    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
-    emit(state.copyWith(status: PostStatus.refreshing));
+    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure, highlightedCommentId: state.highlightedCommentId));
+    emit(state.copyWith(status: PostStatus.refreshing, highlightedCommentId: state.highlightedCommentId));
 
     CommentNode? commentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentView.comment.id.toString());
     List<String> commentPath = event.commentView.comment.path.split('.');
@@ -463,9 +468,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         status: PostStatus.failure,
         errorMessage: getErrorMessage(GlobalContext.context, e.message),
         moddingCommentId: -1,
+        highlightedCommentId: state.highlightedCommentId,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1, highlightedCommentId: state.highlightedCommentId));
     }
   }
 
@@ -474,7 +480,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(
         status: PostStatus.success,
         navigateCommentIndex: max(0, event.targetIndex),
-        navigateCommentId: state.navigateCommentId + 1,
         highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
@@ -482,7 +487,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(
         status: PostStatus.success,
         navigateCommentIndex: event.targetIndex,
-        navigateCommentId: state.navigateCommentId + 1,
         highlightedCommentId: state.highlightedCommentId,
         selectedCommentPath: state.selectedCommentPath,
       ));
@@ -490,49 +494,45 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   Future<void> _startCommentSearchEvent(StartCommentSearchEvent event, Emitter<PostState> emit) async {
-    if (event.commentMatches.isEmpty) {
-      return;
-    }
+    if (event.commentSearchResults.isEmpty) return;
 
-    // Find the parent comment of the match
-    Comment? parentComment = findParent(event.commentMatches.first);
+    int firstMatchIndex = event.commentSearchResults.keys.first;
+    int firstMatchCommentId = event.commentSearchResults[firstMatchIndex]!;
 
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
-      post: null,
-      highlightedCommentId: event.commentMatches.first.id,
-      commentMatches: event.commentMatches,
-      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment.id)) + 1,
-      navigateCommentId: state.navigateCommentId + 1,
+      commentSearchResults: event.commentSearchResults,
+      highlightedCommentId: firstMatchCommentId,
+      navigateCommentIndex: firstMatchIndex,
     ));
   }
 
   Future<void> _continueCommentSearchEvent(ContinueCommentSearchEvent event, Emitter<PostState> emit) async {
-    if (state.commentMatches?.isNotEmpty != true) {
-      return;
-    }
+    if (state.commentSearchResults?.isEmpty ?? true) return;
 
-    int newSelectedCommentId = state.commentMatches!.first.id;
-    Comment? parentComment = findParent(state.commentMatches!.first);
+    final commentSearchResults = state.commentSearchResults!;
+    final commentSearchResultIndexes = commentSearchResults.keys.toList();
 
-    // Try to select and navigate to the next match
-    Comment? existingSelectedComment = state.commentMatches!.firstWhereOrNull((c) => c.id == state.highlightedCommentId);
-    if (state.highlightedCommentId != null && existingSelectedComment != null) {
-      int index = state.commentMatches!.indexOf(existingSelectedComment);
-      if (index + 1 < state.commentMatches!.length && index + 1 >= 0) {
-        newSelectedCommentId = state.commentMatches![index + 1].id;
+    // Find the current match position in our sorted list
+    int currentMatchPosition = -1;
+    int currentCommentId = state.highlightedCommentId ?? commentSearchResults.values.first;
 
-        // Find the parent comment of the match
-        parentComment = findParent(state.commentMatches![index + 1]);
+    for (int i = 0; i < commentSearchResultIndexes.length; i++) {
+      if (commentSearchResults[commentSearchResultIndexes[i]] == currentCommentId) {
+        currentMatchPosition = i;
+        break;
       }
     }
 
+    // Move to the next match, wrapping around to the beginning if at the end
+    int nextMatchPosition = (currentMatchPosition + 1) % commentSearchResultIndexes.length;
+    int nextFlattenedIndex = commentSearchResultIndexes[nextMatchPosition];
+    int nextCommentId = commentSearchResults[nextFlattenedIndex]!;
+
     return emit(state.copyWith(
       status: PostStatus.searchInProgress,
-      post: null,
-      highlightedCommentId: newSelectedCommentId,
-      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment!.id)) + 1,
-      navigateCommentId: state.navigateCommentId + 1,
+      highlightedCommentId: nextCommentId,
+      navigateCommentIndex: nextFlattenedIndex,
     ));
   }
 
@@ -540,45 +540,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return emit(state.copyWith(
       status: PostStatus.success,
       highlightedCommentId: null,
-      commentMatches: null,
+      commentSearchResults: null,
     ));
   }
 
-  /// Finds the parent [CommentViewTree] from the current [state]
-  /// which contains the given [comment] anywhere in its descendents.
-  Comment? findParent(Comment comment) {
-    /// Recursive function which checks if any child has the given [comment].
-    bool childrenContains(CommentViewTree commentViewTree, Comment comment) {
-      if (commentViewTree.replies.firstWhereOrNull((cvt) => cvt.commentView?.comment.id == comment.id) != null) {
-        return true;
-      } else {
-        for (CommentViewTree child in commentViewTree.replies) {
-          if (childrenContains(child, comment)) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    }
-
-    // Only iterate through top-level comments.
-    for (CommentViewTree commentViewTree in state.comments) {
-      if (commentViewTree.commentView!.comment.id == comment.id || childrenContains(commentViewTree, comment)) {
-        return commentViewTree.commentView!.comment;
-      }
-    }
-
-    return null;
-  }
-
   void _onUpdateScrollPosition(UpdateScrollPosition event, Emitter<PostState> emit) {
-    return emit(state.copyWith(status: state.status, scrollPosition: event.scrollPosition, didScrollPositionChange: true));
+    return emit(state.copyWith(status: state.status, highlightedCommentId: state.highlightedCommentId, scrollPosition: event.scrollPosition, didScrollPositionChange: true));
   }
 
   void _onUpdateCollapsedComment(UpdateCollapsedComment event, Emitter<PostState> emit) {
     List<int> collapsedComments = event.collapsed ? (state.collapsedComments.toList()..add(event.commentId)) : (state.collapsedComments.toList()..remove(event.commentId));
 
-    return emit(state.copyWith(status: state.status, collapsedComments: collapsedComments));
+    return emit(state.copyWith(status: state.status, highlightedCommentId: state.highlightedCommentId, collapsedComments: collapsedComments));
   }
 }
