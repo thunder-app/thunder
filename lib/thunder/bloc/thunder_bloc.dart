@@ -161,9 +161,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
           FeedCardDividerThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerThickness) ?? FeedCardDividerThickness.compact.name);
       Color feedCardDividerColor = Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) ?? Colors.transparent.value);
       List<PostCardMetadataItem> compactPostCardMetadataItems =
-          UserPreferences.getLocalSetting(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+          UserPreferences.getLocalSetting<List<String>>(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =
-          UserPreferences.getLocalSetting(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+          UserPreferences.getLocalSetting<List<String>>(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
 
       // Post body settings
       bool showCrossPosts = UserPreferences.getLocalSetting(LocalSettings.showCrossPosts) ?? true;

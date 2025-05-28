@@ -74,8 +74,8 @@ class ThunderState extends Equatable {
     this.dateFormat,
     this.feedCardDividerThickness = FeedCardDividerThickness.compact,
     this.feedCardDividerColor = Colors.transparent,
-    this.compactPostCardMetadataItems = const [],
-    this.cardPostCardMetadataItems = const [],
+    this.compactPostCardMetadataItems = const <PostCardMetadataItem>[],
+    this.cardPostCardMetadataItems = const <PostCardMetadataItem>[],
     this.keywordFilters = const [],
     this.appLanguageCode = 'en',
 
