@@ -1874,6 +1874,12 @@ abstract class AppLocalizations {
   /// **'Failed to update notification settings'**
   String get failedToUpdateNotificationSettings;
 
+  /// Action for favoriting a community
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get favorite;
+
   /// The favorited communities on the drawer
   ///
   /// In en, this message translates to:
@@ -5137,6 +5143,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unexpected Error'**
   String get unexpectedError;
+
+  /// Action for unfavoriting a community
+  ///
+  /// In en, this message translates to:
+  /// **'Unfavorite'**
+  String get unfavorite;
 
   /// Short decription for moderator action to unfeature a post
   ///

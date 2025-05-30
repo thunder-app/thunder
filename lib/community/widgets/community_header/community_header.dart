@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/community/widgets/community_header/community_header_actions.dart';
+import 'package:thunder/community/widgets/community_information.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -50,7 +51,22 @@ class _CommunityHeaderState extends State<CommunityHeader> {
       return content;
     }
 
-    content = _CommunityHeaderWithBanner(community: widget.community, child: content);
+    content = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showModalBottomSheet(
+        context: context,
+        showDragHandle: true,
+        enableDrag: true,
+        useSafeArea: true,
+        scrollControlDisabledMaxHeightRatio: 0.90,
+        builder: (context) => CommunityInformation(
+          community: widget.community,
+          instance: widget.instance,
+          moderators: widget.moderators,
+        ),
+      ),
+      child: _CommunityHeaderWithBanner(community: widget.community, child: content),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +148,7 @@ class _CommunityStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double iconSize = 16.0 * FontScale.small.textScaleFactor;
+    double iconSize = 16.0 * FontScale.base.textScaleFactor;
 
     return Row(
       spacing: 10.0,
@@ -140,12 +156,10 @@ class _CommunityStats extends StatelessWidget {
         IconText(
           icon: Icon(Icons.people_rounded, size: iconSize),
           text: formatNumberToK(community.subscribers ?? 0),
-          fontScale: FontScale.small,
         ),
         IconText(
           icon: Icon(Icons.library_books_rounded, size: iconSize),
           text: formatNumberToK(community.totalPosts ?? 0),
-          fontScale: FontScale.small,
         ),
       ],
     );
@@ -164,12 +178,29 @@ class _CommunityHeaderWithBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Stack(
+      alignment: Alignment.center,
       children: [
         if (community.banner != null) ...[
           _BannerImage(url: community.banner!),
           _BannerGradient(),
         ],
+        Positioned(
+          right: 20.0,
+          child: Icon(
+            Icons.info_outline_rounded,
+            size: 24.0,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+            shadows: [
+              Shadow(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                blurRadius: 16.0,
+              ),
+            ],
+          ),
+        ),
         child,
       ],
     );

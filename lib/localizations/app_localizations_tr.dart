@@ -1009,6 +1009,9 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bildirim ayarları güncellenemedi';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Favoriler';
 
   @override
@@ -2860,6 +2863,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Beklenmeyen Hata';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Öne Çıkmayan Gönderi';

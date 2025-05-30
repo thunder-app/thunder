@@ -10,6 +10,7 @@ import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/user/widgets/user_header/user_header_actions.dart';
+import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -56,7 +57,21 @@ class _UserHeaderState extends State<UserHeader> {
       return content;
     }
 
-    content = _UserHeaderWithBanner(user: widget.user, child: content);
+    content = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showModalBottomSheet(
+        context: context,
+        showDragHandle: true,
+        enableDrag: true,
+        useSafeArea: true,
+        scrollControlDisabledMaxHeightRatio: 0.90,
+        builder: (context) => UserInformation(
+          user: widget.user,
+          moderates: widget.moderates,
+        ),
+      ),
+      child: _UserHeaderWithBanner(user: widget.user, child: content),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +156,7 @@ class _UserStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double iconSize = 16.0 * FontScale.small.textScaleFactor;
+    double iconSize = 16.0 * FontScale.base.textScaleFactor;
 
     return Row(
       spacing: 10.0,
@@ -149,12 +164,10 @@ class _UserStats extends StatelessWidget {
         IconText(
           icon: Icon(Icons.wysiwyg_rounded, size: iconSize),
           text: formatNumberToK(user.totalPosts ?? 0),
-          fontScale: FontScale.small,
         ),
         IconText(
           icon: Icon(Icons.chat_rounded, size: iconSize),
           text: formatNumberToK(user.totalComments ?? 0),
-          fontScale: FontScale.small,
         ),
       ],
     );
@@ -173,12 +186,28 @@ class _UserHeaderWithBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Stack(
       children: [
         if (user.banner != null) ...[
           _BannerImage(url: user.banner!),
           _BannerGradient(),
         ],
+        Positioned(
+          right: 20.0,
+          child: Icon(
+            Icons.info_outline_rounded,
+            size: 24.0,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+            shadows: [
+              Shadow(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                blurRadius: 16.0,
+              ),
+            ],
+          ),
+        ),
         child,
       ],
     );

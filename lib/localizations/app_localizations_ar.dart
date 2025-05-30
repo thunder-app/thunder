@@ -992,6 +992,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'Failed to update notification settings';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Favorites';
 
   @override
@@ -2834,6 +2837,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Unexpected Error';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Unfeatured Post';

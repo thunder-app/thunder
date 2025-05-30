@@ -1011,6 +1011,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Failed to update notification settings';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Избранные';
 
   @override
@@ -2834,6 +2837,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Неожиданная ошибка';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Unfeatured Post';

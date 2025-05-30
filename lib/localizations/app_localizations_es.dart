@@ -1023,6 +1023,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Error al actualizar los ajustes de las notificaciones';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Favoritos';
 
   @override
@@ -2899,6 +2902,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Error inesperado';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Tema sin categoría';

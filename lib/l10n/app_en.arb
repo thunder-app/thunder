@@ -991,6 +991,10 @@
   "@failedToUpdateNotificationSettings": {
     "description": "Error message when failed to update notification settings."
   },
+  "favorite": "Favorite",
+  "@favorite": {
+    "description": "Action for favoriting a community"
+  },
   "favorites": "Favorites",
   "@favorites": {
     "description": "The favorited communities on the drawer"
@@ -2816,6 +2820,10 @@
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {
     "description": "Error message for unexpected error"
+  },
+  "unfavorite": "Unfavorite",
+  "@unfavorite": {
+    "description": "Action for unfavoriting a community"
   },
   "unfeaturedPost": "Unfeatured Post",
   "@unfeaturedPost": {

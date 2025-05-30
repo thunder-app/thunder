@@ -1015,6 +1015,9 @@ class AppLocalizationsTa extends AppLocalizations {
       'அறிவிப்பு அமைப்புகளைப் புதுப்பிக்கத் தவறிவிட்டது';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'பிடித்தவை';
 
   @override
@@ -2887,6 +2890,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get unexpectedError => 'எதிர்பாராத பிழை';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'தயாரிக்கப்படாத இடுகை';

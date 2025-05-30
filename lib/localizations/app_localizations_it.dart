@@ -1007,6 +1007,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'Impossibile aggiornare le impostazioni di notifica';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Preferiti';
 
   @override
@@ -2839,6 +2842,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Errore Inaspettato';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Post Rilasciato';

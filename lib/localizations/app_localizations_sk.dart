@@ -1008,6 +1008,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Failed to update notification settings';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Obľúbené';
 
   @override
@@ -2844,6 +2847,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Neočakávaná chyba';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Odopnutý príspevok';

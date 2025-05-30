@@ -1016,6 +1016,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Benachrichtigungseinstellungen konnten nicht aktualisiert werden';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
   String get favorites => 'Favoriten';
 
   @override
@@ -2879,6 +2882,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get unexpectedError => 'Unerwarteter Fehler';
+
+  @override
+  String get unfavorite => 'Unfavorite';
 
   @override
   String get unfeaturedPost => 'Einfacher Post';

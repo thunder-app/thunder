@@ -136,48 +136,12 @@ class _ActionChipsList extends StatelessWidget {
     return Row(
       spacing: 8.0,
       children: [
-        _InfoActionChip(user: user, moderates: moderates),
         if (feedType != null && onChangeFeedType != null) _FeedTypeActionChip(feedType: feedType!, onChangeFeedType: onChangeFeedType!),
         _SortActionChip(),
         _LabelActionChip(user: user),
         if (isLoggedIn && !isOwnProfile && user.admin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
-    );
-  }
-}
-
-/// Action chip for displaying user information.
-class _InfoActionChip extends StatelessWidget {
-  /// User to display actions for
-  final ThunderUser user;
-
-  /// Communities the user moderates
-  final List<ThunderCommunity> moderates;
-
-  const _InfoActionChip({
-    required this.user,
-    required this.moderates,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = GlobalContext.l10n;
-
-    return ThunderActionChip(
-      icon: Icons.info_outline_rounded,
-      label: l10n.about,
-      onPressed: () => showModalBottomSheet(
-        context: context,
-        showDragHandle: true,
-        enableDrag: true,
-        useSafeArea: true,
-        scrollControlDisabledMaxHeightRatio: 0.90,
-        builder: (context) => UserInformation(
-          user: user,
-          moderates: moderates,
-        ),
-      ),
     );
   }
 }
