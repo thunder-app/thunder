@@ -138,7 +138,7 @@ class _ActionChipsList extends StatelessWidget {
       children: [
         if (feedType != null && onChangeFeedType != null) _FeedTypeActionChip(feedType: feedType!, onChangeFeedType: onChangeFeedType!),
         _SortActionChip(),
-        _LabelActionChip(user: user),
+        if (!isOwnProfile) _LabelActionChip(user: user),
         if (isLoggedIn && !isOwnProfile && user.admin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
