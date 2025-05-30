@@ -14,7 +14,6 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/user/models/user_label.dart';
-import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/global_context.dart';
 

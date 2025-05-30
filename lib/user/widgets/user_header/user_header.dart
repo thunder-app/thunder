@@ -189,6 +189,7 @@ class _UserHeaderWithBanner extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Stack(
+      alignment: Alignment.center,
       children: [
         if (user.banner != null) ...[
           _BannerImage(url: user.banner!),

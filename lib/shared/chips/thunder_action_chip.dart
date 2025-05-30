@@ -37,7 +37,7 @@ class ThunderActionChip extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       side: BorderSide(color: theme.dividerColor),
       backgroundColor: backgroundColor,
-      label: SizedBox(height: 20.0, child: child),
+      label: child,
       onPressed: onPressed,
     );
   }

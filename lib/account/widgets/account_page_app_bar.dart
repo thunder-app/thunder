@@ -7,12 +7,8 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
-import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/feed/utils/utils.dart';
-import 'package:thunder/shared/sort_picker.dart';
-import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -132,10 +128,17 @@ class AccountAppBarUserActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final feedBloc = context.read<FeedBloc>();
 
     return Row(
       children: [
+        IconButton(
+          icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+          tooltip: l10n.refresh,
+          onPressed: () {
+            HapticFeedback.mediumImpact();
+            triggerRefresh(context);
+          },
+        ),
         IconButton(
           icon: Icon(showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, semanticLabel: l10n.saved),
           tooltip: showSaved ? l10n.showOwnContent : l10n.showSavedContent,
@@ -151,41 +154,6 @@ class AccountAppBarUserActions extends StatelessWidget {
             HapticFeedback.mediumImpact();
             navigateToSettingPage(context, LocalSettings.settingsPageAccount);
           },
-        ),
-        Semantics(
-          label: l10n.menu,
-          child: PopupMenuButton(
-            onOpened: () => HapticFeedback.mediumImpact(),
-            itemBuilder: (context) => [
-              ThunderPopupMenuItem(
-                icon: Icons.sort,
-                title: l10n.sortBy,
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    showDragHandle: true,
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (builderContext) => SortPicker(
-                      title: l10n.sortOptions,
-                      onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                      previouslySelected: feedBloc.state.sortType,
-                      minimumVersion: LemmyClient.instance.version,
-                    ),
-                  );
-                },
-              ),
-              ThunderPopupMenuItem(
-                icon: Icons.refresh_rounded,
-                title: l10n.refresh,
-                onTap: () => triggerRefresh(context),
-              ),
-              ThunderPopupMenuItem(
-                icon: Icons.share_rounded,
-                title: l10n.share,
-                onTap: () => showUserShareSheet(context, feedBloc.state.fullPersonView!.personView),
-              ),
-            ],
-          ),
         ),
       ],
     );
