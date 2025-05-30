@@ -141,7 +141,7 @@ class _ActionChipsList extends StatelessWidget {
       _SubscriptionActionChip(community: community),
       if (community.subscribed != SubscribedType.notSubscribed) _FavoritesActionChip(community: community),
       _CreatePostActionChip(community: community),
-      _BlockActionChip(community: community),
+      if (community.subscribed == SubscribedType.notSubscribed) _BlockActionChip(community: community),
     ];
   }
 }
