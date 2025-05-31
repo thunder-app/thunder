@@ -136,11 +136,66 @@ class _ActionChipsList extends StatelessWidget {
       spacing: 8.0,
       children: [
         if (feedType != null && onChangeFeedType != null) _FeedTypeActionChip(feedType: feedType!, onChangeFeedType: onChangeFeedType!),
+        if (isOwnProfile) _SavedActionChip(),
         _SortActionChip(),
         if (!isOwnProfile) _LabelActionChip(user: user),
         if (isLoggedIn && !isOwnProfile && user.admin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
+    );
+  }
+}
+
+/// Action chip for toggling saved posts/comments.
+class _SavedActionChip extends StatefulWidget {
+  @override
+  State<_SavedActionChip> createState() => _SavedActionChipState();
+}
+
+class _SavedActionChipState extends State<_SavedActionChip> {
+  /// Whether or not to show saved posts. We store a local variable here so that the icon can be optimistically updated
+  bool showSaved = false;
+
+  @override
+  void didUpdateWidget(covariant _SavedActionChip oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final status = context.read<FeedBloc>().state.status;
+    final showSaved = context.read<FeedBloc>().state.showSaved;
+
+    if (this.showSaved != showSaved && status == FeedStatus.success) {
+      setState(() => this.showSaved = showSaved);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ThunderActionChip(
+      icon: showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+      label: l10n.saved,
+      backgroundColor: showSaved ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
+      onPressed: () {
+        HapticFeedback.mediumImpact();
+        setState(() => showSaved = !showSaved);
+
+        final state = context.read<FeedBloc>().state;
+        context.read<FeedBloc>().add(
+              FeedFetchedEvent(
+                feedType: FeedType.account,
+                feedListType: state.feedListType,
+                sortType: state.sortType,
+                communityId: state.communityId,
+                communityName: state.communityName,
+                userId: state.userId,
+                username: state.username,
+                reset: true,
+                showHidden: state.showHidden,
+                showSaved: showSaved,
+              ),
+            );
+      },
     );
   }
 }

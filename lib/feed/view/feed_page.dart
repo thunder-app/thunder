@@ -361,26 +361,7 @@ class _FeedViewState extends State<FeedView> {
                       controller: _scrollController,
                       slivers: <Widget>[
                         widget.feedType == FeedType.account
-                            ? AccountPageAppBar(
-                                showAppBarTitle: showAppBarTitle,
-                                showSaved: state.showSaved,
-                                onToggleSaved: (showSaved) {
-                                  context.read<FeedBloc>().add(
-                                        FeedFetchedEvent(
-                                          feedType: FeedType.account,
-                                          feedListType: state.feedListType,
-                                          sortType: state.sortType,
-                                          communityId: state.communityId,
-                                          communityName: state.communityName,
-                                          userId: state.userId,
-                                          username: state.username,
-                                          reset: true,
-                                          showHidden: state.showHidden,
-                                          showSaved: showSaved,
-                                        ),
-                                      );
-                                },
-                              )
+                            ? AccountPageAppBar(showAppBarTitle: showAppBarTitle)
                             : FeedPageAppBar(
                                 showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
                                 scaffoldStateKey: widget.scaffoldStateKey,

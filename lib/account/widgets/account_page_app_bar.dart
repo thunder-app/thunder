@@ -14,39 +14,11 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
 /// Holds the app bar for the account page
-class AccountPageAppBar extends StatefulWidget {
-  const AccountPageAppBar({
-    super.key,
-    this.showAppBarTitle = true,
-    this.showSaved = false,
-    this.onToggleSaved,
-  });
+class AccountPageAppBar extends StatelessWidget {
+  const AccountPageAppBar({super.key, this.showAppBarTitle = true});
 
   /// Whether to show the app bar title
   final bool showAppBarTitle;
-
-  /// Whether or not to show saved posts/comments
-  final bool showSaved;
-
-  /// Callback to show saved posts/comments
-  final Function(bool showSaved)? onToggleSaved;
-
-  @override
-  State<AccountPageAppBar> createState() => _AccountPageAppBarState();
-}
-
-class _AccountPageAppBarState extends State<AccountPageAppBar> {
-  /// Whether or not to show saved posts. We store a local variable here so that the icon can be optimistically updated
-  bool showSaved = false;
-
-  @override
-  void didUpdateWidget(covariant AccountPageAppBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (showSaved != widget.showSaved && context.read<FeedBloc>().state.status == FeedStatus.success) {
-      setState(() => showSaved = widget.showSaved);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +31,7 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
       titleSpacing: 0.0,
       toolbarHeight: 70.0,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: AccountAppBarTitle(visible: widget.showAppBarTitle),
+      title: AccountAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         onPressed: () {
           HapticFeedback.mediumImpact();
@@ -68,15 +40,7 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
         icon: Icon(Icons.people_alt_rounded, semanticLabel: l10n.profiles),
         tooltip: l10n.profiles,
       ),
-      actions: [
-        AccountAppBarUserActions(
-          showSaved: showSaved,
-          onToggleSaved: (showSaved) {
-            setState(() => this.showSaved = showSaved);
-            widget.onToggleSaved?.call(showSaved);
-          },
-        )
-      ],
+      actions: [AccountAppBarUserActions()],
     );
   }
 }
@@ -117,13 +81,7 @@ class AccountAppBarTitle extends StatelessWidget {
 
 /// The actions of the app bar for the account page
 class AccountAppBarUserActions extends StatelessWidget {
-  const AccountAppBarUserActions({super.key, this.showSaved = false, this.onToggleSaved});
-
-  /// Whether to show saved posts/comments
-  final bool showSaved;
-
-  /// Callback when the saved icon is tapped
-  final void Function(bool showSaved)? onToggleSaved;
+  const AccountAppBarUserActions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -137,14 +95,6 @@ class AccountAppBarUserActions extends StatelessWidget {
           onPressed: () {
             HapticFeedback.mediumImpact();
             triggerRefresh(context);
-          },
-        ),
-        IconButton(
-          icon: Icon(showSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, semanticLabel: l10n.saved),
-          tooltip: showSaved ? l10n.showOwnContent : l10n.showSavedContent,
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            onToggleSaved?.call(!showSaved);
           },
         ),
         IconButton(
