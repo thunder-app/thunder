@@ -13,7 +13,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.hjiangsu.thunder"
     compileSdkVersion rootProject.ext.compileSdkVersion
-    ndkVersion = "25.1.8937393"
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         // The following line is required by flutter_local_notifications
