@@ -79,13 +79,15 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   }
 
   String? generateSubtitle(GeneralCommentAction page) {
-    ThunderComment comment = widget.comment;
+    final comment = widget.comment;
 
-    String? userInstance = fetchInstanceNameFromUrl(comment.creator?.actorId);
+    assert(comment.creator != null, 'Comment must have a creator');
+
+    String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
-        return generateUserFullName(context, comment.creator?.name, comment.creator?.displayName, userInstance);
+        return generateUserFullName(context, comment.creator!.name, comment.creator!.displayName, userInstance);
       case GeneralCommentAction.instance:
         return userInstance;
       default:
@@ -97,13 +99,15 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
+
     Widget actions = switch (currentPage) {
       GeneralCommentAction.general => GeneralCommentActionBottomSheetPage(
           context: widget.context,
           comment: widget.comment,
           onSwitchActivePage: (page) => setState(() => currentPage = page),
           onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, comment: updatedComment!, value: value);
+            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
           },
         ),
       GeneralCommentAction.comment => CommentCommentActionBottomSheet(
@@ -111,13 +115,13 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           comment: widget.comment,
           isShowingSource: widget.isShowingSource,
           onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, comment: updatedComment!, value: value);
+            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
           },
         ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
           user: ThunderUser(widget.comment.creator!),
-          communityId: widget.comment.community?.id,
+          communityId: widget.comment.community!.id,
           isUserCommunityModerator: widget.comment.creatorIsModerator,
           isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
@@ -125,8 +129,8 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           },
         ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
-          userInstanceId: widget.comment.creator?.instanceId,
-          userInstanceUrl: widget.comment.creator?.actorId,
+          userInstanceId: widget.comment.creator!.instanceId,
+          userInstanceUrl: widget.comment.creator!.actorId,
           onAction: () {},
         ),
       GeneralCommentAction.share => ShareActionBottomSheet(

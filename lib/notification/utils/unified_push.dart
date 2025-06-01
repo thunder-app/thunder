@@ -11,7 +11,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/notification_utils.dart';
@@ -28,6 +27,7 @@ import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/core/extensions/person_mention_view.dart';
 
 /// Initializes push notifications for UnifiedPush.
 /// For now, initializing UnifiedPush will enable push notifications for all accounts active on the app.
@@ -162,19 +162,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Notification for a mention
       if (data.containsKey('mention')) {
         PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
-        final commentView = CommentView(
-          comment: personMentionView.comment,
-          creator: personMentionView.creator,
-          post: personMentionView.post,
-          community: personMentionView.community,
-          counts: personMentionView.counts,
-          creatorBannedFromCommunity: personMentionView.creatorBannedFromCommunity,
-          subscribed: personMentionView.subscribed,
-          saved: personMentionView.saved,
-          creatorBlocked: personMentionView.creatorBlocked,
-        );
-
-        final comment = ThunderComment(comment: commentView.comment, commentView: commentView);
+        final comment = personMentionView.toComment();
 
         final String commentContent = cleanCommentContent(comment);
         final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));

@@ -26,8 +26,8 @@ class CommentNode {
 
   CommentNode({this.comment, this.replies = const []});
 
-  /// Adds a reply to this comment node
-  /// There is a constraint where the comment [id] must be unique. If there exists a comment that has the same [id], we will replace it with the new comment.
+  /// Adds a reply to this comment node. There is a constraint where the comment [id] must be unique.
+  /// If there exists a comment that has the same [id], we will replace it with the new comment.
   void addReply(CommentNode reply) {
     // Add the comment only if theres no other comment with the same id
     int existingCommentNodeIndex = replies.indexWhere((node) => node.comment?.id == reply.comment?.id);
@@ -62,7 +62,7 @@ class CommentNode {
     if (nodeId == id) return node;
 
     // Recursively search for the target node
-    for (CommentNode child in node.replies) {
+    for (final child in node.replies) {
       CommentNode? found = findCommentNode(child, id);
       if (found != null) return found;
     }
@@ -81,7 +81,7 @@ class CommentNode {
     void flatten(CommentNode node) {
       if (node.comment != null) flattenedCommentNodes.add(node);
 
-      for (CommentNode child in node.replies) {
+      for (final child in node.replies) {
         flatten(child);
       }
     }

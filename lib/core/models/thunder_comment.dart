@@ -1,4 +1,5 @@
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/models/models.dart';
 
 class ThunderComment {
@@ -33,7 +34,7 @@ class ThunderComment {
   int get id => _comment.id;
 
   /// The ID of the post
-  int? get postId => _comment.postId;
+  int get postId => _comment.postId;
 
   /// The ID of the comment creator
   int? get creatorId => _commentView?.creator.id;
@@ -72,13 +73,13 @@ class ThunderComment {
   bool? get saved => _commentView?.saved;
 
   /// Whether the comment is removed
-  bool? get removed => _comment.removed;
+  bool get removed => _comment.removed;
 
   /// Whether the comment is deleted
-  bool? get deleted => _comment.deleted;
+  bool get deleted => _comment.deleted;
 
   /// The language ID of the comment
-  int? get languageId => _comment.languageId;
+  int get languageId => _comment.languageId;
 
   /// The number of child comments
   int? get childCount => _commentView?.counts.childCount;

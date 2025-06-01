@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';

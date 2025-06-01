@@ -21,7 +21,8 @@ class CommentListEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isOwnComment = comment.creator?.id == context.read<ProfileBloc>().state.account?.userId;
+    assert(comment.creator != null, 'Comment must have a creator');
+    final bool isOwnComment = comment.creator!.id == context.read<ProfileBloc>().state.account?.userId;
 
     return BlocProvider<post_bloc.PostBloc>(
       create: (BuildContext context) => post_bloc.PostBloc(),

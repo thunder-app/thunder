@@ -3,9 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+import 'package:thunder/core/extensions/comment_reply_view.dart';
+import 'package:thunder/core/extensions/person_mention_view.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -267,37 +269,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     ThunderComment? comment;
 
     if (existingCommentReplyView != null) {
-      comment = ThunderComment(
-        comment: existingCommentReplyView.comment,
-        commentView: CommentView(
-          comment: existingCommentReplyView.comment,
-          creator: existingCommentReplyView.creator,
-          post: existingCommentReplyView.post,
-          community: existingCommentReplyView.community,
-          counts: existingCommentReplyView.counts,
-          creatorBannedFromCommunity: existingCommentReplyView.creatorBannedFromCommunity,
-          subscribed: existingCommentReplyView.subscribed,
-          creatorBlocked: existingCommentReplyView.creatorBlocked,
-          myVote: existingCommentReplyView.myVote as int?,
-          saved: existingCommentReplyView.saved,
-        ),
-      );
+      comment = existingCommentReplyView.toComment();
     } else if (existingPersonMentionView != null) {
-      comment = ThunderComment(
-        comment: existingPersonMentionView.comment,
-        commentView: CommentView(
-          comment: existingPersonMentionView.comment,
-          creator: existingPersonMentionView.creator,
-          post: existingPersonMentionView.post,
-          community: existingPersonMentionView.community,
-          counts: existingPersonMentionView.counts,
-          creatorBannedFromCommunity: existingPersonMentionView.creatorBannedFromCommunity,
-          subscribed: existingPersonMentionView.subscribed,
-          saved: existingPersonMentionView.saved,
-          creatorBlocked: existingPersonMentionView.creatorBlocked,
-          myVote: existingPersonMentionView.myVote,
-        ),
-      );
+      comment = existingPersonMentionView.toComment();
     }
 
     switch (event.action) {
@@ -368,11 +342,25 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         try {
           ThunderComment updatedComment = optimisticallyVoteComment(comment!, event.value);
 
-          // if (existingCommentReplyView != null) {
-          //   state.replies[existingIndex] = existingCommentReplyView.copyWith(counts: updatedComment.counts, myVote: updatedComment.myVote);
-          // } else if (existingPersonMentionView != null) {
-          //   state.mentions[existingIndex] = existingPersonMentionView.copyWith(counts: updatedComment.counts, myVote: updatedComment.myVote);
-          // }
+          if (existingCommentReplyView != null) {
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(
+              counts: existingCommentReplyView.counts.copyWith(
+                score: updatedComment.score!,
+                upvotes: updatedComment.upvotes!,
+                downvotes: updatedComment.downvotes!,
+              ),
+              myVote: updatedComment.myVote,
+            );
+          } else if (existingPersonMentionView != null) {
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(
+              counts: existingPersonMentionView.counts.copyWith(
+                score: updatedComment.score!,
+                upvotes: updatedComment.upvotes!,
+                downvotes: updatedComment.downvotes!,
+              ),
+              myVote: updatedComment.myVote,
+            );
+          }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success));
@@ -426,11 +414,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         try {
           ThunderComment updatedComment = optimisticallyDeleteComment(comment!, event.value);
 
-          // if (existingCommentReplyView != null) {
-          //   state.replies[existingIndex] = existingCommentReplyView.copyWith(comment: updatedComment.comment);
-          // } else if (existingPersonMentionView != null) {
-          //   state.mentions[existingIndex] = existingPersonMentionView.copyWith(comment: updatedComment.comment);
-          // }
+          if (existingCommentReplyView != null) {
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(
+              comment: existingCommentReplyView.comment.copyWith(deleted: updatedComment.deleted),
+            );
+          } else if (existingPersonMentionView != null) {
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(
+              comment: existingPersonMentionView.comment.copyWith(deleted: updatedComment.deleted),
+            );
+          }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success));

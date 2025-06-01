@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -95,8 +94,10 @@ class _CommentCardState extends State<CommentCard> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
+    assert(widget.comment.creator != null, 'Comment must have a creator');
+
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.comment.creator?.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isOwnComment = widget.comment.creator!.id == context.read<ProfileBloc>().state.account?.userId;
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     final int commentId = widget.comment.id;

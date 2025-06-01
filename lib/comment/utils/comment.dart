@@ -1,13 +1,15 @@
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/comment/comment.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
 ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
+  assert(comment.score != null && comment.upvotes != null && comment.downvotes != null, 'Comment must have score, upvotes and downvotes');
+
   int newScore = comment.score!;
   int newUpvotes = comment.upvotes!;
   int newDownvotes = comment.downvotes!;
@@ -54,7 +56,7 @@ Future<ThunderComment> voteComment(int commentId, int score) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyClient.instance.lemmyApiV3;
 
   final response = await lemmy.run(CreateCommentLike(
     auth: account.jwt!,
@@ -80,7 +82,7 @@ Future<ThunderComment> saveComment(int commentId, bool save) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyClient.instance.lemmyApiV3;
 
   final response = await lemmy.run(SaveComment(
     auth: account.jwt!,
@@ -104,7 +106,7 @@ Future<ThunderComment> deleteComment(int commentId, bool deleted) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyClient.instance.lemmyApiV3;
 
   final response = await lemmy.run(DeleteComment(
     auth: account.jwt!,
@@ -115,7 +117,44 @@ Future<ThunderComment> deleteComment(int commentId, bool deleted) async {
   return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
 }
 
-/// Builds a tree of [ThunderComment] given a flattened list [ThunderComment].
+/// Logic to create a comment
+Future<ThunderComment> createComment(int postId, String content, int? parentCommentId, int? languageId) async {
+  final l10n = GlobalContext.l10n;
+  final account = await fetchActiveProfile();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+  final lemmy = LemmyClient.instance.lemmyApiV3;
+
+  final response = await lemmy.run(CreateComment(
+    postId: postId,
+    content: content,
+    parentId: parentCommentId,
+    languageId: languageId,
+    auth: account.jwt!,
+  ));
+
+  return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+}
+
+/// Logic to edit a comment
+Future<ThunderComment> editComment(int commentId, String content, int? languageId) async {
+  final l10n = GlobalContext.l10n;
+  final account = await fetchActiveProfile();
+  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+  final lemmy = LemmyClient.instance.lemmyApiV3;
+
+  final response = await lemmy.run(EditComment(
+    commentId: commentId,
+    content: content,
+    languageId: languageId,
+    auth: account.jwt!,
+  ));
+
+  return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+}
+
+/// Builds a tree of [ThunderComment]s given a flattened list of [ThunderComment]s.
 ///
 /// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
 CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = false}) {
@@ -132,9 +171,9 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
   return root;
 }
 
-String cleanCommentContent(ThunderComment comment) => cleanComment(comment.body, comment.removed!, comment.deleted!);
+String cleanCommentContent(ThunderComment comment) => cleanComment(comment.body, comment.removed, comment.deleted);
 
-String cleanComment(String commentContent, bool commentRemoved, bool commentDeleted) {
+String cleanComment(String commentContent, bool? commentRemoved, bool? commentDeleted) {
   String deletedByModerator = "deleted by moderator";
   String deletedByCreator = "deleted by creator";
 
@@ -148,11 +187,11 @@ String cleanComment(String commentContent, bool commentRemoved, bool commentDele
     // Ignore the error and move on with the default strings
   }
 
-  if (commentRemoved) {
+  if (commentRemoved == true) {
     return '_${deletedByModerator}_';
   }
 
-  if (commentDeleted) {
+  if (commentDeleted == true) {
     return '_${deletedByCreator}_';
   }
 

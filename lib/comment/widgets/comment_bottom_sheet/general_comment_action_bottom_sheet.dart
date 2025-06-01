@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/account.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
@@ -69,7 +68,7 @@ enum GeneralQuickCommentAction {
 }
 
 /// Defines the general top-level actions that can be taken on a comment.
-/// Given a [commentView] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the comment.
+/// Given a [comment] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the comment.
 class GeneralCommentActionBottomSheetPage extends StatefulWidget {
   const GeneralCommentActionBottomSheetPage({super.key, required this.context, required this.comment, required this.onSwitchActivePage, required this.onAction});
 
@@ -91,13 +90,14 @@ class GeneralCommentActionBottomSheetPage extends StatefulWidget {
 
 class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActionBottomSheetPage> {
   String? generateSubtitle(GeneralCommentAction page) {
-    ThunderComment comment = widget.comment;
+    final comment = widget.comment;
+    assert(comment.creator != null, 'Comment must have a creator');
 
-    String? userInstance = fetchInstanceNameFromUrl(comment.creator?.actorId);
+    String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
-        return generateUserFullName(context, comment.creator?.name, comment.creator?.displayName, userInstance);
+        return generateUserFullName(context, comment.creator!.name, comment.creator!.displayName, userInstance);
       case GeneralCommentAction.instance:
         return userInstance;
       default:

@@ -64,7 +64,7 @@ class CommentCardActions extends StatelessWidget {
                 context,
                 comment,
                 isShowingSource: viewSource,
-                onAction: ({required comment, commentAction, communityAction, userAction, value}) {
+                onAction: ({commentAction, required comment, communityAction, userAction, value}) {
                   if (commentAction != null) {
                     switch (commentAction) {
                       case CommentAction.vote:

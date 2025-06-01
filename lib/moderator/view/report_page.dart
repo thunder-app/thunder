@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
@@ -15,6 +14,7 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
 import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/widgets/report_page_filter_bottom_sheet.dart';

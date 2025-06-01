@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -15,6 +13,7 @@ import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a comment
 /// TODO: Implement admin-level actions
@@ -58,7 +57,7 @@ enum CommentBottomSheetAction {
 
 /// A bottom sheet that allows the user to perform actions on the comment.
 ///
-/// Given a [commentView] and a [onAction] callback, this widget will display a list of actions that can be taken on the comment.
+/// Given a [comment] and a [onAction] callback, this widget will display a list of actions that can be taken on the comment.
 /// The [onAction] callback will be triggered when an action is performed.
 class CommentCommentActionBottomSheet extends StatefulWidget {
   const CommentCommentActionBottomSheet({super.key, required this.context, required this.comment, this.isShowingSource = false, required this.onAction});
@@ -191,6 +190,8 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     final theme = Theme.of(context);
     final authState = context.read<ProfileBloc>().state;
 
+    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
+
     List<CommentBottomSheetAction> generalActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.all).toList();
     List<CommentBottomSheetAction> userActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<CommentBottomSheetAction> moderatorActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
@@ -198,7 +199,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.comment.community?.url).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.comment.community!.url).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
@@ -208,7 +209,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.comment.creator?.actorId) {
+      if (account?.actorId == widget.comment.creator!.actorId) {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.reportComment).toList();
       } else {
         userActions = userActions

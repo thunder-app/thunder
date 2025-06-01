@@ -6,7 +6,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';

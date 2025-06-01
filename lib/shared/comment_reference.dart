@@ -87,10 +87,12 @@ class _CommentReferenceState extends State<CommentReference> {
     final ThunderState state = context.read<ThunderBloc>().state;
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
+    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have both a creator and community');
+
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community?.name ?? '', widget.comment.post?.title ?? '')}\n
-          ${fetchInstanceNameFromUrl(widget.comment.community?.url)}\n
-          ${widget.comment.creator?.name}\n
+      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.title)}\n
+          ${fetchInstanceNameFromUrl(widget.comment.community!.url)}\n
+          ${widget.comment.creator!.name}\n
           ${widget.comment.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.upvotes!))}\n
           ${widget.comment.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.downvotes!))}\n
           ${formatTimeToString(dateTime: (widget.comment.updated ?? widget.comment.published).toIso8601String())}\n

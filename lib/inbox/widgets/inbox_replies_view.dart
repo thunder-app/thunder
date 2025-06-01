@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/extensions/comment_reply_view.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -15,25 +16,6 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
-
-extension on CommentReplyView {
-  ThunderComment toComment() {
-    final commentView = CommentView(
-      comment: comment,
-      creator: creator,
-      post: post,
-      community: community,
-      counts: counts,
-      creatorBannedFromCommunity: creatorBannedFromCommunity,
-      subscribed: subscribed,
-      saved: saved,
-      creatorBlocked: creatorBlocked,
-      myVote: myVote as int?,
-    );
-
-    return ThunderComment(comment: comment, commentView: commentView);
-  }
-}
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentReplyView> replies;
