@@ -1,9 +1,7 @@
-50501.chat
 ani.social
 aussie.zone
 awful.systems
 beehaw.org
-diggita.com
 discuss.online
 discuss.tchncs.de
 feddit.dk
@@ -11,8 +9,8 @@ feddit.it
 feddit.nl
 feddit.nu
 feddit.org
+feddit.uk
 infosec.pub
-jlai.lu
 lemdro.id
 leminal.space
 lemm.ee
