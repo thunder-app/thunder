@@ -22,10 +22,10 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
+  const FeedPageAppBar({super.key, required this.scrollController, this.scaffoldStateKey});
 
-  /// Whether to show the app bar title
-  final bool showAppBarTitle;
+  /// The scroll controller used to determine when to show/hide the app bar title
+  final ScrollController scrollController;
 
   /// The scaffold key of the parent scaffold holding the drawer.
   /// This is used to determine if we are in a pushed navigation stack.
@@ -38,6 +38,30 @@ class FeedPageAppBar extends StatefulWidget {
 class _FeedPageAppBarState extends State<FeedPageAppBar> {
   ThunderUser? user;
 
+  /// Boolean which indicates whether the title on the app bar should be shown
+  bool showAppBarTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
+    if (widget.scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      setState(() => showAppBarTitle = true);
+    } else if (widget.scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
+      setState(() => showAppBarTitle = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
@@ -46,57 +70,65 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
 
     user = profileState.reload ? profileState.user : user;
 
-    return SliverAppBar(
-      pinned: !thunderBloc.state.hideTopBarOnScroll,
-      floating: true,
-      centerTitle: false,
-      toolbarHeight: APP_BAR_HEIGHT,
-      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
-      leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn ? 50 : null,
-      leading: feedBloc.state.status == FeedStatus.initial
-          ? null
-          : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Semantics(
-                    label: MaterialLocalizations.of(context).openAppDrawerTooltip,
-                    child: Stack(
-                      children: [
-                        if (user != null)
-                          Align(
-                            alignment: Alignment.center,
-                            child: UserAvatar(user: user!),
+    return BlocListener<FeedBloc, FeedState>(
+      listenWhen: (previous, current) => current.status == FeedStatus.initial,
+      listener: (context, state) {
+        if (state.status == FeedStatus.initial) {
+          setState(() => showAppBarTitle = false);
+        }
+      },
+      child: SliverAppBar(
+        pinned: !thunderBloc.state.hideTopBarOnScroll,
+        floating: true,
+        centerTitle: false,
+        toolbarHeight: APP_BAR_HEIGHT,
+        surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
+        title: FeedAppBarTitle(visible: (feedBloc.state.feedType == FeedType.general && feedBloc.state.status != FeedStatus.initial) ? true : showAppBarTitle),
+        leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn ? 50 : null,
+        leading: feedBloc.state.status == FeedStatus.initial
+            ? null
+            : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Semantics(
+                      label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                      child: Stack(
+                        children: [
+                          if (user != null)
+                            Align(
+                              alignment: Alignment.center,
+                              child: UserAvatar(user: user!),
+                            ),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () => _openDrawerOrGoBack(context, feedBloc),
+                            ),
                           ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: () => _openDrawerOrGoBack(context, feedBloc),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                  )
+                : IconButton(
+                    icon: widget.scaffoldStateKey == null
+                        ? (!kIsWeb && Platform.isIOS
+                            ? Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                              )
+                            : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+                        : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+                    onPressed: () => _openDrawerOrGoBack(context, feedBloc),
                   ),
-                )
-              : IconButton(
-                  icon: widget.scaffoldStateKey == null
-                      ? (!kIsWeb && Platform.isIOS
-                          ? Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                            )
-                          : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                      : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-                  onPressed: () => _openDrawerOrGoBack(context, feedBloc),
-                ),
-      actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
-          ? [
-              if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
-              if (feedBloc.state.feedType == FeedType.community) const FeedAppBarCommunityActions(),
-              if (feedBloc.state.feedType == FeedType.user) const FeedAppBarUserActions(),
-            ]
-          : [],
+        actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
+            ? [
+                if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
+                if (feedBloc.state.feedType == FeedType.community) const FeedAppBarCommunityActions(),
+                if (feedBloc.state.feedType == FeedType.user) const FeedAppBarUserActions(),
+              ]
+            : [],
+      ),
     );
   }
 

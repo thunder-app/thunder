@@ -15,33 +15,70 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
 /// Holds the app bar for the account page
-class AccountPageAppBar extends StatelessWidget {
-  const AccountPageAppBar({super.key, this.showAppBarTitle = true});
+class AccountPageAppBar extends StatefulWidget {
+  const AccountPageAppBar({super.key, required this.scrollController});
 
-  /// Whether to show the app bar title
-  final bool showAppBarTitle;
+  /// The scroll controller used to determine when to show/hide the app bar title
+  final ScrollController scrollController;
+
+  @override
+  State<AccountPageAppBar> createState() => _AccountPageAppBarState();
+}
+
+class _AccountPageAppBarState extends State<AccountPageAppBar> {
+  /// Boolean which indicates whether the title on the app bar should be shown
+  bool showAppBarTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(onScroll);
+    super.dispose();
+  }
+
+  void onScroll() {
+    // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
+    if (widget.scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
+      setState(() => showAppBarTitle = true);
+    } else if (widget.scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
+      setState(() => showAppBarTitle = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ThunderBloc>().state;
 
-    return SliverAppBar(
-      pinned: true,
-      centerTitle: false,
-      titleSpacing: 0.0,
-      toolbarHeight: APP_BAR_HEIGHT,
-      surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
-      title: AccountAppBarTitle(visible: showAppBarTitle),
-      leading: IconButton(
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          showProfileModalSheet(context);
-        },
-        icon: Icon(Icons.people_alt_rounded, semanticLabel: l10n.profiles),
-        tooltip: l10n.profiles,
+    return BlocListener<FeedBloc, FeedState>(
+      listenWhen: (previous, current) => current.status == FeedStatus.initial,
+      listener: (context, state) {
+        if (state.status == FeedStatus.initial) {
+          setState(() => showAppBarTitle = false);
+        }
+      },
+      child: SliverAppBar(
+        pinned: true,
+        centerTitle: false,
+        titleSpacing: 0.0,
+        toolbarHeight: APP_BAR_HEIGHT,
+        surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
+        title: AccountAppBarTitle(visible: showAppBarTitle),
+        leading: IconButton(
+          onPressed: () {
+            HapticFeedback.mediumImpact();
+            showProfileModalSheet(context);
+          },
+          icon: Icon(Icons.people_alt_rounded, semanticLabel: l10n.profiles),
+          tooltip: l10n.profiles,
+        ),
+        actions: [AccountAppBarUserActions()],
       ),
-      actions: [AccountAppBarUserActions()],
     );
   }
 }
