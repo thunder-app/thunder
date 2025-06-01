@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   bool hasReachedCommentsEnd = false;
 
   List<ThunderPost> posts = [];
-  List<CommentView> commentViews = [];
+  List<ThunderComment> comments = [];
 
   int startingPage = page, currentPage = page;
 
@@ -117,15 +117,15 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts);
       posts.addAll(formattedPosts);
 
-      commentViews.addAll(getPersonDetailsResponse.comments);
+      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment(comment: commentView.comment)));
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
-    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && commentViews.length < desiredPosts));
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
   }
 
-  return {'posts': posts, 'commentViews': commentViews, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
+  return {'posts': posts, 'comments': comments, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
 }
 
 /// Logic to create a post
