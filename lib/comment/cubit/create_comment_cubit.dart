@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:lemmy_api_client/pictrs.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/utils/error_messages.dart';
@@ -77,7 +78,9 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         ));
       }
 
-      emit(state.copyWith(status: CreateCommentStatus.success, commentView: commentResponse.commentView));
+      final comment = ThunderComment(comment: commentResponse.commentView.comment, commentView: commentResponse.commentView);
+
+      emit(state.copyWith(status: CreateCommentStatus.success, comment: comment));
       return commentResponse.commentView.comment.id;
     } catch (e) {
       emit(state.copyWith(status: CreateCommentStatus.error, message: getExceptionErrorMessage(e)));

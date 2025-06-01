@@ -49,9 +49,9 @@ class CommentActionEvent extends PostEvent {
 }
 
 final class CommentItemUpdatedEvent extends PostEvent {
-  final CommentView commentView;
+  final ThunderComment comment;
 
-  const CommentItemUpdatedEvent({required this.commentView});
+  const CommentItemUpdatedEvent({required this.comment});
 }
 
 enum NavigateCommentDirection { up, down }

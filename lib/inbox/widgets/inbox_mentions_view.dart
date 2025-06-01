@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 
@@ -15,8 +16,8 @@ import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
 
 extension on PersonMentionView {
-  CommentView toCommentView() {
-    return CommentView(
+  ThunderComment toComment() {
+    final commentView = CommentView(
       comment: comment,
       creator: creator,
       post: post,
@@ -27,6 +28,8 @@ extension on PersonMentionView {
       saved: saved,
       creatorBlocked: creatorBlocked,
     );
+
+    return ThunderComment(comment: comment, commentView: commentView);
   }
 }
 
@@ -69,7 +72,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
               return Column(
                 children: [
                   CommentReference(
-                    comment: personMentionView.toCommentView(),
+                    comment: personMentionView.toComment(),
                     isOwnComment: personMentionView.creator.id == context.read<ProfileBloc>().state.account?.userId,
                     child: IconButton(
                       onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),

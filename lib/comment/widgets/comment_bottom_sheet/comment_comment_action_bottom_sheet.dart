@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -60,19 +61,19 @@ enum CommentBottomSheetAction {
 /// Given a [commentView] and a [onAction] callback, this widget will display a list of actions that can be taken on the comment.
 /// The [onAction] callback will be triggered when an action is performed.
 class CommentCommentActionBottomSheet extends StatefulWidget {
-  const CommentCommentActionBottomSheet({super.key, required this.context, required this.commentView, this.isShowingSource = false, required this.onAction});
+  const CommentCommentActionBottomSheet({super.key, required this.context, required this.comment, this.isShowingSource = false, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
   /// The comment information
-  final CommentView commentView;
+  final ThunderComment comment;
 
   /// Whether the source of the comment is being shown
   final bool isShowingSource;
 
   /// Called when an action is selected
-  final Function(CommentAction commentAction, CommentView? commentView, dynamic value) onAction;
+  final Function(CommentAction commentAction, ThunderComment comment, dynamic value) onAction;
 
   @override
   State<CommentCommentActionBottomSheet> createState() => _CommentCommentActionBottomSheetState();
@@ -80,16 +81,16 @@ class CommentCommentActionBottomSheet extends StatefulWidget {
 
 class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBottomSheet> {
   void performAction(CommentBottomSheetAction action) async {
-    final commentView = widget.commentView;
+    final comment = widget.comment;
 
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
         Navigator.of(context).pop();
-        showSelectableTextModal(context, text: commentView.comment.content);
+        showSelectableTextModal(context, text: comment.body);
         return;
       case CommentBottomSheetAction.viewCommentSource:
       case CommentBottomSheetAction.viewCommentMarkdown:
-        widget.onAction(CommentAction.viewSource, commentView, null);
+        widget.onAction(CommentAction.viewSource, comment, null);
         break;
       case CommentBottomSheetAction.viewModlog:
         Navigator.of(context).pop();
@@ -97,7 +98,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
           context,
           subtitle: GlobalContext.l10n.removedComment,
           modlogActionType: ModlogActionType.modRemoveComment,
-          commentId: widget.commentView.comment.id,
+          commentId: comment.id,
         );
         return;
       case CommentBottomSheetAction.reportComment:
@@ -105,13 +106,13 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         return;
       case CommentBottomSheetAction.editComment:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.edit, commentView, null);
+        widget.onAction(CommentAction.edit, comment, null);
         return;
       case CommentBottomSheetAction.deleteComment:
-        widget.onAction(CommentAction.delete, commentView, true);
+        widget.onAction(CommentAction.delete, comment, true);
         break;
       case CommentBottomSheetAction.restoreComment:
-        widget.onAction(CommentAction.delete, commentView, false);
+        widget.onAction(CommentAction.delete, comment, false);
         break;
       case CommentBottomSheetAction.removeComment:
         // TODO: Implement remove comment
@@ -133,7 +134,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       title: GlobalContext.l10n.reportComment,
       primaryButtonText: GlobalContext.l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-        widget.onAction(CommentAction.report, widget.commentView, messageController.text);
+        widget.onAction(CommentAction.report, widget.comment, messageController.text);
         Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: GlobalContext.l10n.cancel,
@@ -197,17 +198,17 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
     final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.commentView.community.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.comment.community?.url).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
-    final isCommentDeleted = widget.commentView.comment.deleted; // Deleted by the user
-    final isCommentRemoved = widget.commentView.comment.removed; // Removed by a moderator
+    final isCommentDeleted = widget.comment.deleted; // Deleted by the user
+    final isCommentRemoved = widget.comment.removed; // Removed by a moderator
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.commentView.creator.actorId) {
+      if (account?.actorId == widget.comment.creator?.actorId) {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.reportComment).toList();
       } else {
         userActions = userActions
@@ -215,13 +216,13 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
             .toList();
       }
 
-      if (isCommentDeleted) {
+      if (isCommentDeleted == true) {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.deleteComment).toList();
       } else {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.restoreComment).toList();
       }
 
-      if (isCommentRemoved) {
+      if (isCommentRemoved == true) {
         moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.removeComment).toList();
       } else {
         generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewModlog).toList();

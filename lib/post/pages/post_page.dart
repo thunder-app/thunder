@@ -157,9 +157,9 @@ class _PostPageState extends State<PostPage> {
     navigateToCreateCommentPage(
       context,
       post: post,
-      onCommentSuccess: (commentView, userChanged) {
+      onCommentSuccess: (comment, userChanged) {
         if (!userChanged) {
-          context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+          context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
         }
       },
     );
@@ -191,8 +191,8 @@ class _PostPageState extends State<PostPage> {
 
               for (int index = 0; index < comments.length; index++) {
                 final comment = comments[index];
-                if (comment.commentView?.comment.content.contains(RegExp(value!, caseSensitive: false)) == true) {
-                  commentSearchResults[index] = comment.commentView!.comment.id;
+                if (comment.comment?.body.contains(RegExp(value!, caseSensitive: false)) == true) {
+                  commentSearchResults[index] = comment.comment!.id;
                 }
               }
             }
@@ -308,7 +308,7 @@ class _PostPageState extends State<PostPage> {
           // Check to see if there is a highlighted comment. If there is, check to see if it is visible.
           // If it is not visible, scroll to it.
           final highlightedCommentId = state.highlightedCommentId;
-          final highlightedCommentIndex = flattenedComments.indexWhere((element) => element.commentView!.comment.id == highlightedCommentId);
+          final highlightedCommentIndex = flattenedComments.indexWhere((element) => element.comment!.id == highlightedCommentId);
 
           if (listController.isAttached && highlightedCommentIndex != -1) {
             final visibleRange = listController.visibleRange;
@@ -596,15 +596,15 @@ class _PostPageState extends State<PostPage> {
                               }
 
                               CommentNode commentNode = flattenedComments[index - 1];
-                              CommentView commentView = commentNode.commentView!;
+                              ThunderComment comment = commentNode.comment!;
 
                               final List<int> collapsedComments = context.read<PostBloc>().state.collapsedComments;
 
-                              bool isCollapsed = collapsedComments.contains(commentView.comment.id);
-                              bool isHidden = collapsedComments.any((int id) => commentView.comment.path.contains('$id') && id != commentView.comment.id);
+                              bool isCollapsed = collapsedComments.contains(comment.id);
+                              bool isHidden = collapsedComments.any((int id) => comment.path.contains('$id') && id != comment.id);
 
                               return CommentCard(
-                                commentView: commentView,
+                                comment: comment,
                                 replyCount: commentNode.replies.length,
                                 level: commentNode.depth,
                                 collapsed: isCollapsed,
@@ -613,8 +613,8 @@ class _PostPageState extends State<PostPage> {
                                 onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                                 onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
                                 onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
-                                onReplyEditAction: (CommentView commentView, bool isEdit) {
-                                  context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+                                onReplyEditAction: (ThunderComment comment, bool isEdit) {
+                                  context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
                                 },
                                 onCollapseCommentChange: (int commentId, bool collapsed) {
                                   context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));

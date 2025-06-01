@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/notification_utils.dart';
@@ -161,8 +162,21 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Notification for a mention
       if (data.containsKey('mention')) {
         PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
+        final commentView = CommentView(
+          comment: personMentionView.comment,
+          creator: personMentionView.creator,
+          post: personMentionView.post,
+          community: personMentionView.community,
+          counts: personMentionView.counts,
+          creatorBannedFromCommunity: personMentionView.creatorBannedFromCommunity,
+          subscribed: personMentionView.subscribed,
+          saved: personMentionView.saved,
+          creatorBlocked: personMentionView.creatorBlocked,
+        );
 
-        final String commentContent = cleanCommentContent(personMentionView.comment);
+        final comment = ThunderComment(comment: commentView.comment, commentView: commentView);
+
+        final String commentContent = cleanCommentContent(comment);
         final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 

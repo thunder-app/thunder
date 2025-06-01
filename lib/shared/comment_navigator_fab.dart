@@ -165,7 +165,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
     for (int i = previousIndex; i >= 0; i--) {
       CommentNode currentComment = widget.comments![i - 1];
 
-      List<String> pathSegments = currentComment.commentView!.comment.path.split('.');
+      List<String> pathSegments = currentComment.comment!.path.split('.');
       int depth = pathSegments.length > 2 ? pathSegments.length - 2 : 0;
 
       if (depth == 0) {
@@ -221,7 +221,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
     for (int i = nextIndex; i < widget.comments!.length; i++) {
       CommentNode currentComment = widget.comments![i - 1];
 
-      List<String> pathSegments = currentComment.commentView!.comment.path.split('.');
+      List<String> pathSegments = currentComment.comment!.path.split('.');
       int depth = pathSegments.length > 2 ? pathSegments.length - 2 : 0;
 
       if (depth == 0) {

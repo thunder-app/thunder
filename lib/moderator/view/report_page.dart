@@ -328,13 +328,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   creatorBlocked: false, // Not available
                                 );
 
+                                final comment = ThunderComment(comment: commentView.comment, commentView: commentView);
+
                                 return Column(
                                   children: [
                                     Wrap(
                                       spacing: 8.0,
                                       children: [
                                         CommentReference(
-                                          comment: commentView,
+                                          comment: comment,
                                           isOwnComment: commentView.creator.id == context.read<ProfileBloc>().state.user?.id,
                                           disableActions: true,
                                         ),

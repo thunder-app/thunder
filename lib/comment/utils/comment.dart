@@ -2,16 +2,16 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
-CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
-  int newScore = commentView.counts.score;
-  int newUpvotes = commentView.counts.upvotes;
-  int newDownvotes = commentView.counts.downvotes;
-  int? existingVoteType = commentView.myVote;
+ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
+  int newScore = comment.score!;
+  int newUpvotes = comment.upvotes!;
+  int newDownvotes = comment.downvotes!;
+  int? existingVoteType = comment.myVote;
 
   switch (voteType) {
     case -1:
@@ -36,98 +36,103 @@ CommentView optimisticallyVoteComment(CommentView commentView, int voteType) {
       break;
   }
 
-  return commentView.copyWith(
-    myVote: voteType,
-    counts: commentView.counts.copyWith(
-      score: newScore,
-      upvotes: newUpvotes,
-      downvotes: newDownvotes,
+  return comment.copyWith(
+    commentView: comment.internalCommentView?.copyWith(
+      myVote: voteType,
+      counts: comment.internalCommentView!.counts.copyWith(
+        score: newScore,
+        upvotes: newUpvotes,
+        downvotes: newDownvotes,
+      ),
     ),
   );
 }
 
 /// Logic to vote on a comment
-Future<CommentView> voteComment(int commentId, int score) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
+Future<ThunderComment> voteComment(int commentId, int score) async {
+  final l10n = GlobalContext.l10n;
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  CommentResponse commentResponse = await lemmy.run(CreateCommentLike(
+  final response = await lemmy.run(CreateCommentLike(
     auth: account.jwt!,
     commentId: commentId,
     score: score,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
-  return updatedCommentView;
+  return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
 }
 
 /// Optimistically saves a comment without sending the network request
-CommentView optimisticallySaveComment(CommentView commentView, bool saved) {
-  return commentView.copyWith(saved: saved);
+ThunderComment optimisticallySaveComment(ThunderComment comment, bool saved) {
+  return comment.copyWith(
+    commentView: comment.internalCommentView?.copyWith(
+      saved: saved,
+    ),
+  );
 }
 
 /// Logic to save a comment
-Future<CommentView> saveComment(int commentId, bool save) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
+Future<ThunderComment> saveComment(int commentId, bool save) async {
+  final l10n = GlobalContext.l10n;
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  CommentResponse commentResponse = await lemmy.run(SaveComment(
+  final response = await lemmy.run(SaveComment(
     auth: account.jwt!,
     commentId: commentId,
     save: save,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
-  return updatedCommentView;
+  return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
 }
 
 /// Optimistically deletes a comment without sending the network request
-CommentView optimisticallyDeleteComment(CommentView commentView, bool deleted) {
-  return commentView.copyWith(comment: commentView.comment.copyWith(deleted: deleted));
+ThunderComment optimisticallyDeleteComment(ThunderComment comment, bool deleted) {
+  return comment.copyWith(
+    comment: comment.internalComment.copyWith(deleted: deleted),
+  );
 }
 
 /// Logic to delete a comment
-Future<CommentView> deleteComment(int commentId, bool deleted) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
+Future<ThunderComment> deleteComment(int commentId, bool deleted) async {
+  final l10n = GlobalContext.l10n;
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  CommentResponse commentResponse = await lemmy.run(DeleteComment(
+  final response = await lemmy.run(DeleteComment(
     auth: account.jwt!,
     commentId: commentId,
     deleted: deleted,
   ));
 
-  CommentView updatedCommentView = commentResponse.commentView;
-  return updatedCommentView;
+  return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
 }
 
-/// Builds a tree of [CommentView] given a flattened list [CommentView].
+/// Builds a tree of [ThunderComment] given a flattened list [ThunderComment].
 ///
 /// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
-CommentNode buildCommentTree(List<CommentView> comments, {bool flatten = false}) {
-  CommentNode root = CommentNode(commentView: null, replies: []);
+CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = false}) {
+  CommentNode root = CommentNode(comment: null, replies: []);
 
-  for (CommentView commentView in comments) {
-    List<String> commentPath = commentView.comment.path.split('.');
+  for (final comment in comments) {
+    List<String> commentPath = comment.path.split('.');
     String parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
 
-    CommentNode commentNode = CommentNode(commentView: commentView, replies: []);
+    CommentNode commentNode = CommentNode(comment: comment, replies: []);
     CommentNode.insertCommentNode(root, parentId, commentNode);
   }
 
   return root;
 }
 
-String cleanCommentContent(Comment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
+String cleanCommentContent(ThunderComment comment) => cleanComment(comment.body, comment.removed!, comment.deleted!);
 
 String cleanComment(String commentContent, bool commentRemoved, bool commentDeleted) {
   String deletedByModerator = "deleted by moderator";
@@ -135,7 +140,8 @@ String cleanComment(String commentContent, bool commentRemoved, bool commentDele
 
   try {
     // Try to load these strings from localizations
-    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+    final l10n = GlobalContext.l10n;
+
     deletedByModerator = l10n.deletedByModerator;
     deletedByCreator = l10n.deletedByCreator;
   } catch (e) {
@@ -155,7 +161,7 @@ String cleanComment(String commentContent, bool commentRemoved, bool commentDele
 
 /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment
 /// with the applied settings on Settings -> Appearance -> Comments page.
-CommentView createExampleComment({
+ThunderComment createExampleComment({
   int? id,
   String? path,
   String? commentContent,
@@ -170,7 +176,7 @@ CommentView createExampleComment({
   bool? isBotAccount,
   bool? saved,
 }) {
-  return CommentView(
+  CommentView commentView = CommentView(
     comment: Comment(
       id: id ?? 1,
       creatorId: commentCreatorId ?? 1,
@@ -241,4 +247,6 @@ CommentView createExampleComment({
     saved: saved ?? false,
     creatorBlocked: false,
   );
+
+  return ThunderComment(comment: commentView.comment, commentView: commentView);
 }

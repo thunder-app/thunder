@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -263,33 +264,39 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     if (existingCommentReplyView == null && existingPersonMentionView == null && existingPrivateMessageView == null) return emit(state.copyWith(status: InboxStatus.failure));
 
     /// Convert the reply or mention to a comment
-    CommentView? commentView;
+    ThunderComment? comment;
 
     if (existingCommentReplyView != null) {
-      commentView = CommentView(
+      comment = ThunderComment(
         comment: existingCommentReplyView.comment,
-        creator: existingCommentReplyView.creator,
-        post: existingCommentReplyView.post,
-        community: existingCommentReplyView.community,
-        counts: existingCommentReplyView.counts,
-        creatorBannedFromCommunity: existingCommentReplyView.creatorBannedFromCommunity,
-        subscribed: existingCommentReplyView.subscribed,
-        saved: existingCommentReplyView.saved,
-        creatorBlocked: existingCommentReplyView.creatorBlocked,
-        myVote: existingCommentReplyView.myVote as int?,
+        commentView: CommentView(
+          comment: existingCommentReplyView.comment,
+          creator: existingCommentReplyView.creator,
+          post: existingCommentReplyView.post,
+          community: existingCommentReplyView.community,
+          counts: existingCommentReplyView.counts,
+          creatorBannedFromCommunity: existingCommentReplyView.creatorBannedFromCommunity,
+          subscribed: existingCommentReplyView.subscribed,
+          creatorBlocked: existingCommentReplyView.creatorBlocked,
+          myVote: existingCommentReplyView.myVote as int?,
+          saved: existingCommentReplyView.saved,
+        ),
       );
     } else if (existingPersonMentionView != null) {
-      commentView = CommentView(
+      comment = ThunderComment(
         comment: existingPersonMentionView.comment,
-        creator: existingPersonMentionView.creator,
-        post: existingPersonMentionView.post,
-        community: existingPersonMentionView.community,
-        counts: existingPersonMentionView.counts,
-        creatorBannedFromCommunity: existingPersonMentionView.creatorBannedFromCommunity,
-        subscribed: existingPersonMentionView.subscribed,
-        saved: existingPersonMentionView.saved,
-        creatorBlocked: existingPersonMentionView.creatorBlocked,
-        myVote: existingPersonMentionView.myVote,
+        commentView: CommentView(
+          comment: existingPersonMentionView.comment,
+          creator: existingPersonMentionView.creator,
+          post: existingPersonMentionView.post,
+          community: existingPersonMentionView.community,
+          counts: existingPersonMentionView.counts,
+          creatorBannedFromCommunity: existingPersonMentionView.creatorBannedFromCommunity,
+          subscribed: existingPersonMentionView.subscribed,
+          saved: existingPersonMentionView.saved,
+          creatorBlocked: existingPersonMentionView.creatorBlocked,
+          myVote: existingPersonMentionView.myVote,
+        ),
       );
     }
 
@@ -359,19 +366,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       case CommentAction.vote:
         try {
-          CommentView updatedCommentView = optimisticallyVoteComment(commentView!, event.value);
+          ThunderComment updatedComment = optimisticallyVoteComment(comment!, event.value);
 
-          if (existingCommentReplyView != null) {
-            state.replies[existingIndex] = existingCommentReplyView.copyWith(counts: updatedCommentView.counts, myVote: updatedCommentView.myVote);
-          } else if (existingPersonMentionView != null) {
-            state.mentions[existingIndex] = existingPersonMentionView.copyWith(counts: updatedCommentView.counts, myVote: updatedCommentView.myVote);
-          }
+          // if (existingCommentReplyView != null) {
+          //   state.replies[existingIndex] = existingCommentReplyView.copyWith(counts: updatedComment.counts, myVote: updatedComment.myVote);
+          // } else if (existingPersonMentionView != null) {
+          //   state.mentions[existingIndex] = existingPersonMentionView.copyWith(counts: updatedComment.counts, myVote: updatedComment.myVote);
+          // }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await voteComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+          await voteComment(comment.id, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if vote fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
@@ -388,19 +395,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       case CommentAction.save:
         try {
-          CommentView updatedCommentView = optimisticallySaveComment(commentView!, event.value);
+          ThunderComment updatedComment = optimisticallySaveComment(comment!, event.value);
 
           if (existingCommentReplyView != null) {
-            state.replies[existingIndex] = existingCommentReplyView.copyWith(saved: updatedCommentView.saved);
+            state.replies[existingIndex] = existingCommentReplyView.copyWith(saved: updatedComment.saved!);
           } else if (existingPersonMentionView != null) {
-            state.mentions[existingIndex] = existingPersonMentionView.copyWith(saved: updatedCommentView.saved);
+            state.mentions[existingIndex] = existingPersonMentionView.copyWith(saved: updatedComment.saved!);
           }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await saveComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+          await saveComment(comment.id, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if saving fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
@@ -417,19 +424,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       case CommentAction.delete:
         try {
-          CommentView updatedCommentView = optimisticallyDeleteComment(commentView!, event.value);
+          ThunderComment updatedComment = optimisticallyDeleteComment(comment!, event.value);
 
-          if (existingCommentReplyView != null) {
-            state.replies[existingIndex] = existingCommentReplyView.copyWith(comment: updatedCommentView.comment);
-          } else if (existingPersonMentionView != null) {
-            state.mentions[existingIndex] = existingPersonMentionView.copyWith(comment: updatedCommentView.comment);
-          }
+          // if (existingCommentReplyView != null) {
+          //   state.replies[existingIndex] = existingCommentReplyView.copyWith(comment: updatedComment.comment);
+          // } else if (existingPersonMentionView != null) {
+          //   state.mentions[existingIndex] = existingPersonMentionView.copyWith(comment: updatedComment.comment);
+          // }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await deleteComment(commentView.comment.id, event.value).timeout(timeout, onTimeout: () {
+          await deleteComment(comment.id, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if deleting fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;

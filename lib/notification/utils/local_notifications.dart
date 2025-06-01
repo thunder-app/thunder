@@ -17,6 +17,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
@@ -98,8 +99,20 @@ Future<void> pollRepliesAndShowNotifications() async {
     Account account = entry.key;
     List<CommentReplyView> replies = entry.value;
 
-    for (CommentReplyView commentReplyView in replies) {
-      final String commentContent = cleanCommentContent(commentReplyView.comment);
+    for (final commentReplyView in replies) {
+      final commentView = CommentView(
+        comment: commentReplyView.comment,
+        creator: commentReplyView.creator,
+        post: commentReplyView.post,
+        community: commentReplyView.community,
+        counts: commentReplyView.counts,
+        creatorBannedFromCommunity: commentReplyView.creatorBannedFromCommunity,
+        subscribed: commentReplyView.subscribed,
+        saved: commentReplyView.saved,
+        creatorBlocked: commentReplyView.creatorBlocked,
+      );
+
+      final String commentContent = cleanCommentContent(ThunderComment(comment: commentView.comment, commentView: commentView));
       final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
       final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 

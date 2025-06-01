@@ -271,7 +271,7 @@ Future<void> navigateToModlogPage(
   pushOnTopOfLoadingPage(context, route);
 }
 
-Future<void> navigateToComment(BuildContext context, CommentView commentView) async {
+Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {
   ProfileBloc profileBloc = context.read<ProfileBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -284,8 +284,8 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
   GetPostResponse getPostResponse = await client.run(
     GetPost(
       auth: account.jwt,
-      id: commentView.post.id,
-      commentId: commentView.comment.id,
+      id: comment.post?.id,
+      commentId: comment.id,
     ),
   );
 
@@ -309,8 +309,8 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
       ],
       child: PostPage(
         initialPost: posts.first,
-        highlightedCommentId: commentView.comment.id,
-        commentPath: commentView.comment.path,
+        highlightedCommentId: comment.id,
+        commentPath: comment.path,
         onPostUpdated: (ThunderPost post) {},
       ),
     ),
@@ -322,12 +322,12 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
 Future<void> navigateToCreateCommentPage(
   BuildContext context, {
   ThunderPost? post,
-  CommentView? commentView,
-  CommentView? parentCommentView,
-  Function(CommentView commentView, bool userChanged)? onCommentSuccess,
+  ThunderComment? comment,
+  ThunderComment? parentComment,
+  Function(ThunderComment comment, bool userChanged)? onCommentSuccess,
 }) async {
-  assert(!(post == null && parentCommentView == null && commentView == null));
-  assert(!(post != null && (parentCommentView != null || commentView != null)));
+  assert(!(post == null && parentComment == null && comment == null));
+  assert(!(post != null && (parentComment != null || comment != null)));
 
   final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
@@ -352,8 +352,8 @@ Future<void> navigateToCreateCommentPage(
       ],
       child: CreateCommentPage(
         post: post,
-        commentView: commentView,
-        parentCommentView: parentCommentView,
+        comment: comment,
+        parentComment: parentComment,
         onCommentSuccess: onCommentSuccess,
       ),
     ),
