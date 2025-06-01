@@ -58,6 +58,7 @@ class _ThunderState extends State<Thunder> {
 
   bool hasShownUpdateDialog = false;
   bool hasShownChangelogDialog = false;
+  bool hasShownPageView = false;
 
   bool _isFabOpen = false;
 
@@ -246,7 +247,13 @@ class _ThunderState extends State<Thunder> {
                       if (previous.isLoggedIn != current.isLoggedIn || previous.status == ProfileStatus.initial) return true;
                       return false;
                     },
-                    buildWhen: (previous, current) => current.status != ProfileStatus.failure && current.status != ProfileStatus.loading,
+                    buildWhen: (previous, current) {
+                      // Don't rebuild on ProfileStatus.initial after we've shown the PageView once. This prevents PageView rebuilds during profile switching
+                      if (current.status == ProfileStatus.initial && hasShownPageView) {
+                        return false;
+                      }
+                      return current.status != ProfileStatus.failure && current.status != ProfileStatus.loading;
+                    },
                     listener: (context, state) {
                       // Although the buildWhen delegate exlcudes this state,
                       // there seems to be a timing issue where we can end up here anyway.
@@ -391,6 +398,8 @@ class _ThunderState extends State<Thunder> {
                               }
                             }
                           });
+
+                          hasShownPageView = true; // Set to true to prevent PageView rebuilds during profile switching
 
                           return PageView(
                             controller: widget.pageController,
