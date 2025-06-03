@@ -15,6 +15,7 @@ import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/links.dart';
 
 /// Holds the app bar for the post page.
@@ -59,7 +60,7 @@ class PostPageAppBar extends StatelessWidget {
       pinned: !state.hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
-      toolbarHeight: 70.0,
+      toolbarHeight: APP_BAR_HEIGHT,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: const PostAppBarTitle(),
       actions: [

@@ -13,6 +13,7 @@ import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/constants.dart';
 
 class FabSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -244,7 +245,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
           SliverAppBar(
             title: Text(l10n.floatingActionButton),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverToBoxAdapter(

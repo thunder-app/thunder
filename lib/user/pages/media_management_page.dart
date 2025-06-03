@@ -16,6 +16,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/media/image.dart';
 
 class MediaManagementPage extends StatelessWidget {
@@ -46,7 +47,7 @@ class MediaManagementPage extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     pinned: true,
-                    toolbarHeight: 70.0,
+                    toolbarHeight: APP_BAR_HEIGHT,
                     title: ListTile(
                       title: Text(
                         l10n.manageMedia,

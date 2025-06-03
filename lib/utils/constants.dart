@@ -68,3 +68,5 @@ const String THUNDER_SERVER_URL = 'https://thunderapp.dev';
 
 const Color DARK_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 50, 50, 50);
 const Color LIGHT_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 242, 242, 242);
+
+const double APP_BAR_HEIGHT = 70.0;

@@ -9,6 +9,7 @@ import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/modlog/repository/modlog_repository.dart';
+import 'package:thunder/utils/constants.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -161,7 +162,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                       reset: true,
                     );
               },
-              edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+              edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(
                 children: [
                   CustomScrollView(

@@ -25,6 +25,7 @@ import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/thunder/utils/deep_link.dart';
 import 'package:thunder/thunder/utils/share_intent_handler.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -285,7 +286,7 @@ class _ThunderState extends State<Thunder> {
                         case ProfileStatus.initial:
                           context.read<ProfileBloc>().add(InitializeAuth());
                           return Scaffold(
-                            appBar: AppBar(toolbarHeight: 70.0),
+                            appBar: AppBar(toolbarHeight: APP_BAR_HEIGHT),
                             body: Center(
                               child: CircularProgressIndicator(),
                             ),

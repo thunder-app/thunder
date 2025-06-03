@@ -13,6 +13,7 @@ import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 
 class FilterSettingsPage extends StatefulWidget {
@@ -95,7 +96,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
           SliverAppBar(
             title: Text(l10n.filters),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverToBoxAdapter(

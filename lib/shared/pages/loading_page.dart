@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 bool isLoadingPageShown = false;
 
@@ -23,7 +24,7 @@ class LoadingPage extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                  toolbarHeight: 70.0,
+                  toolbarHeight: APP_BAR_HEIGHT,
                   leading: IconButton(
                     icon: !kIsWeb && Platform.isIOS
                         ? Icon(

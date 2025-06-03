@@ -9,6 +9,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/utils/constants.dart';
 
 /// The app bar for the modlog feed page
 class ModlogFeedPageAppBar extends StatelessWidget {
@@ -28,7 +29,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       pinned: !hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
-      toolbarHeight: 70.0,
+      toolbarHeight: APP_BAR_HEIGHT,
       surfaceTintColor: hideTopBarOnScroll ? Colors.transparent : null,
       title: ListTile(
         title: Text(

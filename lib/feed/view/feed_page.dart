@@ -28,6 +28,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header/user_header.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 
 enum FeedType { community, user, general, account }
@@ -354,7 +355,7 @@ class _FeedViewState extends State<FeedView> {
                   HapticFeedback.mediumImpact();
                   triggerRefresh(context);
                 },
-                edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+                edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
                 child: Stack(
                   children: [
                     CustomScrollView(

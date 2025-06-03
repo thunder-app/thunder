@@ -20,6 +20,7 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -328,7 +329,7 @@ class _PostPageState extends State<PostPage> {
               HapticFeedback.mediumImpact();
               context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
             },
-            edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+            edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
             child: Scaffold(
               floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
               floatingActionButton: Stack(

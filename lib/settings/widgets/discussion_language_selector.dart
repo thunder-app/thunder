@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});
@@ -55,7 +56,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                 pinned: true,
                 floating: true,
                 centerTitle: false,
-                toolbarHeight: 70.0,
+                toolbarHeight: APP_BAR_HEIGHT,
                 scrolledUnderElevation: 0.0,
                 title: Text(l10n.discussionLanguages),
               ),

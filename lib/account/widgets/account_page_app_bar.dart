@@ -14,6 +14,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
@@ -61,7 +62,7 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
       pinned: true,
       centerTitle: false,
       titleSpacing: 0.0,
-      toolbarHeight: 70.0,
+      toolbarHeight: APP_BAR_HEIGHT,
       surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
       title: AccountAppBarTitle(visible: widget.showAppBarTitle),
       leading: IconButton(

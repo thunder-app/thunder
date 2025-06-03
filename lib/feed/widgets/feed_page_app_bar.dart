@@ -12,6 +12,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -49,7 +50,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       pinned: !thunderBloc.state.hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
-      toolbarHeight: 70.0,
+      toolbarHeight: APP_BAR_HEIGHT,
       surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
       leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn ? 50 : null,

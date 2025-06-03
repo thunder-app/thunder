@@ -27,6 +27,7 @@ import "package:thunder/thunder/thunder_icons.dart";
 import "package:thunder/user/bloc/user_settings_bloc.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
+import "package:thunder/utils/constants.dart";
 import "package:thunder/utils/error_messages.dart";
 import "package:thunder/utils/global_context.dart";
 import "package:thunder/utils/links.dart";
@@ -125,7 +126,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       pinned: true,
                       floating: true,
                       centerTitle: false,
-                      toolbarHeight: 70.0,
+                      toolbarHeight: APP_BAR_HEIGHT,
                       title: Text(l10n.accountSettings),
                       actions: [
                         IconButton(

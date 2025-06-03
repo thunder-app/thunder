@@ -13,6 +13,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/error_message.dart';
@@ -123,7 +124,7 @@ class _InstancePageState extends State<InstancePage> {
                     slivers: [
                       SliverAppBar(
                         pinned: true,
-                        toolbarHeight: 70.0,
+                        toolbarHeight: APP_BAR_HEIGHT,
                         title: ListTile(
                           title: Text(
                             fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',

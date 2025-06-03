@@ -362,7 +362,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverAppBar(
             title: Text(l10n.general),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverList(

@@ -171,7 +171,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
           SliverAppBar(
             title: Text(l10n.debug),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverToBoxAdapter(

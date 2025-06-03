@@ -16,6 +16,7 @@ import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
+import 'package:thunder/utils/constants.dart';
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {
@@ -127,7 +128,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                   sliver: SliverAppBar(
                     pinned: true,
                     centerTitle: false,
-                    toolbarHeight: 70.0,
+                    toolbarHeight: APP_BAR_HEIGHT,
                     forceElevated: innerBoxIsScrolled,
                     title: Text(l10n.inbox),
                     actions: [

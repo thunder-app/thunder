@@ -7,6 +7,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 /// A page for displaying the result of reply notifications
 class NotificationsReplyPage extends StatelessWidget {
@@ -39,7 +40,7 @@ class NotificationsReplyPage extends StatelessWidget {
                   sliver: SliverAppBar(
                     pinned: true,
                     centerTitle: false,
-                    toolbarHeight: 70.0,
+                    toolbarHeight: APP_BAR_HEIGHT,
                     forceElevated: innerBoxIsScrolled,
                     title: ListTile(
                       title: Text(l10n.inbox, style: theme.textTheme.titleLarge),

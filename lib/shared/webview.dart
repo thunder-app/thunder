@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/web_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -120,7 +121,7 @@ class _WebViewState extends State<WebView> {
       future: Future.wait([_controller.getTitle(), _controller.currentUrl()]),
       builder: (context, snapshot) => Scaffold(
         appBar: AppBar(
-          toolbarHeight: 70.0,
+          toolbarHeight: APP_BAR_HEIGHT,
           titleSpacing: 0,
           title: ListTile(
             title: Text(snapshot.data?[0] ?? snapshot.data?[1] ?? '', overflow: TextOverflow.fade, softWrap: false),

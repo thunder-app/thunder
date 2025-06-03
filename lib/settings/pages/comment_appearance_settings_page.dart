@@ -214,7 +214,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           SliverAppBar(
             title: Text(l10n.comments),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
             actions: [
               IconButton(

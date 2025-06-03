@@ -50,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SliverAppBar(
             title: Text(l10n.settings),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverToBoxAdapter(

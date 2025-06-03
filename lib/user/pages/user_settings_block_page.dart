@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -259,7 +260,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                   pinned: true,
                   floating: true,
                   centerTitle: false,
-                  toolbarHeight: 70.0,
+                  toolbarHeight: APP_BAR_HEIGHT,
                   scrolledUnderElevation: 0.0,
                   title: Text(l10n.blockManagement),
                   bottom: TabBar(

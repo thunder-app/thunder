@@ -26,6 +26,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
@@ -275,7 +276,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
-                  toolbarHeight: 70.0,
+                  toolbarHeight: APP_BAR_HEIGHT,
                   centerTitle: false,
                 ),
                 body: SafeArea(

@@ -4,6 +4,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 
 class AppearanceSettingsPage extends StatelessWidget {
@@ -21,7 +22,7 @@ class AppearanceSettingsPage extends StatelessWidget {
           SliverAppBar(
             title: Text(l10n.appearance),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),

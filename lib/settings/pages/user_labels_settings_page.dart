@@ -11,6 +11,7 @@ import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
+import 'package:thunder/utils/constants.dart';
 
 class UserLabelSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -102,7 +103,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
           SliverAppBar(
             title: Text(l10n.userLabels),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
           SliverToBoxAdapter(

@@ -425,7 +425,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverAppBar(
             title: Text(l10n.posts),
             centerTitle: false,
-            toolbarHeight: 70.0,
+            toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
             actions: [
               IconButton(
