@@ -49,6 +49,7 @@ class PostCardTitle extends StatelessWidget {
 
   Color? _getDimmedColor(Color? color) => color?.withValues(alpha: 0.55);
 
+  /// Returns the color of the title.
   Color? _getTitleColor(ThemeData theme) {
     if (pinned) return dim ? _getDimmedColor(Colors.green) : Colors.green;
     if (dim) return _getDimmedColor(theme.textTheme.bodyMedium?.color);
@@ -56,34 +57,31 @@ class PostCardTitle extends StatelessWidget {
     return null;
   }
 
+  /// Calculates the font size for the title.
+  double _calculateFontSize(BuildContext context, TextStyle? textStyle, double textScaleFactor) {
+    final baseFontSize = (textStyle?.fontSize ?? 14.0) + 0.5;
+    return MediaQuery.textScalerOf(context).scale(baseFontSize * textScaleFactor);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     final textStyle = theme.textTheme.bodyMedium;
-    final fontSize = (textStyle?.fontSize ?? 14.0) + 0.5;
 
     final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
+    final fontSize = _calculateFontSize(context, textStyle, textScaleFactor);
+
+    final statuses = PostStatusIcon(hidden: hidden, locked: locked, saved: saved, pinned: pinned, deleted: deleted, removed: removed, dim: dim);
 
     return Text.rich(
       TextSpan(
         children: [
-          WidgetSpan(
-            child: PostStatusIcon(
-              hidden: hidden,
-              locked: locked,
-              saved: saved,
-              pinned: pinned,
-              deleted: deleted,
-              removed: removed,
-              dim: dim,
-            ),
-          ),
+          WidgetSpan(child: statuses),
           TextSpan(
             text: _html.convert(title),
             style: textStyle?.copyWith(
               fontWeight: FontWeight.w600,
-              fontSize: MediaQuery.textScalerOf(context).scale(fontSize * textScaleFactor),
+              fontSize: fontSize,
               color: _getTitleColor(theme),
             ),
           ),

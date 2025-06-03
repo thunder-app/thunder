@@ -8,12 +8,25 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 /// Given a list of statuses, returns a list of icons representing the statuses.
 class PostStatusIcon extends StatelessWidget {
+  /// The post status to indicate whether the post is hidden.
   final bool hidden;
+
+  /// The post status to indicate whether the post is locked.
   final bool locked;
+
+  /// The post status to indicate whether the post is saved.
   final bool saved;
+
+  /// The post status to indicate whether the post is pinned.
   final bool pinned;
+
+  /// The post status to indicate whether the post is deleted.
   final bool deleted;
+
+  /// The post status to indicate whether the post is removed.
   final bool removed;
+
+  /// Determines whether the status icons should be dimmed or not. This is usually to indicate when a post has been read.
   final bool dim;
 
   const PostStatusIcon({
@@ -29,9 +42,8 @@ class PostStatusIcon extends StatelessWidget {
 
   static Color getDimmedColor(Color color) => color.withValues(alpha: 0.55);
 
-  Widget _buildStatusIcon(BuildContext context, PostStatusType status, bool isActive, double textScaleFactor) {
-    if (!isActive) return const SizedBox.shrink();
-
+  /// Builds a single status icon.
+  Widget _buildStatusIcon(BuildContext context, PostStatusType status, double textScaleFactor) {
     final color = dim ? getDimmedColor(status.getColor(context)) : status.getColor(context);
 
     return Icon(
@@ -42,31 +54,30 @@ class PostStatusIcon extends StatelessWidget {
     );
   }
 
+  /// Builds the status icons for the post.
+  List<Widget> _buildStatusIcons(BuildContext context, double textScaleFactor) {
+    final statuses = <Widget>[];
+
+    if (hidden) statuses.add(_buildStatusIcon(context, PostStatusType.hidden, textScaleFactor));
+    if (locked) statuses.add(_buildStatusIcon(context, PostStatusType.locked, textScaleFactor));
+    if (saved) statuses.add(_buildStatusIcon(context, PostStatusType.saved, textScaleFactor));
+    if (pinned) statuses.add(_buildStatusIcon(context, PostStatusType.pinned, textScaleFactor));
+    if (deleted) statuses.add(_buildStatusIcon(context, PostStatusType.deleted, textScaleFactor));
+    if (removed) statuses.add(_buildStatusIcon(context, PostStatusType.removed, textScaleFactor));
+
+    return statuses;
+  }
+
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
+    final statuses = _buildStatusIcons(context, textScaleFactor);
 
-    final statusMap = {
-      PostStatusType.hidden: hidden,
-      PostStatusType.locked: locked,
-      PostStatusType.saved: saved,
-      PostStatusType.pinned: pinned,
-      PostStatusType.deleted: deleted,
-      PostStatusType.removed: removed,
-    };
-
-    final List<Widget> statuses = statusMap.entries
-        .where((entry) => entry.value)
-        .map((entry) => _buildStatusIcon(context, entry.key, entry.value, textScaleFactor))
-        .whereType<Widget>() // Filter out any null widgets
-        .toList();
+    if (statuses.isEmpty) return SizedBox.shrink();
 
     return Wrap(
       spacing: 2.0,
-      children: [
-        ...statuses,
-        if (statuses.isNotEmpty) const SizedBox(width: 3.5),
-      ],
+      children: [...statuses, SizedBox(width: 3.5)],
     );
   }
 }

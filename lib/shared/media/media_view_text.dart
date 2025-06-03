@@ -25,22 +25,33 @@ class MediaViewText extends StatelessWidget {
     this.read,
   });
 
+  /// Extracts plain text from markdown/HTML content.
+  /// TODO: Move this parsing outside of the UI layer to improve performance.
+  String? parseText() {
+    if (text?.isNotEmpty != true) return null;
+
+    final htmlText = cleanImagesFromHtml(markdownToHtml(text!));
+    return parse(parse(htmlText).body?.text).documentElement?.text ?? text;
+  }
+
+  /// Calculates the optimal font size based on text length.
+  double _calculateFontSize(String text) {
+    return min(20, max(4.5, (20 * (1 / log(text.length)))));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final readColor = theme.colorScheme.onSecondaryContainer.withValues(alpha: 0.55);
-    final unreadColor = theme.colorScheme.onSecondaryContainer.withValues(alpha: 0.7);
 
-    String? plainText;
+    final baseColor = theme.colorScheme.onSecondaryContainer;
+    final readColor = baseColor.withValues(alpha: 0.55);
+    final unreadColor = baseColor.withValues(alpha: 0.7);
+    final color = read == true ? readColor : unreadColor;
 
-    if (text?.isNotEmpty == true) {
-      final htmlText = cleanImagesFromHtml(markdownToHtml(text!));
-      plainText = parse(parse(htmlText).body?.text).documentElement?.text ?? text;
-    }
+    final plainText = parseText();
 
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         height: ViewMode.compact.height,
         width: ViewMode.compact.height,
@@ -48,18 +59,17 @@ class MediaViewText extends StatelessWidget {
         child: plainText != null
             ? Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Align(
-                  alignment: Alignment.center,
+                child: Center(
                   child: Text(
                     plainText,
                     style: TextStyle(
-                      fontSize: min(20, max(4.5, (20 * (1 / log(plainText.length))))),
-                      color: read == true ? readColor : unreadColor,
+                      fontSize: _calculateFontSize(plainText),
+                      color: color,
                     ),
                   ),
                 ),
               )
-            : Icon(Icons.text_fields_rounded, color: read == true ? readColor : unreadColor),
+            : Icon(Icons.text_fields_rounded, color: color),
       ),
     );
   }

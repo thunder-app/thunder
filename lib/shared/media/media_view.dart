@@ -167,7 +167,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     if (widget.viewMode == ViewMode.comfortable && (widget.hideThumbnails || !isImage)) {
       return LinkInformation(
         viewMode: widget.viewMode,
-        originURL: widget.media.originalUrl,
+        url: widget.media.originalUrl,
         mediaType: widget.media.mediaType,
         onTap: () {
           handleTap();
@@ -224,7 +224,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                   child: LinkInformation(
                     viewMode: widget.viewMode,
                     mediaType: widget.media.mediaType,
-                    originURL: widget.media.originalUrl ?? '',
+                    url: widget.media.originalUrl ?? '',
                     showEdgeToEdgeImages: widget.edgeToEdgeImages,
                   ),
                 ),
@@ -289,7 +289,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       child: LinkInformation(
                         viewMode: widget.viewMode,
                         mediaType: widget.media.mediaType,
-                        originURL: widget.media.originalUrl ?? '',
+                        url: widget.media.originalUrl ?? '',
                         showEdgeToEdgeImages: widget.edgeToEdgeImages,
                       ),
                     ),
