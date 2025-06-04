@@ -33,58 +33,49 @@ class PostCardActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<ThunderBloc, ThunderState>(
-      buildWhen: (previous, current) {
-        return previous.upvoteColor != current.upvoteColor ||
-            previous.downvoteColor != current.downvoteColor ||
-            previous.saveColor != current.saveColor ||
-            previous.showVoteActions != current.showVoteActions ||
-            previous.showSaveAction != current.showSaveAction;
-      },
-      builder: (context, state) {
-        Color upvoteColor = state.upvoteColor.color;
-        Color downvoteColor = state.downvoteColor.color;
-        Color saveColor = state.saveColor.color;
+    final state = context.select((ThunderBloc bloc) => (
+          bloc.state.upvoteColor.color,
+          bloc.state.downvoteColor.color,
+          bloc.state.saveColor.color,
+          bloc.state.showVoteActions,
+          bloc.state.showSaveAction,
+        ));
+    final upvoteColor = state.$1;
+    final downvoteColor = state.$2;
+    final saveColor = state.$3;
+    final showVoteActions = state.$4;
+    final showSaveAction = state.$5;
 
-        bool showVoteActions = state.showVoteActions;
-        bool showSaveAction = state.showSaveAction;
+    final downvotesEnabled = context.select((ProfileBloc bloc) => bloc.state.downvotesEnabled);
 
-        bool upvoted = voteType == 1;
-        bool downvoted = voteType == -1;
+    final upvoted = voteType == 1;
+    final downvoted = voteType == -1;
 
-        return Wrap(
-          children: [
-            if (showVoteActions) ...[
-              PostCardAction(
-                icon: Icons.arrow_upward,
-                color: upvoted ? upvoteColor : null,
-                label: upvoted ? l10n.upvoted : l10n.upvote,
-                onPressed: () => onVoteAction(upvoted ? 0 : 1),
-              ),
-              BlocSelector<ProfileBloc, ProfileState, bool>(
-                selector: (state) => state.downvotesEnabled,
-                builder: (context, downvotesEnabled) {
-                  if (!downvotesEnabled) return const SizedBox.shrink();
-
-                  return PostCardAction(
-                    icon: Icons.arrow_downward,
-                    color: downvoted ? downvoteColor : null,
-                    label: downvoted ? l10n.downvoted : l10n.downvote,
-                    onPressed: () => onVoteAction(downvoted ? 0 : -1),
-                  );
-                },
-              ),
-            ],
-            if (showSaveAction)
-              PostCardAction(
-                icon: saved ? Icons.star_rounded : Icons.star_border_rounded,
-                label: saved ? l10n.saved : l10n.save,
-                color: saved ? saveColor : null,
-                onPressed: () => onSaveAction(!saved),
-              ),
-          ],
-        );
-      },
+    return Wrap(
+      children: [
+        if (showVoteActions) ...[
+          PostCardAction(
+            icon: Icons.arrow_upward,
+            color: upvoted ? upvoteColor : null,
+            label: upvoted ? l10n.upvoted : l10n.upvote,
+            onPressed: () => onVoteAction(upvoted ? 0 : 1),
+          ),
+          if (downvotesEnabled)
+            PostCardAction(
+              icon: Icons.arrow_downward,
+              color: downvoted ? downvoteColor : null,
+              label: downvoted ? l10n.downvoted : l10n.downvote,
+              onPressed: () => onVoteAction(downvoted ? 0 : -1),
+            ),
+        ],
+        if (showSaveAction)
+          PostCardAction(
+            icon: saved ? Icons.star_rounded : Icons.star_border_rounded,
+            label: saved ? l10n.saved : l10n.save,
+            color: saved ? saveColor : null,
+            onPressed: () => onSaveAction(!saved),
+          ),
+      ],
     );
   }
 }
@@ -101,7 +92,7 @@ class PostCardAction extends StatelessWidget {
   final String label;
 
   /// The callback function to execute when the action is pressed.
-  final Function() onPressed;
+  final VoidCallback onPressed;
 
   const PostCardAction({
     super.key,
@@ -111,16 +102,18 @@ class PostCardAction extends StatelessWidget {
     required this.onPressed,
   });
 
+  void _handlePressed() {
+    HapticFeedback.mediumImpact();
+    onPressed();
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(icon, semanticLabel: label),
       color: color,
       visualDensity: VisualDensity.compact,
-      onPressed: () {
-        HapticFeedback.mediumImpact();
-        onPressed();
-      },
+      onPressed: _handlePressed,
     );
   }
 }

@@ -75,6 +75,18 @@ class MediaTypeBadge extends StatelessWidget {
     required this.mediaType,
   });
 
+  static Color _getBackgroundColor(Color foreground, Color background, bool isDarkTheme) {
+    return Color.alphaBlend(foreground.withValues(alpha: isDarkTheme ? 0.05 : 0.075), background);
+  }
+
+  static Color _getMaterialColor(Color foreground, Color blendColor, bool dim) {
+    return Color.alphaBlend(foreground.withValues(alpha: 0.6), blendColor).withValues(alpha: dim ? 0.55 : 1);
+  }
+
+  static Color _getIconColor(Color foreground, Color blendColor, bool dim) {
+    return Color.alphaBlend(foreground.withValues(alpha: 0.9), blendColor).withValues(alpha: dim ? 0.55 : 1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -82,9 +94,9 @@ class MediaTypeBadge extends StatelessWidget {
 
     final mediaTypeItem = mediaTypeBadgeItems[mediaType]!;
 
-    final backgroundColor = dim ? getBackgroundColor(theme.colorScheme.onSurface, theme.colorScheme.surface, darkTheme) : theme.colorScheme.surface;
-    final color = getMaterialColor(theme.colorScheme.primaryContainer, mediaTypeItem.color);
-    final iconColor = getIconColor(theme.colorScheme.onPrimaryContainer, mediaTypeItem.color);
+    final color = _getMaterialColor(theme.colorScheme.primaryContainer, mediaTypeItem.color, dim);
+    final backgroundColor = dim ? _getBackgroundColor(theme.colorScheme.onSurface, theme.colorScheme.surface, darkTheme) : theme.colorScheme.surface;
+    final iconColor = _getIconColor(theme.colorScheme.onPrimaryContainer, mediaTypeItem.color, dim);
 
     return SizedBox(
       height: 28,
@@ -102,17 +114,5 @@ class MediaTypeBadge extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color getBackgroundColor(Color foreground, Color background, bool isDarkTheme) {
-    return Color.alphaBlend(foreground.withValues(alpha: isDarkTheme ? 0.05 : 0.075), background);
-  }
-
-  Color getMaterialColor(Color foreground, Color blendColor) {
-    return Color.alphaBlend(foreground.withValues(alpha: 0.6), blendColor).withValues(alpha: dim ? 0.55 : 1);
-  }
-
-  Color getIconColor(Color foreground, Color blendColor) {
-    return Color.alphaBlend(foreground.withValues(alpha: 0.9), blendColor).withValues(alpha: dim ? 0.55 : 1);
   }
 }

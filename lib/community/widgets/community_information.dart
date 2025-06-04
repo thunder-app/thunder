@@ -39,6 +39,7 @@ class CommunityInformation extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommunityHeader(community: community, instance: instance, moderators: moderators, condensed: true),
           SidebarSectionHeader(value: l10n.information),
