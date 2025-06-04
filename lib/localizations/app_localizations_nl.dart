@@ -2585,6 +2585,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get suggestedTitle => 'Voor­gestelde titel';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'Systeem';
 
   @override

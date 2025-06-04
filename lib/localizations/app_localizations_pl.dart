@@ -2588,6 +2588,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get suggestedTitle => 'Sugerowany tytuł';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'System';
 
   @override

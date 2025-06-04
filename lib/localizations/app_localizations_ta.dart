@@ -2629,6 +2629,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get suggestedTitle => 'பரிந்துரைக்கப்பட்ட தலைப்பு';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'மண்டலம்';
 
   @override

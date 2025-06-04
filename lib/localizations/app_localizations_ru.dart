@@ -2579,6 +2579,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get suggestedTitle => 'Предлагаемое название';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'Система';
 
   @override

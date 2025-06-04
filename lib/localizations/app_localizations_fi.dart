@@ -2572,6 +2572,11 @@ class AppLocalizationsFi extends AppLocalizations {
   String get suggestedTitle => 'Otsikkoehdotus';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'System';
 
   @override

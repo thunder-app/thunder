@@ -4688,6 +4688,12 @@ abstract class AppLocalizations {
   /// **'Suggested title'**
   String get suggestedTitle;
 
+  /// Message shown to the user when Thunder automatically switches accounts
+  ///
+  /// In en, this message translates to:
+  /// **'Switched to {username}'**
+  String switchedAccount(Object username);
+
   /// Describes using the system settings for theme
   ///
   /// In en, this message translates to:

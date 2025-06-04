@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -470,11 +471,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
   Account? account = await fetchActiveProfile();
-
-  bool switchedAccount = false;
-  String? originalAccount = account.id;
-  String? originalAnonymousInstance = context.mounted ? context.read<ThunderBloc>().state.currentAnonymousInstance : null;
 
   if (account.id != accountId && accountId != null && context.mounted) {
     // Switch to the notification's account without reloading the app
@@ -483,8 +481,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
     // Set the account locally here so we don't have to wait for the event to complete
     account = await Account.fetchAccount(accountId);
 
-    // Note that we switched so we can switch back
-    switchedAccount = true;
+    // Show the user a message indicating that we switched
+    showSnackbar(l10n.switchedAccount(generateUserFullName(context, account?.username, account?.displayName, account?.instance)));
   }
 
   // If account is still null, we can't do anything.
@@ -535,12 +533,6 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
     );
 
     pushOnTopOfLoadingPage(context, route).then((_) {
-      // If needed, switch back to the original account or anonymous instance
-      if (switchedAccount) {
-        // We switched from an account, so switch back
-        context.read<ProfileBloc>().add(SwitchProfile(accountId: originalAccount, reload: false));
-      }
-
       context.read<InboxBloc>().add(const GetInboxEvent(reset: true, inboxType: InboxType.all));
     });
   }

@@ -2587,6 +2587,11 @@ class AppLocalizationsSk extends AppLocalizations {
   String get suggestedTitle => 'Navrhovaný názov';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'Systém';
 
   @override

@@ -2571,6 +2571,10 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
+  "switchedAccount": "Switched to {username}",
+  "@switchedAccount": {
+    "description": "Message shown to the user when Thunder automatically switches accounts"
+  },
   "system": "System",
   "@system": {
     "description": "Describes using the system settings for theme"

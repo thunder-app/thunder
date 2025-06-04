@@ -2604,6 +2604,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get suggestedTitle => 'Önerilen başlık';
 
   @override
+  String switchedAccount(Object username) {
+    return 'Switched to $username';
+  }
+
+  @override
   String get system => 'Sistem';
 
   @override
