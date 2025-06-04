@@ -20,26 +20,51 @@ import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/utils/global_context.dart';
 
+/// Displays a card view of a post card. This view is used in the feed related pages.
 class PostCardViewComfortable extends StatelessWidget {
-  final Function(int) onVoteAction;
-  final Function(bool) onSaveAction;
-
+  /// The post to display.
   final ThunderPost post;
+
+  /// Whether to hide thumbnails.
   final bool hideThumbnails;
+
+  /// Whether to hide NSFW previews.
   final bool hideNsfwPreviews;
+
+  /// Whether to use edge-to-edge images.
   final bool edgeToEdgeImages;
+
+  /// Whether to show the title first.
   final bool showTitleFirst;
-  final bool showPostAuthor;
+
+  /// Whether to show full height images.
   final bool showFullHeightImages;
-  final bool showVoteActions;
-  final bool showSaveAction;
+
+  /// Whether to show text content.
   final bool showTextContent;
+
+  /// Whether the user is logged in.
   final bool isUserLoggedIn;
+
+  /// Whether to mark the post as read on media view.
   final bool markPostReadOnMediaView;
-  final void Function({ThunderPost? post})? navigateToPost;
+
+  /// Whether to indicate read posts.
   final bool? indicateRead;
+
+  /// Whether the post is the last tapped post.
   final bool isLastTapped;
+
+  /// The function to navigate to the post.
+  final void Function({ThunderPost? post})? navigateToPost;
+
+  /// The function to handle vote actions.
+  final Function(int) onVoteAction;
+
+  /// The function to handle save actions.
+  final Function(bool) onSaveAction;
 
   const PostCardViewComfortable({
     super.key,
@@ -48,27 +73,21 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.showPostAuthor,
     required this.showFullHeightImages,
-    required this.showVoteActions,
-    required this.showSaveAction,
     required this.showTextContent,
     required this.isUserLoggedIn,
-    required this.onVoteAction,
-    required this.onSaveAction,
     required this.markPostReadOnMediaView,
     this.indicateRead,
     required this.isLastTapped,
     this.navigateToPost,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   /// Returns the color of the container based on the current theme and whether the post is dimmed or not.
   ///
   /// If the post is the last tapped post, the container will be highlighted with the primary color.
-  Color? getContainerColor(BuildContext context, {bool dim = false}) {
-    final theme = Theme.of(context);
-    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
-
+  Color? _getContainerColor(ThemeData theme, bool useDarkTheme, bool dim) {
     if (isLastTapped) {
       return theme.colorScheme.primary.withValues(alpha: 0.15);
     } else if (dim) {
@@ -78,16 +97,63 @@ class PostCardViewComfortable extends StatelessWidget {
     return null;
   }
 
+  void onPostActionBottomSheetPressed(BuildContext context, ThunderPost post) {
+    HapticFeedback.mediumImpact();
+
+    showPostActionBottomModalSheet(
+      context,
+      post,
+      onAction: ({postAction, userAction, communityAction, post}) {
+        if (postAction == null && userAction == null && communityAction == null) return;
+
+        switch (postAction) {
+          case PostAction.hide:
+            context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
+            break;
+          default:
+            break;
+        }
+
+        switch (userAction) {
+          case UserAction.block:
+            context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
+            break;
+          default:
+            break;
+        }
+
+        switch (communityAction) {
+          case CommunityAction.block:
+            context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
+            break;
+          default:
+            break;
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
+    final l10n = GlobalContext.l10n;
+
+    final state = context.select((ThunderBloc bloc) => (bloc.state.dimReadPosts, bloc.state.contentFontSizeScale));
+    final dimReadPosts = state.$1;
+    final contentFontSizeScale = state.$2;
+
+    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
 
     final media = post.media.firstOrNull;
-
-    bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
+    final indicateRead = this.indicateRead ?? dimReadPosts;
+    final dim = indicateRead && post.read;
     final textContent = post.body ?? "";
-    final readColor = indicateRead && post.read ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
+
+    final readColor = dim ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
+
+    final containerColor = _getContainerColor(theme, useDarkTheme, dim);
+    final dateTime = post.updated?.toIso8601String() ?? post.created.toIso8601String();
+    final edited = post.updated != null;
 
     Widget mediaView;
 
@@ -104,37 +170,26 @@ class PostCardViewComfortable extends StatelessWidget {
         markPostReadOnMediaView: markPostReadOnMediaView,
         isUserLoggedIn: isUserLoggedIn,
         navigateToPost: navigateToPost,
-        read: indicateRead && post.read,
+        read: dim,
       );
     }
 
-    // Post statuses
-    final read = post.read;
-    final hidden = post.hidden;
-    final removed = post.removed;
-    final deleted = post.deleted;
-    final saved = post.saved;
-    final locked = post.locked;
-    final pinned = post.featuredCommunity || post.featuredLocal;
-
-    final dim = indicateRead && read;
-
-    Widget postCardTitle = Padding(
+    final postCardTitle = Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
       child: PostCardTitle(
         title: post.title,
-        hidden: hidden,
-        locked: locked,
-        saved: saved,
-        pinned: pinned,
-        deleted: deleted,
-        removed: removed,
+        hidden: post.hidden,
+        locked: post.locked,
+        saved: post.saved,
+        pinned: post.featuredCommunity || post.featuredLocal,
+        deleted: post.deleted,
+        removed: post.removed,
         dim: dim,
       ),
     );
 
     return Container(
-      color: getContainerColor(context, dim: dim),
+      color: containerColor,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         spacing: 2.0,
@@ -148,21 +203,19 @@ class PostCardViewComfortable extends StatelessWidget {
               child: mediaView,
             ),
           if (!showTitleFirst) postCardTitle,
-          Visibility(
-            visible: showTextContent && textContent.isNotEmpty,
-            child: Padding(
+          if (showTextContent && textContent.isNotEmpty)
+            Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: ScalableText(
                 parse(markdownToHtml(textContent)).documentElement?.text.trim() ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                fontScale: state.contentFontSizeScale,
+                fontScale: contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: post.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),
               ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
             child: Row(
@@ -186,8 +239,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         voteType: post.voteType ?? 0,
                         commentCount: post.comments,
                         unreadCommentCount: post.unreadComments,
-                        dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
-                        edited: post.updated != null ? true : false,
+                        dateTime: dateTime,
+                        edited: edited,
                         url: media?.originalUrl,
                         languageId: post.languageId,
                         dim: dim,
@@ -196,43 +249,10 @@ class PostCardViewComfortable extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                    icon: const Icon(Icons.more_horiz_rounded, semanticLabel: 'Actions'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      showPostActionBottomModalSheet(
-                        context,
-                        post,
-                        onAction: ({postAction, userAction, communityAction, post}) {
-                          if (postAction == null && userAction == null && communityAction == null) return;
-
-                          switch (postAction) {
-                            case PostAction.hide:
-                              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
-                              break;
-                            default:
-                              break;
-                          }
-
-                          switch (userAction) {
-                            case UserAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
-                              break;
-                            default:
-                              break;
-                          }
-
-                          switch (communityAction) {
-                            case CommunityAction.block:
-                              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
-                              break;
-                            default:
-                              break;
-                          }
-                        },
-                      );
-
-                      HapticFeedback.mediumImpact();
-                    }),
+                  icon: Icon(Icons.more_horiz_rounded, semanticLabel: l10n.actions),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => onPostActionBottomSheetPressed(context, post),
+                ),
                 if (isUserLoggedIn) PostCardActions(voteType: post.voteType ?? 0, saved: post.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),

@@ -230,7 +230,6 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                               post: ThunderPost(postView.post, postView: postView, media: [Media(mediaType: MediaType.text)]),
                                               creator: ThunderUser(postView.creator),
                                               community: ThunderCommunity(postView.community),
-                                              isUserLoggedIn: false,
                                               isLastTapped: false,
                                             ),
                                           ),

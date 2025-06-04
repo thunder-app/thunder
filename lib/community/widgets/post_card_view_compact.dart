@@ -22,9 +22,6 @@ class PostCardViewCompact extends StatelessWidget {
   /// The community the post belongs to.
   final ThunderCommunity community;
 
-  /// Determines whether the user is logged in or not.
-  final bool isUserLoggedIn;
-
   /// The callback function to navigate to the post.
   final void Function({ThunderPost? post})? navigateToPost;
 
@@ -42,7 +39,6 @@ class PostCardViewCompact extends StatelessWidget {
     required this.post,
     required this.creator,
     required this.community,
-    required this.isUserLoggedIn,
     this.navigateToPost,
     this.indicateRead,
     this.showMedia = true,
@@ -52,10 +48,7 @@ class PostCardViewCompact extends StatelessWidget {
   /// Returns the color of the container based on the current theme and whether the post is dimmed or not.
   ///
   /// If the post is the last tapped post, the container will be highlighted with the primary color.
-  Color? getContainerColor(BuildContext context, {bool dim = false}) {
-    final theme = Theme.of(context);
-    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
-
+  Color? _getContainerColor(ThemeData theme, bool useDarkTheme, bool dim) {
     if (isLastTapped) {
       return theme.colorScheme.primary.withValues(alpha: 0.15);
     } else if (dim) {
@@ -67,29 +60,36 @@ class PostCardViewCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showThumbnailPreviewOnRight = context.select((ThunderBloc bloc) => bloc.state.showThumbnailPreviewOnRight);
-    final showTextPostIndicator = context.select((ThunderBloc bloc) => bloc.state.showTextPostIndicator);
+    final theme = Theme.of(context);
 
-    bool indicateRead = this.indicateRead ?? context.select((ThunderBloc bloc) => bloc.state.dimReadPosts);
+    final state = context.select((ThunderBloc bloc) => (bloc.state.showThumbnailPreviewOnRight, bloc.state.showTextPostIndicator, bloc.state.dimReadPosts));
+    final showThumbnailPreviewOnRight = state.$1;
+    final showTextPostIndicator = state.$2;
+    final dimReadPostsSetting = state.$3;
 
-    // Post statuses
-    final read = post.read;
-    final hidden = post.hidden;
-    final removed = post.removed;
-    final deleted = post.deleted;
-    final saved = post.saved;
-    final locked = post.locked;
-    final pinned = post.featuredCommunity || post.featuredLocal;
+    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
 
-    final dim = indicateRead && read;
+    final indicateRead = this.indicateRead ?? dimReadPostsSetting;
+    final dim = indicateRead && post.read;
+
+    final hasMedia = post.media.isNotEmpty;
+    final isTextPost = hasMedia && post.media.first.mediaType == MediaType.text;
+    final shouldShowThumbnail = showMedia && hasMedia && (isTextPost ? showTextPostIndicator : true);
+
+    final containerColor = _getContainerColor(theme, useDarkTheme, dim);
+    final containerPadding = showMedia ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0);
+
+    final dateTime = post.updated?.toIso8601String() ?? post.created.toIso8601String();
+    final edited = post.updated != null;
+    final mediaUrl = post.media.firstOrNull?.originalUrl;
 
     return Container(
-      color: getContainerColor(context, dim: dim),
-      padding: showMedia ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0),
+      color: containerColor,
+      padding: containerPadding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && showMedia && (post.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
+          !showThumbnailPreviewOnRight && shouldShowThumbnail
               ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
               : const SizedBox(width: 8.0),
           Expanded(
@@ -99,12 +99,12 @@ class PostCardViewCompact extends StatelessWidget {
               children: [
                 PostCardTitle(
                   title: post.title,
-                  hidden: hidden,
-                  locked: locked,
-                  saved: saved,
-                  pinned: pinned,
-                  deleted: deleted,
-                  removed: removed,
+                  hidden: post.hidden,
+                  locked: post.locked,
+                  saved: post.saved,
+                  pinned: post.featuredCommunity || post.featuredLocal,
+                  deleted: post.deleted,
+                  removed: post.removed,
                   dim: dim,
                 ),
                 PostCommunityAndAuthor(user: creator, community: community, dim: dim),
@@ -116,18 +116,16 @@ class PostCardViewCompact extends StatelessWidget {
                   voteType: post.voteType ?? 0,
                   commentCount: post.comments,
                   unreadCommentCount: post.unreadComments,
-                  dateTime: post.updated != null ? post.updated?.toIso8601String() : post.created.toIso8601String(),
-                  edited: post.updated != null ? true : false,
-                  url: post.media.firstOrNull != null ? post.media.first.originalUrl : null,
+                  dateTime: dateTime,
+                  edited: edited,
+                  url: mediaUrl,
                   languageId: post.languageId,
                   dim: dim,
                 ),
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && showMedia && (post.media.first.mediaType == MediaType.text ? showTextPostIndicator : true)
-              ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
-              : const SizedBox(width: 8.0),
+          showThumbnailPreviewOnRight && shouldShowThumbnail ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost) : const SizedBox(width: 8.0),
         ],
       ),
     );

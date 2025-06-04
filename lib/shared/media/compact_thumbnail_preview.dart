@@ -34,8 +34,9 @@ class CompactThumbnailPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
-    final markPostReadOnMediaView = context.select((ThunderBloc bloc) => bloc.state.markPostReadOnMediaView);
+    final state = context.select((ThunderBloc bloc) => (bloc.state.hideNsfwPreviews, bloc.state.markPostReadOnMediaView));
+    final hideNsfwPreviews = state.$1;
+    final markPostReadOnMediaView = state.$2;
 
     final isUserLoggedIn = context.select((ProfileBloc bloc) => bloc.state.isLoggedIn);
 
