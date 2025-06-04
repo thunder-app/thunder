@@ -635,7 +635,7 @@
   "@confirm": {
     "description": "Label for the confirm action in the dialog"
   },
-  "confirmUnsubscription": "Bist du dir sicher, das du dich abmelden möchtest?",
+  "confirmUnsubscription": "Bist du sicher, das du die Community nicht mehr abonnieren möchtest?",
   "@confirmUnsubscription": {
     "description": "Ask the user to confirm that they want to unsubscribe"
   },
@@ -2005,7 +2005,7 @@
   "@pushNotificationServer": {
     "description": "Setting for choosing push notification server"
   },
-  "reachedTheBottom": "Es sind keine weiteren Artikel zu laden",
+  "reachedTheBottom": "Keine weiteren Artikel zu laden",
   "@reachedTheBottom": {},
   "read": "Gelesen",
   "@read": {
@@ -3128,5 +3128,9 @@
   "favorite": "Favorit",
   "@favorite": {
     "description": "Action for favoriting a community"
+  },
+  "switchedAccount": "Zu {username} gewechselt",
+  "@switchedAccount": {
+    "description": "Message shown to the user when Thunder automatically switches accounts"
   }
 }
