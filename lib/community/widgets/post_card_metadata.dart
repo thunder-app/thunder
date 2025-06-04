@@ -81,11 +81,13 @@ class PostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final postCardMetadataItems = context.select((ThunderBloc bloc) => postCardViewType == ViewMode.compact ? bloc.state.compactPostCardMetadataItems : bloc.state.cardPostCardMetadataItems);
     final showScores = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
-    final List<PostCardMetadataItem> postCardMetadataItems = postCardViewType == ViewMode.compact
-        ? context.select((ThunderBloc bloc) => bloc.state.compactPostCardMetadataItems)
-        : context.select((ThunderBloc bloc) => bloc.state.cardPostCardMetadataItems);
+    final dim = this.dim ?? false;
+    final voteType = this.voteType ?? 0;
+    final edited = this.edited ?? false;
+    final unreadCommentCount = this.unreadCommentCount ?? 0;
 
     return Wrap(
       spacing: 0,
@@ -96,38 +98,38 @@ class PostCardMetadata extends StatelessWidget {
           PostCardMetadataItem.score => ScorePostCardMetaData(
               score: score,
               voteType: voteType,
-              dim: dim ?? false,
+              dim: dim,
               showScores: showScores,
             ),
           PostCardMetadataItem.upvote => UpvotePostCardMetaData(
               upvotes: upvoteCount,
               upvoted: voteType == 1,
-              dim: dim ?? false,
+              dim: dim,
               showScores: showScores,
             ),
           PostCardMetadataItem.downvote => DownvotePostCardMetaData(
               downvotes: downvoteCount,
               downvoted: voteType == -1,
-              dim: dim ?? false,
+              dim: dim,
               showScores: showScores,
             ),
           PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(
               commentCount: commentCount,
-              unreadCommentCount: unreadCommentCount ?? 0,
-              dim: dim ?? false,
+              unreadCommentCount: unreadCommentCount,
+              dim: dim,
             ),
           PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
               dateTime: dateTime!,
-              dim: dim ?? false,
-              edited: edited ?? false,
+              dim: dim,
+              edited: edited,
             ),
           PostCardMetadataItem.url => UrlPostCardMetaData(
               url: url,
-              dim: dim ?? false,
+              dim: dim,
             ),
           PostCardMetadataItem.language => LanguagePostCardMetaData(
               languageId: languageId,
-              hasBeenRead: dim ?? false,
+              hasBeenRead: dim,
             ),
         };
       }).toList(),
@@ -170,16 +172,19 @@ class ScorePostCardMetaData extends StatelessWidget {
     final upvoteColor = state.$2;
     final downvoteColor = state.$3;
 
-    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final baseTextColor = theme.textTheme.bodyMedium?.color;
+    final dimColor = baseTextColor?.withValues(alpha: 0.45);
 
-    // Compute the color based on the vote type.
-    final color = switch (voteType) {
+    final primaryColor = switch (voteType) {
       1 => upvoteColor,
       -1 => downvoteColor,
-      _ => dim ? dimColor : theme.textTheme.bodyMedium?.color,
+      _ => dim ? dimColor : baseTextColor,
     };
 
-    final formattedScore = formatNumberToK(score ?? 0);
+    final upvoteIconColor = voteType == -1 ? dimColor : primaryColor;
+    final downvoteIconColor = voteType == 1 ? dimColor : primaryColor;
+
+    final formattedScore = showScores ? formatNumberToK(score ?? 0) : '';
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -195,19 +200,11 @@ class ScorePostCardMetaData extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Icon(
-                    Icons.arrow_upward,
-                    size: 13.5,
-                    color: voteType == -1 ? dimColor : color,
-                  ),
+                  child: Icon(Icons.arrow_upward, size: 13.5, color: upvoteIconColor),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: Icon(
-                    Icons.arrow_downward,
-                    size: 13.5,
-                    color: voteType == 1 ? dimColor : color,
-                  ),
+                  child: Icon(Icons.arrow_downward, size: 13.5, color: downvoteIconColor),
                 ),
               ],
             ),
@@ -217,7 +214,7 @@ class ScorePostCardMetaData extends StatelessWidget {
               formattedScore,
               semanticsLabel: l10n.xScore(formattedScore),
               fontScale: metadataFontScale,
-              style: theme.textTheme.bodyMedium?.copyWith(color: color),
+              style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
             ),
         ],
       ),
@@ -258,16 +255,18 @@ class UpvotePostCardMetaData extends StatelessWidget {
     final metadataFontScale = state.$1;
     final upvoteColor = state.$2;
 
-    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final baseTextColor = theme.textTheme.bodyMedium?.color;
+    final dimColor = baseTextColor?.withValues(alpha: 0.45);
 
-    // Compute the final color based on the upvote status and read status.
-    final color = upvoted == true ? upvoteColor : (dim ? dimColor : theme.textTheme.bodyMedium?.color);
+    final color = upvoted == true ? upvoteColor : (dim ? dimColor : baseTextColor);
+
+    final formattedUpvotes = showScores ? formatNumberToK(upvotes ?? 0) : null;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: metadataFontScale,
-        text: showScores ? formatNumberToK(upvotes ?? 0) : null,
+        text: formattedUpvotes,
         textColor: color,
         padding: 2.0,
         icon: Icon(Icons.arrow_upward, size: 17.0, color: color),
@@ -309,16 +308,18 @@ class DownvotePostCardMetaData extends StatelessWidget {
     final metadataFontScale = state.$1;
     final downvoteColor = state.$2;
 
-    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final baseTextColor = theme.textTheme.bodyMedium?.color;
+    final dimColor = baseTextColor?.withValues(alpha: 0.45);
 
-    // Determine the final color based on the downvote status and read status.
-    final color = downvoted == true ? downvoteColor : (dim ? dimColor : theme.textTheme.bodyMedium?.color);
+    final color = downvoted == true ? downvoteColor : (dim ? dimColor : baseTextColor);
+
+    final formattedDownvotes = showScores ? formatNumberToK(downvotes ?? 0) : null;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: metadataFontScale,
-        text: showScores ? formatNumberToK(downvotes ?? 0) : null,
+        text: formattedDownvotes,
         textColor: color,
         padding: 2.0,
         icon: Icon(Icons.arrow_downward, size: 17.0, color: color),
@@ -350,36 +351,32 @@ class CommentCountPostCardMetaData extends StatelessWidget {
     final theme = Theme.of(context);
 
     final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
-    final dimColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
 
-    final bool hasUnread = unreadCommentCount > 0 && unreadCommentCount != commentCount;
+    final baseTextColor = theme.textTheme.bodyMedium?.color;
+    final primaryColor = theme.primaryColor;
+    final dimColor = baseTextColor?.withValues(alpha: 0.45);
 
-    final color = switch (dim) {
-      true => hasUnread ? theme.primaryColor : dimColor,
-      _ => hasUnread ? theme.primaryColor : theme.textTheme.bodyMedium?.color,
-    };
+    final hasUnread = unreadCommentCount > 0 && unreadCommentCount != commentCount;
 
-    final displayText = hasUnread ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0);
+    final color = hasUnread ? primaryColor : (dim ? dimColor : baseTextColor);
+    final commentCountText = hasUnread ? '+${formatNumberToK(unreadCommentCount)}' : formatNumberToK(commentCount ?? 0);
+    final icon = hasUnread ? Icons.mark_unread_chat_alt_rounded : Icons.chat;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: IconText(
         fontScale: fontScale,
-        text: displayText,
+        text: commentCountText,
         textColor: color,
         padding: 4.0,
-        icon: Icon(
-          hasUnread ? Icons.mark_unread_chat_alt_rounded : Icons.chat,
-          size: 17.0,
-          color: color,
-        ),
+        icon: Icon(icon, size: 17.0, color: color),
       ),
     );
   }
 }
 
 /// Contains metadata related to the number of comments for a given post. This is used in the [PostCardMetadata] widget.
-class DateTimePostCardMetaData extends StatefulWidget {
+class DateTimePostCardMetaData extends StatelessWidget {
   /// The date/time the post was created or updated. This string should conform to ISO-8601 format.
   final String dateTime;
 
@@ -392,48 +389,27 @@ class DateTimePostCardMetaData extends StatefulWidget {
   const DateTimePostCardMetaData({super.key, required this.dateTime, this.dim = false, this.edited = false});
 
   @override
-  State<DateTimePostCardMetaData> createState() => _DateTimePostCardMetaDataState();
-}
-
-class _DateTimePostCardMetaDataState extends State<DateTimePostCardMetaData> {
-  /// The parsed date from the [widget.dateTime] string.
-  late DateTime parsedDate;
-
-  /// The formatted date string.
-  late String formattedDate;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleDateChange();
-  }
-
-  @override
-  void didUpdateWidget(DateTimePostCardMetaData oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.dateTime != oldWidget.dateTime) _handleDateChange();
-  }
-
-  void _handleDateChange() {
-    final state = context.read<ThunderBloc>().state;
-    final showFullPostDate = state.showFullPostDate;
-    final dateFormat = state.dateFormat;
-
-    parsedDate = DateTime.parse(widget.dateTime);
-    formattedDate = showFullPostDate && dateFormat != null ? dateFormat.format(parsedDate.toLocal()) : formatTimeToString(dateTime: widget.dateTime);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
-    final showFullPostDate = context.select((ThunderBloc bloc) => bloc.state.showFullPostDate);
+    final state = context.select((ThunderBloc bloc) => (bloc.state.showFullPostDate, bloc.state.dateFormat, bloc.state.metadataFontSizeScale));
+    final showFullPostDate = state.$1;
+    final dateFormat = state.$2;
+    final fontScale = state.$3;
+
+    String formattedDate;
+
+    try {
+      formattedDate = showFullPostDate && dateFormat != null ? dateFormat.format(DateTime.parse(dateTime).toLocal()) : formatTimeToString(dateTime: dateTime);
+    } catch (e) {
+      formattedDate = dateTime; // Fallback for malformed dates
+    }
 
     final baseColor = theme.textTheme.bodyMedium?.color;
     final dimColor = baseColor?.withValues(alpha: 0.45);
     final fullDateColor = baseColor?.withValues(alpha: 0.75);
-    final color = widget.dim ? dimColor : (showFullPostDate ? fullDateColor : baseColor);
+    final color = dim ? dimColor : (showFullPostDate ? fullDateColor : baseColor);
+    final icon = edited ? Icons.edit : Icons.history_rounded;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -442,18 +418,14 @@ class _DateTimePostCardMetaDataState extends State<DateTimePostCardMetaData> {
         text: formattedDate,
         textColor: color,
         padding: 2.0,
-        icon: Icon(
-          widget.edited ? Icons.edit : Icons.history_rounded,
-          size: 17.0,
-          color: color,
-        ),
+        icon: Icon(icon, size: 17.0, color: color),
       ),
     );
   }
 }
 
 /// Contains metadata related to the url/external link for a given post. This is used in the [PostCardMetadata] widget.
-class UrlPostCardMetaData extends StatefulWidget {
+class UrlPostCardMetaData extends StatelessWidget {
   /// The URL to display in the metadata. If null, no URL will be displayed.
   final String? url;
 
@@ -463,54 +435,34 @@ class UrlPostCardMetaData extends StatefulWidget {
   const UrlPostCardMetaData({super.key, this.url, this.dim = false});
 
   @override
-  State<UrlPostCardMetaData> createState() => _UrlPostCardMetaDataState();
-}
-
-class _UrlPostCardMetaDataState extends State<UrlPostCardMetaData> {
-  /// The host of the URL.
-  String? host;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleUrlChange();
-  }
-
-  @override
-  void didUpdateWidget(UrlPostCardMetaData oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.url != oldWidget.url) _handleUrlChange();
-  }
-
-  void _handleUrlChange() {
-    if (widget.url?.isNotEmpty == true) {
-      try {
-        host = Uri.parse(widget.url!).host.replaceFirst('www.', '');
-      } catch (e) {
-        host = widget.url;
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.url?.isEmpty ?? true) return const SizedBox.shrink();
+    if (url?.isEmpty ?? true) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
     final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
+    String? host;
+
+    if (url?.isNotEmpty == true) {
+      try {
+        host = Uri.parse(url!).host.replaceFirst('www.', '');
+      } catch (e) {
+        host = url; // Fallback for malformed URLs
+      }
+    }
+
     final textStyle = theme.textTheme.bodyMedium;
     final dimColor = textStyle?.color?.withValues(alpha: 0.45);
-    final textColor = widget.dim ? dimColor : textStyle?.color;
+    final textColor = dim ? dimColor : textStyle?.color;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: Tooltip(
-        message: widget.url!,
+        message: url!,
         preferBelow: false,
         child: IconText(
           fontScale: fontScale,
-          text: host ?? widget.url!,
+          text: host ?? url!,
           textColor: textColor,
           padding: 3.0,
           icon: Icon(Icons.public, size: 17.0, color: textColor),
@@ -521,7 +473,7 @@ class _UrlPostCardMetaDataState extends State<UrlPostCardMetaData> {
 }
 
 /// Contains metadata related to the language of a given post. This is used in the [PostCardMetadata] widget.
-class LanguagePostCardMetaData extends StatefulWidget {
+class LanguagePostCardMetaData extends StatelessWidget {
   /// The language to display in the metadata. If null, no language will be displayed.
   /// Pass `-1` to indicate that this widget is for demonstration purposes, and `English` will be displayed.
   final int? languageId;
@@ -536,49 +488,24 @@ class LanguagePostCardMetaData extends StatefulWidget {
   });
 
   @override
-  State<LanguagePostCardMetaData> createState() => _LanguagePostCardMetaDataState();
-}
+  Widget build(BuildContext context) {
+    String? languageName;
 
-class _LanguagePostCardMetaDataState extends State<LanguagePostCardMetaData> {
-  /// The name of the language.
-  String? languageName;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleLanguageChange();
-  }
-
-  @override
-  void didUpdateWidget(LanguagePostCardMetaData oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.languageId != oldWidget.languageId) _handleLanguageChange();
-  }
-
-  void _handleLanguageChange() {
-    if (widget.languageId == -1) {
+    if (languageId == -1) {
       languageName = 'English';
-      return;
+    } else if (languageId != null) {
+      final languages = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.allLanguages ?? <Language>[]);
+      final language = languages.firstWhereOrNull((language) => language.id == languageId);
+      languageName = language?.name;
     }
 
-    List<Language> languages = context.read<ProfileBloc>().state.getSiteResponse?.allLanguages ?? [];
-    final language = languages.firstWhereOrNull((language) => language.id == widget.languageId);
-
-    languageName = language?.name;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (languageName == null) return const SizedBox.shrink();
 
-    final ThemeData theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final Color? readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final theme = Theme.of(context);
+    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
-    final color = switch (widget.hasBeenRead) {
-      true => readColor,
-      _ => theme.textTheme.bodyMedium?.color,
-    };
+    final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
+    final color = hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color;
 
     return Container(
       margin: const EdgeInsets.only(right: 8.0),
@@ -586,7 +513,7 @@ class _LanguagePostCardMetaDataState extends State<LanguagePostCardMetaData> {
         message: languageName,
         preferBelow: false,
         child: IconText(
-          fontScale: state.metadataFontSizeScale,
+          fontScale: fontScale,
           text: languageName,
           textColor: color,
           padding: 3.0,
@@ -720,18 +647,18 @@ class CommunityPostCardMetadata extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final thunderState = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final fontScale = context.select((ThunderBloc bloc) => (bloc.state.metadataFontSizeScale));
     final feedListType = context.select((FeedBloc bloc) => bloc.state.feedListType);
-    final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 
-    final showCommunitySubscription = (feedListType == FeedListType.all || feedListType == FeedListType.local) && subscribed == true;
+    final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
+    final showCommunitySubscription = (feedListType == FeedListType.all || feedListType == FeedListType.local) && subscribed;
 
     Widget child = CommunityFullNameWidget(
       context,
       communityName,
       displayName,
       instanceName,
-      fontScale: thunderState,
+      fontScale: fontScale,
       transformColor: _transformColor,
     );
 
@@ -773,9 +700,9 @@ class UserPostCardMetadata extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.select((ThunderBloc bloc) => (bloc.state.postShowUserInstance, bloc.state.metadataFontSizeScale));
-
     final postShowUserInstance = state.$1;
     final metadataFontSizeScale = state.$2;
+
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 
     return UserFullNameWidget(
