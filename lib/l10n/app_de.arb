@@ -3120,5 +3120,13 @@
   "totalPosts": "{x} Posts",
   "@totalPosts": {
     "description": "The total posts created by a user"
+  },
+  "unfavorite": "Aus Favoriten entfernen",
+  "@unfavorite": {
+    "description": "Action for unfavoriting a community"
+  },
+  "favorite": "Favorit",
+  "@favorite": {
+    "description": "Action for favoriting a community"
   }
 }
