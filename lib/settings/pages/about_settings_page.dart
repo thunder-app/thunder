@@ -6,6 +6,7 @@ import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/navigation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   final LocalSettings? settingToHighlight;
@@ -66,6 +67,17 @@ class AboutSettingsPage extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     handleLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    'Support',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: const Text('thunderapp@proton.me'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    launchUrl(Uri.parse('mailto:thunderapp@proton.me'));
                   },
                 ),
                 ListTile(
