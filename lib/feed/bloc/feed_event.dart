@@ -18,7 +18,7 @@ final class FeedFetchedEvent extends FeedEvent {
   final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
-  final SortType? sortType;
+  final PostSortType? sortType;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -57,7 +57,7 @@ final class FeedFetchedEvent extends FeedEvent {
 }
 
 final class FeedChangeSortTypeEvent extends FeedEvent {
-  final SortType sortType;
+  final PostSortType sortType;
 
   const FeedChangeSortTypeEvent(this.sortType);
 }

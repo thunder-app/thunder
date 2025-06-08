@@ -184,8 +184,8 @@ class ThunderState extends Equatable {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   final FeedListType defaultFeedListType;
-  final SortType defaultSortType;
-  SortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final PostSortType defaultSortType;
+  PostSortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType.toLemmyType()) ? defaultSortType : DEFAULT_SORT_TYPE;
   final bool useProfilePictureForDrawer;
 
   // NSFW Settings
@@ -365,7 +365,7 @@ class ThunderState extends Equatable {
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
     FeedListType? defaultFeedListType,
-    SortType? defaultSortType,
+    PostSortType? defaultSortType,
     bool? useProfilePictureForDrawer,
 
     // NSFW Settings

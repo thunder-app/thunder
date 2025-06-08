@@ -11,6 +11,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -63,7 +64,7 @@ class FeedPage extends StatefulWidget {
   final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
-  final SortType? sortType;
+  final PostSortType? sortType;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -502,7 +503,7 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredFeedListType != currentFeedListType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: PostSortTypeMapping.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBloc.state.sortTypeForInstance,
           reset: true,
           feedListType: desiredFeedListType,
           feedType: FeedType.general,
