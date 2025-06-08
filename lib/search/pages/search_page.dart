@@ -18,6 +18,7 @@ import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
@@ -835,21 +836,20 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions) {
-    assert(community.subscribed != null);
-    if (isUserLoggedIn) return community.subscribed!;
+  SubscriptionStatus _getCurrentSubscriptionStatus(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions) {
+    if (isUserLoggedIn) return community.subscribed;
 
     bool isSubscribed =
         newAnonymousSubscriptions.firstWhereOrNull((c) => c.id == community.id) != null || (currentSubscriptions?.contains(community.id) == true && !removedSubs.contains(community.id));
 
-    return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+    return isSubscribed ? SubscriptionStatus.subscribed : SubscriptionStatus.notSubscribed;
   }
 
   void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, ThunderCommunity community) {
     if (isUserLoggedIn) {
       context.read<SearchBloc>().add(ChangeCommunitySubsciptionStatusEvent(
             communityId: community.id,
-            follow: community.subscribed == SubscribedType.notSubscribed ? true : false,
+            follow: community.subscribed == SubscriptionStatus.notSubscribed ? true : false,
             query: _controller.text,
           ));
       return;

@@ -3,6 +3,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -282,7 +283,7 @@ ThunderComment createExampleComment({
       childCount: commentChildCount ?? 0,
     ),
     creatorBannedFromCommunity: false,
-    subscribed: SubscribedType.notSubscribed,
+    subscribed: SubscriptionStatus.notSubscribed.toLemmyType(),
     saved: saved ?? false,
     creatorBlocked: false,
   );
