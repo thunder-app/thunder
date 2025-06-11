@@ -8,6 +8,9 @@ class ThunderActionChip extends StatelessWidget {
   /// The trailing icon to display in the action chip.
   final IconData? trailingIcon;
 
+  /// The size of the trailing icon.
+  final double? trailingIconSize;
+
   /// The label of the action chip.
   final String label;
 
@@ -17,7 +20,7 @@ class ThunderActionChip extends StatelessWidget {
   /// The function to call when the action chip is pressed.
   final void Function()? onPressed;
 
-  const ThunderActionChip({super.key, this.icon, this.trailingIcon, required this.label, this.onPressed, this.backgroundColor});
+  const ThunderActionChip({super.key, this.icon, this.trailingIcon, this.trailingIconSize, required this.label, this.onPressed, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class ThunderActionChip extends StatelessWidget {
       children: [
         if (icon != null) ...[Icon(icon, size: 15.0), const SizedBox(width: 5.0)],
         Text(label),
-        if (trailingIcon != null) ...[const SizedBox(width: 5.0), Icon(trailingIcon, size: 20.0)],
+        if (trailingIcon != null) ...[const SizedBox(width: 5.0), Icon(trailingIcon, size: trailingIconSize ?? 20.0)],
       ],
     );
 

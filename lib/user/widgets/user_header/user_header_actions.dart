@@ -220,11 +220,16 @@ class _FeedTypeActionChip extends StatelessWidget {
     final icon = feedType == FeedTypeSubview.post ? Icons.article_rounded : Icons.chat_rounded;
     final label = feedType == FeedTypeSubview.post ? l10n.posts : l10n.comments;
 
-    return ThunderActionChip(
-      icon: icon,
-      trailingIcon: Icons.arrow_drop_down_rounded,
-      label: label,
-      onPressed: () => _showFeedTypePicker(context),
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubicEmphasized,
+      child: ThunderActionChip(
+        icon: icon,
+        trailingIcon: Icons.swap_horiz_rounded,
+        trailingIconSize: 17.0,
+        label: label,
+        onPressed: () => onChangeFeedType(feedType == FeedTypeSubview.post ? FeedTypeSubview.comment : FeedTypeSubview.post),
+      ),
     );
   }
 
