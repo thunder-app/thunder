@@ -6,6 +6,9 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 ///
 /// This includes the total number of comments and the date/time the post was created or updated.
 class PostBodyMetadata extends StatelessWidget {
+  /// The language of the post. If null, no language will be displayed.
+  final int? languageId;
+
   /// The number of comments on the post. If null, no comment count will be displayed.
   final int? commentCount;
 
@@ -23,6 +26,7 @@ class PostBodyMetadata extends StatelessWidget {
 
   const PostBodyMetadata({
     super.key,
+    this.languageId,
     this.commentCount,
     this.unreadCommentCount,
     this.dateTime,
@@ -40,6 +44,7 @@ class PostBodyMetadata extends StatelessWidget {
           UrlPostCardMetaData(url: url, dim: false),
           Row(
             children: [
+              if (languageId != null && languageId != 0) LanguagePostCardMetaData(languageId: languageId, hasBeenRead: false),
               CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, dim: false),
               DateTimePostCardMetaData(dateTime: dateTime!, dim: false, edited: hasBeenEdited ?? false),
             ],

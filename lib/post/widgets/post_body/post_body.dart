@@ -214,6 +214,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
     children.add(
       PostBodyMetadata(
+        languageId: post.languageId,
         commentCount: post.comments,
         unreadCommentCount: post.unreadComments,
         dateTime: post.updated?.toIso8601String() ?? post.created.toIso8601String(),
