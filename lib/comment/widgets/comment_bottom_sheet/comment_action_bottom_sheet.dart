@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -19,27 +18,27 @@ import 'package:thunder/utils/instance.dart';
 /// Programatically show the comment action bottom sheet
 void showCommentActionBottomModalSheet(
   BuildContext context,
-  CommentView commentView, {
+  ThunderComment comment, {
   bool isShowingSource = false,
   GeneralCommentAction page = GeneralCommentAction.general,
-  void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required CommentView commentView, dynamic value})? onAction,
+  void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required ThunderComment comment, dynamic value})? onAction,
 }) {
   showModalBottomSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => CommentActionBottomSheet(context: context, initialPage: page, commentView: commentView, onAction: onAction, isShowingSource: isShowingSource),
+    builder: (_) => CommentActionBottomSheet(context: context, initialPage: page, comment: comment, onAction: onAction, isShowingSource: isShowingSource),
   );
 }
 
 class CommentActionBottomSheet extends StatefulWidget {
-  const CommentActionBottomSheet({super.key, required this.context, required this.commentView, this.initialPage = GeneralCommentAction.general, required this.onAction, this.isShowingSource = false});
+  const CommentActionBottomSheet({super.key, required this.context, required this.comment, this.initialPage = GeneralCommentAction.general, required this.onAction, this.isShowingSource = false});
 
   /// The parent context
   final BuildContext context;
 
   /// The comment that is being acted on
-  final CommentView commentView;
+  final ThunderComment comment;
 
   /// Whether the source of the comment is being shown
   final bool isShowingSource;
@@ -48,7 +47,7 @@ class CommentActionBottomSheet extends StatefulWidget {
   final GeneralCommentAction initialPage;
 
   /// The callback that is called when an action is performed
-  final void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required CommentView commentView, dynamic value})? onAction;
+  final void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required ThunderComment comment, dynamic value})? onAction;
 
   @override
   State<CommentActionBottomSheet> createState() => _CommentActionBottomSheetState();
@@ -80,13 +79,15 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   }
 
   String? generateSubtitle(GeneralCommentAction page) {
-    CommentView commentView = widget.commentView;
+    final comment = widget.comment;
 
-    String? userInstance = fetchInstanceNameFromUrl(commentView.creator.actorId);
+    assert(comment.creator != null, 'Comment must have a creator');
+
+    String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
-        return generateUserFullName(context, commentView.creator.name, commentView.creator.displayName, fetchInstanceNameFromUrl(commentView.creator.actorId));
+        return generateUserFullName(context, comment.creator!.name, comment.creator!.displayName, userInstance);
       case GeneralCommentAction.instance:
         return userInstance;
       default:
@@ -98,41 +99,43 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
+
     Widget actions = switch (currentPage) {
       GeneralCommentAction.general => GeneralCommentActionBottomSheetPage(
           context: widget.context,
-          commentView: widget.commentView,
+          comment: widget.comment,
           onSwitchActivePage: (page) => setState(() => currentPage = page),
-          onAction: (CommentAction commentAction, CommentView? updatedCommentView, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
+          onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
+            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
           },
         ),
       GeneralCommentAction.comment => CommentCommentActionBottomSheet(
           context: widget.context,
-          commentView: widget.commentView,
+          comment: widget.comment,
           isShowingSource: widget.isShowingSource,
-          onAction: (CommentAction commentAction, CommentView? updatedCommentView, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, commentView: widget.commentView, value: value);
+          onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
+            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
           },
         ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
-          user: ThunderUser(widget.commentView.creator),
-          communityId: widget.commentView.community.id,
-          isUserCommunityModerator: widget.commentView.creatorIsModerator,
-          isUserBannedFromCommunity: widget.commentView.creatorBannedFromCommunity,
+          user: ThunderUser(widget.comment.creator!),
+          communityId: widget.comment.community!.id,
+          isUserCommunityModerator: widget.comment.creatorIsModerator,
+          isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
-            widget.onAction?.call(userAction: userAction, commentView: widget.commentView);
+            widget.onAction?.call(userAction: userAction, comment: widget.comment);
           },
         ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
-          userInstanceId: widget.commentView.creator.instanceId,
-          userInstanceUrl: widget.commentView.creator.actorId,
+          userInstanceId: widget.comment.creator!.instanceId,
+          userInstanceUrl: widget.comment.creator!.actorId,
           onAction: () {},
         ),
       GeneralCommentAction.share => ShareActionBottomSheet(
           context: widget.context,
-          commentView: widget.commentView,
+          comment: widget.comment,
           onAction: () {},
         ),
     };
@@ -167,7 +170,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
               if (currentPage == GeneralCommentAction.general)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                  child: LanguagePostCardMetaData(languageId: widget.commentView.comment.languageId),
+                  child: LanguagePostCardMetaData(languageId: widget.comment.languageId),
                 ),
               const SizedBox(height: 16.0),
               actions,

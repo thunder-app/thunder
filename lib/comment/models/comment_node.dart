@@ -1,21 +1,21 @@
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 
 /// A node representing a single comment. This node can be part of a [CommentNode] tree.
 ///
-/// The root node is defined by having a null [commentView]
+/// The root node is defined by having a null [comment]
 class CommentNode {
   /// The comment information associated with this node. If this is the root node, this will be null
-  final CommentView? commentView;
+  final ThunderComment? comment;
 
   /// The replies to this comment
   final List<CommentNode> replies;
 
   /// Gets the depth/level of the comment in the tree. A depth of 0 indicates a root comment.
-  /// The [commentView.comment.path] is a dot-separated string of comment ids starting from 0 (post). For example: `0.103315`
+  /// The [comment.path] is a dot-separated string of comment ids starting from 0 (post). For example: `0.103315`
   int get depth {
-    if (commentView == null) return 0;
+    if (comment == null) return 0;
 
-    List<String> pathSegments = commentView!.comment.path.split('.');
+    List<String> pathSegments = comment!.path.split('.');
     int depth = pathSegments.length > 2 ? pathSegments.length - 2 : 0;
 
     return depth;
@@ -24,13 +24,13 @@ class CommentNode {
   /// Gets the total number of replies
   int get totalReplies => replies.length;
 
-  CommentNode({this.commentView, this.replies = const []});
+  CommentNode({this.comment, this.replies = const []});
 
-  /// Adds a reply to this comment node
-  /// There is a constraint where the comment [id] must be unique. If there exists a comment that has the same [id], we will replace it with the new comment.
+  /// Adds a reply to this comment node. There is a constraint where the comment [id] must be unique.
+  /// If there exists a comment that has the same [id], we will replace it with the new comment.
   void addReply(CommentNode reply) {
     // Add the comment only if theres no other comment with the same id
-    int existingCommentNodeIndex = replies.indexWhere((node) => node.commentView?.comment.id == reply.commentView?.comment.id);
+    int existingCommentNodeIndex = replies.indexWhere((node) => node.comment?.id == reply.comment?.id);
 
     if (existingCommentNodeIndex != -1) {
       // Replace the comment with the new comment
@@ -56,13 +56,13 @@ class CommentNode {
   /// A static helper method to find a comment node in the tree given its [id]. The [id] comes from [comment.path]
   /// Returns null if the node is not found.
   static CommentNode? findCommentNode(CommentNode node, String id) {
-    String? nodeId = node.commentView?.comment.path.split('.').last;
+    String? nodeId = node.comment?.path.split('.').last;
 
     // Return the current node if it's the target
     if (nodeId == id) return node;
 
     // Recursively search for the target node
-    for (CommentNode child in node.replies) {
+    for (final child in node.replies) {
       CommentNode? found = findCommentNode(child, id);
       if (found != null) return found;
     }
@@ -79,9 +79,9 @@ class CommentNode {
     if (root == null) return flattenedCommentNodes;
 
     void flatten(CommentNode node) {
-      if (node.commentView != null) flattenedCommentNodes.add(node);
+      if (node.comment != null) flattenedCommentNodes.add(node);
 
-      for (CommentNode child in node.replies) {
+      for (final child in node.replies) {
         flatten(child);
       }
     }

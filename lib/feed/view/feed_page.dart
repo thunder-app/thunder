@@ -337,7 +337,7 @@ class _FeedViewState extends State<FeedView> {
             builder: (context, state) {
               final theme = Theme.of(context);
               List<ThunderPost> posts = state.posts;
-              List<CommentView> commentViews = state.commentViews;
+              List<ThunderComment> comments = state.comments;
 
               return RefreshIndicator(
                 onRefresh: () async {
@@ -398,7 +398,7 @@ class _FeedViewState extends State<FeedView> {
                           selectedUserOption[1]
                               // Widget representing the list of user comments on the feed
                               ? FeedCommentCardList(
-                                  commentViews: commentViews,
+                                  comments: comments,
                                   tabletMode: tabletMode,
                                 )
                               :

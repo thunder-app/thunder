@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -18,14 +18,14 @@ import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommentReference extends StatefulWidget {
-  final CommentView comment;
+  final ThunderComment comment;
   final bool isOwnComment;
   final bool disableActions;
   final Function(int, int)? onVoteAction;
   final Function(int, bool)? onSaveAction;
   final Function(int, bool)? onDeleteAction;
   final Function(int)? onReportAction;
-  final Function(CommentView, bool)? onReplyEditAction;
+  final Function(ThunderComment, bool)? onReplyEditAction;
   final Widget? child;
 
   const CommentReference({
@@ -87,16 +87,18 @@ class _CommentReferenceState extends State<CommentReference> {
     final ThunderState state = context.read<ThunderBloc>().state;
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
+    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have both a creator and community');
+
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
-          ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}\n
-          ${widget.comment.creator.name}\n
-          ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n
-          ${widget.comment.counts.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.counts.downvotes))}\n
-          ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
-          ${cleanCommentContent(widget.comment.comment)}""",
+      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.title)}\n
+          ${fetchInstanceNameFromUrl(widget.comment.community!.url)}\n
+          ${widget.comment.creator!.name}\n
+          ${widget.comment.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.upvotes!))}\n
+          ${widget.comment.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.downvotes!))}\n
+          ${formatTimeToString(dateTime: (widget.comment.updated ?? widget.comment.published).toIso8601String())}\n
+          ${cleanCommentContent(widget.comment)}""",
       child: InkWell(
-        onTap: widget.comment.post.deleted ? null : () async => await navigateToComment(context, widget.comment),
+        onTap: widget.comment.post?.deleted ?? false ? null : () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
@@ -113,7 +115,7 @@ class _CommentReferenceState extends State<CommentReference> {
                         children: [
                           Row(
                             children: [
-                              if (widget.comment.post.deleted) ...[
+                              if (widget.comment.post?.deleted ?? false) ...[
                                 const Icon(
                                   Icons.delete_rounded,
                                   size: 15,
@@ -124,7 +126,7 @@ class _CommentReferenceState extends State<CommentReference> {
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(
-                                    widget.comment.post.name,
+                                    widget.comment.post?.title ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -150,9 +152,9 @@ class _CommentReferenceState extends State<CommentReference> {
                               ExcludeSemantics(
                                 child: CommunityFullNameWidget(
                                   context,
-                                  widget.comment.community.name,
-                                  widget.comment.community.title,
-                                  fetchInstanceNameFromUrl(widget.comment.community.actorId),
+                                  widget.comment.community?.name,
+                                  widget.comment.community?.title,
+                                  fetchInstanceNameFromUrl(widget.comment.community?.url),
                                   fontScale: state.contentFontSizeScale,
                                   transformColor: (color) => color?.withValues(alpha: 0.75),
                                 ),
@@ -186,8 +188,8 @@ class _CommentReferenceState extends State<CommentReference> {
                           onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
                           voteType: widget.comment.myVote ?? 0,
                           saved: widget.comment.saved,
-                          commentView: widget.comment,
-                          highlightedCommentId: widget.comment.comment.id,
+                          comment: widget.comment,
+                          highlightedCommentId: widget.comment.id,
                         );
                       }
                     },
@@ -210,7 +212,7 @@ class _CommentReferenceState extends State<CommentReference> {
                     },
                     child: Dismissible(
                       direction: (widget.disableActions || isOverridingSwipeGestureAction == true) ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
-                      key: ObjectKey(widget.comment.comment.id),
+                      key: ObjectKey(widget.comment.id),
                       resizeDuration: Duration.zero,
                       dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
                       confirmDismiss: (DismissDirection direction) async {
@@ -302,7 +304,7 @@ class _CommentReferenceState extends State<CommentReference> {
                         onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
                         onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
                         onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                        onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, widget.isOwnComment),
+                        onReplyEditAction: (ThunderComment comment, bool isEdit) => widget.onReplyEditAction?.call(comment, widget.isOwnComment),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,
                         excludeSemantics: true,

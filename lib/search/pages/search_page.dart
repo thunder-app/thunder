@@ -687,7 +687,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         )
                       : Container();
                 } else {
-                  CommentView commentView = state.comments![index];
+                  ThunderComment comment = state.comments![index];
                   return Column(
                     children: [
                       Divider(
@@ -700,7 +700,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         ),
                       ),
                       CommentListEntry(
-                        commentView: commentView,
+                        comment: comment,
                         onVoteAction: (int commentId, int voteType) => context.read<SearchBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                         onSaveAction: (int commentId, bool save) => context.read<SearchBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                       ),

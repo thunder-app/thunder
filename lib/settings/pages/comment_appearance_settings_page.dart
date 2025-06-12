@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -130,7 +130,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Generates an example comment to show in the comment preview
   void getExampleComment() {
-    CommentView commentView = createExampleComment(
+    ThunderComment comment = createExampleComment(
       id: 1,
       commentCreatorId: 1,
       path: '0.1',
@@ -142,7 +142,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
-    CommentView replyCommentViewFirst = createExampleComment(
+    ThunderComment replyComment = createExampleComment(
       id: 3,
       commentCreatorId: 3,
       path: '0.1.3',
@@ -155,7 +155,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isPersonAdmin: true,
     );
 
-    CommentView replyCommentViewSecond = createExampleComment(
+    ThunderComment replyCommentSecond = createExampleComment(
       id: 2,
       commentCreatorId: 2,
       path: '0.1.2',
@@ -168,9 +168,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     if (context.mounted) {
       setState(() {
         exampleCommentNode = Future.value(buildCommentTree([
-          commentView,
-          replyCommentViewFirst,
-          replyCommentViewSecond,
+          comment,
+          replyComment,
+          replyCommentSecond,
         ]));
       });
     }
@@ -301,7 +301,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               physics: const NeverScrollableScrollPhysics(),
                               children: flattenedComments.map((commentNode) {
                                 return CommentCard(
-                                  commentView: commentNode.commentView!,
+                                  comment: commentNode.comment!,
                                   level: commentNode.depth,
                                 );
                               }).toList(),

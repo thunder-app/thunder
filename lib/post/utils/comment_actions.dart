@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
@@ -18,15 +18,15 @@ void triggerCommentAction({
   SwipeAction? swipeAction,
   required Function(int, int) onVoteAction,
   required Function(int, bool) onSaveAction,
-  Function(CommentView commentView, bool isEdit)? onReplyEditAction,
+  Function(ThunderComment comment, bool isEdit)? onReplyEditAction,
   required int voteType,
   bool? saved,
-  required CommentView commentView,
+  required ThunderComment comment,
   int? highlightedCommentId,
 }) async {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentView.comment.id, voteType == 1 ? 0 : 1);
+      onVoteAction(comment.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
       bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
@@ -35,28 +35,28 @@ void triggerCommentAction({
         showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
         return;
       }
-      onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
+      onVoteAction(comment.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
-      navigateToCreateCommentPage(context, parentCommentView: commentView, onCommentSuccess: (commentView, userChanged) {
+      navigateToCreateCommentPage(context, parentComment: comment, onCommentSuccess: (comment, userChanged) {
         if (!userChanged) {
-          onReplyEditAction?.call(commentView, false);
+          onReplyEditAction?.call(comment, false);
         }
       });
       break;
     case SwipeAction.edit:
       navigateToCreateCommentPage(
         context,
-        commentView: commentView,
-        onCommentSuccess: (commentView, userChanged) {
+        comment: comment,
+        onCommentSuccess: (comment, userChanged) {
           if (!userChanged) {
-            return onReplyEditAction?.call(commentView, true);
+            return onReplyEditAction?.call(comment, true);
           }
         },
       );
       break;
     case SwipeAction.save:
-      onSaveAction(commentView.comment.id, !(saved ?? false));
+      onSaveAction(comment.id, !(saved ?? false));
       break;
     default:
       break;

@@ -28,7 +28,7 @@ class UserSelector extends StatefulWidget {
   final String? postActorId;
   final void Function(ThunderPost post)? onPostChanged;
   final String? parentCommentActorId;
-  final void Function(CommentView)? onParentCommentChanged;
+  final void Function(ThunderComment parentComment)? onParentCommentChanged;
 
   /// Whether the user is allowed to change the active account
   /// (e.g., it should not be allowed during edit)
@@ -97,7 +97,7 @@ Future<void> temporarilySwitchAccount(
   String? postActorId,
   void Function(ThunderPost post)? onPostChanged,
   String? parentCommentActorId,
-  void Function(CommentView)? onParentCommentChanged,
+  void Function(ThunderComment parentComment)? onParentCommentChanged,
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
@@ -160,8 +160,10 @@ Future<void> temporarilySwitchAccount(
         try {
           final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: parentCommentActorId!));
           resolvedComment = resolveObjectResponse.comment;
+
           if (resolvedComment != null) {
-            onParentCommentChanged(resolvedComment);
+            final comment = ThunderComment(comment: resolvedComment.comment, commentView: resolvedComment);
+            onParentCommentChanged(comment);
           }
         } catch (e) {
           // We will handle this below.

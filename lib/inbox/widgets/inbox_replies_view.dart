@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/extensions/comment_reply_view.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 
@@ -14,23 +16,6 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
-
-extension on CommentReplyView {
-  CommentView toCommentView() {
-    return CommentView(
-      comment: comment,
-      creator: creator,
-      post: post,
-      community: community,
-      counts: counts,
-      creatorBannedFromCommunity: creatorBannedFromCommunity,
-      subscribed: subscribed,
-      saved: saved,
-      creatorBlocked: creatorBlocked,
-      myVote: myVote as int?,
-    );
-  }
-}
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentReplyView> replies;
@@ -71,7 +56,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               return Column(
                 children: [
                   CommentReference(
-                    comment: commentReplyView.toCommentView(),
+                    comment: commentReplyView.toComment(),
                     isOwnComment: commentReplyView.creator.id == context.read<ProfileBloc>().state.account?.userId,
                     onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
                           InboxItemActionEvent(
@@ -86,11 +71,11 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                         ),
                     onSaveAction: (int commentId, bool save) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.save, commentReplyId: commentReply.id, value: save)),
                     onDeleteAction: (int commentId, bool deleted) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.delete, commentReplyId: commentReply.id, value: deleted)),
-                    onReplyEditAction: (CommentView commentView, bool isEdit) {
+                    onReplyEditAction: (ThunderComment comment, bool isEdit) {
                       return navigateToCreateCommentPage(
                         context,
-                        commentView: isEdit ? commentView : null,
-                        parentCommentView: isEdit ? null : commentView,
+                        comment: isEdit ? comment : null,
+                        parentComment: isEdit ? null : comment,
                       );
                     },
                     child: IconButton(

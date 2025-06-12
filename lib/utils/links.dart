@@ -11,6 +11,7 @@ import 'package:intl/message_format.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -195,13 +196,15 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       // Show the loading page while we fetch the comment
       if (context.mounted) showLoadingPage(context);
 
-      CommentResponse fullCommentView = await lemmy.run(GetComment(
+      final response = await lemmy.run(GetComment(
         id: commentId,
         auth: account.jwt,
       ));
 
+      final comment = ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+
       if (context.mounted) {
-        navigateToComment(context, fullCommentView.commentView);
+        navigateToComment(context, comment);
         return;
       }
     } catch (e) {

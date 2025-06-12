@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/account.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -68,21 +68,21 @@ enum GeneralQuickCommentAction {
 }
 
 /// Defines the general top-level actions that can be taken on a comment.
-/// Given a [commentView] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the comment.
+/// Given a [comment] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the comment.
 class GeneralCommentActionBottomSheetPage extends StatefulWidget {
-  const GeneralCommentActionBottomSheetPage({super.key, required this.context, required this.commentView, required this.onSwitchActivePage, required this.onAction});
+  const GeneralCommentActionBottomSheetPage({super.key, required this.context, required this.comment, required this.onSwitchActivePage, required this.onAction});
 
   /// The outer context
   final BuildContext context;
 
   /// The comment information
-  final CommentView commentView;
+  final ThunderComment comment;
 
   /// Called when the active page is changed
   final Function(GeneralCommentAction page) onSwitchActivePage;
 
   /// Called when an action is selected
-  final Function(CommentAction commentAction, CommentView? commentView, dynamic value) onAction;
+  final Function(CommentAction commentAction, ThunderComment? comment, dynamic value) onAction;
 
   @override
   State<GeneralCommentActionBottomSheetPage> createState() => _GeneralCommentActionBottomSheetPageState();
@@ -90,13 +90,14 @@ class GeneralCommentActionBottomSheetPage extends StatefulWidget {
 
 class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActionBottomSheetPage> {
   String? generateSubtitle(GeneralCommentAction page) {
-    CommentView commentView = widget.commentView;
+    final comment = widget.comment;
+    assert(comment.creator != null, 'Comment must have a creator');
 
-    String? userInstance = fetchInstanceNameFromUrl(commentView.creator.actorId);
+    String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
-        return generateUserFullName(context, commentView.creator.name, commentView.creator.displayName, fetchInstanceNameFromUrl(commentView.creator.actorId));
+        return generateUserFullName(context, comment.creator!.name, comment.creator!.displayName, userInstance);
       case GeneralCommentAction.instance:
         return userInstance;
       default:
@@ -105,25 +106,25 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   }
 
   void performAction(GeneralQuickCommentAction action) {
-    final commentView = widget.commentView;
+    final comment = widget.comment;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        widget.onAction(CommentAction.vote, commentView, commentView.myVote == 1 ? 0 : 1);
+        widget.onAction(CommentAction.vote, comment, comment.myVote == 1 ? 0 : 1);
         break;
       case GeneralQuickCommentAction.downvote:
-        widget.onAction(CommentAction.vote, commentView, commentView.myVote == -1 ? 0 : -1);
+        widget.onAction(CommentAction.vote, comment, comment.myVote == -1 ? 0 : -1);
         break;
       case GeneralQuickCommentAction.save:
-        widget.onAction(CommentAction.save, commentView, !commentView.saved);
+        widget.onAction(CommentAction.save, comment, comment.saved == true ? false : true);
         break;
       case GeneralQuickCommentAction.reply:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.reply, commentView, null);
+        widget.onAction(CommentAction.reply, comment, null);
         return;
       case GeneralQuickCommentAction.edit:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.edit, commentView, null);
+        widget.onAction(CommentAction.edit, comment, null);
         return;
     }
 
@@ -131,15 +132,15 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   }
 
   IconData getIcon(GeneralQuickCommentAction action) {
-    final commentView = widget.commentView;
+    final comment = widget.comment;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return commentView.myVote == 1 ? GeneralQuickCommentAction.upvote.enabledIcon : GeneralQuickCommentAction.upvote.disabledIcon;
+        return comment.myVote == 1 ? GeneralQuickCommentAction.upvote.enabledIcon : GeneralQuickCommentAction.upvote.disabledIcon;
       case GeneralQuickCommentAction.downvote:
-        return commentView.myVote == -1 ? GeneralQuickCommentAction.downvote.enabledIcon : GeneralQuickCommentAction.downvote.disabledIcon;
+        return comment.myVote == -1 ? GeneralQuickCommentAction.downvote.enabledIcon : GeneralQuickCommentAction.downvote.disabledIcon;
       case GeneralQuickCommentAction.save:
-        return commentView.saved ? GeneralQuickCommentAction.save.enabledIcon : GeneralQuickCommentAction.save.disabledIcon;
+        return comment.saved == true ? GeneralQuickCommentAction.save.enabledIcon : GeneralQuickCommentAction.save.disabledIcon;
       case GeneralQuickCommentAction.reply:
         return GeneralQuickCommentAction.reply.enabledIcon;
       case GeneralQuickCommentAction.edit:
@@ -148,15 +149,15 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   }
 
   String getLabel(GeneralQuickCommentAction action) {
-    final commentView = widget.commentView;
+    final comment = widget.comment;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return commentView.myVote == 1 ? l10n.upvoted : l10n.upvote;
+        return comment.myVote == 1 ? l10n.upvoted : l10n.upvote;
       case GeneralQuickCommentAction.downvote:
-        return commentView.myVote == -1 ? l10n.downvoted : l10n.downvote;
+        return comment.myVote == -1 ? l10n.downvoted : l10n.downvote;
       case GeneralQuickCommentAction.save:
-        return commentView.saved ? l10n.saved : l10n.save;
+        return comment.saved == true ? l10n.saved : l10n.save;
       case GeneralQuickCommentAction.reply:
         return l10n.reply(1);
       case GeneralQuickCommentAction.edit:
@@ -183,15 +184,15 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
   Color? getForegroundColor(GeneralQuickCommentAction action) {
     final state = context.read<ThunderBloc>().state;
-    final commentView = widget.commentView;
+    final comment = widget.comment;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return commentView.myVote == 1 ? state.upvoteColor.color : null;
+        return comment.myVote == 1 ? state.upvoteColor.color : null;
       case GeneralQuickCommentAction.downvote:
-        return commentView.myVote == -1 ? state.downvoteColor.color : null;
+        return comment.myVote == -1 ? state.downvoteColor.color : null;
       case GeneralQuickCommentAction.save:
-        return commentView.saved ? state.saveColor.color : null;
+        return comment.saved == true ? state.saveColor.color : null;
       default:
         return null;
     }
@@ -213,7 +214,7 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
       }
 
       // Hide edit if the comment is not made by the current user
-      if (widget.commentView.creator.actorId != profileState.account?.actorId) {
+      if (widget.comment.creator?.actorId != profileState.account?.actorId) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.edit).toList();
       }
     }

@@ -199,7 +199,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                   physics: const NeverScrollableScrollPhysics(),
                                                                   shrinkWrap: true,
                                                                   itemCount: state.imageSearchComments!.length,
-                                                                  itemBuilder: (context, index) => CommentListEntry(commentView: state.imageSearchComments![index]),
+                                                                  itemBuilder: (context, index) => CommentListEntry(comment: state.imageSearchComments![index]),
                                                                 ),
                                                             ],
                                                             if (state.status == UserSettingsStatus.succeededSearchingMedia &&

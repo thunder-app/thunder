@@ -25,6 +25,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/core/extensions/person_mention_view.dart';
 
 /// Initializes push notifications for UnifiedPush.
 /// For now, initializing UnifiedPush will enable push notifications for all accounts active on the app.
@@ -159,8 +160,9 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Notification for a mention
       if (data.containsKey('mention')) {
         PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
+        final comment = personMentionView.toComment();
 
-        final String commentContent = cleanCommentContent(personMentionView.comment);
+        final String commentContent = cleanCommentContent(comment);
         final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 

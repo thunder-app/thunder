@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
@@ -52,9 +51,9 @@ enum ShareBottomSheetAction {
 
 /// A bottom sheet that allows the user to perform share actions.
 ///
-/// Given a [post] or a [commentView], and a [onAction] callback, this widget will display a list of share actions that can be taken.
+/// Given a [post] or a [comment], and a [onAction] callback, this widget will display a list of share actions that can be taken.
 class ShareActionBottomSheet extends StatefulWidget {
-  const ShareActionBottomSheet({super.key, required this.context, this.post, this.commentView, required this.onAction});
+  const ShareActionBottomSheet({super.key, required this.context, this.post, this.comment, required this.onAction});
 
   /// The parent context
   final BuildContext context;
@@ -63,7 +62,7 @@ class ShareActionBottomSheet extends StatefulWidget {
   final ThunderPost? post;
 
   /// The comment information
-  final CommentView? commentView;
+  final ThunderComment? comment;
 
   /// Called when an action is selected
   final Function() onAction;
@@ -94,14 +93,14 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
   void performAction(ShareBottomSheetAction action) {
     ThunderPost? post = widget.post;
-    CommentView? commentView = widget.commentView;
+    ThunderComment? comment = widget.comment;
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(commentView!.comment.apId)));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.url)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generateCommentUrl(commentView!.comment.id))));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generateCommentUrl(comment!.id))));
         break;
       case ShareBottomSheetAction.sharePost:
         SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.url)));
@@ -126,13 +125,13 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
   String? generateSubtitle(ShareBottomSheetAction action) {
     ThunderPost? post = widget.post;
-    CommentView? commentView = widget.commentView;
+    ThunderComment? comment = widget.comment;
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        return commentView!.comment.apId;
+        return comment!.url;
       case ShareBottomSheetAction.shareCommentLocal:
-        return LemmyClient.instance.generateCommentUrl(commentView!.comment.id);
+        return LemmyClient.instance.generateCommentUrl(comment!.id);
       case ShareBottomSheetAction.sharePost:
         return post!.url;
       case ShareBottomSheetAction.sharePostLocal:
@@ -153,11 +152,11 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
     // Check to see if we are sharing a post or a comment.
     List<ShareBottomSheetAction> userActions = [];
 
-    if (widget.commentView != null) {
+    if (widget.comment != null) {
       userActions = [ShareBottomSheetAction.shareComment, ShareBottomSheetAction.shareCommentLocal];
 
       // Remove the share local option if it is the same as the original
-      if (widget.commentView!.comment.apId == LemmyClient.instance.generateCommentUrl(widget.commentView!.comment.id)) {
+      if (widget.comment!.url == LemmyClient.instance.generateCommentUrl(widget.comment!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareCommentLocal);
       }
     } else if (widget.post != null) {

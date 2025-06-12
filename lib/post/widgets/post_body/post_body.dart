@@ -293,9 +293,9 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
           onReply: () async => navigateToCreateCommentPage(
             context,
             post: post,
-            onCommentSuccess: (commentView, userChanged) {
+            onCommentSuccess: (comment, userChanged) {
               if (!userChanged) {
-                context.read<PostBloc>().add(CommentItemUpdatedEvent(commentView: commentView));
+                context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
               }
             },
           ),
