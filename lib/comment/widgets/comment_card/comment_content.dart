@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -16,7 +15,7 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CommentContent extends StatefulWidget {
-  final CommentView comment;
+  final ThunderComment comment;
   final bool isUserLoggedIn;
   final bool isOwnComment;
   final bool isHidden;
@@ -29,7 +28,7 @@ class CommentContent extends StatefulWidget {
   final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
-  final Function(CommentView, bool) onReplyEditAction;
+  final Function(ThunderComment, bool) onReplyEditAction;
 
   final int? moddingCommentId;
   final bool viewSource;
@@ -112,7 +111,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
               children: [
                 Divider(height: 1),
                 CommentCardHeader(
-                  comment: ThunderComment(comment: widget.comment.comment, commentView: widget.comment),
+                  comment: widget.comment,
                   hidden: widget.isHidden,
                 ),
                 AnimatedSwitcher(
@@ -154,12 +153,12 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                 },
                                 child: widget.viewSource
                                     ? ScalableText(
-                                        cleanCommentContent(widget.comment.comment),
+                                        cleanCommentContent(widget.comment),
                                         style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                         fontScale: state.contentFontSizeScale,
                                       )
                                     : CommonMarkdownBody(
-                                        body: cleanCommentContent(widget.comment.comment),
+                                        body: cleanCommentContent(widget.comment),
                                         isComment: true,
                                       ),
                               ),
@@ -168,7 +167,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
                                 child: CommentCardActions(
-                                  commentView: widget.comment,
+                                  comment: widget.comment,
                                   onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                   isEdit: widget.isOwnComment,
                                   onSaveAction: widget.onSaveAction,
@@ -181,13 +180,13 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                           ],
                         ),
                 ),
-                if (widget.showReplyEditorButtons && widget.comment.comment.content.isNotEmpty == true)
+                if (widget.showReplyEditorButtons && widget.comment.body.isNotEmpty == true)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                     child: ReplyToPreviewActions(
                       onViewSourceToggled: widget.onViewSourceToggled,
                       viewSource: widget.viewSource,
-                      text: cleanCommentContent(widget.comment.comment),
+                      text: cleanCommentContent(widget.comment),
                     ),
                   ),
               ],

@@ -6,18 +6,18 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+
+// Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/drafts/models/draft.dart';
-
-// Project imports
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/post/widgets/post_body/post_body.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
@@ -31,24 +31,24 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
-  /// [post] is passed in when replying to a post. [commentView] and [parentCommentView] must be null if this is passed in.
+  /// [post] is passed in when replying to a post. [comment] and [parentComment] must be null if this is passed in.
   /// When this is passed in, a post preview will be shown.
   final ThunderPost? post;
 
   /// If this is passed in, it indicates that we are trying to edit a comment
-  final CommentView? commentView;
+  final ThunderComment? comment;
 
   /// If this is passed in, it indicates that we are trying to reply to a comment
-  final CommentView? parentCommentView;
+  final ThunderComment? parentComment;
 
   /// Callback function that is triggered whenever the comment is successfully created or updated
-  final Function(CommentView commentView, bool userChanged)? onCommentSuccess;
+  final Function(ThunderComment comment, bool userChanged)? onCommentSuccess;
 
   const CreateCommentPage({
     super.key,
     this.post,
-    this.commentView,
-    this.parentCommentView,
+    this.comment,
+    this.parentComment,
     this.onCommentSuccess,
   });
 
@@ -58,8 +58,8 @@ class CreateCommentPage extends StatefulWidget {
 
 class _CreateCommentPageState extends State<CreateCommentPage> {
   /// Holds the draft type associated with the comment. This type is determined by the input parameters passed in.
-  /// If [commentView], it will be [DraftType.commentEdit].
-  /// If [post] or [parentCommentView] is passed in, it will be [DraftType.commentCreate].
+  /// If [comment], it will be [DraftType.commentEdit].
+  /// If [post] or [parentComment] is passed in, it will be [DraftType.commentCreate].
   late DraftType draftType;
 
   /// The ID of the comment we are editing, to find a corresponding draft, if any
@@ -117,17 +117,17 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   void initState() {
     super.initState();
 
-    postId = widget.post?.id ?? widget.parentCommentView?.post.id;
-    parentCommentId = widget.parentCommentView?.comment.id;
+    postId = widget.post?.id ?? widget.parentComment?.postId;
+    parentCommentId = widget.parentComment?.id;
 
     _bodyTextController.addListener(() {
       _validateSubmission();
     });
 
     // Logic for pre-populating the comment with the [post] for edits
-    if (widget.commentView != null) {
-      _bodyTextController.text = widget.commentView!.comment.content;
-      languageId = widget.commentView!.comment.languageId;
+    if (widget.comment != null) {
+      _bodyTextController.text = widget.comment!.body;
+      languageId = widget.comment!.languageId;
     }
 
     // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
@@ -164,15 +164,15 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   /// Attempts to restore an existing draft of a comment
   void _restoreExistingDraft() async {
-    if (widget.commentView != null) {
+    if (widget.comment != null) {
       draftType = DraftType.commentEdit;
-      draftExistingId = widget.commentView!.comment.id;
+      draftExistingId = widget.comment!.id;
     } else if (widget.post != null) {
       draftType = DraftType.commentCreate;
       draftReplyId = widget.post!.id;
-    } else if (widget.parentCommentView != null) {
+    } else if (widget.parentComment != null) {
       draftType = DraftType.commentCreate;
-      draftReplyId = widget.parentCommentView!.comment.id;
+      draftReplyId = widget.parentComment!.id;
     } else {
       // Should never come here.
       return;
@@ -202,7 +202,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
             Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-            _bodyTextController.text = widget.commentView?.comment.content ?? '';
+            _bodyTextController.text = widget.comment?.body ?? '';
           },
           closable: true,
         );
@@ -223,11 +223,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   /// Checks whether we are potentially saving a draft of an edit and, if so,
   /// whether the draft contains different contents from the edit
   bool _draftDiffersFromEdit(Draft draft) {
-    if (widget.commentView == null) {
+    if (widget.comment == null) {
       return true;
     }
 
-    return draft.body != widget.commentView!.comment.content;
+    return draft.body != widget.comment!.body;
   }
 
   @override
@@ -246,8 +246,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         create: (context) => CreateCommentCubit(),
         child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
           listener: (context, state) {
-            if (state.status == CreateCommentStatus.success && state.commentView != null) {
-              widget.onCommentSuccess?.call(state.commentView!, userChanged);
+            if (state.status == CreateCommentStatus.success && state.comment != null) {
+              widget.onCommentSuccess?.call(state.comment!, userChanged);
               Navigator.of(context).pop();
             }
 
@@ -275,7 +275,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               child: Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
-                  title: Text(widget.commentView != null ? l10n.editComment : l10n.createComment),
+                  title: Text(widget.comment != null ? l10n.editComment : l10n.createComment),
                   toolbarHeight: APP_BAR_HEIGHT,
                   centerTitle: false,
                 ),
@@ -310,7 +310,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     ),
                                   ),
                                 ),
-                              if (widget.parentCommentView != null) ...[
+                              if (widget.parentComment != null) ...[
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                   child: Container(
@@ -319,7 +319,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
                                     child: CommentContent(
-                                      comment: widget.parentCommentView!,
+                                      comment: widget.parentComment!,
                                       onVoteAction: (_, __) {},
                                       onSaveAction: (_, __) {},
                                       onReplyEditAction: (_, __) {},
@@ -346,13 +346,13 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       profileModalHeading: l10n.selectAccountToCommentAs,
                                       postActorId: widget.post?.url,
                                       onPostChanged: (post) => postId = post.id,
-                                      parentCommentActorId: widget.parentCommentView?.comment.apId,
-                                      onParentCommentChanged: (parentCommentView) {
-                                        postId = parentCommentView.post.id;
-                                        parentCommentId = parentCommentView.comment.id;
+                                      parentCommentActorId: widget.parentComment?.url,
+                                      onParentCommentChanged: (ThunderComment parentComment) {
+                                        postId = parentComment.postId;
+                                        parentCommentId = parentComment.id;
                                       },
                                       onUserChanged: () => userChanged = true,
-                                      enableAccountSwitching: widget.commentView == null,
+                                      enableAccountSwitching: widget.comment == null,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
@@ -492,9 +492,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                           child: CircularProgressIndicator(),
                                         )
                                       : Icon(
-                                          widget.commentView != null ? Icons.edit_rounded : Icons.send_rounded,
+                                          widget.comment != null ? Icons.edit_rounded : Icons.send_rounded,
                                           color: theme.colorScheme.onSecondary,
-                                          semanticLabel: widget.commentView != null ? l10n.editComment : l10n.createComment,
+                                          semanticLabel: widget.comment != null ? l10n.editComment : l10n.createComment,
                                         ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: theme.colorScheme.secondary,
@@ -546,7 +546,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           postId: postId,
           parentCommentId: parentCommentId,
           content: _bodyTextController.text,
-          commentIdBeingEdited: widget.commentView?.comment.id,
+          commentIdBeingEdited: widget.comment?.id,
           languageId: languageId,
         );
   }

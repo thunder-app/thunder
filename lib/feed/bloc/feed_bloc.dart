@@ -438,7 +438,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         status: FeedStatus.fetching,
         feedType: FeedType.account,
         posts: const <ThunderPost>[],
-        commentViews: const <CommentView>[],
+        comments: const <ThunderComment>[],
         hasReachedPostsEnd: false,
         hasReachedCommentsEnd: false,
         currentPage: 1,
@@ -453,7 +453,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(const FeedState(
       status: FeedStatus.initial,
       posts: <ThunderPost>[],
-      commentViews: <CommentView>[],
+      comments: <ThunderComment>[],
       hasReachedPostsEnd: false,
       hasReachedCommentsEnd: false,
       feedType: FeedType.general,
@@ -564,7 +564,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       // Extract information from the response
       List<ThunderPost> posts = feedItemResult['posts'];
-      List<CommentView> commentViews = feedItemResult['commentViews'];
+      List<ThunderComment> comments = feedItemResult['comments'];
       bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
       bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
       int currentPage = feedItemResult['currentPage'];
@@ -572,7 +572,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       return emit(state.copyWith(
         status: FeedStatus.success,
         posts: posts,
-        commentViews: commentViews,
+        comments: comments,
         hasReachedPostsEnd: hasReachedPostsEnd,
         hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
@@ -599,7 +599,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     List<ThunderPost> posts = List.from(state.posts);
-    List<CommentView> commentViews = List.from(state.commentViews);
+    List<ThunderComment> comments = List.from(state.comments);
 
     Map<String, dynamic> feedItemResult = await fetchFeedItems(
       page: state.currentPage,
@@ -616,7 +616,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     // Extract information from the response
     List<ThunderPost> newPosts = feedItemResult['posts'];
-    List<CommentView> newCommentViews = feedItemResult['commentViews'];
+    List<ThunderComment> newComments = feedItemResult['comments'];
     bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
     bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
     int currentPage = feedItemResult['currentPage'];
@@ -634,13 +634,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
 
     posts.addAll(filteredPosts);
-    commentViews.addAll(newCommentViews);
+    comments.addAll(newComments);
 
     return emit(state.copyWith(
       status: FeedStatus.success,
       insertedPostIds: newInsertedPostIds.toList(),
       posts: posts,
-      commentViews: commentViews,
+      comments: comments,
       hasReachedPostsEnd: hasReachedPostsEnd,
       hasReachedCommentsEnd: hasReachedCommentsEnd,
       currentPage: currentPage,

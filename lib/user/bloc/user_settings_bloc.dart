@@ -360,12 +360,14 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       // De-dup posts found by body and URL
       posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
 
-      final List<CommentView> comments = (await lemmy.run(Search(
+      final List<ThunderComment> comments = (await lemmy.run(Search(
         q: url,
         type: SearchType.comments,
         auth: account.jwt,
       )))
-          .comments;
+          .comments
+          .map((cv) => ThunderComment(comment: cv.comment, commentView: cv))
+          .toList();
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,

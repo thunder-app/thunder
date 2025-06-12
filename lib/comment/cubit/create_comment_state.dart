@@ -15,7 +15,7 @@ enum CreateCommentStatus {
 class CreateCommentState extends Equatable {
   const CreateCommentState({
     this.status = CreateCommentStatus.initial,
-    this.commentView,
+    this.comment,
     this.imageUrls,
     this.message,
   });
@@ -24,7 +24,7 @@ class CreateCommentState extends Equatable {
   final CreateCommentStatus status;
 
   /// The result of the created or edited comment
-  final CommentView? commentView;
+  final ThunderComment? comment;
 
   /// The urls of the uploaded images
   final List<String>? imageUrls;
@@ -34,18 +34,18 @@ class CreateCommentState extends Equatable {
 
   CreateCommentState copyWith({
     required CreateCommentStatus status,
-    CommentView? commentView,
+    ThunderComment? comment,
     List<String>? imageUrls,
     String? message,
   }) {
     return CreateCommentState(
       status: status,
-      commentView: commentView ?? this.commentView,
+      comment: comment ?? this.comment,
       imageUrls: imageUrls ?? this.imageUrls,
       message: message ?? this.message,
     );
   }
 
   @override
-  List<dynamic> get props => [status, commentView, imageUrls, message];
+  List<dynamic> get props => [status, comment, imageUrls, message];
 }

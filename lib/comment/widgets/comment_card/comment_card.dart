@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -15,8 +15,8 @@ import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/thunder.dart';
 
 class CommentCard extends StatefulWidget {
-  /// The [CommentView] containing the comment information
-  final CommentView commentView;
+  /// The [ThunderComment] containing the comment information
+  final ThunderComment comment;
 
   /// The level of the comment within the comment tree - a higher level indicates a greater indentation
   final int level;
@@ -46,11 +46,11 @@ class CommentCard extends StatefulWidget {
   final Function(int commentId, bool deleted)? onDeleteAction;
 
   /// Callback function for when a comment being replied to or edited
-  final Function(CommentView commentView, bool isEdit)? onReplyEditAction;
+  final Function(ThunderComment comment, bool isEdit)? onReplyEditAction;
 
   const CommentCard({
     super.key,
-    required this.commentView,
+    required this.comment,
     this.level = 0,
     this.replyCount = 0,
     this.collapsed = false,
@@ -94,11 +94,13 @@ class _CommentCardState extends State<CommentCard> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
+    assert(widget.comment.creator != null, 'Comment must have a creator');
+
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.commentView.creator.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isOwnComment = widget.comment.creator!.id == context.read<ProfileBloc>().state.account?.userId;
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
-    final int commentId = widget.commentView.comment.id;
+    final int commentId = widget.comment.id;
     final bool highlightComment = widget.highlightedCommentId == commentId;
 
     return AnimatedCrossFade(
@@ -121,10 +123,10 @@ class _CommentCardState extends State<CommentCard> {
                   swipeAction: swipeAction,
                   onSaveAction: (int commentId, bool saved) => widget.onSaveAction?.call(commentId, saved),
                   onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-                  onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
-                  voteType: widget.commentView.myVote ?? 0,
-                  saved: widget.commentView.saved,
-                  commentView: widget.commentView,
+                  onReplyEditAction: (ThunderComment comment, bool isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
+                  voteType: widget.comment.myVote ?? 0,
+                  saved: widget.comment.saved,
+                  comment: widget.comment,
                   highlightedCommentId: widget.highlightedCommentId,
                 );
               }
@@ -238,36 +240,36 @@ class _CommentCardState extends State<CommentCard> {
                     HapticFeedback.mediumImpact();
                     showCommentActionBottomModalSheet(
                       context,
-                      widget.commentView,
+                      widget.comment,
                       isShowingSource: viewSource,
-                      onAction: ({commentAction, required commentView, communityAction, userAction, value}) async {
+                      onAction: ({commentAction, required comment, communityAction, userAction, value}) async {
                         if (commentAction != null) {
                           switch (commentAction) {
                             case CommentAction.vote:
-                              widget.onVoteAction?.call(commentView.comment.id, value);
+                              widget.onVoteAction?.call(comment.id, value);
                               break;
                             case CommentAction.save:
-                              widget.onSaveAction?.call(commentView.comment.id, value);
+                              widget.onSaveAction?.call(comment.id, value);
                               break;
                             case CommentAction.reply:
                               return navigateToCreateCommentPage(
                                 context,
-                                commentView: null,
-                                parentCommentView: commentView,
-                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                comment: null,
+                                parentComment: comment,
+                                onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
                               );
                             case CommentAction.edit:
                               return navigateToCreateCommentPage(
                                 context,
-                                commentView: commentView,
-                                parentCommentView: null,
-                                onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                                comment: comment,
+                                parentComment: null,
+                                onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
                               );
                             case CommentAction.delete:
-                              widget.onDeleteAction?.call(commentView.comment.id, value);
+                              widget.onDeleteAction?.call(comment.id, value);
                               break;
                             case CommentAction.report:
-                              context.read<PostBloc>().add(ReportCommentEvent(commentId: commentView.comment.id, message: value));
+                              context.read<PostBloc>().add(ReportCommentEvent(commentId: comment.id, message: value));
                               break;
                             case CommentAction.viewSource:
                               setState(() => viewSource = !viewSource);
@@ -288,18 +290,18 @@ class _CommentCardState extends State<CommentCard> {
                   },
                   child: CommentContent(
                     level: widget.level,
-                    comment: widget.commentView,
+                    comment: widget.comment,
                     dragged: dismissThreshold > 0,
                     isUserLoggedIn: isUserLoggedIn,
                     onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
                     onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
                     onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
-                    onReplyEditAction: (CommentView commentView, bool isEdit) {
+                    onReplyEditAction: (ThunderComment comment, bool isEdit) {
                       return navigateToCreateCommentPage(
                         context,
-                        commentView: isEdit ? commentView : null,
-                        parentCommentView: isEdit ? null : commentView,
-                        onCommentSuccess: (commentView, isEdit) => widget.onReplyEditAction?.call(commentView, isEdit),
+                        comment: isEdit ? comment : null,
+                        parentComment: isEdit ? null : comment,
+                        onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
                       );
                     },
                     isOwnComment: isOwnComment,
@@ -311,14 +313,14 @@ class _CommentCardState extends State<CommentCard> {
               ),
             ),
           ),
-          if (widget.replyCount == 0 && widget.commentView.counts.childCount > 0)
+          if (widget.replyCount == 0 && widget.comment.childCount! > 0)
             AnimatedCrossFade(
               duration: Duration(milliseconds: 350),
               sizeCurve: Curves.easeInOutCubicEmphasized,
               firstChild: SizedBox(width: MediaQuery.sizeOf(context).width),
               secondChild: AdditionalCommentCard(
                 depth: widget.level,
-                replies: widget.commentView.counts.childCount,
+                replies: widget.comment.childCount!,
                 onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: commentId)),
               ),
               crossFadeState: widget.collapsed ? CrossFadeState.showFirst : CrossFadeState.showSecond,

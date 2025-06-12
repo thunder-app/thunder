@@ -352,9 +352,9 @@ class _InstancePageState extends State<InstancePage> {
                             delegate: SliverChildBuilderDelegate(
                               childCount: state.comments?.length,
                               (context, index) {
-                                var commentView = state.comments?[index];
+                                final comment = state.comments?[index];
                                 return Material(
-                                  child: commentView != null ? CommentListEntry(commentView: commentView) : Container(),
+                                  child: comment != null ? CommentListEntry(comment: comment) : Container(),
                                 );
                               },
                             ),
