@@ -9,6 +9,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -75,10 +76,9 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
     final favourited = context.select<ProfileBloc, bool>((bloc) => bloc.state.favorites.any((c) => c.url == community.url));
 
     String subscriptionButtonLabel = switch (community.subscribed) {
-      SubscribedType.notSubscribed => l10n.subscribe,
-      SubscribedType.pending => l10n.unsubscribePending,
-      SubscribedType.subscribed => l10n.unsubscribe,
-      _ => '',
+      SubscriptionStatus.notSubscribed => l10n.subscribe,
+      SubscriptionStatus.pending => l10n.unsubscribePending,
+      SubscriptionStatus.subscribed => l10n.unsubscribe,
     };
 
     return BlocListener<CommunityBloc, CommunityState>(
@@ -115,7 +115,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
               ),
               const SizedBox(width: 4),
               const Icon(Icons.people_rounded, size: 16.0),
-              if (widget.indicateFavorites && favourited && community.subscribed == SubscribedType.subscribed) ...const [
+              if (widget.indicateFavorites && favourited && community.subscribed == SubscriptionStatus.subscribed) ...const [
                 Text(' · '),
                 Icon(Icons.star_rounded, size: 15),
               ]
@@ -124,17 +124,16 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
           trailing: widget.resolutionInstance == null
               ? IconButton(
                   onPressed: () {
-                    onSubscribe(community.subscribed != SubscribedType.notSubscribed, isUserLoggedIn);
-                    showSnackbar(community.subscribed == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                    onSubscribe(community.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
+                    showSnackbar(community.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                   },
                   icon: Semantics(
                     label: subscriptionButtonLabel,
                     child: Icon(
                       switch (community.subscribed) {
-                        SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                        SubscribedType.pending => Icons.pending_outlined,
-                        SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                        _ => Icons.add_circle_outline_rounded,
+                        SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
+                        SubscriptionStatus.pending => Icons.pending_outlined,
+                        SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
                       },
                     ),
                   ),

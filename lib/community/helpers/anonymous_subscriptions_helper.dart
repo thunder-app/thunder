@@ -1,6 +1,7 @@
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/models/anonymous_subscriptions.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/thunder_community.dart';
 
 Future<List<ThunderCommunity>> getSubscriptions() async {
@@ -31,7 +32,7 @@ extension on LocalCommunity {
         postingRestrictedToMods: false,
         instanceId: -1,
       ),
-      subscribed: SubscribedType.subscribed, // Will always be subscribed
+      subscribed: SubscriptionStatus.subscribed, // Will always be subscribed
     );
   }
 }

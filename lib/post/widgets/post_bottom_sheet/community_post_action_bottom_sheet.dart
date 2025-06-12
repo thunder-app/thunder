@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/models/models.dart';
@@ -105,7 +105,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
 
     final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.url).isNotEmpty;
-    final isSubscribedToCommunity = widget.post.subscribed != SubscribedType.notSubscribed;
+    final isSubscribedToCommunity = widget.post.subscribed != SubscriptionStatus.notSubscribed;
 
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();

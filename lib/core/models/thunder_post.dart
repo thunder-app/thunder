@@ -1,5 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 
@@ -64,7 +65,7 @@ class ThunderPost {
   bool? get creatorBannedFromCommunity => _postView?.creatorBannedFromCommunity;
 
   /// The subscribed status of the post.
-  SubscribedType? get subscribed => _postView?.subscribed;
+  SubscriptionStatus get subscribed => SubscriptionStatusMapping.fromLemmyType(_postView?.subscribed);
 
   /// The title of the post.
   String get title => _post.name;
@@ -127,7 +128,7 @@ class ThunderPost {
   ThunderUser? get creator => _postView?.creator != null ? ThunderUser(_postView!.creator) : null;
 
   /// The community associated with the post
-  ThunderCommunity? get community => _postView?.community != null ? ThunderCommunity(_postView!.community, subscribed: _postView?.subscribed) : null;
+  ThunderCommunity? get community => _postView?.community != null ? ThunderCommunity(_postView!.community, subscribed: SubscriptionStatusMapping.fromLemmyType(_postView?.subscribed)) : null;
 
   /// The url for the post. This is generally associated with the ActivityPub actor URL.
   String get url => _post.apId;
