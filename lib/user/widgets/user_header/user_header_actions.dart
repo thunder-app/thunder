@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -296,12 +297,12 @@ class _SortActionChip extends StatelessWidget {
             title: l10n.sortOptions,
             onSelect: (selected) async {
               try {
-                context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload));
+                context.read<FeedBloc>().add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!));
               } catch (e) {
                 debugPrint('Failed to update sort type: $e');
               }
             },
-            previouslySelected: state.sortType,
+            previouslySelected: state.sortType?.toLemmyType(),
             minimumVersion: LemmyClient.instance.version,
           ),
         );

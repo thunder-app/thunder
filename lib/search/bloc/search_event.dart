@@ -9,7 +9,7 @@ abstract class SearchEvent extends Equatable {
 
 class StartSearchEvent extends SearchEvent {
   final String query;
-  final SortType sortType;
+  final PostSortType sortType;
   final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;
@@ -41,7 +41,7 @@ class ResetSearch extends SearchEvent {}
 
 class ContinueSearchEvent extends SearchEvent {
   final String query;
-  final SortType sortType;
+  final PostSortType sortType;
   final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;

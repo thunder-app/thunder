@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -18,7 +19,7 @@ import 'package:thunder/utils/global_context.dart';
 Future<Map<String, dynamic>> fetchFeedItems({
   int page = 1,
   FeedListType? feedListType,
-  SortType? sortType,
+  PostSortType? sortType,
   int? communityId,
   String? communityName,
   int? userId,
@@ -48,7 +49,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
         auth: account.jwt,
         page: currentPage,
-        sort: sortType,
+        sort: sortType?.toLemmyType(),
         type: feedListType?.toLemmyType(),
         communityId: communityId,
         communityName: communityName,
@@ -104,7 +105,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         personId: userId,
         username: username,
         page: currentPage,
-        sort: sortType,
+        sort: sortType?.toLemmyType(),
         savedOnly: showSaved,
       ));
 

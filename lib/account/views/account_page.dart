@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/feed/feed.dart';
 
 class AccountPage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
         return FeedPage(
           feedType: FeedType.account,
           userId: state.account?.userId,
-          sortType: SortType.new_,
+          sortType: PostSortType.new_,
         );
       },
     );

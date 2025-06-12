@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
@@ -26,7 +27,7 @@ String getSortName(FeedState state) {
     return '';
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType?.toLemmyType());
   final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
   return sortTypeItem?.label ?? '';
@@ -37,7 +38,7 @@ IconData? getSortIcon(FeedState state) {
     return null;
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType?.toLemmyType());
   final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
 
   return sortTypeItem?.icon;
