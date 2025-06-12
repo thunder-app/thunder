@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -209,7 +210,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   community: state.postReports[index].community,
                                   creatorBannedFromCommunity: state.postReports[index].creatorBannedFromCommunity,
                                   counts: state.postReports[index].counts,
-                                  subscribed: SubscribedType.notSubscribed, // Not available
+                                  subscribed: SubscriptionStatus.notSubscribed.toLemmyType(), // Not available
                                   saved: false, // Not available
                                   read: false, // Not available
                                   creatorBlocked: false, // Not available
@@ -322,7 +323,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   community: state.commentReports[index].community,
                                   counts: state.commentReports[index].counts,
                                   creatorBannedFromCommunity: state.commentReports[index].creatorBannedFromCommunity,
-                                  subscribed: SubscribedType.notSubscribed, // Not available
+                                  subscribed: SubscriptionStatus.notSubscribed.toLemmyType(), // Not available
                                   saved: false, // Not available
                                   creatorBlocked: false, // Not available
                                 );

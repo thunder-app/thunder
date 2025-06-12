@@ -1,5 +1,7 @@
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/core/enums/subscription_status.dart';
+
 class ThunderCommunity {
   /// The Lemmy API model for the community.
   final Community _community;
@@ -7,12 +9,12 @@ class ThunderCommunity {
   /// The Lemmy API model for the community view.
   late CommunityView? _communityView;
 
-  ThunderCommunity(this._community, {CommunityView? communityView, SubscribedType? subscribed}) {
+  ThunderCommunity(this._community, {CommunityView? communityView, SubscriptionStatus? subscribed}) {
     if (communityView == null && subscribed != null) {
       // If the community view is not provided, create a new one with the provided subscription status.
       _communityView = CommunityView(
         community: _community,
-        subscribed: subscribed,
+        subscribed: subscribed.toLemmyType(),
         blocked: false,
         counts: CommunityAggregates(
           communityId: _community.id,
@@ -85,7 +87,7 @@ class ThunderCommunity {
   int? get usersActiveHalfYear => _communityView?.counts.usersActiveHalfYear;
 
   /// The current user subscription status to the community.
-  SubscribedType? get subscribed => _communityView?.subscribed;
+  SubscriptionStatus get subscribed => SubscriptionStatusMapping.fromLemmyType(_communityView?.subscribed);
 
   /// The date and time that the community was created.
   DateTime get created => _community.published;

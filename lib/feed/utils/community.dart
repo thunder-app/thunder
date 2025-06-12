@@ -5,6 +5,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/core/models/models.dart';
@@ -108,7 +109,7 @@ List<ThunderCommunity>? prioritizeFavorites(List<ThunderCommunity>? communities,
 /// When subcribed, shows a confirmation dialog for unsubscription.
 Future<void> handleSubscription(BuildContext context, ThunderCommunity community) async {
   final l10n = GlobalContext.l10n;
-  final isSubscribed = community.subscribed != SubscribedType.notSubscribed;
+  final isSubscribed = community.subscribed != SubscriptionStatus.notSubscribed;
 
   if (isSubscribed) {
     bool shouldUnsubscribe = false;
