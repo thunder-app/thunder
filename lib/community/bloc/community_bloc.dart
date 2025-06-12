@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -69,9 +69,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           // Determines the desired subscribed type outcome based on the value.
           // If [event.value] is true, then the desired outcome is to subscribe.
           // If [event.value] is false, then the desired outcome is to unsubscribe.
-          SubscribedType? subscribedType = switch (event.value) {
-            true => SubscribedType.subscribed,
-            false => SubscribedType.notSubscribed,
+          SubscriptionStatus? subscriptionStatus = switch (event.value) {
+            true => SubscriptionStatus.subscribed,
+            false => SubscriptionStatus.notSubscribed,
             _ => null,
           };
 
@@ -80,14 +80,14 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           String? message;
 
           // Check if the subscription was successful
-          if (community.subscribed == subscribedType) {
-            message = subscribedType == SubscribedType.subscribed ? l10n.subscribed : l10n.unsubscribed;
+          if (community.subscribed == subscriptionStatus) {
+            message = subscriptionStatus == SubscriptionStatus.subscribed ? l10n.subscribed : l10n.unsubscribed;
           } else {
             message = l10n.subscriptionRequestSent;
           }
 
           emit(state.copyWith(status: CommunityStatus.success, community: community, message: message));
-          if (community.subscribed == subscribedType) return;
+          if (community.subscribed == subscriptionStatus) return;
 
           // Otherwise, retry fetching the community information after a small delay
           emit(state.copyWith(status: CommunityStatus.fetching));
@@ -99,8 +99,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
             String? message;
 
-            if (community.subscribed == subscribedType) {
-              message = subscribedType == SubscribedType.subscribed ? l10n.subscribed : l10n.unsubscribed;
+            if (community.subscribed == subscriptionStatus) {
+              message = subscriptionStatus == SubscriptionStatus.subscribed ? l10n.subscribed : l10n.unsubscribed;
             }
 
             emit(state.copyWith(status: CommunityStatus.success, community: community, message: message));

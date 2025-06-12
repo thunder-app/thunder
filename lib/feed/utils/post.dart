@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -254,7 +255,7 @@ Future<ThunderPost?> createExamplePost({
       downvotes: 0,
       published: DateTime.now(),
     ),
-    subscribed: SubscribedType.notSubscribed,
+    subscribed: SubscriptionStatus.notSubscribed.toLemmyType(),
     saved: saved ?? false,
     read: read ?? false,
     creatorBlocked: false,

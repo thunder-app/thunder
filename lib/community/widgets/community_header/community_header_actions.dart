@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -138,9 +138,9 @@ class _ActionChipsList extends StatelessWidget {
 
     return [
       _SubscriptionActionChip(community: community),
-      if (community.subscribed != SubscribedType.notSubscribed) _FavoritesActionChip(community: community),
+      if (community.subscribed != SubscriptionStatus.notSubscribed) _FavoritesActionChip(community: community),
       _CreatePostActionChip(community: community),
-      if (community.subscribed == SubscribedType.notSubscribed) _BlockActionChip(community: community),
+      if (community.subscribed == SubscriptionStatus.notSubscribed) _BlockActionChip(community: community),
     ];
   }
 }
@@ -212,23 +212,21 @@ class _SubscriptionActionChip extends StatelessWidget {
     );
   }
 
-  IconData _getSubscriptionIcon(SubscribedType? subscribed) {
+  IconData _getSubscriptionIcon(SubscriptionStatus subscribed) {
     return switch (subscribed) {
-      SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-      SubscribedType.pending => Icons.pending_outlined,
-      SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-      _ => Icons.add_circle_outline_rounded,
+      SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
+      SubscriptionStatus.pending => Icons.pending_outlined,
+      SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
     };
   }
 
-  String _getSubscriptionLabel(SubscribedType? subscribed) {
+  String _getSubscriptionLabel(SubscriptionStatus subscribed) {
     final l10n = GlobalContext.l10n;
 
     return switch (subscribed) {
-      SubscribedType.notSubscribed => l10n.subscribe,
-      SubscribedType.pending => l10n.pending,
-      SubscribedType.subscribed => l10n.unsubscribe,
-      _ => '',
+      SubscriptionStatus.notSubscribed => l10n.subscribe,
+      SubscriptionStatus.pending => l10n.pending,
+      SubscriptionStatus.subscribed => l10n.unsubscribe,
     };
   }
 
@@ -288,7 +286,7 @@ class _FavoritesActionChip extends StatelessWidget {
     final favorited = favorites.any((c) => c.id == community.id);
 
     // Only show for subscribed communities
-    if (community.subscribed != SubscribedType.subscribed) {
+    if (community.subscribed != SubscriptionStatus.subscribed) {
       return const SizedBox.shrink();
     }
 

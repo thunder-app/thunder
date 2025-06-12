@@ -7,6 +7,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
@@ -585,7 +586,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 communityName: community.name,
                 displayName: community.title,
                 actorId: community.url,
-                subscribed: community.subscribed != SubscribedType.notSubscribed,
+                subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
                 dim: dim,
               ),
               UserPostCardMetadata(
@@ -601,7 +602,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             communityName: community.name,
             displayName: community.title,
             actorId: community.url,
-            subscribed: community.subscribed != SubscribedType.notSubscribed,
+            subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
             dim: dim,
           )
         else if (showUsername)

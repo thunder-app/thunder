@@ -6,6 +6,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -33,7 +34,7 @@ class CommunityListEntry extends StatelessWidget {
   final bool Function(BuildContext context, ThunderCommunity community)? getFavoriteStatus;
 
   /// Callback function that occurs when the subscription status is requested.
-  final SubscribedType Function(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
+  final SubscriptionStatus Function(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions)? getCurrentSubscriptionStatus;
 
   /// Callback function that occurs when the subscribe icon is pressed.
   final void Function(bool isUserLoggedIn, BuildContext context, ThunderCommunity community)? onSubscribeIconPressed;
@@ -59,9 +60,9 @@ class CommunityListEntry extends StatelessWidget {
     assert(community.subscribers != null);
 
     String subscriptionButtonLabel = switch (getCurrentSubscriptionStatus?.call(isUserLoggedIn, community, currentSubscriptions)) {
-      SubscribedType.notSubscribed => l10n.subscribe,
-      SubscribedType.pending => l10n.unsubscribePending,
-      SubscribedType.subscribed => l10n.unsubscribe,
+      SubscriptionStatus.notSubscribed => l10n.subscribe,
+      SubscriptionStatus.pending => l10n.unsubscribePending,
+      SubscriptionStatus.subscribed => l10n.unsubscribe,
       _ => '',
     };
 
@@ -97,7 +98,7 @@ class CommunityListEntry extends StatelessWidget {
             const Icon(Icons.people_rounded, size: 16.0),
             if (indicateFavorites &&
                 getFavoriteStatus?.call(context, community) == true &&
-                getCurrentSubscriptionStatus?.call(isUserLoggedIn, community, currentSubscriptions) == SubscribedType.subscribed) ...const [
+                getCurrentSubscriptionStatus?.call(isUserLoggedIn, community, currentSubscriptions) == SubscriptionStatus.subscribed) ...const [
               Text(' · '),
               Icon(Icons.star_rounded, size: 15),
             ]
@@ -107,18 +108,18 @@ class CommunityListEntry extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: () {
-                  SubscribedType? subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions);
+                  SubscriptionStatus subscriptionStatus = getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions);
                   onSubscribeIconPressed?.call(isUserLoggedIn, context, community);
-                  showSnackbar(subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                  showSnackbar(subscriptionStatus == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                   context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
                 },
                 icon: Semantics(
                   label: subscriptionButtonLabel,
                   child: Icon(
                     switch (getCurrentSubscriptionStatus!(isUserLoggedIn, community, currentSubscriptions)) {
-                      SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                      SubscribedType.pending => Icons.pending_outlined,
-                      SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                      SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
+                      SubscriptionStatus.pending => Icons.pending_outlined,
+                      SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
                     },
                   ),
                 ),

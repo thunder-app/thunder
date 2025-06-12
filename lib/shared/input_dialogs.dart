@@ -10,6 +10,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -226,11 +227,11 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   const Icon(Icons.people_rounded, size: 16),
                   const SizedBox(width: 5),
                   Text(formatNumberToK(payload.subscribers ?? -1)),
-                  if (payload.subscribed != SubscribedType.notSubscribed) ...[
+                  if (payload.subscribed != SubscriptionStatus.notSubscribed) ...[
                     Text(' · ${switch (payload.subscribed) {
-                      SubscribedType.pending => l10n.pending,
-                      SubscribedType.subscribed => l10n.subscribed,
-                      _ => '',
+                      SubscriptionStatus.pending => l10n.pending,
+                      SubscriptionStatus.subscribed => l10n.subscribed,
+                      SubscriptionStatus.notSubscribed => '',
                     }}'),
                   ],
                   if (_getFavoriteStatus(context, payload)) ...const [
