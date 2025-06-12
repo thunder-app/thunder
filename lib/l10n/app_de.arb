@@ -67,7 +67,7 @@
   "@apply": {},
   "back": "Zurück",
   "@back": {},
-  "backButton": "Zurück-Button",
+  "backButton": "Zurück-Knopf",
   "@backButton": {},
   "backToTop": "Zurück nach oben",
   "@backToTop": {},
@@ -89,7 +89,7 @@
   "@cancel": {},
   "cannotReportOwnComment": "Du kannst nicht deinen eigenen Kommentar melden.",
   "@cannotReportOwnComment": {},
-  "cantBlockAdmin": "Du kannst den Admin der Instanz nicht blockieren.",
+  "cantBlockAdmin": "Du kannst den Administrator der Instanz nicht blockieren.",
   "@cantBlockAdmin": {},
   "cantBlockYourself": "Du kannst dich nicht selbst blockieren.",
   "@cantBlockYourself": {},
@@ -107,19 +107,19 @@
   },
   "changeSort": "Sortierung ändern",
   "@changeSort": {},
-  "clearDatabase": "Datenbank zurücksetzen",
+  "clearDatabase": "Datenbank leeren",
   "@clearDatabase": {
     "description": "Label for action to clear local database in the dialog"
   },
-  "clearPreferences": "Einstellungen zurücksetzen",
+  "clearPreferences": "Einstellungen leeren",
   "@clearPreferences": {
     "description": "Label for action to clear local user preferences in the dialog"
   },
-  "clearSearch": "Suchverlauf löschen",
+  "clearSearch": "Suchverlauf leeren",
   "@clearSearch": {},
-  "clearedDatabase": "Lokale Datenbank zurückgesetzt. Thunder bitte neu starten, um die Änderungen zu über nehmen.",
+  "clearedDatabase": "Lokale Datenbank geleert. Thunder bitte neu starten, um die Änderungen zu übernehmen.",
   "@clearedDatabase": {},
-  "clearedUserPreferences": "Alle Benutzer-Einstellungen zurückgesetzt",
+  "clearedUserPreferences": "Alle Benutzer-Einstellungen geleert",
   "@clearedUserPreferences": {},
   "close": "Schließen",
   "@close": {},
@@ -141,7 +141,7 @@
   "@combineCommentScoresLabel": {
     "description": "Label for setting to combine comment scores"
   },
-  "combineNavAndFab": "FAB und Navigationsbuttons kombinieren",
+  "combineNavAndFab": "FAB und Navigationsknöpfe kombinieren",
   "@combineNavAndFab": {},
   "comment": "Kommentieren",
   "@comment": {},
@@ -963,7 +963,7 @@
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
-  "addedModToCommunity": "Mod zur Community hinzugefügt",
+  "addedModToCommunity": "Moderator zur Community hinzugefügt",
   "@addedModToCommunity": {
     "description": "Short decription for moderator action to add a mod to a community"
   },
@@ -971,11 +971,11 @@
   "@addUserLabel": {
     "description": "Action for adding a user label"
   },
-  "addedInstanceMod": "Instanz Mod hinzugefügt",
+  "addedInstanceMod": "Instanz Moderator hinzugefügt",
   "@addedInstanceMod": {
     "description": "Short decription for moderator action to add a mod to an instance"
   },
-  "admin": "Admin",
+  "admin": "Administrator",
   "@admin": {
     "description": "Role name for admin"
   },
@@ -2861,11 +2861,11 @@
   },
   "sidebarBottomNavDoubleTapDescription": "Doppeltipp auf die untere Navigationsleiste zum Öffnen der Seitenleiste",
   "@sidebarBottomNavDoubleTapDescription": {},
-  "accountSettingsExportedSuccessfully": "Lemmy Accounteinstellungen erfolgreich nach {savedFilePath} exportiert!",
+  "accountSettingsExportedSuccessfully": "Lemmy Kontoeinstellungen erfolgreich nach {savedFilePath} exportiert!",
   "@accountSettingsExportedSuccessfully": {
     "description": "Message shown to user when account settings are exported successfully"
   },
-  "accountSettingsImportedSuccessfully": "Lemmy Accounteinstellungen erfolgreich importiert!",
+  "accountSettingsImportedSuccessfully": "Lemmy Kontoeinstellungen erfolgreich importiert!",
   "@accountSettingsImportedSuccessfully": {
     "description": "Message shown to user when account settings are imported successfully"
   },
