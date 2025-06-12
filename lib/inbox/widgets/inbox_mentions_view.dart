@@ -13,22 +13,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
-
-extension on PersonMentionView {
-  CommentView toCommentView() {
-    return CommentView(
-      comment: comment,
-      creator: creator,
-      post: post,
-      community: community,
-      counts: counts,
-      creatorBannedFromCommunity: creatorBannedFromCommunity,
-      subscribed: subscribed,
-      saved: saved,
-      creatorBlocked: creatorBlocked,
-    );
-  }
-}
+import 'package:thunder/core/extensions/person_mention_view.dart';
 
 class InboxMentionsView extends StatefulWidget {
   final List<PersonMentionView> mentions;
@@ -69,7 +54,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
               return Column(
                 children: [
                   CommentReference(
-                    comment: personMentionView.toCommentView(),
+                    comment: personMentionView.toComment(),
                     isOwnComment: personMentionView.creator.id == context.read<ProfileBloc>().state.account?.userId,
                     child: IconButton(
                       onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),

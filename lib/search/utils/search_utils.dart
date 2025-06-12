@@ -8,7 +8,7 @@ import 'package:thunder/search/bloc/search_bloc.dart';
 bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchResponse? searchResponse}) {
   final List<ThunderCommunity>? communities = searchState?.communities ?? searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
-  final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
+  final List<ThunderComment>? comments = searchState?.comments ?? searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
   final List<ThunderPost>? posts = searchState?.posts?.map((post) => post).toList() ?? searchResponse?.posts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
   final List<ThunderInstanceInfo>? instances = searchState?.instances;
 

@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/modlog.dart';
@@ -322,7 +323,9 @@ Future<DeepLinkResult> _navigateToComment(BuildContext context, String link) asy
     // Check context.mounted after long-running API operations
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
 
-    navigateToComment(context, response.commentView);
+    final comment = ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+
+    navigateToComment(context, comment);
     return DeepLinkResult.successful();
   } catch (e) {
     throw DeepLinkException(GlobalContext.l10n.exceptionProcessingUri, url: link, type: DeepLinkErrorType.entityResolution);

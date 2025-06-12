@@ -6,7 +6,7 @@ final class FeedState extends Equatable {
   const FeedState({
     this.status = FeedStatus.initial,
     this.posts = const <ThunderPost>[],
-    this.commentViews = const <CommentView>[],
+    this.comments = const <ThunderComment>[],
     this.hasReachedPostsEnd = false,
     this.hasReachedCommentsEnd = false,
     this.feedType = FeedType.general,
@@ -40,7 +40,7 @@ final class FeedState extends Equatable {
   final List<ThunderPost> posts;
 
   /// The comments to display on the feed
-  final List<CommentView> commentViews;
+  final List<ThunderComment> comments;
 
   /// Determines if we have reached the end of the feed (posts)
   final bool hasReachedPostsEnd;
@@ -117,7 +117,7 @@ final class FeedState extends Equatable {
   FeedState copyWith({
     FeedStatus? status,
     List<ThunderPost>? posts,
-    List<CommentView>? commentViews,
+    List<ThunderComment>? comments,
     bool? hasReachedPostsEnd,
     bool? hasReachedCommentsEnd,
     FeedType? feedType,
@@ -146,7 +146,7 @@ final class FeedState extends Equatable {
     return FeedState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
-      commentViews: commentViews ?? this.commentViews,
+      comments: comments ?? this.comments,
       hasReachedPostsEnd: hasReachedPostsEnd ?? this.hasReachedPostsEnd,
       hasReachedCommentsEnd: hasReachedCommentsEnd ?? this.hasReachedCommentsEnd,
       feedType: feedType ?? this.feedType,
@@ -176,7 +176,7 @@ final class FeedState extends Equatable {
 
   @override
   String toString() {
-    return '''FeedState { status: $status, posts: ${posts.length}, commentViews: ${commentViews.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
+    return '''FeedState { status: $status, posts: ${posts.length}, comments: ${comments.length}, hasReachedPostsEnd: $hasReachedPostsEnd, hasReachedCommentsEnd: $hasReachedCommentsEnd }''';
   }
 
   @override
@@ -187,7 +187,7 @@ final class FeedState extends Equatable {
         communityModerators,
         fullPersonView,
         posts,
-        commentViews,
+        comments,
         hasReachedPostsEnd,
         hasReachedCommentsEnd,
         feedType,

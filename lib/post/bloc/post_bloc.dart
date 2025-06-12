@@ -110,7 +110,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         parentId: parentId,
       ));
 
-      CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+      List<ThunderComment> comments = getCommentsResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
+      CommentNode commentNode = buildCommentTree(comments);
 
       Map<int, CommentView> responseMap = {};
       for (CommentView comment in getCommentsResponse.comments) {
@@ -121,7 +122,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: PostStatus.success,
           post: post,
-          commentNodes: comments,
+          commentNodes: commentNode,
           commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
           commentResponseMap: responseMap,
           commentCount: getCommentsResponse.comments.length,
@@ -218,7 +219,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           type: ListingType.all,
         ));
 
-        CommentNode comments = buildCommentTree(getCommentsResponse.comments);
+        List<ThunderComment> comments = getCommentsResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
+        CommentNode commentNode = buildCommentTree(comments);
 
         Map<int, CommentView> responseMap = {};
         for (CommentView comment in getCommentsResponse.comments) {
@@ -228,7 +230,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         return emit(
           state.copyWith(
             status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
-            commentNodes: comments,
+            commentNodes: commentNode,
             commentResponseMap: responseMap,
             commentPage: 1,
             commentCount: responseMap.length,
@@ -278,14 +280,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.commentResponseMap[comment.comment.id] = comment;
       }
 
-      CommentNode comments = buildCommentTree(fullCommentResponseList);
+      List<ThunderComment> comments = fullCommentResponseList.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
+      CommentNode commentNode = buildCommentTree(comments);
 
       // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
       return emit(
         state.copyWith(
           status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
           sortType: sortType,
-          commentNodes: comments,
+          commentNodes: commentNode,
           commentResponseMap: state.commentResponseMap,
           commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
           commentCount: state.commentResponseMap.length,
@@ -306,13 +309,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     CommentNode? existingCommentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentId.toString());
     if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure));
 
-    List<String> commentPath = existingCommentNode.commentView!.comment.path.split('.');
+    List<String> commentPath = existingCommentNode.comment!.path.split('.');
     String parentId = commentPath[commentPath.length - 2];
 
     switch (event.action) {
       case CommentAction.vote:
         try {
-          CommentNode newCommentNode = CommentNode(commentView: optimisticallyVoteComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode newCommentNode = CommentNode(comment: optimisticallyVoteComment(existingCommentNode.comment!, event.value), replies: existingCommentNode.replies);
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
@@ -327,7 +330,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         }
       case CommentAction.save:
         try {
-          CommentNode newCommentNode = CommentNode(commentView: optimisticallySaveComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode newCommentNode = CommentNode(comment: optimisticallySaveComment(existingCommentNode.comment!, event.value), replies: existingCommentNode.replies);
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
@@ -342,7 +345,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         }
       case CommentAction.delete:
         try {
-          CommentNode newCommentNode = CommentNode(commentView: optimisticallyDeleteComment(existingCommentNode.commentView!, event.value), replies: existingCommentNode.replies);
+          CommentNode newCommentNode = CommentNode(comment: optimisticallyDeleteComment(existingCommentNode.comment!, event.value), replies: existingCommentNode.replies);
           CommentNode.insertCommentNode(state.commentNodes!, parentId, newCommentNode);
 
           // Immediately set the status, and continue
@@ -364,22 +367,22 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
     emit(state.copyWith(status: PostStatus.refreshing));
 
-    CommentNode? commentNode = CommentNode.findCommentNode(state.commentNodes!, event.commentView.comment.id.toString());
-    List<String> commentPath = event.commentView.comment.path.split('.');
+    CommentNode? commentNode = CommentNode.findCommentNode(state.commentNodes!, event.comment.id.toString());
+    List<String> commentPath = event.comment.path.split('.');
     String parentId = commentPath[commentPath.length - 2];
 
     if (commentNode == null) {
       // This is most likely a new comment
-      CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(commentView: event.commentView, replies: []));
+      CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(comment: event.comment, replies: []));
 
       return emit(state.copyWith(
         status: PostStatus.success,
-        highlightedCommentId: event.commentView.comment.id,
+        highlightedCommentId: event.comment.id,
       ));
     }
 
     // This is an existing comment - update it
-    CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(commentView: event.commentView, replies: commentNode.replies));
+    CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(comment: event.comment, replies: commentNode.replies));
 
     return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1));
   }

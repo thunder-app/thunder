@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/comment_reference.dart';
 
@@ -14,11 +14,11 @@ class FeedCommentCardList extends StatelessWidget {
   final bool tabletMode;
 
   /// The list of comments to display
-  final List<CommentView> commentViews;
+  final List<ThunderComment> comments;
 
   const FeedCommentCardList({
     super.key,
-    required this.commentViews,
+    required this.comments,
     required this.tabletMode,
   });
 
@@ -34,7 +34,7 @@ class FeedCommentCardList extends StatelessWidget {
         return Column(
           children: [
             CommentReference(
-              comment: commentViews[index],
+              comment: comments[index],
               onVoteAction: (int commentId, int voteType) => {
                 // TODO: Implement action
               },
@@ -47,17 +47,17 @@ class FeedCommentCardList extends StatelessWidget {
               onReportAction: (int commentId) {
                 // TODO: Implement action
               },
-              onReplyEditAction: (CommentView commentView, bool isEdit) {
+              onReplyEditAction: (ThunderComment comment, bool isEdit) {
                 // TODO: Implement action
               },
-              isOwnComment: commentViews[index].comment.creatorId == state.account?.userId,
+              isOwnComment: comments[index].creator?.id == state.account?.userId,
               disableActions: true,
             ),
             const FeedCardDivider(),
           ],
         );
       },
-      childCount: commentViews.length,
+      childCount: comments.length,
     );
   }
 }
