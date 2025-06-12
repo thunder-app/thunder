@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -205,8 +206,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
                   title: l10n.sortOptions,
-                  onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
-                  previouslySelected: sortType,
+                  onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!)),
+                  previouslySelected: sortType?.toLemmyType(),
                   minimumVersion: LemmyClient.instance.version,
                 ),
               );
@@ -249,8 +250,8 @@ class FeedAppBarUserActions extends StatelessWidget {
                 isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
                   title: l10n.sortOptions,
-                  onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                  previouslySelected: feedBloc.state.sortType,
+                  onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!)),
+                  previouslySelected: feedBloc.state.sortType?.toLemmyType(),
                   minimumVersion: LemmyClient.instance.version,
                 ),
               );
@@ -291,8 +292,8 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
                 title: l10n.sortOptions,
-                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                previouslySelected: feedBloc.state.sortType,
+                onSelect: (selected) async => feedBloc.add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!)),
+                previouslySelected: feedBloc.state.sortType?.toLemmyType(),
                 minimumVersion: LemmyClient.instance.version,
               ),
             );

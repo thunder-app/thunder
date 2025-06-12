@@ -17,6 +17,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -582,7 +583,7 @@ Future<void> navigateToFeedPage(
   BuildContext context, {
   required FeedType feedType,
   FeedListType? feedListType,
-  SortType? sortType,
+  PostSortType? sortType,
   String? communityName,
   int? communityId,
   String? username,
@@ -603,7 +604,10 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             feedListType: feedListType,
-            sortType: sortType ?? profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+            sortType: sortType ??
+                (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                    ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+                    : thunderBloc.state.sortTypeForInstance),
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -635,7 +639,10 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ?? profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.sortTypeForInstance,
+          sortType: sortType ??
+              (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                  ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+                  : thunderBloc.state.sortTypeForInstance),
           communityName: communityName,
           communityId: communityId,
           userId: userId,

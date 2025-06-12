@@ -17,6 +17,7 @@ import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
@@ -123,7 +124,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
         context.read<SearchBloc>().add(ContinueSearchEvent(
               query: _controller.text,
-              sortType: sortType,
+              sortType: PostSortTypeMapping.fromLemmyType(sortType)!,
               feedListType: _currentFeedType,
               searchType: _getSearchTypeToUse(),
               communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
@@ -808,7 +809,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     if (_controller.text.isNotEmpty || force || searchBloc.state.viewingAll) {
       searchBloc.add(StartSearchEvent(
         query: _controller.text,
-        sortType: sortType,
+        sortType: PostSortTypeMapping.fromLemmyType(sortType)!,
         feedListType: _currentFeedType,
         searchType: _getSearchTypeToUse(),
         communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,

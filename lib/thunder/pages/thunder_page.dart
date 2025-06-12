@@ -19,6 +19,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
@@ -274,7 +275,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
+                                sortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.sortTypeForInstance,
                                 reset: true,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),
@@ -411,7 +412,7 @@ class _ThunderState extends State<Thunder> {
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
                                 feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                                sortType: state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.sortTypeForInstance,
+                                sortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.sortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),

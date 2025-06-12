@@ -10,6 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -100,7 +101,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
-                                      sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                                      sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
                                       communityId: isLoggedIn ? community.id : null,
                                       communityName: !isLoggedIn ? await getLemmyCommunity(community.url) : null,
                                       reset: true,
@@ -302,7 +303,7 @@ class FavoriteCommunities extends StatelessWidget {
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                          sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
                           communityId: community.id,
                           reset: true,
                           showHidden: thunderState.showHiddenPosts,
@@ -362,7 +363,7 @@ class ModeratedCommunities extends StatelessWidget {
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
+                            sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
                             communityId: community.id,
                             reset: true,
                             showHidden: thunderState.showHiddenPosts,

@@ -29,7 +29,7 @@ class SearchState extends Equatable {
   final String? errorMessage;
 
   final int page;
-  final SortType? sortType;
+  final PostSortType? sortType;
 
   final int focusSearchId;
   final bool viewingAll;
@@ -44,7 +44,7 @@ class SearchState extends Equatable {
     List<ThunderInstanceInfo>? instances,
     String? errorMessage,
     int? page,
-    SortType? sortType,
+    PostSortType? sortType,
     int? focusSearchId,
     bool? viewingAll,
   }) {

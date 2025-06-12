@@ -55,7 +55,7 @@ final class FeedState extends Equatable {
   final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
-  final SortType? sortType;
+  final PostSortType? sortType;
 
   /// The community information if applicable
   final ThunderCommunity? community;
@@ -122,7 +122,7 @@ final class FeedState extends Equatable {
     bool? hasReachedCommentsEnd,
     FeedType? feedType,
     FeedListType? feedListType,
-    SortType? sortType,
+    PostSortType? sortType,
     ThunderCommunity? community,
     ThunderInstance? communityInstance,
     List<ThunderUser>? communityModerators,

@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -132,7 +133,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           q: event.query,
           page: 1,
           limit: 15,
-          sort: event.sortType,
+          sort: event.sortType.toLemmyType(),
           listingType: event.feedListType.toLemmyType(),
           type: event.searchType.searchType,
           communityId: event.communityId,
@@ -224,7 +225,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               q: event.query,
               page: state.page,
               limit: 15,
-              sort: event.sortType,
+              sort: event.sortType.toLemmyType(),
               listingType: event.feedListType.toLemmyType(),
               type: event.searchType.searchType,
               communityId: event.communityId,
@@ -349,7 +350,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       final response = await lemmy.run(ListCommunities(
         type: ListingType.local,
-        sort: SortType.active,
+        sort: PostSortType.active.toLemmyType(),
         limit: 5,
         auth: account.jwt,
       ));

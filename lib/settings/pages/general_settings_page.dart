@@ -16,6 +16,7 @@ import 'package:thunder/core/database/database.dart' hide Account;
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
@@ -126,7 +127,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Whether or not to show navigation labels
   bool showNavigationLabels = true;
 
-  SortType defaultSortType = DEFAULT_SORT_TYPE;
+  PostSortType defaultSortType = DEFAULT_SORT_TYPE;
 
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
@@ -159,7 +160,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
-        setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
+        setState(() => defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name))!);
         break;
       case LocalSettings.defaultCommentSortType:
         await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
@@ -277,10 +278,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Default Sorts and Listing
       try {
         defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+        defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name))!;
       } catch (e) {
         defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+        defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(DEFAULT_SORT_TYPE.name))!;
       }
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -399,7 +400,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ),
                 ListOption(
                   description: l10n.defaultFeedSortType,
-                  value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                  value: ListPickerItem(
+                    label: allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType.toLemmyType()).label,
+                    icon: Icons.local_fire_department_rounded,
+                    payload: defaultSortType,
+                  ),
                   options: [
                     ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
                     ...topSortTypeItems
@@ -413,7 +418,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     onSelect: (value) async {
                       setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                     },
-                    previouslySelected: defaultSortType,
+                    previouslySelected: defaultSortType.toLemmyType(),
                   ),
                   valueDisplay: Row(
                     children: [
