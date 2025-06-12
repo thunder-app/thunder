@@ -12,6 +12,7 @@ import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -30,7 +31,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/instance.dart';
 
 class LinkInfo {
@@ -175,13 +175,11 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       // Show the loading page while we fetch the post
       if (context.mounted) showLoadingPage(context);
 
-      GetPostResponse post = await lemmy.run(GetPost(
-        id: postId,
-        auth: account.jwt,
-      ));
+      final repository = context.read<PostRepository>();
+      final post = await repository.getPost(postId);
 
       if (context.mounted) {
-        navigateToPost(context, post: (await parsePosts([post.postView])).first);
+        navigateToPost(context, post: post);
         return;
       }
     } catch (e) {

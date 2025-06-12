@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
@@ -14,6 +16,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
@@ -106,7 +109,9 @@ class _InstancePageState extends State<InstancePage> {
             ),
           ),
           BlocProvider.value(
-            value: FeedBloc(lemmyClient: LemmyClient()..changeBaseUrl(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
+            value: FeedBloc(
+              repository: LemmyPostRepository(client: LemmyApiV3(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
+            ),
           ),
         ],
         child: BlocConsumer<InstancePageCubit, InstancePageState>(
@@ -193,10 +198,9 @@ class _InstancePageState extends State<InstancePage> {
                                 ThunderPopupMenuItem(
                                   onTap: () async {
                                     HapticFeedback.mediumImpact();
-                                    FeedBloc feedBloc = context.read<FeedBloc>();
                                     navigateToModlogPage(
                                       context,
-                                      lemmyClient: feedBloc.lemmyClient,
+                                      lemmyClient: LemmyClient()..changeBaseUrl(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!),
                                       subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
                                     );
                                   },

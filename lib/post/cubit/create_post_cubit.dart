@@ -1,20 +1,23 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/feed/utils/post.dart';
-import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'create_post_state.dart';
 
 class CreatePostCubit extends Cubit<CreatePostState> {
-  CreatePostCubit() : super(const CreatePostState(status: CreatePostStatus.initial));
+  late PostRepository repository;
+
+  CreatePostCubit({PostRepository? repository}) : super(const CreatePostState(status: CreatePostStatus.initial)) {
+    this.repository = repository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+  }
 
   Future<void> clearMessage() async {
     emit(state.copyWith(status: CreatePostStatus.initial, message: null));
@@ -65,7 +68,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
-      PostView postView = await createPost(
+      final post = await repository.create(
         communityId: communityId,
         name: name,
         body: body,
@@ -77,11 +80,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         languageId: languageId,
       );
 
-      // Parse the newly created post
-      List<ThunderPost> posts = await parsePosts([postView]);
-
-      emit(state.copyWith(status: CreatePostStatus.success, post: posts.firstOrNull));
-      return posts.firstOrNull?.id;
+      emit(state.copyWith(status: CreatePostStatus.success, post: post));
+      return post.id;
     } catch (e) {
       emit(state.copyWith(status: CreatePostStatus.error, message: getExceptionErrorMessage(e)));
     }

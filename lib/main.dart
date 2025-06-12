@@ -37,6 +37,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -161,127 +162,132 @@ class _ThunderAppState extends State<ThunderApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ThemeBloc(),
-        ),
-        BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(
-          create: (context) => DeepLinksCubit(),
-        ),
-        BlocProvider(
-          create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream),
-        ),
-        BlocProvider(
-          create: (context) => ThunderBloc(),
-        ),
-        BlocProvider(
-          create: (context) => AnonymousSubscriptionsBloc(),
-        ),
-        BlocProvider(
-          create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
-        ),
-        BlocProvider(
-          create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
-        ),
-        BlocProvider(
-          create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
-        ),
-        BlocProvider(
-          create: (context) => NetworkCheckerCubit()..getConnectionType(),
-        )
+        RepositoryProvider(create: (context) => LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3)),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ThemeBloc(),
+          ),
+          BlocProvider(create: (context) => ProfileBloc()),
+          BlocProvider(
+            create: (context) => DeepLinksCubit(),
+          ),
+          BlocProvider(
+            create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream),
+          ),
+          BlocProvider(
+            create: (context) => ThunderBloc(),
+          ),
+          BlocProvider(
+            create: (context) => AnonymousSubscriptionsBloc(),
+          ),
+          BlocProvider(
+            create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
+          ),
+          BlocProvider(
+            create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
+          ),
+          BlocProvider(
+            create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
+          ),
+          BlocProvider(
+            create: (context) => NetworkCheckerCubit()..getConnectionType(),
+          )
+        ],
+        child: BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
+            final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
 
-          if (state.status == ThemeStatus.initial) {
-            context.read<ThemeBloc>().add(ThemeChangeEvent());
-          }
+            if (state.status == ThemeStatus.initial) {
+              context.read<ThemeBloc>().add(ThemeChangeEvent());
+            }
 
-          return DynamicColorBuilder(
-            builder: (lightColorScheme, darkColorScheme) {
-              FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
+            return DynamicColorBuilder(
+              builder: (lightColorScheme, darkColorScheme) {
+                FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
 
-              Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
+                Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
 
-              ThemeData theme = FlexThemeData.light(scheme: scheme);
-              ThemeData darkTheme = FlexThemeData.dark(
-                scheme: scheme,
-                darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
-                surface: darkThemeSurfaceColor,
-                scaffoldBackground: darkThemeSurfaceColor,
-                appBarBackground: darkThemeSurfaceColor,
-              );
-
-              // Enable Material You theme
-              if (state.useMaterialYouTheme == true) {
-                theme = ThemeData(
-                  colorScheme: lightColorScheme,
-                );
-
-                darkTheme = FlexThemeData.dark(
-                  colorScheme: darkColorScheme,
+                ThemeData theme = FlexThemeData.light(scheme: scheme);
+                ThemeData darkTheme = FlexThemeData.dark(
+                  scheme: scheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                  surface: darkThemeSurfaceColor,
+                  scaffoldBackground: darkThemeSurfaceColor,
+                  appBarBackground: darkThemeSurfaceColor,
                 );
-              }
 
-              // Set the page transitions
-              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              });
+                // Enable Material You theme
+                if (state.useMaterialYouTheme == true) {
+                  theme = ThemeData(
+                    colorScheme: lightColorScheme,
+                  );
 
-              // Customize our themes with the aforementinoed page transitions, as well as some custom styling
-              theme = theme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-                inputDecorationTheme: InputDecorationTheme(
-                  hintStyle: TextStyle(
-                    color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
+                  darkTheme = FlexThemeData.dark(
+                    colorScheme: darkColorScheme,
+                    darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                  );
+                }
+
+                // Set the page transitions
+                const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                });
+
+                // Customize our themes with the aforementinoed page transitions, as well as some custom styling
+                theme = theme.copyWith(
+                  pageTransitionsTheme: pageTransitionsTheme,
+                  inputDecorationTheme: InputDecorationTheme(
+                    hintStyle: TextStyle(
+                      color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
-                ),
-              );
-              darkTheme = darkTheme.copyWith(
-                pageTransitionsTheme: pageTransitionsTheme,
-                inputDecorationTheme: InputDecorationTheme(
-                  hintStyle: TextStyle(
-                    color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
+                );
+                darkTheme = darkTheme.copyWith(
+                  pageTransitionsTheme: pageTransitionsTheme,
+                  inputDecorationTheme: InputDecorationTheme(
+                    hintStyle: TextStyle(
+                      color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
-                ),
-              );
+                );
 
-              Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
+                Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
 
-              return OverlaySupport.global(
-                child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  // Set navigation bar color on Android to be transparent
-                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                  child: MaterialApp(
-                    title: 'Thunder',
-                    locale: locale,
-                    localizationsDelegates: const [
-                      ...AppLocalizations.localizationsDelegates,
-                      MaterialLocalizationsEo.delegate,
-                      CupertinoLocalizationsEo.delegate,
-                    ],
-                    supportedLocales: const [
-                      ...AppLocalizations.supportedLocales,
-                      Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                    ],
-                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                    theme: theme,
-                    darkTheme: darkTheme,
-                    debugShowCheckedModeBanner: false,
-                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
-                    home: Thunder(pageController: thunderPageController),
+                return OverlaySupport.global(
+                  child: AnnotatedRegion<SystemUiOverlayStyle>(
+                    // Set navigation bar color on Android to be transparent
+                    value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                    child: MaterialApp(
+                      title: 'Thunder',
+                      locale: locale,
+                      localizationsDelegates: const [
+                        ...AppLocalizations.localizationsDelegates,
+                        MaterialLocalizationsEo.delegate,
+                        CupertinoLocalizationsEo.delegate,
+                      ],
+                      supportedLocales: const [
+                        ...AppLocalizations.supportedLocales,
+                        Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                      ],
+                      themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                      theme: theme,
+                      darkTheme: darkTheme,
+                      debugShowCheckedModeBanner: false,
+                      scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                      scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                      home: Thunder(pageController: thunderPageController),
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
