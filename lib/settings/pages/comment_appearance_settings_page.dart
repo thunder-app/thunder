@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -129,8 +130,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   }
 
   /// Generates an example comment to show in the comment preview
-  void getExampleComment() {
-    ThunderComment comment = createExampleComment(
+  void getExampleComment() async {
+    final repository = context.read<CommentRepository>();
+
+    ThunderComment comment = await repository.createExample(
       id: 1,
       commentCreatorId: 1,
       path: '0.1',
@@ -142,7 +145,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
-    ThunderComment replyComment = createExampleComment(
+    ThunderComment replyComment = await repository.createExample(
       id: 3,
       commentCreatorId: 3,
       path: '0.1.3',
@@ -155,7 +158,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isPersonAdmin: true,
     );
 
-    ThunderComment replyCommentSecond = createExampleComment(
+    ThunderComment replyCommentSecond = await repository.createExample(
       id: 2,
       commentCreatorId: 2,
       path: '0.1.2',

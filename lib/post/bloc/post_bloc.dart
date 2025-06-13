@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -21,10 +22,12 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
-  late PostRepository repository;
+  late PostRepository postRepository;
+  late CommentRepository commentRepository;
 
-  PostBloc({PostRepository? repository}) : super(PostState()) {
-    this.repository = repository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+  PostBloc({PostRepository? postRepository, CommentRepository? commentRepository}) : super(PostState()) {
+    this.postRepository = postRepository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
@@ -104,25 +107,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
       }
 
-      GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
+      final comments = await commentRepository.getComments(
         page: event.highlightedCommentId == null ? 1 : null,
-        auth: account.jwt,
         communityId: post?.community?.id,
         maxDepth: COMMENT_MAX_DEPTH,
-        postId: post?.id,
-        sort: commentSortType.toLemmyType(),
+        postId: post!.id,
+        commentSortType: commentSortType,
         limit: COMMENT_LIMIT,
-        type: ListingType.all,
         parentId: parentId,
-      ));
+      );
 
-      List<ThunderComment> comments = getCommentsResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
       CommentNode commentNode = buildCommentTree(comments);
-
-      Map<int, CommentView> responseMap = {};
-      for (CommentView comment in getCommentsResponse.comments) {
-        responseMap[comment.comment.id] = comment;
-      }
 
       return emit(
         state.copyWith(
@@ -130,10 +125,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           post: post,
           commentNodes: commentNode,
           commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
-          commentResponseMap: responseMap,
-          commentCount: getCommentsResponse.comments.length,
-          hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < COMMENT_LIMIT,
-          communityId: post?.community?.id,
+          commentResponseMap: comments,
+          commentCount: comments.length,
+          hasReachedCommentEnd: comments.isEmpty || comments.length < COMMENT_LIMIT,
+          communityId: post.community?.id,
           commentSortType: commentSortType,
           highlightedCommentId: event.highlightedCommentId,
         ),
@@ -160,7 +155,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.success, post: updatedPost));
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      updatedPost = await repository.vote(originalPost, event.score);
+      updatedPost = await postRepository.vote(originalPost, event.score);
 
       return emit(state.copyWith(status: PostStatus.success, post: updatedPost));
     } catch (e) {
@@ -185,7 +180,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.success, post: updatedPost));
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      updatedPost = await repository.save(originalPost, event.save);
+      updatedPost = await postRepository.save(originalPost, event.save);
 
       return emit(state.copyWith(status: PostStatus.success, post: updatedPost));
     } catch (e) {
@@ -207,40 +202,29 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 
     try {
-      final account = await fetchActiveProfile();
-      final lemmy = LemmyClient.instance.lemmyApiV3;
-
       if (event.reset) {
         emit(state.copyWith(status: PostStatus.loading, commentSortType: commentSortType));
 
-        GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
-          auth: account.jwt,
+        final comments = await commentRepository.getComments(
           communityId: state.post?.community?.id,
           parentId: event.commentParentId,
-          postId: state.post?.id,
-          sort: commentSortType.toLemmyType(),
+          postId: state.post!.id,
+          commentSortType: commentSortType,
           limit: COMMENT_LIMIT,
           maxDepth: COMMENT_MAX_DEPTH,
           page: 1,
-          type: ListingType.all,
-        ));
+        );
 
-        List<ThunderComment> comments = getCommentsResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
         CommentNode commentNode = buildCommentTree(comments);
-
-        Map<int, CommentView> responseMap = {};
-        for (CommentView comment in getCommentsResponse.comments) {
-          responseMap[comment.comment.id] = comment;
-        }
 
         return emit(
           state.copyWith(
             status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
             commentNodes: commentNode,
-            commentResponseMap: responseMap,
+            commentResponseMap: comments,
             commentPage: 1,
-            commentCount: responseMap.length,
-            hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < COMMENT_LIMIT,
+            commentCount: comments.length,
+            hasReachedCommentEnd: comments.isEmpty || comments.length < COMMENT_LIMIT,
             commentSortType: commentSortType,
           ),
         );
@@ -257,36 +241,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
-        auth: account.jwt,
+      final response = await commentRepository.getComments(
         communityId: state.post?.community?.id,
-        postId: state.post?.id,
+        postId: state.post!.id,
         parentId: event.commentParentId,
-        sort: commentSortType.toLemmyType(),
+        commentSortType: commentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
         page: state.commentPage,
-        //event.commentParentId != null ? 1 : state.commentPage,
-        type: ListingType.all,
-      ));
-
+      );
       // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
       // so we should display an error
       if (event.commentParentId != null) {
-        final bool anyDirectChildren = getCommentsResponse.comments.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+        final bool anyDirectChildren = response.any((comment) => comment.path.contains('${event.commentParentId}.${comment.id}'));
         if (!anyDirectChildren) {
           throw Exception(GlobalContext.l10n.unableToLoadReplies);
         }
       }
 
-      // Combine all of the previous comments list
-      List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
-
-      for (CommentView comment in getCommentsResponse.comments) {
-        state.commentResponseMap[comment.comment.id] = comment;
-      }
-
-      List<ThunderComment> comments = fullCommentResponseList.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
+      List<ThunderComment> comments = [...state.commentResponseMap, ...response];
       CommentNode commentNode = buildCommentTree(comments);
 
       // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
@@ -295,10 +268,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
           commentSortType: commentSortType,
           commentNodes: commentNode,
-          commentResponseMap: state.commentResponseMap,
+          commentResponseMap: comments,
           commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
-          commentCount: state.commentResponseMap.length,
-          hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
+          commentCount: comments.length,
+          hasReachedCommentEnd: event.commentParentId != null || (response.isEmpty || state.commentCount == comments.length),
         ),
       );
     } catch (e) {
@@ -328,7 +301,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           emit(state.copyWith(status: PostStatus.success));
           emit(state.copyWith(status: PostStatus.refreshing));
 
-          await voteComment(event.commentId, event.value);
+          await commentRepository.vote(existingCommentNode.comment!, event.value);
 
           return emit(state.copyWith(status: PostStatus.success));
         } catch (e) {
@@ -343,7 +316,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           emit(state.copyWith(status: PostStatus.success));
           emit(state.copyWith(status: PostStatus.refreshing));
 
-          await saveComment(event.commentId, event.value);
+          await commentRepository.save(existingCommentNode.comment!, event.value);
 
           return emit(state.copyWith(status: PostStatus.success));
         } catch (e) {
@@ -358,7 +331,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           emit(state.copyWith(status: PostStatus.success));
           emit(state.copyWith(status: PostStatus.refreshing));
 
-          await deleteComment(event.commentId, event.value);
+          await commentRepository.delete(existingCommentNode.comment!, event.value);
 
           return emit(state.copyWith(status: PostStatus.success));
         } catch (e) {
@@ -380,11 +353,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (commentNode == null) {
       // This is most likely a new comment
       CommentNode.insertCommentNode(state.commentNodes!, parentId, CommentNode(comment: event.comment, replies: []));
-
-      return emit(state.copyWith(
-        status: PostStatus.success,
-        highlightedCommentId: event.comment.id,
-      ));
+      return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: event.comment.id));
     }
 
     // This is an existing comment - update it
@@ -396,14 +365,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
     try {
       emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId));
-
-      final l10n = GlobalContext.l10n;
-      final account = await fetchActiveProfile();
-      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account.jwt!));
-
+      await commentRepository.report(event.commentId, event.message);
       return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1));
     } on LemmyApiException catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e), moddingCommentId: -1));

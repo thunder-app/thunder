@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/modlog.dart';
@@ -316,14 +316,9 @@ Future<DeepLinkResult> _navigateToComment(BuildContext context, String link) asy
   }
 
   try {
-    final lemmy = LemmyClient.instance.lemmyApiV3;
-    final account = await fetchActiveProfile();
-    final response = await lemmy.run(GetComment(id: commentId, auth: account.jwt));
-
-    // Check context.mounted after long-running API operations
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
-
-    final comment = ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    final repository = context.read<CommentRepository>();
+    final comment = await repository.getComment(commentId);
 
     navigateToComment(context, comment);
     return DeepLinkResult.successful();

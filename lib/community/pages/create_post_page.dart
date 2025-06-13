@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -17,7 +18,6 @@ import 'package:markdown_editor/markdown_editor.dart';
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';

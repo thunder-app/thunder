@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/comment_sort_type.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/extensions/comment_reply_view.dart';
 import 'package:thunder/core/extensions/person_mention_view.dart';
 import 'package:thunder/core/models/models.dart';
@@ -26,13 +27,21 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
+  late CommentRepository commentRepository;
+
   /// Constructor allowing an initial set of replies to be set in the state.
-  InboxBloc.initWith({required List<CommentReplyView> replies, required bool showUnreadOnly}) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
+  InboxBloc.initWith({
+    required List<CommentReplyView> replies,
+    required bool showUnreadOnly,
+    CommentRepository? commentRepository,
+  }) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
+    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
     _init();
   }
 
   /// Unnamed constructor with default state
-  InboxBloc() : super(const InboxState()) {
+  InboxBloc({CommentRepository? commentRepository}) : super(const InboxState()) {
+    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
     _init();
   }
 
@@ -367,7 +376,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await voteComment(comment.id, event.value).timeout(timeout, onTimeout: () {
+          await commentRepository.vote(comment, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if vote fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
@@ -396,7 +405,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await saveComment(comment.id, event.value).timeout(timeout, onTimeout: () {
+          await commentRepository.save(comment, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if saving fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
@@ -429,7 +438,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.success));
           emit(state.copyWith(status: InboxStatus.refreshing));
 
-          await deleteComment(comment.id, event.value).timeout(timeout, onTimeout: () {
+          await commentRepository.delete(comment, event.value).timeout(timeout, onTimeout: () {
             // Restore the original comment if deleting fails
             if (existingCommentReplyView != null) {
               state.replies[existingIndex] = existingCommentReplyView;
