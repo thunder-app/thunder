@@ -69,7 +69,7 @@ class CommunityListEntry extends StatelessWidget {
       excludeFromSemantics: true,
       message: '${community.title}\n${generateCommunityFullName(
         context,
-        community.communityName,
+        community.name,
         community.title,
         fetchInstanceNameFromUrl(community.url),
       )}',
@@ -82,7 +82,7 @@ class CommunityListEntry extends StatelessWidget {
             Flexible(
               child: CommunityFullNameWidget(
                 context,
-                community.communityName,
+                community.name,
                 community.title,
                 fetchInstanceNameFromUrl(community.url),
                 // Override because we're showing display name above

@@ -394,7 +394,7 @@ class _ModlogActionChip extends StatelessWidget {
         communityId: community.id,
         subtitle: generateCommunityFullName(
           context,
-          community.communityName,
+          community.name,
           community.title,
           fetchInstanceNameFromUrl(community.url),
         ),

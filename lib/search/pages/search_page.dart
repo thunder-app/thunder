@@ -229,7 +229,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           },
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                            hintText: l10n.searchInstance(widget.communityToSearch?.communityName ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                            hintText: l10n.searchInstance(widget.communityToSearch?.name ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50),
@@ -404,7 +404,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                           _currentCommunityFilter = community.id;
                                           _currentCommunityFilterName = generateCommunityFullName(
                                             context,
-                                            community.communityName,
+                                            community.name,
                                             community.title,
                                             fetchInstanceNameFromUrl(community.url),
                                           );

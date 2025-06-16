@@ -58,7 +58,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           emit(state.copyWith(
             status: CommunityStatus.success,
             community: community,
-            message: response.blocked ? l10n.successfullyBlockedCommunity(community.communityName) : l10n.successfullyUnblockedCommunity(community.communityName),
+            message: response.blocked ? l10n.successfullyBlockedCommunity(community.name) : l10n.successfullyUnblockedCommunity(community.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));

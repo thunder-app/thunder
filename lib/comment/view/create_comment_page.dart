@@ -443,7 +443,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         _bodyTextController.text = _bodyTextController.text.replaceRange(
                                           _bodyTextController.selection.end,
                                           _bodyTextController.selection.end,
-                                          '!${community.communityName}@${fetchInstanceNameFromUrl(community.url)}',
+                                          '!${community.name}@${fetchInstanceNameFromUrl(community.url)}',
                                         );
                                       });
                                     },

@@ -43,7 +43,7 @@ class CommunityAvatar extends StatelessWidget {
       backgroundColor: theme.colorScheme.secondaryContainer,
       maxRadius: radius,
       child: Text(
-        community.name.isNotEmpty ? community.name[0].toUpperCase() : '',
+        community.titleOrName.isNotEmpty ? community.titleOrName[0].toUpperCase() : '',
         semanticsLabel: '',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: radius),
       ),

@@ -9,7 +9,7 @@ Future<List<ThunderCommunity>> getSubscriptions() async {
 }
 
 Future<void> insertSubscriptions(Set<ThunderCommunity> communities) async {
-  Set<LocalCommunity> subscriptions = communities.map((c) => LocalCommunity(id: c.id, name: c.communityName, title: c.title, actorId: c.url)).toSet();
+  Set<LocalCommunity> subscriptions = communities.map((c) => LocalCommunity(id: c.id, name: c.name, title: c.title, actorId: c.url)).toSet();
   await AnonymousSubscriptions.insertCommunities(subscriptions);
 }
 

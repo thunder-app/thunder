@@ -191,7 +191,7 @@ class UserModeratorList extends StatelessWidget {
                       ),
                       CommunityFullNameWidget(
                         context,
-                        community.communityName,
+                        community.name,
                         community.title,
                         fetchInstanceNameFromUrl(community.url),
                         textStyle: const TextStyle(fontSize: 13.0),

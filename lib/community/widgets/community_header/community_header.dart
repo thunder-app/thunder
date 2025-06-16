@@ -127,7 +127,7 @@ class _CommunityInfo extends StatelessWidget {
         ),
         CommunityFullNameWidget(
           context,
-          community.communityName,
+          community.name,
           community.title,
           fetchInstanceNameFromUrl(community.url),
           useDisplayName: false, // Override because we're showing title above

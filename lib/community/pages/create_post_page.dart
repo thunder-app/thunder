@@ -678,7 +678,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
                                     _bodyTextController.text = _bodyTextController.text
-                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.communityName}@${fetchInstanceNameFromUrl(community.url)}');
+                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.url)}');
                                   });
                                 },
                               },
@@ -873,7 +873,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                             Text('${widget.community!.title} '),
                             CommunityFullNameWidget(
                               context,
-                              widget.community!.communityName,
+                              widget.community!.name,
                               widget.community!.title,
                               fetchInstanceNameFromUrl(widget.community!.url),
                               // Override, because we have the display name right above

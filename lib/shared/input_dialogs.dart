@@ -193,7 +193,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
   return Tooltip(
     message: generateCommunityFullName(
       context,
-      payload.communityName,
+      payload.name,
       payload.title,
       fetchInstanceNameFromUrl(payload.url),
     ),
@@ -214,7 +214,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                 pauseDuration: const Duration(seconds: 1),
                 child: CommunityFullNameWidget(
                   context,
-                  payload.communityName,
+                  payload.name,
                   payload.title,
                   fetchInstanceNameFromUrl(payload.url),
                   // Override because we're showing display name above

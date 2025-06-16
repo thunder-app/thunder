@@ -37,10 +37,10 @@ class ThunderCommunity {
   int get id => _community.id;
 
   /// The name of the community. If the community has a title, it is used. Otherwise, the name is used.
-  String get name => _community.title.isNotEmpty == true ? _community.title : _community.name;
+  String get titleOrName => _community.title.isNotEmpty == true ? _community.title : _community.name;
 
   /// The name of the community.
-  String get communityName => _community.name;
+  String get name => _community.name;
 
   /// The title of the community.
   String get title => _community.title;

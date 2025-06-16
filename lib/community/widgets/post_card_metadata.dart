@@ -582,7 +582,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommunityPostCardMetadata(
-                communityName: community.communityName,
+                communityName: community.name,
                 displayName: community.title,
                 actorId: community.url,
                 subscribed: community.subscribed != SubscribedType.notSubscribed,
@@ -598,7 +598,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
           )
         else if (showCommunityName)
           CommunityPostCardMetadata(
-            communityName: community.communityName,
+            communityName: community.name,
             displayName: community.title,
             actorId: community.url,
             subscribed: community.subscribed != SubscribedType.notSubscribed,
