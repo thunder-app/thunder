@@ -11,9 +11,9 @@ import 'package:thunder/post/enums/post_card_metadata_item.dart';
 
 const FeedListType DEFAULT_LISTING_TYPE = FeedListType.all;
 
-const PostSortType DEFAULT_SORT_TYPE = PostSortType.hot;
+const PostSortType DEFAULT_POST_SORT_TYPE = PostSortType.hot;
 
-const PostSortType DEFAULT_SEARCH_SORT_TYPE = PostSortType.topYear;
+const PostSortType DEFAULT_SEARCH_POST_SORT_TYPE = PostSortType.topYear;
 
 const CommentSortType DEFAULT_COMMENT_SORT_TYPE = CommentSortType.top;
 

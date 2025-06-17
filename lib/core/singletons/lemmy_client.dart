@@ -1,5 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:version/version.dart';
 
 class LemmyClient {
@@ -45,9 +46,9 @@ class LemmyClient {
     return site;
   }
 
-  bool supportsSortType(SortType? sortType) => switch (sortType) {
-        SortType.controversial => supportsFeature(LemmyFeature.sortTypeControversial),
-        SortType.scaled => supportsFeature(LemmyFeature.sortTypeScaled),
+  bool supportsPostSortType(PostSortType? postSortType) => switch (postSortType) {
+        PostSortType.controversial => supportsFeature(LemmyFeature.postSortTypeControversial),
+        PostSortType.scaled => supportsFeature(LemmyFeature.postSortTypeScaled),
         _ => true,
       };
 
@@ -89,8 +90,8 @@ class LemmyClient {
 }
 
 enum LemmyFeature {
-  sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
-  sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
+  postSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
+  postSortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
   commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   blockInstance(0, 19, 0, preRelease: ["rc", "1"]),
   multiRead(0, 19, 0, preRelease: ["rc", "1"]),

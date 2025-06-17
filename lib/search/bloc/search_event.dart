@@ -9,7 +9,7 @@ abstract class SearchEvent extends Equatable {
 
 class StartSearchEvent extends SearchEvent {
   final String query;
-  final PostSortType sortType;
+  final PostSortType postSortType;
   final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;
@@ -19,7 +19,7 @@ class StartSearchEvent extends SearchEvent {
 
   const StartSearchEvent({
     required this.query,
-    required this.sortType,
+    required this.postSortType,
     required this.feedListType,
     required this.searchType,
     this.communityId,
@@ -41,7 +41,7 @@ class ResetSearch extends SearchEvent {}
 
 class ContinueSearchEvent extends SearchEvent {
   final String query;
-  final PostSortType sortType;
+  final PostSortType postSortType;
   final FeedListType feedListType;
   final MetaSearchType searchType;
   final int? communityId;
@@ -50,7 +50,7 @@ class ContinueSearchEvent extends SearchEvent {
 
   const ContinueSearchEvent({
     required this.query,
-    required this.sortType,
+    required this.postSortType,
     required this.feedListType,
     required this.searchType,
     this.communityId,

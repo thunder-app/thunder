@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -169,7 +170,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
     auth: account.jwt,
     type: SearchType.communities,
     limit: 20,
-    sort: SortType.topAll,
+    sort: PostSortType.topAll.toLemmyType(),
   ));
 
   List<ThunderCommunity>? favorites;

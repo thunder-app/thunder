@@ -88,13 +88,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
       FeedListType defaultFeedListType = DEFAULT_LISTING_TYPE;
-      PostSortType defaultSortType = DEFAULT_SORT_TYPE;
+      PostSortType defaultPostSortType = DEFAULT_POST_SORT_TYPE;
       try {
         defaultFeedListType = FeedListType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultFeedListType) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = PostSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultFeedSortType) ?? DEFAULT_SORT_TYPE.name);
+        defaultPostSortType = PostSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultFeedPostSortType) ?? DEFAULT_POST_SORT_TYPE.name);
       } catch (e) {
         defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
-        defaultSortType = PostSortType.values.byName(DEFAULT_SORT_TYPE.name);
+        defaultPostSortType = PostSortType.values.byName(DEFAULT_POST_SORT_TYPE.name);
       }
 
       bool useProfilePictureForDrawer = UserPreferences.getLocalSetting(LocalSettings.useProfilePictureForDrawer) ?? false;
@@ -273,7 +273,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         /// -------------------------- Feed Related Settings --------------------------
         // Default Listing/Sort Settings
         defaultFeedListType: defaultFeedListType,
-        defaultSortType: defaultSortType,
+        defaultPostSortType: defaultPostSortType,
         useProfilePictureForDrawer: useProfilePictureForDrawer,
 
         // NSFW Settings

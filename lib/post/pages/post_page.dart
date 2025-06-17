@@ -138,9 +138,9 @@ class _PostPageState extends State<PostPage> {
         title: l10n.sortOptions,
         onSelect: (selected) async {
           await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
-          if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(sortType: selected.payload, reset: true));
+          if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
         },
-        previouslySelected: state.sortType,
+        previouslySelected: state.commentSortType,
         minimumVersion: LemmyClient.instance.version,
       ),
     );

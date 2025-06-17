@@ -98,10 +98,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
+
+                              final postSortType =
+                                  PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
-                                      sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
+                                      postSortType: postSortType,
                                       communityId: community.id,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
@@ -299,10 +303,13 @@ class FavoriteCommunities extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
+
+                  final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
                           feedType: FeedType.community,
-                          sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
+                          postSortType: postSortType,
                           communityId: community.id,
                           reset: true,
                           showHidden: thunderState.showHiddenPosts,
@@ -359,10 +366,13 @@ class ModeratedCommunities extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
+
+                    final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
                             feedType: FeedType.community,
-                            sortType: PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.sortTypeForInstance,
+                            postSortType: postSortType,
                             communityId: community.id,
                             reset: true,
                             showHidden: thunderState.showHiddenPosts,

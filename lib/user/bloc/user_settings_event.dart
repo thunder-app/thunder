@@ -32,7 +32,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
   final FeedListType? defaultFeedListType;
 
   /// The default sort type for the feed
-  final SortType? defaultSortType;
+  final PostSortType? defaultPostSortType;
 
   /// Whether or not NSFW content should be shown
   final bool? showNsfw;
@@ -58,7 +58,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
     this.email,
     this.matrixUserId,
     this.defaultFeedListType,
-    this.defaultSortType,
+    this.defaultPostSortType,
     this.showNsfw,
     this.showReadPosts,
     this.showScores,

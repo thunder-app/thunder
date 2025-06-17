@@ -17,6 +17,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -762,7 +763,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
           q: url,
           type: SearchType.url,
-          sort: SortType.topAll,
+          sort: PostSortType.topAll.toLemmyType(),
           listingType: FeedListType.all.toLemmyType(),
           limit: 20,
           auth: account.jwt,

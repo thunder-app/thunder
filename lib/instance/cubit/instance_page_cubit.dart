@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -21,7 +22,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
           resolutionInstance: resolutionInstance,
         ));
 
-  Future<void> loadCommunities({int? page, required SortType sortType}) async {
+  Future<void> loadCommunities({int? page, required PostSortType postSortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -33,7 +34,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: sortType,
+        sort: postSortType.toLemmyType(),
         listingType: ListingType.local,
         type: SearchType.communities,
       ));
@@ -48,7 +49,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadUsers({int? page, required SortType sortType}) async {
+  Future<void> loadUsers({int? page, required PostSortType postSortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -60,7 +61,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: sortType,
+        sort: postSortType.toLemmyType(),
         listingType: ListingType.local,
         type: SearchType.users,
       ));
@@ -75,7 +76,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadPosts({int? page, required SortType sortType}) async {
+  Future<void> loadPosts({int? page, required PostSortType postSortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -87,7 +88,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: sortType,
+        sort: postSortType.toLemmyType(),
         listingType: ListingType.local,
         type: SearchType.posts,
       ));
@@ -102,7 +103,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     }
   }
 
-  Future<void> loadComments({int? page, required SortType sortType}) async {
+  Future<void> loadComments({int? page, required PostSortType postSortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
@@ -114,7 +115,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         q: '',
         page: page ?? 1,
         limit: _pageLimit,
-        sort: sortType,
+        sort: postSortType.toLemmyType(),
         listingType: ListingType.local,
         type: SearchType.comments,
       ));

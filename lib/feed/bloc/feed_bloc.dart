@@ -45,8 +45,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     );
 
     /// Handles changing the sort type of the feed
-    on<FeedChangeSortTypeEvent>(
-      _onFeedChangeSortType,
+    on<FeedChangePostSortTypeEvent>(
+      _onFeedChangePostSortType,
       transformer: restartable(),
     );
 
@@ -459,7 +459,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       hasReachedCommentsEnd: false,
       feedType: FeedType.general,
       feedListType: null,
-      sortType: null,
+      postSortType: null,
       community: null,
       communityInstance: null,
       communityModerators: [],
@@ -473,11 +473,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   /// Changes the current sort type of the feed, and refreshes the feed
-  Future<void> _onFeedChangeSortType(FeedChangeSortTypeEvent event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedChangePostSortType(FeedChangePostSortTypeEvent event, Emitter<FeedState> emit) async {
     add(FeedFetchedEvent(
       feedType: state.feedType,
       feedListType: state.feedListType,
-      sortType: event.sortType,
+      postSortType: event.postSortType,
       communityId: state.communityId,
       communityName: state.communityName,
       userId: state.userId,
@@ -552,7 +552,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       Map<String, dynamic> feedItemResult = await fetchFeedItems(
         page: 1,
         feedListType: event.feedListType,
-        sortType: event.sortType,
+        postSortType: event.postSortType,
         communityId: event.communityId,
         communityName: event.communityName,
         userId: event.userId ?? fullPersonView?.personView.person.id,
@@ -578,7 +578,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         hasReachedCommentsEnd: hasReachedCommentsEnd,
         feedType: event.feedType,
         feedListType: event.feedListType,
-        sortType: event.sortType,
+        postSortType: event.postSortType,
         community: community,
         communityInstance: communityInstance,
         communityModerators: communityModerators,
@@ -605,7 +605,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     Map<String, dynamic> feedItemResult = await fetchFeedItems(
       page: state.currentPage,
       feedListType: state.feedListType,
-      sortType: state.sortType,
+      postSortType: state.postSortType,
       communityId: state.communityId,
       communityName: state.communityName,
       userId: state.userId,

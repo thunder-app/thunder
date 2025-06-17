@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -7,109 +8,109 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:version/version.dart';
 
-List<ListPickerItem<SortType>> topSortTypeItems = [
+List<ListPickerItem<PostSortType>> topPostSortTypeItems = [
   ListPickerItem(
-    payload: SortType.topHour,
+    payload: PostSortType.topHour,
     icon: Icons.check_box_outline_blank,
     label: AppLocalizations.of(GlobalContext.context)!.topHour,
   ),
   ListPickerItem(
-    payload: SortType.topSixHour,
+    payload: PostSortType.topSixHour,
     icon: Icons.calendar_view_month,
     label: AppLocalizations.of(GlobalContext.context)!.topSixHour,
   ),
   ListPickerItem(
-    payload: SortType.topTwelveHour,
+    payload: PostSortType.topTwelveHour,
     icon: Icons.calendar_view_week,
     label: AppLocalizations.of(GlobalContext.context)!.topTwelveHour,
   ),
   ListPickerItem(
-    payload: SortType.topDay,
+    payload: PostSortType.topDay,
     icon: Icons.today,
     label: AppLocalizations.of(GlobalContext.context)!.topDay,
   ),
   ListPickerItem(
-    payload: SortType.topWeek,
+    payload: PostSortType.topWeek,
     icon: Icons.view_week_sharp,
     label: AppLocalizations.of(GlobalContext.context)!.topWeek,
   ),
   ListPickerItem(
-    payload: SortType.topMonth,
+    payload: PostSortType.topMonth,
     icon: Icons.calendar_month,
     label: AppLocalizations.of(GlobalContext.context)!.topMonth,
   ),
   ListPickerItem(
-    payload: SortType.topThreeMonths,
+    payload: PostSortType.topThreeMonths,
     icon: Icons.calendar_month_outlined,
     label: AppLocalizations.of(GlobalContext.context)!.topThreeMonths,
   ),
   ListPickerItem(
-    payload: SortType.topSixMonths,
+    payload: PostSortType.topSixMonths,
     icon: Icons.calendar_today_outlined,
     label: AppLocalizations.of(GlobalContext.context)!.topSixMonths,
   ),
   ListPickerItem(
-    payload: SortType.topNineMonths,
+    payload: PostSortType.topNineMonths,
     icon: Icons.calendar_view_day_outlined,
     label: AppLocalizations.of(GlobalContext.context)!.topNineMonths,
   ),
   ListPickerItem(
-    payload: SortType.topYear,
+    payload: PostSortType.topYear,
     icon: Icons.calendar_today,
     label: AppLocalizations.of(GlobalContext.context)!.topYear,
   ),
   ListPickerItem(
-    payload: SortType.topAll,
+    payload: PostSortType.topAll,
     icon: Icons.military_tech,
     label: AppLocalizations.of(GlobalContext.context)!.topAll,
   ),
 ];
 
-List<ListPickerItem<SortType>> allSortTypeItems = [...SortPicker.getDefaultSortTypeItems(minimumVersion: LemmyClient.maxVersion), ...topSortTypeItems];
+List<ListPickerItem<PostSortType>> allPostSortTypeItems = [...SortPicker.getDefaultPostSortTypeItems(minimumVersion: LemmyClient.maxVersion), ...topPostSortTypeItems];
 
-class SortPicker extends BottomSheetListPicker<SortType> {
+class SortPicker extends BottomSheetListPicker<PostSortType> {
   final Version? minimumVersion;
 
-  static List<ListPickerItem<SortType>> getDefaultSortTypeItems({required Version? minimumVersion}) => [
+  static List<ListPickerItem<PostSortType>> getDefaultPostSortTypeItems({required Version? minimumVersion}) => [
         ListPickerItem(
-          payload: SortType.hot,
+          payload: PostSortType.hot,
           icon: Icons.local_fire_department_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.hot,
         ),
         ListPickerItem(
-          payload: SortType.active,
+          payload: PostSortType.active,
           icon: Icons.rocket_launch_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.active,
         ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeScaled))
+        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.postSortTypeScaled))
           ListPickerItem(
-            payload: SortType.scaled,
+            payload: PostSortType.scaled,
             icon: Icons.line_weight_rounded,
             label: AppLocalizations.of(GlobalContext.context)!.scaled,
           ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.sortTypeControversial))
+        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.postSortTypeControversial))
           ListPickerItem(
-            payload: SortType.controversial,
+            payload: PostSortType.controversial,
             icon: Icons.warning_rounded,
             label: AppLocalizations.of(GlobalContext.context)!.controversial,
           ),
         ListPickerItem(
-          payload: SortType.new_,
+          payload: PostSortType.new_,
           icon: Icons.auto_awesome_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.new_,
         ),
         ListPickerItem(
-          payload: SortType.old,
+          payload: PostSortType.old,
           icon: Icons.access_time_outlined,
           label: AppLocalizations.of(GlobalContext.context)!.old,
         ),
         ListPickerItem(
-          payload: SortType.mostComments,
+          payload: PostSortType.mostComments,
           icon: Icons.comment_bank_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.mostComments,
         ),
         ListPickerItem(
-          payload: SortType.newComments,
+          payload: PostSortType.newComments,
           icon: Icons.add_comment_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.newComments,
         ),
@@ -123,10 +124,10 @@ class SortPicker extends BottomSheetListPicker<SortType> {
     super.key,
     required super.onSelect,
     required super.title,
-    List<ListPickerItem<SortType>>? items,
+    List<ListPickerItem<PostSortType>>? items,
     super.previouslySelected,
     required this.minimumVersion,
-  }) : super(items: items ?? getDefaultSortTypeItems(minimumVersion: minimumVersion));
+  }) : super(items: items ?? getDefaultPostSortTypeItems(minimumVersion: minimumVersion));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -168,7 +169,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(SortPicker.getDefaultSortTypeItems(minimumVersion: widget.minimumVersion), theme),
+            ..._generateList(SortPicker.getDefaultPostSortTypeItems(minimumVersion: widget.minimumVersion), theme),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.top,
               icon: Icons.military_tech,
@@ -177,7 +178,7 @@ class _SortPickerState extends State<SortPicker> {
                   topSelected = true;
                 });
               },
-              isSelected: topSortTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              isSelected: topPostSortTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
             )
           ],
@@ -241,7 +242,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(topSortTypeItems, theme),
+            ..._generateList(topPostSortTypeItems, theme),
           ],
         ),
         const SizedBox(height: 16.0),
@@ -249,7 +250,7 @@ class _SortPickerState extends State<SortPicker> {
     );
   }
 
-  List<Widget> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
+  List<Widget> _generateList(List<ListPickerItem<PostSortType>> items, ThemeData theme) {
     return items
         .map((item) => PickerItem(
             label: item.label,
