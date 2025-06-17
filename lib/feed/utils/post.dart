@@ -19,7 +19,7 @@ import 'package:thunder/utils/global_context.dart';
 Future<Map<String, dynamic>> fetchFeedItems({
   int page = 1,
   FeedListType? feedListType,
-  PostSortType? sortType,
+  PostSortType? postSortType,
   int? communityId,
   String? communityName,
   int? userId,
@@ -49,7 +49,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
         auth: account.jwt,
         page: currentPage,
-        sort: sortType?.toLemmyType(),
+        sort: postSortType?.toLemmyType(),
         type: feedListType?.toLemmyType(),
         communityId: communityId,
         communityName: communityName,
@@ -105,7 +105,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
         personId: userId,
         username: username,
         page: currentPage,
-        sort: sortType?.toLemmyType(),
+        sort: postSortType?.toLemmyType(),
         savedOnly: showSaved,
       ));
 

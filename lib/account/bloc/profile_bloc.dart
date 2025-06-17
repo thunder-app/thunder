@@ -10,6 +10,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -238,7 +239,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
 
       final lemmy = LemmyClient.instance.lemmyApiV3;
-      final response = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1));
+      final response = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: PostSortType.new_.toLemmyType(), page: 1));
       final user = ThunderUser(response.personView.person, userView: response.personView);
       final moderates = response.moderates.map((cmv) => ThunderCommunity(cmv.community)).toList();
 

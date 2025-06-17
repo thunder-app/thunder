@@ -10,20 +10,20 @@ abstract class PostEvent extends Equatable {
 class GetPostEvent extends PostEvent {
   final int? postId;
   final ThunderPost? post;
-  final CommentSortType? sortType;
+  final CommentSortType? commentSortType;
   final String? selectedCommentPath;
   final int? highlightedCommentId;
 
-  const GetPostEvent({this.sortType, this.post, this.postId, this.selectedCommentPath, this.highlightedCommentId});
+  const GetPostEvent({this.commentSortType, this.post, this.postId, this.selectedCommentPath, this.highlightedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
   final int? postId;
   final int? commentParentId;
   final bool reset;
-  final CommentSortType? sortType;
+  final CommentSortType? commentSortType;
 
-  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.sortType});
+  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.commentSortType});
 }
 
 class VotePostEvent extends PostEvent {

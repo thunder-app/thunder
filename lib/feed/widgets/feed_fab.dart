@@ -8,7 +8,6 @@ import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -278,8 +277,8 @@ class FeedFAB extends StatelessWidget {
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
-        onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!)),
-        previouslySelected: context.read<FeedBloc>().state.sortType?.toLemmyType(),
+        onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),
+        previouslySelected: context.read<FeedBloc>().state.postSortType,
         minimumVersion: LemmyClient.instance.version,
       ),
     );

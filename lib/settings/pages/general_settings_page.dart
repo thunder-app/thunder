@@ -127,7 +127,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Whether or not to show navigation labels
   bool showNavigationLabels = true;
 
-  PostSortType defaultSortType = DEFAULT_SORT_TYPE;
+  PostSortType defaultPostSortType = DEFAULT_POST_SORT_TYPE;
 
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
@@ -158,9 +158,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.defaultFeedListType.name, value);
         setState(() => defaultFeedListType = FeedListType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
-      case LocalSettings.defaultFeedSortType:
-        await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
-        setState(() => defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name))!);
+      case LocalSettings.defaultFeedPostSortType:
+        await prefs.setString(LocalSettings.defaultFeedPostSortType.name, value);
+        setState(() => defaultPostSortType = PostSortType.values.byName(value ?? DEFAULT_POST_SORT_TYPE.name));
         break;
       case LocalSettings.defaultCommentSortType:
         await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
@@ -278,10 +278,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Default Sorts and Listing
       try {
         defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name))!;
+        defaultPostSortType = PostSortType.values.byName(prefs.getString(LocalSettings.defaultFeedPostSortType.name) ?? DEFAULT_POST_SORT_TYPE.name);
       } catch (e) {
         defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
-        defaultSortType = PostSortTypeMapping.fromLemmyType(SortType.values.byName(DEFAULT_SORT_TYPE.name))!;
+        defaultPostSortType = PostSortType.values.byName(DEFAULT_POST_SORT_TYPE.name);
       }
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -401,13 +401,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ListOption(
                   description: l10n.defaultFeedSortType,
                   value: ListPickerItem(
-                    label: allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType.toLemmyType()).label,
+                    label: allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
                     icon: Icons.local_fire_department_rounded,
-                    payload: defaultSortType,
+                    payload: defaultPostSortType,
                   ),
                   options: [
-                    ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                    ...topSortTypeItems
+                    ...SortPicker.getDefaultPostSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                    ...topPostSortTypeItems
                   ],
                   icon: Icons.sort_rounded,
                   onChanged: (_) async {},
@@ -416,22 +416,22 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                     title: l10n.defaultFeedSortType,
                     onSelect: (value) async {
-                      setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
+                      setPreferences(LocalSettings.defaultFeedPostSortType, value.payload.name);
                     },
-                    previouslySelected: defaultSortType.toLemmyType(),
+                    previouslySelected: defaultPostSortType,
                   ),
                   valueDisplay: Row(
                     children: [
-                      Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
+                      Icon(allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).icon, size: 13),
                       const SizedBox(width: 4),
                       Text(
-                        allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                        allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
                         style: theme.textTheme.titleSmall,
                       ),
                     ],
                   ),
                   highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.defaultFeedSortType,
+                  setting: LocalSettings.defaultFeedPostSortType,
                   highlightedSetting: settingToHighlight,
                 ),
                 ToggleOption(
@@ -610,10 +610,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((item) => item.payload == defaultCommentSortType).icon, size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((item) => item.payload == defaultCommentSortType).label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],

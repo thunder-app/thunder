@@ -583,7 +583,7 @@ Future<void> navigateToFeedPage(
   BuildContext context, {
   required FeedType feedType,
   FeedListType? feedListType,
-  PostSortType? sortType,
+  PostSortType? postSortType,
   String? communityName,
   int? communityId,
   String? username,
@@ -604,10 +604,10 @@ Future<void> navigateToFeedPage(
           FeedFetchedEvent(
             feedType: feedType,
             feedListType: feedListType,
-            sortType: sortType ??
+            postSortType: postSortType ??
                 (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
                     ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
-                    : thunderBloc.state.sortTypeForInstance),
+                    : thunderBloc.state.postSortTypeForInstance),
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -639,10 +639,10 @@ Future<void> navigateToFeedPage(
       child: Material(
         child: FeedPage(
           feedType: feedType,
-          sortType: sortType ??
+          postSortType: postSortType ??
               (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
                   ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
-                  : thunderBloc.state.sortTypeForInstance),
+                  : thunderBloc.state.postSortTypeForInstance),
           communityName: communityName,
           communityId: communityId,
           userId: userId,

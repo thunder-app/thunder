@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -186,7 +185,7 @@ class _SavedActionChipState extends State<_SavedActionChip> {
               FeedFetchedEvent(
                 feedType: FeedType.account,
                 feedListType: state.feedListType,
-                sortType: state.sortType,
+                postSortType: state.postSortType,
                 communityId: state.communityId,
                 communityName: state.communityName,
                 userId: state.userId,
@@ -297,12 +296,12 @@ class _SortActionChip extends StatelessWidget {
             title: l10n.sortOptions,
             onSelect: (selected) async {
               try {
-                context.read<FeedBloc>().add(FeedChangeSortTypeEvent(PostSortTypeMapping.fromLemmyType(selected.payload)!));
+                context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload));
               } catch (e) {
                 debugPrint('Failed to update sort type: $e');
               }
             },
-            previouslySelected: state.sortType?.toLemmyType(),
+            previouslySelected: state.postSortType,
             minimumVersion: LemmyClient.instance.version,
           ),
         );

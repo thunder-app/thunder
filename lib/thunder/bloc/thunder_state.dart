@@ -13,7 +13,7 @@ class ThunderState extends Equatable {
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
     this.defaultFeedListType = DEFAULT_LISTING_TYPE,
-    this.defaultSortType = DEFAULT_SORT_TYPE,
+    this.defaultPostSortType = DEFAULT_POST_SORT_TYPE,
     this.useProfilePictureForDrawer = false,
 
     // NSFW Settings
@@ -184,8 +184,8 @@ class ThunderState extends Equatable {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   final FeedListType defaultFeedListType;
-  final PostSortType defaultSortType;
-  PostSortType get sortTypeForInstance => LemmyClient.instance.supportsSortType(defaultSortType.toLemmyType()) ? defaultSortType : DEFAULT_SORT_TYPE;
+  final PostSortType defaultPostSortType;
+  PostSortType get postSortTypeForInstance => LemmyClient.instance.supportsPostSortType(defaultPostSortType) ? defaultPostSortType : DEFAULT_POST_SORT_TYPE;
   final bool useProfilePictureForDrawer;
 
   // NSFW Settings
@@ -365,7 +365,7 @@ class ThunderState extends Equatable {
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
     FeedListType? defaultFeedListType,
-    PostSortType? defaultSortType,
+    PostSortType? defaultPostSortType,
     bool? useProfilePictureForDrawer,
 
     // NSFW Settings
@@ -537,7 +537,7 @@ class ThunderState extends Equatable {
       /// -------------------------- Feed Related Settings --------------------------
       /// Default Listing/Sort Settings
       defaultFeedListType: defaultFeedListType ?? this.defaultFeedListType,
-      defaultSortType: defaultSortType ?? this.defaultSortType,
+      defaultPostSortType: defaultPostSortType ?? this.defaultPostSortType,
       useProfilePictureForDrawer: useProfilePictureForDrawer ?? this.useProfilePictureForDrawer,
 
       // NSFW Settings
@@ -719,7 +719,7 @@ class ThunderState extends Equatable {
         /// -------------------------- Feed Related Settings --------------------------
         /// Default Listing/Sort Settings
         defaultFeedListType,
-        defaultSortType,
+        defaultPostSortType,
         useProfilePictureForDrawer,
 
         // NSFW Settings

@@ -4,7 +4,6 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -48,7 +47,7 @@ class FeedPage extends StatefulWidget {
     this.useGlobalFeedBloc = false,
     required this.feedType,
     this.feedListType,
-    required this.sortType,
+    required this.postSortType,
     this.communityId,
     this.communityName,
     this.userId,
@@ -64,7 +63,7 @@ class FeedPage extends StatefulWidget {
   final FeedListType? feedListType;
 
   /// The sorting to be applied to the feed.
-  final PostSortType? sortType;
+  final PostSortType? postSortType;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -109,7 +108,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
           feedListType: widget.feedListType,
-          sortType: widget.sortType,
+          postSortType: widget.postSortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
           userId: widget.userId,
@@ -143,7 +142,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
         ..add(FeedFetchedEvent(
           feedType: widget.feedType,
           feedListType: widget.feedListType,
-          sortType: widget.sortType,
+          postSortType: widget.postSortType,
           communityId: widget.communityId,
           communityName: widget.communityName,
           userId: widget.userId,
@@ -501,9 +500,11 @@ class _FeedViewState extends State<FeedView> {
     // - We're on a community
     // THEN navigate to the desired listing type
     if (!canPop && (desiredFeedListType != currentFeedListType || communityMode)) {
+      final postSortType = PostSortTypeMapping.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBloc.state.postSortTypeForInstance;
+
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: PostSortTypeMapping.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBloc.state.sortTypeForInstance,
+          postSortType: postSortType,
           reset: true,
           feedListType: desiredFeedListType,
           feedType: FeedType.general,

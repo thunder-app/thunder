@@ -101,8 +101,8 @@ class _PostAppBarTitleState extends State<PostAppBarTitle> with TickerProviderSt
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final (sortType, sortIcon) = getSort(context);
-    final hasSubtitle = sortType.isNotEmpty && sortIcon != null;
+    final (commentSortType, commentSortIcon) = getCommentSort(context);
+    final hasSubtitle = commentSortType.isNotEmpty && commentSortIcon != null;
 
     return SizedBox(
       height: 56,
@@ -127,9 +127,9 @@ class _PostAppBarTitleState extends State<PostAppBarTitle> with TickerProviderSt
               bottom: 6,
               child: Row(
                 children: [
-                  Icon(sortIcon, size: 13),
+                  Icon(commentSortIcon, size: 13),
                   const SizedBox(width: 4),
-                  Text(sortType, style: theme.textTheme.bodyMedium),
+                  Text(commentSortType, style: theme.textTheme.bodyMedium),
                 ],
               ),
             ),
@@ -215,9 +215,9 @@ class PostAppBarActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async {
                   await onReset?.call();
-                  if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(sortType: selected.payload, reset: true));
+                  if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
                 },
-                previouslySelected: state.sortType,
+                previouslySelected: state.commentSortType,
                 minimumVersion: LemmyClient.instance.version,
               ),
             );
@@ -276,15 +276,15 @@ class PostAppBarActions extends StatelessWidget {
   }
 }
 
-(String, IconData?) getSort(BuildContext context) {
+(String, IconData?) getCommentSort(BuildContext context) {
   final state = context.watch<PostBloc>().state;
 
   if (state.status == PostStatus.initial) {
     return ('', null);
   }
 
-  ListPickerItem<CommentSortType>? sortTypeItem =
-      CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).firstWhereOrNull((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  ListPickerItem<CommentSortType>? commentSortTypeItem =
+      CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).firstWhereOrNull((item) => item.payload == state.commentSortType);
 
-  return (sortTypeItem?.label ?? '', sortTypeItem?.icon);
+  return (commentSortTypeItem?.label ?? '', commentSortTypeItem?.icon);
 }

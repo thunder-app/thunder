@@ -39,8 +39,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Fetches the post, along with the initial set of comments
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
-      CommentSortType defaultSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
 
       final account = await fetchActiveProfile();
 
@@ -91,7 +91,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         status: PostStatus.loading,
       ));
 
-      CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+      CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 
       int? parentId;
       if (event.selectedCommentPath != null) {
@@ -104,7 +104,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         communityId: post?.community?.id,
         maxDepth: COMMENT_MAX_DEPTH,
         postId: post?.id,
-        sort: sortType,
+        sort: commentSortType,
         limit: COMMENT_LIMIT,
         type: ListingType.all,
         parentId: parentId,
@@ -128,7 +128,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           commentCount: getCommentsResponse.comments.length,
           hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < COMMENT_LIMIT,
           communityId: post?.community?.id,
-          sortType: sortType,
+          commentSortType: commentSortType,
           highlightedCommentId: event.highlightedCommentId,
         ),
       );
@@ -195,24 +195,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
     bool searchWasInProgress = state.status == PostStatus.searchInProgress;
 
-    CommentSortType defaultSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-    defaultSortType = LemmyClient.instance.supportsCommentSortType(defaultSortType) ? defaultSortType : DEFAULT_COMMENT_SORT_TYPE;
+    CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
 
-    CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+    CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 
     try {
       final account = await fetchActiveProfile();
       final lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (event.reset) {
-        emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
+        emit(state.copyWith(status: PostStatus.loading, commentSortType: commentSortType));
 
         GetCommentsResponse getCommentsResponse = await lemmy.run(GetComments(
           auth: account.jwt,
           communityId: state.post?.community?.id,
           parentId: event.commentParentId,
           postId: state.post?.id,
-          sort: sortType,
+          sort: commentSortType,
           limit: COMMENT_LIMIT,
           maxDepth: COMMENT_MAX_DEPTH,
           page: 1,
@@ -235,7 +235,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             commentPage: 1,
             commentCount: responseMap.length,
             hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < COMMENT_LIMIT,
-            sortType: sortType,
+            commentSortType: commentSortType,
           ),
         );
       }
@@ -256,7 +256,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         communityId: state.post?.community?.id,
         postId: state.post?.id,
         parentId: event.commentParentId,
-        sort: sortType,
+        sort: commentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
         page: state.commentPage,
@@ -287,7 +287,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(
         state.copyWith(
           status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
-          sortType: sortType,
+          commentSortType: commentSortType,
           commentNodes: commentNode,
           commentResponseMap: state.commentResponseMap,
           commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,

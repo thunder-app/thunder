@@ -13,7 +13,7 @@ class SearchState extends Equatable {
     this.instances,
     this.errorMessage,
     this.page = 1,
-    this.sortType,
+    this.postSortType,
     this.focusSearchId = 0,
     this.viewingAll = false,
   });
@@ -29,7 +29,7 @@ class SearchState extends Equatable {
   final String? errorMessage;
 
   final int page;
-  final PostSortType? sortType;
+  final PostSortType? postSortType;
 
   final int focusSearchId;
   final bool viewingAll;
@@ -44,7 +44,7 @@ class SearchState extends Equatable {
     List<ThunderInstanceInfo>? instances,
     String? errorMessage,
     int? page,
-    PostSortType? sortType,
+    PostSortType? postSortType,
     int? focusSearchId,
     bool? viewingAll,
   }) {
@@ -58,7 +58,7 @@ class SearchState extends Equatable {
       instances: instances ?? this.instances,
       errorMessage: errorMessage,
       page: page ?? this.page,
-      sortType: sortType ?? this.sortType,
+      postSortType: postSortType ?? this.postSortType,
       focusSearchId: focusSearchId ?? this.focusSearchId,
       viewingAll: viewingAll ?? this.viewingAll,
     );
