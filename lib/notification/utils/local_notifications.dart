@@ -9,12 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:markdown/markdown.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/extensions/comment_reply_view.dart';
@@ -74,7 +75,7 @@ Future<void> pollRepliesAndShowNotifications() async {
         auth: account.jwt!,
         unreadOnly: true,
         limit: 50, // Max allowed by API
-        sort: CommentSortType.old,
+        sort: CommentSortType.old.toLemmyType(),
         page: 1,
       ),
     );

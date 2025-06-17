@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
+
+import 'package:version/version.dart';
+
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:version/version.dart';
 
 /// Create a picker which allows selecting a valid comment sort type.
 /// Specify a [minimumVersion] to determine which sort types will be displayed.

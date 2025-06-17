@@ -2,8 +2,7 @@
 
 import 'dart:ui';
 
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';

@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/extensions/comment_reply_view.dart';
 import 'package:thunder/core/extensions/person_mention_view.dart';
 import 'package:thunder/core/models/models.dart';
@@ -82,7 +83,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: event.commentSortType,
+                sort: event.commentSortType.toLemmyType(),
                 page: 1,
               ),
             );
@@ -92,7 +93,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: event.commentSortType,
+                sort: event.commentSortType.toLemmyType(),
                 limit: limit,
                 page: 1,
               ),
@@ -114,7 +115,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: event.commentSortType,
+                sort: event.commentSortType.toLemmyType(),
                 page: 1,
               ),
             );
@@ -122,7 +123,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: event.commentSortType,
+                sort: event.commentSortType.toLemmyType(),
                 limit: limit,
                 page: 1,
               ),
@@ -177,7 +178,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               auth: account.jwt!,
               unreadOnly: state.showUnreadOnly,
               limit: limit,
-              sort: event.commentSortType,
+              sort: event.commentSortType.toLemmyType(),
               page: state.inboxReplyPage,
             ),
           );
@@ -189,7 +190,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             GetPersonMentions(
               auth: account.jwt!,
               unreadOnly: state.showUnreadOnly,
-              sort: event.commentSortType,
+              sort: event.commentSortType.toLemmyType(),
               limit: limit,
               page: state.inboxMentionPage,
             ),

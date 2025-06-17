@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/foundation.dart';
+import 'package:unifiedpush/unifiedpush.dart';
+import 'package:version/version.dart';
+
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/database/database.dart' hide Account;
@@ -17,7 +20,6 @@ import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -39,8 +41,6 @@ import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/language/language.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/navigation.dart';
-import 'package:unifiedpush/unifiedpush.dart';
-import 'package:version/version.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -590,7 +590,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
           SliverToBoxAdapter(
             child: ListOption(
               description: l10n.defaultCommentSortType,
-              value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
+              value: ListPickerItem(label: defaultCommentSortType.name, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
               options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},

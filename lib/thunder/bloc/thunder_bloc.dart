@@ -1,14 +1,14 @@
+import 'package:flutter/material.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lemmy_api_client/v3.dart';
-
 import 'package:stream_transform/stream_transform.dart';
+
 import 'package:thunder/core/enums/action_color.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
-
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/feed_card_divider_thickness.dart';

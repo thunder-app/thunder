@@ -1,7 +1,9 @@
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:version/version.dart';
+
+import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/comment_sort_type.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
