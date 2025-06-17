@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/account.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';

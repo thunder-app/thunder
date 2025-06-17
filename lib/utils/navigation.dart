@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
+import 'package:lemmy_api_client/v3.dart' hide ModlogActionType, CommentSortType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -498,7 +499,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   // Load the notifications
   while (!doneFetching) {
     final GetRepliesResponse getRepliesResponse = await (LemmyClient()..changeBaseUrl(account.instance)).lemmyApiV3.run(GetReplies(
-          sort: CommentSortType.new_,
+          sort: CommentSortType.new_.toLemmyType(),
           page: currentPage,
           limit: 50,
           unreadOnly: replyId == null,

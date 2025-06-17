@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -104,7 +105,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         communityId: post?.community?.id,
         maxDepth: COMMENT_MAX_DEPTH,
         postId: post?.id,
-        sort: commentSortType,
+        sort: commentSortType.toLemmyType(),
         limit: COMMENT_LIMIT,
         type: ListingType.all,
         parentId: parentId,
@@ -212,7 +213,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           communityId: state.post?.community?.id,
           parentId: event.commentParentId,
           postId: state.post?.id,
-          sort: commentSortType,
+          sort: commentSortType.toLemmyType(),
           limit: COMMENT_LIMIT,
           maxDepth: COMMENT_MAX_DEPTH,
           page: 1,
@@ -256,7 +257,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         communityId: state.post?.community?.id,
         postId: state.post?.id,
         parentId: event.commentParentId,
-        sort: commentSortType,
+        sort: commentSortType.toLemmyType(),
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
         page: state.commentPage,
