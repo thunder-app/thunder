@@ -22,7 +22,7 @@ class PostState extends Equatable {
     this.crossPosts,
     this.hasReachedCommentEnd = false,
     this.errorMessage,
-    this.sortType,
+    this.commentSortType,
     this.highlightedCommentId,
     this.selectedCommentPath,
     this.moddingCommentId = -1,
@@ -37,7 +37,7 @@ class PostState extends Equatable {
   final PostStatus status;
 
   /// The sort type of the post comments
-  final CommentSortType? sortType;
+  final CommentSortType? commentSortType;
 
   final List<CommunityModeratorView>? moderators;
   final List<ThunderPost>? crossPosts;
@@ -83,7 +83,7 @@ class PostState extends Equatable {
     List<CommunityModeratorView>? moderators,
     List<ThunderPost>? crossPosts,
     String? errorMessage,
-    CommentSortType? sortType,
+    CommentSortType? commentSortType,
     int? highlightedCommentId,
     String? selectedCommentPath,
     int? moddingCommentId,
@@ -104,7 +104,7 @@ class PostState extends Equatable {
       moderators: moderators ?? this.moderators,
       crossPosts: crossPosts ?? this.crossPosts,
       errorMessage: errorMessage ?? this.errorMessage,
-      sortType: sortType ?? this.sortType,
+      commentSortType: commentSortType ?? this.commentSortType,
       highlightedCommentId: highlightedCommentId,
       selectedCommentPath: selectedCommentPath,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
@@ -127,7 +127,7 @@ class PostState extends Equatable {
         crossPosts,
         errorMessage,
         hasReachedCommentEnd,
-        sortType,
+        commentSortType,
         highlightedCommentId,
         selectedCommentPath,
         moddingCommentId,

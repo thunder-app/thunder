@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -58,7 +59,7 @@ class _InstancePageState extends State<InstancePage> {
   // Use the existing SearchType enum to represent what we're showing in the instance page
   // with SearchType.all representing the about page
   SearchType viewType = SearchType.all;
-  SortType sortType = SortType.topAll;
+  PostSortType postSortType = PostSortType.topAll;
 
   /// Context for [_onScroll] to use
   BuildContext? buildContext;
@@ -176,10 +177,10 @@ class _InstancePageState extends State<InstancePage> {
                                   builder: (builderContext) => SortPicker(
                                     title: l10n.sortOptions,
                                     onSelect: (selected) async {
-                                      sortType = selected.payload;
+                                      postSortType = selected.payload;
                                       _doLoad(context);
                                     },
-                                    previouslySelected: sortType,
+                                    previouslySelected: postSortType,
                                     minimumVersion: LemmyClient.instance.version,
                                   ),
                                 );
@@ -234,7 +235,7 @@ class _InstancePageState extends State<InstancePage> {
                                     icon: Icons.people_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.communities;
-                                      await context.read<InstancePageCubit>().loadCommunities(page: 1, sortType: sortType);
+                                      await context.read<InstancePageCubit>().loadCommunities(page: 1, postSortType: postSortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                     label: l10n.communities,
@@ -244,7 +245,7 @@ class _InstancePageState extends State<InstancePage> {
                                     icon: Icons.person_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.users;
-                                      await context.read<InstancePageCubit>().loadUsers(page: 1, sortType: sortType);
+                                      await context.read<InstancePageCubit>().loadUsers(page: 1, postSortType: postSortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                     label: l10n.users,
@@ -254,7 +255,7 @@ class _InstancePageState extends State<InstancePage> {
                                     icon: Icons.article_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.posts;
-                                      await context.read<InstancePageCubit>().loadPosts(page: 1, sortType: sortType);
+                                      await context.read<InstancePageCubit>().loadPosts(page: 1, postSortType: postSortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                     label: l10n.posts,
@@ -264,7 +265,7 @@ class _InstancePageState extends State<InstancePage> {
                                     icon: Icons.comment_rounded,
                                     onPressed: () async {
                                       viewType = SearchType.comments;
-                                      await context.read<InstancePageCubit>().loadComments(page: 1, sortType: sortType);
+                                      await context.read<InstancePageCubit>().loadComments(page: 1, postSortType: postSortType);
                                       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                     },
                                     label: l10n.comments,
@@ -390,16 +391,16 @@ class _InstancePageState extends State<InstancePage> {
 
     switch (viewType) {
       case SearchType.communities:
-        await instancePageCubit.loadCommunities(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadCommunities(page: page ?? 1, postSortType: postSortType);
         break;
       case SearchType.users:
-        await instancePageCubit.loadUsers(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadUsers(page: page ?? 1, postSortType: postSortType);
         break;
       case SearchType.posts:
-        await instancePageCubit.loadPosts(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadPosts(page: page ?? 1, postSortType: postSortType);
         break;
       case SearchType.comments:
-        await instancePageCubit.loadComments(page: page ?? 1, sortType: sortType);
+        await instancePageCubit.loadComments(page: page ?? 1, postSortType: postSortType);
         break;
       default:
         break;

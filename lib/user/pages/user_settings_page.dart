@@ -9,6 +9,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
+import "package:thunder/core/enums/post_sort_type.dart";
 import 'package:thunder/localizations/app_localizations.dart';
 import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
@@ -320,10 +321,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ListOption(
                                 description: l10n.defaultFeedSortType,
-                                value: ListPickerItem(label: localUser.defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: localUser.defaultSortType),
+                                value: ListPickerItem(
+                                  label: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)?.name ?? "",
+                                  icon: Icons.local_fire_department_rounded,
+                                  payload: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType),
+                                ),
                                 options: [
-                                  ...SortPicker.getDefaultSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                                  ...topSortTypeItems
+                                  ...SortPicker.getDefaultPostSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+                                  ...topPostSortTypeItems
                                 ],
                                 icon: Icons.sort_rounded,
                                 onChanged: (_) async {},
@@ -332,16 +337,16 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                                   title: l10n.defaultFeedSortType,
                                   onSelect: (value) async {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultSortType: value.payload));
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
                                   },
-                                  previouslySelected: localUser.defaultSortType,
+                                  previouslySelected: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType),
                                 ),
                                 valueDisplay: Row(
                                   children: [
-                                    Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).icon, size: 13),
+                                    Icon(allPostSortTypeItems.firstWhere((item) => item.payload == PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)).icon, size: 13),
                                     const SizedBox(width: 4),
                                     Text(
-                                      allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == localUser.defaultSortType).label,
+                                      allPostSortTypeItems.firstWhere((item) => item.payload == PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)).label,
                                       style: theme.textTheme.titleSmall,
                                     ),
                                   ],

@@ -142,7 +142,7 @@ enum LocalSettings {
   // Default Listing/Sort Settings
 
   defaultFeedListType(name: 'setting_general_default_listing_type', key: 'defaultFeedType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
-  defaultFeedSortType(name: 'setting_general_default_sort_type', key: 'defaultFeedSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+  defaultFeedPostSortType(name: 'setting_general_default_sort_type', key: 'defaultFeedSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
 
   // NSFW Settings
   hideNsfwPosts(name: 'setting_general_hide_nsfw_posts', key: 'hideNsfwPostsFromFeed', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),

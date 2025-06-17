@@ -275,7 +275,7 @@ class _ThunderState extends State<Thunder> {
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
                                 feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                                sortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.sortTypeForInstance,
+                                postSortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.postSortTypeForInstance,
                                 reset: true,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),
@@ -412,7 +412,7 @@ class _ThunderState extends State<Thunder> {
                                 useGlobalFeedBloc: true,
                                 feedType: FeedType.general,
                                 feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                                sortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.sortTypeForInstance,
+                                postSortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.postSortTypeForInstance,
                                 scaffoldStateKey: scaffoldStateKey,
                                 showHidden: thunderBlocState.showHiddenPosts,
                               ),

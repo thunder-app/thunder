@@ -10,9 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -64,9 +63,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   final _scrollController = ScrollController(initialScrollOffset: 0);
   // This exists only because it is required by FadingEdgeScrollView
   final ScrollController _searchFiltersScrollController = ScrollController();
-  SortType sortType = SortType.active;
-  IconData? sortTypeIcon;
-  String? sortTypeLabel;
+  PostSortType postSortType = PostSortType.active;
+  IconData? postSortTypeIcon;
+  String? postSortTypeLabel;
   final Set<ThunderCommunity> newAnonymousSubscriptions = {};
   final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
@@ -103,10 +102,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   Future<void> initPrefs() async {
     setState(() {
-      sortType = SortType.values.byName(UserPreferences.instance.preferences.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
-      final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == sortType);
-      sortTypeIcon = sortTypeItem.icon;
-      sortTypeLabel = sortTypeItem.label;
+      postSortType = PostSortType.values.byName(UserPreferences.instance.preferences.getString("search_default_sort_type") ?? DEFAULT_SEARCH_POST_SORT_TYPE.name);
+      final postSortTypeItem = allPostSortTypeItems.firstWhere((item) => item.payload == postSortType);
+      postSortTypeIcon = postSortTypeItem.icon;
+      postSortTypeLabel = postSortTypeItem.label;
     });
   }
 
@@ -134,7 +133,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
         context.read<SearchBloc>().add(ContinueSearchEvent(
               query: _controller.text,
-              sortType: PostSortTypeMapping.fromLemmyType(sortType)!,
+              postSortType: postSortType,
               feedListType: _currentFeedType,
               searchType: _getSearchTypeToUse(),
               communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,
@@ -344,9 +343,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                             ],
                             if (_currentSearchType != MetaSearchType.instances) ...[
                               ThunderActionChip(
-                                icon: sortTypeIcon,
+                                icon: postSortTypeIcon,
                                 trailingIcon: Icons.arrow_drop_down_rounded,
-                                label: sortTypeLabel ?? l10n.sortBy,
+                                label: postSortTypeLabel ?? l10n.sortBy,
                                 onPressed: () => showSortBottomSheet(context),
                               ),
                               if (widget.communityToSearch == null) ...[
@@ -822,16 +821,16 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         title: l10n.sortOptions,
         onSelect: (selected) async {
           setState(() {
-            sortType = selected.payload;
-            sortTypeIcon = selected.icon;
-            sortTypeLabel = selected.label;
+            postSortType = selected.payload;
+            postSortTypeIcon = selected.icon;
+            postSortTypeLabel = selected.label;
           });
 
           UserPreferences.instance.preferences.setString("search_default_sort_type", selected.payload.name);
 
           _doSearch();
         },
-        previouslySelected: sortType,
+        previouslySelected: postSortType,
         minimumVersion: LemmyClient.instance.version,
       ),
     );
@@ -896,7 +895,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     if (_controller.text.isNotEmpty || force || searchBloc.state.viewingAll) {
       searchBloc.add(StartSearchEvent(
         query: _controller.text,
-        sortType: PostSortTypeMapping.fromLemmyType(sortType)!,
+        postSortType: postSortType,
         feedListType: _currentFeedType,
         searchType: _getSearchTypeToUse(),
         communityId: widget.communityToSearch?.id ?? _currentCommunityFilter,

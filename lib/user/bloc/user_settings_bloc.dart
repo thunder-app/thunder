@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -114,7 +115,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
         showNsfw: event.showNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
         defaultListingType: event.defaultFeedListType?.toLemmyType() ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultListingType,
-        defaultSortType: event.defaultSortType ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
+        defaultSortType: event.defaultPostSortType?.toLemmyType() ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
       );
 
       GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
@@ -142,7 +143,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         matrixUserId: event.matrixUserId,
         displayName: event.displayName,
         defaultListingType: event.defaultFeedListType?.toLemmyType(),
-        defaultSortType: event.defaultSortType,
+        defaultSortType: event.defaultPostSortType?.toLemmyType(),
         showNsfw: event.showNsfw,
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
@@ -27,10 +26,10 @@ String getSortName(FeedState state) {
     return '';
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType?.toLemmyType());
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  final postSortTypeItemIndex = allPostSortTypeItems.indexWhere((item) => item.payload == state.postSortType);
+  final postSortTypeItem = postSortTypeItemIndex > -1 ? allPostSortTypeItems[postSortTypeItemIndex] : null;
 
-  return sortTypeItem?.label ?? '';
+  return postSortTypeItem?.label ?? '';
 }
 
 IconData? getSortIcon(FeedState state) {
@@ -38,10 +37,10 @@ IconData? getSortIcon(FeedState state) {
     return null;
   }
 
-  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType?.toLemmyType());
-  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+  final postSortTypeItemIndex = allPostSortTypeItems.indexWhere((item) => item.payload == state.postSortType);
+  final postSortTypeItem = postSortTypeItemIndex > -1 ? allPostSortTypeItems[postSortTypeItemIndex] : null;
 
-  return sortTypeItem?.icon;
+  return postSortTypeItem?.icon;
 }
 
 Future<void> triggerRefresh(BuildContext context) async {
@@ -51,7 +50,7 @@ Future<void> triggerRefresh(BuildContext context) async {
         FeedFetchedEvent(
           feedType: state.feedType,
           feedListType: state.feedListType,
-          sortType: state.sortType,
+          postSortType: state.postSortType,
           communityId: state.communityId,
           communityName: state.communityName,
           userId: state.userId,
