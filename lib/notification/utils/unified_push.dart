@@ -1,7 +1,6 @@
 // Dart imports
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 // Flutter imports
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Initializes push notifications for UnifiedPush.
@@ -36,11 +34,11 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
   final prefs = UserPreferences.instance.preferences;
 
   UnifiedPush.initialize(
-    onNewEndpoint: (String endpoint, String instance) async {
+    onNewEndpoint: (PushEndpoint endpoint, String instance) async {
       debugPrint("Connected to new UnifiedPush endpoint: $instance @ $endpoint");
 
       // Save the endpoint to preferences so we can retrieve it later for troubleshooting
-      prefs.setString('unified_push_endpoint', endpoint);
+      prefs.setString('unified_push_endpoint', endpoint.url);
 
       List<Account> accounts = await Account.accounts();
 
@@ -50,11 +48,11 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // TODO: Select accounts to enable push notifications
       for (Account account in accounts) {
-        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint, jwt: account.jwt!, instance: account.instance);
+        bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint.url, jwt: account.jwt!, instance: account.instance);
         if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
       }
     },
-    onRegistrationFailed: (String instance) async {
+    onRegistrationFailed: (FailedReason reason, String instance) async {
       debugPrint("UnifiedPush registration failed for $instance");
 
       // Clear the endpoint from preferences
@@ -74,7 +72,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       bool removed = await deleteAccountFromNotificationServer();
       if (!removed) debugPrint("Failed to delete previous device token from server.");
     },
-    onMessage: (Uint8List message, String instance) async {
+    onMessage: (PushMessage message, String instance) async {
       // Ensure that the db is initialized before attempting to access below.
       await initializeDatabase();
 
@@ -83,7 +81,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
       final bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
 
-      final String decodedMessage = utf8.decode(message);
+      final String decodedMessage = utf8.decode(message.content);
 
       if (decodedMessage == "test") {
         // This means we successfully got a test notification from UnifiedPush.
@@ -228,5 +226,5 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
   );
 
   // Register Thunder with UnifiedPush
-  if (GlobalContext.context.mounted) UnifiedPush.registerAppWithDialog(GlobalContext.context);
+  UnifiedPush.tryUseCurrentOrDefaultDistributor();
 }
