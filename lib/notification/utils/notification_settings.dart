@@ -22,7 +22,7 @@ import 'package:thunder/shared/snackbar.dart';
 ///
 /// When the notification settings are successfully updated, it will return true. If it fails, it will return false.
 Future<bool> updateNotificationSettings(
-  context, {
+  BuildContext context, {
   required NotificationType currentNotificationType,
   required NotificationType updatedNotificationType,
   Function? onUpdate,

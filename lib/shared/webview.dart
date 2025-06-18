@@ -204,7 +204,7 @@ class NavigationControls extends StatelessWidget {
                     title: l10n.openInBrowser,
                   ),
                   ThunderPopupMenuItem(
-                    onTap: () => Share.share(url),
+                    onTap: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(url))),
                     icon: Icons.share_rounded,
                     title: l10n.share,
                   ),

@@ -67,7 +67,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -128,6 +128,9 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
       case LocalSettings.enableFullScreenSwipeNavigationGesture:
         await prefs.setBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name, value);
         setState(() => enableFullScreenSwipeNavigationGesture = value);
+        break;
+      default:
+        break;
     }
 
     if (context.mounted) {

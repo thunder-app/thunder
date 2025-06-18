@@ -146,7 +146,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
       feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
-      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.value);
+      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.toARGB32());
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -174,7 +174,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   }
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -282,6 +282,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.postBodyShowCommunityAvatar.name, value);
         setState(() => postBodyShowCommunityAvatar = value);
         break;
+      default:
+        break;
     }
 
     if (context.mounted) {
@@ -365,7 +367,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 543,
     );
 
-    return [postText, postLink, postImage].whereNotNull().toList();
+    return [postText, postLink, postImage].nonNulls.toList();
   }
 
   @override
@@ -750,12 +752,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             items: CustomThemeType.values
                                 .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
                                       alignment: Alignment.center,
-                                      value: Color(customThemeType.primaryColor.value),
+                                      value: Color(customThemeType.primaryColor.toARGB32()),
                                       child: CircleAvatar(
                                         radius: 16.0,
                                         backgroundColor: Color.alphaBlend(
                                           theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                          Color(customThemeType.primaryColor.value),
+                                          Color(customThemeType.primaryColor.toARGB32()),
                                         ),
                                       ),
                                     ))
@@ -1379,7 +1381,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
     );
   }
 
-  Widget buildDraggableItem(context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
+  Widget buildDraggableItem(BuildContext context, {required PostCardMetadataItem item, bool isFeedback = false, bool isDisabled = false}) {
     final theme = Theme.of(context);
 
     return TooltipVisibility(

@@ -29,7 +29,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -37,6 +37,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
         await prefs.setBool(LocalSettings.reduceAnimations.name, value);
         setState(() => reduceAnimations = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+      default:
         break;
     }
 

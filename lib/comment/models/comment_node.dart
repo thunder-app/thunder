@@ -22,7 +22,7 @@ class CommentNode {
   }
 
   /// Gets the total number of replies
-  get totalReplies => replies.length;
+  int get totalReplies => replies.length;
 
   CommentNode({this.commentView, this.replies = const []});
 

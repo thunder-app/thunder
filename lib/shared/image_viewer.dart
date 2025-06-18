@@ -42,8 +42,6 @@ class ImageViewer extends StatefulWidget {
     this.isPeek = false,
   }) : assert(url != null || bytes != null);
 
-  get post => null;
-
   @override
   State<ImageViewer> createState() => _ImageViewerState();
 }
@@ -463,7 +461,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         }
 
                                         // Share
-                                        await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                        await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)]));
                                       } catch (e) {
                                         // Tell the user that the download failed
                                         showSnackbar(l10n.errorDownloadingMedia(e));

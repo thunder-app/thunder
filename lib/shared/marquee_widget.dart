@@ -1,4 +1,4 @@
-library marquee_widget;
+library;
 
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,7 @@ class Marquee extends StatelessWidget {
 
   final ScrollController _scrollController = ScrollController();
 
-  scroll(bool repeated) async {
+  void scroll(bool repeated) async {
     do {
       if (_scrollController.hasClients) {
         await Future.delayed(pauseDuration);

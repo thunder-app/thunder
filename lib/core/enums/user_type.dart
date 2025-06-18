@@ -8,7 +8,7 @@ enum UserType {
   op,
   birthday;
 
-  get color {
+  Color get color {
     switch (this) {
       case UserType.moderator:
         return Colors.orange;

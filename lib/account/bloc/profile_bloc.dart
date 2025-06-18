@@ -63,7 +63,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   /// Resets the entire state the the initial state.
-  Future<void> _resetState(emit) async {
+  Future<void> _resetState(Emitter<ProfileState> emit) async {
     return emit(ProfileState());
   }
 

@@ -51,11 +51,11 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
         onSelect: (selection) async {
           switch (selection.payload) {
             case UserShareOptions.link:
-              Share.share(personView.person.actorId);
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(personView.person.actorId)));
             case UserShareOptions.localLink:
-              Share.share(localLink);
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink)));
             case UserShareOptions.lemmy:
-              Share.share(lemmyLink);
+              SharePlus.instance.share(ShareParams(text: lemmyLink));
           }
         },
       ),

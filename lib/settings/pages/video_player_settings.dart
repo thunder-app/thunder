@@ -79,7 +79,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
     super.initState();
   }
 
-  Future<void> setPreferences(attribute, value) async {
+  Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
     switch (attribute) {
       case LocalSettings.videoAutoMute:
@@ -107,6 +107,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
         setState(() => videoPlayerMode = VideoPlayerMode.values.byName(value ?? VideoPlayerMode.inApp));
         break;
       default:
+        break;
     }
 
     if (context.mounted) {

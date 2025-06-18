@@ -472,7 +472,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 PickerItem(
                   label: l10n.share,
                   icon: Icons.share_rounded,
-                  onSelected: () => Share.share(widget.url ?? widget.text),
+                  onSelected: () => SharePlus.instance.share(ShareParams(text: widget.url ?? widget.text)),
                 ),
                 PickerItem(
                   label: l10n.alternateSources,

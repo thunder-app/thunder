@@ -75,7 +75,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   }
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -100,6 +100,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       case LocalSettings.nestedCommentIndicatorColor:
         await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
         setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
+        break;
+      default:
         break;
     }
 

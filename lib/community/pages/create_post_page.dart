@@ -916,7 +916,7 @@ class DraftPost {
 
   Map<String, dynamic> toJson() => {'title': title, 'url': url, 'text': text};
 
-  static fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
+  static DraftPost fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
 
   bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
 }

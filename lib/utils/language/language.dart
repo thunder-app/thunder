@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 class LanguageLocal {
-  static String getDisplayLanguage(key, String? code) {
+  static String getDisplayLanguage(String key, String? code) {
     final languageLabels = {
       "ab": {"name": "Abkhaz", "nativeName": "аҧсуа"},
       "aa": {"name": "Afar", "nativeName": "Afaraf"},

@@ -561,7 +561,7 @@ class DraftComment {
 
   Map<String, dynamic> toJson() => {'text': text};
 
-  static fromJson(Map<String, dynamic> json) => DraftComment(text: json['text']);
+  static DraftComment fromJson(Map<String, dynamic> json) => DraftComment(text: json['text']);
 
   bool get isNotEmpty => text?.isNotEmpty == true;
 }

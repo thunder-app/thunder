@@ -139,7 +139,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     _controller.clear(); // Clear the search field
   }
 
-  _onChange(BuildContext context, String value) {
+  void _onChange(BuildContext context, String value) {
     if (_currentSearchType == MetaSearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
       setState(() {
         _searchByUrl = true;

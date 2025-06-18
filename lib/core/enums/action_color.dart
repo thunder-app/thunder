@@ -16,7 +16,7 @@ class ActionColor {
   const ActionColor.fromString({required this.colorRaw});
 
   @override
-  String toString() => color.value.toString();
+  String toString() => color.toARGB32().toString();
 
   String label(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;

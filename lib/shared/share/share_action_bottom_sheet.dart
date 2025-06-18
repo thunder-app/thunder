@@ -86,7 +86,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
-      await Share.shareXFiles([XFile(mediaFile!.path)]);
+      await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)]));
     } catch (e) {
       showSnackbar(GlobalContext.l10n.errorDownloadingMedia(e));
     }
@@ -98,25 +98,25 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        Share.share(commentView!.comment.apId);
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(commentView!.comment.apId)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
-        Share.share(LemmyClient.instance.generateCommentUrl(commentView!.comment.id));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generateCommentUrl(commentView!.comment.id))));
         break;
       case ShareBottomSheetAction.sharePost:
-        Share.share(post!.url);
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.url)));
         break;
       case ShareBottomSheetAction.sharePostLocal:
-        Share.share(LemmyClient.instance.generatePostUrl(post!.id));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generatePostUrl(post!.id))));
         break;
       case ShareBottomSheetAction.shareImage:
         retrieveMedia(post!.media.first.imageUrl!);
         break;
       case ShareBottomSheetAction.shareMedia:
-        Share.share(post!.media.first.mediaUrl!);
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.media.first.mediaUrl!)));
         break;
       case ShareBottomSheetAction.shareLink:
-        if (post!.media.first.originalUrl != null) Share.share(post.media.first.originalUrl!);
+        if (post!.media.first.originalUrl != null) SharePlus.instance.share(ShareParams(uri: Uri.parse(post.media.first.originalUrl!)));
         break;
       case ShareBottomSheetAction.shareAdvanced:
         showAdvancedShareSheet(widget.context, post!);

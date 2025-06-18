@@ -32,13 +32,15 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
       case LocalSettings.keywordFilters:
         await prefs.setStringList(LocalSettings.keywordFilters.name, value);
         setState(() => keywordFilters = value);
+        break;
+      default:
         break;
     }
 

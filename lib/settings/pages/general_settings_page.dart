@@ -149,7 +149,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// Enable experimental features in the app.
   bool enableExperimentalFeatures = false;
 
-  Future<void> setPreferences(attribute, value) async {
+  Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -257,6 +257,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.showNavigationLabels:
         await prefs.setBool(LocalSettings.showNavigationLabels.name, value);
         setState(() => showNavigationLabels = value);
+        break;
+      default:
         break;
     }
 

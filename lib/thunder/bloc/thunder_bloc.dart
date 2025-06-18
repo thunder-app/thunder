@@ -159,7 +159,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       DateFormat dateFormat = DateFormat(UserPreferences.getLocalSetting(LocalSettings.dateFormat) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
       FeedCardDividerThickness feedCardDividerThickness =
           FeedCardDividerThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerThickness) ?? FeedCardDividerThickness.compact.name);
-      Color feedCardDividerColor = Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) ?? Colors.transparent.value);
+      Color feedCardDividerColor = Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) ?? Colors.transparent.toARGB32());
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           UserPreferences.getLocalSetting<List<String>>(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =

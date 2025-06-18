@@ -115,7 +115,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
   }
 }
 
-Size? getScaledMediaSize({width, height, offset = 24.0, tabletMode = false}) {
+Size? getScaledMediaSize({double? width, double? height, double offset = 24.0, bool tabletMode = false}) {
   if (width == null || height == null) return null;
   double mediaRatio = width / height;
 

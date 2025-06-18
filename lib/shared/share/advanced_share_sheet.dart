@@ -41,7 +41,7 @@ class AdvancedShareSheetOptions {
         'includeCommnity': includeCommnity,
       };
 
-  static fromJson(Map<String, dynamic> json) => AdvancedShareSheetOptions(
+  static AdvancedShareSheetOptions fromJson(Map<String, dynamic> json) => AdvancedShareSheetOptions(
         includePostLink: json['includePostLink'],
         includeExternalLink: json['includeExternalLink'],
         includeImage: json['includeImage'],
@@ -338,15 +338,15 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                                         // Do the actual sharing
                                         if (_canShareImage(options, post)) {
                                           if (_isImageCustomized(options, post)) {
-                                            Share.shareXFiles([XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text);
+                                            SharePlus.instance.share(ShareParams(files: [XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text));
                                           } else {
                                             setState(() => isDownloading = true);
                                             final File file = await DefaultCacheManager().getSingleFile(post.media.first.thumbnailUrl!);
                                             setState(() => isDownloading = false);
-                                            Share.shareXFiles([XFile(file.path)], text: text);
+                                            SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: text));
                                           }
                                         } else if (text != null) {
-                                          Share.share(text);
+                                          SharePlus.instance.share(ShareParams(text: text));
                                         }
 
                                         if (context.mounted) {

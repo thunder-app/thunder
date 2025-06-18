@@ -65,7 +65,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   /// The available timeout values for image dimensions in seconds.
   List<int> imageDimensionTimeouts = List.generate(10, (index) => index + 1);
 
-  Future<void> setPreferences(attribute, value) async {
+  Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -76,6 +76,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
       case LocalSettings.imageDimensionTimeout:
         await prefs.setInt(LocalSettings.imageDimensionTimeout.name, value);
         setState(() => imageDimensionTimeout = value);
+        break;
+      default:
         break;
     }
   }

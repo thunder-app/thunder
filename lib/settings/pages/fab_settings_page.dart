@@ -82,7 +82,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  void setPreferences(attribute, value) async {
+  void setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -156,6 +156,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       case LocalSettings.postFabLongPressAction:
         await prefs.setString(LocalSettings.postFabLongPressAction.name, (value as PostFabAction).name);
         setState(() => postFabLongPressAction = value);
+        break;
+      default:
         break;
     }
 

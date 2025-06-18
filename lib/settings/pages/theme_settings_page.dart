@@ -104,7 +104,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   GlobalKey settingToHighlightKey = GlobalKey();
   LocalSettings? settingToHighlight;
 
-  Future<void> setPreferences(attribute, value) async {
+  Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
     final prefs = UserPreferences.instance.preferences;
 
     switch (attribute) {
@@ -228,6 +228,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       case LocalSettings.useDisplayNamesForCommunities:
         await prefs.setBool(LocalSettings.useDisplayNamesForCommunities.name, value);
         setState(() => useDisplayNamesForCommunities = value);
+        break;
+      default:
         break;
     }
 

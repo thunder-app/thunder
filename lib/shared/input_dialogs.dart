@@ -400,9 +400,9 @@ Future<List<Language>> getLanguageSuggestions(BuildContext context, String query
   return filteredLanguages;
 }
 
-Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelected, BuildContext? context}) {
+Widget buildLanguageSuggestionWidget(Language payload, {void Function(Language)? onSelected, BuildContext? context}) {
   return Tooltip(
-    message: '${payload.name}',
+    message: payload.name,
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
