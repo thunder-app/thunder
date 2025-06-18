@@ -2796,7 +2796,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Nebylo možné načíst příspěvky z $instance';
   }
 

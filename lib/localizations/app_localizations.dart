@@ -5058,7 +5058,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Unable to load posts from {instance}'**
-  String unableToLoadPostsFrominstance(Object Instance, Object instance);
+  String unableToLoadPostsFrominstance(Object instance);
 
   /// No description provided for @unableToLoadReplies.
   ///

@@ -40,7 +40,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountSettingOverrideWarning =>
-      'Your account settings override the following settings';
+      'Preferencje twojego konta napiszą obecne ustawienia';
 
   @override
   String get accountSettings => 'Ustawienia konta';
@@ -61,11 +61,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'The selected post was not found on \'$instance\'. Switching back to previous account.';
+    return 'Wybrany wpis nie został znaleziony na \'$instance\'. Powrót do poprzedniego konta.';
   }
 
   @override
-  String get actionColors => 'Action Colors';
+  String get actionColors => 'Kolory akcji';
 
   @override
   String get actionColorsRedirect => 'Chcesz dostosować kolory?';
@@ -77,7 +77,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get active => 'Aktywne';
 
   @override
-  String get activity => 'Activity';
+  String get activity => 'Aktywność';
 
   @override
   String get add => 'Dodaj';
@@ -116,7 +116,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get addedInstanceMod => 'Added Instance Mod';
 
   @override
-  String get addedModToCommunity => 'Added Mod to Community';
+  String get addedModToCommunity => 'Dodano moderatora do społeczności';
 
   @override
   String get admin => 'Administrator';
@@ -143,7 +143,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get alreadyPostedTo => 'Już utworzono wpis do';
 
   @override
-  String get altText => 'Alt Text';
+  String get altText => 'Alternatywny tekst';
 
   @override
   String get alternateSources => 'Alternatywne źródła';
@@ -163,7 +163,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get anonymous => 'Anonimowy';
 
   @override
-  String get anonymousInstances => 'Anonymous Instances';
+  String get anonymousInstances => 'Instancja anonimowa';
 
   @override
   String get appLanguage => 'Język Aplikacji';
@@ -172,7 +172,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get appearance => 'Wygląd';
 
   @override
-  String get applePushNotificationService => 'Apple Push Notification Service';
+  String get applePushNotificationService => 'Usługa powiadomień Apple';
 
   @override
   String get applied => 'Zaaplikowane';
@@ -187,7 +187,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String averageComments(Object x) {
-    return '$x comments/month';
+    return '$x komentarze/miesiąc';
   }
 
   @override
@@ -2800,7 +2800,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Nie udało się załadować wpisów z $instance';
   }
 

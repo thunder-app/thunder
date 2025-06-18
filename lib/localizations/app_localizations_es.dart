@@ -2853,7 +2853,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'No se pueden cargar los posts de $instance';
   }
 

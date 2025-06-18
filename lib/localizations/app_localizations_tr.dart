@@ -12,25 +12,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get about => 'Hakkında';
 
   @override
-  String get accept => 'Accept';
+  String get accept => 'Kabul Et';
 
   @override
   String get accessibility => 'Erişilebilirlik';
 
   @override
   String get accessibilityProfilesDescription =>
-      'Erişilebilirlik profilleri, belirli bir erişilebilirlik gereksinimini karşılamak için birkaç ayarı aynı anda uygulamaya olanak sağlar.';
+      'Erişilebilirlik profilleri, belirli bir erişilebilirlik gereksinimini karşılamak için birkaç ayarın aynı anda uygulanmasına olanak tanır.';
 
   @override
   String account(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Hesaplar',
+      other: 'Hesap',
       one: 'Hesap',
-      zero: 'Hesap',
     );
-    return '$_temp0 ';
+    return '$_temp0';
   }
 
   @override
@@ -40,19 +39,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get accountSettingOverrideWarning =>
-      'Hesap ayarlarınız aşağıdaki ayarların üzerine yazılır.';
+      'Hesap ayarlarınız aşağıdaki ayarları geçersiz kılıyor';
 
   @override
   String get accountSettings => 'Hesap Ayarları';
 
   @override
   String accountSettingsExportedSuccessfully(Object savedFilePath) {
-    return 'Lemmy account settings exported successfully to $savedFilePath!';
+    return 'Lemmy hesap ayarları başarıyla $savedFilePath konumuna aktarıldı!';
   }
 
   @override
   String get accountSettingsImportedSuccessfully =>
-      'Lemmy account settings imported successfully!';
+      'Lemmy hesap ayarları başarıyla içe aktarıldı!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
@@ -77,7 +76,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get active => 'Aktif';
 
   @override
-  String get activity => 'Activity';
+  String get activity => 'Aktivite';
 
   @override
   String get add => 'Ekle';
@@ -89,10 +88,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addAccountToSeeProfile => 'Hesabınızı görmek için giriş yapın.';
 
   @override
-  String get addAnonymousInstance => 'Anonim Örnek Ekle';
+  String get addAnonymousInstance => 'Anonim Sunucu Ekle';
 
   @override
-  String get addAsCommunityModerator => 'Add as Community Moderator';
+  String get addAsCommunityModerator => 'Topluluk Moderatörü Olarak Ekle';
 
   @override
   String get addDiscussionLanguage => 'Dil Ekle';
@@ -101,7 +100,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addKeywordFilter => 'Anahtar Kelime Ekle';
 
   @override
-  String get addOriginalPostBody => 'Add original post body?';
+  String get addOriginalPostBody => 'Orijinal gönderi metni eklensin mi?';
 
   @override
   String get addToFavorites => 'Favorilere ekle';
@@ -113,7 +112,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addedCommunityToSubscriptions => 'Topluluğa abone olundu';
 
   @override
-  String get addedInstanceMod => 'Eklenen Örnek Mod';
+  String get addedInstanceMod => 'Sunucuya Mod Eklendi';
 
   @override
   String get addedModToCommunity => 'Topluluğa Mod Eklendi';
@@ -122,7 +121,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get admin => 'Yönetici';
 
   @override
-  String get advanced => 'İleri düzey';
+  String get advanced => 'Gelişmiş';
 
   @override
   String ago(Object time) {
@@ -130,7 +129,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get all => 'Hepsi';
+  String get all => 'Tümü';
 
   @override
   String get allPosts => 'Tüm Gönderiler';
@@ -140,20 +139,20 @@ class AppLocalizationsTr extends AppLocalizations {
       'Uygulamanın desteklenen bağlantıları açmasına izin ver.';
 
   @override
-  String get alreadyPostedTo => 'Zaten gönderildi';
+  String get alreadyPostedTo => 'Zaten şuraya gönderildi';
 
   @override
-  String get altText => 'Alt Text';
+  String get altText => 'Alternatif Metin';
 
   @override
-  String get alternateSources => 'Alternate Sources';
+  String get alternateSources => 'Alternatif Kaynaklar';
 
   @override
   String get always => 'Her zaman';
 
   @override
   String andXMore(Object count) {
-    return 've $count daha fazla';
+    return 've $count tane daha';
   }
 
   @override
@@ -163,7 +162,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get anonymous => 'Anonim';
 
   @override
-  String get anonymousInstances => 'Anonymous Instances';
+  String get anonymousInstances => 'Anonim Sunucular';
 
   @override
   String get appLanguage => 'Uygulama Dili';
@@ -172,32 +171,32 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appearance => 'Görünüm';
 
   @override
-  String get applePushNotificationService => 'Apple Push Bildirim Servisi';
+  String get applePushNotificationService => 'Apple Anlık Bildirim Servisi';
 
   @override
-  String get applied => 'Uygulanan';
+  String get applied => 'Uygulandı';
 
   @override
   String get apply => 'Uygula';
 
   @override
   String areNotificationsAllowedBySystem(Object yesOrNo) {
-    return 'Sistem tarafından bildirimlere izin verilir: $yesOrNo';
+    return 'Bildirimlere sistem tarafından izin veriliyor: $yesOrNo';
   }
 
   @override
   String averageComments(Object x) {
-    return '$x comments/month';
+    return '$x yorum/ay';
   }
 
   @override
   String averageContributions(Object x) {
-    return '$x contributions/month';
+    return '$x katkı/ay';
   }
 
   @override
   String averagePosts(Object x) {
-    return '$x posts/month';
+    return '$x gönderi/ay';
   }
 
   @override
@@ -211,49 +210,49 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backgroundCheckWarning =>
-      'Bildirim kontrolünün ekstra pil tüketimine neden olacağını unutmayın.';
+      'Bildirim kontrollerinin ek pil tüketeceğini unutmayın';
 
   @override
-  String get banFromCommunity => 'Ban from Community';
+  String get banFromCommunity => 'Topluluktan Yasakla';
 
   @override
   String get bannedUser => 'Yasaklanmış Kullanıcı';
 
   @override
-  String get bannedUserFromCommunity => 'Topluluktan Yasaklanan Kullanıcı';
+  String get bannedUserFromCommunity => 'Kullanıcı Topluluktan Yasaklandı';
 
   @override
-  String get base => 'Taban';
+  String get base => 'Temel';
 
   @override
-  String get block => 'Block';
+  String get block => 'Engelle';
 
   @override
-  String get blockCommunity => 'Blok Topluluğu';
+  String get blockCommunity => 'Topluluğu Engelle';
 
   @override
-  String get blockCommunityInstance => 'Block Community Instance';
+  String get blockCommunityInstance => 'Topluluk Sunucusunu Engelle';
 
   @override
-  String get blockInstance => 'Blok Örneği';
+  String get blockInstance => 'Sunucuyu Engelle';
 
   @override
-  String get blockManagement => 'Blok Yönetimi';
+  String get blockManagement => 'Engelleme Yönetimi';
 
   @override
-  String get blockSettingLabel => 'Kullanıcı/Topluluk/Örnek Engelleri';
+  String get blockSettingLabel => 'Kullanıcı/Topluluk/Sunucu Engelleri';
 
   @override
   String get blockUser => 'Kullanıcıyı Engelle';
 
   @override
-  String get blockUserInstance => 'Block User Instance';
+  String get blockUserInstance => 'Kullanıcı Sunucusunu Engelle';
 
   @override
-  String get blockedCommunities => 'Engellenmiş Topluluklar';
+  String get blockedCommunities => 'Engellenen Topluluklar';
 
   @override
-  String get blockedInstances => 'Engellenmiş Örnekler';
+  String get blockedInstances => 'Engellenen Sunucular';
 
   @override
   String get blockedUsers => 'Engellenen Kullanıcılar';
@@ -262,26 +261,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get blue => 'Mavi';
 
   @override
-  String get bold => 'Cesur';
+  String get bold => 'Kalın';
 
   @override
-  String get boldCommunityName => 'Cesur Topluluk Adı';
+  String get boldCommunityName => 'Topluluk Adını Kalın Yap';
 
   @override
-  String get boldInstanceName => 'Kalın Örnek İsmi';
+  String get boldInstanceName => 'Sunucu Adını Kalın Yap';
 
   @override
-  String get boldUserName => 'Cesur Kullanıcı Adı';
+  String get boldUserName => 'Kullanıcı Adını Kalın Yap';
 
   @override
   String get bot => 'Bot';
 
   @override
-  String get browserMode => 'Bağlantı işleme';
+  String get browserMode => 'Bağlantı yönetimi';
 
   @override
   String browsingAnonymously(Object instance) {
-    return 'Şu anda $instance sitesinde anonim olarak geziniyorsunuz.';
+    return 'Şu anda $instance sunucusunda anonim olarak geziniyorsunuz.';
   }
 
   @override
@@ -289,39 +288,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cannotReportOwnComment =>
-      'Kendi yorumunuz için bir rapor sunamazsınız.';
+      'Kendi yorumunuz için bir şikayet gönderemezsiniz.';
 
   @override
-  String get cantBlockAdmin => 'Bir örnek yöneticisini engelleyemezsiniz.';
+  String get cantBlockAdmin => 'Bir sunucu yöneticisini engelleyemezsiniz.';
 
   @override
-  String get cantBlockYourself => 'Kendini engelleyemezsin.';
+  String get cantBlockYourself => 'Kendinizi engelleyemezsiniz.';
 
   @override
-  String get cardPostCardMetadataItems => 'Kart Görünümü Meta Verisi';
+  String get cardPostCardMetadataItems => 'Kart Görünümü Meta Verileri';
 
   @override
   String get cardView => 'Kart Görünümü';
 
   @override
   String get cardViewDescription =>
-      'Kart görünümünü ayarları ayarlamak için etkinleştirin';
+      'Ayarları düzenlemek için kart görünümünü etkinleştirin';
 
   @override
   String get cardViewSettings => 'Kart Görünümü Ayarları';
 
   @override
-  String get changeAccountSettingsFor => 'Hesap ayarlarını değiştirin için';
+  String get changeAccountSettingsFor => 'Şunun için hesap ayarlarını değiştir';
 
   @override
   String get changeNotificationSettings => 'Bildirim ayarlarını değiştir...';
 
   @override
-  String get changePassword => 'Şifre Değiştir';
+  String get changePassword => 'Şifreyi Değiştir';
 
   @override
   String get changePasswordWarning =>
-      'Şifrenizi değiştirmek için, örnek siteye yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?';
+      'Şifrenizi değiştirmek için sunucu sitenize yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?';
 
   @override
   String get changeSort => 'Sıralamayı Değiştir';
@@ -332,7 +331,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get clearCacheLabel => 'Clear Cache';
+  String get clearCacheLabel => 'Önbelleği Temizle';
 
   @override
   String get clearDatabase => 'Veritabanını Temizle';
@@ -357,26 +356,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get close => 'Kapat';
 
   @override
-  String get collapse => 'Çökme';
+  String get collapse => 'Daralt';
 
   @override
   String get collapseCommentPreview => 'Yorum Önizlemesini Daralt';
 
   @override
-  String get collapseInformation => 'Bilgi Çöküşü';
+  String get collapseInformation => 'Bilgiyi Daralt';
 
   @override
   String get collapseParentCommentBodyOnGesture =>
-      'Çöktüğünde Üst Yorumu Gizle';
+      'Daraltıldığında Üst Yorumu Gizle';
 
   @override
-  String get collapsePost => 'Gönderiyi çökert';
+  String get collapsePost => 'Gönderiyi daralt';
 
   @override
   String get collapsePostPreview => 'Gönderi Önizlemesini Daralt';
 
   @override
-  String get collapseSpoiler => 'Spoiler\'ı Çökert';
+  String get collapseSpoiler => 'Spoiler\'ı Daralt';
 
   @override
   String get color => 'Renk';
@@ -385,7 +384,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get colorizeCommunityName => 'Topluluk Adını Renklendir';
 
   @override
-  String get colorizeInstanceName => 'Örnek İsmi Renklendir';
+  String get colorizeInstanceName => 'Sunucu Adını Renklendir';
 
   @override
   String get colorizeUserName => 'Kullanıcı Adını Renklendir';
@@ -400,11 +399,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get combineCommentScoresLabel => 'Yorum Puanlarını Birleştir';
 
   @override
-  String get combineNavAndFab => 'FAB ve Navigasyon Düğmelerini Birleştirin';
+  String get combineNavAndFab => 'FAB ve Gezinme Düğmelerini Birleştir';
 
   @override
   String get combineNavAndFabDescription =>
-      'Yüzen İşlem Düğmesi, navigasyon düğmeleri arasında gösterilecektir.';
+      'Kayan Eylem Düğmesi, gezinme düğmeleri arasında gösterilecektir.';
 
   @override
   String get comfortable => 'Rahat';
@@ -423,16 +422,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'Verilen ayarlarla yorumların bir önizlemesini göster';
 
   @override
-  String get commentReported => 'Yorum inceleme için işaretlendi.';
+  String get commentReported => 'Yorum incelenmek üzere işaretlendi.';
 
   @override
-  String get commentSavedAsDraft => 'Taslak olarak yorum kaydedildi';
+  String get commentSavedAsDraft => 'Yorum taslak olarak kaydedildi';
 
   @override
   String get commentShowUserAvatar => 'Kullanıcı Avatarını Göster';
 
   @override
-  String get commentShowUserInstance => 'Kullanıcı Örneğini Göster';
+  String get commentShowUserInstance => 'Kullanıcı Sunucusunu Göster';
 
   @override
   String get commentSortType => 'Yorum Sıralama Türü';
@@ -442,7 +441,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get commentSwipeGesturesHint =>
-      'Düğmeleri kullanmayı mı düşünüyorsunuz? Genel ayarlarda yorumlar bölümünü etkinleştirin.';
+      'Bunun yerine düğmeleri mi kullanmak istiyorsunuz? Onları genel ayarlardaki yorumlar bölümünde etkinleştirin.';
 
   @override
   String get comments => 'Yorumlar';
@@ -458,7 +457,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String communityEntry(Object community) {
-    return '\'Topluluk \'$community\'';
+    return 'Topluluk \'$community\'';
   }
 
   @override
@@ -484,7 +483,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get compactViewDescription =>
-      'Ayarları ayarlamak için kompakt görünümü etkinleştirin';
+      'Ayarları düzenlemek için kompakt görünümü etkinleştirin';
 
   @override
   String get compactViewSettings => 'Kompakt Görünüm Ayarları';
@@ -496,40 +495,40 @@ class AppLocalizationsTr extends AppLocalizations {
   String get confirm => 'Onayla';
 
   @override
-  String get confirmLogOutBody => 'Çıkış yapmak istediğinize emin misiniz?';
+  String get confirmLogOutBody => 'Çıkış yapmak istediğinizden emin misiniz?';
 
   @override
-  String get confirmLogOutTitle => 'Çıkış Yap?';
+  String get confirmLogOutTitle => 'Çıkış yapılsın mı?';
 
   @override
   String get confirmMarkAllAsReadBody =>
-      'Tüm mesajları okundu olarak işaretlemek istediğinize emin misiniz?';
+      'Tüm yanıtları, bahsetmeleri ve mesajları okundu olarak işaretlemek istediğinizden emin misiniz?';
 
   @override
-  String get confirmMarkAllAsReadTitle => 'Tümünü Okundu Olarak İşaretle?';
+  String get confirmMarkAllAsReadTitle => 'Tümü okundu olarak işaretlensin mi?';
 
   @override
   String get confirmResetCommentPreferences =>
-      'Bu, tüm yorum tercihlerini sıfırlayacak. Devam etmek istediğinizden emin misiniz?';
+      'Bu, tüm yorum tercihlerini sıfırlayacaktır. Devam etmek istediğinizden emin misiniz?';
 
   @override
   String get confirmResetPostPreferences =>
-      'Bu, tüm gönderi tercihlerini sıfırlayacak. Devam etmek istediğinizden emin misiniz?';
+      'Bu, tüm gönderi tercihlerini sıfırlayacaktır. Devam etmek istediğinizden emin misiniz?';
 
   @override
   String get confirmUnsubscription =>
-      'Abonelikten çıkmak istediğinize emin misiniz?';
+      'Abonelikten çıkmak istediğinizden emin misiniz?';
 
   @override
   String connectedToUnifiedPushDistributorApp(Object app) {
-    return '$app ile bağlandı.';
+    return '$app uygulamasına bağlandı';
   }
 
   @override
   String get contentManagement => 'İçerik Yönetimi';
 
   @override
-  String get contentWarning => 'Content Warning';
+  String get contentWarning => 'İçerik Uyarısı';
 
   @override
   String get controversial => 'Tartışmalı';
@@ -547,7 +546,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get copySelected => 'Seçileni kopyala';
 
   @override
-  String get copyText => 'Metin Kopyala';
+  String get copyText => 'Metni Kopyala';
 
   @override
   String get couldNotDetermineCommentDelete =>
@@ -559,11 +558,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get couldntCreateReport =>
-      'Yorum raporunuz şu anda gönderilemedi. Lütfen daha sonra tekrar deneyin.';
+      'Yorum şikayetiniz şu anda gönderilemedi. Lütfen daha sonra tekrar deneyin';
 
   @override
   String get couldntFindPost =>
-      'İstenilen gönderi yüklenemiyor. Silinmiş veya kaldırılmış olabilir.';
+      'İstenen gönderi yüklenemiyor. Silinmiş veya kaldırılmış olabilir.';
 
   @override
   String countComments(Object count) {
@@ -572,7 +571,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String countLocalSubscribers(Object count) {
-    return '$count Yerel Aboneler';
+    return '$count Yerel Abone';
   }
 
   @override
@@ -624,25 +623,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String created(Object date) {
-    return 'Oluşturulma tarihi $date';
+    return 'Oluşturulma: $date';
   }
 
   @override
   String get createdToday => 'Bugün Oluşturuldu';
 
   @override
-  String get creator => 'Yaratıcı';
+  String get creator => 'Oluşturan';
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return '$postUrl adresinden paylaşıldı.';
+    return 'şuradan çapraz gönderildi:  $postUrl';
   }
 
   @override
-  String get crossPostedTo => 'Çapraz yayınlandı';
+  String get crossPostedTo => 'Şuraya çapraz gönderildi';
 
   @override
-  String get currentLongPress => 'Uzun basma olarak ayarlandı';
+  String get currentLongPress => 'Şu anda uzun basma olarak ayarlı';
 
   @override
   String currentNotificationsMode(Object mode) {
@@ -650,25 +649,25 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get currentSinglePress => 'Tek basılı olarak ayarlandı';
+  String get currentSinglePress => 'Şu anda tek basma olarak ayarlı';
 
   @override
   String get customizeSwipeActions =>
-      'Kaydırma eylemlerini özelleştir (değiştirmek için dokunun)';
+      'Kaydırma eylemlerini özelleştir (değiştirmek için dokun)';
 
   @override
-  String get dangerZone => 'Tehlike Bölgesi';
+  String get dangerZone => 'Tehlikeli Bölge';
 
   @override
   String get dark => 'Karanlık';
 
   @override
   String get databaseExportWarning =>
-      'Veritabanı, Lemmy hesabınızla ilgili hassas bilgiler içerebilir. Eğer onu dışa aktarırsanız, kimseyle paylaşmamalısınız. Devam etmek istiyor musunuz?';
+      'Veritabanı, Lemmy hesabınızla ilgili hassas bilgiler içerebilir. Dışa aktarırsanız, kimseyle paylaşmamalısınız. Devam etmek istiyor musunuz?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
-    return 'Veritabanı başarıyla \'$savedFilePath\' konumuna aktarıldı.';
+    return 'Veritabanı başarıyla \'$savedFilePath\' konumuna aktarıldı';
   }
 
   @override
@@ -681,24 +680,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get databaseNotImportedSuccessfully =>
-      'Veritabanı başarıyla içe aktarılmadı veya işlem iptal edildi.';
+      'Veritabanı başarıyla içe aktarılamadı veya işlem iptal edildi.';
 
   @override
   String get dateFormat => 'Tarih Formatı';
 
   @override
-  String get debug => 'Hata ayıklama';
+  String get debug => 'Hata Ayıklama';
 
   @override
   String get debugDescription =>
-      'Aşağıdaki hata ayıklama ayarları sadece sorun giderme amaçları için kullanılmalıdır.';
+      'Aşağıdaki hata ayıklama ayarları yalnızca sorun giderme amacıyla kullanılmalıdır.';
 
   @override
   String get debugNotificationsDescription =>
       'Bildirimlerle ilgili sorunları gidermek için aşağıdaki seçenekleri kullanın.';
 
   @override
-  String get decline => 'Decline';
+  String get decline => 'Reddet';
 
   @override
   String get defaultColor => 'Varsayılan';
@@ -707,10 +706,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get defaultCommentSortType => 'Varsayılan Yorum Sıralama Türü';
 
   @override
-  String get defaultFeedSortType => 'Varsayılan Besleme Sıralama Türü';
+  String get defaultFeedSortType => 'Varsayılan Akış Sıralama Türü';
 
   @override
-  String get defaultFeedType => 'Varsayılan Besleme Türü';
+  String get defaultFeedType => 'Varsayılan Akış Türü';
 
   @override
   String get delete => 'Sil';
@@ -720,51 +719,51 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deleteAccountDescription =>
-      'Hesabınızı kalıcı olarak silmek için, örnek siteye yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?';
+      'Hesabınızı kalıcı olarak silmek için sunucu sitenize yönlendirileceksiniz. \n\nDevam etmek istediğinizden emin misiniz?';
 
   @override
-  String get deleteComment => 'Delete Comment';
+  String get deleteComment => 'Yorumu Sil';
 
   @override
   String get deleteImageConfirmMessage =>
-      'Are you sure you want to delete this image?';
+      'Bu resmi silmek istediğinizden emin misiniz?';
 
   @override
-  String get deleteImageConfirmTitle => 'Delete?';
+  String get deleteImageConfirmTitle => 'Silinsin mi?';
 
   @override
   String get deleteLocalDatabase => 'Yerel Veritabanını Sil';
 
   @override
   String get deleteLocalDatabaseDescription =>
-      'Bu eylem, yerel veritabanını kaldıracak ve sizi tüm hesaplarınızdan çıkaracaktır.\n\nDevam etmek istediğinizden emin misiniz?';
+      'Bu işlem yerel veritabanını kaldıracak ve tüm hesaplarınızdan çıkış yapmanızı sağlayacaktır.\n\nDevam etmek istediğinizden emin misiniz?';
 
   @override
   String get deleteLocalPreferences => 'Yerel Tercihleri Sil';
 
   @override
   String get deleteLocalPreferencesDescription =>
-      'Bu, Thunder\'daki tüm kullanıcı tercihlerinizi ve ayarlarınızı silecektir.\n\nDevam etmek ister misiniz?';
+      'Bu, Thunder\'daki tüm kullanıcı tercihlerinizi ve ayarlarınızı temizleyecektir.\n\nDevam etmek istiyor musunuz?';
 
   @override
-  String get deletePost => 'Delete Post';
+  String get deletePost => 'Gönderiyi Sil';
 
   @override
   String get deleteUserLabelConfirmation =>
-      'Are you sure you want to delete the label?';
+      'Etiketi silmek istediğinizden emin misiniz?';
 
   @override
-  String get deleted => 'Deleted';
+  String get deleted => 'Silindi';
 
   @override
-  String get deletedByCreator => 'yaratıcı tarafından silindi';
+  String get deletedByCreator => 'oluşturan tarafından silindi';
 
   @override
   String get deletedByModerator => 'moderatör tarafından silindi';
 
   @override
   String get deselectUndeterminedWarning =>
-      'Belirsiz\'i seçimi kaldırırsanız, çoğu içeriği göremezsiniz.';
+      'Belirsiz\'i seçmezseniz, çoğu içeriği görmezsiniz.';
 
   @override
   String detailedReason(Object reason) {
@@ -772,57 +771,57 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get dimReadPosts => 'Gönderileri Oku';
+  String get dimReadPosts => 'Okunmuş Gönderileri Soluklaştır';
 
   @override
-  String get disable => 'Devre dışı bırak';
+  String get disable => 'Devre Dışı Bırak';
 
   @override
-  String get disablePushNotifications => 'Bildirimleri Kapat';
+  String get disablePushNotifications => 'Anlık Bildirimleri Devre Dışı Bırak';
 
   @override
-  String get disabled => 'Engelli';
+  String get disabled => 'Devre dışı';
 
   @override
   String get discussionLanguages => 'Tartışma Dilleri';
 
   @override
   String get discussionLanguagesTooltip =>
-      'İçerik, seçilen dillere göre filtrelenmiştir.';
+      'İçerik, seçilen dillere göre filtrelenir.';
 
   @override
-  String get dismissRead => 'Okuma İptal Et';
+  String get dismissRead => 'Okunanı Kapat';
 
   @override
-  String get displayName => 'Görünen İsim';
+  String get displayName => 'Görünen Ad';
 
   @override
-  String get displayUserScore => 'Kullanıcı Skorlarını Göster (Karma).';
+  String get displayUserScore => 'Kullanıcı Puanlarını (Karma) Görüntüle.';
 
   @override
-  String get dividerAppearance => 'Bölücü Görünümü';
+  String get dividerAppearance => 'Ayırıcı Görünümü';
 
   @override
-  String get doNotShowAgain => 'Bir Daha Gösterme';
+  String get doNotShowAgain => 'Tekrar Gösterme';
 
   @override
   String get doNotSupportMultipleUnifiedPushApps =>
-      'Birden fazla uyumlu uygulama bulundu; lütfen sadece birini yükleyin.';
+      'Birden fazla uyumlu uygulama bulundu; lütfen yalnızca bir tane yükleyin';
 
   @override
-  String get downloadingMedia => 'Medya indiriliyor ve paylaşılıyor...';
+  String get downloadingMedia => 'Paylaşmak için medya indiriliyor…';
 
   @override
-  String get downvote => 'Aşağı oyla';
+  String get downvote => 'Eksi Oy';
 
   @override
-  String get downvoteColor => 'Aşağı Oy Rengi';
+  String get downvoteColor => 'Eksi Oy Rengi';
 
   @override
-  String get downvoted => 'Oy aşağı';
+  String get downvoted => 'Eksi Oylandı';
 
   @override
-  String get downvotesDisabled => 'Bu durumda eksilenme özelliği kapalıdır.';
+  String get downvotesDisabled => 'Bu sunucuda eksi oylar kapalı.';
 
   @override
   String get edit => 'Düzenle';
@@ -844,7 +843,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get emptyUri =>
-      'Bağlantı boş. Lütfen devam etmek için geçerli bir dinamik bağlantı sağlayın.';
+      'Bağlantı boş. Devam etmek için lütfen geçerli bir dinamik bağlantı sağlayın.';
 
   @override
   String get enableCommentNavigation => 'Yorum Navigasyonunu Etkinleştir';
@@ -853,79 +852,79 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enableExperimentalFeatures => 'Deneysel özellikleri etkinleştir';
 
   @override
-  String get enableFeedFab => 'Beslemelerde Yüzen Düğmeyi Etkinleştir';
+  String get enableFeedFab => 'Akışlarda Kayan Düğmeyi Etkinleştir';
 
   @override
   String get enableFloatingButtonOnFeeds =>
-      'Beslemelerde Yüzen Düğmeyi Etkinleştir';
+      'Akışlarda Kayan Düğmeyi Etkinleştir';
 
   @override
   String get enableFloatingButtonOnPosts =>
-      'Gönderilerde Yüzen Düğmeyi Etkinleştir';
+      'Gönderilerde Kayan Düğmeyi Etkinleştir';
 
   @override
   String get enableInboxNotifications =>
       'Gelen Kutusu Bildirimlerini Etkinleştir';
 
   @override
-  String get enablePostFab => 'Gönderilerde Yüzen Düğmeyi Etkinleştir';
+  String get enablePostFab => 'Gönderilerde Kayan Düğmeyi Etkinleştir';
 
   @override
-  String get endOfComments => 'End of comments';
+  String get endOfComments => 'Yorumların sonu';
 
   @override
-  String get endSearch => 'Aramayı Sonlandır';
+  String get endSearch => 'Aramayı Bitir';
 
   @override
   String errorDeletingImage(Object error) {
-    return 'There was an error deleting the image: $error';
+    return 'Resim silinirken bir hata oluştu: $error';
   }
 
   @override
   String errorDownloadingMedia(Object errorMessage) {
-    return 'Medya dosyasını paylaşmak için indirilemedi: $errorMessage';
+    return 'Paylaşmak için medya dosyası indirilemedi: $errorMessage';
   }
 
   @override
   String get errorImportingAccountSettings =>
-      'There was an error importing the settings. The file might not be in the right format.';
+      'Ayarlar içe aktarılırken bir hata oluştu. Dosya doğru formatta olmayabilir.';
 
   @override
-  String get errorInitializingClient => 'Error initializing client';
+  String get errorInitializingClient => 'İstemci başlatılırken hata oluştu';
 
   @override
   String get errorLoadingAccountSettings =>
-      'There was an error loading the settings file or the operation was canceled.';
+      'Ayarlar dosyası yüklenirken bir hata oluştu veya işlem iptal edildi.';
 
   @override
   String get errorMarkingReplyRead =>
-      'Yanıtı okundu olarak işaretleme hatası oluştu.';
+      'Yanıt okundu olarak işaretlenirken bir hata oluştu.';
 
   @override
   String get errorMarkingReplyUnread =>
-      'Yanıtı okunmadı olarak işaretleme hatası oluştu.';
+      'Yanıt okunmadı olarak işaretlenirken bir hata oluştu.';
 
   @override
-  String get errorNoActiveInstance => 'No active instance found';
+  String get errorNoActiveInstance => 'Aktif sunucu bulunamadı';
 
   @override
   String get errorParsingJson =>
-      'There was an error parsing the selected file. It may not be valid JSON.';
+      'Seçilen dosya ayrıştırılırken bir hata oluştu. Geçerli bir JSON olmayabilir.';
 
   @override
   String get errorSavingAccountSettings =>
-      'There was an error saving the settings file or the operation was canceled.';
+      'Ayarlar dosyası kaydedilirken bir hata oluştu veya işlem iptal edildi.';
 
   @override
   String get exceptionProcessingUri =>
-      'Bağlantı işlenirken bir hata oluştu. Bu, sizin örneğinizde mevcut olmayabilir.';
+      'Bağlantı işlenirken bir hata oluştu. Sunucunuzda mevcut olmayabilir.';
 
   @override
   String get excessiveApiCallsWarning =>
-      'Your feed may be taking a while to load due to keyword filters.';
+      'Anahtar kelime filtreleri nedeniyle akışınızın yüklenmesi biraz zaman alabilir.';
 
   @override
-  String get expand => 'Genişle';
+  String get expand => 'Genişlet';
 
   @override
   String get expandCommentPreview => 'Yorum Önizlemesini Genişlet';
@@ -953,55 +952,55 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get experimentalFeaturesDescription =>
-      'Bu özellikler hala geliştirme aşamasındadır ve kararsız olabilir. Onları kendi riskinizde kullanın. Etkili olması için Thunder\'ı yeniden başlatmalısınız.';
+      'Bu özellikler hala geliştirme aşamasındadır ve kararsız olabilir. Riski size ait olmak üzere kullanın. Etkili olması için Thunder\'ı yeniden başlatmanız gerekir.';
 
   @override
-  String get exploreInstance => 'Örneklemi keşfet';
+  String get exploreInstance => 'Sunucuyu keşfet';
 
   @override
   String get exportDatabase => 'Veritabanını Dışa Aktar';
 
   @override
   String get exportDatabaseSubtitle =>
-      'Veritabanı, hesaplar, favoriler, anonim abonelikler ve kullanıcı etiketleri hakkında bilgi içerir.';
+      'Veritabanı hesaplar, favoriler, anonim abonelikler ve kullanıcı etiketleri hakkında bilgi içerir.';
 
   @override
   String get exportLemmyAccountSettingsDescription =>
-      'Export Lemmy account settings';
+      'Lemmy hesap ayarlarını dışa aktar';
 
   @override
   String get exportSettingsSubtitle =>
       'Ayarlar, Thunder\'da yapılandırdığınız tüm tercihleri içerir.';
 
   @override
-  String get extraLarge => 'Ekstra Büyük';
+  String get extraLarge => 'Çok Büyük';
 
   @override
   String failedToBlock(Object errorMessage) {
-    return 'Engellenemedi: $errorMessage';
+    return 'Engelleme başarısız: $errorMessage';
   }
 
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return '\'$serverAddress\' adresindeki Thunder bildirim sunucusuyla iletişim kurulamadı.';
+    return '\'$serverAddress\' adresindeki Thunder bildirim sunucusuyla iletişim kurulamadı';
   }
 
   @override
   String failedToLoadBlocks(Object errorMessage) {
-    return 'Blok yüklenemedi: $errorMessage';
+    return 'Engeller yüklenemedi: $errorMessage';
   }
 
   @override
   String get failedToLoadVideo =>
-      'Video yüklenemedi. Tarayıcıda bağlantıyı aç?';
+      'Video yüklenemedi. Bağlantıyı tarayıcıda açmak ister misiniz?';
 
   @override
-  String get failedToPerformAction => 'Failed to perform action';
+  String get failedToPerformAction => 'Eylem gerçekleştirilemedi';
 
   @override
   String failedToUnblock(Object errorMessage) {
-    return 'Açılamadı: $errorMessage';
+    return 'Engelleme kaldırılamadı: $errorMessage';
   }
 
   @override
@@ -1009,7 +1008,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bildirim ayarları güncellenemedi';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'Favori';
 
   @override
   String get favorites => 'Favoriler';
@@ -1018,34 +1017,34 @@ class AppLocalizationsTr extends AppLocalizations {
   String get featuredPost => 'Öne Çıkan Gönderi';
 
   @override
-  String get feed => 'Besle';
+  String get feed => 'Akış';
 
   @override
-  String get feedBehaviourSettings => 'Besle';
+  String get feedBehaviourSettings => 'Akış';
 
   @override
-  String get feedSettings => 'Besleme Ayarları';
+  String get feedSettings => 'Akış Ayarları';
 
   @override
-  String get feedTypeAndSorts => 'Varsayılan Besleme Türü ve Sıralama';
+  String get feedTypeAndSorts => 'Varsayılan Akış Türü ve Sıralama';
 
   @override
   String get fetchAccountError => 'Hesap belirlenemedi';
 
   @override
   String filteringBy(Object entity) {
-    return '$entity tarafından filtreleme';
+    return '$entity ile filtreleniyor';
   }
 
   @override
   String get filters => 'Filtreler';
 
   @override
-  String get floatingActionButton => 'Yüzen İşlem Düğmesi';
+  String get floatingActionButton => 'Kayan Eylem Düğmesi';
 
   @override
   String get floatingActionButtonInformation =>
-      'Gök gürültüsü, birkaç jesti destekleyen tamamen özelleştirilebilir bir FAB deneyimine sahiptir.\n- Ek FAB eylemlerini göstermek için yukarı kaydırın\n- FAB\'ı gizlemek veya göstermek için aşağı/yukarı kaydırın\n\nFAB için ana ve ikincil eylemleri özelleştirmek için, aşağıdaki eylemlerden birine uzun basın.';
+      'Thunder, birkaç hareketi destekleyen tamamen özelleştirilebilir bir FAB deneyimine sahiptir.\n- Ek FAB eylemlerini ortaya çıkarmak için yukarı kaydırın\n- FAB\'ı gizlemek veya göstermek için aşağı/yukarı kaydırın\n\nFAB için ana ve ikincil eylemleri özelleştirmek için aşağıdaki eylemlerden birine uzun basın.';
 
   @override
   String get floatingActionButtonLongPressDescription =>
@@ -1053,21 +1052,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get floatingActionButtonSinglePressDescription =>
-      'FAB\'ın tek basmalı eylemini belirtir.';
+      'FAB\'ın tek basma eylemini belirtir.';
 
   @override
-  String get fonts => 'Yazı tipleri';
+  String get fonts => 'Yazı Tipleri';
 
   @override
   String get forward => 'İleri';
 
   @override
   String get foundUnifiedPushDistribtorApp =>
-      'Uygun uygulama bulundu; Thunder\'ı bağlanmak için yeniden başlatın.';
+      'Uyumlu uygulama bulundu; bağlanmak için Thunder\'ı yeniden başlatın';
 
   @override
   String get fullScreenNavigationSwipeDescription =>
-      'Sol-a sağ hareketler devre dışıyken geri gitmek için herhangi bir yere sürükleyin.';
+      'Soldan sağa hareketler devre dışı bırakıldığında geri gitmek için herhangi bir yere kaydırın';
 
   @override
   String get fullscreenSwipeGestures => 'Tam Ekran Kaydırma Hareketleri';
@@ -1079,42 +1078,42 @@ class AppLocalizationsTr extends AppLocalizations {
   String get generalSettings => 'Genel Ayarlar';
 
   @override
-  String get gestures => 'Jestler';
+  String get gestures => 'Hareketler';
 
   @override
-  String get gettingStarted => 'Başlamak';
+  String get gettingStarted => 'Başlarken';
 
   @override
   String get green => 'Yeşil';
 
   @override
-  String get guestModeFeedSettings => 'Konuk Modu Besleme Ayarları';
+  String get guestModeFeedSettings => 'Misafir Modu Akış Ayarları';
 
   @override
   String get guestModeFeedSettingsLabel =>
-      'Aşağıdaki ayarlar yalnızca misafir hesaplarına uygulanır. Hesabınız için besleme ayarlarını düzenlemek için Hesap Ayarları\'na gidin.';
+      'Aşağıdaki ayarlar yalnızca misafir hesaplarına uygulanır. Hesabınız için akış ayarlarını düzenlemek için Hesap Ayarları\'na gidin.';
 
   @override
   String get havingIssuesWithNotifications =>
-      'Bildirimlerle ilgili sorunlar mı yaşıyorsunuz?';
+      'Bildirimlerle ilgili sorun mu yaşıyorsunuz?';
 
   @override
-  String get hidCommunity => 'Hid Topluluğu';
+  String get hidCommunity => 'Topluluk Gizlendi';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Gizli';
 
   @override
-  String get hide => 'Hide';
+  String get hide => 'Gizle';
 
   @override
-  String get hideColor => 'Hide Color';
+  String get hideColor => 'Gizleme Rengi';
 
   @override
-  String get hideNsfwPostsFromFeed => 'Beslemeden NSFW Gönderileri Gizle';
+  String get hideNsfwPostsFromFeed => 'NSFW Gönderileri Akıştan Gizle';
 
   @override
-  String get hideNsfwPreviews => 'NSFW Önizlemeleri Bulanıklaştır';
+  String get hideNsfwPreviews => 'NSFW Önizlemelerini Bulanıklaştır';
 
   @override
   String get hidePassword => 'Şifreyi Gizle';
@@ -1123,67 +1122,67 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hideThumbnails => 'Küçük Resimleri Gizle';
 
   @override
-  String get hideTopBarOnScroll => 'Kaydırma Sırasında Üst Çubuğu Gizle';
+  String get hideTopBarOnScroll => 'Kaydırırken Üst Çubuğu Gizle';
 
   @override
-  String get hostInstance => 'Ana Bilgisayar Örneği';
+  String get hostInstance => 'Barındıran Sunucu';
 
   @override
-  String get hot => 'Sıcak';
+  String get hot => 'Popüler';
 
   @override
-  String get image => 'Görüntü';
+  String get image => 'Resim';
 
   @override
-  String get imageCachingMode => 'Görüntü Önbellekleme Modu';
+  String get imageCachingMode => 'Resim Önbellekleme Modu';
 
   @override
   String get imageCachingModeAggressive =>
       'Resimleri agresif bir şekilde önbelleğe al (daha fazla bellek kullanır)';
 
   @override
-  String get imageCachingModeAggressiveShort => 'Saldırgan';
+  String get imageCachingModeAggressiveShort => 'Agresif';
 
   @override
   String get imageCachingModeRelaxed =>
-      'Görüntü önbelleklerinin süresi dolmasına izin ver (daha az bellek kullanır ancak görüntülerin daha sık yeniden yüklenmesine neden olur)';
+      'Resim önbelleklerinin süresinin dolmasına izin ver (daha az bellek kullanır ancak resimlerin daha sık yeniden yüklenmesine neden olur)';
 
   @override
   String get imageCachingModeRelaxedShort => 'Rahat';
 
   @override
-  String get imageDimensionTimeout => 'Görüntü Boyutu Zaman Aşımı';
+  String get imageDimensionTimeout => 'Resim Boyutu Zaman Aşımı';
 
   @override
   String get importDatabase => 'Veritabanını İçe Aktar';
 
   @override
-  String get importExportDatabase => 'Veritabanı İçe Aktar/Dışa Aktar';
+  String get importExportDatabase => 'Thunder Veritabanını İçe/Dışa Aktar';
 
   @override
   String get importExportLemmyAccountSettings =>
-      'Import/Export Lemmy Account Settings';
+      'Lemmy Hesap Ayarlarını İçe/Dışa Aktar';
 
   @override
   String get importExportLemmyAccountSettingsSubtitle =>
-      'Includes subscribed communities, blocklists, and account preferences';
+      'Abone olunan toplulukları, engelleme listelerini ve hesap tercihlerini içerir';
 
   @override
-  String get importExportSettings => 'İçe/Dışa Ayarları Aktarma';
+  String get importExportSettings => 'Ayarları İçe/Dışa Aktar';
 
   @override
-  String get importExportThunderSettings => 'Import/Export Thunder Settings';
+  String get importExportThunderSettings => 'Thunder Ayarlarını İçe/Dışa Aktar';
 
   @override
   String get importLemmyAccountSettingsDescription =>
-      'Import Lemmy account settings';
+      'Lemmy hesap ayarlarını içe aktar';
 
   @override
   String get importSettings => 'Ayarları İçe Aktar';
 
   @override
   String inReplyTo(Object community, Object post) {
-    return '$post başlıklı $community topluluğundaki mesaja yanıt olarak';
+    return '$post gönderisine $community içinde yanıt olarak';
   }
 
   @override
@@ -1199,7 +1198,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get includeExternalLink => 'Harici Bağlantıyı Dahil Et';
 
   @override
-  String get includeImage => 'Resim Ekleyin';
+  String get includeImage => 'Resmi Dahil Et';
 
   @override
   String get includePostLink => 'Gönderi Bağlantısını Dahil Et';
@@ -1208,7 +1207,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get includeText => 'Metni Dahil Et';
 
   @override
-  String get includeTitle => 'Başlık Dahil Et';
+  String get includeTitle => 'Başlığı Dahil Et';
 
   @override
   String get information => 'Bilgi';
@@ -1218,19 +1217,18 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Instances',
-      one: 'Instance',
-      zero: 'Instance',
+      other: 'Sunucu',
+      one: 'Sunucu',
     );
-    return '$_temp0 ';
+    return '$_temp0';
   }
 
   @override
-  String get instanceActions => 'Örnek Eylemler';
+  String get instanceActions => 'Sunucu Eylemleri';
 
   @override
   String instanceEntry(Object username) {
-    return '\'$username\' örneği';
+    return 'Sunucu \'$username\'';
   }
 
   @override
@@ -1239,29 +1237,29 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get instanceNameColor => 'Örnek İsim Renk';
+  String get instanceNameColor => 'Sunucu Adı Rengi';
 
   @override
-  String get instanceNameThickness => 'Örnek İsim Kalınlık';
+  String get instanceNameThickness => 'Sunucu Adı Kalınlığı';
 
   @override
-  String get instances => 'Örnekler';
+  String get instances => 'Sunucular';
 
   @override
   String get internetOrInstanceIssues =>
-      'İnternete bağlı olmayabilirsiniz veya örneğiniz şu anda kullanılamıyor olabilir.';
+      'İnternete bağlı olmayabilirsiniz veya sunucunuz şu anda kullanılamıyor olabilir.';
 
   @override
-  String get invalidUrl => 'Invalid URL format';
+  String get invalidUrl => 'Geçersiz URL formatı';
 
   @override
   String joined(Object x) {
-    return 'Joined $x';
+    return 'Katılım: $x';
   }
 
   @override
   String get keywordFilterDescription =>
-      'Başlık, gövde veya URL\'deki herhangi bir anahtar kelimeyi içeren gönderileri filtreler.';
+      'Başlık, gövde veya URL\'de herhangi bir anahtar kelime içeren gönderileri filtreler';
 
   @override
   String get keywordFilters => 'Anahtar Kelime Filtreleri';
@@ -1277,30 +1275,29 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get languageNotAllowed =>
-      'Seçtiğiniz dilde gönderi yapmaya izin verilmeyen bir topluluğa gönderi yapıyorsunuz. Başka bir dil dene.';
+      'Gönderi yaptığınız topluluk, seçtiğiniz dilde gönderilere izin vermiyor. Başka bir dil deneyin.';
 
   @override
   String get large => 'Büyük';
 
   @override
-  String get leftLongSwipe => 'Uzun Sol Kaydırma';
+  String get leftLongSwipe => 'Sola Uzun Kaydırma';
 
   @override
-  String get leftShortSwipe => 'Sol Kısa Sürükleyiş';
+  String get leftShortSwipe => 'Sola Kısa Kaydırma';
 
   @override
-  String get light => 'Işık';
+  String get light => 'Aydınlık';
 
   @override
   String link(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bağlantılar',
+      other: 'Bağlantı',
       one: 'Bağlantı',
-      zero: 'Bağlantı',
     );
-    return '$_temp0 ';
+    return '$_temp0';
   }
 
   @override
@@ -1308,19 +1305,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get linkHandlingCustomTabs =>
-      'Uygulama içine gömülü sistem tarayıcısında aç';
+      'Sistem tarayıcısında uygulama içi gömülü olarak aç';
 
   @override
   String get linkHandlingCustomTabsShort => 'Uygulama içi gömülü';
 
   @override
-  String get linkHandlingExternal => 'Sistemin dış tarayıcısında açın';
+  String get linkHandlingExternal => 'Sistem tarayıcısında harici olarak aç';
 
   @override
-  String get linkHandlingExternalShort => 'Dış\n';
+  String get linkHandlingExternalShort => 'Harici';
 
   @override
-  String get linkHandlingInApp => 'Thunder\'ın yerleşik tarayıcısını kullanın';
+  String get linkHandlingInApp => 'Thunder\'ın yerleşik tarayıcısını kullan';
 
   @override
   String get linkHandlingInAppShort => 'Uygulama içi';
@@ -1330,16 +1327,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String loadMorePlural(Object count) {
-    return '$count tane daha yanıt yükleyin...';
+    return '$count yanıt daha yükle…';
   }
 
   @override
   String loadMoreSingular(Object count) {
-    return '$count tane daha yanıt yükle…';
+    return '$count yanıt daha yükle…';
   }
 
   @override
-  String get loading => 'Loading...';
+  String get loading => 'Yükleniyor...';
 
   @override
   String get local => 'Yerel';
@@ -1348,7 +1345,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get localNotifications => 'Yerel Bildirimler';
 
   @override
-  String get localOnly => 'Yerel Sadece';
+  String get localOnly => 'Yalnızca Yerel';
 
   @override
   String get localPosts => 'Yerel Gönderiler';
@@ -1357,23 +1354,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get lockPost => 'Gönderiyi Kilitle';
 
   @override
-  String get locked => 'Locked';
+  String get locked => 'Kilitli';
 
   @override
   String get lockedPost => 'Kilitli Gönderi';
 
   @override
-  String get logOut => 'Çıkış yap';
+  String get logOut => 'Çıkış Yap';
 
   @override
-  String get login => 'Giriş yap';
+  String get login => 'Giriş Yap';
 
   @override
-  String get loginAttemptCanceled => 'Login attempt canceled.';
+  String get loginAttemptCanceled => 'Giriş denemesi iptal edildi.';
 
   @override
   String loginFailed(Object errorMessage) {
-    return 'Giriş yapılamadı. Lütfen tekrar deneyin:($errorMessage)';
+    return 'Giriş yapılamadı. Lütfen tekrar deneyin. (Hata: $errorMessage)';
   }
 
   @override
@@ -1381,43 +1378,43 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loginToPerformAction =>
-      'Bu görevi gerçekleştirebilmek için giriş yapmış olmanız gerekmektedir.';
+      'Bu görevi gerçekleştirmek için giriş yapmış olmanız gerekir.';
 
   @override
-  String get loginToSeeInbox => 'Gelen kutunuzu görmek için giriş yapın.';
+  String get loginToSeeInbox => 'Gelen kutunuzu görmek için giriş yapın';
 
   @override
   String get lookingForAccountSpecificFeedSettings =>
-      'Looking for account-specific feed settings?';
+      'Hesaba özgü akış ayarlarını mı arıyorsunuz?';
 
   @override
   String get malformedUri =>
-      'Sağladığınız bağlantı desteklenmeyen bir formatta. Lütfen geçerli bir bağlantı olduğundan emin olun.';
+      'Sağladığınız bağlantı desteklenmeyen bir biçimde. Lütfen geçerli bir bağlantı olduğundan emin olun.';
 
   @override
   String get manageAccounts => 'Hesapları Yönet';
 
   @override
-  String get manageMedia => 'Manage Media';
+  String get manageMedia => 'Medyayı Yönet';
 
   @override
-  String get markAllAsRead => 'Tümünü Okundu Olarak İşaretle';
+  String get markAllAsRead => 'Tümünü okundu olarak işaretle';
 
   @override
   String get markAsRead => 'Okundu olarak işaretle';
 
   @override
   String get markPostAsReadOnMediaView =>
-      'Medya Görüntülendikten Sonra İşaretle Okundu';
+      'Medyayı Görüntüledikten Sonra Okundu Olarak İşaretle';
 
   @override
-  String get markPostAsReadOnScroll => 'Kaydırma İşareti Okundu';
+  String get markPostAsReadOnScroll => 'Kaydırırken Okundu Olarak İşaretle';
 
   @override
   String get markReadColor => 'Okundu/Okunmadı Rengi';
 
   @override
-  String get matrixUser => 'Matris Kullanıcısı';
+  String get matrixUser => 'Matrix Kullanıcısı';
 
   @override
   String get me => 'Ben';
@@ -1430,52 +1427,50 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bahsetmeler',
+      other: 'Bahsetme',
       one: 'Bahsetme',
-      zero: 'Bahsetme',
     );
     return '$_temp0';
   }
 
   @override
-  String get menu => 'Menu';
+  String get menu => 'Menü';
 
   @override
   String message(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mesajlar',
+      other: 'Mesaj',
       one: 'Mesaj',
-      zero: 'Mesaj',
     );
     return '$_temp0';
   }
 
   @override
-  String get metadataFontScale => 'Metaveri Yazı Tipi Ölçeği';
+  String get metadataFontScale => 'Meta Veri Yazı Tipi Ölçeği';
 
   @override
   String get missingErrorMessage => 'Hata mesajı mevcut değil';
 
   @override
-  String get modAdd => 'Örnek Moderatörleri Ekle/Kaldır';
+  String get modAdd => 'Sunucu Moderatörleri Ekle/Kaldır';
 
   @override
   String get modAddCommunity => 'Topluluklara Moderatör Ekle/Kaldır';
 
   @override
-  String get modBan => 'Örnek Kullanıcıları Yasakla/Yasağı Kaldır';
+  String get modBan => 'Sunucu Kullanıcılarını Yasakla/Yasağı Kaldır';
 
   @override
   String get modBanFromCommunity =>
-      'Topluluklardan Kullanıcıları Yasakla/Yasağı Kaldır';
+      'Kullanıcıları Topluluklardan Yasakla/Yasağını Kaldır';
 
   @override
-  String get modFeaturePost => 'Gönderileri Öne Çıkar/Kaldır';
+  String get modFeaturePost => 'Gönderileri Öne Çıkar/Öne Çıkarmayı Kaldır';
 
   @override
-  String get modLockPost => 'Gönderileri Kilitle/Aç';
+  String get modLockPost => 'Gönderileri Kilitle/Kilidini Aç';
 
   @override
   String get modRemoveComment => 'Yorumları Kaldır/Geri Yükle';
@@ -1490,19 +1485,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get modTransferCommunity => 'Toplulukları Aktarma';
 
   @override
-  String get moderatedCommunities => 'Denetlenen Topluluklar';
+  String get moderatedCommunities => 'Moderatörü Olduğum Topluluklar';
 
   @override
-  String get moderates => 'Moderates';
+  String get moderates => 'Moderatörlükleri';
 
   @override
   String moderator(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Moderatörler',
+      other: 'Moderatör',
       one: 'Moderatör',
-      zero: 'Moderatör',
     );
     return '$_temp0';
   }
@@ -1511,30 +1505,31 @@ class AppLocalizationsTr extends AppLocalizations {
   String get moderatorActions => 'Moderatör Eylemleri';
 
   @override
-  String get modlog => 'Mod kaydı';
+  String get modlog => 'Mod Kayıtları';
 
   @override
-  String get mostComments => 'En Çok Yorumlar';
+  String get mostComments => 'En Çok Yorum Alanlar';
 
   @override
   String get mustBeLoggedIn => 'Giriş yapmanız gerekiyor';
 
   @override
   String get mustBeLoggedInComment =>
-      'Yorum yapmak için giriş yapmanız gerekiyor.';
+      'Yorum yapmak için giriş yapmanız gerekiyor';
 
   @override
   String get mustBeLoggedInPost =>
-      'Bir gönderi oluşturmak için giriş yapmanız gerekiyor.';
+      'Gönderi oluşturmak için giriş yapmanız gerekiyor';
 
   @override
   String get names => 'İsimler';
 
   @override
-  String get navbarDoubleTapGestures => 'Navbar Çift Dokunma Hareketleri';
+  String get navbarDoubleTapGestures =>
+      'Gezinme Çubuğu Çift Dokunma Hareketleri';
 
   @override
-  String get navbarSwipeGestures => 'Navbar Kaydırma Hareketleri';
+  String get navbarSwipeGestures => 'Gezinme Çubuğu Kaydırma Hareketleri';
 
   @override
   String get navigateDown => 'Sonraki yorum';
@@ -1543,13 +1538,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navigateUp => 'Önceki yorum';
 
   @override
-  String get navigation => 'Navigasyon';
+  String get navigation => 'Gezinme';
 
   @override
   String get nestedCommentIndicatorColor => 'İç İçe Yorum Göstergesi Rengi';
 
   @override
-  String get nestedCommentIndicatorStyle => 'İç İçe Yorum Gösterim Stili';
+  String get nestedCommentIndicatorStyle => 'İç İçe Yorum Göstergesi Stili';
 
   @override
   String get never => 'Asla';
@@ -1567,72 +1562,71 @@ class AppLocalizationsTr extends AppLocalizations {
   String get no => 'Hayır';
 
   @override
-  String get noAccountsAdded => 'No accounts have been added';
+  String get noAccountsAdded => 'Hiç hesap eklenmedi';
 
   @override
-  String get noAnonymousInstances => 'No anonymous instances have been added';
+  String get noAnonymousInstances => 'Hiç anonim sunucu eklenmedi';
 
   @override
-  String get noCommentsFound => 'Yorum bulunamadı.';
+  String get noCommentsFound => 'Hiç yorum bulunamadı';
 
   @override
-  String get noCommunitiesFound => 'Hiçbir topluluk bulunamadı.';
+  String get noCommunitiesFound => 'Hiç topluluk bulunamadı';
 
   @override
-  String get noCommunityBlocks => 'Engellenmiş topluluklar yok.';
+  String get noCommunityBlocks => 'Engellenen topluluk yok';
 
   @override
-  String get noCompatibleAppFound => 'Uygun uygulama bulunamadı';
+  String get noCompatibleAppFound => 'Uyumlu uygulama bulunamadı';
 
   @override
-  String get noDiscussionLanguages =>
-      'Dil temelli hiçbir içerik gizlenmemiştir.';
+  String get noDiscussionLanguages => 'Dile göre gizlenmiş içerik yok.';
 
   @override
-  String get noDisplayNameSet => 'Görüntüleme adı ayarlanmamış';
+  String get noDisplayNameSet => 'Görünen ad ayarlanmamış';
 
   @override
-  String get noEmailSet => 'E-posta ayarlanmadı';
+  String get noEmailSet => 'E-posta ayarlanmamış';
 
   @override
-  String get noFavoritedCommunities => 'Favori topluluklar yok';
+  String get noFavoritedCommunities => 'Favori topluluk yok';
 
   @override
-  String get noImages => 'It looks like you have not uploaded any images.';
+  String get noImages => 'Görünüşe göre hiç resim yüklemediniz.';
 
   @override
-  String get noInstanceBlocks => 'Engellenmiş örnek yok.';
+  String get noInstanceBlocks => 'Engellenen sunucu yok.';
 
   @override
-  String get noItems => 'Hiçbir öğe';
+  String get noItems => 'Öğe yok';
 
   @override
-  String get noKeywordFilters => 'Hiçbir anahtar kelime filtresi eklenmedi';
+  String get noKeywordFilters => 'Eklenmiş anahtar kelime filtresi yok';
 
   @override
-  String get noLanguage => 'Hiçbir dil';
+  String get noLanguage => 'Dil yok';
 
   @override
-  String get noMatrixUserSet => 'Hiçbir matris kullanıcısı ayarlanmadı';
+  String get noMatrixUserSet => 'Matrix kullanıcısı ayarlanmamış';
 
   @override
-  String get noMentions => 'No mentions';
+  String get noMentions => 'Bahsetme yok';
 
   @override
-  String get noMessages => 'No messages';
+  String get noMessages => 'Mesaj yok';
 
   @override
   String get noPostsFound => 'Hiç gönderi bulunamadı.';
 
   @override
-  String get noProfileBioSet => 'Profil biyografisi ayarlanmamış.';
+  String get noProfileBioSet => 'Profil biyografisi ayarlanmamış';
 
   @override
   String get noReferencesToImage =>
-      'No posts or comments were found containing this image. However, it may be used elsewhere on the internet.';
+      'Bu resmi içeren hiçbir gönderi veya yorum bulunamadı. Ancak, internetin başka bir yerinde kullanılıyor olabilir.';
 
   @override
-  String get noReplies => 'Cevap yok';
+  String get noReplies => 'Yanıt yok';
 
   @override
   String get noResultsFound => 'Sonuç bulunamadı.';
@@ -1641,17 +1635,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noSubscriptions => 'Abonelik Yok';
 
   @override
-  String get noUserBlocks => 'Engellenmiş kullanıcı yok.';
+  String get noUserBlocks => 'Engellenen kullanıcı yok.';
 
   @override
-  String get noUserLabels => 'You have not created any user labels yet';
+  String get noUserLabels => 'Henüz hiç kullanıcı etiketi oluşturmadınız';
 
   @override
-  String get noUsersFound => 'Kullanıcı bulunamadı.';
+  String get noUsersFound => 'Hiç kullanıcı bulunamadı.';
 
   @override
   String get noVisibleComments =>
-      'Comments may not be visible because the community is blocked.';
+      'Topluluk engellendiği için yorumlar görünmüyor olabilir.';
 
   @override
   String get none => 'Hiçbiri';
@@ -1661,7 +1655,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance geçerli bir Lemmy örneği gibi görünmüyor.';
+    return '$instance geçerli bir Lemmy sunucusu gibi görünmüyor';
   }
 
   @override
@@ -1675,9 +1669,8 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bildirimler',
-      one: 'Bildirimler',
-      zero: 'Bildirim',
+      other: 'Bildirim',
+      one: 'Bildirim',
     );
     return '$_temp0';
   }
@@ -1691,13 +1684,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get notificationsWarningDialog =>
-      'Bildirimler, tüm cihazlarda doğru şekilde çalışmayabilecek bir **deneysel özellik**tir.\n\n - Kontroller her ~15 dakikada bir gerçekleşecek ve ekstra pil tüketilecektir.\n\n - Başarılı bildirimlerin olasılığını artırmak için pil optimizasyonlarını devre dışı bırakın.\n\n Daha fazla bilgi için aşağıdaki sayfayı görüntüleyin.';
+      'Bildirimler, tüm cihazlarda doğru çalışmayabilecek **deneysel bir özelliktir**.\n\n - Kontroller yaklaşık 15 dakikada bir gerçekleşir ve ek pil tüketir.\n\n - Başarılı bildirim olasılığını artırmak için pil optimizasyonlarını devre dışı bırakın.\n\n Daha fazla bilgi için aşağıdaki sayfaya bakın.';
 
   @override
-  String get nsfw => 'Uygunsuz İçerik';
+  String get nsfw => 'NSFW';
 
   @override
-  String get nsfwWarning => 'NSFW - Açmak için dokunun';
+  String get nsfwWarning => 'NSFW - Görmek için dokunun';
 
   @override
   String get off => 'kapalı';
@@ -1712,44 +1705,44 @@ class AppLocalizationsTr extends AppLocalizations {
   String get old => 'Eski';
 
   @override
-  String get on => 'üzerinde';
+  String get on => 'açık';
 
   @override
-  String get onWifi => 'Wifi Üzerinde';
+  String get onWifi => 'Wi-Fi\'de';
 
   @override
   String get onlyModsCanPostInCommunity =>
-      'Bu toplulukta sadece moderatörler gönderi yapabilir.';
+      'Bu toplulukta yalnızca moderatörler gönderi yapabilir';
 
   @override
-  String get open => 'Açık';
+  String get open => 'Aç';
 
   @override
-  String get openAccountSwitcher => 'Hesap değiştiriciyi açın';
+  String get openAccountSwitcher => 'Hesap değiştiriciyi aç';
 
   @override
-  String get openByDefault => 'Varsayılan olarak açık';
+  String get openByDefault => 'Varsayılan olarak aç';
 
   @override
   String get openInBrowser => 'Tarayıcıda Aç';
 
   @override
-  String get openInstance => 'Açık Örnek';
+  String get openInstance => 'Sunucuyu Aç';
 
   @override
-  String get openLinksInExternalBrowser => 'Harici Tarayıcıda Bağlantıları Aç';
+  String get openLinksInExternalBrowser => 'Bağlantıları Harici Tarayıcıda Aç';
 
   @override
-  String get openLinksInReaderMode => 'Okuyucu Modunda Linkleri Açın';
+  String get openLinksInReaderMode => 'Bağlantıları Okuyucu Modunda Aç';
 
   @override
   String get openSettings => 'Ayarları Aç';
 
   @override
-  String get orange => 'Portakal';
+  String get orange => 'Turuncu';
 
   @override
-  String get originalPoster => 'Orijinal Gönderen';
+  String get originalPoster => 'Gönderi Sahibi';
 
   @override
   String get overview => 'Genel Bakış';
@@ -1762,57 +1755,57 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String performedBy(Object user) {
-    return 'Performed by: $user';
+    return 'Gerçekleştiren: $user';
   }
 
   @override
   String get permissionDenied =>
-      'Thunder\'ın bildirimleri gösterme izni verilmedi. Lütfen sistem ayarlarında etkinleştirin.';
+      'Thunder\'a bildirimleri görüntüleme izni verilmedi. Lütfen sistem ayarlarında etkinleştirin.';
 
   @override
   String get permissionDeniedMessage =>
-      'Bu resmi kaydetmek için Thunder\'ın bazı izinlere ihtiyacı vardır ve bu izinler reddedilmiştir.';
+      'Thunder, bu resmi kaydetmek için reddedilen bazı izinlere ihtiyaç duyar.';
 
   @override
-  String get pinPostToCommunity => 'Pin Post to Community';
+  String get pinPostToCommunity => 'Gönderiyi Topluluğa Sabitle';
 
   @override
   String get pinToCommunity => 'Topluluğa Sabitle';
 
   @override
-  String get pinned => 'Pinned';
+  String get pinned => 'Sabitlenmiş';
 
   @override
   String get placeholderText =>
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. En azından küçük bir özür dilemek için, kimse işçilik hakkında egzersiz yapmamı istemiyor, ancak bu rahatlıkla sonuçlanabilir. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, suçlu olanlar işleri terk eden mollit anim id est laborum.';
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
   @override
-  String get post => 'Post';
+  String get post => 'Gönderi';
 
   @override
-  String get postActions => 'Post Actions';
+  String get postActions => 'Gönderi Eylemleri';
 
   @override
   String get postBehaviourSettings => 'Gönderiler';
 
   @override
-  String get postBody => 'Gönderi İçeriği';
+  String get postBody => 'Gönderi Metni';
 
   @override
-  String get postBodySettings => 'Gönderi Gövde Ayarları';
+  String get postBodySettings => 'Gönderi Metni Ayarları';
 
   @override
   String get postBodySettingsDescription =>
-      'Bu ayarlar, gönderi gövdesinin görüntülenmesini etkiler.';
+      'Bu ayarlar gönderi metninin görüntülenmesini etkiler';
 
   @override
-  String get postBodyShowCommunityInstance => 'Topluluk Örneğini Göster';
+  String get postBodyShowCommunityInstance => 'Topluluk Sunucusunu Göster';
 
   @override
-  String get postBodyShowUserInstance => 'Kullanıcı Örneğini Göster';
+  String get postBodyShowUserInstance => 'Kullanıcı Sunucusunu Göster';
 
   @override
-  String get postBodyViewType => 'Gönderi Gövde Görünüm Tipi';
+  String get postBodyViewType => 'Gönderi Metni Görünüm Türü';
 
   @override
   String get postContentFontScale => 'Gönderi İçeriği Yazı Tipi Ölçeği';
@@ -1821,39 +1814,40 @@ class AppLocalizationsTr extends AppLocalizations {
   String get postCreatedSuccessfully => 'Gönderi başarıyla oluşturuldu!';
 
   @override
-  String get postLocked => 'Gönderi kilitlendi. Cevap vermek yasaktır.';
+  String get postLocked => 'Gönderi kilitli. Yanıtlara izin verilmiyor.';
 
   @override
   String get postMetadataInstructions =>
-      'İstenilen bilgileri sürükleyip bırakarak metaveri bilgilerini özelleştirebilirsiniz.';
+      'Meta veri bilgilerini istenen bilgileri sürükleyip bırakarak özelleştirebilirsiniz';
 
   @override
   String get postNSFW => 'NSFW olarak işaretle';
 
   @override
-  String get postPreview => 'Verilen ayarlarla bir gönderi önizlemesi gösterin';
+  String get postPreview =>
+      'Verilen ayarlarla gönderinin bir önizlemesini göster';
 
   @override
-  String get postSavedAsDraft => 'Taslak olarak kaydedildi';
+  String get postSavedAsDraft => 'Gönderi taslak olarak kaydedildi';
 
   @override
-  String get postShowUserInstance => 'Kullanıcı Örneğini Göster';
+  String get postShowUserInstance => 'Kullanıcı Sunucusunu Göster';
 
   @override
-  String get postSwipeActions => 'Kaydırma Sonrası Eylemler';
+  String get postSwipeActions => 'Gönderi Kaydırma Eylemleri';
 
   @override
   String get postSwipeGesturesHint =>
-      'Düğmeleri kullanmayı mı düşünüyorsunuz? Genel ayarlarda posta kartlarındaki düğmelerin ne olduğunu değiştirin.';
+      'Bunun yerine düğmeleri mi kullanmak istiyorsunuz? Genel ayarlarda gönderi kartlarında hangi düğmelerin görüneceğini değiştirin.';
 
   @override
   String get postTitle => 'Başlık';
 
   @override
-  String get postTitleFontScale => 'Yazı Başlığı Font Ölçeği';
+  String get postTitleFontScale => 'Gönderi Başlığı Yazı Tipi Ölçeği';
 
   @override
-  String get postTogglePreview => 'Önizleme Geçişi';
+  String get postTogglePreview => 'Önizlemeyi Aç/Kapat';
 
   @override
   String get postURL => 'URL';
@@ -1862,7 +1856,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get postUploadImageError => 'Resim yüklenemedi';
 
   @override
-  String get postViewType => 'Gönderi Görünüm Tipi';
+  String get postViewType => 'Gönderi Görünüm Türü';
 
   @override
   String get posts => 'Gönderiler';
@@ -1882,13 +1876,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get profiles => 'Profiller';
 
   @override
-  String get public => 'Kamu';
+  String get public => 'Herkese Açık';
 
   @override
   String get pureBlack => 'Saf Siyah';
 
   @override
-  String get purgedComment => 'Silinmiş Yorum';
+  String get purgedComment => 'Temizlenmiş Yorum';
 
   @override
   String get purgedCommunity => 'Temizlenmiş Topluluk';
@@ -1897,40 +1891,40 @@ class AppLocalizationsTr extends AppLocalizations {
   String get purgedPerson => 'Temizlenmiş Kişi';
 
   @override
-  String get purgedPost => 'Silinmiş Gönderi';
+  String get purgedPost => 'Temizlenmiş Gönderi';
 
   @override
   String get purple => 'Mor';
 
   @override
-  String get pushNotification => 'Bildirimler';
+  String get pushNotification => 'Anlık Bildirimler';
 
   @override
   String get pushNotificationDescription =>
-      'Etkinleştirilirse, Thunder JWT belirteç(ler)inizi sunucuya göndererek yeni bildirimler için anket yapar. \n\n **NOT:** Bu, uygulama bir sonraki sefer başlatıldığında etkili olacaktır.';
+      'Etkinleştirilirse, Thunder yeni bildirimleri yoklamak için JWT jeton(lar)ınızı sunucuya gönderir. \n\n **NOT:** Bu, uygulama bir sonraki başlatılana kadar etkili olmayacaktır.';
 
   @override
-  String get pushNotificationServer => 'Bildirim Sunucusu';
+  String get pushNotificationServer => 'Anlık Bildirim Sunucusu';
 
   @override
   String get pushNotificationServerDescription =>
-      'Push bildirim sunucusunu yapılandırın. Sunucu, cihazınıza push bildirimleri göndermek için doğru şekilde yapılandırılmalıdır.\n\n **Yalnızca kimlik bilgilerinize güvendiğiniz bir sunucuya girin.**';
+      'Anlık bildirim sunucusunu yapılandırın. Sunucunun cihazınıza anlık bildirim göndermek için doğru şekilde yapılandırılması gerekir.\n\n **Yalnızca kimlik bilgilerinizle güvendiğiniz bir sunucu girin.**';
 
   @override
   String get rateLimitErrorMessage =>
-      'You have hit the rate limit for this request. Please wait and try again later.';
+      'Bu istek için sınıra ulaştınız. Lütfen bekleyip daha sonra tekrar deneyin.';
 
   @override
-  String get reachedTheBottom => 'Hmm. Görünüşe göre dibe ulaştınız.';
+  String get reachedTheBottom => 'Yüklenecek başka öğe yok';
 
   @override
-  String get read => 'Read';
+  String get read => 'Okundu';
 
   @override
-  String get readAll => 'Hepsini Oku';
+  String get readAll => 'Tümünü Oku';
 
   @override
-  String get readerMode => 'Reader mode';
+  String get readerMode => 'Okuyucu modu';
 
   @override
   String get reason => 'Sebep';
@@ -1961,16 +1955,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removeAccount => 'Hesabı Kaldır';
 
   @override
-  String get removeAsCommunityModerator => 'Remove as Community Moderator';
+  String get removeAsCommunityModerator => 'Topluluk Moderatörlüğünden Kaldır';
 
   @override
-  String get removeComment => 'Remove Comment';
+  String get removeComment => 'Yorumu Kaldır';
 
   @override
-  String get removeFromFavorites => 'Favorilerden çıkar';
+  String get removeFromFavorites => 'Favorilerden kaldır';
 
   @override
-  String get removeInstance => 'Örneği kaldır';
+  String get removeInstance => 'Sunucuyu kaldır';
 
   @override
   String removeKeyword(Object keyword) {
@@ -1984,55 +1978,54 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removePost => 'Gönderiyi Kaldır';
 
   @override
-  String get removed => 'Removed';
+  String get removed => 'Kaldırıldı';
 
   @override
   String get removedComment => 'Kaldırılmış Yorum';
 
   @override
-  String get removedCommunity => 'Kaldırılan Topluluk';
+  String get removedCommunity => 'Kaldırılmış Topluluk';
 
   @override
   String get removedCommunityFromSubscriptions =>
-      'Topluluktan abonelik iptal edildi.';
+      'Topluluk aboneliğinden çıkıldı';
 
   @override
-  String get removedInstanceMod => 'Kaldırılan Örnek Mod';
+  String get removedInstanceMod => 'Sunucu Modu Kaldırıldı';
 
   @override
   String get removedModFromCommunity => 'Topluluktan Mod Kaldırıldı';
 
   @override
-  String get removedPost => 'Kaldırılan Gönderi';
+  String get removedPost => 'Kaldırılmış Gönderi';
 
   @override
-  String get reorder => 'Reorder';
+  String get reorder => 'Yeniden Sırala';
 
   @override
   String reply(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Yanıtlar',
-      one: 'Yanıt',
-      zero: 'Yanıt',
+      other: 'Yanıtla',
+      one: 'Yanıtla',
     );
     return '$_temp0';
   }
 
   @override
-  String get replyColor => 'Cevap Renk';
+  String get replyColor => 'Yanıt Rengi';
 
   @override
   String get replyNotSupported =>
-      'Bu görünümden yanıt verme şu anda henüz desteklenmiyor.';
+      'Bu görünümden yanıtlamak şu anda desteklenmiyor';
 
   @override
-  String get replyToPost => 'Posta Yanıtla';
+  String get replyToPost => 'Gönderiye Yanıtla';
 
   @override
   String replyingTo(Object author) {
-    return '$author adlı kişiye yanıt veriyor.';
+    return '$author kullanıcısına yanıt veriliyor';
   }
 
   @override
@@ -2040,24 +2033,23 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Raporlar',
-      one: 'Rapor',
-      zero: 'Rapor',
+      other: 'Şikayet',
+      one: 'Şikayet',
     );
-    return '$_temp0 ';
+    return '$_temp0';
   }
 
   @override
-  String get reportComment => 'Yorumu Bildir';
+  String get reportComment => 'Yorumu Şikayet Et';
 
   @override
-  String get reportPost => 'Report Post';
+  String get reportPost => 'Gönderiyi Şikayet Et';
 
   @override
-  String get reporter => 'Reporter:';
+  String get reporter => 'Şikayet Eden:';
 
   @override
-  String get requiredField => '*required';
+  String get requiredField => '*zorunlu';
 
   @override
   String get reset => 'Sıfırla';
@@ -2075,43 +2067,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get resetPreferencesAndData => 'Tercihleri ve Verileri Sıfırla';
 
   @override
-  String get restore => 'Geri yükle';
+  String get restore => 'Geri Yükle';
 
   @override
-  String get restoreComment => 'Restore Comment';
+  String get restoreComment => 'Yorumu Geri Yükle';
 
   @override
   String get restorePost => 'Gönderiyi Geri Yükle';
 
   @override
-  String get restoredComment => 'Yeniden Yorumlanan Yorum';
+  String get restoredComment => 'Geri Yüklenmiş Yorum';
 
   @override
-  String get restoredCommentFromDraft => 'Taslaktan geri yüklenen yorum';
+  String get restoredCommentFromDraft => 'Taslaktan yorum geri yüklendi';
 
   @override
-  String get restoredCommunity => 'Onarılmış Topluluk';
+  String get restoredCommunity => 'Geri Yüklenmiş Topluluk';
 
   @override
-  String get restoredPost => 'Onarılmış Gönderi';
+  String get restoredPost => 'Geri Yüklenmiş Gönderi';
 
   @override
-  String get restoredPostFromDraft => 'Taslaktan geri yüklenen gönderi';
+  String get restoredPostFromDraft => 'Taslaktan gönderi geri yüklendi';
 
   @override
-  String get retry => 'Tekrar dene';
+  String get retry => 'Yeniden Dene';
 
   @override
-  String get rightLongSwipe => 'Sağ Uzun Kaydırma';
+  String get rightLongSwipe => 'Sağa Uzun Kaydırma';
 
   @override
-  String get rightShortSwipe => 'Sağ Kısa Sürükleme';
+  String get rightShortSwipe => 'Sağa Kısa Kaydırma';
 
   @override
   String get save => 'Kaydet';
 
   @override
-  String get saveColor => 'Renk Kaydet';
+  String get saveColor => 'Kaydetme Rengi';
 
   @override
   String get saveSettings => 'Ayarları Kaydet';
@@ -2120,56 +2112,56 @@ class AppLocalizationsTr extends AppLocalizations {
   String get saved => 'Kaydedildi';
 
   @override
-  String get scaled => 'Ölçeklendirilmiş';
+  String get scaled => 'Ölçeklendi';
 
   @override
-  String get scrapeMissingLinkPreviews => 'Eksik Link Önizlemelerini Kazı';
+  String get scrapeMissingLinkPreviews => 'Eksik Bağlantı Önizlemelerini Tara';
 
   @override
   String get screenReaderProfile => 'Ekran Okuyucu Profili';
 
   @override
   String get screenReaderProfileDescription =>
-      'Ekran okuyucuları için Thunder\'ı optimize eder, genel öğeleri azaltır ve potansiyel olarak çelişkili hareketleri kaldırır.';
+      'Genel öğeleri azaltarak ve potansiyel olarak çakışan hareketleri kaldırarak Thunder\'ı ekran okuyucular için optimize eder.';
 
   @override
   String get search => 'Ara';
 
   @override
-  String get searchByText => 'Metinle ara';
+  String get searchByText => 'Metne göre ara';
 
   @override
-  String get searchByUrl => 'URL ile ara';
+  String get searchByUrl => 'URL\'ye göre ara';
 
   @override
-  String get searchComments => 'Yorumları Ara';
+  String get searchComments => 'Yorumlarda Ara';
 
   @override
   String searchCommentsFederatedWith(Object instance) {
-    return '$instance ile federasyon yapılan yorumları ara';
+    return '$instance ile federasyonlu yorumları ara';
   }
 
   @override
   String searchCommunitiesFederatedWith(Object instance) {
-    return '$instance ile federasyon kurmuş toplulukları ara';
+    return '$instance ile federasyonlu toplulukları ara';
   }
 
   @override
   String searchInstance(Object instance) {
-    return '$instance ara';
+    return '$instance Ara';
   }
 
   @override
   String searchInstancesFederatedWith(Object instance) {
-    return '$instance ile federasyon kurulan örnekleri arayın.';
+    return '$instance ile federasyonlu sunucuları ara';
   }
 
   @override
-  String get searchPostSearchType => 'Gönderi Arama Türünü Seçin';
+  String get searchPostSearchType => 'Gönderi Arama Türünü Seç';
 
   @override
   String searchPostsFederatedWith(Object instance) {
-    return '$instance ile federasyon kurulan gönderileri ara';
+    return '$instance ile federasyonlu gönderileri ara';
   }
 
   @override
@@ -2177,51 +2169,51 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String searchUsersFederatedWith(Object instance) {
-    return '$instance ile federasyon kurmuş kullanıcıları ara';
+    return '$instance ile federasyonlu kullanıcıları ara';
   }
 
   @override
-  String get selectAccountToCommentAs => 'Yorum yapmak için hesap seçin';
+  String get selectAccountToCommentAs => 'Yorum yapılacak hesabı seç';
 
   @override
-  String get selectAccountToPostAs => 'Yayın yapılacak hesabı seçin';
+  String get selectAccountToPostAs => 'Gönderi yapılacak hesabı seç';
 
   @override
   String get selectAll => 'Tümünü seç';
 
   @override
-  String get selectCommunity => 'Bir topluluk seçin';
+  String get selectCommunity => 'Bir topluluk seçin (gerekli)';
 
   @override
-  String get selectFeedType => 'Besleme Türünü Seçin';
+  String get selectFeedType => 'Akış Türünü Seç';
 
   @override
-  String get selectLanguage => 'Dil Seçin';
+  String get selectLanguage => 'Dil Seç';
 
   @override
-  String get selectSearchType => 'Arama Türü Seçin';
+  String get selectSearchType => 'Arama Türünü Seç';
 
   @override
-  String get selectText => 'Metni Seçin';
+  String get selectText => 'Metni Seç';
 
   @override
   String get sendBackgroundTestLocalNotification =>
-      'Arka plan testi yerel bildirimini gönder';
+      'Arka planda test yerel bildirimi gönder';
 
   @override
   String get sendBackgroundTestUnifiedPushNotification =>
-      'Arka plan testi UnifiedPush bildirimi gönder';
+      'Arka planda test UnifiedPush bildirimi gönder';
 
   @override
-  String get sendTestLocalNotification => 'Yerel bildirim testi gönder';
+  String get sendTestLocalNotification => 'Test yerel bildirimi gönder';
 
   @override
   String get sendTestUnifiedPushNotification =>
-      'Test UnifiedPush bildirimi gönderin';
+      'Test UnifiedPush bildirimi gönder';
 
   @override
   String get sensitiveContentWarning =>
-      'Hassas içerik içerebilir. Açmak için dokunun.';
+      'Hassas içerik içerebilir. Görmek için dokunun.';
 
   @override
   String get sentRequestForTestNotification =>
@@ -2243,11 +2235,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingOverrideLabel =>
-      'Bu ayarlar, Thunder\'ın varsayılan ayarlarını geçersiz kılar.';
+      'Bu ayarlar Thunder\'ın varsayılan ayarlarını geçersiz kılar.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
-    return '$settingType türü ayarlar henüz desteklenmiyor.';
+    return '$settingType türündeki ayarlar henüz desteklenmiyor.';
   }
 
   @override
@@ -2255,74 +2247,74 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String settingsExportedSuccessfully(Object savedFilePath) {
-    return 'Ayarlar başarıyla \'\'$savedFilePath\' konumuna kaydedildi.';
+    return 'Ayarlar başarıyla \'$savedFilePath\' konumuna kaydedildi';
   }
 
   @override
   String get settingsFeedCards =>
-      'Bu ayarlar ana beslemekteki kartlara uygulanır, gönderileri gerçekten açtığınızda eylemler her zaman kullanılabilir.';
+      'Bu ayarlar ana akıştaki kartlara uygulanır, gönderileri açtığınızda eylemler her zaman kullanılabilir.';
 
   @override
   String get settingsImportedSuccessfully => 'Ayarlar başarıyla içe aktarıldı!';
 
   @override
   String get settingsNotExportedSuccessfully =>
-      'Ayarlar başarıyla kaydedilmedi veya işlem iptal edildi.';
+      'Ayarlar başarıyla kaydedilemedi veya işlem iptal edildi.';
 
   @override
   String get settingsNotImportedSuccessfully =>
-      'Ayarlar başarıyla içe aktarılmadı veya işlem iptal edildi.';
+      'Ayarlar başarıyla içe aktarılamadı veya işlem iptal edildi.';
 
   @override
-  String get settingsPage => 'Settings Page';
+  String get settingsPage => 'Ayarlar Sayfası';
 
   @override
-  String get settingsPageAbout => 'About';
+  String get settingsPageAbout => 'Hakkında';
 
   @override
-  String get settingsPageAccessibility => 'Accessibility';
+  String get settingsPageAccessibility => 'Erişilebilirlik';
 
   @override
-  String get settingsPageAccount => 'Account';
+  String get settingsPageAccount => 'Hesap';
 
   @override
-  String get settingsPageAccountBlocks => 'Blocklists';
+  String get settingsPageAccountBlocks => 'Engelleme Listeleri';
 
   @override
-  String get settingsPageAccountLanguages => 'Discussion Languages';
+  String get settingsPageAccountLanguages => 'Tartışma Dilleri';
 
   @override
-  String get settingsPageAccountMedia => 'Manage Media';
+  String get settingsPageAccountMedia => 'Medyayı Yönet';
 
   @override
-  String get settingsPageAppearance => 'Appearance';
+  String get settingsPageAppearance => 'Görünüm';
 
   @override
-  String get settingsPageAppearanceComments => 'Comments';
+  String get settingsPageAppearanceComments => 'Yorumlar';
 
   @override
-  String get settingsPageAppearancePosts => 'Posts';
+  String get settingsPageAppearancePosts => 'Gönderiler';
 
   @override
-  String get settingsPageAppearanceTheming => 'Theming';
+  String get settingsPageAppearanceTheming => 'Temalandırma';
 
   @override
-  String get settingsPageDebug => 'Debug';
+  String get settingsPageDebug => 'Hata Ayıklama';
 
   @override
-  String get settingsPageFilters => 'Filters';
+  String get settingsPageFilters => 'Filtreler';
 
   @override
-  String get settingsPageFloatingActionButton => 'Floating Action Button';
+  String get settingsPageFloatingActionButton => 'Kayan Eylem Düğmesi';
 
   @override
-  String get settingsPageGeneral => 'General';
+  String get settingsPageGeneral => 'Genel';
 
   @override
-  String get settingsPageGestures => 'Gestures';
+  String get settingsPageGestures => 'Hareketler';
 
   @override
-  String get settingsPageUserLabels => 'User Labels';
+  String get settingsPageUserLabels => 'Kullanıcı Etiketleri';
 
   @override
   String get settingsPageVideo => 'Video';
@@ -2331,10 +2323,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get share => 'Paylaş';
 
   @override
-  String get shareComment => 'Yorumu Paylaş Linki';
+  String get shareComment => 'Yorum Bağlantısını Paylaş';
 
   @override
-  String get shareCommentLocal => 'Yorum Paylaş Linki (Benim Örneğim)';
+  String get shareCommentLocal => 'Yorum Bağlantısını Paylaş (Benim Sunucum)';
 
   @override
   String get shareCommunity => 'Topluluğu Paylaş';
@@ -2344,19 +2336,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get shareCommunityLinkLocal =>
-      'Topluluk Bağlantısını Paylaş (Benim Örneğim)';
+      'Topluluk Bağlantısını Paylaş (Benim Sunucum)';
 
   @override
-  String get shareImage => 'Resim Paylaş';
+  String get shareImage => 'Resmi Paylaş';
 
   @override
-  String get shareLemmyLink => 'Lemmy Linkini Paylaş';
+  String get shareLemmyLink => 'Lemmy Bağlantısını Paylaş';
 
   @override
-  String get shareLink => 'Dış Bağlantıyı Paylaş';
+  String get shareLink => 'Harici Bağlantıyı Paylaş';
 
   @override
-  String get shareMedia => 'Medya Paylaş';
+  String get shareMedia => 'Medyayı Paylaş';
 
   @override
   String get shareMediaLink => 'Medya Bağlantısını Paylaş';
@@ -2368,13 +2360,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sharePost => 'Gönderi Bağlantısını Paylaş';
 
   @override
-  String get sharePostLocal => 'Gönderi Bağlantısını Paylaş (Benim Örneğim)';
+  String get sharePostLocal => 'Gönderi Bağlantısını Paylaş (Benim Sunucum)';
 
   @override
-  String get shareThumbnail => 'Önizleme Paylaş';
+  String get shareThumbnail => 'Küçük Resmi Paylaş';
 
   @override
-  String get shareThumbnailAsImage => 'Önizlemeyi Resim Olarak Paylaş';
+  String get shareThumbnailAsImage => 'Küçük Resmi Resim Olarak Paylaş';
 
   @override
   String get shareUser => 'Kullanıcıyı Paylaş';
@@ -2384,28 +2376,28 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get shareUserLinkLocal =>
-      'Kullanıcı Bağlantısını Paylaş (Benim Örneğim)';
+      'Kullanıcı Bağlantısını Paylaş (Benim Sunucum)';
 
   @override
-  String get showAll => 'Hepsini Göster';
+  String get showAll => 'Tümünü göster';
 
   @override
-  String get showBotAccounts => 'Bot Hesapları Göster';
+  String get showBotAccounts => 'Bot Hesaplarını Göster';
 
   @override
   String get showCommentActionButtons => 'Yorum Eylem Düğmelerini Göster';
 
   @override
-  String get showCommunityDisplayNames => 'Topluluk Görünen İsimlerini Göster';
+  String get showCommunityDisplayNames => 'Topluluk Görünen Adlarını Göster';
 
   @override
   String get showCrossPosts => 'Çapraz Gönderileri Göster';
 
   @override
-  String get showEdgeToEdgeImages => 'Kenarından Kenarına Görseller Göster';
+  String get showEdgeToEdgeImages => 'Kenardan Kenara Resimleri Göster';
 
   @override
-  String get showExpandedTaglines => 'Show expanded taglines';
+  String get showExpandedTaglines => 'Genişletilmiş sloganları göster';
 
   @override
   String get showFullDate => 'Tam Tarihi Göster';
@@ -2414,14 +2406,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showFullDateDescription => 'Gönderilerde tam tarihi göster';
 
   @override
-  String get showFullHeightImages => 'Tam Yükseklikte Görüntüleri Göster';
+  String get showFullHeightImages => 'Tam Yükseklikte Resimleri Göster';
 
   @override
-  String get showHiddenPosts => 'Show Hidden Posts';
+  String get showHiddenPosts => 'Gizli Gönderileri Göster';
 
   @override
   String get showInAppUpdateNotifications =>
-      'Yeni GitHub Sürümlerinden Haberdar Olun';
+      'Yeni GitHub Sürümlerinden Haberdar Ol';
 
   @override
   String get showLess => 'Daha az göster';
@@ -2430,17 +2422,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showMore => 'Daha fazla göster';
 
   @override
-  String get showNavigationLabels => 'Navigasyon Etiketlerini Göster';
+  String get showNavigationLabels => 'Gezinme Etiketlerini Göster';
 
   @override
   String get showNavigationLabelsDescription =>
-      'Alt navigasyon düğmelerinin altında etiketlerin görüntülenip görüntülenmeyeceği';
+      'Alt gezinme düğmelerinin altında etiketlerin gösterilip gösterilmeyeceği';
 
   @override
   String get showNsfwContent => 'NSFW İçeriği Göster';
 
   @override
-  String get showOwnContent => 'Show own content';
+  String get showOwnContent => 'Kendi içeriğini göster';
 
   @override
   String get showPassword => 'Şifreyi Göster';
@@ -2450,43 +2442,43 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get showPostAuthorSubtitle =>
-      'Yazı yazarı her zaman topluluk beslemelerinde gösterilir.';
+      'Gönderi yazarı topluluk akışlarında her zaman gösterilir';
 
   @override
   String get showPostCommunityIcons => 'Topluluk Simgelerini Göster';
 
   @override
-  String get showPostSaveAction => 'Kaydet Butonunu Göster';
+  String get showPostSaveAction => 'Kaydet Düğmesini Göster';
 
   @override
   String get showPostTextContentPreview => 'Metin Önizlemesini Göster';
 
   @override
-  String get showPostTitleFirst => 'İlk Önce Gösteri Başlığını';
+  String get showPostTitleFirst => 'Önce Başlığı Göster';
 
   @override
-  String get showPostVoteActions => 'Oy Verme Düğmelerini Göster';
+  String get showPostVoteActions => 'Oy Düğmelerini Göster';
 
   @override
-  String get showReadPosts => 'Okunan Gönderileri Göster';
+  String get showReadPosts => 'Okunmuş Gönderileri Göster';
 
   @override
-  String get showSavedContent => 'Show saved content';
+  String get showSavedContent => 'Kaydedilen içeriği göster';
 
   @override
-  String get showScoreCounters => 'Kullanıcı Skorlarını Göster';
+  String get showScoreCounters => 'Kullanıcı Puanlarını Görüntüle';
 
   @override
   String get showScores => 'Gönderi/Yorum Puanlarını Göster';
 
   @override
-  String get showTextPostIndicator => 'Metin Gönderi Göstergesini Göster';
+  String get showTextPostIndicator => 'Metin Gönderisi Göstergesini Göster';
 
   @override
-  String get showThumbnailPreviewOnRight => 'Sağda Küçük Resimleri Göster';
+  String get showThumbnailPreviewOnRight => 'Küçük Resimleri Sağda Göster';
 
   @override
-  String get showUnreadOnly => 'Show unread only';
+  String get showUnreadOnly => 'Yalnızca okunmamışları göster';
 
   @override
   String get showUpdateChangelogs =>
@@ -2494,39 +2486,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get showUpdateChangelogsSubtitle =>
-      'Bir güncellemeden sonra değişikliklerin bir listesini gösterin';
+      'Bir güncellemeden sonra değişikliklerin bir listesini görüntüle';
 
   @override
   String get showUserAvatar => 'Kullanıcı Avatarını Göster';
 
   @override
-  String get showUserDisplayNames => 'Kullanıcı Görünen İsimlerini Göster';
+  String get showUserDisplayNames => 'Kullanıcı Görünen Adlarını Göster';
 
   @override
-  String get showUserInstance => 'Kullanıcı Örneğini Göster';
+  String get showUserInstance => 'Kullanıcı Sunucusunu Göster';
 
   @override
-  String get sidebar => 'Kenar çubuğu';
+  String get sidebar => 'Kenar Çubuğu';
 
   @override
   String get sidebarBottomNavDoubleTapDescription =>
-      'Alt menüyü çift tıklayarak yan menüyü açın';
+      'Kenar çubuğunu açmak için alt gezinme çubuğuna çift dokunun';
 
   @override
   String get sidebarBottomNavSwipeDescription =>
-      'Alt navigasyonu kaydırarak yan menüyü açın';
+      'Kenar çubuğunu açmak için alt gezinme çubuğunu kaydırın';
 
   @override
   String get small => 'Küçük';
 
   @override
-  String get somethingWentWrong => 'Hata oluştu, bir şeyler yanlış gitti!';
+  String get somethingWentWrong => 'Bir şeyler ters gitti!';
 
   @override
-  String get sortBy => 'Sırala Göre';
+  String get sortBy => 'Sırala';
 
   @override
-  String get sortByTop => 'En Üste Göre Sırala';
+  String get sortByTop => 'En İyilere Göre Sırala';
 
   @override
   String get sortOptions => 'Sıralama Seçenekleri';
@@ -2547,23 +2539,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get submit => 'Gönder';
 
   @override
-  String get subscribe => 'Abone ol';
+  String get subscribe => 'Abone Ol';
 
   @override
   String get subscribeToCommunity => 'Topluluğa Abone Ol';
 
   @override
-  String get subscribed => 'Abone olundu';
+  String get subscribed => 'Abone Olundu';
 
   @override
-  String get subscriptionRequestSent => 'Subscription request sent';
+  String get subscriptionRequestSent => 'Abonelik isteği gönderildi';
 
   @override
   String get subscriptions => 'Abonelikler';
 
   @override
   String successfullyBannedUser(Object username) {
-    return 'Banned $username';
+    return '$username yasaklandı';
   }
 
   @override
@@ -2581,83 +2573,83 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String successfullyUnbannedUser(Object username) {
-    return 'Unbanned $username';
+    return '$username kullanıcısının yasağı kaldırıldı';
   }
 
   @override
-  String get successfullyUnblocked => 'Engellenmemiş.';
+  String get successfullyUnblocked => 'Engelleme kaldırıldı.';
 
   @override
   String successfullyUnblockedCommunity(Object communityName) {
-    return 'Engellenmemiş $communityName';
+    return '$communityName topluluğunun engeli kaldırıldı';
   }
 
   @override
   String successfullyUnblockedUser(Object username) {
-    return '$username engellemesini kaldırdı.';
+    return '$username kullanıcısının engeli kaldırıldı';
   }
 
   @override
-  String get suchAs => 'gibi';
+  String get suchAs => 'örneğin';
 
   @override
   String get suggestedTitle => 'Önerilen başlık';
 
   @override
   String switchedAccount(Object username) {
-    return 'Switched to $username';
+    return '$username hesabına geçildi';
   }
 
   @override
   String get system => 'Sistem';
 
   @override
-  String get systemDarkMode => 'Pure Black';
+  String get systemDarkMode => 'Saf Siyah';
 
   @override
   String get systemDarkModeDescription =>
-      'Enable pure black theme for dark mode';
+      'Karanlık mod için saf siyah temayı etkinleştir';
 
   @override
-  String get tabletMode => 'Tablet Modu (2-sütun görünümü)';
+  String get tabletMode => 'Tablet Modu (2 sütunlu görünüm)';
 
   @override
-  String get tapToExit => 'Tekrar geri basın çıkmak için';
+  String get tapToExit => 'Çıkmak için tekrar geri tuşuna basın';
 
   @override
-  String get tappableAuthorCommunity => 'Dokunulabilir Yazarlar & Topluluklar';
+  String get tappableAuthorCommunity => 'Dokunulabilir Yazarlar ve Topluluklar';
 
   @override
-  String get teal => 'Cam göbeği';
+  String get teal => 'Camgöbeği';
 
   @override
   String get testBackgroundNotificationDescription =>
-      'Gök gürültüsü kendini kapatacak ve ardından arka planda bir bildirim oluşturmaya çalışacak. (Birkaç dakika sürebilir.)';
+      'Thunder kendini kapatacak ve ardından arka planda bir bildirim oluşturmaya çalışacaktır. (En az 15 dakika sürecektir.)';
 
   @override
   String get testBackgroundUnifiedPushNotificationDescription =>
-      'Gök gürültüsü, bildirim sunucusundan gecikmeli bir bildirim göndermesini isteyecek ve sonra kendini kapatacaktır. (Birkaç dakika sürebilir.)';
+      'Thunder, bildirim sunucusundan gecikmeli bir bildirim göndermesini isteyecek ve ardından kendini kapatacaktır. (Birkaç dakika sürebilir.)';
 
   @override
   String get text => 'Metin';
 
   @override
-  String get textActions => 'Metin İşlemleri';
+  String get textActions => 'Metin Eylemleri';
 
   @override
   String get theme => 'Tema';
 
   @override
-  String get themeAccentColor => 'Aksan Renkleri';
+  String get themeAccentColor => 'Vurgu Renkleri';
 
   @override
-  String get themePrimary => 'Birincil Tema';
+  String get themePrimary => 'Birincil Tema Rengi';
 
   @override
-  String get themeSecondary => 'İkincil Tema';
+  String get themeSecondary => 'İkincil Tema Rengi';
 
   @override
-  String get themeTertiary => 'Üçüncül Tema';
+  String get themeTertiary => 'Üçüncül Tema Rengi';
 
   @override
   String get theming => 'Temalandırma';
@@ -2669,64 +2661,64 @@ class AppLocalizationsTr extends AppLocalizations {
   String get thisAccount => 'Bu Hesap';
 
   @override
-  String get thumbnailUrl => 'Thumbnail URL';
+  String get thumbnailUrl => 'Küçük Resim URL\'si';
 
   @override
   String thunderHasBeenUpdated(Object version) {
-    return 'Gök gürültüsü $version sürümüne güncellendi!';
+    return 'Thunder $version sürümüne güncellendi!';
   }
 
   @override
   String thunderNotificationServer(Object server) {
-    return 'Gök Gürültüsü Bildirim Sunucusu: $server';
+    return 'Thunder Bildirim Sunucusu: $server';
   }
 
   @override
   String get timeoutComments =>
-      'Hata: Yorumları almak için yapılan denemede zaman aşımı oldu.';
+      'Hata: Yorumları getirmeye çalışırken zaman aşımı';
 
   @override
-  String get timeoutErrorMessage => 'Bir yanıt beklerken zaman aşımına uğradı.';
+  String get timeoutErrorMessage => 'Bir yanıt beklerken zaman aşımı oldu.';
 
   @override
   String get timeoutSaveComment =>
-      'Hata: Bir yorumu kaydetmeye çalışırken zaman aşımı oldu.';
+      'Hata: Bir yorumu kaydetmeye çalışırken zaman aşımı';
 
   @override
   String get timeoutSavingPost =>
-      'Hata: Gönderi kaydedilmeye çalışılırken zaman aşımı oldu.';
+      'Hata: Gönderiyi kaydetmeye çalışırken zaman aşımı.';
 
   @override
   String get timeoutUpvoteComment =>
-      'Hata: Yorumda oy kullanmaya çalışırken zaman aşımı oldu.';
+      'Hata: Yoruma oy vermeye çalışırken zaman aşımı';
 
   @override
   String get timeoutVotingPost =>
-      'Hata: Gönderiye oy verme girişiminde zaman aşımı.';
+      'Hata: Gönderiye oy vermeye çalışırken zaman aşımı.';
 
   @override
-  String get toggelRead => 'Okuma Modunu Değiştir';
+  String get toggelRead => 'Okundu/Okunmadı Yap';
 
   @override
-  String get top => 'Üst';
+  String get top => 'En İyiler';
 
   @override
-  String get topAll => 'Tüm zamanların en iyisi';
+  String get topAll => 'Tüm Zamanların En İyileri';
 
   @override
   String get topDay => 'Bugünün En İyileri';
 
   @override
-  String get topHour => 'Son Saatteki En Üstteki';
+  String get topHour => 'Son Saatin En İyileri';
 
   @override
-  String get topMonth => 'En İyi Ay';
+  String get topMonth => 'Ayın En İyileri';
 
   @override
   String get topNineMonths => 'Son 9 Ayın En İyileri';
 
   @override
-  String get topSixHour => 'Son 6 Saatte En Üstte';
+  String get topSixHour => 'Son 6 Saatin En İyileri';
 
   @override
   String get topSixMonths => 'Son 6 Ayın En İyileri';
@@ -2735,54 +2727,54 @@ class AppLocalizationsTr extends AppLocalizations {
   String get topThreeMonths => 'Son 3 Ayın En İyileri';
 
   @override
-  String get topTwelveHour => 'Son 12 Saatte En Çok İzlenenler';
+  String get topTwelveHour => 'Son 12 Saatin En İyileri';
 
   @override
-  String get topWeek => 'Haftanın Zirvesi';
+  String get topWeek => 'Haftanın En İyileri';
 
   @override
-  String get topYear => 'En İyi Yıl';
+  String get topYear => 'Yılın En İyileri';
 
   @override
   String totalComments(Object x) {
-    return '$x Comments';
+    return '$x Yorum';
   }
 
   @override
   String totalPosts(Object x) {
-    return '$x Posts';
+    return '$x Gönderi';
   }
 
   @override
   String get totp => 'TOTP (isteğe bağlı)';
 
   @override
-  String get transferredModToCommunity => 'Aktarılan Topluluk';
+  String get transferredModToCommunity => 'Topluluk Aktarıldı';
 
   @override
   String get translationsMayNotBeComplete =>
-      'Lütfen çevirilerin tam olmayabileceğini unutmayın.';
+      'Lütfen çevirilerin tam olmayabileceğini unutmayın';
 
   @override
   String get trendingCommunities => 'Trend Olan Topluluklar';
 
   @override
-  String get trySearchingFor => '... aramayı deneyin.';
+  String get trySearchingFor => 'Şunu aramayı deneyin...';
 
   @override
   String get unableToFindCommunity => 'Topluluk bulunamadı';
 
   @override
   String unableToFindCommunityName(Object communityName) {
-    return '\'$communityName\' adlı topluluk bulunamadı.';
+    return '\'$communityName\' topluluğu bulunamadı';
   }
 
   @override
   String get unableToFindCommunityOnInstance =>
-      'Seçilen kullanıcının örneğinde seçilen topluluk bulunamadı.';
+      'Seçilen topluluk, seçilen kullanıcının sunucusunda bulunamadı.';
 
   @override
-  String get unableToFindInstance => 'Örnek bulunamadı';
+  String get unableToFindInstance => 'Sunucu bulunamadı';
 
   @override
   String get unableToFindLanguage => 'Dil bulunamadı';
@@ -2795,73 +2787,73 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String unableToFindUserName(Object username) {
-    return 'Kullanıcı \'$username\' bulunamadı.';
+    return '\'$username\' kullanıcısı bulunamadı';
   }
 
   @override
-  String get unableToLoadImage => 'Resim yüklenemiyor';
+  String get unableToLoadImage => 'Resim yüklenemedi';
 
   @override
   String unableToLoadImageFrom(Object domain) {
-    return '$domain adresinden resim yüklenemiyor';
+    return '$domain adresinden resim yüklenemedi';
   }
 
   @override
   String unableToLoadInstance(Object instance) {
-    return '$instance yüklenemiyor';
+    return '$instance yüklenemedi';
   }
 
   @override
-  String get unableToLoadPost => 'Unable to load post';
+  String get unableToLoadPost => 'Gönderi yüklenemedi';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
-    return '$Instance \'dan gönderiler yüklenemiyor';
+  String unableToLoadPostsFrominstance(Object instance) {
+    return '$instance adresinden gönderiler yüklenemedi';
   }
 
   @override
-  String get unableToLoadReplies => 'Daha fazla yanıt yüklenemiyor.';
+  String get unableToLoadReplies => 'Daha fazla yanıt yüklenemedi.';
 
   @override
   String unableToNavigateToInstance(Object instanceHost) {
-    return '$instanceHost\'a gidilemiyor. Geçerli bir Lemmy örneği olmayabilir.';
+    return '$instanceHost adresine gidilemiyor. Geçerli bir Lemmy sunucusu olmayabilir.';
   }
 
   @override
-  String get unableToResolveReport => 'Raporu çözme konusunda başarısız oldu';
+  String get unableToResolveReport => 'Şikayet çözümlenemedi';
 
   @override
   String unableToRetrieveChangelog(Object version) {
-    return '$version sürümü için değişiklik günlüğü alınamıyor.';
+    return '$version sürümü için değişiklik günlüğü alınamadı.';
   }
 
   @override
-  String get unbanFromCommunity => 'Unban from Community';
+  String get unbanFromCommunity => 'Topluluktan Yasağı Kaldır';
 
   @override
   String get unbannedUser => 'Yasağı Kaldırılmış Kullanıcı';
 
   @override
   String get unbannedUserFromCommunity =>
-      'Topluluktan Engeli Kaldırılan Kullanıcı';
+      'Kullanıcının Topluluktan Yasağı Kaldırıldı';
 
   @override
-  String get unblock => 'Unblock';
+  String get unblock => 'Engeli Kaldır';
 
   @override
   String get unblockCommunity => 'Topluluğun Engelini Kaldır';
 
   @override
-  String get unblockCommunityInstance => 'Unblock Community Instance';
+  String get unblockCommunityInstance => 'Topluluk Sunucusunun Engelini Kaldır';
 
   @override
-  String get unblockInstance => 'Örneği Engeli Kaldır';
+  String get unblockInstance => 'Sunucunun Engelini Kaldır';
 
   @override
-  String get unblockUser => 'Unblock User';
+  String get unblockUser => 'Kullanıcının Engelini Kaldır';
 
   @override
-  String get unblockUserInstance => 'Unblock User Instance';
+  String get unblockUserInstance => 'Kullanıcı Sunucusunun Engelini Kaldır';
 
   @override
   String get understandEnable => 'Anladım, Etkinleştir';
@@ -2870,16 +2862,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get unexpectedError => 'Beklenmeyen Hata';
 
   @override
-  String get unfavorite => 'Unfavorite';
+  String get unfavorite => 'Favorilerden Çıkar';
 
   @override
-  String get unfeaturedPost => 'Öne Çıkmayan Gönderi';
+  String get unfeaturedPost => 'Öne Çıkarılmamış Gönderi';
 
   @override
-  String get unhidCommunity => 'Unhid Topluluğu';
+  String get unhidCommunity => 'Topluluk Gösterildi';
 
   @override
-  String get unhide => 'Unhide';
+  String get unhide => 'Göster';
 
   @override
   String unifiedPushDistributorApp(Object app, Object count) {
@@ -2887,45 +2879,46 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get unifiedPushNotifications => 'BirleşikPush Bildirimleri';
+  String get unifiedPushNotifications => 'UnifiedPush Bildirimleri';
 
   @override
   String unifiedPushServer(Object server) {
-    return 'BirleşikPush Sunucusu: $server';
+    return 'UnifiedPush Sunucusu: $server';
   }
 
   @override
-  String get unifiedpush => 'BirleşikPush';
+  String get unifiedpush => 'UnifiedPush';
 
   @override
-  String get unlockPost => 'Gönderiyi Kilidini Aç';
+  String get unlockPost => 'Gönderinin Kilidini Aç';
 
   @override
-  String get unlockedPost => 'Kilit Açılmış Gönderi';
+  String get unlockedPost => 'Kilidi Açılmış Gönderi';
 
   @override
-  String get unpinFromCommunity => 'Topluluktan Kaldır';
+  String get unpinFromCommunity => 'Topluluktan Sabitlemeyi Kaldır';
 
   @override
-  String get unpinPostFromCommunity => 'Unpin Post from Community';
+  String get unpinPostFromCommunity =>
+      'Gönderiyi Topluluktan Sabitlemeyi Kaldır';
 
   @override
-  String get unreachable => 'Ulaşılamaz';
+  String get unreachable => 'Ulaşılamıyor';
 
   @override
   String get unresolved => 'Çözülmemiş';
 
   @override
-  String get unsubscribe => 'Abonelikten çık';
+  String get unsubscribe => 'Abonelikten Çık';
 
   @override
-  String get unsubscribeFromCommunity => 'Topluluktan Aboneliği İptal Et';
+  String get unsubscribeFromCommunity => 'Topluluktan Abonelikten Çık';
 
   @override
-  String get unsubscribePending => 'Abonelikten çık (abonelik bekleniyor)';
+  String get unsubscribePending => 'Abonelikten Çık (abonelik beklemede)';
 
   @override
-  String get unsubscribed => 'Abonelikten çıktı';
+  String get unsubscribed => 'Abonelikten Çıkıldı';
 
   @override
   String updateReleased(Object version) {
@@ -2933,71 +2926,70 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get uploadImage => 'Görsel yükle';
+  String get uploadImage => 'Resim yükle';
 
   @override
   String uploadedDate(Object date) {
-    return 'Uploaded: $date';
+    return 'Yüklendi: $date';
   }
 
   @override
-  String get upvote => 'Oy ver';
+  String get upvote => 'Artı Oy';
 
   @override
-  String get upvoteColor => 'Oy Renk';
+  String get upvoteColor => 'Artı Oy Rengi';
 
   @override
-  String get upvoted => 'Oy verildi';
+  String get upvoted => 'Artı Oylandı';
 
   @override
-  String get uriNotSupported => 'Bu tür bağlantı şu anda desteklenmiyor.';
+  String get uriNotSupported => 'Bu tür bir bağlantı şu anda desteklenmiyor.';
 
   @override
   String get url => 'URL';
 
   @override
-  String get useAdvancedShareSheet => 'Gelişmiş Paylaşım Sayfasını Kullanın';
+  String get useAdvancedShareSheet => 'Gelişmiş Paylaşım Sayfasını Kullan';
 
   @override
-  String get useApplePushNotifications => 'APNs Bildirimlerini Kullanın';
+  String get useApplePushNotifications => 'APNs Bildirimlerini Kullan';
 
   @override
   String get useApplePushNotificationsDescription =>
-      'Apple\'ın Push Bildirim hizmetini kullanır';
+      'Apple\'ın Anlık Bildirim servisini kullanır';
 
   @override
   String get useCompactView =>
-      'Küçük gönderiler için etkinleştir, büyükler için devre dışı bırak.';
+      'Küçük gönderiler için etkinleştirin, büyükler için devre dışı bırakın.';
 
   @override
-  String get useLocalNotifications => 'Yerel Bildirimleri Kullanın (Deneysel)';
+  String get useLocalNotifications => 'Yerel Bildirimleri Kullan (Deneysel)';
 
   @override
   String get useLocalNotificationsDescription =>
-      'Arka planda bildirimler için periyodik olarak kontrol eder';
+      'Arka planda periyodik olarak bildirimleri kontrol eder';
 
   @override
-  String get useMaterialYouTheme => 'Material You Tema Kullanın';
+  String get useMaterialYouTheme => 'Material You Temasını Kullan';
 
   @override
   String get useMaterialYouThemeDescription =>
-      'Seçili özel temayı geçersiz kılar';
+      'Seçilen özel temayı geçersiz kılar';
 
   @override
-  String get useProfilePictureForDrawer => 'Çekmece için Profil Resmi Kullanın';
+  String get useProfilePictureForDrawer => 'Çekmece İçin Profil Resmini Kullan';
 
   @override
   String get useProfilePictureForDrawerSubtitle =>
-      'Giriş yapıldığında, çekmece simgesinin yerine kullanıcının profil resmini gösterir.';
+      'Giriş yapıldığında, çekmece simgesi yerine kullanıcının profil resmini gösterir';
 
   @override
   String useSuggestedTitle(Object title) {
-    return 'Önerilen başlığı kullanın: $title';
+    return 'Önerilen başlığı kullan: $title';
   }
 
   @override
-  String get useUnifiedPushNotifications =>
-      'UnifiedPush Bildirimlerini Kullanın';
+  String get useUnifiedPushNotifications => 'UnifiedPush Bildirimlerini Kullan';
 
   @override
   String get useUnifiedPushNotificationsDescription =>
@@ -3021,11 +3013,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get userLabelHint => 'Bu benim favori kullanıcım';
 
   @override
-  String get userLabels => 'User Labels';
+  String get userLabels => 'Kullanıcı Etiketleri';
 
   @override
   String get userLabelsSettingsPageDescription =>
-      'You can add, modify, or remove labels associated with users.';
+      'Kullanıcılarla ilişkili etiketleri ekleyebilir, değiştirebilir veya kaldırabilirsiniz.';
 
   @override
   String get userNameColor => 'Kullanıcı Adı Rengi';
@@ -3034,7 +3026,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get userNameThickness => 'Kullanıcı Adı Kalınlığı';
 
   @override
-  String get userNotLoggedIn => 'Kullanıcı giriş yapmadı';
+  String get userNotLoggedIn => 'Kullanıcı giriş yapmamış';
 
   @override
   String get userProfiles => 'Kullanıcı Profilleri';
@@ -3047,11 +3039,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get userStyle => 'Kullanıcı Stili';
 
   @override
-  String get username => 'Kullanıcı adı';
+  String get username => 'Kullanıcı Adı';
 
   @override
   String get usernameFormattingRedirect =>
-      'Kullanıcı adı biçimlendirme mi arıyorsunuz?';
+      'Kullanıcı adı biçimlendirmesi mi arıyorsunuz?';
 
   @override
   String get users => 'Kullanıcılar';
@@ -3068,10 +3060,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get videoAutoFullscreen => 'Otomatik Tam Ekran';
 
   @override
-  String get videoAutoLoop => 'Video Döngüsü';
+  String get videoAutoLoop => 'Videoyu Döngüye Al';
 
   @override
-  String get videoAutoMute => 'Sessiz Videolar';
+  String get videoAutoMute => 'Videoları Sessize Al';
 
   @override
   String get videoAutoPlay => 'Video Otomatik Oynatma';
@@ -3080,41 +3072,42 @@ class AppLocalizationsTr extends AppLocalizations {
   String get videoDefaultPlaybackSpeed => 'Varsayılan Oynatma Hızı';
 
   @override
-  String get videoLinkHandlingExternal => 'Play video with an external app';
+  String get videoLinkHandlingExternal =>
+      'Videoyu harici bir uygulamayla oynat';
 
   @override
-  String get videoPlayerInApp => 'Use Thunder built-in player';
+  String get videoPlayerInApp => 'Thunder yerleşik oynatıcısını kullan';
 
   @override
-  String get videoPlayerMode => 'Player Mode';
+  String get videoPlayerMode => 'Oynatıcı Modu';
 
   @override
-  String get viewAll => 'Hepsini gör';
+  String get viewAll => 'Tümünü görüntüle';
 
   @override
-  String get viewAllComments => 'Tüm yorumları gör';
+  String get viewAllComments => 'Tüm yorumları görüntüle';
 
   @override
   String get viewCommentSource => 'Yorum Kaynağını Görüntüle';
 
   @override
-  String get viewModlog => 'View Modlog';
+  String get viewModlog => 'Mod Kayıtlarını Görüntüle';
 
   @override
   String get viewOriginal => 'Orijinali görüntüle';
 
   @override
   String get viewPostAsDifferentAccount =>
-      'Farklı bir hesap olarak gönderiyi görüntüle';
+      'Gönderiyi farklı hesap olarak görüntüle';
 
   @override
   String get viewPostSource => 'Gönderi kaynağını görüntüle';
 
   @override
-  String get viewSource => 'Kaynak kodunu görüntüle';
+  String get viewSource => 'Kaynağı görüntüle';
 
   @override
-  String get viewingAll => 'Hepsini görüntüle';
+  String get viewingAll => 'Tümü görüntüleniyor';
 
   @override
   String visibility(Object visibility) {
@@ -3125,13 +3118,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get visitCommunity => 'Topluluğu Ziyaret Et';
 
   @override
-  String get visitCommunityInstance => 'Visit Community Instance';
+  String get visitCommunityInstance => 'Topluluk Sunucusunu Ziyaret Et';
 
   @override
-  String get visitInstance => 'Ziyaret Etme Örneği';
+  String get visitInstance => 'Sunucuyu Ziyaret Et';
 
   @override
-  String get visitUserInstance => 'Visit User Instance';
+  String get visitUserInstance => 'Kullanıcı Sunucusunu Ziyaret Et';
 
   @override
   String get visitUserProfile => 'Kullanıcı Profilini Ziyaret Et';
@@ -3141,7 +3134,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String xDownvotes(Object x) {
-    return '$x aşağı oy';
+    return '$x eksi oy';
   }
 
   @override
@@ -3151,7 +3144,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String xUpvotes(Object x) {
-    return '$x beğeni';
+    return '$x artı oy';
   }
 
   @override
@@ -3161,7 +3154,6 @@ class AppLocalizationsTr extends AppLocalizations {
       locale: localeName,
       other: '$x yaşında',
       one: '$x yaşında',
-      zero: '$x yaşında',
     );
     return '$_temp0';
   }
@@ -3170,5 +3162,5 @@ class AppLocalizationsTr extends AppLocalizations {
   String get yes => 'Evet';
 
   @override
-  String get youMustSelectAJsonFile => 'You must select a .json file.';
+  String get youMustSelectAJsonFile => 'Bir .json dosyası seçmelisiniz.';
 }

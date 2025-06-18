@@ -76,7 +76,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get active => 'Actief';
 
   @override
-  String get activity => 'Activity';
+  String get activity => 'Activiteit';
 
   @override
   String get add => 'Toe­voegen';
@@ -748,7 +748,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Are you sure you want to delete the label?';
 
   @override
-  String get deleted => 'Deleted';
+  String get deleted => 'Verwĳderd';
 
   @override
   String get deletedByCreator => 'deleted by creator';
@@ -1346,7 +1346,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get lockPost => 'Bericht vergrendelen';
 
   @override
-  String get locked => 'Locked';
+  String get locked => 'Vergrendeld';
 
   @override
   String get lockedPost => 'Vergrendeld bericht';
@@ -1480,7 +1480,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get moderatedCommunities => 'Gemodereerde gemeen­schappen';
 
   @override
-  String get moderates => 'Moderates';
+  String get moderates => 'Moderator van';
 
   @override
   String moderator(num count) {
@@ -1968,7 +1968,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get removePost => 'Bericht verwĳderen';
 
   @override
-  String get removed => 'Removed';
+  String get removed => 'Verwĳderd';
 
   @override
   String get removedComment => 'Verwĳderde opmerking';
@@ -2261,16 +2261,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsPage => 'Settings Page';
 
   @override
-  String get settingsPageAbout => 'About';
+  String get settingsPageAbout => 'Over';
 
   @override
-  String get settingsPageAccessibility => 'Accessibility';
+  String get settingsPageAccessibility => 'Toegankelĳkheid';
 
   @override
   String get settingsPageAccount => 'Account';
 
   @override
-  String get settingsPageAccountBlocks => 'Blocklists';
+  String get settingsPageAccountBlocks => 'Blokkerings­lĳsten';
 
   @override
   String get settingsPageAccountLanguages => 'Discussion Languages';
@@ -2279,19 +2279,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsPageAccountMedia => 'Manage Media';
 
   @override
-  String get settingsPageAppearance => 'Appearance';
+  String get settingsPageAppearance => 'Uiterlĳk';
 
   @override
-  String get settingsPageAppearanceComments => 'Comments';
+  String get settingsPageAppearanceComments => 'Opmerkingen';
 
   @override
-  String get settingsPageAppearancePosts => 'Posts';
+  String get settingsPageAppearancePosts => 'Berichten';
 
   @override
   String get settingsPageAppearanceTheming => 'Theming';
 
   @override
-  String get settingsPageDebug => 'Debug';
+  String get settingsPageDebug => 'Fout­opsporing';
 
   @override
   String get settingsPageFilters => 'Filters';
@@ -2300,10 +2300,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsPageFloatingActionButton => 'Floating Action Button';
 
   @override
-  String get settingsPageGeneral => 'General';
+  String get settingsPageGeneral => 'Algemeen';
 
   @override
-  String get settingsPageGestures => 'Gestures';
+  String get settingsPageGestures => 'Gebaren';
 
   @override
   String get settingsPageUserLabels => 'User Labels';
@@ -2797,7 +2797,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Unable to load posts from $instance';
   }
 

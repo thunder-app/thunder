@@ -2779,7 +2779,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Ne eblas ŝargi afiŝojn el $instance';
   }
 

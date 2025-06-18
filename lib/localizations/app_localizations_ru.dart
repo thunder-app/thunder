@@ -358,7 +358,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get close => 'Закрыть';
 
   @override
-  String get collapse => 'Collapse';
+  String get collapse => 'Свернуть';
 
   @override
   String get collapseCommentPreview => 'Свернуть предпросмотр комментария';
@@ -758,7 +758,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Are you sure you want to delete the label?';
 
   @override
-  String get deleted => 'Deleted';
+  String get deleted => 'Удалено';
 
   @override
   String get deletedByCreator => 'deleted by creator';
@@ -928,7 +928,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Your feed may be taking a while to load due to keyword filters.';
 
   @override
-  String get expand => 'Expand';
+  String get expand => 'Раскрыть';
 
   @override
   String get expandCommentPreview => 'Расширить предпросмотр комментариев';
@@ -1351,7 +1351,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get lockPost => 'Закрыть пост';
 
   @override
-  String get locked => 'Locked';
+  String get locked => 'Заблокировано';
 
   @override
   String get lockedPost => 'Закрыть доступ к посту';
@@ -1431,7 +1431,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get menu => 'Menu';
+  String get menu => 'Меню';
 
   @override
   String message(num count) {
@@ -1476,7 +1476,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get modRemoveCommunity => 'Удалить/вернуть сообщества';
 
   @override
-  String get modRemovePost => 'Remove/Restore Posts';
+  String get modRemovePost => 'Удалить/вернуть посты';
 
   @override
   String get modTransferCommunity => 'Передача сообщества';
@@ -1513,7 +1513,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вам необходимо войти в систему, чтобы создать сообщение';
 
   @override
-  String get names => 'Names';
+  String get names => 'Имена';
 
   @override
   String get navbarDoubleTapGestures => 'Navbar Double Tap Gestures';
@@ -1763,7 +1763,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pinToCommunity => 'Pin to Community';
 
   @override
-  String get pinned => 'Pinned';
+  String get pinned => 'Прикреплено';
 
   @override
   String get placeholderText =>
@@ -1968,10 +1968,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get removePost => 'Удалить пост';
 
   @override
-  String get removed => 'Removed';
+  String get removed => 'Удалено';
 
   @override
-  String get removedComment => 'Removed Comment';
+  String get removedComment => 'Удаленный комментарий';
 
   @override
   String get removedCommunity => 'Removed Community';
@@ -1986,7 +1986,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get removedModFromCommunity => 'Removed Mod from Community';
 
   @override
-  String get removedPost => 'Removed Post';
+  String get removedPost => 'Удаленный пост';
 
   @override
   String get reorder => 'Переместить';
@@ -2020,7 +2020,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String report(num count) {
-    return 'Пожаловаться';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Жалоба о нарушении',
+      few: 'Жалобы о нарушении',
+      one: 'Жалоба о нарушении',
+    );
+    return '$_temp0 ';
   }
 
   @override
@@ -2060,14 +2067,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get restorePost => 'Вернуть пост';
 
   @override
-  String get restoredComment => 'Restored Comment';
+  String get restoredComment => 'Восстановленный комментарий';
 
   @override
   String get restoredCommentFromDraft =>
       'Восстановлен комментарий из черновика';
 
   @override
-  String get restoredCommunity => 'Restored Community';
+  String get restoredCommunity => 'Восстановленное сообщество';
 
   @override
   String get restoredPost => 'Restored Post';
@@ -2258,13 +2265,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsPageAbout => 'About';
 
   @override
-  String get settingsPageAccessibility => 'Accessibility';
+  String get settingsPageAccessibility => 'Специальные возможности';
 
   @override
-  String get settingsPageAccount => 'Account';
+  String get settingsPageAccount => 'Аккаунт';
 
   @override
-  String get settingsPageAccountBlocks => 'Blocklists';
+  String get settingsPageAccountBlocks => 'Чёрные списки';
 
   @override
   String get settingsPageAccountLanguages => 'Discussion Languages';
@@ -2273,37 +2280,37 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsPageAccountMedia => 'Manage Media';
 
   @override
-  String get settingsPageAppearance => 'Appearance';
+  String get settingsPageAppearance => 'Внешний вид';
 
   @override
-  String get settingsPageAppearanceComments => 'Comments';
+  String get settingsPageAppearanceComments => 'Комментарии';
 
   @override
-  String get settingsPageAppearancePosts => 'Posts';
+  String get settingsPageAppearancePosts => 'Посты';
 
   @override
-  String get settingsPageAppearanceTheming => 'Theming';
+  String get settingsPageAppearanceTheming => 'Темы';
 
   @override
-  String get settingsPageDebug => 'Debug';
+  String get settingsPageDebug => 'Отладка';
 
   @override
-  String get settingsPageFilters => 'Filters';
+  String get settingsPageFilters => 'Фильтры';
 
   @override
   String get settingsPageFloatingActionButton => 'Floating Action Button';
 
   @override
-  String get settingsPageGeneral => 'General';
+  String get settingsPageGeneral => 'Главное';
 
   @override
-  String get settingsPageGestures => 'Gestures';
+  String get settingsPageGestures => 'Жесты';
 
   @override
   String get settingsPageUserLabels => 'User Labels';
 
   @override
-  String get settingsPageVideo => 'Video';
+  String get settingsPageVideo => 'Видео';
 
   @override
   String get share => 'Поделиться';
@@ -2790,7 +2797,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Невозможно загрузить посты из $instance';
   }
 

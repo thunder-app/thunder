@@ -2794,7 +2794,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get unableToLoadPost => 'Unable to load post';
 
   @override
-  String unableToLoadPostsFrominstance(Object Instance, Object instance) {
+  String unableToLoadPostsFrominstance(Object instance) {
     return 'Помилка завантаження публікацій з $instance';
   }
 
