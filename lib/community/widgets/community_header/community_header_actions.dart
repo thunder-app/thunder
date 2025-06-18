@@ -27,7 +27,7 @@ class CommunityHeaderActions extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance instance;
+  final ThunderInstance? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -35,7 +35,7 @@ class CommunityHeaderActions extends StatelessWidget {
   const CommunityHeaderActions({
     super.key,
     required this.community,
-    required this.instance,
+    this.instance,
     required this.moderators,
   });
 
@@ -54,14 +54,14 @@ class _CommunityActionsContent extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance instance;
+  final ThunderInstance? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
 
   const _CommunityActionsContent({
     required this.community,
-    required this.instance,
+    this.instance,
     required this.moderators,
   });
 
@@ -103,14 +103,14 @@ class _ActionChipsList extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance instance;
+  final ThunderInstance? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
 
   const _ActionChipsList({
     required this.community,
-    required this.instance,
+    this.instance,
     required this.moderators,
   });
 

@@ -375,7 +375,7 @@ class _FeedViewState extends State<FeedView> {
                             SliverToBoxAdapter(
                               child: CommunityHeader(
                                 community: state.community!,
-                                instance: state.communityInstance!,
+                                instance: state.communityInstance,
                                 moderators: state.communityModerators,
                                 condensed: false,
                               ),

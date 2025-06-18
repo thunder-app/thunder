@@ -21,7 +21,7 @@ class CommunityInformation extends StatelessWidget {
   final ThunderCommunity community;
 
   /// The instance that the community is hosted on
-  final ThunderInstance instance;
+  final ThunderInstance? instance;
 
   /// The moderators of the community
   final List<ThunderUser> moderators;
@@ -29,7 +29,7 @@ class CommunityInformation extends StatelessWidget {
   const CommunityInformation({
     super.key,
     required this.community,
-    required this.instance,
+    this.instance,
     required this.moderators,
   });
 
