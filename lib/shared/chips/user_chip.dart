@@ -27,6 +27,7 @@ class UserChip extends StatelessWidget {
     this.userGroups = const [],
     this.opacity = 1.0,
     this.ignorePointerEvents = false,
+    this.constraints,
   });
 
   /// The user to display information for
@@ -47,6 +48,9 @@ class UserChip extends StatelessWidget {
 
   /// Whether or not to disable the touch events (e.g., navigating to user page)
   final bool ignorePointerEvents;
+
+  /// The constraints for the user chip
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context) {
@@ -80,14 +84,17 @@ class UserChip extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (showUserAvatar && personAvatar != null && user.icon != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
-                  UserFullNameWidget(
-                    context,
-                    user.username,
-                    user.displayName,
-                    fetchInstanceNameFromUrl(user.url),
-                    includeInstance: includeInstance,
-                    fontScale: state.metadataFontSizeScale,
-                    transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: (constraints?.maxWidth ?? MediaQuery.sizeOf(context).width) * 0.55),
+                    child: UserFullNameWidget(
+                      context,
+                      user.username,
+                      user.displayName,
+                      fetchInstanceNameFromUrl(user.url),
+                      includeInstance: includeInstance,
+                      fontScale: state.metadataFontSizeScale,
+                      transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
+                    ),
                   ),
                   if (userGroups.isNotEmpty) const SizedBox(width: 2.0),
                   if (userGroups.contains(UserType.op))

@@ -64,33 +64,46 @@ class CommentCardHeader extends StatelessWidget {
 
     final userGroups = _getUserGroups(accountId);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            spacing: 8.0,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              UserChip(
-                user: ThunderUser(comment.creator!),
-                personAvatar: UserAvatar(user: ThunderUser(comment.creator!), radius: 10, thumbnailSize: 20, format: 'png'),
-                userGroups: userGroups,
-                includeInstance: commentShowUserInstance,
-                ignorePointerEvents: hidden && collapseParentCommentOnGesture,
-                opacity: 1.0,
-              ),
-              CommentCardHeaderScore(score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
-              Spacer(flex: 1),
-              CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden),
-              if (saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
-              if (updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
-              CommentCardHeaderDate(created: created, updated: updated),
-            ],
-          ),
-          UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.name, comment.creator!.actorId))
-        ],
+    return LayoutBuilder(
+      builder: (context, constraints) => Padding(
+        padding: EdgeInsets.fromLTRB(userGroups.isNotEmpty ? 8.0 : 8.0, 10.0, 8.0, 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              spacing: 8.0,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  spacing: 8.0,
+                  children: [
+                    UserChip(
+                      user: ThunderUser(comment.creator!),
+                      personAvatar: UserAvatar(user: ThunderUser(comment.creator!), radius: 10, thumbnailSize: 20, format: 'png'),
+                      userGroups: userGroups,
+                      includeInstance: commentShowUserInstance,
+                      ignorePointerEvents: hidden && collapseParentCommentOnGesture,
+                      opacity: 1.0,
+                      constraints: constraints,
+                    ),
+                    CommentCardHeaderScore(score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
+                  ],
+                ),
+                Row(
+                  spacing: 8.0,
+                  children: hidden
+                      ? [CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden)]
+                      : [
+                          if (saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
+                          if (updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
+                          CommentCardHeaderDate(created: created, updated: updated),
+                        ],
+                )
+              ],
+            ),
+            UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.name, comment.creator!.actorId))
+          ],
+        ),
       ),
     );
   }
