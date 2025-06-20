@@ -43,6 +43,7 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/preferences.dart';
+import 'package:thunder/utils/language/language.dart';
 
 late AppDatabase database;
 
@@ -250,7 +251,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 ),
               );
 
-              Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
+              Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
 
               return OverlaySupport.global(
                 child: AnnotatedRegion<SystemUiOverlayStyle>(

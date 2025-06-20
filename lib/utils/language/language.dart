@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import 'package:thunder/localizations/app_localizations.dart';
+
 class LanguageLocal {
   static String getDisplayLanguage(key, String? code) {
     final languageLabels = {
@@ -189,6 +193,41 @@ class LanguageLocal {
       return "${languageLabels[key]?["nativeName"]}${code != null ? " ($code)" : ""}";
     } else {
       throw Exception("Language key incorrect");
+    }
+  }
+
+  /// Parses a locale string (e.g., "en-AU") and finds the matching supported locale.
+  ///
+  /// This function handles both full locale strings (e.g., "en-AU") and simple language codes (e.g., "en").
+  /// It first tries to find an exact match for language + country, then falls back to language-only matches.
+  ///
+  /// Returns the matching Locale if found, null otherwise.
+  static Locale? parseLanguageTag(String? languageTag) {
+    if (languageTag == null || languageTag.isEmpty) {
+      return null;
+    }
+
+    try {
+      List<String> parts = languageTag.split('-');
+      Locale targetLocale;
+
+      if (parts.length >= 2) {
+        targetLocale = Locale(parts[0], parts[1]);
+      } else {
+        targetLocale = Locale(parts[0]);
+      }
+
+      // First, try to find an exact match for language + country
+      Locale? exactMatch = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == targetLocale.languageCode && locale.countryCode == targetLocale.countryCode).firstOrNull;
+
+      if (exactMatch != null) {
+        return exactMatch;
+      }
+
+      // If no exact match found, try matching just the language code
+      return AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == targetLocale.languageCode).firstOrNull;
+    } catch (e) {
+      return null;
     }
   }
 }

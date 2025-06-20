@@ -166,7 +166,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
       case LocalSettings.appLanguageCode:
-        await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
+        await prefs.setString(LocalSettings.appLanguageCode.name, value.toLanguageTag());
         setState(() => currentLocale = value);
         break;
       case LocalSettings.useProfilePictureForDrawer:
@@ -282,7 +282,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       }
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      currentLocale = Localizations.localeOf(context);
+
+      // Load saved locale from preferences, if not found, fallback to system locale
+      Locale? parsedLocale = LanguageLocal.parseLanguageTag(prefs.getString(LocalSettings.appLanguageCode.name));
+      currentLocale = parsedLocale ?? Localizations.localeOf(context);
+
       useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
@@ -459,7 +463,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.appLanguage,
               bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
-              value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
+              value: ListPickerItem(label: LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()), icon: Icons.language_rounded, payload: currentLocale),
               options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
               icon: Icons.language_rounded,
               onChanged: (ListPickerItem<Locale> value) async {
