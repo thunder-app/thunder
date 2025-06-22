@@ -1446,5 +1446,43 @@
   "moderates": "Moderator van",
   "@moderates": {
     "description": "A heading describing the communities that a user moderates"
+  },
+  "block": "Blokkeren",
+  "@block": {
+    "description": "Action for blocking an item"
+  },
+  "settingsPageAppearanceTheming": "Thema's",
+  "@settingsPageAppearanceTheming": {
+    "description": "Theming settings page"
+  },
+  "unblock": "Deblokkeren",
+  "@unblock": {
+    "description": "Action for unblocking an item"
+  },
+  "endOfComments": "Einde van de opmerkingen",
+  "@endOfComments": {},
+  "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "@placeholderText": {
+    "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+  },
+  "pushNotificationServer": "Pushmeldings­server",
+  "@pushNotificationServer": {
+    "description": "Setting for choosing push notification server"
+  },
+  "reachedTheBottom": "Geen items meer om te laden",
+  "@reachedTheBottom": {},
+  "reducesAnimations": "Vermindert de animaties die in Thunder worden gebruikt",
+  "@reducesAnimations": {},
+  "pinned": "Vastgepind",
+  "@pinned": {
+    "description": "Status to indicate that an item has been pinned"
+  },
+  "unfavorite": "Verwijderen uit favorieten",
+  "@unfavorite": {
+    "description": "Action for unfavoriting a community"
+  },
+  "favorite": "Opslaan als favoriet",
+  "@favorite": {
+    "description": "Action for favoriting a community"
   }
 }
