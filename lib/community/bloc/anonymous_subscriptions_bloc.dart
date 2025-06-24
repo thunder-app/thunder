@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -20,52 +21,68 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, AnonymousSubscriptionsState> {
   AnonymousSubscriptionsBloc() : super(const AnonymousSubscriptionsState()) {
     on<GetSubscribedCommunitiesEvent>(_getSubscribedCommunities, transformer: throttleDroppable(throttleDuration));
-
-    on<AddSubscriptionsEvent>(_addSubscriptions, transformer: throttleDroppable(throttleDuration));
-
-    on<DeleteSubscriptionsEvent>(_deleteSubscriptions, transformer: throttleDroppable(throttleDuration));
+    on<AddSubscriptionsEvent>(_addSubscriptions);
+    on<DeleteSubscriptionsEvent>(_deleteSubscriptions);
   }
 
   FutureOr<void> _deleteSubscriptions(DeleteSubscriptionsEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
     try {
-      await AnonymousSubscriptions.deleteCommunities(event.ids);
-      emit(state.copyWith(
-        status: AnonymousSubscriptionsStatus.success,
-        subscriptions: [...state.subscriptions]..removeWhere((e) => event.ids.contains(e.id)),
-        ids: {...state.ids}..removeAll(event.ids),
-      ));
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.success));
+      await AnonymousSubscriptions.deleteCommunities(event.urls);
+
+      emit(
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.success,
+          subscriptions: [...state.subscriptions]..removeWhere((e) => event.urls.contains(e.url)),
+          urls: {...state.urls}..removeAll(event.urls),
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
     }
   }
 
   FutureOr<void> _addSubscriptions(AddSubscriptionsEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
     try {
-      await insertSubscriptions(event.communities);
+      // Filter out already subscribed communities
+      final communities = event.communities.where((community) => !state.urls.contains(community.url)).toList();
+      if (communities.isEmpty) return;
+
+      await insertSubscriptions(communities.toSet());
+
       emit(
         state.copyWith(
           status: AnonymousSubscriptionsStatus.success,
-          subscriptions: [...state.subscriptions, ...event.communities],
-          ids: {...state.ids}..addAll(event.communities.map((e) => e.id)),
+          subscriptions: [...state.subscriptions, ...communities],
+          urls: {...state.urls}..addAll(communities.map((e) => e.url)),
         ),
       );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
     }
   }
 
   Future<void> _getSubscribedCommunities(GetSubscribedCommunitiesEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
-    emit(const AnonymousSubscriptionsState(status: AnonymousSubscriptionsStatus.loading));
+    emit(state.copyWith(status: AnonymousSubscriptionsStatus.loading));
+
     try {
       List<ThunderCommunity> subscribedCommunities = await getSubscriptions();
-      emit(state.copyWith(
-        status: AnonymousSubscriptionsStatus.success,
-        subscriptions: subscribedCommunities,
-        ids: subscribedCommunities.map((e) => e.id).toSet(),
-      ));
+
+      // Filter out duplicate communities based on URL
+      Map<String, ThunderCommunity> communities = {};
+
+      for (final community in subscribedCommunities) {
+        communities[community.url] = community;
+      }
+
+      emit(
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.success,
+          subscriptions: communities.values.toList(),
+          urls: communities.keys.toSet(),
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
     }
   }
 }

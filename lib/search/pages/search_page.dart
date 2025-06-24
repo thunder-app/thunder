@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,8 +64,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
-  final Set<ThunderCommunity> newAnonymousSubscriptions = {};
-  final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
   int? _previousUserId;
@@ -114,12 +111,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     _scrollController.dispose();
 
     super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    _saveToDB();
-    super.deactivate();
   }
 
   FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
@@ -526,17 +517,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           itemCount: context.read<ProfileBloc>().state.favorites.length,
                           itemBuilder: (BuildContext context, int index) {
                             final community = context.read<ProfileBloc>().state.favorites[index];
-                            final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-
-                            return CommunityListEntry(
-                              community: community,
-                              isUserLoggedIn: isUserLoggedIn,
-                              currentSubscriptions: subscriptions,
-                              indicateFavorites: false,
-                              getFavoriteStatus: _getFavoriteStatus,
-                              getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
-                              onSubscribeIconPressed: _onSubscribeIconPressed,
-                            );
+                            return CommunityListEntry(community: community, indicateFavorites: false);
                           },
                         ),
                         const SizedBox(height: 20),
@@ -554,16 +535,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         itemCount: state.trendingCommunities!.length,
                         itemBuilder: (BuildContext context, int index) {
                           final community = state.trendingCommunities![index];
-                          final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-
-                          return CommunityListEntry(
-                            community: community,
-                            isUserLoggedIn: isUserLoggedIn,
-                            currentSubscriptions: subscriptions,
-                            getFavoriteStatus: _getFavoriteStatus,
-                            getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
-                            onSubscribeIconPressed: _onSubscribeIconPressed,
-                          );
+                          return CommunityListEntry(community: community);
                         },
                       ),
                       const SizedBox(height: 5),
@@ -668,16 +640,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   final community = state.communities![index];
-                  final subscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-
-                  return CommunityListEntry(
-                    community: community,
-                    isUserLoggedIn: isUserLoggedIn,
-                    currentSubscriptions: subscriptions,
-                    getFavoriteStatus: _getFavoriteStatus,
-                    getCurrentSubscriptionStatus: _getCurrentSubscriptionStatus,
-                    onSubscribeIconPressed: _onSubscribeIconPressed,
-                  );
+                  return CommunityListEntry(community: community);
                 }
               },
             ),
@@ -804,11 +767,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
-    final state = context.read<ProfileBloc>().state;
-    return state.favorites.any((c) => c.id == community.id);
-  }
-
   void showSortBottomSheet(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
@@ -833,51 +791,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         minimumVersion: LemmyClient.instance.version,
       ),
     );
-  }
-
-  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, ThunderCommunity community, Set<int>? currentSubscriptions) {
-    assert(community.subscribed != null);
-    if (isUserLoggedIn) return community.subscribed!;
-
-    bool isSubscribed =
-        newAnonymousSubscriptions.firstWhereOrNull((c) => c.id == community.id) != null || (currentSubscriptions?.contains(community.id) == true && !removedSubs.contains(community.id));
-
-    return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
-  }
-
-  void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, ThunderCommunity community) {
-    if (isUserLoggedIn) {
-      context.read<SearchBloc>().add(ChangeCommunitySubsciptionStatusEvent(
-            communityId: community.id,
-            follow: community.subscribed == SubscribedType.notSubscribed ? true : false,
-            query: _controller.text,
-          ));
-      return;
-    }
-
-    Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-
-    setState(() {
-      if (currentSubscriptions.contains(community.id) && !removedSubs.contains(community.id)) {
-        removedSubs.add(community.id);
-      } else if (newAnonymousSubscriptions.map((c) => c.id).contains(community.id)) {
-        newAnonymousSubscriptions.removeWhere((c) => c.id == community.id);
-      } else if (removedSubs.contains(community.id)) {
-        removedSubs.remove(community.id);
-      } else {
-        newAnonymousSubscriptions.add(community);
-      }
-    });
-    return;
-  }
-
-  void _saveToDB() {
-    if (newAnonymousSubscriptions.isNotEmpty) {
-      context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: newAnonymousSubscriptions));
-    }
-    if (removedSubs.isNotEmpty) {
-      context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: removedSubs));
-    }
   }
 
   MetaSearchType _getSearchTypeToUse() {

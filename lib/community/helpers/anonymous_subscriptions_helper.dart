@@ -31,6 +31,7 @@ extension on LocalCommunity {
         postingRestrictedToMods: false,
         instanceId: -1,
       ),
+      subscribed: SubscribedType.subscribed, // Will always be subscribed
     );
   }
 }

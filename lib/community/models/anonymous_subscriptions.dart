@@ -41,9 +41,9 @@ class AnonymousSubscriptions {
     }
   }
 
-  static Future<void> deleteCommunities(Set<int> ids) async {
+  static Future<void> deleteCommunities(Set<String> urls) async {
     try {
-      await (database.delete(database.localSubscriptions)..where((t) => t.id.isIn(ids))).go();
+      await (database.delete(database.localSubscriptions)..where((t) => t.actorId.isIn(urls))).go();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -52,7 +52,7 @@ class AnonymousSubscriptions {
   static Future<List<LocalCommunity>> getSubscribedCommunities() async {
     try {
       return (await database.localSubscriptions.all().get())
-          .map((favorite) => LocalCommunity(id: favorite.id, name: favorite.name, title: favorite.title, actorId: favorite.actorId, icon: favorite.icon))
+          .map((community) => LocalCommunity(id: community.id, name: community.name, title: community.title, actorId: community.actorId, icon: community.icon))
           .toList();
     } catch (e) {
       debugPrint(e.toString());

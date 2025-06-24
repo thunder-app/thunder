@@ -6,29 +6,36 @@ class AnonymousSubscriptionsState extends Equatable {
   const AnonymousSubscriptionsState({
     this.status = AnonymousSubscriptionsStatus.initial,
     this.subscriptions = const [],
-    this.ids = const {},
-    this.errorMessage,
+    this.urls = const {},
+    this.message,
   });
 
+  /// Status of the bloc
   final AnonymousSubscriptionsStatus status;
-  final String? errorMessage;
+
+  /// Error message
+  final String? message;
+
+  /// List of subscribed communities
   final List<ThunderCommunity> subscriptions;
-  final Set<int> ids;
+
+  /// Set of community actor ids (e.g., https://lemmy.ml/c/lemmy)
+  final Set<String> urls;
 
   AnonymousSubscriptionsState copyWith({
     AnonymousSubscriptionsStatus? status,
     List<ThunderCommunity>? subscriptions,
-    Set<int>? ids,
-    String? errorMessage,
+    Set<String>? urls,
+    String? message,
   }) {
     return AnonymousSubscriptionsState(
       status: status ?? this.status,
-      ids: ids ?? this.ids,
+      urls: urls ?? this.urls,
       subscriptions: subscriptions ?? this.subscriptions,
-      errorMessage: errorMessage ?? this.errorMessage,
+      message: message ?? this.message,
     );
   }
 
   @override
-  List<Object?> get props => [status, subscriptions, ids, errorMessage];
+  List<Object?> get props => [status, subscriptions, urls, message];
 }

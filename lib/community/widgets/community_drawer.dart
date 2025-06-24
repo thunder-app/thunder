@@ -95,13 +95,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               minimumSize: const Size.fromHeight(50),
                               backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               Navigator.of(context).pop();
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
                                       sortType: profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.sortTypeForInstance,
-                                      communityId: community.id,
+                                      communityId: isLoggedIn ? community.id : null,
+                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.url) : null,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
                                     ),

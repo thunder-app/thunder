@@ -312,13 +312,7 @@ class _InstancePageState extends State<InstancePage> {
                                 final community = state.communities?[index];
 
                                 return Material(
-                                  child: community != null
-                                      ? CommunityListEntry(
-                                          community: community,
-                                          isUserLoggedIn: false,
-                                          resolutionInstance: state.resolutionInstance,
-                                        )
-                                      : Container(),
+                                  child: community != null ? CommunityListEntry(community: community, resolutionInstance: state.resolutionInstance) : Container(),
                                 );
                               },
                             ),
