@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 
@@ -8,6 +9,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
@@ -119,8 +121,9 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
           // Show the loading page while we resolve the post
           showLoadingPage(context);
 
-          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
-          return resolveObjectResponse.post?.post.id;
+          final repository = context.read<SearchRepository>();
+          final response = await repository.resolve(query: text);
+          return response.post?.post.id;
         } catch (e) {
           return null;
         }
@@ -164,8 +167,9 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
         // Show the loading page while we resolve the post
         showLoadingPage(context);
 
-        final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
-        return resolveObjectResponse.comment?.comment.id;
+        final repository = context.read<SearchRepository>();
+        final response = await repository.resolve(query: text);
+        return response.comment?.comment.id;
       } catch (e) {
         return null;
       }

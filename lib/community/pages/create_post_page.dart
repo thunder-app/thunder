@@ -28,6 +28,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/cross_posts.dart';
@@ -757,17 +758,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
     SearchResponse? searchResponse;
     if (url == text) {
       try {
-        // Fetch cross-posts
-        final account = await fetchActiveProfile();
+        final repository = context.read<SearchRepository>();
 
-        searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
-          q: url,
+        // Fetch cross-posts
+        searchResponse = await repository.search(
+          query: url,
           type: SearchType.url,
-          sort: PostSortType.topAll.toLemmyType(),
-          listingType: FeedListType.all.toLemmyType(),
+          sort: PostSortType.topAll,
+          listingType: FeedListType.all,
           limit: 20,
-          auth: account.jwt,
-        ));
+        );
       } catch (e) {
         // Ignore
       }

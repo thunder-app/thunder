@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 
@@ -124,7 +126,7 @@ Future<void> temporarilySwitchAccount(
       // If there is a selected community, see if we can resolve it to the new user's instance.
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
         try {
-          final response = await LemmyApiV3(newUser.instance).run(ResolveObject(q: communityActorId!));
+          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: communityActorId!);
 
           if (response.community != null) {
             final community = ThunderCommunity(response.community!.community, communityView: response.community);
@@ -139,8 +141,9 @@ Future<void> temporarilySwitchAccount(
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
         PostView? resolvedPost;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: postActorId!));
-          resolvedPost = resolveObjectResponse.post;
+          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: postActorId!);
+          resolvedPost = response.post;
+
           if (resolvedPost != null) {
             onPostChanged((await parsePosts([resolvedPost])).first);
           }
@@ -158,8 +161,8 @@ Future<void> temporarilySwitchAccount(
       if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
         CommentView? resolvedComment;
         try {
-          final ResolveObjectResponse resolveObjectResponse = await LemmyApiV3(newUser.instance).run(ResolveObject(q: parentCommentActorId!));
-          resolvedComment = resolveObjectResponse.comment;
+          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: parentCommentActorId!);
+          resolvedComment = response.comment;
 
           if (resolvedComment != null) {
             final comment = ThunderComment(comment: resolvedComment.comment, commentView: resolvedComment);

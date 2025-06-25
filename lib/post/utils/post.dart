@@ -8,6 +8,7 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 
@@ -102,7 +103,7 @@ Future<List<ThunderPost>> parsePosts(List<PostView> postViews, {String? resoluti
 
     for (PostView postView in postViews) {
       try {
-        final response = await lemmy.run(ResolveObject(q: postView.post.apId));
+        final response = await LemmySearchRepository(client: lemmy).resolve(query: postView.post.apId);
         posts.add(response.post!);
       } catch (e) {
         // If we can't resolve it, we won't even add it
