@@ -10,6 +10,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -93,7 +94,7 @@ Future<void> navigateToInstancePage(
 
   try {
     // Get the site information by connecting to the given instance
-    getSiteResponse = await LemmyApiV3(instanceHost).run(const GetSite()).timeout(const Duration(seconds: 5));
+    getSiteResponse = await LemmyInstanceRepository(client: LemmyApiV3(instanceHost)).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
     isBlocked = profileBloc.state.getSiteResponse?.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost);

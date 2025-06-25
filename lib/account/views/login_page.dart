@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/account.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -480,7 +480,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         });
       } else {
         // Check for content warning on anyonmous instance
-        GetSiteResponse getSiteResponse = await (LemmyClient()..changeBaseUrl(_instanceTextEditingController.text)).lemmyApiV3.run(const GetSite());
+        LemmyClient().changeBaseUrl(_instanceTextEditingController.text);
+        final repository = context.read<InstanceRepository>();
+        final getSiteResponse = await repository.getSiteInfo();
 
         bool acceptedContentWarning = true;
 

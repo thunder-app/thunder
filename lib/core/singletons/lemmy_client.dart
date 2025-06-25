@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:version/version.dart';
 
-import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
@@ -38,8 +38,7 @@ class LemmyClient {
     if (_lemmySites.containsKey(instance.lemmyApiV3.host)) return;
 
     // Retrieve the site so we can look up metadata about it later
-    final account = await fetchActiveProfile();
-    _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(GetSite(auth: account.jwt));
+    _lemmySites[instance.lemmyApiV3.host] = await LemmyInstanceRepository(client: instance.lemmyApiV3).getSiteInfo();
   }
 
   Version? get version {

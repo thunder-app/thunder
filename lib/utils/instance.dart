@@ -1,9 +1,12 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 
@@ -180,7 +183,7 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(timeout ?? const Duration(seconds: 5));
+    final site = await LemmyInstanceRepository(client: LemmyApiV3(url!)).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
     final instance = ThunderInstance(site.siteView.site, instanceView: site.siteView);
 
     return ThunderInstanceInfo(
@@ -214,7 +217,7 @@ Future<bool> isLemmyInstance(String? url) async {
   }
 
   try {
-    await LemmyApiV3(url!).run(const GetSite());
+    await LemmyInstanceRepository(client: LemmyApiV3(url!)).getSiteInfo();
     // If we get here, it worked
     validInstances.add(url);
     return true;
