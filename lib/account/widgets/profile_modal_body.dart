@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
@@ -734,7 +734,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
     // Intentionally don't await these here
     fetchInstanceInfo(accountsExtended);
     pingInstances(accountsExtended);
-    getUnreadCounts(accountsExtended);
+    getUnreadNotificationCount(accountsExtended);
 
     setState(() => this.accounts = accountsExtended);
   }
@@ -767,11 +767,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
     }
   }
 
-  Future<void> getUnreadCounts(List<AccountExtended> accountsExtended) async {
+  Future<void> getUnreadNotificationCount(List<AccountExtended> accountsExtended) async {
     for (final AccountExtended account in accountsExtended) {
       try {
-        final GetUnreadCountResponse getUnreadCountResponse = (await (LemmyClient()..changeBaseUrl(account.instance!)).lemmyApiV3.run(GetUnreadCount(auth: account.account.jwt)));
-        int? totalUnreadCount = getUnreadCountResponse.replies + getUnreadCountResponse.mentions + getUnreadCountResponse.privateMessages;
+        LemmyClient().changeBaseUrl(account.instance!);
+
+        final repository = context.read<NotificationRepository>();
+        final unread = await repository.unreadNotificationsCount();
+
+        int? totalUnreadCount = unread.replies + unread.mentions + unread.privateMessages;
         if (totalUnreadCount == 0) totalUnreadCount = null;
         setState(() => account.totalUnreadCount = totalUnreadCount);
       } catch (e) {

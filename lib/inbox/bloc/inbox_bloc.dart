@@ -14,6 +14,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
+import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'inbox_event.dart';
@@ -28,20 +29,24 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
   late CommentRepository commentRepository;
+  late NotificationRepository notificationRepository;
 
   /// Constructor allowing an initial set of replies to be set in the state.
   InboxBloc.initWith({
     required List<CommentReplyView> replies,
     required bool showUnreadOnly,
     CommentRepository? commentRepository,
+    NotificationRepository? notificationRepository,
   }) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.notificationRepository = notificationRepository ?? LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
     _init();
   }
 
   /// Unnamed constructor with default state
-  InboxBloc({CommentRepository? commentRepository}) : super(const InboxState()) {
+  InboxBloc({CommentRepository? commentRepository, NotificationRepository? notificationRepository}) : super(const InboxState()) {
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.notificationRepository = notificationRepository ?? LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
     _init();
   }
 
@@ -76,8 +81,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     try {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
       PrivateMessagesResponse? privateMessagesResponse;
       GetPersonMentionsResponse? getPersonMentionsResponse;
       GetRepliesResponse? getRepliesResponse;
@@ -87,71 +90,55 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
         switch (event.inboxType) {
           case InboxType.replies:
-            getRepliesResponse = await lemmy.run(
-              GetReplies(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                limit: limit,
-                sort: event.commentSortType.toLemmyType(),
-                page: 1,
-              ),
+            getRepliesResponse = await notificationRepository.replies(
+              unread: !event.showAll,
+              limit: limit,
+              sort: event.commentSortType,
+              page: 1,
             );
             break;
           case InboxType.mentions:
-            getPersonMentionsResponse = await lemmy.run(
-              GetPersonMentions(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                sort: event.commentSortType.toLemmyType(),
-                limit: limit,
-                page: 1,
-              ),
+            getPersonMentionsResponse = await notificationRepository.mentions(
+              unread: !event.showAll,
+              limit: limit,
+              sort: event.commentSortType,
+              page: 1,
             );
             break;
           case InboxType.messages:
-            privateMessagesResponse = await lemmy.run(
-              GetPrivateMessages(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                limit: limit,
-                page: 1,
-              ),
+            privateMessagesResponse = await notificationRepository.messages(
+              unread: !event.showAll,
+              limit: limit,
+              page: 1,
             );
             break;
           case InboxType.all:
-            getRepliesResponse = await lemmy.run(
-              GetReplies(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                limit: limit,
-                sort: event.commentSortType.toLemmyType(),
-                page: 1,
-              ),
+            getRepliesResponse = await notificationRepository.replies(
+              unread: !event.showAll,
+              limit: limit,
+              sort: event.commentSortType,
+              page: 1,
             );
-            getPersonMentionsResponse = await lemmy.run(
-              GetPersonMentions(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                sort: event.commentSortType.toLemmyType(),
-                limit: limit,
-                page: 1,
-              ),
+
+            getPersonMentionsResponse = await notificationRepository.mentions(
+              unread: !event.showAll,
+              limit: limit,
+              sort: event.commentSortType,
+              page: 1,
             );
-            privateMessagesResponse = await lemmy.run(
-              GetPrivateMessages(
-                auth: account.jwt!,
-                unreadOnly: !event.showAll,
-                limit: limit,
-                page: 1,
-              ),
+
+            privateMessagesResponse = await notificationRepository.messages(
+              unread: !event.showAll,
+              limit: limit,
+              page: 1,
             );
             break;
           default:
             break;
         }
 
-        GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account.jwt!));
-        int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
+        final unread = await notificationRepository.unreadNotificationsCount();
+        int totalUnreadCount = unread.privateMessages + unread.mentions + unread.replies;
 
         return emit(
           state.copyWith(
@@ -164,9 +151,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             inboxReplyPage: 2,
             inboxPrivateMessagePage: 2,
             totalUnreadCount: totalUnreadCount,
-            repliesUnreadCount: getUnreadCountResponse.replies,
-            mentionsUnreadCount: getUnreadCountResponse.mentions,
-            messagesUnreadCount: getUnreadCountResponse.privateMessages,
+            repliesUnreadCount: unread.replies,
+            mentionsUnreadCount: unread.mentions,
+            messagesUnreadCount: unread.privateMessages,
             hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
             hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
             hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
@@ -181,39 +168,28 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       switch (event.inboxType) {
         case InboxType.replies:
           if (state.hasReachedInboxReplyEnd) return;
-
-          getRepliesResponse = await lemmy.run(
-            GetReplies(
-              auth: account.jwt!,
-              unreadOnly: state.showUnreadOnly,
-              limit: limit,
-              sort: event.commentSortType.toLemmyType(),
-              page: state.inboxReplyPage,
-            ),
+          getRepliesResponse = await notificationRepository.replies(
+            unread: state.showUnreadOnly,
+            limit: limit,
+            sort: event.commentSortType,
+            page: state.inboxReplyPage,
           );
           break;
         case InboxType.mentions:
           if (state.hasReachedInboxMentionEnd) return;
-
-          getPersonMentionsResponse = await lemmy.run(
-            GetPersonMentions(
-              auth: account.jwt!,
-              unreadOnly: state.showUnreadOnly,
-              sort: event.commentSortType.toLemmyType(),
-              limit: limit,
-              page: state.inboxMentionPage,
-            ),
+          getPersonMentionsResponse = await notificationRepository.mentions(
+            unread: state.showUnreadOnly,
+            limit: limit,
+            sort: event.commentSortType,
+            page: state.inboxMentionPage,
           );
           break;
         case InboxType.messages:
           if (state.hasReachedInboxPrivateMessageEnd) return;
-          privateMessagesResponse = await lemmy.run(
-            GetPrivateMessages(
-              auth: account.jwt!,
-              unreadOnly: state.showUnreadOnly,
-              limit: limit,
-              page: state.inboxPrivateMessagePage,
-            ),
+          privateMessagesResponse = await notificationRepository.messages(
+            unread: state.showUnreadOnly,
+            limit: limit,
+            page: state.inboxPrivateMessagePage,
           );
           break;
         default:
@@ -308,41 +284,32 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             }
           }
 
-          final l10n = AppLocalizations.of(GlobalContext.context)!;
-          final account = await fetchActiveProfile();
-          if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
           if (existingCommentReplyView != null) {
-            await lemmy.run(MarkCommentReplyAsRead(
-              auth: account.jwt!,
-              commentReplyId: event.commentReplyId!,
+            await notificationRepository.markReplyAsRead(
+              replyId: event.commentReplyId!,
               read: event.value,
-            ));
+            );
           } else if (existingPersonMentionView != null) {
-            await lemmy.run(MarkPersonMentionAsRead(
-              auth: account.jwt!,
-              personMentionId: event.personMentionId!,
+            await notificationRepository.markMentionAsRead(
+              mentionId: event.personMentionId!,
               read: event.value,
-            ));
+            );
           } else if (existingPrivateMessageView != null) {
-            await lemmy.run(MarkPrivateMessageAsRead(
-              auth: account.jwt!,
-              privateMessageId: event.privateMessageId!,
+            await notificationRepository.markMessageAsRead(
+              messageId: event.privateMessageId!,
               read: event.value,
-            ));
+            );
           }
 
-          GetUnreadCountResponse getUnreadCountResponse = await lemmy.run(GetUnreadCount(auth: account.jwt!));
-          int totalUnreadCount = getUnreadCountResponse.privateMessages + getUnreadCountResponse.mentions + getUnreadCountResponse.replies;
+          final unread = await notificationRepository.unreadNotificationsCount();
+          int totalUnreadCount = unread.privateMessages + unread.mentions + unread.replies;
 
           return emit(state.copyWith(
             status: InboxStatus.success,
             totalUnreadCount: totalUnreadCount,
-            repliesUnreadCount: getUnreadCountResponse.replies,
-            mentionsUnreadCount: getUnreadCountResponse.mentions,
-            messagesUnreadCount: getUnreadCountResponse.privateMessages,
+            repliesUnreadCount: unread.replies,
+            mentionsUnreadCount: unread.mentions,
+            messagesUnreadCount: unread.privateMessages,
             inboxReplyMarkedAsRead: event.commentReplyId,
           ));
         } catch (e) {
@@ -461,13 +428,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   Future<void> _markAllAsRead(MarkAllAsReadEvent event, emit) async {
     try {
       emit(state.copyWith(status: InboxStatus.refreshing, errorMessage: ''));
-
-      final l10n = AppLocalizations.of(GlobalContext.context)!;
-      final account = await fetchActiveProfile();
-      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      await lemmy.run(MarkAllAsRead(auth: account.jwt!));
+      await notificationRepository.markAllNotificationsAsRead();
 
       // Update all the replies, mentions, and messages to be read locally
       List<CommentReplyView> updatedReplies = state.replies.map((commentReplyView) => commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: true))).toList();

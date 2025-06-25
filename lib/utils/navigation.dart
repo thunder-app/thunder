@@ -30,6 +30,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/pages/instance_page.dart';
 import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/modlog/modlog.dart';
+import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -476,13 +477,14 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   // Load the notifications
   while (!doneFetching) {
-    final GetRepliesResponse getRepliesResponse = await (LemmyClient()..changeBaseUrl(account.instance)).lemmyApiV3.run(GetReplies(
-          sort: CommentSortType.new_.toLemmyType(),
-          page: currentPage,
-          limit: 50,
-          unreadOnly: replyId == null,
-          auth: account.jwt,
-        ));
+    final client = LemmyClient()..changeBaseUrl(account.instance);
+
+    final getRepliesResponse = await LemmyNotificationRepository(client: client.lemmyApiV3).replies(
+      unread: replyId == null,
+      limit: 50,
+      sort: CommentSortType.new_,
+      page: currentPage,
+    );
 
     allReplies.addAll(getRepliesResponse.replies);
     specificReply ??= getRepliesResponse.replies.firstWhereOrNull((crv) => crv.commentReply.id == replyId);
