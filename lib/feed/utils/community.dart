@@ -4,58 +4,14 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-
-/// Logic to block a community
-Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-  BlockCommunityResponse blockedCommunity = await lemmy.run(BlockCommunity(
-    auth: account.jwt!,
-    communityId: communityId,
-    block: block,
-  ));
-
-  return blockedCommunity;
-}
-
-Future<ThunderCommunity> followCommunity(int communityId, bool follow) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-  final response = await lemmy.run(FollowCommunity(auth: account.jwt!, communityId: communityId, follow: follow));
-
-  return ThunderCommunity(response.communityView.community, communityView: response.communityView);
-}
-
-Future<Map<String, dynamic>> fetchCommunityInformation({int? id, String? name}) async {
-  assert(!(id == null && name == null));
-
-  final account = await fetchActiveProfile();
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-  final response = await lemmy.run(GetCommunity(auth: account.jwt, id: id, name: name));
-
-  return {
-    "community": ThunderCommunity(response.communityView.community, communityView: response.communityView),
-    "instance": response.site != null ? ThunderInstance(response.site!) : null,
-    "moderators": response.moderators.map((mod) => ThunderUser(mod.moderator)).toList(),
-  };
-}
 
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   try {

@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -289,8 +290,8 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = await fetchActiveProfile();
-    await LemmyClient.instance.lemmyApiV3.run(GetCommunity(name: communityName, auth: account.jwt));
+    final repository = context.read<CommunityRepository>();
+    await repository.getCommunity(name: communityName);
     return true;
   } catch (e) {
     // Ignore and return false below.

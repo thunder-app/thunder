@@ -5,12 +5,12 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
-import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -30,10 +30,12 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
-  late PostRepository repository;
+  late PostRepository postRepository;
+  late CommunityRepository communityRepository;
 
-  FeedBloc({PostRepository? repository}) : super(const FeedState()) {
-    this.repository = repository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+  FeedBloc({PostRepository? postRepository, CommunityRepository? communityRepository}) : super(const FeedState()) {
+    this.postRepository = postRepository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
 
     /// Handles resetting the feed to its initial state
     on<ResetFeedEvent>(
@@ -172,7 +174,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          updatedPost = await repository.vote(post, event.value);
+          updatedPost = await postRepository.vote(post, event.value);
           state.posts[existingPostIndex] = updatedPost;
 
           emit(state.copyWith(status: FeedStatus.success));
@@ -194,7 +196,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          updatedPost = await repository.save(post, event.value);
+          updatedPost = await postRepository.save(post, event.value);
           state.posts[existingPostIndex] = updatedPost;
 
           emit(state.copyWith(status: FeedStatus.success));
@@ -221,7 +223,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.read(post.id, event.value);
+          bool success = await postRepository.read(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -261,7 +263,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             emit(state.copyWith(status: FeedStatus.success));
             emit(state.copyWith(status: FeedStatus.fetching));
 
-            List<int> failed = await repository.readMultiple(postIds, event.value);
+            List<int> failed = await postRepository.readMultiple(postIds, event.value);
             if (failed.isEmpty) return emit(state.copyWith(status: FeedStatus.success));
 
             // Restore the original post contents if not successful
@@ -291,7 +293,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.hide(post.id, event.value);
+          bool success = await postRepository.hide(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -315,7 +317,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.delete(post.id, event.value);
+          bool success = await postRepository.delete(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -331,7 +333,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         final post = state.posts[existingPostIndex];
 
         try {
-          await repository.report(post.id, event.value);
+          await postRepository.report(post.id, event.value);
           return emit(state.copyWith(status: FeedStatus.success));
         } catch (e) {
           return emit(state.copyWith(status: FeedStatus.failure));
@@ -349,7 +351,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.lock(post.id, event.value);
+          bool success = await postRepository.lock(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -373,7 +375,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.pinCommunity(post.id, event.value);
+          bool success = await postRepository.pinCommunity(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -397,7 +399,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          bool success = await repository.remove(post.id, event.value['remove'], event.value['reason']);
+          bool success = await postRepository.remove(post.id, event.value['remove'], event.value['reason']);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
@@ -512,7 +514,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case FeedType.community:
           // Fetch community information
           try {
-            final result = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
+            final result = await communityRepository.getCommunity(id: event.communityId, name: event.communityName);
             community = result['community'];
             communityInstance = result['instance'];
             communityModerators = result['moderators'];
@@ -656,7 +658,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     try {
-      final post = await repository.create(
+      final post = await postRepository.create(
         communityId: event.communityId,
         name: event.name,
         body: event.body,

@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -24,10 +25,12 @@ part 'post_state.dart';
 class PostBloc extends Bloc<PostEvent, PostState> {
   late PostRepository postRepository;
   late CommentRepository commentRepository;
+  late CommunityRepository communityRepository;
 
-  PostBloc({PostRepository? postRepository, CommentRepository? commentRepository}) : super(PostState()) {
+  PostBloc({PostRepository? postRepository, CommentRepository? commentRepository, CommunityRepository? communityRepository}) : super(PostState()) {
     this.postRepository = postRepository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
@@ -82,7 +85,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // If we can't get mods from the post response, fallback to getting the whole community.
       if (moderators == null && post != null) {
         try {
-          moderators = (await lemmy.run(GetCommunity(id: post.community?.id, auth: account.jwt))).moderators;
+          final response = await communityRepository.getCommunity(id: post.community?.id);
+          moderators = response['moderators'];
         } catch (e) {
           // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
         }

@@ -26,6 +26,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -146,6 +147,9 @@ class _ThunderAppState extends State<ThunderApp> {
   /// The global search repository
   SearchRepository? _searchRepository;
 
+  /// The global community repository
+  CommunityRepository? _communityRepository;
+
   @override
   void initState() {
     super.initState();
@@ -184,6 +188,7 @@ class _ThunderAppState extends State<ThunderApp> {
     _instanceRepository?.dispose();
     _notificationRepository?.dispose();
     _searchRepository?.dispose();
+    _communityRepository?.dispose();
 
     // Dispose the LemmyClient stream controller
     LemmyClient.dispose();
@@ -223,6 +228,12 @@ class _ThunderAppState extends State<ThunderApp> {
             return _searchRepository!;
           },
         ),
+        RepositoryProvider<CommunityRepository>(
+          create: (context) {
+            _communityRepository = LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+            return _communityRepository!;
+          },
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -243,13 +254,13 @@ class _ThunderAppState extends State<ThunderApp> {
             create: (context) => AnonymousSubscriptionsBloc(),
           ),
           BlocProvider(
-            create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
+            create: (context) => CommunityBloc(),
           ),
           BlocProvider(
             create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
           ),
           BlocProvider(
-            create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
+            create: (context) => UserBloc(),
           ),
           BlocProvider(
             create: (context) => NetworkCheckerCubit()..getConnectionType(),
