@@ -327,7 +327,12 @@ class _PostPageState extends State<PostPage> {
           return RefreshIndicator(
             onRefresh: () async {
               HapticFeedback.mediumImpact();
-              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+              if (this.highlightedCommentId != null) {
+                // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
+                context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+              } else {
+                context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost));
+              }
             },
             edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
             child: Scaffold(
@@ -423,13 +428,22 @@ class _PostPageState extends State<PostPage> {
                                       centered: combineNavAndFab,
                                       onPressed: () {
                                         HapticFeedback.mediumImpact();
-                                        PostFabAction.refresh.execute(
-                                          context: context,
-                                          post: state.post,
-                                          postId: state.post?.id,
-                                          highlightedCommentId: state.highlightedCommentId,
-                                          selectedCommentPath: state.selectedCommentPath,
-                                        );
+                                        if (this.highlightedCommentId != null) {
+                                          // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
+                                          PostFabAction.refresh.execute(
+                                            context: context,
+                                            post: state.post,
+                                            postId: state.post?.id,
+                                            highlightedCommentId: widget.highlightedCommentId,
+                                            selectedCommentPath: widget.commentPath,
+                                          );
+                                        } else {
+                                          PostFabAction.refresh.execute(
+                                            context: context,
+                                            post: state.post,
+                                            postId: state.post?.id,
+                                          );
+                                        }
                                       },
                                       title: PostFabAction.refresh.getTitle(context),
                                       icon: Icon(
@@ -522,6 +536,8 @@ class _PostPageState extends State<PostPage> {
                           },
                           onUserChanged: () => userChanged = true,
                           onPostChanged: (post) => context.read<PostBloc>().add(GetPostEvent(post: post)),
+                          highlightedCommentId: this.highlightedCommentId,
+                          commentPath: widget.commentPath,
                         ),
                         if (state.status == PostStatus.initial || state.status == PostStatus.loading)
                           const SliverFillRemaining(
@@ -540,13 +556,18 @@ class _PostPageState extends State<PostPage> {
                                     (
                                       text: l10n.retry,
                                       action: () {
-                                        context.read<PostBloc>().add(
-                                              GetPostEvent(
-                                                post: widget.initialPost,
-                                                selectedCommentPath: widget.commentPath,
-                                                highlightedCommentId: widget.highlightedCommentId,
-                                              ),
-                                            );
+                                        if (this.highlightedCommentId != null) {
+                                          // If we're viewing a specific comment thread, retry with that context unless "View All Comments" is pressed
+                                          context.read<PostBloc>().add(
+                                                GetPostEvent(
+                                                  post: widget.initialPost,
+                                                  selectedCommentPath: widget.commentPath,
+                                                  highlightedCommentId: widget.highlightedCommentId,
+                                                ),
+                                              );
+                                        } else {
+                                          context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost));
+                                        }
                                       },
                                       loading: false,
                                     ),

@@ -41,6 +41,12 @@ class PostPageAppBar extends StatelessWidget {
   /// Callback for when the post changes
   final void Function(ThunderPost post)? onPostChanged;
 
+  /// The ID of the comment that should be highlighted
+  final int? highlightedCommentId;
+
+  /// The path of the comment that should be highlighted
+  final String? commentPath;
+
   const PostPageAppBar({
     super.key,
     this.viewSource = false,
@@ -50,6 +56,8 @@ class PostPageAppBar extends StatelessWidget {
     this.onSelectText,
     this.onUserChanged,
     this.onPostChanged,
+    this.highlightedCommentId,
+    this.commentPath,
   });
 
   @override
@@ -72,6 +80,8 @@ class PostPageAppBar extends StatelessWidget {
           onSelectText: onSelectText,
           onUserChanged: onUserChanged,
           onPostChanged: onPostChanged,
+          highlightedCommentId: highlightedCommentId,
+          commentPath: commentPath,
         )
       ],
     );
@@ -152,6 +162,12 @@ class PostAppBarActions extends StatelessWidget {
   /// Callback for when the post changes
   final void Function(ThunderPost post)? onPostChanged;
 
+  /// The ID of the comment that should be highlighted
+  final int? highlightedCommentId;
+
+  /// The path of the comment that should be highlighted
+  final String? commentPath;
+
   const PostAppBarActions({
     super.key,
     this.viewSource = false,
@@ -161,6 +177,8 @@ class PostAppBarActions extends StatelessWidget {
     this.onSelectText,
     this.onUserChanged,
     this.onPostChanged,
+    this.highlightedCommentId,
+    this.commentPath,
   });
 
   @override
@@ -175,7 +193,14 @@ class PostAppBarActions extends StatelessWidget {
           onPressed: () async {
             HapticFeedback.mediumImpact();
             await onReset?.call();
-            if (context.mounted) context.read<PostBloc>().add(GetPostEvent(post: state.post));
+            if (context.mounted) {
+              if (highlightedCommentId != null) {
+                // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
+                context.read<PostBloc>().add(GetPostEvent(post: state.post, selectedCommentPath: commentPath, highlightedCommentId: highlightedCommentId));
+              } else {
+                context.read<PostBloc>().add(GetPostEvent(post: state.post));
+              }
+            }
           },
         ),
         IconButton(
