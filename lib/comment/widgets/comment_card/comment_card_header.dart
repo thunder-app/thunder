@@ -91,7 +91,7 @@ class CommentCardHeader extends StatelessWidget {
                 ),
                 Row(
                   spacing: 8.0,
-                  children: hidden
+                  children: hidden && (comment.childCount ?? 0) > 0
                       ? [CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden)]
                       : [
                           if (saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
