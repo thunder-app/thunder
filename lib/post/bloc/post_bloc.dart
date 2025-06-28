@@ -11,6 +11,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
@@ -20,7 +21,11 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
-  PostBloc() : super(PostState()) {
+  late PostRepository repository;
+
+  PostBloc({PostRepository? repository}) : super(PostState()) {
+    this.repository = repository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
     on<ReportCommentEvent>(_reportCommentEvent);
@@ -155,7 +160,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.success, post: updatedPost));
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      updatedPost = await votePost(originalPost, event.score);
+      updatedPost = await repository.vote(originalPost, event.score);
 
       return emit(state.copyWith(status: PostStatus.success, post: updatedPost));
     } catch (e) {
@@ -180,7 +185,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.success, post: updatedPost));
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      updatedPost = await savePost(originalPost, event.save);
+      updatedPost = await repository.save(originalPost, event.save);
 
       return emit(state.copyWith(status: PostStatus.success, post: updatedPost));
     } catch (e) {

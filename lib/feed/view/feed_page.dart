@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
@@ -12,7 +13,6 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -138,7 +138,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
     }
 
     return BlocProvider<FeedBloc>(
-      create: (_) => FeedBloc(lemmyClient: LemmyClient.instance)
+      create: (_) => FeedBloc()
         ..add(FeedFetchedEvent(
           feedType: widget.feedType,
           feedListType: widget.feedListType,

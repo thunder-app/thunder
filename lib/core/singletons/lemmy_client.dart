@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:version/version.dart';
 
@@ -8,13 +10,24 @@ import 'package:thunder/core/enums/post_sort_type.dart';
 class LemmyClient {
   LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
+  // Stream controller for broadcasting client changes
+  static final StreamController<LemmyApiV3> _clientChangeController = StreamController<LemmyApiV3>.broadcast();
+
+  // Stream that other widgets can listen to for client changes
+  static Stream<LemmyApiV3> get onClientChanged => _clientChangeController.stream;
+
   LemmyClient();
 
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
     lemmyApiV3 = LemmyApiV3(baseUrl, debug: true);
+    _clientChangeController.add(lemmyApiV3); // Broadcast the new client to all listeners
     _populateSiteInfo(); // Do NOT await this. Let it populate in the background.
+  }
+
+  static void dispose() {
+    _clientChangeController.close();
   }
 
   static final LemmyClient _instance = LemmyClient._initialize();

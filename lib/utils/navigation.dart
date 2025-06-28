@@ -33,7 +33,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
-import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/about_settings_page.dart';
@@ -155,32 +155,19 @@ Future<void> navigateToPost(
 
   ThunderPost? pvm = post;
 
-  if (pvm == null) {
-    final client = LemmyClient.instance.lemmyApiV3;
-    final account = await fetchActiveProfile();
-
-    GetPostResponse getPostResponse = await client.run(
-      GetPost(
-        auth: account.jwt,
-        id: postId,
-      ),
-    );
-
-    List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
-
-    pvm = posts.first;
-  }
+  final repository = context.read<PostRepository>();
+  pvm ??= await repository.getPost(postId!);
 
   // Mark post as read when tapped
   if (profileBloc.state.isLoggedIn) {
-    feedBloc?.add(FeedItemActionedEvent(postId: pvm.id, postAction: PostAction.read, value: true));
+    feedBloc?.add(FeedItemActionedEvent(postId: pvm!.id, postAction: PostAction.read, value: true));
   }
 
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm.url
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.url
       ? _cachedPostBloc!.postBloc
       : (_cachedPostBloc = (
           postApId: pvm.url,
@@ -238,7 +225,7 @@ Future<void> navigateToModlogPage(
 
   // Optional blocs
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
-  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : FeedBloc(lemmyClient: lemmyClient ?? LemmyClient.instance);
+  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : FeedBloc(repository: LemmyPostRepository(client: lemmyClient?.lemmyApiV3 ?? LemmyClient.instance.lemmyApiV3));
 
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;
@@ -280,18 +267,8 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
   final ThunderState state = context.read<ThunderBloc>().state;
   final bool reduceAnimations = state.reduceAnimations;
 
-  final client = LemmyClient.instance.lemmyApiV3;
-  final account = await fetchActiveProfile();
-
-  GetPostResponse getPostResponse = await client.run(
-    GetPost(
-      auth: account.jwt,
-      id: comment.post?.id,
-      commentId: comment.id,
-    ),
-  );
-
-  List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
+  final repository = context.read<PostRepository>();
+  final post = await repository.getPost(comment.post!.id, commentId: comment.id);
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -310,7 +287,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
         BlocProvider(create: (context) => PostBloc()),
       ],
       child: PostPage(
-        initialPost: posts.first,
+        initialPost: post!,
         highlightedCommentId: comment.id,
         commentPath: comment.path,
         onPostUpdated: (ThunderPost post) {},
@@ -416,7 +393,7 @@ Future<void> navigateToCreatePostPage(
       builder: (navigatorContext) {
         return MultiBlocProvider(
           providers: [
-            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => FeedBloc()),
             if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
             BlocProvider<ProfileBloc>.value(value: profileBloc),

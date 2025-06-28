@@ -2,22 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
-
-extension on MarkPostAsReadResponse {
-  bool isSuccess() {
-    return postView != null || success == true;
-  }
-}
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyVotePost(ThunderPost post, int voteType) {
@@ -93,142 +85,6 @@ ThunderPost optimisticallyPinPostToCommunity(ThunderPost post, bool pin) {
 // Optimistically removes a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyRemovePost(ThunderPost post, bool remove) {
   return post.copyWith(post: post.internalPost.copyWith(removed: remove));
-}
-
-/// Logic to mark post as read
-Future<bool> markPostAsRead(int postId, bool read) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
-    final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
-    return response.isSuccess();
-  } else {
-    final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postId: postId, read: read));
-    return response.isSuccess();
-  }
-}
-
-/// Logic to mark multiple posts as read
-Future<List<int>> markPostsAsRead(List<int> postIds, bool read) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  List<int> failed = [];
-
-  if (LemmyClient.instance.supportsFeature(LemmyFeature.multiRead)) {
-    final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: postIds, read: read));
-    if (!response.isSuccess()) failed = List<int>.generate(postIds.length, (index) => index);
-  } else {
-    for (int i = 0; i < postIds.length; i++) {
-      final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postId: postIds[i], read: read));
-      if (!response.isSuccess()) failed.add(i);
-    }
-  }
-
-  return failed;
-}
-
-/// Logic to mark post as hidden
-Future<bool> markPostAsHidden(int postId, bool hide) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
-  return response.success;
-}
-
-/// Logic to delete post
-Future<bool> deletePost(int postId, bool delete) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
-  return response.postView.post.deleted == delete;
-}
-
-/// Logic to lock a post
-Future<bool> lockPost(int postId, bool lock) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
-  return response.postView.post.locked == lock;
-}
-
-/// Logic to pin a post to a community
-Future<bool> pinPostToCommunity(int postId, bool pin) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
-  return response.postView.post.featuredCommunity == pin;
-}
-
-/// Logic to remove a post to a community (moderator action)
-Future<bool> removePost(int postId, bool remove, String reason) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
-  return response.postView.post.removed == remove;
-}
-
-/// Logic to report a given post
-Future<PostReportResponse> reportPost(int postId, String reason) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
-  return response;
-}
-
-/// Logic to vote on a post
-Future<ThunderPost> votePost(ThunderPost post, int score) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
-  return post.copyWith(postView: response.postView, post: response.postView.post);
-}
-
-/// Logic to save a post
-Future<ThunderPost> savePost(ThunderPost post, bool save) async {
-  final l10n = GlobalContext.l10n;
-  final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyClient.instance.lemmyApiV3;
-
-  final response = await lemmy.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
-  return post.copyWith(postView: response.postView, post: response.postView.post);
 }
 
 /// Parse a post with media

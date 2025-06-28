@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 
 import 'package:intl/intl.dart';
 import 'package:expandable/expandable.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
@@ -18,11 +17,10 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -331,7 +329,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Generates an example post to show in the post preview
   Future<List<ThunderPost?>> getExamplePosts() async {
-    ThunderPost? postText = await createExamplePost(
+    final repository = context.read<PostRepository>();
+
+    ThunderPost? postText = await repository.createExample(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
       personInstance: 'lemmy.world',
@@ -342,7 +342,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4,
     );
 
-    ThunderPost? postImage = await createExamplePost(
+    ThunderPost? postImage = await repository.createExample(
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -355,7 +355,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4230,
     );
 
-    ThunderPost? postLink = await createExamplePost(
+    ThunderPost? postLink = await repository.createExample(
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -501,7 +501,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                         if (snapshot.data == null) return Container();
 
                         return BlocProvider(
-                          create: (context) => FeedBloc(lemmyClient: LemmyClient()),
+                          create: (context) => FeedBloc(),
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,

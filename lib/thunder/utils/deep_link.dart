@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/utils/profiles.dart';
@@ -8,7 +9,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/modlog.dart';
-import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -233,13 +234,12 @@ Future<DeepLinkResult> _navigateToPost(BuildContext context, String link) async 
   }
 
   try {
-    final lemmy = LemmyClient.instance.lemmyApiV3;
-    final account = await fetchActiveProfile();
-    final response = await lemmy.run(GetPost(id: postId, auth: account.jwt));
+    final repository = context.read<PostRepository>();
+    final post = await repository.getPost(postId);
 
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
 
-    navigateToPost(context, post: (await parsePosts([response.postView])).first);
+    navigateToPost(context, post: post);
     return DeepLinkResult.successful();
   } catch (e) {
     throw DeepLinkException(GlobalContext.l10n.exceptionProcessingUri, url: link, type: DeepLinkErrorType.entityResolution);

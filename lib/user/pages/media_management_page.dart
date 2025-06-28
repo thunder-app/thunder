@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
@@ -179,7 +179,7 @@ class MediaManagementPage extends StatelessWidget {
                                                             else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
-                                                                  value: FeedBloc(lemmyClient: LemmyClient.instance),
+                                                                  value: FeedBloc(),
                                                                   child: CustomScrollView(
                                                                     physics: const NeverScrollableScrollPhysics(),
                                                                     shrinkWrap: true,

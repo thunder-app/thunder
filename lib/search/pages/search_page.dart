@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -164,7 +164,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     return BlocProvider(
-      create: (context) => FeedBloc(lemmyClient: LemmyClient.instance),
+      create: (context) => FeedBloc(),
       child: MultiBlocListener(
         listeners: [
           BlocListener<FeedBloc, FeedState>(listener: (context, state) => setState(() {})),

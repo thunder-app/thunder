@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Packages
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -15,6 +14,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 
 // Internal
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/core/enums/enums.dart';
@@ -165,7 +165,7 @@ class _ThunderState extends State<Thunder> {
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
-        BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+        BlocProvider(create: (context) => FeedBloc()),
       ],
       child: MultiBlocListener(
         listeners: [
