@@ -127,6 +127,9 @@ class _ThunderAppState extends State<ThunderApp> {
 
   PageController thunderPageController = PageController(initialPage: 0);
 
+  /// The global post repository
+  PostRepository? _postRepository;
+
   @override
   void initState() {
     super.initState();
@@ -158,13 +161,24 @@ class _ThunderAppState extends State<ThunderApp> {
   void dispose() {
     super.dispose();
     notificationsStreamController.close();
+
+    // Clean up repositories that are listening to the LemmyClient stream
+    _postRepository?.dispose();
+
+    // Dispose the LemmyClient stream controller
+    LemmyClient.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3)),
+        RepositoryProvider<PostRepository>(
+          create: (context) {
+            _postRepository = LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+            return _postRepository!;
+          },
+        ),
       ],
       child: MultiBlocProvider(
         providers: [

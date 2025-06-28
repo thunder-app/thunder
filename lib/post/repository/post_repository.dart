@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -82,14 +85,28 @@ abstract class PostRepository {
   /// Reports a post
   /// @TODO: Change the return type to an internal model
   Future<PostReportResponse> report(int postId, String reason);
+
+  /// Dispose method to clean up resources
+  void dispose();
 }
 
 /// Implementation of [PostRepository] using Lemmy API
 class LemmyPostRepository implements PostRepository {
   /// The Lemmy client to use for the repository
-  final LemmyApiV3 client;
+  LemmyApiV3 client;
 
-  LemmyPostRepository({required this.client});
+  /// Stream subscription for client changes
+  StreamSubscription<LemmyApiV3>? _subscription;
+
+  LemmyPostRepository({required this.client}) {
+    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
 
   @override
   Future<ThunderPost?> getPost(int postId, {int? commentId}) async {
