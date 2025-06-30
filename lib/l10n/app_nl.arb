@@ -1519,8 +1519,60 @@
   "@enablePostFab": {
     "description": "Enable the Floating Action Button for the post"
   },
-  "hideNsfwPostsFromFeed": "NSFW-berichten verbeegen uit feed",
+  "hideNsfwPostsFromFeed": "NSFW-berichten verbergen uit feed",
   "@hideNsfwPostsFromFeed": {
     "description": "Toggle to hide NSFW posts from the feed."
+  },
+  "noPostsFound": "Er zĳn geen berichten gevonden.",
+  "@noPostsFound": {},
+  "postSavedAsDraft": "Bericht opgeslagen als concept",
+  "@postSavedAsDraft": {},
+  "postShowUserInstance": "Gebruikers­instantie tonen",
+  "@postShowUserInstance": {
+    "description": "Whether to show the user instance for post listings"
+  },
+  "postSwipeActions": "Veegacties voor berichten",
+  "@postSwipeActions": {
+    "description": "Setting for post swipe actions"
+  },
+  "showCrossPosts": "Kruis­berichten tonen",
+  "@showCrossPosts": {
+    "description": "Toggle to show cross posts."
+  },
+  "showFullDateDescription": "Volledige datum tonen op berichten",
+  "@showFullDateDescription": {
+    "description": "Description to show full date on posts"
+  },
+  "showHiddenPosts": "Verborgen berichten tonen",
+  "@showHiddenPosts": {
+    "description": "The name of the setting for showing hidden posts"
+  },
+  "showPostSaveAction": "Opslaan-knop tonen",
+  "@showPostSaveAction": {
+    "description": "Toggle to show save button."
+  },
+  "showReadPosts": "Gelezen berichten tonen",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "totalPosts": "{x} berichten",
+  "@totalPosts": {
+    "description": "The total posts created by a user"
+  },
+  "averageComments": "{x} opmerkingen/maand",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "averageContributions": "{x} bĳdragen/maand",
+  "@averageContributions": {
+    "description": "Describes the average number of contributions (both posts and comments) in the past month"
+  },
+  "totalComments": "{x} opmerkingen",
+  "@totalComments": {
+    "description": "The total comments created by a user"
+  },
+  "xYearsOld": "{x} jaar oud",
+  "@xYearsOld": {
+    "description": "An account descriptor representing how old an account is"
   }
 }
