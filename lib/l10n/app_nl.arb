@@ -1484,5 +1484,43 @@
   "favorite": "Opslaan als favoriet",
   "@favorite": {
     "description": "Action for favoriting a community"
+  },
+  "doNotShowAgain": "Niet opnieuw tonen",
+  "@doNotShowAgain": {
+    "description": "Action for hiding something permanently"
+  },
+  "searchPostSearchType": "Selecteer zoektype voor berichten",
+  "@searchPostSearchType": {},
+  "selectSearchType": "Selecteer zoektype",
+  "@selectSearchType": {},
+  "noInstanceBlocks": "Er zĳn geen geblokkeerde instanties.",
+  "@noInstanceBlocks": {},
+  "noProfileBioSet": "Geen profiel­biografie ingesteld",
+  "@noProfileBioSet": {
+    "description": "Message for no profile bio set"
+  },
+  "joined": "Lid geworden op {x}",
+  "@joined": {
+    "description": "Describes the time when a user joined the site (or was created)"
+  },
+  "averagePosts": "{x} berichten/maand",
+  "@averagePosts": {
+    "description": "Describes the average number of posts created in the past month"
+  },
+  "dimReadPosts": "Gelezen berichten dimmen",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "enableFloatingButtonOnPosts": "Zwevende knop op berichten inschakelen",
+  "@enableFloatingButtonOnPosts": {
+    "description": "Setting for enable floating button on posts"
+  },
+  "enablePostFab": "Zwevende knop op berichten inschakelen",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "hideNsfwPostsFromFeed": "NSFW-berichten verbeegen uit feed",
+  "@hideNsfwPostsFromFeed": {
+    "description": "Toggle to hide NSFW posts from the feed."
   }
 }
