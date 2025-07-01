@@ -1571,8 +1571,26 @@
   "@totalComments": {
     "description": "The total comments created by a user"
   },
-  "xYearsOld": "{x} jaar oud",
+  "xYearsOld": "{count, plural, other {{x} jaar oud}}",
   "@xYearsOld": {
     "description": "An account descriptor representing how old an account is"
+  },
+  "reply": "{count, plural, one {Reactie} other {Reacties}}",
+  "@reply": {},
+  "unableToLoadReplies": "Kan niet meer reacties laden.",
+  "@unableToLoadReplies": {},
+  "loadMorePlural": "Nog {count} reacties laden…",
+  "@loadMorePlural": {},
+  "message": "{count, plural, one {Bericht} other {Berichten}}",
+  "@message": {},
+  "mention": "{count, plural, one {Vermelding} other {Vermeldingen}}",
+  "@mention": {},
+  "markAllAsRead": "Alles als gelezen markeren",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "confirmMarkAllAsReadTitle": "Alles als gelezen markeren?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
   }
 }
