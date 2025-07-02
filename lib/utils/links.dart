@@ -11,7 +11,7 @@ import 'package:intl/message_format.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
@@ -139,9 +139,6 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
 /// Attempts to perform in-app navigtion to communities, users, posts, and comments
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
 void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-  final account = await fetchActiveProfile();
-
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
   if (communityName != null && (!context.mounted || await _testValidCommunity(context, url, communityName, communityName.split('@')[1]))) {
@@ -194,12 +191,8 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       // Show the loading page while we fetch the comment
       if (context.mounted) showLoadingPage(context);
 
-      final response = await lemmy.run(GetComment(
-        id: commentId,
-        auth: account.jwt,
-      ));
-
-      final comment = ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+      final repository = context.read<CommentRepository>();
+      final comment = await repository.getComment(commentId);
 
       if (context.mounted) {
         navigateToComment(context, comment);

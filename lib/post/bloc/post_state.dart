@@ -15,7 +15,7 @@ class PostState extends Equatable {
     this.status = PostStatus.initial,
     this.post,
     this.commentNodes,
-    this.commentResponseMap = const <int, CommentView>{},
+    this.commentResponseMap = const [],
     this.commentPage = 1,
     this.commentCount = 0,
     this.moderators,
@@ -45,7 +45,7 @@ class PostState extends Equatable {
 
   // Comment related data
   final CommentNode? commentNodes;
-  final Map<int, CommentView> commentResponseMap;
+  final List<ThunderComment> commentResponseMap;
   final int commentPage;
   final int commentCount;
   final bool hasReachedCommentEnd;
@@ -75,7 +75,7 @@ class PostState extends Equatable {
     required PostStatus status,
     ThunderPost? post,
     CommentNode? commentNodes,
-    Map<int, CommentView>? commentResponseMap,
+    List<ThunderComment>? commentResponseMap,
     int? commentPage,
     int? commentCount,
     bool? hasReachedCommentEnd,

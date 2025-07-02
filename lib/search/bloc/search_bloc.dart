@@ -3,9 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
@@ -15,7 +16,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
-import 'package:thunder/comment/comment.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -30,7 +30,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc() : super(SearchState()) {
+  late CommentRepository commentRepository;
+
+  SearchBloc({CommentRepository? commentRepository}) : super(SearchState()) {
+    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+
     on<StartSearchEvent>(
       _startSearchEvent,
       // Use restartable here so that a long search can essentially be "canceled" by a new one.
@@ -368,21 +372,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(status: SearchStatus.performingCommentAction));
 
     try {
-      ThunderComment updatedComment = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
+      if (comment == null) return;
+
+      ThunderComment updatedComment = await commentRepository.vote(comment, event.score).timeout(timeout, onTimeout: () {
         throw Exception(l10n.timeoutUpvoteComment);
       });
 
       // If it worked, update and emit
-      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
-      if (comment != null) {
-        int index = (state.comments?.indexOf(comment))!;
+      int index = (state.comments?.indexOf(comment))!;
 
-        List<ThunderComment> comments = List.from(state.comments ?? []);
-        comments.insert(index, updatedComment);
-        comments.remove(comment);
+      List<ThunderComment> comments = List.from(state.comments ?? []);
+      comments.insert(index, updatedComment);
+      comments.remove(comment);
 
-        emit(state.copyWith(status: SearchStatus.success, comments: comments));
-      }
+      emit(state.copyWith(status: SearchStatus.success, comments: comments));
     } catch (e) {
       // It just fails
     }
@@ -394,21 +398,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(status: SearchStatus.performingCommentAction));
 
     try {
-      ThunderComment updatedComment = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
+      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
+      if (comment == null) return;
+
+      ThunderComment updatedComment = await commentRepository.save(comment, event.save).timeout(timeout, onTimeout: () {
         throw Exception(l10n.timeoutUpvoteComment);
       });
 
       // If it worked, update and emit
-      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
-      if (comment != null) {
-        int index = (state.comments?.indexOf(comment))!;
+      int index = (state.comments?.indexOf(comment))!;
 
-        List<ThunderComment> comments = List.from(state.comments ?? []);
-        comments.insert(index, updatedComment);
-        comments.remove(comment);
+      List<ThunderComment> comments = List.from(state.comments ?? []);
+      comments.insert(index, updatedComment);
+      comments.remove(comment);
 
-        emit(state.copyWith(status: SearchStatus.success, comments: comments));
-      }
+      emit(state.copyWith(status: SearchStatus.success, comments: comments));
     } catch (e) {
       // It just fails
     }
