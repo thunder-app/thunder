@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -87,7 +87,7 @@ Future<void> handleDeepLinkNavigation(BuildContext context, {required LinkType l
       throw DeepLinkException(GlobalContext.l10n.invalidUrl, type: DeepLinkErrorType.invalidUrl);
     }
 
-    await _initializeLemmyClient();
+    await _initializeLemmyClient(context);
 
     final normalizedLink = _normalizeLink(link);
     if (normalizedLink.isEmpty) {
@@ -117,7 +117,7 @@ Future<void> handleDeepLinkNavigation(BuildContext context, {required LinkType l
 }
 
 /// Initializes the client with the currently active profile. Includes retry logic and validation.
-Future<void> _initializeLemmyClient() async {
+Future<void> _initializeLemmyClient(BuildContext context) async {
   int maxRetries = 2;
   int attempts = 0;
 
@@ -132,7 +132,8 @@ Future<void> _initializeLemmyClient() async {
       LemmyClient.instance.changeBaseUrl(instance);
 
       // Validate connection by making a simple request
-      await LemmyClient.instance.lemmyApiV3.run(GetSite());
+      final repository = context.read<InstanceRepository>();
+      await repository.getSiteInfo();
       return;
     } catch (e) {
       attempts++;

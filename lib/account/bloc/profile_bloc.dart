@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -14,6 +15,7 @@ import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -30,7 +32,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(const ProfileState()) {
+  late InstanceRepository instanceRepository;
+
+  ProfileBloc({InstanceRepository? instanceRepository}) : super(const ProfileState()) {
+    this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
+
     // This event should be triggered during the start of the app, or when there is a change in the active account
     on<InitializeAuth>(_initializeAuth, transformer: throttleDroppable(throttleDuration));
 
@@ -78,14 +84,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     LemmyClient.instance.changeBaseUrl(account.instance.replaceAll('https://', ''));
 
     // Check to see the instance settings (for checking if downvotes are enabled)
-    final lemmy = LemmyClient.instance.lemmyApiV3;
-
     bool downvotesEnabled = true;
     GetSiteResponse? getSiteResponse;
 
     try {
-      getSiteResponse = await lemmy.run(GetSite(auth: account.jwt)).timeout(const Duration(seconds: 15));
-
+      getSiteResponse = await instanceRepository.getSiteInfo().timeout(const Duration(seconds: 15));
       downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
     } catch (e) {
       return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
@@ -128,7 +131,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       if (response.jwt == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
-      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: response.jwt));
+      final getSiteResponse = await instanceRepository.getSiteInfo();
 
       if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
         return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => getSiteResponse.siteView.site.contentWarning!));
@@ -264,8 +267,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading));
 
       // Refresh the site information, which includes the user's settings
-      final lemmy = LemmyClient.instance.lemmyApiV3;
-      final response = await lemmy.run(GetSite(auth: account.jwt));
+      final response = await instanceRepository.getSiteInfo();
 
       return emit(state.copyWith(status: ProfileStatus.success, getSiteResponse: () => response));
     } catch (e) {

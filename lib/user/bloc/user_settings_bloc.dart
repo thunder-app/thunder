@@ -4,9 +4,10 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
@@ -27,7 +28,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
-  UserSettingsBloc() : super(const UserSettingsState()) {
+  late InstanceRepository instanceRepository;
+
+  UserSettingsBloc({InstanceRepository? instanceRepository}) : super(const UserSettingsState()) {
+    this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
+
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -74,14 +79,13 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _getUserSettingsEvent(GetUserSettingsEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
     final l10n = AppLocalizations.of(GlobalContext.context)!;
     final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
-      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
+      final getSiteResponse = await instanceRepository.getSiteInfo();
+
       return emit(
         state.copyWith(
           status: UserSettingsStatus.success,
@@ -163,16 +167,12 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _getUserBlocksEvent(GetUserBlocksEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
     final l10n = AppLocalizations.of(GlobalContext.context)!;
     final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
-      GetSiteResponse getSiteResponse = await lemmy.run(
-        GetSite(auth: account.jwt),
-      );
+      final getSiteResponse = await instanceRepository.getSiteInfo();
 
       final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
       final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
