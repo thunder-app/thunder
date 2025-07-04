@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -15,6 +16,7 @@ import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -58,21 +60,20 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     title: title,
     inputLabel: l10n.username,
     onSubmitted: onSubmitted,
-    getSuggestions: getUserSuggestions,
+    getSuggestions: (query) => getUserSuggestions(context, query),
     suggestionBuilder: (payload) => buildUserSuggestionWidget(context, payload),
   );
 }
 
-Future<List<ThunderUser>> getUserSuggestions(String query) async {
+Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query) async {
   if (query.isNotEmpty != true) return [];
 
-  final account = await fetchActiveProfile();
-  final response = await LemmyClient.instance.lemmyApiV3.run(Search(
-    q: query,
-    auth: account.jwt,
+  final repository = context.read<SearchRepository>();
+  final response = await repository.search(
+    query: query,
     type: SearchType.users,
     limit: 20,
-  ));
+  );
 
   final users = response.users.map((pv) => ThunderUser(pv.person, userView: pv)).toList();
   return users;
@@ -164,14 +165,13 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
   if (query.isNotEmpty != true) return emptySuggestions ?? [];
 
-  final account = await fetchActiveProfile();
-  final response = await LemmyClient.instance.lemmyApiV3.run(Search(
-    q: query,
-    auth: account.jwt,
+  final repository = context.read<SearchRepository>();
+  final response = await repository.search(
+    query: query,
     type: SearchType.communities,
     limit: 20,
-    sort: PostSortType.topAll.toLemmyType(),
-  ));
+    sort: PostSortType.topAll,
+  );
 
   List<ThunderCommunity>? favorites;
 

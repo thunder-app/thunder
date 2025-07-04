@@ -14,6 +14,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -29,9 +30,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   late InstanceRepository instanceRepository;
+  late SearchRepository searchRepository;
 
-  UserSettingsBloc({InstanceRepository? instanceRepository}) : super(const UserSettingsState()) {
+  UserSettingsBloc({InstanceRepository? instanceRepository, SearchRepository? searchRepository}) : super(const UserSettingsState()) {
     this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
@@ -339,33 +342,18 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfile();
-
       String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 
-      List<PostView> posts = (await lemmy.run(Search(
-        q: url,
-        type: SearchType.posts,
-        auth: account.jwt,
-      )))
-          .posts
-          .toList(); // Copy so we can modify
-
-      List<PostView> postsByUrl = (await lemmy.run(Search(
-        q: url,
-        type: SearchType.url,
-        auth: account.jwt,
-      )))
-          .posts;
+      List<PostView> posts = (await searchRepository.search(query: url, type: SearchType.posts)).posts.toList();
+      List<PostView> postsByUrl = (await searchRepository.search(query: url, type: SearchType.url)).posts.toList();
 
       // De-dup posts found by body and URL
       posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
 
-      final List<ThunderComment> comments = (await lemmy.run(Search(
-        q: url,
+      List<ThunderComment> comments = (await searchRepository.search(
+        query: url,
         type: SearchType.comments,
-        auth: account.jwt,
-      )))
+      ))
           .comments
           .map((cv) => ThunderComment(comment: cv.comment, commentView: cv))
           .toList();

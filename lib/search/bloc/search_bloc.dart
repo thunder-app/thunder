@@ -15,6 +15,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -31,9 +32,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   late CommentRepository commentRepository;
+  late SearchRepository searchRepository;
 
-  SearchBloc({CommentRepository? commentRepository}) : super(SearchState()) {
+  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository}) : super(SearchState()) {
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -85,7 +88,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       final account = await fetchActiveProfile();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       SearchResponse? searchResponse;
       List<ThunderInstanceInfo> instances = [];
@@ -132,17 +134,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
         }
       } else {
-        searchResponse = await lemmy.run(Search(
-          auth: account.jwt,
-          q: event.query,
-          page: 1,
-          limit: 15,
-          sort: event.postSortType.toLemmyType(),
-          listingType: event.feedListType.toLemmyType(),
+        searchResponse = await searchRepository.search(
+          query: event.query,
           type: event.searchType.searchType,
+          sort: event.postSortType,
+          listingType: event.feedListType,
+          limit: 15,
+          page: 1,
           communityId: event.communityId,
           creatorId: event.creatorId,
-        ));
+        );
       }
 
       // If there are no search results, see if this is an exact search
@@ -216,25 +217,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             instances: state.instances,
           ));
 
-          final account = await fetchActiveProfile();
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
           SearchResponse? searchResponse;
           if (event.searchType == MetaSearchType.instances) {
             // Instance search is not paged, so this is a no-op.
             //
           } else {
-            searchResponse = await lemmy.run(Search(
-              auth: account.jwt,
-              q: event.query,
-              page: state.page,
-              limit: 15,
-              sort: event.postSortType.toLemmyType(),
-              listingType: event.feedListType.toLemmyType(),
+            searchResponse = await searchRepository.search(
+              query: event.query,
               type: event.searchType.searchType,
+              sort: event.postSortType,
+              listingType: event.feedListType,
+              limit: 15,
+              page: state.page,
               communityId: event.communityId,
               creatorId: event.creatorId,
-            ));
+            );
           }
 
           if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {

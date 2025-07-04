@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -13,6 +12,7 @@ import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -147,7 +147,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
             if (widget.resolutionInstance != null) {
               try {
                 final lemmy = (LemmyClient()..changeBaseUrl(widget.resolutionInstance!)).lemmyApiV3;
-                final response = await lemmy.run(ResolveObject(q: widget.community.url));
+                final response = await LemmySearchRepository(client: lemmy).resolve(query: widget.community.url);
 
                 communityId = response.community?.community.id;
               } catch (e) {

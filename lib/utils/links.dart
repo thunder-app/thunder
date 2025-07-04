@@ -11,12 +11,12 @@ import 'package:intl/message_format.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/comment/repository/comment_repository.dart';
-import 'package:thunder/post/repository/post_repository.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/post/repository/post_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/video_player_mode.dart';
