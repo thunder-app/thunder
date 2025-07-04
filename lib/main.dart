@@ -36,6 +36,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
+import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
@@ -138,6 +139,9 @@ class _ThunderAppState extends State<ThunderApp> {
   /// The global instance repository
   InstanceRepository? _instanceRepository;
 
+  /// The global notification repository
+  NotificationRepository? _notificationRepository;
+
   @override
   void initState() {
     super.initState();
@@ -174,6 +178,7 @@ class _ThunderAppState extends State<ThunderApp> {
     _postRepository?.dispose();
     _commentRepository?.dispose();
     _instanceRepository?.dispose();
+    _notificationRepository?.dispose();
 
     // Dispose the LemmyClient stream controller
     LemmyClient.dispose();
@@ -199,6 +204,12 @@ class _ThunderAppState extends State<ThunderApp> {
           create: (context) {
             _instanceRepository = LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
             return _instanceRepository!;
+          },
+        ),
+        RepositoryProvider<NotificationRepository>(
+          create: (context) {
+            _notificationRepository = LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
+            return _notificationRepository!;
           },
         ),
       ],

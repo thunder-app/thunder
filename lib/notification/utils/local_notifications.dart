@@ -23,6 +23,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
+import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/notification_utils.dart';
@@ -70,14 +71,11 @@ Future<void> pollRepliesAndShowNotifications() async {
     LemmyClient client = LemmyClient()..changeBaseUrl(account.instance);
 
     // Iterate through inbox replies
-    GetRepliesResponse getRepliesResponse = await client.lemmyApiV3.run(
-      GetReplies(
-        auth: account.jwt!,
-        unreadOnly: true,
-        limit: 50, // Max allowed by API
-        sort: CommentSortType.old.toLemmyType(),
-        page: 1,
-      ),
+    final getRepliesResponse = await LemmyNotificationRepository(client: client.lemmyApiV3).replies(
+      unread: true,
+      limit: 50,
+      sort: CommentSortType.old,
+      page: 1,
     );
 
     // Only handle messages that have arrived since the last time we polled
