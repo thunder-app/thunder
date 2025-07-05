@@ -1592,5 +1592,25 @@
   "confirmMarkAllAsReadTitle": "Alles als gelezen markeren?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
+  },
+  "modFeaturePost": "Berichten uitlichten/niet meer uitlichten",
+  "@modFeaturePost": {
+    "description": "Description for modlog filter for actions that feature posts"
+  },
+  "modLockPost": "Berichten vergrendelen/ontgrendelen",
+  "@modLockPost": {
+    "description": "Description for modlog filter for actions that lock posts"
+  },
+  "modRemoveComment": "Opmerkingen verwĳderen/herstellen",
+  "@modRemoveComment": {
+    "description": "Description for modlog filter for actions that remove comments"
+  },
+  "modRemoveCommunity": "Gemeenschappen verwĳderen/herstellen",
+  "@modRemoveCommunity": {
+    "description": "Description for modlog filter for actions that remove communities"
+  },
+  "modRemovePost": "Berichten verwĳderen/herstellen",
+  "@modRemovePost": {
+    "description": "Description for modlog filter for actions that remove posts"
   }
 }
