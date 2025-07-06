@@ -110,7 +110,7 @@ class _InstancePageState extends State<InstancePage> {
           ),
           BlocProvider.value(
             value: FeedBloc(
-              repository: LemmyPostRepository(client: LemmyApiV3(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
+              postRepository: LemmyPostRepository(client: LemmyApiV3(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
             ),
           ),
         ],

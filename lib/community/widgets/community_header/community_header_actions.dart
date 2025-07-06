@@ -42,7 +42,7 @@ class CommunityHeaderActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CommunityBloc>(
-      create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
+      create: (context) => CommunityBloc(),
       child: _CommunityActionsContent(community: community, instance: instance, moderators: moderators),
     );
   }

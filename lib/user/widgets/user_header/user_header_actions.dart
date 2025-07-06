@@ -42,7 +42,7 @@ class UserHeaderActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
-      create: (context) => UserBloc(lemmyClient: LemmyClient.instance),
+      create: (context) => UserBloc(),
       child: _UserActionsContent(
         user: user,
         moderates: moderates,

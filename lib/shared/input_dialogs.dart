@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -136,9 +137,9 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
       if (normalizedCommunity != null) {
         try {
-          final account = await fetchActiveProfile();
-          final response = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(auth: account.jwt, name: normalizedCommunity));
-          final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
+          final repository = context.read<CommunityRepository>();
+          final response = await repository.getCommunity(name: normalizedCommunity);
+          final community = response['community'];
 
           onCommunitySelected(community);
           Navigator.of(context).pop();

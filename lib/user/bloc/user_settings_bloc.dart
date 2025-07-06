@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -31,10 +32,12 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   late InstanceRepository instanceRepository;
   late SearchRepository searchRepository;
+  late CommunityRepository communityRepository;
 
-  UserSettingsBloc({InstanceRepository? instanceRepository, SearchRepository? searchRepository}) : super(const UserSettingsState()) {
+  UserSettingsBloc({InstanceRepository? instanceRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository}) : super(const UserSettingsState()) {
     this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
     this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
@@ -216,8 +219,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _unblockCommunityEvent(UnblockCommunityEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
     final l10n = AppLocalizations.of(GlobalContext.context)!;
     final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
@@ -225,11 +226,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
-      final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
-        auth: account.jwt!,
-        communityId: event.communityId,
-        block: !event.unblock,
-      ));
+      final blockCommunityResponse = await communityRepository.block(event.communityId, !event.unblock);
 
       List<Community> updatedCommunityBlocks;
       if (event.unblock) {

@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
@@ -33,10 +34,12 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   late CommentRepository commentRepository;
   late SearchRepository searchRepository;
+  late CommunityRepository communityRepository;
 
-  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository}) : super(SearchState()) {
+  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository}) : super(SearchState()) {
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
     this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -346,17 +349,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent event, Emitter<SearchState> emit) async {
     try {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      final account = await fetchActiveProfile();
-
-      final response = await lemmy.run(ListCommunities(
-        type: ListingType.local,
-        sort: PostSortType.active.toLemmyType(),
-        limit: 5,
-        auth: account.jwt,
-      ));
-
-      final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+      final communities = await communityRepository.trending();
       return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
     } catch (e) {
       // Not the end of the world if we can't load trending

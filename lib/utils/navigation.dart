@@ -195,7 +195,7 @@ Future<void> navigateToPost(
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: postBloc),
           BlocProvider(create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance)),
-          BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
+          BlocProvider(create: (context) => CommunityBloc()),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
@@ -227,7 +227,7 @@ Future<void> navigateToModlogPage(
 
   // Optional blocs
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
-  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : FeedBloc(repository: LemmyPostRepository(client: lemmyClient?.lemmyApiV3 ?? LemmyClient.instance.lemmyApiV3));
+  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : FeedBloc(postRepository: LemmyPostRepository(client: lemmyClient?.lemmyApiV3 ?? LemmyClient.instance.lemmyApiV3));
 
   final state = thunderBloc.state;
   final reduceAnimations = state.reduceAnimations;

@@ -4,10 +4,10 @@ import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
@@ -22,9 +22,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
-  final LemmyClient lemmyClient;
+  late CommunityRepository communityRepository;
 
-  CommunityBloc({required this.lemmyClient}) : super(const CommunityState()) {
+  CommunityBloc({CommunityRepository? communityRepository}) : super(const CommunityState()) {
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+
     /// Handles clearing any messages from the state
     on<CommunityClearMessageEvent>(
       _onCommunityClearMessage,
@@ -52,7 +54,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     switch (event.communityAction) {
       case CommunityAction.block:
         try {
-          final response = await blockCommunity(event.communityId, event.value);
+          final response = await communityRepository.block(event.communityId, event.value);
           final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
 
           emit(state.copyWith(
@@ -75,7 +77,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             _ => null,
           };
 
-          final community = await followCommunity(event.communityId, event.value);
+          final community = await communityRepository.subscribe(event.communityId, event.value);
 
           String? message;
 
@@ -94,7 +96,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           // Wait for one second before fetching the community information to get any updated information
           await Future.delayed(const Duration(seconds: 1)).then((value) async {
-            final result = await fetchCommunityInformation(id: event.communityId);
+            final result = await communityRepository.getCommunity(id: event.communityId);
             final community = result['community'];
 
             String? message;

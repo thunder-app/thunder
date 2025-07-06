@@ -4,8 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -24,9 +25,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final LemmyClient lemmyClient;
+  late CommunityRepository communityRepository;
 
-  UserBloc({required this.lemmyClient}) : super(const UserState()) {
+  UserBloc({CommunityRepository? communityRepository}) : super(const UserState()) {
+    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+
     /// Handles clearing any messages from the state
     on<UserClearMessageEvent>(
       _onUserClearMessage,
@@ -80,7 +83,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             expires = expires ~/ 1000;
           }
 
-          BanFromCommunityResponse banFromCommunityResponse = await banUserFromCommunity(event.userId, event.value, communityId: communityId, reason: reason, expires: expires, removeData: removeData);
+          final banFromCommunityResponse = await communityRepository.banUserFromCommunity(
+            userId: event.userId,
+            ban: event.value,
+            communityId: communityId,
+            reason: reason,
+            expires: expires,
+            removeData: removeData,
+          );
 
           emit(state.copyWith(
             status: UserStatus.success,
@@ -100,7 +110,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           int communityId = event.metadata!['communityId'] as int;
 
-          AddModToCommunityResponse addModToCommunityResponse = await addModerator(event.userId, event.value, communityId: communityId);
+          final addModToCommunityResponse = await communityRepository.addModerator(userId: event.userId, added: event.value, communityId: communityId);
           CommunityModeratorView? communityModeratorView = addModToCommunityResponse.moderators.firstWhereOrNull((communityModeratorView) => communityModeratorView.moderator.id == event.userId);
 
           emit(state.copyWith(
