@@ -1612,5 +1612,47 @@
   "modRemovePost": "Berichten verwĳderen/herstellen",
   "@modRemovePost": {
     "description": "Description for modlog filter for actions that remove posts"
-  }
+  },
+  "noAnonymousInstances": "Er zĳn geen anonieme instanties toegevoegd",
+  "@noAnonymousInstances": {
+    "description": "Placeholder text when no anonymous instances have been added"
+  },
+  "colorizeInstanceName": "Instantie­naam kleuren",
+  "@colorizeInstanceName": {
+    "description": "Setting for colorizing instance name"
+  },
+  "commentShowUserInstance": "Gebruikers­instantie tonen",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "downvotesDisabled": "Downvotes zĳn uitgeschakeld op deze instantie.",
+  "@downvotesDisabled": {},
+  "errorNoActiveInstance": "Geen actieve instantie gevonden",
+  "@errorNoActiveInstance": {
+    "description": "Error message for no active instance found"
+  },
+  "instance": "{count, plural, one {Instantie} other {Instanties}} ",
+  "@instance": {
+    "description": "Heading for an instance"
+  },
+  "instanceHasAlreadyBenAdded": "{instance} is al toegevoegd.",
+  "@instanceHasAlreadyBenAdded": {},
+  "instanceNameColor": "Kleur van instantie­naam",
+  "@instanceNameColor": {
+    "description": "Setting for instance name color"
+  },
+  "instanceNameThickness": "Dikte van instantie­naam",
+  "@instanceNameThickness": {
+    "description": "Setting for instance name thickness"
+  },
+  "viewPostSource": "Bericht­bron bekĳken",
+  "@viewPostSource": {
+    "description": "Menu item for viewing a post's source"
+  },
+  "viewPostAsDifferentAccount": "Bericht bekĳken als ander account",
+  "@viewPostAsDifferentAccount": {
+    "description": "Action for viewing a post as a different account"
+  },
+  "createNewCrossPost": "Nieuw kruis­bericht maken",
+  "@createNewCrossPost": {}
 }
