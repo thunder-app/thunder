@@ -8,7 +8,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -480,9 +479,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         });
       } else {
         // Check for content warning on anyonmous instance
-        LemmyClient().changeBaseUrl(_instanceTextEditingController.text);
-        final repository = context.read<InstanceRepository>();
-        final getSiteResponse = await repository.getSiteInfo();
+        final account = Account(id: '', instance: _instanceTextEditingController.text, index: -1);
+        final getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo();
 
         bool acceptedContentWarning = true;
 

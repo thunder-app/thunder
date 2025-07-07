@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a comment repository
@@ -69,33 +70,22 @@ abstract class CommentRepository {
     bool? isBotAccount,
     bool? saved,
   });
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [CommentRepository] using Lemmy API
 class LemmyCommentRepository implements CommentRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyCommentRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyCommentRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
-    final account = await fetchActiveProfile();
-
     final response = await client.run(GetComment(id: commentId, auth: account.jwt));
 
     return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
@@ -111,8 +101,6 @@ class LemmyCommentRepository implements CommentRepository {
     int? limit,
     int? communityId,
   }) async {
-    final account = await fetchActiveProfile();
-
     final response = await client.run(GetComments(
       auth: account.jwt,
       communityId: communityId,
@@ -136,7 +124,6 @@ class LemmyCommentRepository implements CommentRepository {
     int? languageId,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreateComment(
@@ -157,7 +144,6 @@ class LemmyCommentRepository implements CommentRepository {
     int? languageId,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(EditComment(
@@ -173,7 +159,6 @@ class LemmyCommentRepository implements CommentRepository {
   @override
   Future<ThunderComment> vote(ThunderComment comment, int score) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreateCommentLike(
@@ -188,7 +173,6 @@ class LemmyCommentRepository implements CommentRepository {
   @override
   Future<ThunderComment> save(ThunderComment comment, bool save) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(SaveComment(
@@ -203,7 +187,6 @@ class LemmyCommentRepository implements CommentRepository {
   @override
   Future<ThunderComment> delete(ThunderComment comment, bool deleted) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(DeleteComment(
@@ -218,7 +201,6 @@ class LemmyCommentRepository implements CommentRepository {
   @override
   Future<CommentReportResponse> report(int commentId, String reason) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));

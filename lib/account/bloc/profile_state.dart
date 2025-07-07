@@ -14,7 +14,7 @@ class ProfileState extends Equatable {
 
   final bool isLoggedIn;
 
-  final Account? account;
+  final Account account;
 
   final bool downvotesEnabled;
 
@@ -43,7 +43,7 @@ class ProfileState extends Equatable {
   const ProfileState({
     this.status = ProfileStatus.initial,
     this.isLoggedIn = false,
-    this.account,
+    required this.account,
     this.downvotesEnabled = true,
     this.getSiteResponse,
     this.contentWarning,

@@ -126,7 +126,7 @@ Future<void> temporarilySwitchAccount(
       // If there is a selected community, see if we can resolve it to the new user's instance.
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
         try {
-          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: communityActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: communityActorId!);
 
           if (response.community != null) {
             final community = ThunderCommunity(response.community!.community, communityView: response.community);
@@ -141,7 +141,7 @@ Future<void> temporarilySwitchAccount(
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
         PostView? resolvedPost;
         try {
-          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: postActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: postActorId!);
           resolvedPost = response.post;
 
           if (resolvedPost != null) {
@@ -161,7 +161,7 @@ Future<void> temporarilySwitchAccount(
       if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
         CommentView? resolvedComment;
         try {
-          final response = await LemmySearchRepository(client: LemmyApiV3(newUser.instance)).resolve(query: parentCommentActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: parentCommentActorId!);
           resolvedComment = response.comment;
 
           if (resolvedComment != null) {

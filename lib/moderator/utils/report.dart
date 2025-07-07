@@ -1,8 +1,9 @@
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 
+import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -20,7 +21,7 @@ Future<Map<String, dynamic>> fetchReports({
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   bool hasReachedPostReportsEnd = false;
   bool hasReachedCommentReportsEnd = false;
@@ -78,7 +79,7 @@ Future<bool> resolvePostReport(int postReportId, bool resolved) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   PostReportResponse postReportResponse = await lemmy.run(ResolvePostReport(
     reportId: postReportId,
@@ -100,7 +101,7 @@ Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   CommentReportResponse commentReportResponse = await lemmy.run(ResolveCommentReport(
     reportId: commentReportId,

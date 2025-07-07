@@ -185,7 +185,7 @@ class ThunderState extends Equatable {
   // Default Listing/Sort Settings
   final FeedListType defaultFeedListType;
   final PostSortType defaultPostSortType;
-  PostSortType get postSortTypeForInstance => LemmyClient.instance.supportsPostSortType(defaultPostSortType) ? defaultPostSortType : DEFAULT_POST_SORT_TYPE;
+  PostSortType get postSortTypeForInstance => defaultPostSortType;
   final bool useProfilePictureForDrawer;
 
   // NSFW Settings

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/utils/media/image.dart';
@@ -99,11 +99,12 @@ Future<List<ThunderPost>> parsePosts(List<PostView> postViews, {String? resoluti
   List<PostView> posts = [];
 
   if (resolutionInstance != null) {
-    final lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance)).lemmyApiV3;
+    // Create a temporary Account object to use for the request
+    final account = Account(id: '', instance: resolutionInstance, index: -1);
 
     for (PostView postView in postViews) {
       try {
-        final response = await LemmySearchRepository(client: lemmy).resolve(query: postView.post.apId);
+        final response = await LemmySearchRepository(account: account).resolve(query: postView.post.apId);
         posts.add(response.post!);
       } catch (e) {
         // If we can't resolve it, we won't even add it
@@ -161,7 +162,8 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
   }
 
   // Determine thumbnail and relevant image metadata. If the instance supports image metadata, we'll use that.
-  bool useImageMetadata = LemmyClient.instance.supportsFeature(LemmyFeature.imageDimension);
+  // bool useImageMetadata = LemmyClient.instance.supportsFeature(LemmyFeature.imageDimension);
+  bool useImageMetadata = true;
 
   Size? size;
 

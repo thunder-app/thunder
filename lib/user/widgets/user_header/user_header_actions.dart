@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/post/post.dart';
@@ -41,8 +40,10 @@ class UserHeaderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final account = context.read<ProfileBloc>().state.account;
+
     return BlocProvider<UserBloc>(
-      create: (context) => UserBloc(),
+      create: (context) => UserBloc(account: account),
       child: _UserActionsContent(
         user: user,
         moderates: moderates,
@@ -302,7 +303,6 @@ class _SortActionChip extends StatelessWidget {
               }
             },
             previouslySelected: state.postSortType,
-            minimumVersion: LemmyClient.instance.version,
           ),
         );
       },

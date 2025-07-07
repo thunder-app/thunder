@@ -10,7 +10,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -146,8 +145,9 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
 
             if (widget.resolutionInstance != null) {
               try {
-                final lemmy = (LemmyClient()..changeBaseUrl(widget.resolutionInstance!)).lemmyApiV3;
-                final response = await LemmySearchRepository(client: lemmy).resolve(query: widget.community.url);
+                // Create a temporary Account
+                final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
+                final response = await LemmySearchRepository(account: account).resolve(query: widget.community.url);
 
                 communityId = response.community?.community.id;
               } catch (e) {

@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 
 /// Interface for a search repository
 abstract class SearchRepository {
@@ -24,27 +25,18 @@ abstract class SearchRepository {
 
   /// Resolves a given query
   Future<ResolveObjectResponse> resolve({required String query});
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [SearchRepository] using Lemmy API
 class LemmySearchRepository implements SearchRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmySearchRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmySearchRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
@@ -58,8 +50,6 @@ class LemmySearchRepository implements SearchRepository {
     int? communityId,
     int? creatorId,
   }) async {
-    final account = await fetchActiveProfile();
-
     final response = await client.run(Search(
       auth: account.jwt,
       q: query,

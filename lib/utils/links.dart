@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/message_format.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
@@ -28,7 +29,6 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/user/repository/user_repository.dart';
@@ -139,6 +139,8 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
 /// Attempts to perform in-app navigtion to communities, users, posts, and comments
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
 void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
+  final account = context.read<ProfileBloc>().state.account;
+
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
   if (communityName != null && (!context.mounted || await _testValidCommunity(context, url, communityName, communityName.split('@')[1]))) {
@@ -171,9 +173,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the post
       if (context.mounted) showLoadingPage(context);
-
-      final repository = context.read<PostRepository>();
-      final post = await repository.getPost(postId);
+      final post = await LemmyPostRepository(account: account).getPost(postId);
 
       if (context.mounted) {
         navigateToPost(context, post: post);
@@ -190,9 +190,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the comment
       if (context.mounted) showLoadingPage(context);
-
-      final repository = context.read<CommentRepository>();
-      final comment = await repository.getComment(commentId);
+      final comment = await LemmyCommentRepository(account: account).getComment(commentId);
 
       if (context.mounted) {
         navigateToComment(context, comment);
@@ -207,8 +205,6 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   Uri? uri = Uri.tryParse(url);
   if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
     try {
-      final LemmyClient lemmyClient = LemmyClient()..changeBaseUrl(uri.host);
-
       await navigateToModlogPage(
         context,
         modlogActionType: ModlogActionType.values.firstWhere(
@@ -218,8 +214,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
         communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
         moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
-        lemmyClient: lemmyClient,
-        subtitle: lemmyClient.lemmyApiV3.host,
+        subtitle: uri.host,
       );
       return;
     } catch (e) {
@@ -289,8 +284,8 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final repository = context.read<CommunityRepository>();
-    await repository.getCommunity(name: communityName);
+    final account = context.read<ProfileBloc>().state.account;
+    await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
     return true;
   } catch (e) {
     // Ignore and return false below.
@@ -318,8 +313,8 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final repository = context.read<UserRepository>();
-    await repository.getUser(username: userName);
+    final account = context.read<ProfileBloc>().state.account;
+    await LemmyUserRepository(account: account).getUser(username: userName);
     return true;
   } catch (e) {
     // Ignore and return false below.

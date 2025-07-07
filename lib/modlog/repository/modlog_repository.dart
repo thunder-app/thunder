@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -35,9 +35,7 @@ abstract class ModlogRepository {
 
 /// Implementation of [ModlogRepository] using Lemmy API
 class ModlogRepositoryImpl implements ModlogRepository {
-  final LemmyClient client;
-
-  ModlogRepositoryImpl({required this.client});
+  ModlogRepositoryImpl();
 
   @override
   Future<ModlogFeed> getModlogEvents({
@@ -57,7 +55,6 @@ class ModlogRepositoryImpl implements ModlogRepository {
       userId: userId,
       moderatorId: moderatorId,
       commentId: commentId,
-      lemmyClient: client,
     );
     return ModlogFeed(
       items: result['modLogEventItems'] as List<ModlogEventItem>,
@@ -76,7 +73,6 @@ Future<Map<String, dynamic>> _fetchModlogEvents({
   int? userId,
   int? moderatorId,
   int? commentId,
-  required LemmyClient lemmyClient,
 }) async {
   final account = await fetchActiveProfile();
 
@@ -88,7 +84,9 @@ Future<Map<String, dynamic>> _fetchModlogEvents({
 
   // Guarantee that we fetch at least x events (unless we reach the end of the feed)
   do {
-    final response = await lemmyClient.lemmyApiV3.run(lemmy.GetModlog(
+    final client = lemmy.LemmyApiV3(account.instance, debug: kDebugMode);
+
+    final response = await client.run(lemmy.GetModlog(
       auth: account.jwt,
       page: currentPage,
       type: lemmy.ModlogActionType.values.firstWhere(

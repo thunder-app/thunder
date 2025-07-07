@@ -236,6 +236,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     final theme = Theme.of(context);
     originalUser ??= context.read<ProfileBloc>().state.account;
 
+    final account = context.read<ProfileBloc>().state.account;
+
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (context.mounted) {
@@ -243,7 +245,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         }
       },
       child: BlocProvider(
-        create: (context) => CreateCommentCubit(),
+        create: (context) => CreateCommentCubit(account: account),
         child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
           listener: (context, state) {
             if (state.status == CreateCommentStatus.success && state.comment != null) {

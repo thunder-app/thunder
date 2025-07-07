@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -41,8 +41,8 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 
       if (normalizedUsername != null) {
         try {
-          final repository = context.read<UserRepository>();
-          final response = await repository.getUser(username: normalizedUsername);
+          final account = context.read<ProfileBloc>().state.account;
+          final response = await LemmyUserRepository(account: account).getUser(username: normalizedUsername);
           final user = ThunderUser(response!.personView.person, userView: response.personView);
 
           onUserSelected(user);
@@ -70,8 +70,8 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query) async {
   if (query.isNotEmpty != true) return [];
 
-  final repository = context.read<SearchRepository>();
-  final response = await repository.search(
+  final account = context.read<ProfileBloc>().state.account;
+  final response = await LemmySearchRepository(account: account).search(
     query: query,
     type: SearchType.users,
     limit: 20,
@@ -138,8 +138,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
       if (normalizedCommunity != null) {
         try {
-          final repository = context.read<CommunityRepository>();
-          final response = await repository.getCommunity(name: normalizedCommunity);
+          final account = context.read<ProfileBloc>().state.account;
+          final response = await LemmyCommunityRepository(account: account).getCommunity(name: normalizedCommunity);
           final community = response['community'];
 
           onCommunitySelected(community);
@@ -167,8 +167,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
   if (query.isNotEmpty != true) return emptySuggestions ?? [];
 
-  final repository = context.read<SearchRepository>();
-  final response = await repository.search(
+  final account = context.read<ProfileBloc>().state.account;
+  final response = await LemmySearchRepository(account: account).search(
     query: query,
     type: SearchType.communities,
     limit: 20,
@@ -265,8 +265,9 @@ void showInstanceInputDialog(
   Iterable<InstanceWithFederationState>? emptySuggestions,
 }) async {
   Account? account = await fetchActiveProfile();
+  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
-  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account.jwt));
+  GetFederatedInstancesResponse getFederatedInstancesResponse = await lemmy.run(GetFederatedInstances(auth: account.jwt));
 
   Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {

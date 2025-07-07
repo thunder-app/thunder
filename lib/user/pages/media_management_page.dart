@@ -7,7 +7,6 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/image_caching_mode.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -55,9 +54,9 @@ class MediaManagementPage extends StatelessWidget {
                       ),
                       subtitle: UserFullNameWidget(
                         context,
-                        context.read<ProfileBloc>().state.account?.username,
-                        context.read<ProfileBloc>().state.account?.displayName,
-                        context.read<ProfileBloc>().state.account?.instance,
+                        context.read<ProfileBloc>().state.account.username,
+                        context.read<ProfileBloc>().state.account.displayName,
+                        context.read<ProfileBloc>().state.account.instance,
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
@@ -80,7 +79,8 @@ class MediaManagementPage extends StatelessWidget {
                         addRepaintBoundaries: false,
                         itemCount: state.images!.length,
                         itemBuilder: (context, index) {
-                          String url = 'https://${LemmyClient.instance.lemmyApiV3.host}/pictrs/image/${state.images![index].localImage.pictrsAlias}';
+                          final account = context.read<ProfileBloc>().state.account;
+                          String url = 'https://${account.instance}/pictrs/image/${state.images![index].localImage.pictrsAlias}';
 
                           return KeepAlive(
                             keepAlive: true,
@@ -118,7 +118,7 @@ class MediaManagementPage extends StatelessWidget {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(16.0),
                                                     child: Text(
-                                                      l10n.unableToLoadImageFrom(LemmyClient.instance.lemmyApiV3.host),
+                                                      l10n.unableToLoadImageFrom(account.instance),
                                                       style: theme.textTheme.bodyMedium?.copyWith(
                                                         color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                                                       ),
@@ -179,7 +179,7 @@ class MediaManagementPage extends StatelessWidget {
                                                             else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
-                                                                  value: FeedBloc(),
+                                                                  value: FeedBloc(account: context.read<ProfileBloc>().state.account),
                                                                   child: CustomScrollView(
                                                                     physics: const NeverScrollableScrollPhysics(),
                                                                     shrinkWrap: true,

@@ -8,7 +8,6 @@ import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
@@ -218,7 +217,6 @@ class PostAppBarActions extends StatelessWidget {
                   if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
                 },
                 previouslySelected: state.commentSortType,
-                minimumVersion: LemmyClient.instance.version,
               ),
             );
           },
@@ -283,8 +281,7 @@ class PostAppBarActions extends StatelessWidget {
     return ('', null);
   }
 
-  ListPickerItem<CommentSortType>? commentSortTypeItem =
-      CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.instance.version).firstWhereOrNull((item) => item.payload == state.commentSortType);
+  ListPickerItem<CommentSortType>? commentSortTypeItem = CommentSortPicker.getCommentSortTypeItems().firstWhereOrNull((item) => item.payload == state.commentSortType);
 
   return (commentSortTypeItem?.label ?? '', commentSortTypeItem?.icon);
 }

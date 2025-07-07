@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
@@ -11,7 +12,6 @@ import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -23,14 +23,16 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
+  Account account;
+
   late PostRepository postRepository;
   late CommentRepository commentRepository;
   late CommunityRepository communityRepository;
 
-  PostBloc({PostRepository? postRepository, CommentRepository? commentRepository, CommunityRepository? communityRepository}) : super(PostState()) {
-    this.postRepository = postRepository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+  PostBloc({required this.account}) : super(PostState()) {
+    postRepository = LemmyPostRepository(account: account);
+    commentRepository = LemmyCommentRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
 
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
@@ -52,13 +54,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
+      // defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
+      defaultCommentSortType = defaultCommentSortType;
 
       final account = await fetchActiveProfile();
 
       emit(state.copyWith(status: PostStatus.loading));
 
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      LemmyApiV3 lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
       GetPostResponse? getPostResponse;
 
@@ -201,7 +204,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     bool searchWasInProgress = state.status == PostStatus.searchInProgress;
 
     CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-    defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
+    // defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
+    defaultCommentSortType = defaultCommentSortType;
 
     CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 

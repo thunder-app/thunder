@@ -119,7 +119,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
   }
 
   void _updateIsOwnPost() {
-    final userId = context.read<ProfileBloc>().state.account?.userId;
+    final userId = context.read<ProfileBloc>().state.account.userId;
     isOwnPost = widget.post.creator?.id == userId;
   }
 

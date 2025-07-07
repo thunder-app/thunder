@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -207,7 +206,6 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                   title: l10n.sortOptions,
                   onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),
                   previouslySelected: postSortType,
-                  minimumVersion: LemmyClient.instance.version,
                 ),
               );
             },
@@ -251,7 +249,6 @@ class FeedAppBarUserActions extends StatelessWidget {
                   title: l10n.sortOptions,
                   onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),
                   previouslySelected: feedBloc.state.postSortType,
-                  minimumVersion: LemmyClient.instance.version,
                 ),
               );
             },
@@ -293,7 +290,6 @@ class FeedAppBarGeneralActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.postSortType,
-                minimumVersion: LemmyClient.instance.version,
               ),
             );
           },
@@ -306,7 +302,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               ThunderPopupMenuItem(
                 onTap: () async {
                   HapticFeedback.mediumImpact();
-                  await navigateToModlogPage(context, subtitle: LemmyClient.instance.lemmyApiV3.host);
+                  await navigateToModlogPage(context, subtitle: 'TODO: Implement modlog subtitle');
                 },
                 icon: Icons.shield_rounded,
                 title: l10n.modlog,

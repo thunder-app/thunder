@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -53,8 +53,9 @@ class UserListEntry extends StatelessWidget {
 
           if (resolutionInstance != null) {
             try {
-              final lemmy = (LemmyClient()..changeBaseUrl(resolutionInstance!)).lemmyApiV3;
-              final response = await LemmySearchRepository(client: lemmy).resolve(query: user.url);
+              // Create a temporary Account for the request
+              final account = Account(instance: resolutionInstance!, id: '', index: -1);
+              final response = await LemmySearchRepository(account: account).resolve(query: user.url);
 
               userId = response.person?.person.id;
             } catch (e) {

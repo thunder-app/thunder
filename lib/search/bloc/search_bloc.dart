@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
@@ -13,7 +14,6 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
@@ -33,16 +33,18 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  Account account;
+
   late CommentRepository commentRepository;
   late SearchRepository searchRepository;
   late CommunityRepository communityRepository;
   late UserRepository userRepository;
 
-  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository, UserRepository? userRepository}) : super(SearchState()) {
-    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
+  SearchBloc({required this.account}) : super(SearchState()) {
+    commentRepository = LemmyCommentRepository(account: account);
+    searchRepository = LemmySearchRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -100,7 +102,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account.jwt));
+        final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        GetFederatedInstancesResponse getFederatedInstancesResponse = await lemmy.run(GetFederatedInstances(auth: account.jwt));
 
         // Filter the instances down
         for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
@@ -161,8 +164,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (communityName != null) {
           try {
             final account = await fetchActiveProfile();
+            final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
-            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+            final getCommunityResponse = await lemmy.run(GetCommunity(
               name: communityName,
               auth: account.jwt,
             ));
@@ -276,8 +280,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
+      LemmyApiV3 lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
       await lemmy.run(FollowCommunity(auth: account.jwt!, communityId: event.communityId, follow: event.follow));
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status

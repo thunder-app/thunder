@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +15,6 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
@@ -32,20 +33,20 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
+  Account account;
+
   late InstanceRepository instanceRepository;
   late SearchRepository searchRepository;
   late CommunityRepository communityRepository;
   late AccountRepository accountRepository;
   late UserRepository userRepository;
 
-  UserSettingsBloc(
-      {InstanceRepository? instanceRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository, AccountRepository? accountRepository, UserRepository? userRepository})
-      : super(const UserSettingsState()) {
-    this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.accountRepository = accountRepository ?? LemmyAccountRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
+  UserSettingsBloc({required this.account}) : super(const UserSettingsState()) {
+    instanceRepository = LemmyInstanceRepository(account: account);
+    searchRepository = LemmySearchRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    accountRepository = LemmyAccountRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
@@ -115,8 +116,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _updateUserSettingsEvent(UpdateUserSettingsEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
     final l10n = AppLocalizations.of(GlobalContext.context)!;
     final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
@@ -329,7 +328,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.searchingMedia));
 
     try {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
       String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 
       List<PostView> posts = (await searchRepository.search(query: url, type: SearchType.posts)).posts.toList();

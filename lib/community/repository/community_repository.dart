@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a community repository
@@ -31,34 +32,23 @@ abstract class CommunityRepository {
 
   /// Adds or removes a moderator from a community
   Future<AddModToCommunityResponse> addModerator({required int userId, required bool added, required int communityId});
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [CommunityRepository] using Lemmy API
 class LemmyCommunityRepository implements CommunityRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyCommunityRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyCommunityRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
   Future<Map<String, dynamic>> getCommunity({int? id, String? name}) async {
     assert(!(id == null && name == null));
-
-    final account = await fetchActiveProfile();
     final response = await client.run(GetCommunity(auth: account.jwt, id: id, name: name));
 
     return {
@@ -71,7 +61,6 @@ class LemmyCommunityRepository implements CommunityRepository {
   @override
   Future<ThunderCommunity> subscribe(int communityId, bool follow) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(FollowCommunity(auth: account.jwt!, communityId: communityId, follow: follow));
@@ -81,7 +70,6 @@ class LemmyCommunityRepository implements CommunityRepository {
   @override
   Future<BlockCommunityResponse> block(int communityId, bool block) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await client.run(BlockCommunity(auth: account.jwt!, communityId: communityId, block: block));
@@ -90,7 +78,6 @@ class LemmyCommunityRepository implements CommunityRepository {
   @override
   Future<BanFromCommunityResponse> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false}) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(BanFromCommunity(auth: account.jwt!, communityId: communityId, personId: userId, ban: ban, removeData: removeData, reason: reason, expires: expires));
@@ -100,7 +87,6 @@ class LemmyCommunityRepository implements CommunityRepository {
   @override
   Future<AddModToCommunityResponse> addModerator({required int userId, required bool added, required int communityId}) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(AddModToCommunity(auth: account.jwt!, communityId: communityId, personId: userId, added: added));
@@ -109,8 +95,6 @@ class LemmyCommunityRepository implements CommunityRepository {
 
   @override
   Future<List<ThunderCommunity>> trending() async {
-    final account = await fetchActiveProfile();
-
     final response = await client.run(ListCommunities(
       type: FeedListType.local.toLemmyType(),
       sort: PostSortType.active.toLemmyType(),

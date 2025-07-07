@@ -214,7 +214,7 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
       }
 
       // Hide edit if the comment is not made by the current user
-      if (widget.comment.creator?.actorId != profileState.account?.actorId) {
+      if (widget.comment.creator?.actorId != profileState.account.actorId) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.edit).toList();
       }
     }

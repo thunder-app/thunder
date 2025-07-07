@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -85,33 +86,22 @@ abstract class PostRepository {
   /// Reports a post
   /// @TODO: Change the return type to an internal model
   Future<PostReportResponse> report(int postId, String reason);
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [PostRepository] using Lemmy API
 class LemmyPostRepository implements PostRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyPostRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyPostRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
   Future<ThunderPost?> getPost(int postId, {int? commentId}) async {
-    final account = await fetchActiveProfile();
-
     final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
     final posts = await parsePosts([response.postView]);
     return posts.firstOrNull;
@@ -130,7 +120,6 @@ class LemmyPostRepository implements PostRepository {
     int? languageId,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     PostResponse postResponse;
@@ -167,7 +156,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<ThunderPost> vote(ThunderPost post, int score) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
@@ -177,7 +165,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<ThunderPost> save(ThunderPost post, bool save) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
@@ -187,7 +174,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> read(int postId, bool read) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
@@ -197,7 +183,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<List<int>> readMultiple(List<int> postIds, bool read) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     List<int> failed = [];
@@ -211,7 +196,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> hide(int postId, bool hide) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
@@ -221,7 +205,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> delete(int postId, bool delete) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
@@ -231,7 +214,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> lock(int postId, bool lock) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
@@ -241,7 +223,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> pinCommunity(int postId, bool pin) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
@@ -251,7 +232,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> remove(int postId, bool remove, String reason) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
@@ -261,7 +241,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<PostReportResponse> report(int postId, String reason) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));

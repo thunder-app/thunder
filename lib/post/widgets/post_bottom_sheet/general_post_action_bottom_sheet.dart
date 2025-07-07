@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
@@ -214,11 +213,6 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     if (!isLoggedIn) {
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      // Hide hidden if instance does not support it
-      if (!LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
-        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.hide).toList();
-      }
-
       // Hide downvoted if instance does not support it
       if (!authState.downvotesEnabled) {
         quickActions = quickActions.where((action) => action != GeneralQuickPostAction.downvote).toList();

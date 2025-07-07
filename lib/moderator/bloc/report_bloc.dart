@@ -5,7 +5,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/utils/report.dart';
 import 'package:thunder/moderator/view/report_page.dart';
@@ -23,9 +22,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  final LemmyClient lemmyClient;
-
-  ReportBloc({required this.lemmyClient}) : super(const ReportState()) {
+  ReportBloc() : super(const ReportState()) {
     /// Handles resetting the report feed to its initial state
     on<ResetReportEvent>(
       _onResetReportFeed,

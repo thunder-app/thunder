@@ -6,7 +6,6 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/instance/enums/instance_action.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -22,9 +21,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
-  final LemmyClient lemmyClient;
-
-  InstanceBloc({required this.lemmyClient}) : super(const InstanceState()) {
+  InstanceBloc() : super(const InstanceState()) {
     /// Handles clearing any messages from the state
     on<InstanceClearMessageEvent>(
       _onInstanceClearMessage,

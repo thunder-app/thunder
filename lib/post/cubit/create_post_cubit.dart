@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
@@ -13,10 +12,12 @@ import 'package:thunder/utils/global_context.dart';
 part 'create_post_state.dart';
 
 class CreatePostCubit extends Cubit<CreatePostState> {
+  Account account;
+
   late PostRepository repository;
 
-  CreatePostCubit({PostRepository? repository}) : super(const CreatePostState(status: CreatePostStatus.initial)) {
-    this.repository = repository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
+  CreatePostCubit({required this.account}) : super(const CreatePostState(status: CreatePostStatus.initial)) {
+    repository = LemmyPostRepository(account: account);
   }
 
   Future<void> clearMessage() async {

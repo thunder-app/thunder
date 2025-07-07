@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a user repository
@@ -21,27 +22,18 @@ abstract class UserRepository {
 
   /// Blocks or unblocks a person
   Future<BlockPersonResponse> block(int personId, bool block);
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [UserRepository] using Lemmy API
 class LemmyUserRepository implements UserRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyUserRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyUserRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
@@ -53,8 +45,6 @@ class LemmyUserRepository implements UserRepository {
     int? limit,
     bool? saved,
   }) async {
-    final account = await fetchActiveProfile();
-
     return await client.run(GetPersonDetails(
       auth: account.jwt,
       personId: userId,
@@ -69,7 +59,6 @@ class LemmyUserRepository implements UserRepository {
   @override
   Future<BlockPersonResponse> block(int personId, bool block) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));

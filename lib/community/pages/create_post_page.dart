@@ -25,7 +25,6 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/search/repository/search_repository.dart';
@@ -531,7 +530,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               ),
                             ),
-                            if (LemmyClient.instance.supportsFeature(LemmyFeature.customThumbnail) && !isImageUrl(_urlTextController.text)) ...[
+                            if (!isImageUrl(_urlTextController.text)) ...[
                               const SizedBox(height: 10),
                               TextFormField(
                                 controller: _customThumbnailTextController,
@@ -544,7 +543,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               ),
                             ],
-                            if (LemmyClient.instance.supportsFeature(LemmyFeature.altText) && isImageUrl(_urlTextController.text)) ...[
+                            if (isImageUrl(_urlTextController.text)) ...[
                               const SizedBox(height: 10),
                               TextFormField(
                                 controller: _altTextTextController,
@@ -758,10 +757,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
     SearchResponse? searchResponse;
     if (url == text) {
       try {
-        final repository = context.read<SearchRepository>();
+        final account = context.read<ProfileBloc>().state.account;
 
         // Fetch cross-posts
-        searchResponse = await repository.search(
+        searchResponse = await LemmySearchRepository(account: account).search(
           query: url,
           type: SearchType.url,
           sort: PostSortType.topAll,

@@ -1,8 +1,9 @@
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/localizations/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 
+import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Logic to block a instance
@@ -11,7 +12,7 @@ Future<BlockInstanceResponse> blockInstance(int instanceId, bool block) async {
   final account = await fetchActiveProfile();
   if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   BlockInstanceResponse blockedInstance = await lemmy.run(BlockInstance(
     auth: account.jwt!,

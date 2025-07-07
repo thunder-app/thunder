@@ -7,7 +7,6 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -29,7 +28,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   void Function()? notifyExcessiveApiCalls,
 }) async {
   final account = await fetchActiveProfile();
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+  LemmyApiV3? lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
@@ -99,7 +98,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
   if (userId != null || username != null) {
     do {
-      final userRepository = LemmyUserRepository(client: lemmy);
+      final userRepository = LemmyUserRepository(account: account);
 
       GetPersonDetailsResponse? getPersonDetailsResponse = await userRepository.getUser(
         userId: userId,

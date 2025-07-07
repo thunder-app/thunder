@@ -5,11 +5,11 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/user/enums/user_action.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -25,12 +25,14 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserBloc extends Bloc<UserEvent, UserState> {
+  Account account;
+
   late CommunityRepository communityRepository;
   late UserRepository userRepository;
 
-  UserBloc({CommunityRepository? communityRepository, UserRepository? userRepository}) : super(const UserState()) {
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
+  UserBloc({required this.account}) : super(const UserState()) {
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     /// Handles clearing any messages from the state
     on<UserClearMessageEvent>(

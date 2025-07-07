@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -13,10 +13,11 @@ enum CommunityShareOptions { link, localLink, lemmy }
 /// Shows a bottom modal sheet which allows sharing the given [community].
 Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity community) async {
   final l10n = AppLocalizations.of(context)!;
+  final account = await fetchActiveProfile();
 
   final communityLink = await getLemmyCommunity(community.url) ?? '';
   final lemmyLink = '!$communityLink';
-  final localLink = LemmyClient.instance.generateCommunityUrl(communityLink);
+  final localLink = 'https://${account.instance}/c/$communityLink';
 
   if (context.mounted) {
     showModalBottomSheet(
@@ -32,7 +33,7 @@ Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity comm
             subtitle: community.url,
             payload: CommunityShareOptions.link,
           ),
-          if (!community.url.contains(LemmyClient.instance.lemmyApiV3.host))
+          if (!community.url.contains(account.instance))
             ListPickerItem(
               label: l10n.shareCommunityLinkLocal,
               icon: Icons.link_rounded,

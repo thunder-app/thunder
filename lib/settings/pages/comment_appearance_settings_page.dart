@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -131,7 +132,8 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Generates an example comment to show in the comment preview
   void getExampleComment() async {
-    final repository = context.read<CommentRepository>();
+    final account = context.read<ProfileBloc>().state.account;
+    final repository = LemmyCommentRepository(account: account);
 
     ThunderComment comment = await repository.createExample(
       id: 1,
@@ -294,9 +296,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                         if (snapshot.data == null) return Container();
 
                         List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(snapshot.data);
+                        final account = context.read<ProfileBloc>().state.account;
 
                         return BlocProvider(
-                          create: (context) => PostBloc(),
+                          create: (context) => PostBloc(account: account),
                           child: IgnorePointer(
                             child: ListView(
                               padding: EdgeInsets.zero,

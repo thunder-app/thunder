@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/thunder_community.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 //// Interface for an account repository
@@ -40,27 +41,18 @@ abstract class AccountRepository {
 
   /// Exports the user's settings.
   Future<dynamic> exportSettings();
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [AccountRepository] using Lemmy API
 class LemmyAccountRepository implements AccountRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyAccountRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyAccountRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
@@ -71,7 +63,6 @@ class LemmyAccountRepository implements AccountRepository {
   @override
   Future<List<ThunderCommunity>> subscriptions({int? page, int? limit}) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(ListCommunities(
@@ -87,7 +78,6 @@ class LemmyAccountRepository implements AccountRepository {
   @override
   Future<ListMediaResponse> media({int? page, int? limit}) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return client.run(ListMedia(auth: account.jwt, page: page, limit: limit));
@@ -109,7 +99,6 @@ class LemmyAccountRepository implements AccountRepository {
     List<int>? discussionLanguages,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await client.run(SaveUserSettings(
@@ -132,7 +121,6 @@ class LemmyAccountRepository implements AccountRepository {
   @override
   Future<SuccessResponse> importSettings(String settings) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await client.run(ImportSettings(auth: account.jwt, data: settings));
@@ -141,7 +129,6 @@ class LemmyAccountRepository implements AccountRepository {
   @override
   Future<dynamic> exportSettings() async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await client.run(ExportSettings(auth: account.jwt));

@@ -20,7 +20,6 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
@@ -161,11 +160,13 @@ class _ThunderState extends State<Thunder> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    final account = context.read<ProfileBloc>().state.account;
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => InboxBloc()),
-        BlocProvider(create: (context) => SearchBloc()),
-        BlocProvider(create: (context) => FeedBloc()),
+        BlocProvider(create: (context) => InboxBloc(account: account)),
+        BlocProvider(create: (context) => SearchBloc(account: account)),
+        BlocProvider(create: (context) => FeedBloc(account: account)),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -430,9 +431,10 @@ class _ThunderState extends State<Thunder> {
                         case ProfileStatus.failureCheckingInstance:
                           showSnackbar(state.error ?? AppLocalizations.of(context)!.missingErrorMessage);
                           errorMessageLoading = false;
+
                           return StatefulBuilder(
                             builder: (context, setState) => ErrorMessage(
-                              title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                              title: AppLocalizations.of(context)!.unableToLoadInstance(state.account.instance),
                               message: AppLocalizations.of(context)!.internetOrInstanceIssues,
                               actions: [
                                 (
