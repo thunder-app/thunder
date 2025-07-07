@@ -18,6 +18,7 @@ import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -35,11 +36,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   late CommentRepository commentRepository;
   late SearchRepository searchRepository;
   late CommunityRepository communityRepository;
+  late UserRepository userRepository;
 
-  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository}) : super(SearchState()) {
+  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository, UserRepository? userRepository}) : super(SearchState()) {
     this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
     this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
     this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -176,14 +179,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
-            final account = await fetchActiveProfile();
-
-            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
-              username: userName,
-              auth: account.jwt,
-            ));
-
-            searchResponse = searchResponse?.copyWith(users: [getCommunityResponse.personView]);
+            final response = await userRepository.getUser(username: userName);
+            searchResponse = searchResponse?.copyWith(users: [response!.personView]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -281,11 +278,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      await lemmy.run(FollowCommunity(
-        auth: account.jwt!,
-        communityId: event.communityId,
-        follow: event.follow,
-      ));
+      await lemmy.run(FollowCommunity(auth: account.jwt!, communityId: event.communityId, follow: event.follow));
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
       GetCommunityResponse response = await lemmy.run(GetCommunity(auth: account.jwt, id: event.communityId));

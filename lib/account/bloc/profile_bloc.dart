@@ -8,15 +8,16 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/repository/account_repository.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/models/favourite.dart';
-import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -33,9 +34,13 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   late InstanceRepository instanceRepository;
+  late AccountRepository accountRepository;
+  late UserRepository userRepository;
 
-  ProfileBloc({InstanceRepository? instanceRepository}) : super(const ProfileState()) {
+  ProfileBloc({InstanceRepository? instanceRepository, AccountRepository? accountRepository, UserRepository? userRepository}) : super(const ProfileState()) {
     this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.accountRepository = accountRepository ?? LemmyAccountRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
     on<InitializeAuth>(_initializeAuth, transformer: throttleDroppable(throttleDuration));
@@ -121,14 +126,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       String instance = event.instance.replaceAll('https://', '');
       LemmyClient.instance.changeBaseUrl(instance);
 
-      final lemmy = LemmyClient.instance.lemmyApiV3;
-
-      final response = await lemmy.run(Login(
-        usernameOrEmail: event.username,
-        password: event.password,
-        totp2faToken: event.totp,
-      ));
-
+      final response = await accountRepository.login(username: event.username, password: event.password, totp: event.totp);
       if (response.jwt == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       final getSiteResponse = await instanceRepository.getSiteInfo();
@@ -241,9 +239,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
 
-      final lemmy = LemmyClient.instance.lemmyApiV3;
-      final response = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: PostSortType.new_.toLemmyType(), page: 1));
-      final user = ThunderUser(response.personView.person, userView: response.personView);
+      final response = await userRepository.getUser(username: account.username, sort: PostSortType.new_, page: 1);
+      final user = ThunderUser(response!.personView.person, userView: response.personView);
       final moderates = response.moderates.map((cmv) => ThunderCommunity(cmv.community)).toList();
 
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
@@ -283,18 +280,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
 
-      final lemmy = LemmyClient.instance.lemmyApiV3;
       List<ThunderCommunity> subscriptions = [];
 
       int page = 1;
       bool hasFetchedAllSubscriptions = false;
 
       while (!hasFetchedAllSubscriptions) {
-        final response = await lemmy.run(ListCommunities(auth: account.jwt, page: page, limit: 50, type: FeedListType.subscribed.toLemmyType()));
-        subscriptions.addAll(response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)));
+        final response = await accountRepository.subscriptions(page: page, limit: 50);
+        subscriptions.addAll(response);
 
         page++;
-        hasFetchedAllSubscriptions = response.communities.isEmpty;
+        hasFetchedAllSubscriptions = response.isEmpty;
       }
 
       // Sort subscriptions by their name

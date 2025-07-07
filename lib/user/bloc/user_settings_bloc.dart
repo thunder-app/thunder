@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/account/repository/account_repository.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -16,6 +17,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -33,11 +35,17 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   late InstanceRepository instanceRepository;
   late SearchRepository searchRepository;
   late CommunityRepository communityRepository;
+  late AccountRepository accountRepository;
+  late UserRepository userRepository;
 
-  UserSettingsBloc({InstanceRepository? instanceRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository}) : super(const UserSettingsState()) {
+  UserSettingsBloc(
+      {InstanceRepository? instanceRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository, AccountRepository? accountRepository, UserRepository? userRepository})
+      : super(const UserSettingsState()) {
     this.instanceRepository = instanceRepository ?? LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
     this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
     this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.accountRepository = accountRepository ?? LemmyAccountRepository(client: LemmyClient.instance.lemmyApiV3);
+    this.userRepository = userRepository ?? LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
@@ -146,21 +154,20 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       emit(state.copyWith(status: UserSettingsStatus.success, getSiteResponse: updatedGetSiteResponse));
       emit(state.copyWith(status: UserSettingsStatus.updating));
 
-      await lemmy.run(SaveUserSettings(
-        auth: account.jwt,
+      await accountRepository.saveSettings(
         bio: event.bio,
         email: event.email,
         matrixUserId: event.matrixUserId,
         displayName: event.displayName,
-        defaultListingType: event.defaultFeedListType?.toLemmyType(),
-        defaultSortType: event.defaultPostSortType?.toLemmyType(),
+        defaultFeedListType: event.defaultFeedListType,
+        defaultPostSortType: event.defaultPostSortType,
         showNsfw: event.showNsfw,
         showReadPosts: event.showReadPosts,
         showScores: event.showScores,
         botAccount: event.botAccount,
         showBotAccounts: event.showBotAccounts,
         discussionLanguages: event.discussionLanguages,
-      ));
+      );
 
       return emit(state.copyWith(status: UserSettingsStatus.success));
     } catch (e) {
@@ -249,26 +256,16 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _unblockPersonEvent(UnblockPersonEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfile();
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
     emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
-      final blockPerson = await lemmy.run(BlockPerson(
-        auth: account.jwt!,
-        personId: event.personId,
-        block: !event.unblock,
-      ));
+      final response = await userRepository.block(event.personId, !event.unblock);
 
       List<Person> updatedPersonBlocks;
       if (event.unblock) {
         updatedPersonBlocks = state.personBlocks.where((person) => person.id != event.personId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedPersonBlocks = (state.personBlocks + [blockPerson.personView.person])..sort((a, b) => a.name.compareTo(b.name));
+        updatedPersonBlocks = (state.personBlocks + [response.personView.person])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
@@ -285,12 +282,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _listMediaEvent(ListMediaEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfile();
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
     emit(state.copyWith(status: UserSettingsStatus.listingMedia));
 
     try {
@@ -299,8 +290,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       List<LocalImageView>? lastResponse;
 
       while (lastResponse?.isEmpty != true) {
-        ListMediaResponse listMediaResponse = await lemmy.run(ListMedia(page: page, auth: account.jwt));
-        images.addAll(lastResponse = listMediaResponse.images);
+        final response = await accountRepository.media(page: page);
+        images.addAll(lastResponse = response.images);
         ++page;
       }
 

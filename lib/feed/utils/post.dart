@@ -11,6 +11,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
@@ -98,17 +99,18 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
   if (userId != null || username != null) {
     do {
-      GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
-        auth: account.jwt,
-        personId: userId,
+      final userRepository = LemmyUserRepository(client: lemmy);
+
+      GetPersonDetailsResponse? getPersonDetailsResponse = await userRepository.getUser(
+        userId: userId,
         username: username,
+        sort: postSortType,
         page: currentPage,
-        sort: postSortType?.toLemmyType(),
-        savedOnly: showSaved,
-      ));
+        saved: showSaved,
+      );
 
       // Remove deleted posts and comments
-      getPersonDetailsResponse = getPersonDetailsResponse.copyWith(
+      getPersonDetailsResponse = getPersonDetailsResponse!.copyWith(
         posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
         comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
       );

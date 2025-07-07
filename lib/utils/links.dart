@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/message_format.dart';
-import 'package:lemmy_api_client/v3.dart' hide ModlogActionType;
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -29,10 +28,10 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/media/image.dart';
 import 'package:thunder/utils/media/video.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/account/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 
 class LinkInfo {
   String? imageURL;
@@ -319,8 +318,8 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = await fetchActiveProfile();
-    await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(username: userName, auth: account.jwt));
+    final repository = context.read<UserRepository>();
+    await repository.getUser(username: userName);
     return true;
   } catch (e) {
     // Ignore and return false below.

@@ -24,6 +24,7 @@ import 'package:path_provider/path_provider.dart';
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/account/repository/account_repository.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/repository/community_repository.dart';
@@ -46,6 +47,7 @@ import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/preferences.dart';
@@ -150,6 +152,12 @@ class _ThunderAppState extends State<ThunderApp> {
   /// The global community repository
   CommunityRepository? _communityRepository;
 
+  /// The global account repository
+  AccountRepository? _accountRepository;
+
+  /// The global user repository
+  UserRepository? _userRepository;
+
   @override
   void initState() {
     super.initState();
@@ -189,6 +197,8 @@ class _ThunderAppState extends State<ThunderApp> {
     _notificationRepository?.dispose();
     _searchRepository?.dispose();
     _communityRepository?.dispose();
+    _accountRepository?.dispose();
+    _userRepository?.dispose();
 
     // Dispose the LemmyClient stream controller
     LemmyClient.dispose();
@@ -232,6 +242,18 @@ class _ThunderAppState extends State<ThunderApp> {
           create: (context) {
             _communityRepository = LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
             return _communityRepository!;
+          },
+        ),
+        RepositoryProvider<AccountRepository>(
+          create: (context) {
+            _accountRepository = LemmyAccountRepository(client: LemmyClient.instance.lemmyApiV3);
+            return _accountRepository!;
+          },
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (context) {
+            _userRepository = LemmyUserRepository(client: LemmyClient.instance.lemmyApiV3);
+            return _userRepository!;
           },
         ),
       ],

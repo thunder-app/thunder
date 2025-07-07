@@ -23,6 +23,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/marquee_widget.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -40,9 +41,9 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 
       if (normalizedUsername != null) {
         try {
-          final account = await fetchActiveProfile();
-          final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account.jwt, username: normalizedUsername));
-          final user = ThunderUser(response.personView.person, userView: response.personView);
+          final repository = context.read<UserRepository>();
+          final response = await repository.getUser(username: normalizedUsername);
+          final user = ThunderUser(response!.personView.person, userView: response.personView);
 
           onUserSelected(user);
           Navigator.of(context).pop();
@@ -265,11 +266,7 @@ void showInstanceInputDialog(
 }) async {
   Account? account = await fetchActiveProfile();
 
-  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
-    GetFederatedInstances(
-      auth: account.jwt,
-    ),
-  );
+  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account.jwt));
 
   Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {

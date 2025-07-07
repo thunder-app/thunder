@@ -9,6 +9,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
 import "package:lemmy_api_client/v3.dart";
+import "package:thunder/account/repository/account_repository.dart";
 import "package:thunder/core/enums/post_sort_type.dart";
 import 'package:thunder/localizations/app_localizations.dart';
 import "package:path_provider/path_provider.dart";
@@ -447,11 +448,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onTap: () async {
                                     dynamic exportSettings;
                                     try {
-                                      final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                      final account = await fetchActiveProfile();
-                                      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-                                      exportSettings = await LemmyClient.instance.lemmyApiV3.run(ExportSettings(auth: account.jwt));
+                                      final repository = context.read<AccountRepository>();
+                                      exportSettings = await repository.exportSettings();
                                     } catch (e) {
                                       // Catch rate-limit errors
                                       showSnackbar(getExceptionErrorMessage(e));
@@ -521,10 +519,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                                     try {
                                       final l10n = AppLocalizations.of(GlobalContext.context)!;
-                                      final account = await fetchActiveProfile();
-                                      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-                                      SuccessResponse response = await LemmyClient.instance.lemmyApiV3.run(ImportSettings(auth: account.jwt, data: importSettings));
+                                      final repository = context.read<AccountRepository>();
+                                      final response = await repository.importSettings(importSettings);
 
                                       if (response.success) {
                                         showSnackbar(l10n.accountSettingsImportedSuccessfully);
