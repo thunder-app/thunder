@@ -171,7 +171,7 @@ class _ThunderAppState extends State<ThunderApp> {
         BlocProvider(create: (context) => ThunderBloc()),
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => CommunityBloc(account: account)),
-        BlocProvider(create: (context) => InstanceBloc()),
+        BlocProvider(create: (context) => InstanceBloc(account: account)),
         BlocProvider(create: (context) => UserBloc(account: account)),
         BlocProvider(create: (context) => NetworkCheckerCubit()..getConnectionType())
       ],

@@ -15,7 +15,6 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/user/repository/user_repository.dart';
@@ -207,7 +206,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.blocking, instanceBeingBlocked: event.instanceId, personBeingBlocked: 0, communityBeingBlocked: 0));
 
     try {
-      await blockInstance(event.instanceId, !event.unblock);
+      await instanceRepository.block(event.instanceId, !event.unblock);
 
       emit(state.copyWith(
         status: state.status,

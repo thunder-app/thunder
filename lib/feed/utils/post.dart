@@ -10,6 +10,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
@@ -28,7 +29,6 @@ Future<Map<String, dynamic>> fetchFeedItems({
   void Function()? notifyExcessiveApiCalls,
 }) async {
   final account = await fetchActiveProfile();
-  LemmyApiV3? lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
@@ -44,16 +44,16 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
     do {
-      GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
-        auth: account.jwt,
+      final postRepository = LemmyPostRepository(account: account);
+      GetPostsResponse getPostsResponse = await postRepository.getPosts(
         page: currentPage,
-        sort: postSortType?.toLemmyType(),
-        type: feedListType?.toLemmyType(),
+        postSortType: postSortType,
+        feedListType: feedListType,
         communityId: communityId,
         communityName: communityName,
         showHidden: showHidden,
-        savedOnly: showSaved,
-      ));
+        showSaved: showSaved,
+      );
 
       // Keep the length of the original response to see if there are any additional posts to fetch
       int postResponseLength = getPostsResponse.posts.length;

@@ -6,6 +6,8 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
+import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -18,8 +20,19 @@ extension on MarkPostAsReadResponse {
 
 /// Interface for a post repository
 abstract class PostRepository {
-  /// Fetches a post by its ID
-  Future<ThunderPost?> getPost(int postId, {int? commentId});
+  /// Fetches a post by its ID. Returns the post along with moderators and cross-posts information
+  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});
+
+  /// Fetches posts from the API
+  Future<GetPostsResponse> getPosts({
+    int page = 1,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+    int? communityId,
+    String? communityName,
+    bool showHidden = false,
+    bool showSaved = false,
+  });
 
   /// Creates a new post
   Future<ThunderPost> create({
@@ -86,6 +99,18 @@ abstract class PostRepository {
   /// Reports a post
   /// @TODO: Change the return type to an internal model
   Future<PostReportResponse> report(int postId, String reason);
+
+  /// Get post reports
+  Future<ListPostReportsResponse> getPostReports({
+    int? postId,
+    int page = 1,
+    int limit = 20,
+    bool unresolved = false,
+    int? communityId,
+  });
+
+  /// Resolve a post report
+  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved);
 }
 
 /// Implementation of [PostRepository] using Lemmy API
@@ -101,10 +126,43 @@ class LemmyPostRepository implements PostRepository {
   }
 
   @override
-  Future<ThunderPost?> getPost(int postId, {int? commentId}) async {
+  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
     final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
-    final posts = await parsePosts([response.postView]);
-    return posts.firstOrNull;
+
+    // Parse the posts and add in media information which is used elsewhere in the app
+    List<ThunderPost> posts = await parsePosts([response.postView]);
+    ThunderPost post = posts.first;
+
+    // Convert cross-posts to ThunderPost objects
+    List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+
+    return {
+      'post': post,
+      'moderators': response.moderators,
+      'crossPosts': crossPosts,
+    };
+  }
+
+  @override
+  Future<GetPostsResponse> getPosts({
+    int page = 1,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+    int? communityId,
+    String? communityName,
+    bool showHidden = false,
+    bool showSaved = false,
+  }) async {
+    return await client.run(GetPosts(
+      auth: account.jwt,
+      page: page,
+      sort: postSortType?.toLemmyType(),
+      type: feedListType?.toLemmyType(),
+      communityId: communityId,
+      communityName: communityName,
+      showHidden: showHidden,
+      savedOnly: showSaved,
+    ));
   }
 
   @override
@@ -245,6 +303,33 @@ class LemmyPostRepository implements PostRepository {
 
     final response = await client.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
     return response;
+  }
+
+  @override
+  Future<ListPostReportsResponse> getPostReports({int? postId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ListPostReports(
+      auth: account.jwt!,
+      postId: postId,
+      page: page,
+      limit: limit,
+      unresolvedOnly: unresolved,
+      communityId: communityId,
+    ));
+  }
+
+  @override
+  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ResolvePostReport(
+      auth: account.jwt!,
+      reportId: reportId,
+      resolved: resolved,
+    ));
   }
 
   @override

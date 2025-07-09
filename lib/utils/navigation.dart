@@ -158,7 +158,11 @@ Future<void> navigateToPost(
   ThunderPost? pvm = post;
 
   final account = await fetchActiveProfile();
-  pvm ??= await LemmyPostRepository(account: account).getPost(postId!);
+
+  if (pvm == null) {
+    final response = await LemmyPostRepository(account: account).getPost(postId!);
+    pvm = response?['post'];
+  }
 
   // Mark post as read when tapped
   if (profileBloc.state.isLoggedIn) {
@@ -194,7 +198,7 @@ Future<void> navigateToPost(
           BlocProvider.value(value: profileBloc),
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: postBloc),
-          BlocProvider(create: (context) => InstanceBloc()),
+          BlocProvider(create: (context) => InstanceBloc(account: account)),
           BlocProvider(create: (context) => CommunityBloc(account: account)),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
@@ -289,7 +293,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
         BlocProvider(create: (context) => PostBloc(account: account)),
       ],
       child: PostPage(
-        initialPost: post!,
+        initialPost: post!['post'],
         highlightedCommentId: comment.id,
         commentPath: comment.path,
         onPostUpdated: (ThunderPost post) {},

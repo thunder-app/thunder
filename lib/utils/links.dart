@@ -176,7 +176,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       final post = await LemmyPostRepository(account: account).getPost(postId);
 
       if (context.mounted) {
-        navigateToPost(context, post: post);
+        navigateToPost(context, post: post?['post']);
         return;
       }
     } catch (e) {

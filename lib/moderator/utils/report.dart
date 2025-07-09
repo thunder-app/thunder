@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/moderator/view/report_page.dart';
-import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 
 /// Helper function which handles the logic of fetching post/comment reports
 Future<Map<String, dynamic>> fetchReports({
@@ -17,11 +15,7 @@ Future<Map<String, dynamic>> fetchReports({
   int? commentId,
   ReportFeedType reportFeedType = ReportFeedType.post,
 }) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
   final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
   bool hasReachedPostReportsEnd = false;
   bool hasReachedCommentReportsEnd = false;
@@ -33,23 +27,21 @@ Future<Map<String, dynamic>> fetchReports({
 
   // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
   do {
-    ListPostReportsResponse listPostReportsResponse = await lemmy.run(ListPostReports(
-      auth: account.jwt,
-      page: currentPage,
-      limit: limit,
-      unresolvedOnly: unresolved,
-      communityId: communityId,
+    final listPostReportsResponse = await LemmyPostRepository(account: account).getPostReports(
       postId: postId,
-    ));
-
-    ListCommentReportsResponse listCommentReportsResponse = await lemmy.run(ListCommentReports(
-      auth: account.jwt,
       page: currentPage,
       limit: limit,
-      unresolvedOnly: unresolved,
+      unresolved: unresolved,
       communityId: communityId,
+    );
+
+    final listCommentReportsResponse = await LemmyCommentRepository(account: account).getCommentReports(
       commentId: commentId,
-    ));
+      page: currentPage,
+      limit: limit,
+      unresolved: unresolved,
+      communityId: communityId,
+    );
 
     postReportViews.addAll(listPostReportsResponse.postReports);
     commentReportViews.addAll(listCommentReportsResponse.commentReports);
@@ -75,17 +67,8 @@ PostReport optimisticallyResolvePostReport(PostReport postReport, bool resolved)
 
 /// Logic to resolve a post report
 Future<bool> resolvePostReport(int postReportId, bool resolved) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
   final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
-
-  PostReportResponse postReportResponse = await lemmy.run(ResolvePostReport(
-    reportId: postReportId,
-    resolved: resolved,
-    auth: account.jwt!,
-  ));
+  final postReportResponse = await LemmyPostRepository(account: account).resolvePostReport(postReportId, resolved);
 
   return postReportResponse.postReportView.postReport.resolved == resolved;
 }
@@ -97,17 +80,8 @@ CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bo
 
 /// Logic to resolve a comment report
 Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
-  final l10n = AppLocalizations.of(GlobalContext.context)!;
   final account = await fetchActiveProfile();
-  if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
-
-  CommentReportResponse commentReportResponse = await lemmy.run(ResolveCommentReport(
-    reportId: commentReportId,
-    resolved: resolved,
-    auth: account.jwt!,
-  ));
+  final commentReportResponse = await LemmyCommentRepository(account: account).resolveCommentReport(commentReportId, resolved);
 
   return commentReportResponse.commentReportView.commentReport.resolved == resolved;
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,7 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -265,9 +265,8 @@ void showInstanceInputDialog(
   Iterable<InstanceWithFederationState>? emptySuggestions,
 }) async {
   Account? account = await fetchActiveProfile();
-  final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
 
-  GetFederatedInstancesResponse getFederatedInstancesResponse = await lemmy.run(GetFederatedInstances(auth: account.jwt));
+  final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
 
   Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {

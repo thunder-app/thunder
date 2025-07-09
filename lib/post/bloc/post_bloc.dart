@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
@@ -57,32 +56,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
       defaultCommentSortType = defaultCommentSortType;
 
-      final account = await fetchActiveProfile();
-
       emit(state.copyWith(status: PostStatus.loading));
-
-      LemmyApiV3 lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
-
-      GetPostResponse? getPostResponse;
 
       // Retrieve the full post for moderators and cross-posts
       int? postId = event.postId ?? event.post?.id;
-      if (postId != null) {
-        getPostResponse = await lemmy.run(GetPost(id: postId, auth: account.jwt));
-      }
 
       ThunderPost? post = event.post;
       List<CommunityModeratorView>? moderators;
       List<ThunderPost>? crossPosts;
 
-      if (getPostResponse != null) {
-        // Parse the posts and add in media information which is used elsewhere in the app
-        List<ThunderPost> posts = await parsePosts([getPostResponse.postView]);
-
-        post = posts.first;
-
-        moderators = getPostResponse.moderators;
-        crossPosts = getPostResponse.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+      if (postId != null) {
+        final response = await postRepository.getPost(postId);
+        post = response?['post'];
+        moderators = response?['moderators'];
+        crossPosts = response?['crossPosts'];
       }
 
       // If we can't get mods from the post response, fallback to getting the whole community.

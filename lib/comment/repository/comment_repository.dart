@@ -53,6 +53,12 @@ abstract class CommentRepository {
   /// Reports a comment
   Future<CommentReportResponse> report(int commentId, String reason);
 
+  /// Get comment reports
+  Future<ListCommentReportsResponse> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId});
+
+  /// Resolve a comment report
+  Future<CommentReportResponse> resolveCommentReport(int reportId, bool resolved);
+
   /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment
   /// with the applied settings on Settings -> Appearance -> Comments page.
   Future<ThunderComment> createExample({
@@ -206,6 +212,33 @@ class LemmyCommentRepository implements CommentRepository {
     final response = await client.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
 
     return response;
+  }
+
+  @override
+  Future<ListCommentReportsResponse> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ListCommentReports(
+      auth: account.jwt!,
+      commentId: commentId,
+      page: page,
+      limit: limit,
+      unresolvedOnly: unresolved,
+      communityId: communityId,
+    ));
+  }
+
+  @override
+  Future<CommentReportResponse> resolveCommentReport(int reportId, bool resolved) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ResolveCommentReport(
+      auth: account.jwt!,
+      reportId: reportId,
+      resolved: resolved,
+    ));
   }
 
   @override
