@@ -57,10 +57,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
-    int limit = 20;
-
-    final account = await fetchActiveProfile();
-    if (account.jwt == null) {
+    if (account.anonymous) {
       return emit(state.copyWith(
         status: InboxStatus.empty,
         privateMessages: [],
@@ -79,6 +76,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         hasReachedInboxPrivateMessageEnd: true,
       ));
     }
+
+    int limit = 20;
 
     try {
       PrivateMessagesResponse? privateMessagesResponse;

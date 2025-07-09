@@ -32,9 +32,12 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -161,8 +164,6 @@ class _ThunderAppState extends State<ThunderApp> {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.watch<ProfileBloc>().state.account;
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThemeBloc()),
@@ -170,9 +171,6 @@ class _ThunderAppState extends State<ThunderApp> {
         BlocProvider(create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream)),
         BlocProvider(create: (context) => ThunderBloc()),
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
-        BlocProvider(create: (context) => CommunityBloc(account: account)),
-        BlocProvider(create: (context) => InstanceBloc(account: account)),
-        BlocProvider(create: (context) => UserBloc(account: account)),
         BlocProvider(create: (context) => NetworkCheckerCubit()..getConnectionType())
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -240,25 +238,42 @@ class _ThunderAppState extends State<ThunderApp> {
                 child: AnnotatedRegion<SystemUiOverlayStyle>(
                   // Set navigation bar color on Android to be transparent
                   value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                  child: MaterialApp(
-                    title: 'Thunder',
-                    locale: locale,
-                    localizationsDelegates: const [
-                      ...AppLocalizations.localizationsDelegates,
-                      MaterialLocalizationsEo.delegate,
-                      CupertinoLocalizationsEo.delegate,
-                    ],
-                    supportedLocales: const [
-                      ...AppLocalizations.supportedLocales,
-                      Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                    ],
-                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                    theme: theme,
-                    darkTheme: darkTheme,
-                    debugShowCheckedModeBanner: false,
-                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
-                    home: Thunder(pageController: thunderPageController),
+                  child: BlocBuilder<ProfileBloc, ProfileState>(
+                    buildWhen: (previous, current) => previous.account.id != current.account.id,
+                    builder: (context, profileState) {
+                      final account = profileState.account;
+                      return MultiBlocProvider(
+                        key: ValueKey('account_${account.id}'),
+                        providers: [
+                          BlocProvider(create: (context) => CommunityBloc(account: account)),
+                          BlocProvider(create: (context) => InstanceBloc(account: account)),
+                          BlocProvider(create: (context) => UserBloc(account: account)),
+                          BlocProvider(create: (context) => InboxBloc(account: account)..add(GetInboxEvent(reset: true))),
+                          BlocProvider(create: (context) => SearchBloc(account: account)),
+                          BlocProvider(create: (context) => FeedBloc(account: account)),
+                        ],
+                        child: MaterialApp(
+                          title: 'Thunder',
+                          locale: locale,
+                          localizationsDelegates: const [
+                            ...AppLocalizations.localizationsDelegates,
+                            MaterialLocalizationsEo.delegate,
+                            CupertinoLocalizationsEo.delegate,
+                          ],
+                          supportedLocales: const [
+                            ...AppLocalizations.supportedLocales,
+                            Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                          ],
+                          themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                          theme: theme,
+                          darkTheme: darkTheme,
+                          debugShowCheckedModeBanner: false,
+                          scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                          scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                          home: Thunder(pageController: thunderPageController),
+                        ),
+                      );
+                    },
                   ),
                 ),
               );

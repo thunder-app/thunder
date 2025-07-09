@@ -162,7 +162,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     final String accountInstance = context.read<ProfileBloc>().state.account.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider(
       create: (context) => FeedBloc(account: account),

@@ -137,7 +137,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
       );
     }
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider<FeedBloc>(
       create: (_) => FeedBloc(account: account)

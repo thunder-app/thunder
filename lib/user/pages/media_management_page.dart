@@ -166,6 +166,8 @@ class MediaManagementPage extends StatelessWidget {
                                                         Navigator.of(context).pop();
                                                       }
 
+                                                      final account = context.read<ProfileBloc>().state.account;
+
                                                       return SingleChildScrollView(
                                                         child: Column(
                                                           children: [
@@ -179,7 +181,7 @@ class MediaManagementPage extends StatelessWidget {
                                                             else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
-                                                                  value: FeedBloc(account: context.read<ProfileBloc>().state.account),
+                                                                  value: FeedBloc(account: account),
                                                                   child: CustomScrollView(
                                                                     physics: const NeverScrollableScrollPhysics(),
                                                                     shrinkWrap: true,

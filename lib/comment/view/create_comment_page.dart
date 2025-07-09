@@ -236,7 +236,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     final theme = Theme.of(context);
     originalUser ??= context.read<ProfileBloc>().state.account;
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

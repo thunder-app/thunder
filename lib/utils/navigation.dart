@@ -157,7 +157,7 @@ Future<void> navigateToPost(
 
   ThunderPost? pvm = post;
 
-  final account = await fetchActiveProfile();
+  final account = context.read<ProfileBloc>().state.account;
 
   if (pvm == null) {
     final response = await LemmyPostRepository(account: account).getPost(postId!);
@@ -227,7 +227,7 @@ Future<void> navigateToModlogPage(
   required String subtitle,
 }) async {
   final thunderBloc = context.read<ThunderBloc>();
-  final account = await fetchActiveProfile();
+  final account = context.read<ProfileBloc>().state.account;
 
   // Optional blocs
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
@@ -266,14 +266,13 @@ Future<void> navigateToModlogPage(
 }
 
 Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {
-  final account = await fetchActiveProfile();
-
   ProfileBloc profileBloc = context.read<ProfileBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
   final ThunderState state = context.read<ThunderBloc>().state;
   final bool reduceAnimations = state.reduceAnimations;
 
+  final account = context.read<ProfileBloc>().state.account;
   final post = await LemmyPostRepository(account: account).getPost(comment.post!.id, commentId: comment.id);
 
   final SwipeablePageRoute route = SwipeablePageRoute(

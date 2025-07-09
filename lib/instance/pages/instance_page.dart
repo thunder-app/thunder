@@ -85,7 +85,7 @@ class _InstancePageState extends State<InstancePage> {
 
     final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {

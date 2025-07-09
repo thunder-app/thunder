@@ -40,7 +40,7 @@ class UserHeaderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.read<ProfileBloc>().state.account;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider<UserBloc>(
       create: (context) => UserBloc(account: account),

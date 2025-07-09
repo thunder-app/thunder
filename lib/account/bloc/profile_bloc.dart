@@ -77,8 +77,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> _initializeAuth(InitializeAuth event, Emitter<ProfileState> emit) async {
-    _resetState(emit);
-
     // Check to see what the current active profile is.
     final account = await fetchActiveProfile();
 
