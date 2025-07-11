@@ -8,6 +8,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
@@ -329,7 +330,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Generates an example post to show in the post preview
   Future<List<ThunderPost?>> getExamplePosts() async {
-    final repository = context.read<PostRepository>();
+    final account = context.read<ProfileBloc>().state.account;
+    final repository = LemmyPostRepository(account: account);
 
     ThunderPost? postText = await repository.createExample(
       postTitle: 'Example Text Post',
@@ -499,9 +501,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       future: getExamplePosts(),
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return Container();
+                        final account = context.read<ProfileBloc>().state.account;
 
                         return BlocProvider(
-                          create: (context) => FeedBloc(),
+                          create: (context) => FeedBloc(account: account),
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,

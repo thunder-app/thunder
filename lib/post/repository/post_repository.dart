@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
+import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -17,8 +20,19 @@ extension on MarkPostAsReadResponse {
 
 /// Interface for a post repository
 abstract class PostRepository {
-  /// Fetches a post by its ID
-  Future<ThunderPost?> getPost(int postId, {int? commentId});
+  /// Fetches a post by its ID. Returns the post along with moderators and cross-posts information
+  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});
+
+  /// Fetches posts from the API
+  Future<GetPostsResponse> getPosts({
+    int page = 1,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+    int? communityId,
+    String? communityName,
+    bool showHidden = false,
+    bool showSaved = false,
+  });
 
   /// Creates a new post
   Future<ThunderPost> create({
@@ -86,35 +100,69 @@ abstract class PostRepository {
   /// @TODO: Change the return type to an internal model
   Future<PostReportResponse> report(int postId, String reason);
 
-  /// Dispose method to clean up resources
-  void dispose();
+  /// Get post reports
+  Future<ListPostReportsResponse> getPostReports({
+    int? postId,
+    int page = 1,
+    int limit = 20,
+    bool unresolved = false,
+    int? communityId,
+  });
+
+  /// Resolve a post report
+  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved);
 }
 
 /// Implementation of [PostRepository] using Lemmy API
 class LemmyPostRepository implements PostRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyPostRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
+  LemmyPostRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
-  }
-
-  @override
-  Future<ThunderPost?> getPost(int postId, {int? commentId}) async {
-    final account = await fetchActiveProfile();
-
+  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
     final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
-    final posts = await parsePosts([response.postView]);
-    return posts.firstOrNull;
+
+    // Parse the posts and add in media information which is used elsewhere in the app
+    List<ThunderPost> posts = await parsePosts([response.postView]);
+    ThunderPost post = posts.first;
+
+    // Convert cross-posts to ThunderPost objects
+    List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+
+    return {
+      'post': post,
+      'moderators': response.moderators,
+      'crossPosts': crossPosts,
+    };
+  }
+
+  @override
+  Future<GetPostsResponse> getPosts({
+    int page = 1,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+    int? communityId,
+    String? communityName,
+    bool showHidden = false,
+    bool showSaved = false,
+  }) async {
+    return await client.run(GetPosts(
+      auth: account.jwt,
+      page: page,
+      sort: postSortType?.toLemmyType(),
+      type: feedListType?.toLemmyType(),
+      communityId: communityId,
+      communityName: communityName,
+      showHidden: showHidden,
+      savedOnly: showSaved,
+    ));
   }
 
   @override
@@ -130,7 +178,6 @@ class LemmyPostRepository implements PostRepository {
     int? languageId,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     PostResponse postResponse;
@@ -167,7 +214,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<ThunderPost> vote(ThunderPost post, int score) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
@@ -177,7 +223,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<ThunderPost> save(ThunderPost post, bool save) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
@@ -187,7 +232,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> read(int postId, bool read) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
@@ -197,7 +241,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<List<int>> readMultiple(List<int> postIds, bool read) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     List<int> failed = [];
@@ -211,7 +254,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> hide(int postId, bool hide) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
@@ -221,7 +263,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> delete(int postId, bool delete) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
@@ -231,7 +272,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> lock(int postId, bool lock) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
@@ -241,7 +281,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> pinCommunity(int postId, bool pin) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
@@ -251,7 +290,6 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<bool> remove(int postId, bool remove, String reason) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
@@ -261,11 +299,37 @@ class LemmyPostRepository implements PostRepository {
   @override
   Future<PostReportResponse> report(int postId, String reason) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
     return response;
+  }
+
+  @override
+  Future<ListPostReportsResponse> getPostReports({int? postId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ListPostReports(
+      auth: account.jwt!,
+      postId: postId,
+      page: page,
+      limit: limit,
+      unresolvedOnly: unresolved,
+      communityId: communityId,
+    ));
+  }
+
+  @override
+  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    return await client.run(ResolvePostReport(
+      auth: account.jwt!,
+      reportId: reportId,
+      resolved: resolved,
+    ));
   }
 
   @override

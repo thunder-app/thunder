@@ -12,7 +12,6 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -28,6 +27,8 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
+  Account account;
+
   late CommentRepository commentRepository;
   late NotificationRepository notificationRepository;
 
@@ -35,18 +36,17 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   InboxBloc.initWith({
     required List<CommentReplyView> replies,
     required bool showUnreadOnly,
-    CommentRepository? commentRepository,
-    NotificationRepository? notificationRepository,
+    required this.account,
   }) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
-    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.notificationRepository = notificationRepository ?? LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
+    commentRepository = LemmyCommentRepository(account: account);
+    notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }
 
   /// Unnamed constructor with default state
-  InboxBloc({CommentRepository? commentRepository, NotificationRepository? notificationRepository}) : super(const InboxState()) {
-    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.notificationRepository = notificationRepository ?? LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
+  InboxBloc({required this.account}) : super(const InboxState()) {
+    commentRepository = LemmyCommentRepository(account: account);
+    notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }
 
@@ -57,10 +57,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
-    int limit = 20;
-
-    final account = await fetchActiveProfile();
-    if (account.jwt == null) {
+    if (account.anonymous) {
       return emit(state.copyWith(
         status: InboxStatus.empty,
         privateMessages: [],
@@ -79,6 +76,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         hasReachedInboxPrivateMessageEnd: true,
       ));
     }
+
+    int limit = 20;
 
     try {
       PrivateMessagesResponse? privateMessagesResponse;

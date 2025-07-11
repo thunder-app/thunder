@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/share/advanced_share_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -72,6 +73,16 @@ class ShareActionBottomSheet extends StatefulWidget {
 }
 
 class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
+  String generateCommentUrl(int commentId) {
+    final account = context.read<ProfileBloc>().state.account;
+    return 'https://${account.instance}/comment/$commentId';
+  }
+
+  String generatePostUrl(int postId) {
+    final account = context.read<ProfileBloc>().state.account;
+    return 'https://${account.instance}/post/$postId';
+  }
+
   void retrieveMedia(String? url) async {
     if (url == null) return;
 
@@ -100,13 +111,13 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.url)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generateCommentUrl(comment!.id))));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(generateCommentUrl(comment!.id))));
         break;
       case ShareBottomSheetAction.sharePost:
         SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.url)));
         break;
       case ShareBottomSheetAction.sharePostLocal:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(LemmyClient.instance.generatePostUrl(post!.id))));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(generatePostUrl(post!.id))));
         break;
       case ShareBottomSheetAction.shareImage:
         retrieveMedia(post!.media.first.imageUrl!);
@@ -131,11 +142,11 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       case ShareBottomSheetAction.shareComment:
         return comment!.url;
       case ShareBottomSheetAction.shareCommentLocal:
-        return LemmyClient.instance.generateCommentUrl(comment!.id);
+        return generateCommentUrl(comment!.id);
       case ShareBottomSheetAction.sharePost:
         return post!.url;
       case ShareBottomSheetAction.sharePostLocal:
-        return LemmyClient.instance.generatePostUrl(post!.id);
+        return generatePostUrl(post!.id);
       case ShareBottomSheetAction.shareImage:
         return post!.media.first.imageUrl;
       case ShareBottomSheetAction.shareMedia:
@@ -156,7 +167,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       userActions = [ShareBottomSheetAction.shareComment, ShareBottomSheetAction.shareCommentLocal];
 
       // Remove the share local option if it is the same as the original
-      if (widget.comment!.url == LemmyClient.instance.generateCommentUrl(widget.comment!.id)) {
+      if (widget.comment!.url == generateCommentUrl(widget.comment!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareCommentLocal);
       }
     } else if (widget.post != null) {
@@ -181,7 +192,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       }
 
       // Remove the share local option if it is the same as the original
-      if (widget.post!.url == LemmyClient.instance.generatePostUrl(widget.post!.id)) {
+      if (widget.post!.url == generatePostUrl(widget.post!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.sharePostLocal);
       }
     }

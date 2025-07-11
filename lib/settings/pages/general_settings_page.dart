@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:unifiedpush/unifiedpush.dart';
-import 'package:version/version.dart';
 
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -22,7 +21,6 @@ import 'package:thunder/core/enums/image_caching_mode.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/utils/notification_settings.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -405,15 +403,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     icon: Icons.local_fire_department_rounded,
                     payload: defaultPostSortType,
                   ),
-                  options: [
-                    ...SortPicker.getDefaultPostSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
-                    ...topPostSortTypeItems
-                  ],
+                  options: [...SortPicker.getDefaultPostSortTypeItems(), ...topPostSortTypeItems],
                   icon: Icons.sort_rounded,
                   onChanged: (_) async {},
                   isBottomModalScrollControlled: true,
                   customListPicker: SortPicker(
-                    minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                     title: l10n.defaultFeedSortType,
                     onSelect: (value) async {
                       setPreferences(LocalSettings.defaultFeedPostSortType, value.payload.name);
@@ -597,11 +591,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultCommentSortType,
               value: ListPickerItem(label: defaultCommentSortType.name, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"])),
+              options: CommentSortPicker.getCommentSortTypeItems(),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},
               customListPicker: CommentSortPicker(
-                minimumVersion: Version(0, 19, 0, preRelease: ["rc", "1"]),
                 title: l10n.commentSortType,
                 onSelect: (value) async {
                   setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
@@ -610,10 +603,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((item) => item.payload == defaultCommentSortType).icon, size: 13),
+                  Icon(CommentSortPicker.getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).icon, size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems(minimumVersion: LemmyClient.maxVersion).firstWhere((item) => item.payload == defaultCommentSortType).label,
+                    CommentSortPicker.getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],

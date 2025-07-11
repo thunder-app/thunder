@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:version/version.dart';
 
 List<ListPickerItem<PostSortType>> topPostSortTypeItems = [
   ListPickerItem(
@@ -66,12 +64,10 @@ List<ListPickerItem<PostSortType>> topPostSortTypeItems = [
   ),
 ];
 
-List<ListPickerItem<PostSortType>> allPostSortTypeItems = [...SortPicker.getDefaultPostSortTypeItems(minimumVersion: LemmyClient.maxVersion), ...topPostSortTypeItems];
+List<ListPickerItem<PostSortType>> allPostSortTypeItems = [...SortPicker.getDefaultPostSortTypeItems(), ...topPostSortTypeItems];
 
 class SortPicker extends BottomSheetListPicker<PostSortType> {
-  final Version? minimumVersion;
-
-  static List<ListPickerItem<PostSortType>> getDefaultPostSortTypeItems({required Version? minimumVersion}) => [
+  static List<ListPickerItem<PostSortType>> getDefaultPostSortTypeItems() => [
         ListPickerItem(
           payload: PostSortType.hot,
           icon: Icons.local_fire_department_rounded,
@@ -82,18 +78,16 @@ class SortPicker extends BottomSheetListPicker<PostSortType> {
           icon: Icons.rocket_launch_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.active,
         ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.postSortTypeScaled))
-          ListPickerItem(
-            payload: PostSortType.scaled,
-            icon: Icons.line_weight_rounded,
-            label: AppLocalizations.of(GlobalContext.context)!.scaled,
-          ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.postSortTypeControversial))
-          ListPickerItem(
-            payload: PostSortType.controversial,
-            icon: Icons.warning_rounded,
-            label: AppLocalizations.of(GlobalContext.context)!.controversial,
-          ),
+        ListPickerItem(
+          payload: PostSortType.scaled,
+          icon: Icons.line_weight_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.scaled,
+        ),
+        ListPickerItem(
+          payload: PostSortType.controversial,
+          icon: Icons.warning_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.controversial,
+        ),
         ListPickerItem(
           payload: PostSortType.new_,
           icon: Icons.auto_awesome_rounded,
@@ -126,8 +120,7 @@ class SortPicker extends BottomSheetListPicker<PostSortType> {
     required super.title,
     List<ListPickerItem<PostSortType>>? items,
     super.previouslySelected,
-    required this.minimumVersion,
-  }) : super(items: items ?? getDefaultPostSortTypeItems(minimumVersion: minimumVersion));
+  }) : super(items: items ?? getDefaultPostSortTypeItems());
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -142,12 +135,12 @@ class _SortPickerState extends State<SortPicker> {
       child: AnimatedSize(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
-        child: topSelected ? topSortPicker() : defaultSortPicker(minimumVersion: widget.minimumVersion),
+        child: topSelected ? topSortPicker() : defaultSortPicker(),
       ),
     );
   }
 
-  Widget defaultSortPicker({required Version? minimumVersion}) {
+  Widget defaultSortPicker() {
     final theme = Theme.of(context);
 
     return Column(
@@ -169,7 +162,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(SortPicker.getDefaultPostSortTypeItems(minimumVersion: widget.minimumVersion), theme),
+            ..._generateList(SortPicker.getDefaultPostSortTypeItems(), theme),
             PickerItem(
               label: AppLocalizations.of(GlobalContext.context)!.top,
               icon: Icons.military_tech,

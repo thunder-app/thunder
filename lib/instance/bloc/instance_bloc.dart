@@ -1,13 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'instance_event.dart';
@@ -22,9 +21,13 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
-  final LemmyClient lemmyClient;
+  Account account;
 
-  InstanceBloc({required this.lemmyClient}) : super(const InstanceState()) {
+  late InstanceRepository instanceRepository;
+
+  InstanceBloc({required this.account}) : super(const InstanceState()) {
+    instanceRepository = LemmyInstanceRepository(account: account);
+
     /// Handles clearing any messages from the state
     on<InstanceClearMessageEvent>(
       _onInstanceClearMessage,
@@ -52,10 +55,11 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
     switch (event.instanceAction) {
       case InstanceAction.block:
         try {
-          BlockInstanceResponse blockInstanceResponse = await blockInstance(event.instanceId, event.value);
+          final response = await instanceRepository.block(event.instanceId, event.value);
+
           emit(state.copyWith(
-            status: blockInstanceResponse.blocked == event.value ? InstanceStatus.success : InstanceStatus.failure,
-            message: blockInstanceResponse.blocked ? l10n.successfullyBlockedCommunity(event.domain ?? '') : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
+            status: response.blocked == event.value ? InstanceStatus.success : InstanceStatus.failure,
+            message: response.blocked ? l10n.successfullyBlockedCommunity(event.domain ?? '') : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
           ));
         } catch (e) {
           return emit(state.copyWith(status: InstanceStatus.failure));

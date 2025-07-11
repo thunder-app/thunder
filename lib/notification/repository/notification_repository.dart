@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a notification repository
@@ -55,27 +56,18 @@ abstract class NotificationRepository {
 
   /// Marks all notifications as read
   Future<void> markAllNotificationsAsRead();
-
-  /// Dispose method to clean up resources
-  void dispose();
 }
 
 /// Implementation of [InstanceRepository] using Lemmy API
 class LemmyNotificationRepository implements NotificationRepository {
+  /// The account to use for methods invoked in this repository
+  Account account;
+
   /// The Lemmy client to use for the repository
-  LemmyApiV3 client;
+  late LemmyApiV3 client;
 
-  /// Stream subscription for client changes
-  StreamSubscription<LemmyApiV3>? _subscription;
-
-  LemmyNotificationRepository({required this.client}) {
-    _subscription = LemmyClient.onClientChanged.listen((newClient) => client = newClient);
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+  LemmyNotificationRepository({required this.account}) {
+    client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
@@ -86,7 +78,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(GetReplies(
@@ -106,7 +97,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     bool read = true,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await client.run(MarkCommentReplyAsRead(
@@ -124,7 +114,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(GetPersonMentions(
@@ -144,7 +133,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     bool read = true,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await client.run(MarkPersonMentionAsRead(
@@ -161,7 +149,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(GetPrivateMessages(
@@ -180,7 +167,6 @@ class LemmyNotificationRepository implements NotificationRepository {
     bool read = true,
   }) async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await client.run(MarkPrivateMessageAsRead(
@@ -193,7 +179,6 @@ class LemmyNotificationRepository implements NotificationRepository {
   @override
   Future<GetUnreadCountResponse> unreadNotificationsCount() async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(GetUnreadCount(auth: account.jwt!));
@@ -204,7 +189,6 @@ class LemmyNotificationRepository implements NotificationRepository {
   @override
   Future<void> markAllNotificationsAsRead() async {
     final l10n = GlobalContext.l10n;
-    final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await client.run(MarkAllAsRead(auth: account.jwt!));

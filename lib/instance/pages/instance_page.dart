@@ -9,14 +9,12 @@ import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
-import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
@@ -82,10 +80,12 @@ class _InstancePageState extends State<InstancePage> {
     final bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
 
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<ProfileBloc>().state.account?.instance;
+    final String accountInstance = context.read<ProfileBloc>().state.account.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
+
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocListener<InstanceBloc, InstanceState>(
       listener: (context, state) {
@@ -106,11 +106,16 @@ class _InstancePageState extends State<InstancePage> {
             value: InstancePageCubit(
               instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!,
               resolutionInstance: (isUserLoggedIn ? accountInstance : currentAnonymousInstance)!,
+              account: account,
             ),
           ),
           BlocProvider.value(
             value: FeedBloc(
-              postRepository: LemmyPostRepository(client: LemmyApiV3(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!)),
+              account: Account(
+                id: '',
+                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!,
+                index: -1,
+              ),
             ),
           ),
         ],
@@ -143,7 +148,7 @@ class _InstancePageState extends State<InstancePage> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                         ),
                         actions: [
-                          if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance) && widget.instanceId != null)
+                          if (widget.instanceId != null)
                             IconButton(
                               tooltip: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
                               onPressed: () {
@@ -186,7 +191,6 @@ class _InstancePageState extends State<InstancePage> {
                                       _doLoad(context);
                                     },
                                     previouslySelected: postSortType,
-                                    minimumVersion: LemmyClient.instance.version,
                                   ),
                                 );
                               },
@@ -200,7 +204,6 @@ class _InstancePageState extends State<InstancePage> {
                                     HapticFeedback.mediumImpact();
                                     navigateToModlogPage(
                                       context,
-                                      lemmyClient: LemmyClient()..changeBaseUrl(fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!),
                                       subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
                                     );
                                   },

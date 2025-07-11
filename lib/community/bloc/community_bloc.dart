@@ -3,11 +3,11 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
@@ -22,10 +22,12 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
+  Account account;
+
   late CommunityRepository communityRepository;
 
-  CommunityBloc({CommunityRepository? communityRepository}) : super(const CommunityState()) {
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+  CommunityBloc({required this.account}) : super(const CommunityState()) {
+    communityRepository = LemmyCommunityRepository(account: account);
 
     /// Handles clearing any messages from the state
     on<CommunityClearMessageEvent>(

@@ -97,7 +97,7 @@ class _CommentCardState extends State<CommentCard> {
     assert(widget.comment.creator != null, 'Comment must have a creator');
 
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.comment.creator!.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isOwnComment = widget.comment.creator!.id == context.read<ProfileBloc>().state.account.userId;
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
 
     final int commentId = widget.comment.id;

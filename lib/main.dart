@@ -23,26 +23,21 @@ import 'package:path_provider/path_provider.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/database/database.dart';
 import 'package:thunder/core/database/migrations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/enums/theme_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
-import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
-import 'package:thunder/post/repository/post_repository.dart';
-import 'package:thunder/comment/repository/comment_repository.dart';
-import 'package:thunder/instance/repository/instance_repository.dart';
-import 'package:thunder/search/repository/search_repository.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -105,13 +100,15 @@ void main() async {
     DartPingIOS.register();
   }
 
-  final String initialInstance = UserPreferences.getLocalSetting(LocalSettings.currentAnonymousInstance) ?? 'lemmy.ml';
-  LemmyClient.instance.changeBaseUrl(initialInstance);
-
   // Perform preference migrations
   await performSharedPreferencesMigration();
 
-  runApp(const ThunderApp());
+  final account = await fetchActiveProfile();
+
+  runApp(BlocProvider<ProfileBloc>(
+    create: (context) => ProfileBloc(account: account)..add(InitializeAuth()),
+    child: const ThunderApp(),
+  ));
 
   if (!kIsWeb && Platform.isAndroid) {
     // Set high refresh rate after app initialization
@@ -131,24 +128,6 @@ class _ThunderAppState extends State<ThunderApp> {
   final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
 
   PageController thunderPageController = PageController(initialPage: 0);
-
-  /// The global post repository
-  PostRepository? _postRepository;
-
-  /// The global comment repository
-  CommentRepository? _commentRepository;
-
-  /// The global instance repository
-  InstanceRepository? _instanceRepository;
-
-  /// The global notification repository
-  NotificationRepository? _notificationRepository;
-
-  /// The global search repository
-  SearchRepository? _searchRepository;
-
-  /// The global community repository
-  CommunityRepository? _communityRepository;
 
   @override
   void initState() {
@@ -181,182 +160,126 @@ class _ThunderAppState extends State<ThunderApp> {
   void dispose() {
     super.dispose();
     notificationsStreamController.close();
-
-    // Clean up repositories that are listening to the LemmyClient stream
-    _postRepository?.dispose();
-    _commentRepository?.dispose();
-    _instanceRepository?.dispose();
-    _notificationRepository?.dispose();
-    _searchRepository?.dispose();
-    _communityRepository?.dispose();
-
-    // Dispose the LemmyClient stream controller
-    LemmyClient.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider<PostRepository>(
-          create: (context) {
-            _postRepository = LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _postRepository!;
-          },
-        ),
-        RepositoryProvider<CommentRepository>(
-          create: (context) {
-            _commentRepository = LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _commentRepository!;
-          },
-        ),
-        RepositoryProvider<InstanceRepository>(
-          create: (context) {
-            _instanceRepository = LemmyInstanceRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _instanceRepository!;
-          },
-        ),
-        RepositoryProvider<NotificationRepository>(
-          create: (context) {
-            _notificationRepository = LemmyNotificationRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _notificationRepository!;
-          },
-        ),
-        RepositoryProvider<SearchRepository>(
-          create: (context) {
-            _searchRepository = LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _searchRepository!;
-          },
-        ),
-        RepositoryProvider<CommunityRepository>(
-          create: (context) {
-            _communityRepository = LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
-            return _communityRepository!;
-          },
-        ),
+        BlocProvider(create: (context) => ThemeBloc()),
+        BlocProvider(create: (context) => DeepLinksCubit()),
+        BlocProvider(create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream)),
+        BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
+        BlocProvider(create: (context) => NetworkCheckerCubit()..getConnectionType())
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => ThemeBloc(),
-          ),
-          BlocProvider(create: (context) => ProfileBloc()),
-          BlocProvider(
-            create: (context) => DeepLinksCubit(),
-          ),
-          BlocProvider(
-            create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream),
-          ),
-          BlocProvider(
-            create: (context) => ThunderBloc(),
-          ),
-          BlocProvider(
-            create: (context) => AnonymousSubscriptionsBloc(),
-          ),
-          BlocProvider(
-            create: (context) => CommunityBloc(),
-          ),
-          BlocProvider(
-            create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
-          ),
-          BlocProvider(
-            create: (context) => UserBloc(),
-          ),
-          BlocProvider(
-            create: (context) => NetworkCheckerCubit()..getConnectionType(),
-          )
-        ],
-        child: BlocBuilder<ThemeBloc, ThemeState>(
-          builder: (context, state) {
-            final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
 
-            if (state.status == ThemeStatus.initial) {
-              context.read<ThemeBloc>().add(ThemeChangeEvent());
-            }
+          if (state.status == ThemeStatus.initial) {
+            context.read<ThemeBloc>().add(ThemeChangeEvent());
+          }
 
-            return DynamicColorBuilder(
-              builder: (lightColorScheme, darkColorScheme) {
-                FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
+          return DynamicColorBuilder(
+            builder: (lightColorScheme, darkColorScheme) {
+              FlexScheme scheme = FlexScheme.values.byName(state.selectedTheme.name);
 
-                Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
+              Color? darkThemeSurfaceColor = state.themeType == ThemeType.pureBlack ? null : Colors.black.lighten(8);
 
-                ThemeData theme = FlexThemeData.light(scheme: scheme);
-                ThemeData darkTheme = FlexThemeData.dark(
-                  scheme: scheme,
+              ThemeData theme = FlexThemeData.light(scheme: scheme);
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: scheme,
+                darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
+                surface: darkThemeSurfaceColor,
+                scaffoldBackground: darkThemeSurfaceColor,
+                appBarBackground: darkThemeSurfaceColor,
+              );
+
+              // Enable Material You theme
+              if (state.useMaterialYouTheme == true) {
+                theme = ThemeData(
+                  colorScheme: lightColorScheme,
+                );
+
+                darkTheme = FlexThemeData.dark(
+                  colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
-                  surface: darkThemeSurfaceColor,
-                  scaffoldBackground: darkThemeSurfaceColor,
-                  appBarBackground: darkThemeSurfaceColor,
                 );
+              }
 
-                // Enable Material You theme
-                if (state.useMaterialYouTheme == true) {
-                  theme = ThemeData(
-                    colorScheme: lightColorScheme,
-                  );
+              // Set the page transitions
+              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              });
 
-                  darkTheme = FlexThemeData.dark(
-                    colorScheme: darkColorScheme,
-                    darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
-                  );
-                }
-
-                // Set the page transitions
-                const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
-                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                });
-
-                // Customize our themes with the aforementinoed page transitions, as well as some custom styling
-                theme = theme.copyWith(
-                  pageTransitionsTheme: pageTransitionsTheme,
-                  inputDecorationTheme: InputDecorationTheme(
-                    hintStyle: TextStyle(
-                      color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
-                    ),
+              // Customize our themes with the aforementinoed page transitions, as well as some custom styling
+              theme = theme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
                   ),
-                );
-                darkTheme = darkTheme.copyWith(
-                  pageTransitionsTheme: pageTransitionsTheme,
-                  inputDecorationTheme: InputDecorationTheme(
-                    hintStyle: TextStyle(
-                      color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
-                    ),
+                ),
+              );
+              darkTheme = darkTheme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
                   ),
-                );
+                ),
+              );
 
-                Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
+              Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
 
-                return OverlaySupport.global(
-                  child: AnnotatedRegion<SystemUiOverlayStyle>(
-                    // Set navigation bar color on Android to be transparent
-                    value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                    child: MaterialApp(
-                      title: 'Thunder',
-                      locale: locale,
-                      localizationsDelegates: const [
-                        ...AppLocalizations.localizationsDelegates,
-                        MaterialLocalizationsEo.delegate,
-                        CupertinoLocalizationsEo.delegate,
-                      ],
-                      supportedLocales: const [
-                        ...AppLocalizations.supportedLocales,
-                        Locale('eo'), // Additional locale which is not officially supported: Esperanto
-                      ],
-                      themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                      theme: theme,
-                      darkTheme: darkTheme,
-                      debugShowCheckedModeBanner: false,
-                      scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                      scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
-                      home: Thunder(pageController: thunderPageController),
-                    ),
+              return OverlaySupport.global(
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  // Set navigation bar color on Android to be transparent
+                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                  child: BlocBuilder<ProfileBloc, ProfileState>(
+                    buildWhen: (previous, current) => previous.account.id != current.account.id,
+                    builder: (context, profileState) {
+                      final account = profileState.account;
+                      return MultiBlocProvider(
+                        key: ValueKey('account_${account.id}'),
+                        providers: [
+                          BlocProvider(create: (context) => CommunityBloc(account: account)),
+                          BlocProvider(create: (context) => InstanceBloc(account: account)),
+                          BlocProvider(create: (context) => UserBloc(account: account)),
+                          BlocProvider(create: (context) => InboxBloc(account: account)..add(GetInboxEvent(reset: true))),
+                          BlocProvider(create: (context) => SearchBloc(account: account)),
+                          BlocProvider(create: (context) => FeedBloc(account: account)),
+                        ],
+                        child: MaterialApp(
+                          title: 'Thunder',
+                          locale: locale,
+                          localizationsDelegates: const [
+                            ...AppLocalizations.localizationsDelegates,
+                            MaterialLocalizationsEo.delegate,
+                            CupertinoLocalizationsEo.delegate,
+                          ],
+                          supportedLocales: const [
+                            ...AppLocalizations.supportedLocales,
+                            Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                          ],
+                          themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                          theme: theme,
+                          darkTheme: darkTheme,
+                          debugShowCheckedModeBanner: false,
+                          scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                          scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                          home: Thunder(pageController: thunderPageController),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            );
-          },
-        ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

@@ -12,7 +12,6 @@ import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/widgets.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -261,7 +260,7 @@ class _PostCardState extends State<PostCard> {
             }
           }
 
-          if (updatedAction == SwipeAction.hide && !LemmyClient.instance.supportsFeature(LemmyFeature.hidePosts)) {
+          if (updatedAction == SwipeAction.hide) {
             updatedAction = SwipeAction.none;
           }
 

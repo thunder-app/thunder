@@ -5,12 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/user/enums/user_action.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/user/utils/user.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'user_event.dart';
@@ -25,10 +25,14 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  late CommunityRepository communityRepository;
+  Account account;
 
-  UserBloc({CommunityRepository? communityRepository}) : super(const UserState()) {
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+  late CommunityRepository communityRepository;
+  late UserRepository userRepository;
+
+  UserBloc({required this.account}) : super(const UserState()) {
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     /// Handles clearing any messages from the state
     on<UserClearMessageEvent>(
@@ -57,12 +61,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     switch (event.userAction) {
       case UserAction.block:
         try {
-          BlockPersonResponse blockPersonResponse = await blockUser(event.userId, event.value);
+          final response = await userRepository.block(event.userId, event.value);
+
           emit(state.copyWith(
             status: UserStatus.success,
-            user: ThunderUser(blockPersonResponse.personView.person, userView: blockPersonResponse.personView),
-            message:
-                blockPersonResponse.blocked ? l10n.successfullyBlockedUser(blockPersonResponse.personView.person.name) : l10n.successfullyUnblockedUser(blockPersonResponse.personView.person.name),
+            user: ThunderUser(response.personView.person, userView: response.personView),
+            message: response.blocked ? l10n.successfullyBlockedUser(response.personView.person.name) : l10n.successfullyUnblockedUser(response.personView.person.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure, message: e.toString()));

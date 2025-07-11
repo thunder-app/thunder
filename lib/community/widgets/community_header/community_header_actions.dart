@@ -10,7 +10,6 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/community_share.dart';
@@ -41,8 +40,10 @@ class CommunityHeaderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+
     return BlocProvider<CommunityBloc>(
-      create: (context) => CommunityBloc(),
+      create: (context) => CommunityBloc(account: account),
       child: _CommunityActionsContent(community: community, instance: instance, moderators: moderators),
     );
   }
@@ -182,7 +183,6 @@ class _SortActionChip extends StatelessWidget {
               }
             },
             previouslySelected: state.postSortType,
-            minimumVersion: LemmyClient.instance.version,
           ),
         );
       },

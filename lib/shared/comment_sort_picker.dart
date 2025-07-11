@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:version/version.dart';
-
 import 'package:thunder/core/enums/comment_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -14,9 +11,7 @@ import 'package:thunder/utils/global_context.dart';
 /// Pass `null` to NOT show any version-specific types (e.g., Scaled).
 /// Pass [LemmyClient.maxVersion] to show ALL types.
 class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
-  final Version? minimumVersion;
-
-  static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({required Version? minimumVersion}) => [
+  static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems() => [
         ListPickerItem(
           payload: CommentSortType.hot,
           icon: Icons.local_fire_department,
@@ -27,12 +22,11 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
           icon: Icons.military_tech,
           label: AppLocalizations.of(GlobalContext.context)!.top,
         ),
-        if (LemmyClient.versionSupportsFeature(minimumVersion, LemmyFeature.commentSortTypeControversial))
-          ListPickerItem(
-            payload: CommentSortType.controversial,
-            icon: Icons.warning_rounded,
-            label: AppLocalizations.of(GlobalContext.context)!.controversial,
-          ),
+        ListPickerItem(
+          payload: CommentSortType.controversial,
+          icon: Icons.warning_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.controversial,
+        ),
         ListPickerItem(
           payload: CommentSortType.new_,
           icon: Icons.auto_awesome_rounded,
@@ -51,8 +45,7 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
     required super.title,
     List<ListPickerItem<CommentSortType>>? items,
     super.previouslySelected,
-    required this.minimumVersion,
-  }) : super(items: items ?? CommentSortPicker.getCommentSortTypeItems(minimumVersion: minimumVersion));
+  }) : super(items: items ?? CommentSortPicker.getCommentSortTypeItems());
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -96,7 +89,7 @@ class _SortPickerState extends State<CommentSortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(CommentSortPicker.getCommentSortTypeItems(minimumVersion: widget.minimumVersion), theme),
+            ..._generateList(CommentSortPicker.getCommentSortTypeItems(), theme),
           ],
         ),
         const SizedBox(height: 16.0),

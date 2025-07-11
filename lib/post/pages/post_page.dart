@@ -13,7 +13,6 @@ import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
@@ -141,7 +140,6 @@ class _PostPageState extends State<PostPage> {
           if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
         },
         previouslySelected: state.commentSortType,
-        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

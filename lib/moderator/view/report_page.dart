@@ -13,7 +13,6 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
@@ -42,7 +41,7 @@ class _ReportFeedPageState extends State<ReportFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ReportBloc>(
-      create: (_) => ReportBloc(lemmyClient: LemmyClient.instance)..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
+      create: (_) => ReportBloc()..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
       child: const ReportFeedView(),
     );
   }

@@ -25,7 +25,7 @@ Future<bool> showLogOutDialog(BuildContext context) async {
     secondaryButtonText: l10n.cancel,
     onPrimaryButtonPressed: (dialogContext, _) {
       result = true;
-      dialogContext.read<ProfileBloc>().add(RemoveProfile(accountId: dialogContext.read<ProfileBloc>().state.account!.id));
+      dialogContext.read<ProfileBloc>().add(RemoveProfile(accountId: dialogContext.read<ProfileBloc>().state.account.id));
       Navigator.of(dialogContext).pop();
     },
     primaryButtonText: l10n.logOut,

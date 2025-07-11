@@ -9,7 +9,6 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -156,7 +155,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
     if (!darkTheme) {
       selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor();
     }
-    String? currentAccountId = context.watch<ProfileBloc>().state.account?.id;
+    Account currentAccount = context.watch<ProfileBloc>().state.account;
     String? currentAnonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     if (accounts == null) {
@@ -244,10 +243,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Material(
-                        color: currentAccountId == accounts![index].account.id ? selectedColor : Colors.transparent,
+                        color: currentAccount.anonymous == false && currentAccount.id == accounts![index].account.id ? selectedColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
-                          onTap: (currentAccountId == accounts![index].account.id)
+                          onTap: (currentAccount == accounts![index].account.id)
                               ? null
                               : () {
                                   context.read<ProfileBloc>().add(SwitchProfile(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
@@ -285,7 +284,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       height: 12,
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                                        color: currentAccount == accounts![index].account.id ? selectedColor : null,
                                       ),
                                     ),
                                   ),
@@ -381,7 +380,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                               trailing: !widget.quickSelectMode
                                   ? areAccountsBeingReordered
                                       ? const Icon(Icons.drag_handle)
-                                      : (currentAccountId == accounts![index].account.id)
+                                      : (currentAccount.anonymous == false && currentAccount.id == accounts![index].account.id)
                                           ? IconButton(
                                               icon: loggingOutId == accounts![index].account.id
                                                   ? const SizedBox(
@@ -408,11 +407,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
                                                 setState(() => loggingOutId = accounts![index].account.id);
 
-                                                if (currentAccountId != null) {
-                                                  await Future.delayed(const Duration(milliseconds: 1000), () {
-                                                    context.read<ProfileBloc>().add(SwitchProfile(accountId: currentAccountId));
-                                                  });
-                                                }
+                                                await Future.delayed(const Duration(milliseconds: 1000), () {
+                                                  context.read<ProfileBloc>().add(SwitchProfile(accountId: currentAccount.id));
+                                                });
 
                                                 setState(() {
                                                   accounts = null;
@@ -498,10 +495,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Material(
                           elevation: anonymousInstanceBeingReorderedIndex == index ? 3 : 0,
-                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : Colors.transparent,
+                          color: currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : Colors.transparent,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
-                            onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
+                            onTap: (currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
                                 ? null
                                 : () async {
                                     context.read<ProfileBloc>().add(SwitchProfile(accountId: anonymousInstances![index].anonymousInstance.instance));
@@ -539,7 +536,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         height: 12,
                                         child: Material(
                                           borderRadius: BorderRadius.circular(10),
-                                          color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
+                                          color: currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : null,
                                         ),
                                       ),
                                     ),
@@ -629,7 +626,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                     ? areAnonymousInstancesBeingReordered
                                         ? const Icon(Icons.drag_handle)
                                         : ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                                            ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
+                                            ? (currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
                                                 ? IconButton(
                                                     icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
                                                     onPressed: () async {
@@ -691,7 +688,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   }
 
   Future<void> _logOutOfActiveAccount({String? activeAccountId}) async {
-    activeAccountId ??= context.read<ProfileBloc>().state.account?.id;
+    activeAccountId ??= context.read<ProfileBloc>().state.account.id;
 
     final profileBloc = context.read<ProfileBloc>();
     final ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -770,10 +767,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> getUnreadNotificationCount(List<AccountExtended> accountsExtended) async {
     for (final AccountExtended account in accountsExtended) {
       try {
-        LemmyClient().changeBaseUrl(account.instance!);
-
-        final repository = context.read<NotificationRepository>();
-        final unread = await repository.unreadNotificationsCount();
+        final unread = await LemmyNotificationRepository(account: account.account).unreadNotificationsCount();
 
         int? totalUnreadCount = unread.replies + unread.mentions + unread.privateMessages;
         if (totalUnreadCount == 0) totalUnreadCount = null;

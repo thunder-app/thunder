@@ -50,7 +50,7 @@ class FeedCommentCardList extends StatelessWidget {
               onReplyEditAction: (ThunderComment comment, bool isEdit) {
                 // TODO: Implement action
               },
-              isOwnComment: comments[index].creator?.id == state.account?.userId,
+              isOwnComment: comments[index].creator?.id == state.account.userId,
               disableActions: true,
             ),
             const FeedCardDivider(),

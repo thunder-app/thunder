@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -19,7 +18,6 @@ class ModlogFeedPage extends StatefulWidget {
     this.communityId,
     this.userId,
     this.moderatorId,
-    this.lemmyClient,
     this.commentId,
     required this.subtitle,
   });
@@ -39,9 +37,6 @@ class ModlogFeedPage extends StatefulWidget {
   /// The id of a specific comment to show in the modlog (optional)
   final int? commentId;
 
-  /// An optional lemmy client to use a different instance and override the singleton
-  final LemmyClient? lemmyClient;
-
   /// An optional string to display as the subtitle on the app bar.
   /// If not specified, this will be the instance or community name.
   final String subtitle;
@@ -55,9 +50,7 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   Widget build(BuildContext context) {
     return BlocProvider<ModlogCubit>(
       create: (_) => ModlogCubit(
-        repository: ModlogRepositoryImpl(
-          client: widget.lemmyClient ?? LemmyClient.instance,
-        ),
+        repository: ModlogRepositoryImpl(),
       )..fetchModlogFeed(
           modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,
@@ -66,19 +59,16 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
           commentId: widget.commentId,
           reset: true,
         ),
-      child: ModlogFeedView(lemmyClient: widget.lemmyClient ?? LemmyClient.instance, subtitle: widget.subtitle),
+      child: ModlogFeedView(subtitle: widget.subtitle),
     );
   }
 }
 
 class ModlogFeedView extends StatefulWidget {
-  /// The current Lemmy client
-  final LemmyClient lemmyClient;
-
   /// Subtitle to display on app bar
   final String subtitle;
 
-  const ModlogFeedView({super.key, required this.lemmyClient, required this.subtitle});
+  const ModlogFeedView({super.key, required this.subtitle});
 
   @override
   State<ModlogFeedView> createState() => _ModlogFeedViewState();

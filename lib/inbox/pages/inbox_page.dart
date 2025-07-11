@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/enums/inbox_type.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
@@ -52,7 +51,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 3);
-    accountId = context.read<ProfileBloc>().state.account?.userId;
+    accountId = context.read<ProfileBloc>().state.account.userId;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => nestedScrollViewKey.currentState!.innerController.addListener(() {
@@ -87,7 +86,6 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
           context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll, commentSortType: selected.payload));
         },
         previouslySelected: commentSortType,
-        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }
@@ -102,7 +100,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
           if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
             nestedScrollViewKey.currentState?.innerController.jumpTo(0);
 
-            int? newAccountId = context.read<ProfileBloc>().state.account?.userId;
+            int? newAccountId = context.read<ProfileBloc>().state.account.userId;
 
             if (newAccountId != accountId) {
               accountId = newAccountId;

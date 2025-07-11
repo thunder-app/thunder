@@ -4,18 +4,18 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:thunder/account/account.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 
 part 'feed_event.dart';
@@ -30,12 +30,16 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
+  Account account;
+
   late PostRepository postRepository;
   late CommunityRepository communityRepository;
+  late UserRepository userRepository;
 
-  FeedBloc({PostRepository? postRepository, CommunityRepository? communityRepository}) : super(const FeedState()) {
-    this.postRepository = postRepository ?? LemmyPostRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+  FeedBloc({required this.account}) : super(const FeedState()) {
+    postRepository = LemmyPostRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     /// Handles resetting the feed to its initial state
     on<ResetFeedEvent>(
@@ -531,14 +535,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case FeedType.account:
           // Fetch user information
           try {
-            final account = await fetchActiveProfile();
-            LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-            fullPersonView = await lemmy.run(GetPersonDetails(
-              auth: account.jwt,
-              personId: event.userId,
-              username: event.username,
-            ));
+            fullPersonView = await userRepository.getUser(userId: event.userId, username: event.username);
           } catch (e) {
             // If we are given a user feed, but we can't load the user, that's a problem! Emit an error.
             return emit(state.copyWith(

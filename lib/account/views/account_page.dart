@@ -24,7 +24,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
 
         return FeedPage(
           feedType: FeedType.account,
-          userId: state.account?.userId,
+          userId: state.account.userId,
           postSortType: PostSortType.new_,
         );
       },

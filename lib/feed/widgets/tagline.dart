@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/colors.dart';
@@ -32,8 +31,8 @@ class _TagLineState extends State<TagLine> {
   void initState() {
     super.initState();
 
-    final site = LemmyClient.instance.site;
-    tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
+    // final site = LemmyClient.instance.site;
+    // tagline = site?.taglines.isNotEmpty == true ? site?.taglines[Random().nextInt(site.taglines.length)].content : null;
 
     // Check if the tagline is long enough to be truncated after the first frame is rendered.
     // This is necessary because the size of the text is not available until after the first frame.

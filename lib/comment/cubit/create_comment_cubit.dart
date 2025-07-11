@@ -5,7 +5,6 @@ import 'package:lemmy_api_client/pictrs.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -13,10 +12,12 @@ import 'package:thunder/utils/global_context.dart';
 part 'create_comment_state.dart';
 
 class CreateCommentCubit extends Cubit<CreateCommentState> {
+  Account account;
+
   late CommentRepository repository;
 
-  CreateCommentCubit({CommentRepository? repository}) : super(const CreateCommentState(status: CreateCommentStatus.initial)) {
-    this.repository = repository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
+  CreateCommentCubit({required this.account}) : super(const CreateCommentState(status: CreateCommentStatus.initial)) {
+    repository = LemmyCommentRepository(account: account);
   }
 
   Future<void> clearMessage() async {

@@ -177,7 +177,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
     if (widget.post.creator?.bot == true) userGroups.add(UserType.bot);
     if (widget.post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (widget.post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (widget.post.creator?.id == profileState.account?.userId) userGroups.add(UserType.self);
+    if (widget.post.creator?.id == profileState.account.userId) userGroups.add(UserType.self);
     if (widget.post.creator?.created.month == DateTime.now().month && widget.post.creator?.created.day == DateTime.now().day) userGroups.add(UserType.birthday);
   }
 

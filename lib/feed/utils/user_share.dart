@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -15,10 +17,11 @@ enum UserShareOptions {
 /// Shows a mottom modal sheet which allows sharing the given [personView].
 Future<void> showUserShareSheet(BuildContext context, PersonView personView) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
+  final account = await fetchActiveProfile();
 
   String user = await getLemmyUser(personView.person.actorId) ?? '';
   String lemmyLink = '@$user';
-  String localLink = LemmyClient.instance.generateUserUrl(user);
+  String localLink = 'https://${account.instance}/u/$user';
 
   if (context.mounted) {
     showModalBottomSheet(
@@ -34,7 +37,7 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
             subtitle: personView.person.actorId,
             icon: Icons.link_rounded,
           ),
-          if (!personView.person.actorId.contains(LemmyClient.instance.lemmyApiV3.host))
+          if (!personView.person.actorId.contains(account.instance))
             ListPickerItem(
               label: l10n.shareUserLinkLocal,
               payload: UserShareOptions.localLink,

@@ -20,7 +20,6 @@ import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
@@ -160,11 +159,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
 
     final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<ProfileBloc>().state.account?.instance;
+    final String accountInstance = context.read<ProfileBloc>().state.account.instance;
     final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+
     return BlocProvider(
-      create: (context) => FeedBloc(),
+      create: (context) => FeedBloc(account: account),
       child: MultiBlocListener(
         listeners: [
           BlocListener<FeedBloc, FeedState>(listener: (context, state) => setState(() {})),
@@ -788,7 +789,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           _doSearch();
         },
         previouslySelected: postSortType,
-        minimumVersion: LemmyClient.instance.version,
       ),
     );
   }

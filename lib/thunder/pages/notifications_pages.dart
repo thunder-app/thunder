@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -20,10 +22,12 @@ class NotificationsReplyPage extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc.initWith(replies: replies, showUnreadOnly: true)),
-        BlocProvider.value(value: PostBloc()),
+        BlocProvider.value(value: InboxBloc.initWith(replies: replies, showUnreadOnly: true, account: account)),
+        BlocProvider.value(value: PostBloc(account: account)),
       ],
       child: BlocConsumer<InboxBloc, InboxState>(
         listener: (BuildContext context, InboxState state) {

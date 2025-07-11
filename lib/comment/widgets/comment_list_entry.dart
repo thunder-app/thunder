@@ -22,10 +22,11 @@ class CommentListEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(comment.creator != null, 'Comment must have a creator');
-    final bool isOwnComment = comment.creator!.id == context.read<ProfileBloc>().state.account?.userId;
+    final bool isOwnComment = comment.creator!.id == context.read<ProfileBloc>().state.account.userId;
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider<post_bloc.PostBloc>(
-      create: (BuildContext context) => post_bloc.PostBloc(),
+      create: (BuildContext context) => post_bloc.PostBloc(account: account),
       child: CommentReference(
         comment: comment,
         onVoteAction: (int commentId, int voteType) => onVoteAction?.call(commentId, voteType),

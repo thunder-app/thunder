@@ -10,12 +10,12 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -23,6 +23,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/marquee_widget.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -40,9 +41,9 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 
       if (normalizedUsername != null) {
         try {
-          final account = await fetchActiveProfile();
-          final response = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(auth: account.jwt, username: normalizedUsername));
-          final user = ThunderUser(response.personView.person, userView: response.personView);
+          final account = context.read<ProfileBloc>().state.account;
+          final response = await LemmyUserRepository(account: account).getUser(username: normalizedUsername);
+          final user = ThunderUser(response!.personView.person, userView: response.personView);
 
           onUserSelected(user);
           Navigator.of(context).pop();
@@ -69,8 +70,8 @@ void showUserInputDialog(BuildContext context, {required String title, required 
 Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query) async {
   if (query.isNotEmpty != true) return [];
 
-  final repository = context.read<SearchRepository>();
-  final response = await repository.search(
+  final account = context.read<ProfileBloc>().state.account;
+  final response = await LemmySearchRepository(account: account).search(
     query: query,
     type: SearchType.users,
     limit: 20,
@@ -137,8 +138,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
       if (normalizedCommunity != null) {
         try {
-          final repository = context.read<CommunityRepository>();
-          final response = await repository.getCommunity(name: normalizedCommunity);
+          final account = context.read<ProfileBloc>().state.account;
+          final response = await LemmyCommunityRepository(account: account).getCommunity(name: normalizedCommunity);
           final community = response['community'];
 
           onCommunitySelected(community);
@@ -166,8 +167,8 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
   if (query.isNotEmpty != true) return emptySuggestions ?? [];
 
-  final repository = context.read<SearchRepository>();
-  final response = await repository.search(
+  final account = context.read<ProfileBloc>().state.account;
+  final response = await LemmySearchRepository(account: account).search(
     query: query,
     type: SearchType.communities,
     limit: 20,
@@ -265,11 +266,7 @@ void showInstanceInputDialog(
 }) async {
   Account? account = await fetchActiveProfile();
 
-  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
-    GetFederatedInstances(
-      auth: account.jwt,
-    ),
-  );
+  final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
 
   Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {

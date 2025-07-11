@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/repository/community_repository.dart';
@@ -13,11 +14,11 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -32,14 +33,18 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  Account account;
+
   late CommentRepository commentRepository;
   late SearchRepository searchRepository;
   late CommunityRepository communityRepository;
+  late UserRepository userRepository;
 
-  SearchBloc({CommentRepository? commentRepository, SearchRepository? searchRepository, CommunityRepository? communityRepository}) : super(SearchState()) {
-    this.commentRepository = commentRepository ?? LemmyCommentRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.searchRepository = searchRepository ?? LemmySearchRepository(client: LemmyClient.instance.lemmyApiV3);
-    this.communityRepository = communityRepository ?? LemmyCommunityRepository(client: LemmyClient.instance.lemmyApiV3);
+  SearchBloc({required this.account}) : super(SearchState()) {
+    commentRepository = LemmyCommentRepository(account: account);
+    searchRepository = LemmySearchRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -97,7 +102,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(GetFederatedInstances(auth: account.jwt));
+        final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
 
         // Filter the instances down
         for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
@@ -158,13 +163,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (communityName != null) {
           try {
             final account = await fetchActiveProfile();
+            final response = await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
 
-            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-              name: communityName,
-              auth: account.jwt,
-            ));
-
-            searchResponse = searchResponse?.copyWith(communities: [getCommunityResponse.communityView]);
+            searchResponse = searchResponse?.copyWith(communities: [response['community']]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -176,14 +177,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
-            final account = await fetchActiveProfile();
-
-            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
-              username: userName,
-              auth: account.jwt,
-            ));
-
-            searchResponse = searchResponse?.copyWith(users: [getCommunityResponse.personView]);
+            final response = await userRepository.getUser(username: userName);
+            searchResponse = searchResponse?.copyWith(users: [response!.personView]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -279,17 +274,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-      await lemmy.run(FollowCommunity(
-        auth: account.jwt!,
-        communityId: event.communityId,
-        follow: event.follow,
-      ));
+      await LemmyCommunityRepository(account: account).subscribe(event.communityId, event.follow);
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      GetCommunityResponse response = await lemmy.run(GetCommunity(auth: account.jwt, id: event.communityId));
-      ThunderCommunity community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
+      Map<String, dynamic> response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
+      ThunderCommunity community = response['community'];
 
       List<ThunderCommunity> communities;
 
@@ -318,8 +307,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
 
-      response = await lemmy.run(GetCommunity(auth: account.jwt, id: event.communityId));
-      community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
+      response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
+      community = response['community'];
 
       if (event.query.isNotEmpty || state.viewingAll) {
         communities = state.communities ?? [];

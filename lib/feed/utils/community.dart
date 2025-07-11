@@ -88,3 +88,6 @@ Future<void> handleSubscription(BuildContext context, ThunderCommunity community
 
   context.read<CommunityBloc>().add(CommunityActionEvent(communityId: community.id, communityAction: CommunityAction.follow, value: !isSubscribed));
 }
+
+// String generatePostUrl(int id) => 'https://${lemmyApiV3.host}/post/$id';
+// String generateCommentUrl(int id) => 'https://${lemmyApiV3.host}/comment/$id';

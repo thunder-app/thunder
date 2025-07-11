@@ -27,7 +27,6 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/enums/video_auto_play.dart';
 import 'package:thunder/core/enums/video_playback_speed.dart';
 import 'package:thunder/core/models/version.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
@@ -450,7 +449,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
   void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
     if (event.instance != null) {
-      LemmyClient.instance.changeBaseUrl(event.instance!);
       UserPreferences.setSetting(LocalSettings.currentAnonymousInstance, event.instance!);
     } else {
       UserPreferences.removeSetting(LocalSettings.currentAnonymousInstance);

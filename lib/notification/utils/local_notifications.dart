@@ -19,7 +19,6 @@ import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/extensions/comment_reply_view.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
@@ -68,10 +67,8 @@ Future<void> pollRepliesAndShowNotifications() async {
   Map<Account, List<CommentReplyView>> notifications = {};
 
   for (final Account account in accounts) {
-    LemmyClient client = LemmyClient()..changeBaseUrl(account.instance);
-
     // Iterate through inbox replies
-    final getRepliesResponse = await LemmyNotificationRepository(client: client.lemmyApiV3).replies(
+    final getRepliesResponse = await LemmyNotificationRepository(account: account).replies(
       unread: true,
       limit: 50,
       sort: CommentSortType.old,
