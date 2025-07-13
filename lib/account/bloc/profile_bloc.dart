@@ -14,6 +14,8 @@ import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/thunder_site_response.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -21,6 +23,7 @@ import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -120,8 +123,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
 
+      final String instanceUrl = event.instance.replaceAll('https://', '');
+
+      // Detect the platform before attempting to log in
+      final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(instanceUrl);
+
       // Create a temporary Account to attempt to log in
-      Account tempAccount = Account(id: '', index: -1, instance: event.instance.replaceAll('https://', ''));
+      Account tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
 
       // Create a temporary account repository to use for the login
       final response = await LemmyAccountRepository(account: tempAccount).login(username: event.username, password: event.password, totp: event.totp);
@@ -143,6 +151,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         instance: tempAccount.instance,
         userId: siteResponse.myUser?.localUserView.person.id,
         index: -1,
+        platform: platform,
       );
 
       account = await Account.insertAccount(account);

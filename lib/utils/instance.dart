@@ -1,10 +1,13 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
@@ -229,5 +232,83 @@ Future<bool> isLemmyInstance(String? url) async {
     return true;
   } catch (e) {
     return false;
+  }
+}
+
+/// Determines the proper ThreadiversePlatform by fetching software information from nodeinfo.
+///
+/// Given a URL, fetches the .well-known/nodeinfo endpoint and parses the JSON response
+/// to determine the underlying software platform (lemmy, piefed, etc.).
+///
+/// Returns the detected ThreadiversePlatform or null if detection fails.
+Future<ThreadiversePlatform?> detectPlatformFromNodeInfo(String url, {Duration? timeout}) async {
+  if (url.isEmpty) return null;
+
+  try {
+    // Ensure the URL has proper protocol
+    Uri uri;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      uri = Uri.parse('https://$url');
+    } else {
+      uri = Uri.parse(url);
+    }
+
+    // Construct the nodeinfo URL
+    final nodeInfoUri = Uri(
+      scheme: uri.scheme,
+      host: uri.host,
+      port: uri.port,
+      path: '/.well-known/nodeinfo',
+    );
+
+    // Fetch the nodeinfo response
+    final response = await http.get(nodeInfoUri).timeout(timeout ?? const Duration(seconds: 5));
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    // Parse the JSON response
+    final Map<String, dynamic> nodeInfo = json.decode(response.body);
+
+    // Extract the nodeinfo link from the well-known response
+    String? nodeInfoUrl;
+    if (nodeInfo['links'] != null && nodeInfo['links'].isNotEmpty) {
+      // Look for a nodeinfo schema link (prefer 2.0 or 2.1)
+      for (final link in nodeInfo['links']) {
+        final rel = link['rel']?.toString();
+        if (rel != null && rel.contains('nodeinfo.diaspora.software/ns/schema/')) {
+          nodeInfoUrl = link['href']?.toString();
+          break;
+        }
+      }
+    }
+
+    if (nodeInfoUrl == null) return null;
+
+    // Fetch the actual nodeinfo document
+    final nodeInfoResponse = await http.get(Uri.parse(nodeInfoUrl)).timeout(timeout ?? const Duration(seconds: 5));
+
+    if (nodeInfoResponse.statusCode != 200) {
+      return null;
+    }
+
+    final Map<String, dynamic> nodeInfoData = json.decode(nodeInfoResponse.body);
+    final String? softwareName = nodeInfoData['software']?['name']?.toString().toLowerCase();
+
+    if (softwareName == null) return null;
+
+    // Map software names to ThreadiversePlatform
+    switch (softwareName) {
+      case 'lemmy':
+        return ThreadiversePlatform.lemmy;
+      case 'piefed':
+        return ThreadiversePlatform.piefed;
+      default:
+        return null;
+    }
+  } catch (e) {
+    // Return null if any error occurs during detection
+    return null;
   }
 }

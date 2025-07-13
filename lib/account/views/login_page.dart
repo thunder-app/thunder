@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -502,7 +503,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         }
 
         if (acceptedContentWarning) {
-          await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
+          // Detect the platform for the instance
+          final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(_instanceTextEditingController.text);
+
+          await Account.insertAnonymousInstance(Account(
+            id: '',
+            instance: _instanceTextEditingController.text,
+            index: -1,
+            anonymous: true,
+            platform: platform,
+          ));
           context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
           context.read<ProfileBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
           widget.popRegister();
