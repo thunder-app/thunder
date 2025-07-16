@@ -91,12 +91,12 @@ class _UserIndicatorState extends State<UserIndicator> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(user!.name),
+                  Text(user!.displayNameOrName),
                   UserFullNameWidget(
                     context,
-                    user!.username,
+                    user!.name,
                     user!.displayName,
-                    fetchInstanceNameFromUrl(user!.url) ?? '-',
+                    fetchInstanceNameFromUrl(user!.actorId) ?? '-',
                     // Override because we're showing display name above
                     useDisplayName: false,
                   ),

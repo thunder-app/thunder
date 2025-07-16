@@ -55,7 +55,7 @@ class LemmyCommunityRepository implements CommunityRepository {
     return {
       "community": ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson()),
       "instance": response.site != null ? ThunderInstance(response.site!) : null,
-      "moderators": response.moderators.map((mod) => ThunderUser(mod.moderator)).toList(),
+      "moderators": response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList(),
     };
   }
 

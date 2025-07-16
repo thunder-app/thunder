@@ -126,7 +126,7 @@ class ThunderPost {
   int? get languageId => _post.languageId;
 
   /// The creator of the post
-  ThunderUser? get creator => _postView?.creator != null ? ThunderUser(_postView!.creator) : null;
+  ThunderUser? get creator => _postView?.creator != null ? ThunderUser.fromLemmyUser(_postView!.creator.toJson()) : null;
 
   /// The community associated with the post
   ThunderCommunity? get community =>

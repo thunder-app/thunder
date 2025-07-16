@@ -219,7 +219,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.post.creator?.url) {
+      if (account?.actorId == widget.post.creator?.actorId) {
         userActions = userActions.where((action) => action != PostPostAction.reportPost).toList();
       } else {
         userActions = userActions.where((action) => action != PostPostAction.editPost && action != PostPostAction.deletePost && action != PostPostAction.restorePost).toList();

@@ -154,7 +154,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemovePost.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modRemovePost.reason,
         post: ThunderPost(event.post),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
@@ -164,7 +164,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modLockPost.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         post: ThunderPost(event.post),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modLockPost.locked,
@@ -173,7 +173,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modFeaturePost.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         post: ThunderPost(event.post),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modFeaturePost.featured,
@@ -182,9 +182,9 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemoveComment.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modRemoveComment.reason,
-        user: event.commenter != null ? ThunderUser(event.commenter) : null,
+        user: event.commenter != null ? ThunderUser.fromLemmyUser(event.commenter.toJson()) : null,
         post: ThunderPost(event.post),
         comment: ThunderComment(comment: event.comment),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
@@ -194,7 +194,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modRemoveCommunity.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modRemoveCommunity.reason,
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modRemoveCommunity.removed,
@@ -203,9 +203,9 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modBanFromCommunity.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modBanFromCommunity.reason,
-        user: event.bannedPerson != null ? ThunderUser(event.bannedPerson) : null,
+        user: event.bannedPerson != null ? ThunderUser.fromLemmyUser(event.bannedPerson.toJson()) : null,
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modBanFromCommunity.banned,
       );
@@ -213,17 +213,17 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modBan.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modBan.reason,
-        user: event.bannedPerson != null ? ThunderUser(event.bannedPerson) : null,
+        user: event.bannedPerson != null ? ThunderUser.fromLemmyUser(event.bannedPerson.toJson()) : null,
         actioned: event.modBan.banned,
       );
     case ModlogActionType.modAddCommunity:
       return ModlogEventItem(
         type: type,
         dateTime: event.modAddCommunity.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
-        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
+        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: !event.modAddCommunity.removed,
       );
@@ -231,8 +231,8 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modTransferCommunity.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
-        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
+        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: true,
       );
@@ -240,15 +240,15 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modAdd.when,
-        moderator: event.moderator != null ? ThunderUser(event.moderator) : null,
-        user: event.moddedPerson != null ? ThunderUser(event.moddedPerson) : null,
+        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
+        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
         actioned: !event.modAdd.removed,
       );
     case ModlogActionType.adminPurgePerson:
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgePerson.when,
-        admin: event.admin != null ? ThunderUser(event.admin) : null,
+        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
         reason: event.adminPurgePerson.reason,
         actioned: true,
       );
@@ -256,7 +256,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgeCommunity.when,
-        admin: event.admin != null ? ThunderUser(event.admin) : null,
+        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
         reason: event.adminPurgeCommunity.reason,
         actioned: true,
       );
@@ -264,7 +264,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgePost.when,
-        admin: event.admin != null ? ThunderUser(event.admin) : null,
+        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
         reason: event.adminPurgePost.reason,
         actioned: true,
       );
@@ -272,7 +272,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.adminPurgeComment.when,
-        admin: event.admin != null ? ThunderUser(event.admin) : null,
+        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
         reason: event.adminPurgeComment.reason,
         actioned: true,
       );
@@ -280,7 +280,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
       return ModlogEventItem(
         type: type,
         dateTime: event.modHideCommunity.when,
-        admin: event.admin != null ? ThunderUser(event.admin) : null,
+        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
         reason: event.modHideCommunity.reason,
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modHideCommunity.hidden,

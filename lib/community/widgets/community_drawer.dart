@@ -178,7 +178,7 @@ class UserDrawerItem extends StatelessWidget {
                       const SizedBox(width: 5),
                     ],
                     Text(
-                      isLoggedIn ? profileState.user?.username ?? '' : l10n.anonymous,
+                      isLoggedIn ? profileState.user?.name ?? '' : l10n.anonymous,
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -246,7 +246,7 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (profileState.moderates.isNotEmpty || profileState.user?.admin == true)
+        if (profileState.moderates.isNotEmpty || profileState.user?.isAdmin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () {

@@ -66,7 +66,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: UserAvatar(user: ThunderUser(person)),
+          leading: UserAvatar(user: ThunderUser.fromLemmyUser(person.toJson())),
           trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),

@@ -37,19 +37,19 @@ class UserAvatar extends StatelessWidget {
       backgroundColor: theme.colorScheme.secondaryContainer,
       maxRadius: radius,
       child: Text(
-        user.name[0].toUpperCase(),
+        user.displayNameOrName[0].toUpperCase(),
         semanticsLabel: '',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: radius),
       ),
     );
 
-    if (user.icon?.isNotEmpty != true) return placeholderIcon;
+    if (user.avatar?.isNotEmpty != true) return placeholderIcon;
 
     Map<String, dynamic> queryParameters = {};
     if (thumbnailSize != null) queryParameters['thumbnail'] = thumbnailSize.toString();
     if (format != null) queryParameters['format'] = format;
 
-    Uri imageUri = Uri.parse(user.icon!);
+    Uri imageUri = Uri.parse(user.avatar!);
 
     // Only set pictrs query parameters if the image URL is a pictrs URL and the image is not being proxied
     if (imageUri.path.contains('/pictrs/image/') && queryParameters.isNotEmpty) {

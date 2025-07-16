@@ -86,11 +86,11 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
     ThunderPost post = widget.post;
 
     String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
-    String? userInstance = fetchInstanceNameFromUrl(post.creator?.url);
+    String? userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.url));
+        return generateUserFullName(context, post.creator?.displayNameOrName, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.actorId));
       case GeneralPostAction.community:
         return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
       case GeneralPostAction.instance:
@@ -138,7 +138,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
           userInstanceId: widget.post.creator?.instanceId,
-          userInstanceUrl: widget.post.creator?.url,
+          userInstanceUrl: widget.post.creator?.actorId,
           communityInstanceId: widget.post.community?.instanceId,
           communityInstanceUrl: widget.post.community?.actorId,
           onAction: () {},

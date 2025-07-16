@@ -335,7 +335,7 @@ class _InstancePageState extends State<InstancePage> {
                                 return Material(
                                   child: user != null
                                       ? UserListEntry(
-                                          user: ThunderUser(user.person, userView: user),
+                                          user: ThunderUser.fromLemmyUserView(user.toJson()),
                                           resolutionInstance: state.resolutionInstance,
                                         )
                                       : Container(),

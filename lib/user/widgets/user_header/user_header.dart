@@ -129,15 +129,15 @@ class _UserInfo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         AutoSizeText(
-          user.name,
+          user.displayNameOrName,
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           maxLines: 1,
         ),
         UserFullNameWidget(
           context,
-          user.username,
+          user.name,
           user.displayName,
-          fetchInstanceNameFromUrl(user.url),
+          fetchInstanceNameFromUrl(user.actorId),
           autoSize: true,
           useDisplayName: false, // Override because we're showing display name above
         ),
@@ -164,11 +164,11 @@ class _UserStats extends StatelessWidget {
       children: [
         IconText(
           icon: Icon(Icons.wysiwyg_rounded, size: iconSize),
-          text: formatNumberToK(user.totalPosts ?? 0),
+          text: formatNumberToK(user.posts ?? 0),
         ),
         IconText(
           icon: Icon(Icons.chat_rounded, size: iconSize),
-          text: formatNumberToK(user.totalComments ?? 0),
+          text: formatNumberToK(user.comments ?? 0),
         ),
       ],
     );

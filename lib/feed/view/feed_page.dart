@@ -386,7 +386,7 @@ class _FeedViewState extends State<FeedView> {
                           if (state.fullPersonView != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
                             SliverToBoxAdapter(
                               child: UserHeader(
-                                user: ThunderUser(state.fullPersonView!.personView.person, userView: state.fullPersonView!.personView),
+                                user: ThunderUser.fromLemmyUserView(state.fullPersonView!.personView.toJson()),
                                 moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity.fromLemmyCommunity(e.community.toJson())).toList(),
                                 feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
                                 onChangeFeedType: (feedType) {

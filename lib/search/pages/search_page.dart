@@ -427,9 +427,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                         _currentCreatorFilter = user.id;
                                         _currentCreatorFilterName = generateUserFullName(
                                           context,
-                                          user.username,
+                                          user.name,
                                           user.displayName,
-                                          fetchInstanceNameFromUrl(user.url),
+                                          fetchInstanceNameFromUrl(user.actorId),
                                         );
                                       });
                                       _doSearch();
@@ -665,7 +665,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   final pv = state.users![index];
-                  final user = ThunderUser(pv.person, userView: pv);
+                  final user = ThunderUser.fromLemmyUserView(pv.toJson());
 
                   return UserListEntry(user: user);
                 }

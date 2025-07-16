@@ -44,7 +44,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
         try {
           final account = context.read<ProfileBloc>().state.account;
           final response = await LemmyUserRepository(account: account).getUser(username: normalizedUsername);
-          final user = ThunderUser(response!.personView.person, userView: response.personView);
+          final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
 
           onUserSelected(user);
           Navigator.of(context).pop();
@@ -78,7 +78,7 @@ Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query)
     limit: 20,
   );
 
-  final users = response.users.map((pv) => ThunderUser(pv.person, userView: pv)).toList();
+  final users = response.users.map((pv) => ThunderUser.fromLemmyUserView(pv.toJson())).toList();
   return users;
 }
 
@@ -86,16 +86,16 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
   return Tooltip(
     message: generateUserFullName(
       context,
-      payload.username,
+      payload.name,
       payload.displayName,
-      fetchInstanceNameFromUrl(payload.url),
+      fetchInstanceNameFromUrl(payload.actorId),
     ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
         leading: UserAvatar(user: payload),
-        title: Text(payload.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(payload.displayNameOrName, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Semantics(
           excludeSemantics: true,
           child: Marquee(
@@ -104,9 +104,9 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
             pauseDuration: const Duration(seconds: 1),
             child: UserFullNameWidget(
               context,
-              payload.username,
+              payload.name,
               payload.displayName,
-              fetchInstanceNameFromUrl(payload.url),
+              fetchInstanceNameFromUrl(payload.actorId),
               // Override because we're showing display name above
               useDisplayName: false,
             ),

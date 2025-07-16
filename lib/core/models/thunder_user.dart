@@ -1,53 +1,131 @@
-import 'package:lemmy_api_client/v3.dart';
-
 class ThunderUser {
-  /// The Lemmy API model for the user.
-  Person user;
+  /// The user's ID
+  final int id;
 
-  /// The Lemmy API model for the person view.
-  PersonView? userView;
+  /// The user's name
+  final String name;
 
-  ThunderUser(this.user, {this.userView});
+  /// The user's display name
+  final String? displayName;
 
-  /// The ID of the user.
-  int get id => user.id;
+  /// The user's display name or name
+  String get displayNameOrName => displayName ?? name;
 
-  /// The name of the user. If the user has a display name, it is used. Otherwise, the username is used.
-  String get name => (displayName?.isNotEmpty == true ? displayName : username) ?? '';
+  /// The user's avatar
+  final String? avatar;
 
-  /// The username of the user.
-  String get username => user.name;
+  /// Whether the user is banned
+  final bool banned;
 
-  /// The display name of the user.
-  String? get displayName => user.displayName;
+  /// The user's created date
+  final DateTime published;
 
-  /// The bio of the user.
-  String? get bio => user.bio;
+  /// The user's updated date
+  final DateTime? updated;
 
-  /// The avatar of the user.
-  String? get icon => user.avatar;
+  /// The user's actor ID
+  final String actorId;
 
-  /// The banner of the user.
-  String? get banner => user.banner;
+  /// The user's bio
+  final String? bio;
 
-  /// The URL to the user's profile. This is generally associated with the ActivityPub actor URL.
-  String get url => user.actorId;
+  /// Whether the user is local
+  final bool local;
 
-  /// The date and time that the user was created.
-  DateTime get created => user.published;
+  /// The user's banner
+  final String? banner;
+
+  /// Whether the user is deleted
+  final bool deleted;
+
+  /// The user's matrix user ID
+  final String? matrixUserId;
+
+  /// Whether the user is a bot
+  final bool botAccount;
+
+  /// The date and time that the user's ban expires
+  final DateTime? banExpires;
+
+  /// The user's instance ID
+  final int instanceId;
 
   /// The total number of posts that the user has made.
-  int? get totalPosts => userView?.counts.postCount;
+  final int? posts;
 
   /// The total number of comments that the user has made.
-  int? get totalComments => userView?.counts.commentCount;
+  final int? comments;
 
   /// Whether the user is an admin.
-  bool? get admin => userView?.isAdmin == true;
+  final bool? isAdmin;
 
-  /// Whether the user is marked as a bot.
-  bool get bot => user.botAccount;
+  ThunderUser({
+    required this.id,
+    required this.name,
+    this.displayName,
+    this.avatar,
+    required this.banned,
+    required this.published,
+    this.updated,
+    required this.actorId,
+    this.bio,
+    required this.local,
+    this.banner,
+    required this.deleted,
+    this.matrixUserId,
+    required this.botAccount,
+    this.banExpires,
+    required this.instanceId,
+    this.posts,
+    this.comments,
+    this.isAdmin,
+  });
 
-  /// The instance ID of the user.
-  int get instanceId => user.instanceId;
+  factory ThunderUser.fromLemmyUser(Map<String, dynamic> user) {
+    return ThunderUser(
+      id: user['id'],
+      name: user['name'],
+      displayName: user['display_name'],
+      avatar: user['avatar'],
+      banned: user['banned'],
+      published: DateTime.parse(user['published']),
+      updated: user['updated'] != null ? DateTime.parse(user['updated']) : null,
+      actorId: user['actor_id'],
+      bio: user['bio'],
+      local: user['local'],
+      banner: user['banner'],
+      deleted: user['deleted'],
+      matrixUserId: user['matrix_user_id'],
+      botAccount: user['bot_account'],
+      banExpires: user['ban_expires'] != null ? DateTime.parse(user['ban_expires']) : null,
+      instanceId: user['instance_id'],
+    );
+  }
+
+  factory ThunderUser.fromLemmyUserView(Map<String, dynamic> userView) {
+    final user = userView['person'];
+    final counts = userView['counts'];
+
+    return ThunderUser(
+      id: user['id'],
+      name: user['name'],
+      displayName: user['display_name'],
+      avatar: user['avatar'],
+      banned: user['banned'],
+      published: DateTime.parse(user['published']),
+      updated: user['updated'] != null ? DateTime.parse(user['updated']) : null,
+      actorId: user['actor_id'],
+      bio: user['bio'],
+      local: user['local'],
+      banner: user['banner'],
+      deleted: user['deleted'],
+      matrixUserId: user['matrix_user_id'],
+      botAccount: user['bot_account'],
+      banExpires: user['ban_expires'] != null ? DateTime.parse(user['ban_expires']) : null,
+      instanceId: user['instance_id'],
+      posts: counts['post_count'],
+      comments: counts['comment_count'],
+      isAdmin: userView['is_admin'],
+    );
+  }
 }

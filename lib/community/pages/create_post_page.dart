@@ -673,7 +673,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     _bodyTextController.text = _bodyTextController.text.replaceRange(
                                       _bodyTextController.selection.end,
                                       _bodyTextController.selection.end,
-                                      '[@${user.username}@${fetchInstanceNameFromUrl(user.url)}](${user.url})',
+                                      '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
                                     );
                                   });
                                 },

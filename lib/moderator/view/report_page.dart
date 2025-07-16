@@ -229,7 +229,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             child: PostCardViewCompact(
                                               showMedia: false,
                                               post: ThunderPost(postView.post, postView: postView, media: [Media(mediaType: MediaType.text)]),
-                                              creator: ThunderUser(postView.creator),
+                                              creator: ThunderUser.fromLemmyUser(postView.creator.toJson()),
                                               community: ThunderCommunity.fromLemmyCommunity(postView.community.toJson()),
                                               isLastTapped: false,
                                             ),

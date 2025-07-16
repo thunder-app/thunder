@@ -160,7 +160,7 @@ class CommunityModeratorList extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.55,
                         child: Text(
-                          moderator.name,
+                          moderator.displayNameOrName,
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
@@ -168,9 +168,9 @@ class CommunityModeratorList extends StatelessWidget {
                       ),
                       UserFullNameWidget(
                         context,
-                        moderator.username,
+                        moderator.name,
                         moderator.displayName,
-                        fetchInstanceNameFromUrl(moderator.url),
+                        fetchInstanceNameFromUrl(moderator.actorId),
                         textStyle: const TextStyle(fontSize: 13.0),
                         transformColor: (color) => color?.withValues(alpha: 0.6),
                         useDisplayName: false, // Override because we're showing display name above

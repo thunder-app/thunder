@@ -591,9 +591,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 dim: dim,
               ),
               UserPostCardMetadata(
-                username: user.username,
+                username: user.name,
                 displayName: user.displayName,
-                actorId: user.url,
+                actorId: user.actorId,
                 dim: dim,
               ),
             ],
@@ -608,9 +608,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
           )
         else if (showUsername)
           UserPostCardMetadata(
-            username: user.username,
+            username: user.name,
             displayName: user.displayName,
-            actorId: user.url,
+            actorId: user.actorId,
             dim: dim,
           ),
       ],

@@ -260,7 +260,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               borderRadius: BorderRadius.circular(6),
                               onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
                               child: ScalableText(
-                                '${widget.user?.displayName ?? widget.user?.name}',
+                                '${widget.user?.displayName ?? widget.user?.displayNameOrName}',
                                 fontScale: state.metadataFontSizeScale,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
@@ -335,15 +335,15 @@ class ModlogUserItemContextCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScalableText(
-                      HtmlUnescape().convert(user?.displayName ?? user?.name ?? l10n.user),
+                      HtmlUnescape().convert(user?.displayName ?? user?.displayNameOrName ?? l10n.user),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
                     UserFullNameWidget(
                       context,
-                      user?.name,
+                      user?.displayNameOrName,
                       user?.displayName,
-                      fetchInstanceNameFromUrl(user?.url),
+                      fetchInstanceNameFromUrl(user?.actorId),
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],

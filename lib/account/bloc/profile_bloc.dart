@@ -233,7 +233,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
 
       final response = await userRepository!.getUser(username: account.username, sort: PostSortType.new_, page: 1);
-      final user = ThunderUser(response!.personView.person, userView: response.personView);
+      final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
       final moderates = response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunityView(cmv.community.toJson())).toList();
 
       // This eliminates an issue which has plagued me a lot which is that there's a race condition

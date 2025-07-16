@@ -141,7 +141,7 @@ class _ActionChipsList extends StatelessWidget {
         if (isOwnProfile) _SavedActionChip(),
         _SortActionChip(),
         if (!isOwnProfile) _LabelActionChip(user: user),
-        if (isLoggedIn && !isOwnProfile && user.admin != true) _BlockActionChip(user: user),
+        if (isLoggedIn && !isOwnProfile && user.isAdmin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
     );
@@ -327,7 +327,7 @@ class _LabelActionChip extends StatelessWidget {
       label: l10n.label,
       onPressed: () async => await showUserLabelEditorDialog(
         context,
-        UserLabel.usernameFromParts(user.name, user.url),
+        UserLabel.usernameFromParts(user.displayNameOrName, user.actorId),
       ),
     );
   }
@@ -369,7 +369,7 @@ class _BlockActionChip extends StatelessWidget {
       return false;
     }
 
-    final blockedUsers = state.getSiteResponse!.myUser!.personBlocks.map((block) => ThunderUser(block.target)).toList();
+    final blockedUsers = state.getSiteResponse!.myUser!.personBlocks.map((block) => ThunderUser.fromLemmyUser(block.target.toJson())).toList();
     return blockedUsers.any((blockedUser) => blockedUser.id == user.id);
   }
 }

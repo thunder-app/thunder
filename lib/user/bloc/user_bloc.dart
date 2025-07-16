@@ -65,7 +65,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(
             status: UserStatus.success,
-            user: ThunderUser(response.personView.person, userView: response.personView),
+            user: ThunderUser.fromLemmyUserView(response.personView.toJson()),
             message: response.blocked ? l10n.successfullyBlockedUser(response.personView.person.name) : l10n.successfullyUnblockedUser(response.personView.person.name),
           ));
         } catch (e) {
@@ -98,7 +98,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(
             status: UserStatus.success,
-            user: ThunderUser(banFromCommunityResponse.personView.person, userView: banFromCommunityResponse.personView),
+            user: ThunderUser.fromLemmyUserView(banFromCommunityResponse.personView.toJson()),
             message: banFromCommunityResponse.banned
                 ? l10n.successfullyBannedUser(banFromCommunityResponse.personView.person.name)
                 : l10n.successfullyUnbannedUser(banFromCommunityResponse.personView.person.name),

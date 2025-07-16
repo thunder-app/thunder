@@ -114,7 +114,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         setState(() => _userAction = UserAction.block);
         break;
       case UserBottomSheetAction.addUserLabel:
-        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.url));
+        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.displayNameOrName, widget.user.actorId));
         widget.onAction(UserAction.setUserLabel, null);
         Navigator.of(context).pop();
         break;
@@ -244,7 +244,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     final isLoggedIn = authState.isLoggedIn;
     final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
 
-    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.url).isNotEmpty;
+    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.actorId).isNotEmpty;
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
     final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;
     // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
@@ -253,7 +253,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.user.url) {
+      if (account?.actorId == widget.user.actorId) {
         userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
       }
 

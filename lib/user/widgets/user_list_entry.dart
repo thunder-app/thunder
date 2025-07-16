@@ -24,24 +24,24 @@ class UserListEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${user.name}\n${generateUserFullName(
+      message: '${user.displayNameOrName}\n${generateUserFullName(
         context,
-        user.username,
+        user.name,
         user.displayName,
-        fetchInstanceNameFromUrl(user.url),
+        fetchInstanceNameFromUrl(user.actorId),
       )}',
       preferBelow: false,
       child: ListTile(
         leading: UserAvatar(user: user, radius: 25),
-        title: Text(user.name, overflow: TextOverflow.ellipsis),
+        title: Text(user.displayNameOrName, overflow: TextOverflow.ellipsis),
         subtitle: Row(
           children: [
             Flexible(
               child: UserFullNameWidget(
                 context,
-                user.username,
+                user.name,
                 user.displayName,
-                fetchInstanceNameFromUrl(user.url),
+                fetchInstanceNameFromUrl(user.actorId),
                 // Override because we're showing display name above
                 useDisplayName: false,
               ),
@@ -55,7 +55,7 @@ class UserListEntry extends StatelessWidget {
             try {
               // Create a temporary Account for the request
               final account = Account(instance: resolutionInstance!, id: '', index: -1);
-              final response = await LemmySearchRepository(account: account).resolve(query: user.url);
+              final response = await LemmySearchRepository(account: account).resolve(query: user.actorId);
 
               userId = response.person?.person.id;
             } catch (e) {

@@ -78,8 +78,8 @@ class CommentCardHeader extends StatelessWidget {
                   spacing: 8.0,
                   children: [
                     UserChip(
-                      user: ThunderUser(comment.creator!),
-                      personAvatar: UserAvatar(user: ThunderUser(comment.creator!), radius: 10, thumbnailSize: 20, format: 'png'),
+                      user: ThunderUser.fromLemmyUser(comment.creator!.toJson()),
+                      personAvatar: UserAvatar(user: ThunderUser.fromLemmyUser(comment.creator!.toJson()), radius: 10, thumbnailSize: 20, format: 'png'),
                       userGroups: userGroups,
                       includeInstance: commentShowUserInstance,
                       ignorePointerEvents: hidden && collapseParentCommentOnGesture,
