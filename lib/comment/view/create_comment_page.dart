@@ -347,7 +347,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
-                                      postActorId: widget.post?.url,
+                                      postActorId: widget.post?.apId,
                                       onPostChanged: (post) => postId = post.id,
                                       parentCommentActorId: widget.parentComment?.apId,
                                       onParentCommentChanged: (ThunderComment parentComment) {

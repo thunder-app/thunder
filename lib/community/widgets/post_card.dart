@@ -112,10 +112,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _onPointerUp() {
-    final int? myVote = widget.post.voteType;
-    final bool saved = widget.post.saved;
-    final bool read = widget.post.read;
-    final bool hidden = widget.post.hidden;
+    final int? myVote = widget.post.myVote;
+    final bool saved = widget.post.saved ?? false;
+    final bool read = widget.post.read ?? false;
+    final bool hidden = widget.post.hidden ?? false;
 
     _updateOverridingSwipe(false);
 
@@ -279,8 +279,8 @@ class _PostCardState extends State<PostCard> {
           dismissThreshold: dismissThreshold,
           firstActionThreshold: firstActionThreshold,
           dismissDirection: dismissDirection ?? DismissDirection.startToEnd,
-          read: read,
-          hidden: hidden,
+          read: read ?? false,
+          hidden: hidden ?? false,
         ),
         child: child,
       );

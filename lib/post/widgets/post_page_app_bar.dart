@@ -246,7 +246,7 @@ class PostAppBarActions extends StatelessWidget {
                     context,
                     profileModalHeading: l10n.viewPostAsDifferentAccount,
                     onUserChanged: onUserChanged,
-                    postActorId: context.read<PostBloc>().state.post?.url,
+                    postActorId: context.read<PostBloc>().state.post?.apId,
                     onPostChanged: onPostChanged,
                   );
                 },

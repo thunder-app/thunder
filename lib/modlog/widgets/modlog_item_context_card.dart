@@ -113,7 +113,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ScalableText(
-                    HtmlUnescape().convert(post.title),
+                    HtmlUnescape().convert(post.name),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     fontScale: state.titleFontSizeScale,
                   ),
@@ -216,7 +216,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           ),
                         ),
                         TextSpan(
-                          text: HtmlUnescape().convert(widget.post!.title),
+                          text: HtmlUnescape().convert(widget.post!.name),
                         )
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(

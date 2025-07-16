@@ -114,16 +114,16 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.voteType == 1 ? 0 : 1));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.myVote == 1 ? 0 : 1));
         break;
       case GeneralQuickPostAction.downvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.voteType == -1 ? 0 : -1));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.myVote == -1 ? 0 : -1));
         break;
       case GeneralQuickPostAction.save:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: post.id, value: !post.saved));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: post.id, value: !(post.saved ?? false)));
         break;
       case GeneralQuickPostAction.read:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: post.id, value: !post.read));
+        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: post.id, value: !(post.read ?? false)));
         break;
       case GeneralQuickPostAction.hide:
         widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.hide, postId: post.id, value: post.hidden == true ? false : true));
@@ -139,13 +139,13 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.voteType == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
+        return post.myVote == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
       case GeneralQuickPostAction.downvote:
-        return post.voteType == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
+        return post.myVote == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
       case GeneralQuickPostAction.save:
-        return post.saved ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
+        return post.saved == true ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
       case GeneralQuickPostAction.read:
-        return post.read ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
+        return post.read == true ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
       case GeneralQuickPostAction.hide:
         return post.hidden == true ? GeneralQuickPostAction.hide.enabledIcon : GeneralQuickPostAction.hide.disabledIcon;
     }
@@ -156,13 +156,13 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.voteType == 1 ? l10n.upvoted : l10n.upvote;
+        return post.myVote == 1 ? l10n.upvoted : l10n.upvote;
       case GeneralQuickPostAction.downvote:
-        return post.voteType == -1 ? l10n.downvoted : l10n.downvote;
+        return post.myVote == -1 ? l10n.downvoted : l10n.downvote;
       case GeneralQuickPostAction.save:
-        return post.saved ? l10n.saved : l10n.save;
+        return post.saved == true ? l10n.saved : l10n.save;
       case GeneralQuickPostAction.read:
-        return post.read ? l10n.read : l10n.markAsRead;
+        return post.read == true ? l10n.read : l10n.markAsRead;
       case GeneralQuickPostAction.hide:
         return post.hidden == true ? l10n.hidden : l10n.hide;
     }
@@ -191,13 +191,13 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.voteType == 1 ? state.upvoteColor.color : null;
+        return post.myVote == 1 ? state.upvoteColor.color : null;
       case GeneralQuickPostAction.downvote:
-        return post.voteType == -1 ? state.downvoteColor.color : null;
+        return post.myVote == -1 ? state.downvoteColor.color : null;
       case GeneralQuickPostAction.save:
-        return post.saved ? state.saveColor.color : null;
+        return post.saved == true ? state.saveColor.color : null;
       case GeneralQuickPostAction.read:
-        return post.read ? state.markReadColor.color : null;
+        return post.read == true ? state.markReadColor.color : null;
       case GeneralQuickPostAction.hide:
         return post.hidden == true ? state.hideColor.color : null;
     }

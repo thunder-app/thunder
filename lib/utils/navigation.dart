@@ -174,10 +174,10 @@ Future<void> navigateToPost(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.url
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.apId
       ? _cachedPostBloc!.postBloc
       : (_cachedPostBloc = (
-          postApId: pvm.url,
+          postApId: pvm.apId,
           postBloc: post_bloc.PostBloc(account: account),
         ))
           .postBloc;
@@ -207,7 +207,7 @@ Future<void> navigateToPost(
           initialPost: postBloc.state.post ?? pvm!,
           onPostUpdated: (ThunderPost post) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(postView: post.internalPostView?.copyWith(read: true))));
+            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(read: true)));
           },
         ),
       );

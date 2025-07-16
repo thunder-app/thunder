@@ -539,9 +539,9 @@ class CrossPostMetaData extends StatelessWidget {
       spacing: 6.0,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ScorePostCardMetaData(score: post.score, voteType: post.voteType, dim: true),
+        ScorePostCardMetaData(score: post.score, voteType: post.myVote, dim: true),
         CommentCountPostCardMetaData(commentCount: post.comments, unreadCommentCount: post.unreadComments ?? 0, dim: true),
-        DateTimePostCardMetaData(dateTime: post.created.toIso8601String(), edited: post.updated != null, dim: true),
+        DateTimePostCardMetaData(dateTime: post.published.toIso8601String(), edited: post.updated != null, dim: true),
       ],
     );
   }

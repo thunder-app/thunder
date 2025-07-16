@@ -518,16 +518,16 @@ class _PostPageState extends State<PostPage> {
                           onCreateCrossPost: () {
                             createCrossPost(
                               context,
-                              title: state.post?.title ?? '',
-                              url: state.post?.link,
+                              title: state.post?.name ?? '',
+                              url: state.post?.url,
                               text: state.post?.body,
-                              postUrl: state.post?.url,
+                              postUrl: state.post?.apId,
                             );
                           },
                           onSelectText: () {
                             showSelectableTextModal(
                               context,
-                              title: state.post?.title ?? '',
+                              title: state.post?.name ?? '',
                               text: state.post?.body ?? '',
                             );
                           },

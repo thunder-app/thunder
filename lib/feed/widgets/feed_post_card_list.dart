@@ -124,7 +124,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
     if (isUserLoggedIn && widget.markPostReadOnScroll) {
       child = VisibilityDetector(
-        key: Key(post.url),
+        key: Key(post.apId),
         onVisibilityChanged: (info) {
           if (!isScrollingDown) return;
 

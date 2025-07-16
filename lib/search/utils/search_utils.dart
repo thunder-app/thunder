@@ -10,7 +10,7 @@ bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchR
   final List<ThunderCommunity>? communities = searchState?.communities ?? searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
   final List<ThunderComment>? comments = searchState?.comments ?? searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
-  final List<ThunderPost>? posts = searchState?.posts?.map((post) => post).toList() ?? searchResponse?.posts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+  final List<ThunderPost>? posts = searchState?.posts?.map((post) => post).toList() ?? searchResponse?.posts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
   final List<ThunderInstanceInfo>? instances = searchState?.instances;
 
   return switch (searchType) {

@@ -17,7 +17,7 @@ ThunderPost optimisticallyVotePost(ThunderPost post, int voteType) {
   int newScore = post.score!;
   int newUpvotes = post.upvotes!;
   int newDownvotes = post.downvotes!;
-  int? existingVoteType = post.voteType;
+  int? existingVoteType = post.myVote;
 
   switch (voteType) {
     case -1:
@@ -41,51 +41,42 @@ ThunderPost optimisticallyVotePost(ThunderPost post, int voteType) {
       break;
   }
 
-  final updatedPostView = post.internalPostView?.copyWith(
-    myVote: voteType,
-    counts: post.internalPostView!.counts.copyWith(
-      score: newScore,
-      upvotes: newUpvotes,
-      downvotes: newDownvotes,
-    ),
-  );
-
-  return post.copyWith(postView: updatedPostView);
+  return post.copyWith(myVote: voteType, score: newScore, upvotes: newUpvotes, downvotes: newDownvotes);
 }
 
 // Optimistically saves a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallySavePost(ThunderPost post, bool saved) {
-  return post.copyWith(postView: post.internalPostView?.copyWith(saved: saved));
+  return post.copyWith(saved: saved);
 }
 
 // Optimistically marks a post as read/unread. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyReadPost(ThunderPost post, bool read) {
-  return post.copyWith(postView: post.internalPostView?.copyWith(read: read));
+  return post.copyWith(read: read);
 }
 
 // Optimistically marks a post as hidden/unhidden. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyHidePost(ThunderPost post, bool hidden) {
-  return post.copyWith(postView: post.internalPostView?.copyWith(hidden: hidden));
+  return post.copyWith(hidden: hidden);
 }
 
 // Optimistically deletes a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyDeletePost(ThunderPost post, bool delete) {
-  return post.copyWith(post: post.internalPost.copyWith(deleted: delete));
+  return post.copyWith(deleted: delete);
 }
 
 // Optimistically locks a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyLockPost(ThunderPost post, bool lock) {
-  return post.copyWith(post: post.internalPost.copyWith(locked: lock));
+  return post.copyWith(locked: lock);
 }
 
 // Optimistically pins a post to a community. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyPinPostToCommunity(ThunderPost post, bool pin) {
-  return post.copyWith(post: post.internalPost.copyWith(featuredCommunity: pin));
+  return post.copyWith(featuredCommunity: pin);
 }
 
 // Optimistically removes a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyRemovePost(ThunderPost post, bool remove) {
-  return post.copyWith(post: post.internalPost.copyWith(removed: remove));
+  return post.copyWith(removed: remove);
 }
 
 /// Parse a post with media
@@ -198,5 +189,5 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
 
   mediaList.add(media);
 
-  return ThunderPost(postView.post, postView: postView, media: mediaList);
+  return ThunderPost.fromLemmyPostView(postView.toJson(), media: mediaList);
 }

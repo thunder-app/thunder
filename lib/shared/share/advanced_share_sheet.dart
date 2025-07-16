@@ -93,7 +93,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  post.title,
+                  post.name,
                   textAlign: TextAlign.left,
                   style: const TextStyle(color: Colors.black, fontSize: 20),
                 ),
@@ -206,7 +206,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                                 : const CircularProgressIndicator(),
                           if (options.includePostLink)
                             Text(
-                              post.url,
+                              post.apId,
                               style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
                             ),
                           if (options.includeExternalLink && _hasExternalLink(post))
@@ -329,7 +329,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                                         // Generate the text to share
                                         String? text;
                                         if (options.includePostLink) {
-                                          text = post.url;
+                                          text = post.apId;
                                         }
                                         if (options.includeExternalLink && _hasExternalLink(post)) {
                                           text == null ? text = post.media.first.originalUrl! : text = '$text\n${post.media.first.originalUrl!}';

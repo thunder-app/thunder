@@ -215,7 +215,7 @@ class _FeedViewState extends State<FeedView> {
 
     if (posts.isNotEmpty) {
       for (ThunderPost post in posts) {
-        if (post.read) {
+        if (post.read == true) {
           setState(() => queuedForRemoval.add(post.id));
           await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
         }

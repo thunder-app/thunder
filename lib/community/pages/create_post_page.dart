@@ -240,9 +240,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     // Logic for pre-populating the post with the [postView] for edits
     if (widget.post != null) {
-      _titleTextController.text = widget.post!.title;
-      _urlTextController.text = widget.post!.link ?? '';
-      _customThumbnailTextController.text = widget.post!.thumbnail ?? '';
+      _titleTextController.text = widget.post!.name;
+      _urlTextController.text = widget.post!.url ?? '';
+      _customThumbnailTextController.text = widget.post!.thumbnailUrl ?? '';
       _altTextTextController.text = widget.post!.altText ?? '';
       _bodyTextController.text = widget.post!.body ?? '';
       isNSFW = widget.post!.nsfw;
@@ -321,9 +321,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
           Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-          _titleTextController.text = widget.post?.title ?? '';
-          _urlTextController.text = widget.post?.link ?? '';
-          _customThumbnailTextController.text = widget.post?.thumbnail ?? '';
+          _titleTextController.text = widget.post?.name ?? '';
+          _urlTextController.text = widget.post?.url ?? '';
+          _customThumbnailTextController.text = widget.post?.thumbnailUrl ?? '';
           _altTextTextController.text = widget.post?.altText ?? '';
           _bodyTextController.text = widget.post?.body ?? '';
         },
@@ -352,9 +352,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       return true;
     }
 
-    return draft.title != widget.post!.title ||
-        draft.url != (widget.post!.link ?? '') ||
-        draft.customThumbnail != (widget.post!.thumbnail ?? '') ||
+    return draft.title != widget.post!.name ||
+        draft.url != (widget.post!.url ?? '') ||
+        draft.customThumbnail != (widget.post!.thumbnailUrl ?? '') ||
         draft.altText != (widget.post!.altText ?? '') ||
         draft.body != (widget.post!.body ?? '');
   }
@@ -774,7 +774,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
 
     setState(() {
-      crossPosts = searchResponse?.posts.map((pv) => ThunderPost(pv.post, postView: pv)).toList() ?? [];
+      crossPosts = searchResponse?.posts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList() ?? [];
     });
   }
 

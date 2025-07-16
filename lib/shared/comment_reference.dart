@@ -90,7 +90,7 @@ class _CommentReferenceState extends State<CommentReference> {
     assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have both a creator and community');
 
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.title)}\n
+      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.name)}\n
           ${fetchInstanceNameFromUrl(widget.comment.community!.actorId)}\n
           ${widget.comment.creator!.name}\n
           ${widget.comment.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.upvotes!))}\n
@@ -126,7 +126,7 @@ class _CommentReferenceState extends State<CommentReference> {
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(
-                                    widget.comment.post?.title ?? '',
+                                    widget.comment.post?.name ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.bodyMedium?.copyWith(

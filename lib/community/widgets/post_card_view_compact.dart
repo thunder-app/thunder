@@ -71,7 +71,7 @@ class PostCardViewCompact extends StatelessWidget {
     final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
 
     final indicateRead = this.indicateRead ?? dimReadPostsSetting;
-    final dim = indicateRead && post.read;
+    final dim = indicateRead && post.read == true;
 
     final hasMedia = post.media.isNotEmpty;
     final isTextPost = hasMedia && post.media.first.mediaType == MediaType.text;
@@ -80,7 +80,7 @@ class PostCardViewCompact extends StatelessWidget {
     final containerColor = _getContainerColor(theme, useDarkTheme, dim);
     final containerPadding = showMedia ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0);
 
-    final dateTime = post.updated?.toIso8601String() ?? post.created.toIso8601String();
+    final dateTime = post.updated?.toIso8601String() ?? post.published.toIso8601String();
     final edited = post.updated != null;
     final mediaUrl = post.media.firstOrNull?.originalUrl;
 
@@ -99,10 +99,10 @@ class PostCardViewCompact extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PostCardTitle(
-                  title: post.title,
-                  hidden: post.hidden,
+                  title: post.name,
+                  hidden: post.hidden ?? false,
                   locked: post.locked,
-                  saved: post.saved,
+                  saved: post.saved ?? false,
                   pinned: post.featuredCommunity || post.featuredLocal,
                   deleted: post.deleted,
                   removed: post.removed,
@@ -114,7 +114,7 @@ class PostCardViewCompact extends StatelessWidget {
                   score: post.score,
                   upvoteCount: post.upvotes,
                   downvoteCount: post.downvotes,
-                  voteType: post.voteType ?? 0,
+                  voteType: post.myVote ?? 0,
                   commentCount: post.comments,
                   unreadCommentCount: post.unreadComments,
                   dateTime: dateTime,

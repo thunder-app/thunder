@@ -201,7 +201,7 @@ class ThunderComment {
   factory ThunderComment.fromLemmyCommentView(Map<String, dynamic> commentView) {
     final comment = commentView['comment'];
     final creator = commentView['creator'];
-    final post = commentView['post']; // TODO: Fix once we migrate to the new post model
+    final post = commentView['post'];
     final community = commentView['community'];
     final counts = commentView['counts'];
 
@@ -220,7 +220,7 @@ class ThunderComment {
       distinguished: comment['distinguished'],
       languageId: comment['language_id'],
       creator: ThunderUser.fromLemmyUser(creator),
-      // post: ThunderPost.fromLemmyPost(post),
+      post: ThunderPost.fromLemmyPost(post),
       community: ThunderCommunity.fromLemmyCommunity(community),
       score: counts['score'],
       upvotes: counts['upvotes'],

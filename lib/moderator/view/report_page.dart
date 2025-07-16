@@ -228,7 +228,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                             padding: const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
-                                              post: ThunderPost(postView.post, postView: postView, media: [Media(mediaType: MediaType.text)]),
+                                              post: ThunderPost.fromLemmyPostView(postView.toJson(), media: [Media(mediaType: MediaType.text)]),
                                               creator: ThunderUser.fromLemmyUser(postView.creator.toJson()),
                                               community: ThunderCommunity.fromLemmyCommunity(postView.community.toJson()),
                                               isLastTapped: false,

@@ -134,7 +134,7 @@ class LemmyPostRepository implements PostRepository {
     ThunderPost post = posts.first;
 
     // Convert cross-posts to ThunderPost objects
-    List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();
+    List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
 
     return {
       'post': post,
@@ -217,7 +217,7 @@ class LemmyPostRepository implements PostRepository {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
-    return post.copyWith(postView: response.postView, post: response.postView.post);
+    return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
   }
 
   @override
@@ -226,7 +226,7 @@ class LemmyPostRepository implements PostRepository {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
-    return post.copyWith(postView: response.postView, post: response.postView.post);
+    return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
   }
 
   @override

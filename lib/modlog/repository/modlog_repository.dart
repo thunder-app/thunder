@@ -156,7 +156,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         dateTime: event.modRemovePost.when,
         moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modRemovePost.reason,
-        post: ThunderPost(event.post),
+        post: ThunderPost.fromLemmyPost(event.post.toJson()),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modRemovePost.removed,
       );
@@ -165,7 +165,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         type: type,
         dateTime: event.modLockPost.when,
         moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        post: ThunderPost(event.post),
+        post: ThunderPost.fromLemmyPost(event.post.toJson()),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modLockPost.locked,
       );
@@ -174,7 +174,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         type: type,
         dateTime: event.modFeaturePost.when,
         moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        post: ThunderPost(event.post),
+        post: ThunderPost.fromLemmyPost(event.post.toJson()),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modFeaturePost.featured,
       );
@@ -185,7 +185,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
         reason: event.modRemoveComment.reason,
         user: event.commenter != null ? ThunderUser.fromLemmyUser(event.commenter.toJson()) : null,
-        post: ThunderPost(event.post),
+        post: ThunderPost.fromLemmyPost(event.post.toJson()),
         comment: ThunderComment.fromLemmyComment(event.comment.toJson()),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modRemoveComment.removed,

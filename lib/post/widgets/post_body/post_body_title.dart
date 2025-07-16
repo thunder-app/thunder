@@ -114,7 +114,7 @@ class PostBodyTitle extends StatelessWidget {
     final titleFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.titleFontSizeScale);
 
     return ScalableText(
-      HtmlUnescape().convert(post.title),
+      HtmlUnescape().convert(post.name),
       fontScale: titleFontSizeScale,
       style: theme.textTheme.titleMedium,
     );
