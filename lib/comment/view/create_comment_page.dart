@@ -127,7 +127,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
     // Logic for pre-populating the comment with the [post] for edits
     if (widget.comment != null) {
-      _bodyTextController.text = widget.comment!.body;
+      _bodyTextController.text = widget.comment!.content;
       languageId = widget.comment!.languageId;
     }
 
@@ -203,7 +203,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
             Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-            _bodyTextController.text = widget.comment?.body ?? '';
+            _bodyTextController.text = widget.comment?.content ?? '';
           },
           closable: true,
         );
@@ -228,7 +228,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       return true;
     }
 
-    return draft.body != widget.comment!.body;
+    return draft.body != widget.comment!.content;
   }
 
   @override
@@ -349,7 +349,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       profileModalHeading: l10n.selectAccountToCommentAs,
                                       postActorId: widget.post?.url,
                                       onPostChanged: (post) => postId = post.id,
-                                      parentCommentActorId: widget.parentComment?.url,
+                                      parentCommentActorId: widget.parentComment?.apId,
                                       onParentCommentChanged: (ThunderComment parentComment) {
                                         postId = parentComment.postId;
                                         parentCommentId = parentComment.id;

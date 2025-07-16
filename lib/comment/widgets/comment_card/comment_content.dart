@@ -180,7 +180,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                           ],
                         ),
                 ),
-                if (widget.showReplyEditorButtons && widget.comment.body.isNotEmpty == true)
+                if (widget.showReplyEditorButtons && widget.comment.content.isNotEmpty == true)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                     child: ReplyToPreviewActions(

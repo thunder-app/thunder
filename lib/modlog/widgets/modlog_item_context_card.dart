@@ -230,7 +230,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                   AnimatedSize(
                     duration: const Duration(milliseconds: 100),
                     child: showSensitiveContent
-                        ? CommonMarkdownBody(body: widget.comment.body, isComment: true)
+                        ? CommonMarkdownBody(body: widget.comment.content, isComment: true)
                         : InkWell(
                             borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                             onTap: () => setState(() {

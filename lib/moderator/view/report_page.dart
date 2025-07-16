@@ -328,7 +328,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   creatorBlocked: false, // Not available
                                 );
 
-                                final comment = ThunderComment(comment: commentView.comment, commentView: commentView);
+                                final comment = ThunderComment.fromLemmyCommentView(commentView.toJson());
 
                                 return Column(
                                   children: [

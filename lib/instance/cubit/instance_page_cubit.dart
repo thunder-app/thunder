@@ -108,7 +108,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         page: page ?? 1,
       );
 
-      List<ThunderComment> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv))];
+      List<ThunderComment> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))];
       List<ThunderComment> commentsFinal = [];
 
       // Create a temporary Account object to use for the request
@@ -116,8 +116,8 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       for (final comment in comments) {
         try {
-          final resolveObjectResponse = await LemmySearchRepository(account: account).resolve(query: comment.url);
-          final resolvedComment = ThunderComment(comment: resolveObjectResponse.comment!.comment, commentView: resolveObjectResponse.comment!);
+          final resolveObjectResponse = await LemmySearchRepository(account: account).resolve(query: comment.apId);
+          final resolvedComment = ThunderComment.fromLemmyCommentView(resolveObjectResponse.comment!.toJson());
           commentsFinal.add(resolvedComment);
         } catch (e) {
           // If we can't resolve it, we won't even add it

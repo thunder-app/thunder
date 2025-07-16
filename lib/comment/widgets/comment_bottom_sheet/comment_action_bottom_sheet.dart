@@ -120,7 +120,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
         ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
-          user: ThunderUser.fromLemmyUser(widget.comment.creator!.toJson()),
+          user: widget.comment.creator!,
           communityId: widget.comment.community!.id,
           isUserCommunityModerator: widget.comment.creatorIsModerator,
           isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,

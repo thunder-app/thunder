@@ -1,105 +1,239 @@
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/models/thunder_community.dart';
-
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
 
 class ThunderComment {
-  /// The Lemmy API model for the comment.
-  final Comment _comment;
+  /// The comment's ID
+  final int id;
 
-  /// The Lemmy API model for the comment view.
-  final CommentView? _commentView;
+  /// The comment's creator ID
+  final int creatorId;
 
-  ThunderComment({required Comment comment, CommentView? commentView})
-      : _comment = comment,
-        _commentView = commentView;
+  /// The comment's post ID
+  final int postId;
 
-  /// Creates a new instance of [ThunderComment] with the given fields replaced with the new values.
+  /// The comment's content
+  final String content;
+
+  /// Whether the comment is removed
+  final bool removed;
+
+  /// The comment's published date
+  final DateTime published;
+
+  /// The comment's updated date
+  final DateTime? updated;
+
+  /// Whether the comment is deleted
+  final bool deleted;
+
+  /// The comment's AP ID
+  final String apId;
+
+  /// Whether the comment is local
+  final bool local;
+
+  /// The comment's path
+  final String path;
+
+  /// Whether the comment is distinguished
+  final bool distinguished;
+
+  /// The comment's language ID
+  final int languageId;
+
+  /// The comment's creator
+  final ThunderUser? creator;
+
+  /// The comment's post
+  final ThunderPost? post;
+
+  /// The comment's community
+  final ThunderCommunity? community;
+
+  /// The comment's score
+  final int? score;
+
+  /// The comment's upvotes
+  final int? upvotes;
+
+  /// The comment's downvotes
+  final int? downvotes;
+
+  /// The comment's child count
+  final int? childCount;
+
+  /// Whether the creator of the comment is banned from the community
+  final bool? creatorBannedFromCommunity;
+
+  /// Whether the current user is banned from the community
+  final bool? bannedFromCommunity;
+
+  /// Whether the creator of the comment is a moderator
+  final bool? creatorIsModerator;
+
+  /// Whether the creator of the comment is an admin
+  final bool? creatorIsAdmin;
+
+  /// The comment's subscribed status
+  final SubscriptionStatus? subscribed;
+
+  /// Whether the comment is saved by the current user
+  final bool? saved;
+
+  /// Whether the creator of the comment is blocked
+  final bool? creatorBlocked;
+
+  /// The comment's vote status
+  final int? myVote;
+
+  ThunderComment({
+    required this.id,
+    required this.creatorId,
+    required this.postId,
+    required this.content,
+    required this.removed,
+    required this.published,
+    this.updated,
+    required this.deleted,
+    required this.apId,
+    required this.local,
+    required this.path,
+    required this.distinguished,
+    required this.languageId,
+    this.creator,
+    this.post,
+    this.community,
+    this.score,
+    this.upvotes,
+    this.downvotes,
+    this.childCount,
+    this.creatorBannedFromCommunity,
+    this.bannedFromCommunity,
+    this.creatorIsModerator,
+    this.creatorIsAdmin,
+    this.subscribed,
+    this.saved,
+    this.creatorBlocked,
+    this.myVote,
+  });
+
   ThunderComment copyWith({
-    Comment? comment,
-    CommentView? commentView,
+    int? id,
+    int? creatorId,
+    int? postId,
+    String? content,
+    bool? removed,
+    DateTime? published,
+    DateTime? updated,
+    bool? deleted,
+    String? apId,
+    bool? local,
+    String? path,
+    bool? distinguished,
+    int? languageId,
+    ThunderUser? creator,
+    ThunderPost? post,
+    ThunderCommunity? community,
+    int? score,
+    int? upvotes,
+    int? downvotes,
+    int? childCount,
+    bool? creatorBannedFromCommunity,
+    bool? bannedFromCommunity,
+    bool? creatorIsModerator,
+    bool? creatorIsAdmin,
+    SubscriptionStatus? subscribed,
+    bool? saved,
+    bool? creatorBlocked,
+    int? myVote,
   }) {
     return ThunderComment(
-      comment: comment ?? _comment,
-      commentView: commentView ?? _commentView,
+      id: id ?? this.id,
+      creatorId: creatorId ?? this.creatorId,
+      postId: postId ?? this.postId,
+      content: content ?? this.content,
+      removed: removed ?? this.removed,
+      published: published ?? this.published,
+      updated: updated ?? this.updated,
+      deleted: deleted ?? this.deleted,
+      apId: apId ?? this.apId,
+      local: local ?? this.local,
+      path: path ?? this.path,
+      distinguished: distinguished ?? this.distinguished,
+      languageId: languageId ?? this.languageId,
+      creator: creator ?? this.creator,
+      post: post ?? this.post,
+      community: community ?? this.community,
+      score: score ?? this.score,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+      childCount: childCount ?? this.childCount,
+      creatorBannedFromCommunity: creatorBannedFromCommunity ?? this.creatorBannedFromCommunity,
+      bannedFromCommunity: bannedFromCommunity ?? this.bannedFromCommunity,
+      creatorIsModerator: creatorIsModerator ?? this.creatorIsModerator,
+      creatorIsAdmin: creatorIsAdmin ?? this.creatorIsAdmin,
+      subscribed: subscribed ?? this.subscribed,
+      saved: saved ?? this.saved,
+      creatorBlocked: creatorBlocked ?? this.creatorBlocked,
+      myVote: myVote ?? this.myVote,
     );
   }
 
-  /// The internal comment model. ONLY use this in special cases where the raw model is required.
-  Comment get internalComment => _comment;
+  factory ThunderComment.fromLemmyComment(Map<String, dynamic> comment) {
+    return ThunderComment(
+      id: comment['id'],
+      creatorId: comment['creator_id'],
+      postId: comment['post_id'],
+      content: comment['content'],
+      removed: comment['removed'],
+      published: DateTime.parse(comment['published']),
+      updated: comment['updated'] != null ? DateTime.parse(comment['updated']) : null,
+      deleted: comment['deleted'],
+      apId: comment['ap_id'],
+      local: comment['local'],
+      path: comment['path'],
+      distinguished: comment['distinguished'],
+      languageId: comment['language_id'],
+    );
+  }
 
-  /// The internal comment view model. ONLY use this in special cases where the raw model is required.
-  CommentView? get internalCommentView => _commentView;
+  factory ThunderComment.fromLemmyCommentView(Map<String, dynamic> commentView) {
+    final comment = commentView['comment'];
+    final creator = commentView['creator'];
+    final post = commentView['post']; // TODO: Fix once we migrate to the new post model
+    final community = commentView['community'];
+    final counts = commentView['counts'];
 
-  /// The ID of the comment
-  int get id => _comment.id;
-
-  /// The ID of the post
-  int get postId => _comment.postId;
-
-  /// The ID of the comment creator
-  int? get creatorId => _commentView?.creator.id;
-
-  /// The ID of the post creator
-  int? get postCreatorId => _commentView?.post.creatorId;
-
-  /// The path that resolves to this comment
-  String get path => _comment.path;
-
-  /// The content of the comment
-  String get body => _comment.content;
-
-  /// The creator of the comment
-  Person? get creator => _commentView?.creator;
-
-  /// The date and time that the comment was published
-  DateTime get published => _comment.published;
-
-  /// The date and time that the comment was last updated
-  DateTime? get updated => _comment.updated;
-
-  /// The score of the comment (upvotes - downvotes)
-  int? get score => _commentView?.counts.score;
-
-  /// The number of upvotes on the comment
-  int? get upvotes => _commentView?.counts.upvotes;
-
-  /// The number of downvotes on the comment
-  int? get downvotes => _commentView?.counts.downvotes;
-
-  /// The vote status of the current user on this comment
-  int? get myVote => _commentView?.myVote;
-
-  /// Whether the comment is saved by the current user
-  bool? get saved => _commentView?.saved;
-
-  /// Whether the comment is removed
-  bool get removed => _comment.removed;
-
-  /// Whether the comment is deleted
-  bool get deleted => _comment.deleted;
-
-  /// The language ID of the comment
-  int get languageId => _comment.languageId;
-
-  /// The number of child comments
-  int? get childCount => _commentView?.counts.childCount;
-
-  /// Whether the creator of the comment is a moderator
-  bool get creatorIsModerator => _commentView?.creatorIsModerator ?? false;
-
-  /// Whether the creator of the comment is an admin
-  bool get creatorIsAdmin => _commentView?.creatorIsAdmin ?? false;
-
-  /// The URL of the comment
-  String get url => _comment.apId;
-
-  /// The community of the comment
-  ThunderCommunity? get community => _commentView?.community != null ? ThunderCommunity.fromLemmyCommunityView(_commentView!.community.toJson()) : null;
-
-  /// The post of the comment
-  ThunderPost? get post => _commentView?.post != null ? ThunderPost(_commentView!.post) : null;
-
-  /// Whether the creator of the comment is banned from the community
-  bool get creatorBannedFromCommunity => _commentView?.creatorBannedFromCommunity ?? false;
+    return ThunderComment(
+      id: comment['id'],
+      creatorId: comment['creator_id'],
+      postId: comment['post_id'],
+      content: comment['content'],
+      removed: comment['removed'],
+      published: DateTime.parse(comment['published']),
+      updated: comment['updated'] != null ? DateTime.parse(comment['updated']) : null,
+      deleted: comment['deleted'],
+      apId: comment['ap_id'],
+      local: comment['local'],
+      path: comment['path'],
+      distinguished: comment['distinguished'],
+      languageId: comment['language_id'],
+      creator: ThunderUser.fromLemmyUser(creator),
+      // post: ThunderPost.fromLemmyPost(post),
+      community: ThunderCommunity.fromLemmyCommunity(community),
+      score: counts['score'],
+      upvotes: counts['upvotes'],
+      downvotes: counts['downvotes'],
+      childCount: counts['child_count'],
+      creatorBannedFromCommunity: commentView['creator_banned_from_community'],
+      bannedFromCommunity: commentView['banned_from_community'],
+      creatorIsModerator: commentView['creator_is_moderator'],
+      creatorIsAdmin: commentView['creator_is_admin'],
+      subscribed: commentView['subscribed'],
+      saved: commentView['saved'],
+      creatorBlocked: commentView['creator_blocked'],
+      myVote: commentView['my_vote'],
+    );
+  }
 }

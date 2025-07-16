@@ -34,9 +34,9 @@ class CommentCardHeader extends StatelessWidget {
     final List<UserType> groups = [];
 
     if (comment.creator?.botAccount == true) groups.add(UserType.bot);
-    if (comment.creatorIsModerator) groups.add(UserType.moderator);
-    if (comment.creatorIsAdmin) groups.add(UserType.admin);
-    if (comment.postCreatorId == comment.creatorId) groups.add(UserType.op);
+    if (comment.creatorIsModerator == true) groups.add(UserType.moderator);
+    if (comment.creatorIsAdmin == true) groups.add(UserType.admin);
+    if (comment.post?.creator?.id == comment.creatorId) groups.add(UserType.op);
     if (comment.creatorId == accountId) groups.add(UserType.self);
 
     final now = DateTime.now();
@@ -78,8 +78,8 @@ class CommentCardHeader extends StatelessWidget {
                   spacing: 8.0,
                   children: [
                     UserChip(
-                      user: ThunderUser.fromLemmyUser(comment.creator!.toJson()),
-                      personAvatar: UserAvatar(user: ThunderUser.fromLemmyUser(comment.creator!.toJson()), radius: 10, thumbnailSize: 20, format: 'png'),
+                      user: comment.creator!,
+                      personAvatar: UserAvatar(user: comment.creator!, radius: 10, thumbnailSize: 20, format: 'png'),
                       userGroups: userGroups,
                       includeInstance: commentShowUserInstance,
                       ignorePointerEvents: hidden && collapseParentCommentOnGesture,

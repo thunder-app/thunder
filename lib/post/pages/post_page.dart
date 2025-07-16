@@ -188,7 +188,7 @@ class _PostPageState extends State<PostPage> {
 
               for (int index = 0; index < comments.length; index++) {
                 final comment = comments[index];
-                if (comment.comment?.body.contains(RegExp(value!, caseSensitive: false)) == true) {
+                if (comment.comment?.content.contains(RegExp(value!, caseSensitive: false)) == true) {
                   commentSearchResults[index] = comment.comment!.id;
                 }
               }

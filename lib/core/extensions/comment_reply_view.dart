@@ -17,6 +17,6 @@ extension CommentReplyViewExtension on CommentReplyView {
       myVote: myVote as int?,
     );
 
-    return ThunderComment(comment: comment, commentView: commentView);
+    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }

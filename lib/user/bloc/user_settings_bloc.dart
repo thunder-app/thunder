@@ -341,7 +341,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         type: SearchType.comments,
       ))
           .comments
-          .map((cv) => ThunderComment(comment: cv.comment, commentView: cv))
+          .map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))
           .toList();
 
       return emit(state.copyWith(

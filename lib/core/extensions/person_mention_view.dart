@@ -16,6 +16,6 @@ extension PersonMentionViewExtension on PersonMentionView {
       creatorBlocked: creatorBlocked,
     );
 
-    return ThunderComment(comment: comment, commentView: commentView);
+    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }

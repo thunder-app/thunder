@@ -186,7 +186,7 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
         reason: event.modRemoveComment.reason,
         user: event.commenter != null ? ThunderUser.fromLemmyUser(event.commenter.toJson()) : null,
         post: ThunderPost(event.post),
-        comment: ThunderComment(comment: event.comment),
+        comment: ThunderComment.fromLemmyComment(event.comment.toJson()),
         community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
         actioned: event.modRemoveComment.removed,
       );

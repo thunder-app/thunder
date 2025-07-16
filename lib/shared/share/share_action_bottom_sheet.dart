@@ -108,7 +108,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.url)));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.apId)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
         SharePlus.instance.share(ShareParams(uri: Uri.parse(generateCommentUrl(comment!.id))));
@@ -140,7 +140,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        return comment!.url;
+        return comment!.apId;
       case ShareBottomSheetAction.shareCommentLocal:
         return generateCommentUrl(comment!.id);
       case ShareBottomSheetAction.sharePost:
@@ -167,7 +167,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       userActions = [ShareBottomSheetAction.shareComment, ShareBottomSheetAction.shareCommentLocal];
 
       // Remove the share local option if it is the same as the original
-      if (widget.comment!.url == generateCommentUrl(widget.comment!.id)) {
+      if (widget.comment!.apId == generateCommentUrl(widget.comment!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareCommentLocal);
       }
     } else if (widget.post != null) {

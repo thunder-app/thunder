@@ -85,7 +85,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
         Navigator.of(context).pop();
-        showSelectableTextModal(context, text: comment.body);
+        showSelectableTextModal(context, text: comment.content);
         return;
       case CommentBottomSheetAction.viewCommentSource:
       case CommentBottomSheetAction.viewCommentMarkdown:

@@ -166,7 +166,7 @@ Future<void> temporarilySwitchAccount(
           resolvedComment = response.comment;
 
           if (resolvedComment != null) {
-            final comment = ThunderComment(comment: resolvedComment.comment, commentView: resolvedComment);
+            final comment = ThunderComment.fromLemmyCommentView(resolvedComment.toJson());
             onParentCommentChanged(comment);
           }
         } catch (e) {

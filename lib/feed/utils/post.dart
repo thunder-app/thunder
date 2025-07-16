@@ -118,7 +118,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts);
       posts.addAll(formattedPosts);
 
-      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment(comment: commentView.comment, commentView: commentView)));
+      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment.fromLemmyCommentView(commentView.toJson())));
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
