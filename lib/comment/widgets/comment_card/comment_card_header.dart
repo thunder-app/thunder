@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';

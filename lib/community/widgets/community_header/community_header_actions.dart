@@ -17,6 +17,7 @@ import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';

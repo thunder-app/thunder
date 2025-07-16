@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a comment repository

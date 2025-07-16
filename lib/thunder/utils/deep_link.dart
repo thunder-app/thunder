@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 
-import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/feed/view/feed_page.dart';

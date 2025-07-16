@@ -1,7 +1,7 @@
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/media.dart';
-import 'package:thunder/core/models/thunder_user.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 
 class ThunderPost {
   /// The post's ID
@@ -341,7 +341,7 @@ class ThunderPost {
       upvotes: counts['upvotes'],
       downvotes: counts['downvotes'],
       newestCommentTime: counts['newest_comment_time'] != null ? DateTime.parse(counts['newest_comment_time']) : null,
-      subscribed: postView['subscribed'] != null ? SubscriptionStatusMapping.fromLemmyType(postView['subscribed']) : null,
+      subscribed: postView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postView['subscribed']) : null,
       saved: postView['saved'],
       read: postView['read'],
       hidden: postView['hidden'],

@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' as lemmy;
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Model representing a page of modlog events

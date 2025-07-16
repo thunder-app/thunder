@@ -23,7 +23,7 @@ import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/drafts/draft_type.dart';
@@ -37,6 +37,7 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
@@ -669,7 +670,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                               customTapActions: {
                                 MarkdownType.username: () {
-                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (user) {
+                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (ThunderUser user) {
                                     _bodyTextController.text = _bodyTextController.text.replaceRange(
                                       _bodyTextController.selection.end,
                                       _bodyTextController.selection.end,

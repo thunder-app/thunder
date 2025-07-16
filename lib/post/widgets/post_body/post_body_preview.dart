@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/thunder.dart';

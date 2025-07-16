@@ -1,6 +1,7 @@
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 
 class ThunderComment {
   /// The comment's ID
@@ -230,7 +231,7 @@ class ThunderComment {
       bannedFromCommunity: commentView['banned_from_community'],
       creatorIsModerator: commentView['creator_is_moderator'],
       creatorIsAdmin: commentView['creator_is_admin'],
-      subscribed: commentView['subscribed'],
+      subscribed: commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null,
       saved: commentView['saved'],
       creatorBlocked: commentView['creator_blocked'],
       myVote: commentView['my_vote'],

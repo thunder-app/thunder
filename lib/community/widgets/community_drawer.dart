@@ -186,7 +186,7 @@ class UserDrawerItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  isLoggedIn ? profileState.account.instance ?? '' : anonymousInstance ?? '',
+                  isLoggedIn ? profileState.account.instance : anonymousInstance ?? '',
                   style: theme.textTheme.bodyMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

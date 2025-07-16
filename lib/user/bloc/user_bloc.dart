@@ -8,8 +8,8 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 

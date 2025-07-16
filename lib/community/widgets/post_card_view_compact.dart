@@ -6,11 +6,12 @@ import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_card_title.dart';
 import 'package:thunder/shared/media/compact_thumbnail_preview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 
 /// Displays a compact view of a post card. This view is used in the feed related pages.
 class PostCardViewCompact extends StatelessWidget {

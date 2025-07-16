@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/post/post.dart';
@@ -13,6 +12,7 @@ import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/global_context.dart';

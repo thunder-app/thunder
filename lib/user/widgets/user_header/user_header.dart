@@ -5,11 +5,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_header/user_header_actions.dart';
 import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/instance.dart';

@@ -7,6 +7,7 @@ import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';

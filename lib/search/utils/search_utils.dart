@@ -1,8 +1,10 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 
 /// Checks whether there are any results for the current given [searchType] in the [searchState] or the given [searchResponse].

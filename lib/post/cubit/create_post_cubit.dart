@@ -4,7 +4,7 @@ import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';

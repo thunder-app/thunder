@@ -1,9 +1,13 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 
 enum SubscriptionStatus {
-  subscribed,
-  notSubscribed,
-  pending,
+  subscribed('Subscribed'),
+  notSubscribed('NotSubscribed'),
+  pending('Pending');
+
+  final String name;
+
+  const SubscriptionStatus(this.name);
 }
 
 extension SubscriptionStatusMapping on SubscriptionStatus {

@@ -9,6 +9,7 @@ import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a community repository

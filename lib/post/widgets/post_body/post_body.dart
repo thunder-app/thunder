@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_body/post_body_action_bar.dart';
 import 'package:thunder/post/widgets/post_body/post_body_metadata.dart';
 import 'package:thunder/post/widgets/post_body/post_body_title.dart';

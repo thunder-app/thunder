@@ -10,8 +10,8 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/image_preview.dart';
 

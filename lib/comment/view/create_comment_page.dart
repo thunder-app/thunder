@@ -12,10 +12,11 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -24,6 +25,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
@@ -348,7 +350,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
                                       postActorId: widget.post?.apId,
-                                      onPostChanged: (post) => postId = post.id,
+                                      onPostChanged: (ThunderPost post) => postId = post.id,
                                       parentCommentActorId: widget.parentComment?.apId,
                                       onParentCommentChanged: (ThunderComment parentComment) {
                                         postId = parentComment.postId;
@@ -433,7 +435,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   ],
                                   customTapActions: {
                                     MarkdownType.username: () {
-                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (user) {
+                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (ThunderUser user) {
                                         _bodyTextController.text = _bodyTextController.text.replaceRange(
                                           _bodyTextController.selection.end,
                                           _bodyTextController.selection.end,

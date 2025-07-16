@@ -6,8 +6,8 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/community/models/thunder_community.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';

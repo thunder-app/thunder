@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 

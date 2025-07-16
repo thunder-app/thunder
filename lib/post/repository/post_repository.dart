@@ -8,7 +8,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/utils/global_context.dart';
 

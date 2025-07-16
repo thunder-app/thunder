@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -12,7 +13,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';

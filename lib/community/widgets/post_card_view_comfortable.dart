@@ -6,8 +6,8 @@ import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';

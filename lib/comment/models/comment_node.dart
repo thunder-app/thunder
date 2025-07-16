@@ -1,4 +1,4 @@
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
 /// A node representing a single comment. This node can be part of a [CommentNode] tree.
 ///

@@ -1,5 +1,5 @@
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
