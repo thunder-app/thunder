@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';

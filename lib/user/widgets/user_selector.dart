@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -103,7 +104,7 @@ Future<void> temporarilySwitchAccount(
 }) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  final Account? originalUser = context.read<ProfileBloc>().state.account;
+  final Account originalUser = context.read<ProfileBloc>().state.account;
 
   await showProfileModalSheet(
     context,
@@ -118,7 +119,7 @@ Future<void> temporarilySwitchAccount(
   if (context.mounted) {
     Account? newUser = context.read<ProfileBloc>().state.account;
 
-    if (originalUser != null && newUser != null && originalUser.id != newUser.id) {
+    if (originalUser.id != newUser.id) {
       // The user changed. Reload the widget.
       setState?.call(() {});
       onUserChanged?.call();
@@ -129,7 +130,7 @@ Future<void> temporarilySwitchAccount(
           final response = await LemmySearchRepository(account: newUser).resolve(query: communityActorId!);
 
           if (response.community != null) {
-            final community = ThunderCommunity(response.community!.community, communityView: response.community);
+            final community = ThunderCommunity.fromLemmyCommunityView(response.community!.toJson());
             onCommunityChanged(community);
           }
         } catch (e) {

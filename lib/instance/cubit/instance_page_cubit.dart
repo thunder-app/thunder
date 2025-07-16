@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
@@ -40,7 +41,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       emit(state.copyWith(
         status: searchResponse.communities.isEmpty || searchResponse.communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv))],
+        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson()))],
         page: page ?? 1,
       ));
     } catch (e) {

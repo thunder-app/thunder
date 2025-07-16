@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -98,13 +99,13 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
 
     // final account = authState.getSiteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.url).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
     final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
 
-    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.url).isNotEmpty;
+    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.actorId).isNotEmpty;
     final isSubscribedToCommunity = widget.post.subscribed != SubscriptionStatus.notSubscribed;
 
     if (!isLoggedIn) {

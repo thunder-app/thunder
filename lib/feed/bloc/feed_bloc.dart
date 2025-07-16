@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';

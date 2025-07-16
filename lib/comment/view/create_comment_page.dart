@@ -13,6 +13,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
@@ -441,11 +442,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       });
                                     },
                                     MarkdownType.community: () {
-                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
+                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (ThunderCommunity community) {
                                         _bodyTextController.text = _bodyTextController.text.replaceRange(
                                           _bodyTextController.selection.end,
                                           _bodyTextController.selection.end,
-                                          '!${community.name}@${fetchInstanceNameFromUrl(community.url)}',
+                                          '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}',
                                         );
                                       });
                                     },

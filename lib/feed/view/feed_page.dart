@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -386,7 +387,7 @@ class _FeedViewState extends State<FeedView> {
                             SliverToBoxAdapter(
                               child: UserHeader(
                                 user: ThunderUser(state.fullPersonView!.personView.person, userView: state.fullPersonView!.personView),
-                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity(e.community)).toList(),
+                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity.fromLemmyCommunity(e.community.toJson())).toList(),
                                 feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
                                 onChangeFeedType: (feedType) {
                                   setState(() {

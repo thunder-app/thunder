@@ -91,7 +91,7 @@ class _CommentReferenceState extends State<CommentReference> {
 
     return Semantics(
       label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.title)}\n
-          ${fetchInstanceNameFromUrl(widget.comment.community!.url)}\n
+          ${fetchInstanceNameFromUrl(widget.comment.community!.actorId)}\n
           ${widget.comment.creator!.name}\n
           ${widget.comment.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.upvotes!))}\n
           ${widget.comment.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.downvotes!))}\n
@@ -154,7 +154,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   context,
                                   widget.comment.community?.name,
                                   widget.comment.community?.title,
-                                  fetchInstanceNameFromUrl(widget.comment.community?.url),
+                                  fetchInstanceNameFromUrl(widget.comment.community?.actorId),
                                   fontScale: state.contentFontSizeScale,
                                   transformColor: (color) => color?.withValues(alpha: 0.75),
                                 ),

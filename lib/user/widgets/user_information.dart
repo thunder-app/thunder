@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -193,7 +194,7 @@ class UserModeratorList extends StatelessWidget {
                         context,
                         community.name,
                         community.title,
-                        fetchInstanceNameFromUrl(community.url),
+                        fetchInstanceNameFromUrl(community.actorId),
                         textStyle: const TextStyle(fontSize: 13.0),
                         transformColor: (color) => color?.withValues(alpha: 0.6),
                         useDisplayName: false, // Override because we're showing display name above

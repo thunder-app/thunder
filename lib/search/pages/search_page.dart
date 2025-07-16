@@ -10,6 +10,7 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -398,7 +399,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                             context,
                                             community.name,
                                             community.title,
-                                            fetchInstanceNameFromUrl(community.url),
+                                            fetchInstanceNameFromUrl(community.actorId),
                                           );
                                         });
                                         _doSearch();

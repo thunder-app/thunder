@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-import 'package:thunder/core/models/models.dart';
 
 /// A community avatar. Displays the associated community icon if available.
 ///
@@ -68,7 +67,7 @@ class CommunityAvatar extends StatelessWidget {
         return Stack(
           children: [
             CircleAvatar(backgroundColor: Colors.transparent, foregroundImage: imageProvider, maxRadius: radius),
-            if (community.locked && showCommunityStatus)
+            if (community.postingRestrictedToMods && showCommunityStatus)
               Positioned(
                 bottom: -2.0,
                 right: -2.0,

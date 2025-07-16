@@ -1,12 +1,13 @@
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 
 /// Checks whether there are any results for the current given [searchType] in the [searchState] or the given [searchResponse].
 bool searchIsEmpty(MetaSearchType searchType, {SearchState? searchState, SearchResponse? searchResponse}) {
-  final List<ThunderCommunity>? communities = searchState?.communities ?? searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+  final List<ThunderCommunity>? communities = searchState?.communities ?? searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
   final List<ThunderComment>? comments = searchState?.comments ?? searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
   final List<ThunderPost>? posts = searchState?.posts?.map((post) => post).toList() ?? searchResponse?.posts.map((pv) => ThunderPost(pv.post, postView: pv)).toList();

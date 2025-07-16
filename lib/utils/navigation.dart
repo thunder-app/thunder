@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType, CommentSortType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';

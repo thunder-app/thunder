@@ -58,7 +58,7 @@ class FeedFAB extends StatelessWidget {
     if (profileState.isLoggedIn && isCommunityFeed) {
       final community = feedState.community;
 
-      if (community!.locked && !profileState.moderates.any((c) => c.id == community.id)) {
+      if (community!.postingRestrictedToMods && !profileState.moderates.any((c) => c.id == community.id)) {
         isPostLocked = true;
       }
     }

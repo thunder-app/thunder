@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -187,7 +188,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList(), event.favoriteCommunities),
+        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
         comments: searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList(),
         posts: await parsePosts(searchResponse?.posts ?? []),
@@ -237,7 +238,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)) ?? []];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
           state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)) ?? []];
           state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts ?? [])];

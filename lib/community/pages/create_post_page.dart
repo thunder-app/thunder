@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -448,7 +449,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             const SizedBox(height: 4.0),
                             UserSelector(
                               profileModalHeading: l10n.selectAccountToPostAs,
-                              communityActorId: community?.url,
+                              communityActorId: community?.actorId,
                               onCommunityChanged: (community) {
                                 if (community == null) showSnackbar(l10n.unableToFindCommunityOnInstance);
 
@@ -679,7 +680,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
                                     _bodyTextController.text = _bodyTextController.text
-                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.url)}');
+                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
                                   });
                                 },
                               },
@@ -875,7 +876,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                               context,
                               widget.community!.name,
                               widget.community!.title,
-                              fetchInstanceNameFromUrl(widget.community!.url),
+                              fetchInstanceNameFromUrl(widget.community!.actorId),
                               // Override, because we have the display name right above
                               useDisplayName: false,
                             )

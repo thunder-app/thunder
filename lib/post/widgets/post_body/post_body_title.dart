@@ -211,7 +211,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
           communityAvatar: CommunityAvatar(community: community, radius: 8, thumbnailSize: 20, format: 'png'),
           communityName: community.name,
           communityTitle: community.title,
-          communityUrl: community.url,
+          communityUrl: community.actorId,
           includeInstance: postBodyShowCommunityInstance,
         )
       ],

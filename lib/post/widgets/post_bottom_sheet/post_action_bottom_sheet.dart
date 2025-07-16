@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
@@ -84,14 +85,14 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   String? generateSubtitle(GeneralPostAction page) {
     ThunderPost post = widget.post;
 
-    String? communityInstance = fetchInstanceNameFromUrl(post.community?.url);
+    String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
     String? userInstance = fetchInstanceNameFromUrl(post.creator?.url);
 
     switch (page) {
       case GeneralPostAction.user:
         return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.url));
       case GeneralPostAction.community:
-        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.url));
+        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
       case GeneralPostAction.instance:
         return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
       default:
@@ -139,7 +140,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           userInstanceId: widget.post.creator?.instanceId,
           userInstanceUrl: widget.post.creator?.url,
           communityInstanceId: widget.post.community?.instanceId,
-          communityInstanceUrl: widget.post.community?.url,
+          communityInstanceUrl: widget.post.community?.actorId,
           onAction: () {},
         ),
       GeneralPostAction.share => ShareActionBottomSheet(

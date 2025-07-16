@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/community/widgets/community_header/community_header_actions.dart';
 import 'package:thunder/community/widgets/community_information.dart';
@@ -129,7 +130,7 @@ class _CommunityInfo extends StatelessWidget {
           context,
           community.name,
           community.title,
-          fetchInstanceNameFromUrl(community.url),
+          fetchInstanceNameFromUrl(community.actorId),
           useDisplayName: false, // Override because we're showing title above
         ),
         const SizedBox(height: 8.0),
@@ -159,7 +160,7 @@ class _CommunityStats extends StatelessWidget {
         ),
         IconText(
           icon: Icon(Icons.library_books_rounded, size: iconSize),
-          text: formatNumberToK(community.totalPosts ?? 0),
+          text: formatNumberToK(community.posts ?? 0),
         ),
       ],
     );

@@ -8,6 +8,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
@@ -229,7 +230,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                               showMedia: false,
                                               post: ThunderPost(postView.post, postView: postView, media: [Media(mediaType: MediaType.text)]),
                                               creator: ThunderUser(postView.creator),
-                                              community: ThunderCommunity(postView.community),
+                                              community: ThunderCommunity.fromLemmyCommunity(postView.community.toJson()),
                                               isLastTapped: false,
                                             ),
                                           ),

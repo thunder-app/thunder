@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/media_type.dart';

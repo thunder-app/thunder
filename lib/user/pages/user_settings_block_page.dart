@@ -5,6 +5,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/utils/constants.dart';
@@ -110,7 +111,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: CommunityAvatar(community: ThunderCommunity(community), radius: 16.0),
+          leading: CommunityAvatar(community: ThunderCommunity.fromLemmyCommunity(community.toJson()), radius: 16.0),
           trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),

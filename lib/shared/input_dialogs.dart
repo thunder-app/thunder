@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -185,7 +186,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
     }
   }
 
-  final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+  final communities = response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   return prioritizeFavorites(communities, favorites) ?? [];
 }
 
@@ -199,7 +200,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
       context,
       payload.name,
       payload.title,
-      fetchInstanceNameFromUrl(payload.url),
+      fetchInstanceNameFromUrl(payload.actorId),
     ),
     preferBelow: false,
     child: InkWell(
@@ -220,7 +221,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   context,
                   payload.name,
                   payload.title,
-                  fetchInstanceNameFromUrl(payload.url),
+                  fetchInstanceNameFromUrl(payload.actorId),
                   // Override because we're showing display name above
                   useDisplayName: false,
                 ),
@@ -235,6 +236,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                       SubscriptionStatus.pending => l10n.pending,
                       SubscriptionStatus.subscribed => l10n.subscribed,
                       SubscriptionStatus.notSubscribed => '',
+                      _ => '',
                     }}'),
                   ],
                   if (_getFavoriteStatus(context, payload)) ...const [

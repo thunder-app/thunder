@@ -1,4 +1,5 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/core/models/models.dart';
 
@@ -94,7 +95,7 @@ class ThunderComment {
   String get url => _comment.apId;
 
   /// The community of the comment
-  ThunderCommunity? get community => _commentView?.community != null ? ThunderCommunity(_commentView!.community) : null;
+  ThunderCommunity? get community => _commentView?.community != null ? ThunderCommunity.fromLemmyCommunityView(_commentView!.community.toJson()) : null;
 
   /// The post of the comment
   ThunderPost? get post => _commentView?.post != null ? ThunderPost(_commentView!.post) : null;

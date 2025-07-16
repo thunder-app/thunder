@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -585,7 +586,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
               CommunityPostCardMetadata(
                 communityName: community.name,
                 displayName: community.title,
-                actorId: community.url,
+                actorId: community.actorId,
                 subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
                 dim: dim,
               ),
@@ -601,7 +602,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
           CommunityPostCardMetadata(
             communityName: community.name,
             displayName: community.title,
-            actorId: community.url,
+            actorId: community.actorId,
             subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
             dim: dim,
           )

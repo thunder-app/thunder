@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -11,7 +12,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -85,7 +85,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   ),
                   if (subscriptions.isNotEmpty)
                     ...subscriptions.map(
-                      (community) {
+                      (ThunderCommunity community) {
                         final bool isCommunitySelected = feedState.communityId == community.id;
 
                         return Padding(
@@ -107,7 +107,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       feedType: FeedType.community,
                                       postSortType: postSortType,
                                       communityId: isLoggedIn ? community.id : null,
-                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.url) : null,
+                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
                                     ),
@@ -496,7 +496,7 @@ class CommunityItem extends StatelessWidget {
               context,
               community.name,
               community.title,
-              fetchInstanceNameFromUrl(community.url),
+              fetchInstanceNameFromUrl(community.actorId),
             )}',
             preferBelow: false,
             child: Column(
@@ -509,7 +509,7 @@ class CommunityItem extends StatelessWidget {
                   maxLines: 1,
                 ),
                 Text(
-                  fetchInstanceNameFromUrl(community.url) ?? '',
+                  fetchInstanceNameFromUrl(community.actorId) ?? '',
                   style: theme.textTheme.bodyMedium,
                   overflow: TextOverflow.ellipsis,
                 ),

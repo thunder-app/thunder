@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/models/models.dart';
@@ -80,16 +81,16 @@ class CommunityStatsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (community.local != null) ...[
+        ...[
           SidebarStat(
-            icon: community.local! ? Icons.house_rounded : Icons.language_rounded,
-            value: l10n.visibility(community.local! ? CommunityVisibility.localOnly : CommunityVisibility.public),
+            icon: community.local ? Icons.house_rounded : Icons.language_rounded,
+            value: l10n.visibility(community.local ? CommunityVisibility.localOnly : CommunityVisibility.public),
           ),
           const SizedBox(height: 8.0),
         ],
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.created(DateFormat.yMMMMd().format(community.created))} · ${l10n.ago(formatTimeToString(dateTime: community.created.toIso8601String()))}',
+          value: '${l10n.created(DateFormat.yMMMMd().format(community.published))} · ${l10n.ago(formatTimeToString(dateTime: community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
@@ -103,11 +104,11 @@ class CommunityStatsList extends StatelessWidget {
           ),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.totalPosts)),
+          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.totalComments)),
+          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.comments)),
         ),
         const SizedBox(height: 8.0),
         SidebarStat(

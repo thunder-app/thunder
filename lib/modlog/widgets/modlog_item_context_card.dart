@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
@@ -125,7 +126,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         context,
                         community?.name,
                         community?.title,
-                        fetchInstanceNameFromUrl(community?.url),
+                        fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
                         transformColor: (color) => color?.withValues(alpha: 0.75),
                       ),
@@ -281,7 +282,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             context,
                             widget.community?.name,
                             widget.community?.title,
-                            fetchInstanceNameFromUrl(widget.community?.url),
+                            fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: textStyleCommunityAndAuthor,
                           ),
@@ -399,7 +400,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       context,
                       community?.name,
                       community?.title,
-                      fetchInstanceNameFromUrl(community?.url),
+                      fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/localizations/app_localizations.dart';
 

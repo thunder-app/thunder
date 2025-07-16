@@ -7,7 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/thunder_community.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/utils/global_context.dart';
 
 //// Interface for an account repository
@@ -72,7 +72,7 @@ class LemmyAccountRepository implements AccountRepository {
       type: FeedListType.subscribed.toLemmyType(),
     ));
 
-    return response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+    return response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   }
 
   @override
