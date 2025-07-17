@@ -147,7 +147,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       } else {
         searchResponse = await searchRepository.search(
           query: event.query,
-          type: event.searchType.searchType,
+          type: event.searchType,
           sort: event.postSortType,
           listingType: event.feedListType,
           limit: 15,
@@ -225,7 +225,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           } else {
             searchResponse = await searchRepository.search(
               query: event.query,
-              type: event.searchType.searchType,
+              type: event.searchType,
               sort: event.postSortType,
               listingType: event.feedListType,
               limit: 15,

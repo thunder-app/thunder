@@ -6,6 +6,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -33,7 +34,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.communities,
+        type: MetaSearchType.communities,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -56,7 +57,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.users,
+        type: MetaSearchType.users,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -79,7 +80,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.posts,
+        type: MetaSearchType.posts,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -102,7 +103,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.comments,
+        type: MetaSearchType.comments,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,

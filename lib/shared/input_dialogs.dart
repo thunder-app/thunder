@@ -10,6 +10,7 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -75,7 +76,7 @@ Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query)
   final account = context.read<ProfileBloc>().state.account;
   final response = await LemmySearchRepository(account: account).search(
     query: query,
-    type: SearchType.users,
+    type: MetaSearchType.users,
     limit: 20,
   );
 
@@ -172,7 +173,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
   final account = context.read<ProfileBloc>().state.account;
   final response = await LemmySearchRepository(account: account).search(
     query: query,
-    type: SearchType.communities,
+    type: MetaSearchType.communities,
     limit: 20,
     sort: PostSortType.topAll,
   );

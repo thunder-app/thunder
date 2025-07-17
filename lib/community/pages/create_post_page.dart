@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -765,7 +766,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         // Fetch cross-posts
         searchResponse = await LemmySearchRepository(account: account).search(
           query: url,
-          type: SearchType.url,
+          type: MetaSearchType.url,
           sort: PostSortType.topAll,
           listingType: FeedListType.all,
           limit: 20,

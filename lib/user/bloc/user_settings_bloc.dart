@@ -10,6 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/repository/account_repository.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -331,15 +332,15 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
       String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 
-      List<PostView> posts = (await searchRepository.search(query: url, type: SearchType.posts)).posts.toList();
-      List<PostView> postsByUrl = (await searchRepository.search(query: url, type: SearchType.url)).posts.toList();
+      List<PostView> posts = (await searchRepository.search(query: url, type: MetaSearchType.posts)).posts.toList();
+      List<PostView> postsByUrl = (await searchRepository.search(query: url, type: MetaSearchType.url)).posts.toList();
 
       // De-dup posts found by body and URL
       posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
 
       List<ThunderComment> comments = (await searchRepository.search(
         query: url,
-        type: SearchType.comments,
+        type: MetaSearchType.comments,
       ))
           .comments
           .map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))
