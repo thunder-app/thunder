@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -594,7 +595,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
                                   child: LanguageSelector(
                                     languageId: languageId,
-                                    onLanguageSelected: (Language? language) {
+                                    onLanguageSelected: (ThunderLanguage? language) {
                                       setState(() => languageId = language?.id);
                                     },
                                   ),

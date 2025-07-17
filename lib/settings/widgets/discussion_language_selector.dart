@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/core/models/thunder_language.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
@@ -17,14 +17,14 @@ class DiscussionLanguageSelector extends StatefulWidget {
 }
 
 class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
-  List<Language> _languages = [];
+  List<ThunderLanguage> _languages = [];
 
   @override
   void initState() {
     super.initState();
 
     final state = context.read<UserSettingsBloc>().state;
-    setState(() => _languages = state.getSiteResponse?.allLanguages ?? []);
+    setState(() => _languages = state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? []);
   }
 
   @override
@@ -44,7 +44,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
               title: l10n.addDiscussionLanguage,
               excludedLanguageIds: [-1],
               onLanguageSelected: (language) {
-                List<Language> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
+                List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
                 context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
               },
             ),

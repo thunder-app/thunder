@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -497,7 +497,8 @@ class LanguagePostCardMetaData extends StatelessWidget {
     if (languageId == -1) {
       languageName = 'English';
     } else if (languageId != null) {
-      final languages = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.allLanguages ?? <Language>[]);
+      final languages =
+          context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? <ThunderLanguage>[]);
       final language = languages.firstWhereOrNull((language) => language.id == languageId);
       languageName = language?.name;
     }

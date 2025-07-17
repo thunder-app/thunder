@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/models/thunder_post.dart';
@@ -365,7 +365,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                     child: LanguageSelector(
                                       languageId: languageId,
-                                      onLanguageSelected: (Language? language) {
+                                      onLanguageSelected: (ThunderLanguage? language) {
                                         setState(() => languageId = language?.id);
                                       },
                                     ),

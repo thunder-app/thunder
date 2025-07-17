@@ -11,6 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -342,11 +343,14 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 
 /// Shows a dialog which allows typing/search for an language
 void showLanguageInputDialog(BuildContext context,
-    {required String title, required void Function(Language) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<Language>? emptySuggestions}) async {
+    {required String title, required void Function(ThunderLanguage) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<ThunderLanguage>? emptySuggestions}) async {
   ProfileState state = context.read<ProfileBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];
+  List<ThunderLanguage> languages = [
+    ThunderLanguage(id: -1, code: '', name: l10n.noLanguage),
+    ...(state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? [])
+  ];
   languages = languages.where((language) {
     if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
       return !excludedLanguageIds.contains(language.id);
@@ -354,12 +358,12 @@ void showLanguageInputDialog(BuildContext context,
     return true;
   }).toList();
 
-  Future<String?> onSubmitted({Language? payload, String? value}) async {
+  Future<String?> onSubmitted({ThunderLanguage? payload, String? value}) async {
     if (payload != null) {
       onLanguageSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final Language? language = languages.firstWhereOrNull((Language language) => language.name.toLowerCase().contains(value.toLowerCase()));
+      final ThunderLanguage? language = languages.firstWhereOrNull((ThunderLanguage language) => language.name.toLowerCase().contains(value.toLowerCase()));
 
       if (language != null) {
         onLanguageSelected(language);
@@ -373,7 +377,7 @@ void showLanguageInputDialog(BuildContext context,
   }
 
   if (context.mounted) {
-    showInputDialog<Language>(
+    showInputDialog<ThunderLanguage>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
@@ -384,10 +388,10 @@ void showLanguageInputDialog(BuildContext context,
   }
 }
 
-Future<List<Language>> getLanguageSuggestions(BuildContext context, String query, List<Language>? emptySuggestions) async {
+Future<List<ThunderLanguage>> getLanguageSuggestions(BuildContext context, String query, List<ThunderLanguage>? emptySuggestions) async {
   final Locale currentLocale = Localizations.localeOf(context);
 
-  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  final ThunderLanguage? currentLanguage = emptySuggestions?.firstWhereOrNull((ThunderLanguage l) => l.code == currentLocale.languageCode);
   if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
     emptySuggestions = emptySuggestions?.toList()
       ?..remove(currentLanguage)
@@ -398,11 +402,11 @@ Future<List<Language>> getLanguageSuggestions(BuildContext context, String query
     return emptySuggestions ?? [];
   }
 
-  List<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  List<ThunderLanguage> filteredLanguages = emptySuggestions?.where((ThunderLanguage language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
   return filteredLanguages;
 }
 
-Widget buildLanguageSuggestionWidget(Language payload, {void Function(Language)? onSelected, BuildContext? context}) {
+Widget buildLanguageSuggestionWidget(ThunderLanguage payload, {void Function(ThunderLanguage)? onSelected, BuildContext? context}) {
   return Tooltip(
     message: payload.name,
     preferBelow: false,
