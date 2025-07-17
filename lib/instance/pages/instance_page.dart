@@ -309,7 +309,7 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: ThunderInstance(widget.getSiteResponse.siteView.site)),
+                                child: InstanceView(site: ThunderSite.fromLemmySiteView(widget.getSiteResponse.siteView.toJson())),
                               ),
                             ),
                           ),

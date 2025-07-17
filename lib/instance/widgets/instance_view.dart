@@ -6,7 +6,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 
 class InstanceView extends StatelessWidget {
-  final ThunderInstance site;
+  final ThunderSite site;
 
   const InstanceView({super.key, required this.site});
 

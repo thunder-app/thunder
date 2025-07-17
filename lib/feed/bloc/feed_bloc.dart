@@ -513,7 +513,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent(softReset: event.feedType == FeedType.account));
 
       ThunderCommunity? community;
-      ThunderInstance? communityInstance;
+      ThunderSite? communityInstance;
       List<ThunderUser> communityModerators = [];
 
       GetPersonDetailsResponse? fullPersonView;

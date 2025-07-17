@@ -23,7 +23,7 @@ class CommunityInformation extends StatelessWidget {
   final ThunderCommunity community;
 
   /// The instance that the community is hosted on
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// The moderators of the community
   final List<ThunderUser> moderators;

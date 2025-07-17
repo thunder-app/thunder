@@ -61,7 +61,7 @@ final class FeedState extends Equatable {
   final ThunderCommunity? community;
 
   /// The community instance information if applicable
-  final ThunderInstance? communityInstance;
+  final ThunderSite? communityInstance;
 
   /// The community moderators if applicable
   final List<ThunderUser> communityModerators;
@@ -124,7 +124,7 @@ final class FeedState extends Equatable {
     FeedListType? feedListType,
     PostSortType? postSortType,
     ThunderCommunity? community,
-    ThunderInstance? communityInstance,
+    ThunderSite? communityInstance,
     List<ThunderUser>? communityModerators,
     GetPersonDetailsResponse? fullPersonView,
     int? communityId,

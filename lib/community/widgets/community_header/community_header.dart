@@ -24,7 +24,7 @@ class CommunityHeader extends StatefulWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;

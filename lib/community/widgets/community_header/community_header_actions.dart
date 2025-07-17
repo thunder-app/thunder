@@ -28,7 +28,7 @@ class CommunityHeaderActions extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -57,7 +57,7 @@ class _CommunityActionsContent extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -106,7 +106,7 @@ class _ActionChipsList extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
