@@ -234,7 +234,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       final response = await userRepository!.getUser(username: account.username, sort: PostSortType.new_, page: 1);
       final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
-      final moderates = response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunityView(cmv.community.toJson())).toList();
+      final moderates = response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunity(cmv.community.toJson())).toList();
 
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.

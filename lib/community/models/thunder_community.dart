@@ -164,7 +164,7 @@ class ThunderCommunity {
       postingRestrictedToMods: community['posting_restricted_to_mods'],
       instanceId: community['instance_id'],
       visibility: community['visibility'],
-      subscribed: communityView['subscribed'],
+      subscribed: communityView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((status) => status.name == communityView['subscribed']) : null,
       blocked: communityView['blocked'],
       bannedFromCommunity: communityView['banned_from_community'],
       subscribers: counts['subscribers'],

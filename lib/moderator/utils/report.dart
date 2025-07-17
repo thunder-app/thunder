@@ -2,6 +2,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/models/thunder_post_report.dart';
 import 'package:thunder/moderator/view/report_page.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 
@@ -20,7 +21,7 @@ Future<Map<String, dynamic>> fetchReports({
   bool hasReachedPostReportsEnd = false;
   bool hasReachedCommentReportsEnd = false;
 
-  List<PostReportView> postReportViews = [];
+  List<ThunderPostReport> postReportViews = [];
   List<CommentReportView> commentReportViews = [];
 
   int currentPage = page;
@@ -43,7 +44,7 @@ Future<Map<String, dynamic>> fetchReports({
       communityId: communityId,
     );
 
-    postReportViews.addAll(listPostReportsResponse.postReports);
+    postReportViews.addAll(listPostReportsResponse.postReports.map((postReport) => ThunderPostReport.fromLemmyPostReportView(postReport.toJson())));
     commentReportViews.addAll(listCommentReportsResponse.commentReports);
 
     if (listPostReportsResponse.postReports.isEmpty) hasReachedPostReportsEnd = true;
@@ -61,7 +62,7 @@ Future<Map<String, dynamic>> fetchReports({
 }
 
 // Optimistically resolves a post report. This changes the value of the post report locally, without sending the network request
-PostReport optimisticallyResolvePostReport(PostReport postReport, bool resolved) {
+ThunderPostReport optimisticallyResolvePostReport(ThunderPostReport postReport, bool resolved) {
   return postReport.copyWith(resolved: resolved);
 }
 

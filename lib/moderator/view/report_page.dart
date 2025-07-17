@@ -11,16 +11,12 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
-import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/moderator/bloc/report_bloc.dart';
 import 'package:thunder/moderator/enums/report_action.dart';
 import 'package:thunder/moderator/widgets/report_page_filter_bottom_sheet.dart';
-import 'package:thunder/post/models/thunder_post.dart';
-import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -206,33 +202,20 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           if (reportFeedType == ReportFeedType.post)
                             SliverList.builder(
                               itemBuilder: (context, index) {
-                                PostView postView = PostView(
-                                  post: state.postReports[index].post,
-                                  creator: state.postReports[index].creator,
-                                  community: state.postReports[index].community,
-                                  creatorBannedFromCommunity: state.postReports[index].creatorBannedFromCommunity,
-                                  counts: state.postReports[index].counts,
-                                  subscribed: SubscriptionStatus.notSubscribed.toLemmyType(), // Not available
-                                  saved: false, // Not available
-                                  read: false, // Not available
-                                  creatorBlocked: false, // Not available
-                                  unreadComments: 0, // Not available
-                                );
-
                                 return Column(
                                   children: [
                                     Wrap(
                                       spacing: 8.0,
                                       children: [
                                         InkWell(
-                                          onTap: () => navigateToPost(context, postId: state.postReports[index].post.id),
+                                          onTap: () => navigateToPost(context, postId: state.postReports[index].post!.id),
                                           child: Padding(
                                             padding: const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
-                                              post: ThunderPost.fromLemmyPostView(postView.toJson(), media: [Media(mediaType: MediaType.text)]),
-                                              creator: ThunderUser.fromLemmyUser(postView.creator.toJson()),
-                                              community: ThunderCommunity.fromLemmyCommunity(postView.community.toJson()),
+                                              post: state.postReports[index].post!,
+                                              creator: state.postReports[index].creator!,
+                                              community: state.postReports[index].community!,
                                               isLastTapped: false,
                                             ),
                                           ),
@@ -250,15 +233,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   InkWell(
                                                     borderRadius: BorderRadius.circular(6),
                                                     onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.postReports[index].creator.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.postReports[index].creator!.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
                                                         context,
-                                                        state.postReports[index].creator.name,
-                                                        state.postReports[index].creator.displayName,
-                                                        fetchInstanceNameFromUrl(state.postReports[index].creator.actorId),
+                                                        state.postReports[index].creator?.name ?? '',
+                                                        state.postReports[index].creator?.displayName ?? '',
+                                                        fetchInstanceNameFromUrl(state.postReports[index].creator?.actorId ?? ''),
                                                       ),
                                                     ),
                                                   ),
@@ -270,7 +253,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.postReports[index].postReport.reason),
+                                                    l10n.detailedReason(state.postReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     fontScale: thunderState.contentFontSizeScale,
@@ -286,10 +269,10 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
                                                             reportAction: ReportAction.resolvePost,
                                                             postReportView: state.postReports[index],
-                                                            value: !state.postReports[index].postReport.resolved,
+                                                            value: !state.postReports[index].resolved,
                                                           ));
                                                     },
-                                                    icon: Icon(state.postReports[index].postReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(state.postReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),
