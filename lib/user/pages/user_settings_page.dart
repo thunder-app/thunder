@@ -26,6 +26,7 @@ import "package:thunder/shared/snackbar.dart";
 import "package:thunder/shared/sort_picker.dart";
 import "package:thunder/thunder/thunder_icons.dart";
 import "package:thunder/user/bloc/user_settings_bloc.dart";
+import "package:thunder/user/models/thunder_user.dart";
 import "package:thunder/user/widgets/user_indicator.dart";
 import "package:thunder/utils/bottom_sheet_list_picker.dart";
 import "package:thunder/utils/constants.dart";
@@ -117,7 +118,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                 MyUserInfo? myUserInfo = getSiteResponse?.myUser;
                 LocalUser? localUser = myUserInfo?.localUserView.localUser;
-                Person? person = myUserInfo?.localUserView.person;
+                ThunderUser? person = myUserInfo != null ? ThunderUser.fromLemmyUser(myUserInfo.localUserView.person.toJson()) : null;
 
                 return CustomScrollView(
                   physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,

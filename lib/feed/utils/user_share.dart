@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -14,12 +14,12 @@ enum UserShareOptions {
   lemmy,
 }
 
-/// Shows a mottom modal sheet which allows sharing the given [personView].
-Future<void> showUserShareSheet(BuildContext context, PersonView personView) async {
+/// Shows a mottom modal sheet which allows sharing the given [person].
+Future<void> showUserShareSheet(BuildContext context, ThunderUser person) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
   final account = await fetchActiveProfile();
 
-  String user = await getLemmyUser(personView.person.actorId) ?? '';
+  String user = await getLemmyUser(person.actorId) ?? '';
   String lemmyLink = '@$user';
   String localLink = 'https://${account.instance}/u/$user';
 
@@ -34,10 +34,10 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
           ListPickerItem(
             label: l10n.shareUserLink,
             payload: UserShareOptions.link,
-            subtitle: personView.person.actorId,
+            subtitle: person.actorId,
             icon: Icons.link_rounded,
           ),
-          if (!personView.person.actorId.contains(account.instance))
+          if (!person.actorId.contains(account.instance))
             ListPickerItem(
               label: l10n.shareUserLinkLocal,
               payload: UserShareOptions.localLink,
@@ -54,7 +54,7 @@ Future<void> showUserShareSheet(BuildContext context, PersonView personView) asy
         onSelect: (selection) async {
           switch (selection.payload) {
             case UserShareOptions.link:
-              SharePlus.instance.share(ShareParams(uri: Uri.parse(personView.person.actorId)));
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(person.actorId)));
             case UserShareOptions.localLink:
               SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink)));
             case UserShareOptions.lemmy:

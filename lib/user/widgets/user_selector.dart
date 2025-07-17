@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 
@@ -141,42 +140,34 @@ Future<void> temporarilySwitchAccount(
 
       // If there is a selected post, see if we can resolve it to the new user's instance.
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
-        PostView? resolvedPost;
         try {
           final response = await LemmySearchRepository(account: newUser).resolve(query: postActorId!);
-          resolvedPost = response.post;
 
-          if (resolvedPost != null) {
-            onPostChanged((await parsePosts([resolvedPost])).first);
+          if (response.post != null) {
+            onPostChanged((await parsePosts([response.post!])).first);
           }
-        } catch (e) {
-          // We will handle this below.
-        }
-        if (resolvedPost == null) {
-          // This is not allowed, so we must block the account switch.
+
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
           if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
+        } catch (e) {
+          // We will handle this below.
         }
       }
 
       // If there is a selected parent comment, see if we can resolve it to the new user's instance.
       if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
-        CommentView? resolvedComment;
         try {
           final response = await LemmySearchRepository(account: newUser).resolve(query: parentCommentActorId!);
-          resolvedComment = response.comment;
 
-          if (resolvedComment != null) {
-            final comment = ThunderComment.fromLemmyCommentView(resolvedComment.toJson());
+          if (response.comment != null) {
+            final comment = ThunderComment.fromLemmyCommentView(response.comment!.toJson());
             onParentCommentChanged(comment);
           }
-        } catch (e) {
-          // We will handle this below.
-        }
-        if (resolvedComment == null) {
-          // This is not allowed, so we must block the accout switch.
+
           showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance));
           if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
+        } catch (e) {
+          // We will handle this below.
         }
       }
     }

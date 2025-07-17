@@ -43,7 +43,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     super.dispose();
   }
 
-  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<Person> persons) {
+  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<ThunderUser> persons) {
     final l10n = AppLocalizations.of(context)!;
 
     return persons.map((person) {
@@ -66,7 +66,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: UserAvatar(user: ThunderUser.fromLemmyUser(person.toJson())),
+          leading: UserAvatar(user: person),
           trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
@@ -88,7 +88,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<Community> communities) {
+  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<ThunderCommunity> communities) {
     final l10n = AppLocalizations.of(context)!;
 
     return communities.map((community) {
@@ -111,7 +111,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: CommunityAvatar(community: ThunderCommunity.fromLemmyCommunity(community.toJson()), radius: 16.0),
+          leading: CommunityAvatar(community: community, radius: 16.0),
           trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
@@ -250,8 +250,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           }
         },
         builder: (context, state) {
-          List<Widget> blockedUsers = getPersonBlocks(context, state, state.personBlocks);
-          List<Widget> blockedCommunities = getCommunityBlocks(context, state, state.communityBlocks);
+          List<Widget> blockedUsers = getPersonBlocks(context, state, state.personBlocks.map((person) => ThunderUser.fromLemmyUser(person.toJson())).toList());
+          List<Widget> blockedCommunities = getCommunityBlocks(context, state, state.communityBlocks.map((community) => ThunderCommunity.fromLemmyCommunity(community.toJson())).toList());
           List<Widget> blockedInstances = getInstanceBlocks(context, state, state.instanceBlocks);
 
           return NestedScrollView(
