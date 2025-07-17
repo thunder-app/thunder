@@ -39,7 +39,7 @@ class PostState extends Equatable {
   /// The sort type of the post comments
   final CommentSortType? commentSortType;
 
-  final List<CommunityModeratorView>? moderators;
+  final List<ThunderUser>? moderators;
   final List<ThunderPost>? crossPosts;
   ThunderPost? post;
 
@@ -80,7 +80,7 @@ class PostState extends Equatable {
     int? commentCount,
     bool? hasReachedCommentEnd,
     int? communityId,
-    List<CommunityModeratorView>? moderators,
+    List<ThunderUser>? moderators,
     List<ThunderPost>? crossPosts,
     String? errorMessage,
     CommentSortType? commentSortType,

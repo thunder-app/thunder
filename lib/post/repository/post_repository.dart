@@ -10,6 +10,7 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 extension on MarkPostAsReadResponse {
@@ -135,10 +136,11 @@ class LemmyPostRepository implements PostRepository {
 
     // Convert cross-posts to ThunderPost objects
     List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
+    List<ThunderUser> moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
 
     return {
       'post': post,
-      'moderators': response.moderators,
+      'moderators': moderators,
       'crossPosts': crossPosts,
     };
   }
