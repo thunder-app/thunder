@@ -348,10 +348,7 @@ void showLanguageInputDialog(BuildContext context,
   ProfileState state = context.read<ProfileBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  List<ThunderLanguage> languages = [
-    ThunderLanguage(id: -1, code: '', name: l10n.noLanguage),
-    ...(state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? [])
-  ];
+  List<ThunderLanguage> languages = [ThunderLanguage(id: -1, code: '', name: l10n.noLanguage), ...(state.siteResponse?.allLanguages ?? [])];
   languages = languages.where((language) {
     if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
       return !excludedLanguageIds.contains(language.id);

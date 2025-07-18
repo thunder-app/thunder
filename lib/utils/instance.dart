@@ -188,7 +188,7 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
     final account = Account(instance: url!, id: '', index: -1);
 
     final site = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
-    final instance = ThunderSite.fromLemmySiteView(site.siteView.toJson());
+    final instance = site.siteView;
 
     return ThunderInstanceInfo(
       id: id,

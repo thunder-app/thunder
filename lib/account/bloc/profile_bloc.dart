@@ -13,6 +13,7 @@ import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -88,11 +89,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     // Check to see the instance settings (for checking if downvotes are enabled)
     bool downvotesEnabled = true;
-    GetSiteResponse? getSiteResponse;
+    ThunderSiteResponse? siteResponse;
 
     try {
-      getSiteResponse = await instanceRepository!.getSiteInfo().timeout(const Duration(seconds: 15));
-      downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
+      siteResponse = await instanceRepository!.getSiteInfo().timeout(const Duration(seconds: 15));
+      downvotesEnabled = siteResponse.siteView.enableDownvotes ?? true;
     } catch (e) {
       return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
     }
@@ -103,7 +104,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         account: () => account,
         isLoggedIn: !account.anonymous,
         downvotesEnabled: downvotesEnabled,
-        getSiteResponse: () => getSiteResponse!,
+        siteResponse: () => siteResponse!,
       ),
     );
 
@@ -128,19 +129,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       // Create a temporary instance repository to use for the site information
       tempAccount = Account(id: '', index: -1, jwt: response.jwt!, instance: tempAccount.instance);
-      final getSiteResponse = await LemmyInstanceRepository(account: tempAccount).getSiteInfo();
+      final siteResponse = await LemmyInstanceRepository(account: tempAccount).getSiteInfo();
 
-      if (event.showContentWarning && getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
-        return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => getSiteResponse.siteView.site.contentWarning!));
+      if (event.showContentWarning && siteResponse.siteView.contentWarning?.isNotEmpty == true) {
+        return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => siteResponse.siteView.contentWarning!));
       }
 
       // Create a new account in the database
       Account? account = Account(
         id: '',
-        username: getSiteResponse.myUser?.localUserView.person.name,
+        username: siteResponse.myUser?.localUserView.person.name,
         jwt: response.jwt,
         instance: tempAccount.instance,
-        userId: getSiteResponse.myUser?.localUserView.person.id,
+        userId: siteResponse.myUser?.localUserView.person.id,
         index: -1,
       );
 
@@ -259,7 +260,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // Refresh the site information, which includes the user's settings
       final response = await instanceRepository!.getSiteInfo();
 
-      return emit(state.copyWith(status: ProfileStatus.success, getSiteResponse: () => response));
+      return emit(state.copyWith(status: ProfileStatus.success, siteResponse: () => response));
     } catch (e) {
       emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }

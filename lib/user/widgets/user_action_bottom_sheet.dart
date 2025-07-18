@@ -236,13 +236,13 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final account = authState.siteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.id == widget.communityId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
-    final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
+    final blockedUsers = authState.siteResponse?.myUser?.personBlocks ?? [];
 
     final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.actorId).isNotEmpty;
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;

@@ -8,9 +8,10 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
-import "package:lemmy_api_client/v3.dart";
 import "package:thunder/account/repository/account_repository.dart";
-import "package:thunder/core/enums/post_sort_type.dart";
+import "package:thunder/core/models/thunder_local_user.dart";
+import "package:thunder/core/models/thunder_my_user.dart";
+import "package:thunder/core/models/thunder_site_response.dart";
 import 'package:thunder/localizations/app_localizations.dart';
 import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
@@ -114,11 +115,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 }
               },
               builder: (context, state) {
-                GetSiteResponse? getSiteResponse = state.getSiteResponse;
+                ThunderSiteResponse? siteResponse = state.siteResponse;
 
-                MyUserInfo? myUserInfo = getSiteResponse?.myUser;
-                LocalUser? localUser = myUserInfo?.localUserView.localUser;
-                ThunderUser? person = myUserInfo != null ? ThunderUser.fromLemmyUser(myUserInfo.localUserView.person.toJson()) : null;
+                ThunderMyUser? myUser = siteResponse?.myUser;
+                ThunderLocalUser? localUser = myUser?.localUserView.localUser;
+                ThunderUser? person = myUser?.localUserView.person;
 
                 return CustomScrollView(
                   physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
@@ -307,7 +308,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ListOption(
                                 description: l10n.defaultFeedType,
-                                value: ListPickerItem(label: localUser!.defaultListingType.value, icon: Icons.feed, payload: FeedListType.fromLemmyType(localUser.defaultListingType)),
+                                value: ListPickerItem(label: localUser?.defaultListingType?.value ?? "", icon: Icons.feed, payload: localUser?.defaultListingType),
                                 options: [
                                   ListPickerItem(icon: Icons.view_list_rounded, label: FeedListType.subscribed.value, payload: FeedListType.subscribed),
                                   ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
@@ -322,9 +323,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ListOption(
                                 description: l10n.defaultFeedSortType,
                                 value: ListPickerItem(
-                                  label: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)?.name ?? "",
+                                  label: localUser?.defaultSortType?.name ?? "",
                                   icon: Icons.local_fire_department_rounded,
-                                  payload: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType),
+                                  payload: localUser?.defaultSortType,
                                 ),
                                 options: [...SortPicker.getDefaultPostSortTypeItems(), ...topPostSortTypeItems],
                                 icon: Icons.sort_rounded,
@@ -335,14 +336,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   onSelect: (value) async {
                                     context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
                                   },
-                                  previouslySelected: PostSortTypeMapping.fromLemmyType(localUser.defaultSortType),
+                                  previouslySelected: localUser?.defaultSortType,
                                 ),
                                 valueDisplay: Row(
                                   children: [
-                                    Icon(allPostSortTypeItems.firstWhere((item) => item.payload == PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)).icon, size: 13),
+                                    Icon(allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).icon, size: 13),
                                     const SizedBox(width: 4),
                                     Text(
-                                      allPostSortTypeItems.firstWhere((item) => item.payload == PostSortTypeMapping.fromLemmyType(localUser.defaultSortType)).label,
+                                      allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).label,
                                       style: theme.textTheme.titleSmall,
                                     ),
                                   ],
@@ -353,7 +354,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ToggleOption(
                                 description: l10n.showNsfwContent,
-                                value: localUser.showNsfw,
+                                value: localUser?.showNsfw,
                                 iconEnabled: Icons.no_adult_content,
                                 iconDisabled: Icons.no_adult_content,
                                 onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
@@ -363,7 +364,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ToggleOption(
                                 description: l10n.showScores,
-                                value: localUser.showScores,
+                                value: localUser?.showScores,
                                 iconEnabled: Icons.onetwothree_rounded,
                                 iconDisabled: Icons.onetwothree_rounded,
                                 onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
@@ -373,7 +374,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ToggleOption(
                                 description: l10n.showReadPosts,
-                                value: localUser.showReadPosts,
+                                value: localUser?.showReadPosts,
                                 iconEnabled: Icons.fact_check_rounded,
                                 iconDisabled: Icons.fact_check_outlined,
                                 onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
@@ -394,7 +395,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               ),
                               ToggleOption(
                                 description: l10n.showBotAccounts,
-                                value: localUser.showBotAccounts,
+                                value: localUser?.showBotAccounts,
                                 iconEnabled: Thunder.robot,
                                 iconDisabled: Thunder.robot,
                                 iconSpacing: 14.0,

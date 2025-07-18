@@ -17,9 +17,7 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/feed/feed.dart';
@@ -266,8 +264,8 @@ class _ThunderState extends State<Thunder> {
                       context.read<FeedBloc>().add(
                             FeedFetchedEvent(
                               feedType: FeedType.general,
-                              feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                              postSortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.postSortTypeForInstance,
+                              feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultFeedListType,
+                              postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.postSortTypeForInstance,
                               reset: true,
                               showHidden: thunderBlocState.showHiddenPosts,
                             ),
@@ -403,8 +401,8 @@ class _ThunderState extends State<Thunder> {
                             FeedPage(
                               useGlobalFeedBloc: true,
                               feedType: FeedType.general,
-                              feedListType: FeedListType.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBlocState.defaultFeedListType,
-                              postSortType: PostSortTypeMapping.fromLemmyType(state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBlocState.postSortTypeForInstance,
+                              feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultFeedListType,
+                              postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.postSortTypeForInstance,
                               scaffoldStateKey: scaffoldStateKey,
                               showHidden: thunderBlocState.showHiddenPosts,
                             ),

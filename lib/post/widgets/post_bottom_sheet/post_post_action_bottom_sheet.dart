@@ -204,8 +204,8 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<PostPostAction> adminActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final account = authState.siteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 

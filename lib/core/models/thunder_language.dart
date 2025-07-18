@@ -9,4 +9,12 @@ class ThunderLanguage {
   final String name;
 
   ThunderLanguage({required this.id, required this.code, required this.name});
+
+  factory ThunderLanguage.fromLemmyLanguage(Map<String, dynamic> language) {
+    return ThunderLanguage(
+      id: language['id'],
+      code: language['code'],
+      name: language['name'],
+    );
+  }
 }

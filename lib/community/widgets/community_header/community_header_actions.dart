@@ -136,7 +136,7 @@ class _ActionChipsList extends StatelessWidget {
     final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
     if (!isLoggedIn) return [_AnonymousSubscriptionChip(community: community)];
 
-    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.getSiteResponse?.myUser?.communityBlocks.any((block) => block.community.id == community.id) ?? false);
+    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.siteResponse?.myUser?.communityBlocks.any((block) => block.community.id == community.id) ?? false);
     if (blocked) return [_BlockActionChip(community: community)];
 
     return [
@@ -350,11 +350,11 @@ class _BlockActionChip extends StatelessWidget {
   }
 
   bool _isCommunityBlocked(ProfileState state) {
-    if (state.getSiteResponse?.myUser?.communityBlocks == null) {
+    if (state.siteResponse?.myUser?.communityBlocks == null) {
       return false;
     }
 
-    final blockedCommunities = state.getSiteResponse!.myUser!.communityBlocks.map((block) => ThunderCommunity.fromLemmyCommunity(block.community.toJson())).toList();
+    final blockedCommunities = state.siteResponse!.myUser!.communityBlocks.map((block) => block.community).toList();
     return blockedCommunities.any((blockedCommunity) => blockedCommunity.id == community.id);
   }
 }

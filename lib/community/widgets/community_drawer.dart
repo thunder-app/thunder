@@ -11,7 +11,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/enums/enums.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -99,8 +98,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             onPressed: () async {
                               Navigator.of(context).pop();
 
-                              final postSortType =
-                                  PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                              final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
@@ -305,7 +303,7 @@ class FavoriteCommunities extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
 
-                  final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                  final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
@@ -368,7 +366,7 @@ class ModeratedCommunities extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
 
-                    final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                    final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(

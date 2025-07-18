@@ -81,6 +81,50 @@ class ThunderUser {
     this.isAdmin,
   });
 
+  ThunderUser copyWith({
+    int? id,
+    String? name,
+    String? displayName,
+    String? avatar,
+    bool? banned,
+    DateTime? published,
+    DateTime? updated,
+    String? actorId,
+    String? bio,
+    bool? local,
+    String? banner,
+    bool? deleted,
+    String? matrixUserId,
+    bool? botAccount,
+    DateTime? banExpires,
+    int? instanceId,
+    int? posts,
+    int? comments,
+    bool? isAdmin,
+  }) {
+    return ThunderUser(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      displayName: displayName ?? this.displayName,
+      avatar: avatar ?? this.avatar,
+      banned: banned ?? this.banned,
+      published: published ?? this.published,
+      updated: updated ?? this.updated,
+      actorId: actorId ?? this.actorId,
+      bio: bio ?? this.bio,
+      local: local ?? this.local,
+      banner: banner ?? this.banner,
+      deleted: deleted ?? this.deleted,
+      matrixUserId: matrixUserId ?? this.matrixUserId,
+      botAccount: botAccount ?? this.botAccount,
+      banExpires: banExpires ?? this.banExpires,
+      instanceId: instanceId ?? this.instanceId,
+      posts: posts ?? this.posts,
+      comments: comments ?? this.comments,
+      isAdmin: isAdmin ?? this.isAdmin,
+    );
+  }
+
   factory ThunderUser.fromLemmyUser(Map<String, dynamic> user) {
     return ThunderUser(
       id: user['id'],

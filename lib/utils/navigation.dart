@@ -12,6 +12,7 @@ import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -91,7 +92,7 @@ Future<void> navigateToInstancePage(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  GetSiteResponse? getSiteResponse;
+  ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
 
   try {
@@ -100,7 +101,7 @@ Future<void> navigateToInstancePage(
     getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
-    isBlocked = profileBloc.state.getSiteResponse?.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost);
+    isBlocked = profileBloc.state.siteResponse?.myUser?.instanceBlocks.any((i) => i.instance['domain'] == instanceHost);
   } catch (e) {
     // Continue if we can't get the site
   }
@@ -590,8 +591,8 @@ Future<void> navigateToFeedPage(
             feedType: feedType,
             feedListType: feedListType,
             postSortType: postSortType ??
-                (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                    ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+                (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                    ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
                     : thunderBloc.state.postSortTypeForInstance),
             communityId: communityId,
             communityName: communityName,
@@ -625,8 +626,8 @@ Future<void> navigateToFeedPage(
         child: FeedPage(
           feedType: feedType,
           postSortType: postSortType ??
-              (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                  ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+              (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                  ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
                   : thunderBloc.state.postSortTypeForInstance),
           communityName: communityName,
           communityId: communityId,

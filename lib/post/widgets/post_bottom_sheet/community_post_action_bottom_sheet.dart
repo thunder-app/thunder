@@ -97,13 +97,11 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<CommunityPostAction> adminActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    // final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
-    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
-    final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
+    final blockedCommunities = authState.siteResponse?.myUser?.communityBlocks ?? [];
 
     final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.actorId).isNotEmpty;
     final isSubscribedToCommunity = widget.post.subscribed != SubscriptionStatus.notSubscribed;

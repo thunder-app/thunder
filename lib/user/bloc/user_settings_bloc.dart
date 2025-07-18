@@ -9,9 +9,11 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/repository/account_repository.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -19,6 +21,7 @@ import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -105,7 +108,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return emit(
         state.copyWith(
           status: UserSettingsStatus.success,
-          getSiteResponse: getSiteResponse,
+          siteResponse: getSiteResponse,
         ),
       );
     } catch (e) {
@@ -121,37 +124,37 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     final account = await fetchActiveProfile();
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    GetSiteResponse? originalGetSiteResponse = state.getSiteResponse;
+    ThunderSiteResponse? originalGetSiteResponse = state.siteResponse;
     if (originalGetSiteResponse == null) emit(state.copyWith(status: UserSettingsStatus.failure));
 
     try {
       // Optimistically update settings
-      LocalUser localUser = state.getSiteResponse!.myUser!.localUserView.localUser.copyWith(
-        email: event.email ?? state.getSiteResponse!.myUser!.localUserView.localUser.email,
-        showReadPosts: event.showReadPosts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showReadPosts,
-        showScores: event.showScores ?? state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
-        showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
-        showNsfw: event.showNsfw ?? state.getSiteResponse!.myUser!.localUserView.localUser.showNsfw,
-        defaultListingType: event.defaultFeedListType?.toLemmyType() ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultListingType,
-        defaultSortType: event.defaultPostSortType?.toLemmyType() ?? state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType,
+      ThunderLocalUser localUser = state.siteResponse!.myUser!.localUserView.localUser.copyWith(
+        email: event.email ?? state.siteResponse!.myUser!.localUserView.localUser.email,
+        showReadPosts: event.showReadPosts ?? state.siteResponse!.myUser!.localUserView.localUser.showReadPosts,
+        showScores: event.showScores ?? state.siteResponse!.myUser!.localUserView.localUser.showScores,
+        showBotAccounts: event.showBotAccounts ?? state.siteResponse!.myUser!.localUserView.localUser.showBotAccounts,
+        showNsfw: event.showNsfw ?? state.siteResponse!.myUser!.localUserView.localUser.showNsfw,
+        defaultListingType: event.defaultFeedListType ?? state.siteResponse!.myUser!.localUserView.localUser.defaultListingType,
+        defaultSortType: event.defaultPostSortType ?? state.siteResponse!.myUser!.localUserView.localUser.defaultSortType,
       );
 
-      GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
-        myUser: state.getSiteResponse!.myUser!.copyWith(
-          localUserView: state.getSiteResponse!.myUser!.localUserView.copyWith(
-            person: state.getSiteResponse!.myUser!.localUserView.person.copyWith(
-              botAccount: event.botAccount ?? state.getSiteResponse!.myUser!.localUserView.person.botAccount,
-              bio: event.bio ?? state.getSiteResponse!.myUser!.localUserView.person.bio,
-              displayName: event.displayName ?? state.getSiteResponse!.myUser!.localUserView.person.displayName,
-              matrixUserId: event.matrixUserId ?? state.getSiteResponse!.myUser!.localUserView.person.matrixUserId,
+      ThunderSiteResponse updatedGetSiteResponse = state.siteResponse!.copyWith(
+        myUser: state.siteResponse!.myUser!.copyWith(
+          localUserView: state.siteResponse!.myUser!.localUserView.copyWith(
+            person: state.siteResponse!.myUser!.localUserView.person.copyWith(
+              botAccount: event.botAccount ?? state.siteResponse!.myUser!.localUserView.person.botAccount,
+              bio: event.bio ?? state.siteResponse!.myUser!.localUserView.person.bio,
+              displayName: event.displayName ?? state.siteResponse!.myUser!.localUserView.person.displayName,
+              matrixUserId: event.matrixUserId ?? state.siteResponse!.myUser!.localUserView.person.matrixUserId,
             ),
             localUser: localUser,
           ),
-          discussionLanguages: event.discussionLanguages ?? state.getSiteResponse!.discussionLanguages,
+          discussionLanguages: event.discussionLanguages ?? state.siteResponse!.discussionLanguages,
         ),
       );
 
-      emit(state.copyWith(status: UserSettingsStatus.success, getSiteResponse: updatedGetSiteResponse));
+      emit(state.copyWith(status: UserSettingsStatus.success, siteResponse: updatedGetSiteResponse));
       emit(state.copyWith(status: UserSettingsStatus.updating));
 
       await accountRepository.saveSettings(
@@ -173,7 +176,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     } catch (e) {
       return emit(state.copyWith(
         status: UserSettingsStatus.failure,
-        getSiteResponse: originalGetSiteResponse,
+        siteResponse: originalGetSiteResponse,
         errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
       ));
     }
@@ -189,12 +192,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
       final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
-      final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
+      final instanceBlocks = getSiteResponse.myUser!.instanceBlocks.map((instanceBlockView) => instanceBlockView.instance).toList()..sort((a, b) => a['domain'].compareTo(b['domain']));
 
       return emit(state.copyWith(
-        status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
-            ? UserSettingsStatus.revert
-            : UserSettingsStatus.success,
+        status: (state.instanceBeingBlocked != 0 && (instanceBlocks.any((instance) => instance['id'] == state.instanceBeingBlocked) ?? false)) ? UserSettingsStatus.revert : UserSettingsStatus.success,
         personBlocks: personBlocks,
         communityBlocks: communityBlocks,
         instanceBlocks: instanceBlocks,
@@ -235,11 +236,11 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     try {
       final blockCommunityResponse = await communityRepository.block(event.communityId, !event.unblock);
 
-      List<Community> updatedCommunityBlocks;
+      List<ThunderCommunity> updatedCommunityBlocks;
       if (event.unblock) {
         updatedCommunityBlocks = state.communityBlocks.where((community) => community.id != event.communityId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedCommunityBlocks = (state.communityBlocks + [blockCommunityResponse.communityView.community])..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = (state.communityBlocks + [ThunderCommunity.fromLemmyCommunityView(blockCommunityResponse.communityView.toJson())])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
@@ -261,11 +262,11 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     try {
       final response = await userRepository.block(event.personId, !event.unblock);
 
-      List<Person> updatedPersonBlocks;
+      List<ThunderUser> updatedPersonBlocks;
       if (event.unblock) {
         updatedPersonBlocks = state.personBlocks.where((person) => person.id != event.personId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedPersonBlocks = (state.personBlocks + [response.personView.person])..sort((a, b) => a.name.compareTo(b.name));
+        updatedPersonBlocks = (state.personBlocks + [ThunderUser.fromLemmyUserView(response.personView.toJson())])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(

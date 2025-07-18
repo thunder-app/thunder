@@ -131,7 +131,7 @@ class _ActionChipsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final myUserId = context.read<ProfileBloc>().state.getSiteResponse?.myUser?.localUserView.person.id;
+    final myUserId = context.read<ProfileBloc>().state.siteResponse?.myUser?.localUserView.person.id;
     final isOwnProfile = user.id == myUserId;
 
     return Row(
@@ -365,11 +365,11 @@ class _BlockActionChip extends StatelessWidget {
   }
 
   bool _isUserBlocked(ProfileState state) {
-    if (state.getSiteResponse?.myUser?.personBlocks == null) {
+    if (state.siteResponse?.myUser?.personBlocks == null) {
       return false;
     }
 
-    final blockedUsers = state.getSiteResponse!.myUser!.personBlocks.map((block) => ThunderUser.fromLemmyUser(block.target.toJson())).toList();
+    final blockedUsers = state.siteResponse!.myUser!.personBlocks.map((block) => block.target).toList();
     return blockedUsers.any((blockedUser) => blockedUser.id == user.id);
   }
 }

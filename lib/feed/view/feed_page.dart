@@ -493,7 +493,7 @@ class _FeedViewState extends State<FeedView> {
     }
 
     // Get the desired post listing so we can check against current
-    final desiredFeedListType = FeedListType.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBloc.state.defaultFeedListType;
+    final desiredFeedListType = authBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultFeedListType;
     final currentFeedListType = feedBloc.state.feedListType;
 
     // See if we're in a community
@@ -505,7 +505,7 @@ class _FeedViewState extends State<FeedView> {
     // - We're on a community
     // THEN navigate to the desired listing type
     if (!canPop && (desiredFeedListType != currentFeedListType || communityMode)) {
-      final postSortType = PostSortTypeMapping.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBloc.state.postSortTypeForInstance;
+      final postSortType = authBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.postSortTypeForInstance;
 
       feedBloc.add(
         FeedFetchedEvent(

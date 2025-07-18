@@ -24,7 +24,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
     super.initState();
 
     final state = context.read<UserSettingsBloc>().state;
-    setState(() => _languages = state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? []);
+    setState(() => _languages = state.siteResponse?.allLanguages ?? []);
   }
 
   @override
@@ -34,8 +34,8 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
 
     return BlocBuilder<UserSettingsBloc, UserSettingsState>(
       builder: (context, state) {
-        final discussionLanguageIds = state.getSiteResponse?.myUser?.discussionLanguages ?? [];
-        final discussionLanguages = discussionLanguageIds.map((id) => _languages.firstWhere((language) => language.id == id)).toList();
+        final selectedLanguages = state.siteResponse?.myUser?.discussionLanguages ?? [];
+        final discussionLanguages = selectedLanguages.map((id) => _languages.firstWhere((language) => language.id == id)).toList();
 
         return Scaffold(
           floatingActionButton: FloatingActionButton(

@@ -85,7 +85,7 @@ class PostCardMetadata extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final postCardMetadataItems = context.select((ThunderBloc bloc) => postCardViewType == ViewMode.compact ? bloc.state.compactPostCardMetadataItems : bloc.state.cardPostCardMetadataItems);
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
+    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
     final dim = this.dim ?? false;
     final voteType = this.voteType ?? 0;
@@ -497,8 +497,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
     if (languageId == -1) {
       languageName = 'English';
     } else if (languageId != null) {
-      final languages =
-          context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.allLanguages.map((e) => ThunderLanguage(id: e.id, code: e.code, name: e.name)).toList() ?? <ThunderLanguage>[]);
+      final languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
       final language = languages.firstWhereOrNull((language) => language.id == languageId);
       languageName = language?.name;
     }

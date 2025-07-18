@@ -11,7 +11,7 @@ enum PostStatus {
 }
 
 class PostState extends Equatable {
-  PostState({
+  const PostState({
     this.status = PostStatus.initial,
     this.post,
     this.commentNodes,
@@ -41,7 +41,7 @@ class PostState extends Equatable {
 
   final List<ThunderUser>? moderators;
   final List<ThunderPost>? crossPosts;
-  ThunderPost? post;
+  final ThunderPost? post;
 
   // Comment related data
   final CommentNode? commentNodes;

@@ -225,7 +225,7 @@ class CommentCardHeaderScore extends StatelessWidget {
 
     final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true);
+    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
     final combineCommentScores = context.select((ThunderBloc bloc) => bloc.state.combineCommentScores);
 
     // Show only vote indicator if scores are hidden

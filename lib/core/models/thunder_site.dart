@@ -235,7 +235,7 @@ class ThunderSite {
       applicationQuestion: localSite['application_question'],
       privateInstance: localSite['private_instance'],
       defaultTheme: localSite['default_theme'],
-      defaultPostListingType: FeedListType.fromLemmyType(localSite['default_post_listing_type']),
+      defaultPostListingType: FeedListType.values.firstWhereOrNull((e) => e.value == localSite['default_post_listing_type']),
       legalInformation: localSite['legal_information'],
       hideModlogModNames: localSite['hide_modlog_mod_names'],
       applicationEmailAdmins: localSite['application_email_admins'],

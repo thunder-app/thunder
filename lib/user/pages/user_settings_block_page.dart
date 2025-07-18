@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/community/models/thunder_community.dart';
@@ -133,23 +132,23 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Instance> instances) {
+  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Map<String, dynamic>> instances) {
     final l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
 
     return instances.map((instance) {
       return Tooltip(
-        message: instance.domain,
+        message: instance['domain'],
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-          title: Text(instance.domain, overflow: TextOverflow.ellipsis),
+          title: Text(instance['domain'], overflow: TextOverflow.ellipsis),
           leading: CircleAvatar(
             backgroundColor: theme.colorScheme.secondaryContainer,
             maxRadius: 16.0,
             child: Text(
-              instance.domain[0].toUpperCase(),
+              instance['domain'][0].toUpperCase(),
               semanticsLabel: "",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -157,7 +156,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               ),
             ),
           ),
-          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance.id
+          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance['id']
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -168,10 +167,10 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id)),
+                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance['id'])),
                 ),
           onTap: () {
-            navigateToInstancePage(context, instanceHost: instance.domain, instanceId: instance.id);
+            navigateToInstancePage(context, instanceHost: instance['domain'], instanceId: instance['id']);
           },
         ),
       );
@@ -250,8 +249,8 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           }
         },
         builder: (context, state) {
-          List<Widget> blockedUsers = getPersonBlocks(context, state, state.personBlocks.map((person) => ThunderUser.fromLemmyUser(person.toJson())).toList());
-          List<Widget> blockedCommunities = getCommunityBlocks(context, state, state.communityBlocks.map((community) => ThunderCommunity.fromLemmyCommunity(community.toJson())).toList());
+          List<Widget> blockedUsers = getPersonBlocks(context, state, state.personBlocks);
+          List<Widget> blockedCommunities = getCommunityBlocks(context, state, state.communityBlocks);
           List<Widget> blockedInstances = getInstanceBlocks(context, state, state.instanceBlocks);
 
           return NestedScrollView(

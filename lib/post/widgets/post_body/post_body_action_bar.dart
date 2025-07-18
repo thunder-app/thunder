@@ -68,7 +68,7 @@ class PostBodyActionsBar extends StatelessWidget {
       builder: (context, state) {
         bool isUserLoggedIn = state.isLoggedIn;
         bool downvotesEnabled = state.downvotesEnabled;
-        bool showScores = state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+        final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
