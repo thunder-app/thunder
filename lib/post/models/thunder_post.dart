@@ -306,6 +306,8 @@ class ThunderPost {
     final imageDetails = postView['image_details'];
     final counts = postView['counts'];
 
+    final subscribed = postView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postView['subscribed']) : null;
+
     return ThunderPost(
       id: post['id'],
       name: post['name'],
@@ -330,7 +332,7 @@ class ThunderPost {
       urlContentType: post['url_content_type'],
       altText: post['alt_text'],
       creator: creator != null ? ThunderUser.fromLemmyUser(creator) : null,
-      community: community != null ? ThunderCommunity.fromLemmyCommunity(community) : null,
+      community: community != null ? ThunderCommunity.fromLemmyCommunity(community, subscribed: subscribed) : null,
       imageDetails: imageDetails,
       creatorBannedFromCommunity: postView['creator_banned_from_community'],
       bannedFromCommunity: postView['banned_from_community'],
@@ -341,7 +343,7 @@ class ThunderPost {
       upvotes: counts['upvotes'],
       downvotes: counts['downvotes'],
       newestCommentTime: counts['newest_comment_time'] != null ? DateTime.parse(counts['newest_comment_time']) : null,
-      subscribed: postView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postView['subscribed']) : null,
+      subscribed: subscribed,
       saved: postView['saved'],
       read: postView['read'],
       hidden: postView['hidden'],
