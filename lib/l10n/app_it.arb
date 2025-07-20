@@ -1,5 +1,5 @@
 {
-  "about": "Riguardo",
+  "about": "Info",
   "@about": {
     "description": "About settings category."
   },
@@ -29,7 +29,7 @@
   },
   "addedCommunityToSubscriptions": "Comunità aggiunta alle iscrizioni",
   "@addedCommunityToSubscriptions": {},
-  "allPosts": "Tutti i post",
+  "allPosts": "Tutti i Post",
   "@allPosts": {},
   "allowOpenSupportedLinks": "Permetti a questa app di aprire i link supportati.",
   "@allowOpenSupportedLinks": {
@@ -89,7 +89,7 @@
   "@collapsePost": {},
   "combineNavAndFab": "Il pulsante flessibile delle azioni è disponibile tra i pulsanti di navigazione.",
   "@combineNavAndFab": {},
-  "comment": "Commenta",
+  "comment": "Commento",
   "@comment": {},
   "commentReported": "Il commento è stato segnalato per un controllo.",
   "@commentReported": {},
@@ -105,7 +105,7 @@
   "@communities": {},
   "community": "Comunità",
   "@community": {},
-  "controversial": "Controverso",
+  "controversial": "Controversi",
   "@controversial": {},
   "copiedToClipboard": "Copiato in memoria",
   "@copiedToClipboard": {},
@@ -139,7 +139,7 @@
   "@customizeSwipeActions": {},
   "delete": "Elimina",
   "@delete": {},
-  "dimReadPosts": "I post già letti saranno oscurati",
+  "dimReadPosts": "Sbiadisci Post Letti",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
@@ -199,7 +199,7 @@
   "@gettingStarted": {},
   "hidePassword": "Nascondi Password",
   "@hidePassword": {},
-  "hot": "Popolare",
+  "hot": "Popolari",
   "@hot": {},
   "image": "Immagine",
   "@image": {},
@@ -241,7 +241,7 @@
   "@loadMorePlural": {},
   "loadMoreSingular": "Carica {count} risposta in più…",
   "@loadMoreSingular": {},
-  "localPosts": "Post della Rete Locale",
+  "localPosts": "Post Locali",
   "@localPosts": {},
   "logOut": "Log Out",
   "@logOut": {},
@@ -267,7 +267,7 @@
   "@message": {},
   "missingErrorMessage": "Nessun messaggio di errore disponibile",
   "@missingErrorMessage": {},
-  "mostComments": "La Maggioranza dei Commenti",
+  "mostComments": "Più Commentati",
   "@mostComments": {},
   "mustBeLoggedInComment": "Devi avere effettuato il log in per poter commentare",
   "@mustBeLoggedInComment": {},
@@ -291,7 +291,7 @@
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "Nessun istanza bloccata.",
   "@noInstanceBlocks": {},
-  "noPostsFound": "Nessun post trovato",
+  "noPostsFound": "Nessun post trovato.",
   "@noPostsFound": {},
   "noUserBlocks": "Nessun utente bloccato.",
   "@noUserBlocks": {},
@@ -321,7 +321,7 @@
   "@open": {},
   "openAccountSwitcher": "Apri interruttore utenti",
   "@openAccountSwitcher": {},
-  "openByDefault": "Apri per default",
+  "openByDefault": "Apri per impostazione predefinita",
   "@openByDefault": {
     "description": "Indicating the default behavior of opening links."
   },
@@ -399,13 +399,13 @@
   "@retry": {},
   "save": "Salva",
   "@save": {},
-  "saveSettings": "Salva le Impostazioni",
+  "saveSettings": "Salva Impostazioni",
   "@saveSettings": {
     "description": "Action to save the application settings."
   },
-  "saved": "Salvato",
+  "saved": "Salvati",
   "@saved": {},
-  "scaled": "Scala",
+  "scaled": "Bilanciati",
   "@scaled": {},
   "screenReaderProfile": "Profilo del Lettore di Schermo",
   "@screenReaderProfile": {},
@@ -543,7 +543,7 @@
   "@unableToFindUser": {},
   "unableToLoadInstance": "Impossibile caricare {instance}",
   "@unableToLoadInstance": {},
-  "unableToLoadPostsFrominstance": "Impossibile caricare i post da {instance}",
+  "unableToLoadPostsFrominstance": "Impossibile caricare post da {instance}",
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Impossibile caricare ulteriori commenti.",
   "@unableToLoadReplies": {},
@@ -567,7 +567,7 @@
   },
   "url": "URL",
   "@url": {},
-  "useCompactView": "Abilita per post piccoli, disabilita per post più grandi.",
+  "useCompactView": "Abilita per post piccoli, disabilita per post grandi.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
   },
@@ -595,7 +595,7 @@
   "@xDownvotes": {},
   "xUpvotes": "{x} voti in su",
   "@xUpvotes": {},
-  "accountBirthday": "Compleanno dell'Account {additionalInfo}",
+  "accountBirthday": "Compleanno Account {additionalInfo}",
   "@accountBirthday": {
     "description": "User descriptor for accounts created on today's date"
   },
@@ -793,7 +793,7 @@
   "@exportLemmyAccountSettingsDescription": {
     "description": "Description for setting related to Lemmy account settings export"
   },
-  "feedTypeAndSorts": "Feed di Default e Ordinamento",
+  "feedTypeAndSorts": "Feed Predefinito e Ordinamento",
   "@feedTypeAndSorts": {
     "description": "Subcategory in Setting -> General"
   },
@@ -901,7 +901,7 @@
   "@in_": {
     "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
   },
-  "languageNotAllowed": "Questa comunità non permette post nella lingua selezionata. Prova altra lingua.",
+  "languageNotAllowed": "Questa comunità non permette post nella lingua che hai selezionato. Prova un altra lingua.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
   },
@@ -1055,11 +1055,11 @@
   "@decline": {
     "description": "The ability to decline an option"
   },
-  "defaultFeedType": "Ordinamento Feed di Default",
+  "defaultFeedType": "Ordinamento Feed Predefinito",
   "@defaultFeedType": {
     "description": "Default listing type for the feed."
   },
-  "defaultFeedSortType": "Tipo Ordinamento Feed di Default",
+  "defaultFeedSortType": "Tipo Ordinamento Feed Predefinito",
   "@defaultFeedSortType": {
     "description": "Default sorting type for the feed."
   },
@@ -1177,7 +1177,7 @@
   "@commentSwipeActions": {
     "description": "Setting for comment swipe actions"
   },
-  "defaultCommentSortType": "Tipo Ordinamento Commenti di Default",
+  "defaultCommentSortType": "Tipo Ordinamento Commenti Predefinito",
   "@defaultCommentSortType": {
     "description": "Setting for default comment sort type"
   },
@@ -1237,7 +1237,7 @@
   "@collapseInformation": {
     "description": "Describes the action to collapse information - used in FAB settings"
   },
-  "collapseParentCommentBodyOnGesture": "Nascondi Commento Genitore se Collassato",
+  "collapseParentCommentBodyOnGesture": "Nascondi Commento Genitore quando Ridotto",
   "@collapseParentCommentBodyOnGesture": {
     "description": "Toggle to collapse parent comment body on gesture."
   },
@@ -1295,7 +1295,7 @@
   "@databaseImportedSuccessfully": {
     "description": "Message shown to the user when the db was successfully imported"
   },
-  "defaultColor": "Default",
+  "defaultColor": "Predefinito",
   "@defaultColor": {
     "description": "Default setting value (e.g., color)"
   },
@@ -1617,7 +1617,7 @@
   },
   "searchTerm": "Cerca termine",
   "@searchTerm": {},
-  "theming": "Tematizzazione",
+  "theming": "Personalizzazione tema",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
   },
@@ -2503,7 +2503,7 @@
   },
   "mustBeLoggedIn": "Devi effettuare l'accesso",
   "@mustBeLoggedIn": {},
-  "postContentFontScale": "Scala Font Contenuto del Post",
+  "postContentFontScale": "Scala Font Contenuto Post",
   "@postContentFontScale": {
     "description": "Setting for post content font scale"
   },
@@ -2931,7 +2931,7 @@
   "@videoLinkHandlingExternal": {
     "description": "Description to Open video with an external application"
   },
-  "videoPlayerInApp": "Utilizzare player Thunder integrato",
+  "videoPlayerInApp": "Utilizza player Thunder integrato",
   "@videoPlayerInApp": {
     "description": "Description for using in-app video player"
   },
@@ -2954,5 +2954,29 @@
   "warning": "Avvertimento",
   "@warning": {
     "description": "Heading for warning dialogs"
+  },
+  "joined": "Iscritto il {x}",
+  "@joined": {
+    "description": "Describes the time when a user joined the site (or was created)"
+  },
+  "averagePosts": "{x} post/mese",
+  "@averagePosts": {
+    "description": "Describes the average number of posts created in the past month"
+  },
+  "settingsPageAppearancePosts": "Post",
+  "@settingsPageAppearancePosts": {
+    "description": "Theming posts page"
+  },
+  "totalPosts": "{x} Post",
+  "@totalPosts": {
+    "description": "The total posts created by a user"
+  },
+  "averageComments": "{x} commenti/mese",
+  "@averageComments": {
+    "description": "Describes the average number of comments created in the past month"
+  },
+  "averageContributions": "{x} contributi/mese",
+  "@averageContributions": {
+    "description": "Describes the average number of contributions (both posts and comments) in the past month"
   }
 }
