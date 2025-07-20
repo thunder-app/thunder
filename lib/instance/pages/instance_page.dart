@@ -15,6 +15,7 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
@@ -31,7 +32,7 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class InstancePage extends StatefulWidget {
-  final GetSiteResponse getSiteResponse;
+  final ThunderSiteResponse getSiteResponse;
   final bool? isBlocked;
 
   // This is needed (in addition to Site) specifically for blocking.
@@ -104,7 +105,7 @@ class _InstancePageState extends State<InstancePage> {
         providers: [
           BlocProvider.value(
             value: InstancePageCubit(
-              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!,
+              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId)!,
               resolutionInstance: (isUserLoggedIn ? accountInstance : currentAnonymousInstance)!,
               account: account,
             ),
@@ -113,7 +114,7 @@ class _InstancePageState extends State<InstancePage> {
             value: FeedBloc(
               account: Account(
                 id: '',
-                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId)!,
+                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId)!,
                 index: -1,
               ),
             ),
@@ -138,13 +139,13 @@ class _InstancePageState extends State<InstancePage> {
                         toolbarHeight: APP_BAR_HEIGHT,
                         title: ListTile(
                           title: Text(
-                            fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                            fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId) ?? '',
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                             softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
-                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
+                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.users ?? 0))}"),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                         ),
                         actions: [
@@ -156,7 +157,7 @@ class _InstancePageState extends State<InstancePage> {
                                 context.read<InstanceBloc>().add(InstanceActionEvent(
                                       instanceAction: InstanceAction.block,
                                       instanceId: widget.instanceId!,
-                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId),
+                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId),
                                       value: !isBlocked!,
                                     ));
                               },
@@ -168,7 +169,7 @@ class _InstancePageState extends State<InstancePage> {
                           if (viewType == SearchType.all)
                             IconButton(
                               tooltip: l10n.openInBrowser,
-                              onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                              onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.actorId),
                               icon: Icon(
                                 Icons.open_in_browser_rounded,
                                 semanticLabel: l10n.openInBrowser,
@@ -204,7 +205,7 @@ class _InstancePageState extends State<InstancePage> {
                                     HapticFeedback.mediumImpact();
                                     navigateToModlogPage(
                                       context,
-                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId) ?? '',
                                     );
                                   },
                                   icon: Icons.shield_rounded,
@@ -212,7 +213,7 @@ class _InstancePageState extends State<InstancePage> {
                                 ),
                                 if (viewType != SearchType.all)
                                   ThunderPopupMenuItem(
-                                    onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
+                                    onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.actorId),
                                     icon: Icons.open_in_browser_rounded,
                                     title: l10n.openInBrowser,
                                   ),
@@ -308,7 +309,7 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: ThunderInstance(widget.getSiteResponse.siteView.site)),
+                                child: InstanceView(site: widget.getSiteResponse.siteView),
                               ),
                             ),
                           ),
@@ -335,7 +336,7 @@ class _InstancePageState extends State<InstancePage> {
                                 return Material(
                                   child: user != null
                                       ? UserListEntry(
-                                          user: ThunderUser(user.person, userView: user),
+                                          user: ThunderUser.fromLemmyUserView(user.toJson()),
                                           resolutionInstance: state.resolutionInstance,
                                         )
                                       : Container(),

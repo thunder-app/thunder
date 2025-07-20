@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_header/user_header_actions.dart';
 import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/instance.dart';
@@ -128,15 +129,15 @@ class _UserInfo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         AutoSizeText(
-          user.name,
+          user.displayNameOrName,
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           maxLines: 1,
         ),
         UserFullNameWidget(
           context,
-          user.username,
+          user.name,
           user.displayName,
-          fetchInstanceNameFromUrl(user.url),
+          fetchInstanceNameFromUrl(user.actorId),
           autoSize: true,
           useDisplayName: false, // Override because we're showing display name above
         ),
@@ -163,11 +164,11 @@ class _UserStats extends StatelessWidget {
       children: [
         IconText(
           icon: Icon(Icons.wysiwyg_rounded, size: iconSize),
-          text: formatNumberToK(user.totalPosts ?? 0),
+          text: formatNumberToK(user.posts ?? 0),
         ),
         IconText(
           icon: Icon(Icons.chat_rounded, size: iconSize),
-          text: formatNumberToK(user.totalComments ?? 0),
+          text: formatNumberToK(user.comments ?? 0),
         ),
       ],
     );

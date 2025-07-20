@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
@@ -114,7 +114,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         setState(() => _userAction = UserAction.block);
         break;
       case UserBottomSheetAction.addUserLabel:
-        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.name, widget.user.url));
+        await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.displayNameOrName, widget.user.actorId));
         widget.onAction(UserAction.setUserLabel, null);
         Navigator.of(context).pop();
         break;
@@ -236,15 +236,15 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
+    final account = authState.siteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.id == widget.communityId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
-    final blockedUsers = authState.getSiteResponse?.myUser?.personBlocks ?? [];
+    final blockedUsers = authState.siteResponse?.myUser?.personBlocks ?? [];
 
-    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.url).isNotEmpty;
+    final isUserBlocked = blockedUsers.where((personBlockView) => personBlockView.person.actorId == widget.user.actorId).isNotEmpty;
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
     final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;
     // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
@@ -253,7 +253,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.user.url) {
+      if (account?.actorId == widget.user.actorId) {
         userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
       }
 

@@ -1,25 +1,29 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 
 enum PostSortType {
-  active,
-  hot,
-  new_,
-  old,
-  topDay,
-  topWeek,
-  topMonth,
-  topYear,
-  topAll,
-  mostComments,
-  newComments,
-  topHour,
-  topSixHour,
-  topTwelveHour,
-  topThreeMonths,
-  topSixMonths,
-  topNineMonths,
-  controversial,
-  scaled,
+  active('Active'),
+  hot('Hot'),
+  new_('New'),
+  old('Old'),
+  topDay('TopDay'),
+  topWeek('TopWeek'),
+  topMonth('TopMonth'),
+  topYear('TopYear'),
+  topAll('TopAll'),
+  mostComments('MostComments'),
+  newComments('NewComments'),
+  topHour('TopHour'),
+  topSixHour('TopSixHour'),
+  topTwelveHour('TopTwelveHour'),
+  topThreeMonths('TopThreeMonths'),
+  topSixMonths('TopSixMonths'),
+  topNineMonths('TopNineMonths'),
+  controversial('Controversial'),
+  scaled('Scaled');
+
+  final String value;
+
+  const PostSortType(this.value);
 }
 
 extension PostSortTypeMapping on PostSortType {

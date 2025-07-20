@@ -1,5 +1,5 @@
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/utils/global_context.dart';
 
 // Optimistically updates a comment
@@ -34,32 +34,17 @@ ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
       break;
   }
 
-  return comment.copyWith(
-    commentView: comment.internalCommentView?.copyWith(
-      myVote: voteType,
-      counts: comment.internalCommentView!.counts.copyWith(
-        score: newScore,
-        upvotes: newUpvotes,
-        downvotes: newDownvotes,
-      ),
-    ),
-  );
+  return comment.copyWith(myVote: voteType, score: newScore, upvotes: newUpvotes, downvotes: newDownvotes);
 }
 
 /// Optimistically saves a comment without sending the network request
 ThunderComment optimisticallySaveComment(ThunderComment comment, bool saved) {
-  return comment.copyWith(
-    commentView: comment.internalCommentView?.copyWith(
-      saved: saved,
-    ),
-  );
+  return comment.copyWith(saved: saved);
 }
 
 /// Optimistically deletes a comment without sending the network request
 ThunderComment optimisticallyDeleteComment(ThunderComment comment, bool deleted) {
-  return comment.copyWith(
-    comment: comment.internalComment.copyWith(deleted: deleted),
-  );
+  return comment.copyWith(deleted: deleted);
 }
 
 /// Builds a tree of [ThunderComment]s given a flattened list of [ThunderComment]s.
@@ -79,7 +64,7 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
   return root;
 }
 
-String cleanCommentContent(ThunderComment comment) => cleanComment(comment.body, comment.removed, comment.deleted);
+String cleanCommentContent(ThunderComment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
 
 String cleanComment(String commentContent, bool? commentRemoved, bool? commentDeleted) {
   String deletedByModerator = "deleted by moderator";

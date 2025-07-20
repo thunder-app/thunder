@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/modlog/enums/modlog_action_type.dart';
+import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -112,7 +115,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ScalableText(
-                    HtmlUnescape().convert(post.title),
+                    HtmlUnescape().convert(post.name),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     fontScale: state.titleFontSizeScale,
                   ),
@@ -125,7 +128,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         context,
                         community?.name,
                         community?.title,
-                        fetchInstanceNameFromUrl(community?.url),
+                        fetchInstanceNameFromUrl(community?.actorId),
                         fontScale: state.metadataFontSizeScale,
                         transformColor: (color) => color?.withValues(alpha: 0.75),
                       ),
@@ -215,7 +218,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           ),
                         ),
                         TextSpan(
-                          text: HtmlUnescape().convert(widget.post!.title),
+                          text: HtmlUnescape().convert(widget.post!.name),
                         )
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -229,7 +232,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                   AnimatedSize(
                     duration: const Duration(milliseconds: 100),
                     child: showSensitiveContent
-                        ? CommonMarkdownBody(body: widget.comment.body, isComment: true)
+                        ? CommonMarkdownBody(body: widget.comment.content, isComment: true)
                         : InkWell(
                             borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                             onTap: () => setState(() {
@@ -259,7 +262,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               borderRadius: BorderRadius.circular(6),
                               onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
                               child: ScalableText(
-                                '${widget.user?.displayName ?? widget.user?.name}',
+                                '${widget.user?.displayName ?? widget.user?.displayNameOrName}',
                                 fontScale: state.metadataFontSizeScale,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
@@ -281,7 +284,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             context,
                             widget.community?.name,
                             widget.community?.title,
-                            fetchInstanceNameFromUrl(widget.community?.url),
+                            fetchInstanceNameFromUrl(widget.community?.actorId),
                             fontScale: state.metadataFontSizeScale,
                             transformColor: textStyleCommunityAndAuthor,
                           ),
@@ -334,15 +337,15 @@ class ModlogUserItemContextCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScalableText(
-                      HtmlUnescape().convert(user?.displayName ?? user?.name ?? l10n.user),
+                      HtmlUnescape().convert(user?.displayName ?? user?.displayNameOrName ?? l10n.user),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       fontScale: state.titleFontSizeScale,
                     ),
                     UserFullNameWidget(
                       context,
-                      user?.name,
+                      user?.displayNameOrName,
                       user?.displayName,
-                      fetchInstanceNameFromUrl(user?.url),
+                      fetchInstanceNameFromUrl(user?.actorId),
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],
@@ -399,7 +402,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       context,
                       community?.name,
                       community?.title,
-                      fetchInstanceNameFromUrl(community?.url),
+                      fetchInstanceNameFromUrl(community?.actorId),
                       fontScale: state.metadataFontSizeScale,
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),

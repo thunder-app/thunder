@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -246,7 +246,7 @@ class PostAppBarActions extends StatelessWidget {
                     context,
                     profileModalHeading: l10n.viewPostAsDifferentAccount,
                     onUserChanged: onUserChanged,
-                    postActorId: context.read<PostBloc>().state.post?.url,
+                    postActorId: context.read<PostBloc>().state.post?.apId,
                     onPostChanged: onPostChanged,
                   );
                 },

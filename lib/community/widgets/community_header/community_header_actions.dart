@@ -7,6 +7,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/models/models.dart';
@@ -16,6 +17,7 @@ import 'package:thunder/feed/utils/community_share.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -26,7 +28,7 @@ class CommunityHeaderActions extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -55,7 +57,7 @@ class _CommunityActionsContent extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -104,7 +106,7 @@ class _ActionChipsList extends StatelessWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -134,7 +136,7 @@ class _ActionChipsList extends StatelessWidget {
     final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
     if (!isLoggedIn) return [_AnonymousSubscriptionChip(community: community)];
 
-    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.getSiteResponse?.myUser?.communityBlocks.any((block) => block.community.id == community.id) ?? false);
+    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.siteResponse?.myUser?.communityBlocks.any((block) => block.community.id == community.id) ?? false);
     if (blocked) return [_BlockActionChip(community: community)];
 
     return [
@@ -202,8 +204,8 @@ class _SubscriptionActionChip extends StatelessWidget {
     return BlocConsumer<CommunityBloc, CommunityState>(
       listener: _handleSubscriptionStateChange,
       builder: (context, state) => ThunderActionChip(
-        icon: _getSubscriptionIcon(community.subscribed),
-        label: _getSubscriptionLabel(community.subscribed),
+        icon: _getSubscriptionIcon(community.subscribed!),
+        label: _getSubscriptionLabel(community.subscribed!),
         onPressed: () {
           HapticFeedback.mediumImpact();
           handleSubscription(context, community);
@@ -252,7 +254,7 @@ class _AnonymousSubscriptionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
     final subscriptions = context.watch<AnonymousSubscriptionsBloc>().state.urls;
-    final isSubscribed = subscriptions.contains(community.url);
+    final isSubscribed = subscriptions.contains(community.actorId);
 
     return ThunderActionChip(
       icon: isSubscribed ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded,
@@ -261,7 +263,7 @@ class _AnonymousSubscriptionChip extends StatelessWidget {
         HapticFeedback.mediumImpact();
 
         if (isSubscribed) {
-          context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(urls: {community.url}));
+          context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(urls: {community.actorId}));
           showSnackbar(l10n.unsubscribed);
         } else {
           context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
@@ -348,11 +350,11 @@ class _BlockActionChip extends StatelessWidget {
   }
 
   bool _isCommunityBlocked(ProfileState state) {
-    if (state.getSiteResponse?.myUser?.communityBlocks == null) {
+    if (state.siteResponse?.myUser?.communityBlocks == null) {
       return false;
     }
 
-    final blockedCommunities = state.getSiteResponse!.myUser!.communityBlocks.map((block) => ThunderCommunity(block.community)).toList();
+    final blockedCommunities = state.siteResponse!.myUser!.communityBlocks.map((block) => block.community).toList();
     return blockedCommunities.any((blockedCommunity) => blockedCommunity.id == community.id);
   }
 }
@@ -394,7 +396,7 @@ class _ModlogActionChip extends StatelessWidget {
           context,
           community.name,
           community.title,
-          fetchInstanceNameFromUrl(community.url),
+          fetchInstanceNameFromUrl(community.actorId),
         ),
       ),
     );

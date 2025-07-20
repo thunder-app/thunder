@@ -27,7 +27,7 @@ class UserSettingsState extends Equatable {
     this.personBeingBlocked = 0,
     this.communityBeingBlocked = 0,
     this.instanceBeingBlocked = 0,
-    this.getSiteResponse,
+    this.siteResponse,
     this.errorMessage = '',
     this.images,
     this.imageSearchPosts,
@@ -36,15 +36,15 @@ class UserSettingsState extends Equatable {
 
   final UserSettingsStatus status;
 
-  final List<Person> personBlocks;
-  final List<Community> communityBlocks;
-  final List<Instance> instanceBlocks;
+  final List<ThunderUser> personBlocks;
+  final List<ThunderCommunity> communityBlocks;
+  final List<Map<String, dynamic>> instanceBlocks;
 
   final int personBeingBlocked;
   final int communityBeingBlocked;
   final int instanceBeingBlocked;
 
-  final GetSiteResponse? getSiteResponse;
+  final ThunderSiteResponse? siteResponse;
 
   final String? errorMessage;
   final List<LocalImageView>? images;
@@ -53,13 +53,13 @@ class UserSettingsState extends Equatable {
 
   UserSettingsState copyWith({
     required UserSettingsStatus status,
-    List<Person>? personBlocks,
-    List<Community>? communityBlocks,
-    List<Instance>? instanceBlocks,
+    List<ThunderUser>? personBlocks,
+    List<ThunderCommunity>? communityBlocks,
+    List<Map<String, dynamic>>? instanceBlocks,
     int? personBeingBlocked,
     int? communityBeingBlocked,
     int? instanceBeingBlocked,
-    GetSiteResponse? getSiteResponse,
+    ThunderSiteResponse? siteResponse,
     String? errorMessage,
     List<LocalImageView>? images,
     List<ThunderPost>? imageSearchPosts,
@@ -73,7 +73,7 @@ class UserSettingsState extends Equatable {
       personBeingBlocked: personBeingBlocked ?? this.personBeingBlocked,
       communityBeingBlocked: communityBeingBlocked ?? this.communityBeingBlocked,
       instanceBeingBlocked: instanceBeingBlocked ?? this.instanceBeingBlocked,
-      getSiteResponse: getSiteResponse ?? this.getSiteResponse,
+      siteResponse: siteResponse ?? this.siteResponse,
       errorMessage: errorMessage ?? this.errorMessage,
       images: images ?? this.images,
       imageSearchPosts: imageSearchPosts ?? this.imageSearchPosts,
@@ -90,7 +90,7 @@ class UserSettingsState extends Equatable {
         personBeingBlocked,
         communityBeingBlocked,
         instanceBeingBlocked,
-        getSiteResponse,
+        siteResponse,
         errorMessage,
         images,
       ];

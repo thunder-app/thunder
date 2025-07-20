@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';

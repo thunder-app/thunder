@@ -7,9 +7,10 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/share/advanced_share_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -108,13 +109,13 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.url)));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.apId)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
         SharePlus.instance.share(ShareParams(uri: Uri.parse(generateCommentUrl(comment!.id))));
         break;
       case ShareBottomSheetAction.sharePost:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.url)));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.apId)));
         break;
       case ShareBottomSheetAction.sharePostLocal:
         SharePlus.instance.share(ShareParams(uri: Uri.parse(generatePostUrl(post!.id))));
@@ -140,11 +141,11 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        return comment!.url;
+        return comment!.apId;
       case ShareBottomSheetAction.shareCommentLocal:
         return generateCommentUrl(comment!.id);
       case ShareBottomSheetAction.sharePost:
-        return post!.url;
+        return post!.apId;
       case ShareBottomSheetAction.sharePostLocal:
         return generatePostUrl(post!.id);
       case ShareBottomSheetAction.shareImage:
@@ -167,7 +168,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       userActions = [ShareBottomSheetAction.shareComment, ShareBottomSheetAction.shareCommentLocal];
 
       // Remove the share local option if it is the same as the original
-      if (widget.comment!.url == generateCommentUrl(widget.comment!.id)) {
+      if (widget.comment!.apId == generateCommentUrl(widget.comment!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.shareCommentLocal);
       }
     } else if (widget.post != null) {
@@ -192,7 +193,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       }
 
       // Remove the share local option if it is the same as the original
-      if (widget.post!.url == generatePostUrl(widget.post!.id)) {
+      if (widget.post!.apId == generatePostUrl(widget.post!.id)) {
         userActions.removeWhere((action) => action == ShareBottomSheetAction.sharePostLocal);
       }
     }

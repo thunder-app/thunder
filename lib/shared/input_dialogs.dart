@@ -8,14 +8,16 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -23,6 +25,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/marquee_widget.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -43,7 +46,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
         try {
           final account = context.read<ProfileBloc>().state.account;
           final response = await LemmyUserRepository(account: account).getUser(username: normalizedUsername);
-          final user = ThunderUser(response!.personView.person, userView: response.personView);
+          final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
 
           onUserSelected(user);
           Navigator.of(context).pop();
@@ -73,11 +76,11 @@ Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query)
   final account = context.read<ProfileBloc>().state.account;
   final response = await LemmySearchRepository(account: account).search(
     query: query,
-    type: SearchType.users,
+    type: MetaSearchType.users,
     limit: 20,
   );
 
-  final users = response.users.map((pv) => ThunderUser(pv.person, userView: pv)).toList();
+  final users = response.users.map((pv) => ThunderUser.fromLemmyUserView(pv.toJson())).toList();
   return users;
 }
 
@@ -85,16 +88,16 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
   return Tooltip(
     message: generateUserFullName(
       context,
-      payload.username,
+      payload.name,
       payload.displayName,
-      fetchInstanceNameFromUrl(payload.url),
+      fetchInstanceNameFromUrl(payload.actorId),
     ),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
         leading: UserAvatar(user: payload),
-        title: Text(payload.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(payload.displayNameOrName, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Semantics(
           excludeSemantics: true,
           child: Marquee(
@@ -103,9 +106,9 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
             pauseDuration: const Duration(seconds: 1),
             child: UserFullNameWidget(
               context,
-              payload.username,
+              payload.name,
               payload.displayName,
-              fetchInstanceNameFromUrl(payload.url),
+              fetchInstanceNameFromUrl(payload.actorId),
               // Override because we're showing display name above
               useDisplayName: false,
             ),
@@ -170,7 +173,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
   final account = context.read<ProfileBloc>().state.account;
   final response = await LemmySearchRepository(account: account).search(
     query: query,
-    type: SearchType.communities,
+    type: MetaSearchType.communities,
     limit: 20,
     sort: PostSortType.topAll,
   );
@@ -185,7 +188,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
     }
   }
 
-  final communities = response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+  final communities = response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   return prioritizeFavorites(communities, favorites) ?? [];
 }
 
@@ -199,7 +202,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
       context,
       payload.name,
       payload.title,
-      fetchInstanceNameFromUrl(payload.url),
+      fetchInstanceNameFromUrl(payload.actorId),
     ),
     preferBelow: false,
     child: InkWell(
@@ -220,7 +223,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   context,
                   payload.name,
                   payload.title,
-                  fetchInstanceNameFromUrl(payload.url),
+                  fetchInstanceNameFromUrl(payload.actorId),
                   // Override because we're showing display name above
                   useDisplayName: false,
                 ),
@@ -235,6 +238,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                       SubscriptionStatus.pending => l10n.pending,
                       SubscriptionStatus.subscribed => l10n.subscribed,
                       SubscriptionStatus.notSubscribed => '',
+                      _ => '',
                     }}'),
                   ],
                   if (_getFavoriteStatus(context, payload)) ...const [
@@ -340,11 +344,11 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 
 /// Shows a dialog which allows typing/search for an language
 void showLanguageInputDialog(BuildContext context,
-    {required String title, required void Function(Language) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<Language>? emptySuggestions}) async {
+    {required String title, required void Function(ThunderLanguage) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<ThunderLanguage>? emptySuggestions}) async {
   ProfileState state = context.read<ProfileBloc>().state;
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];
+  List<ThunderLanguage> languages = [ThunderLanguage(id: -1, code: '', name: l10n.noLanguage), ...(state.siteResponse?.allLanguages ?? [])];
   languages = languages.where((language) {
     if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
       return !excludedLanguageIds.contains(language.id);
@@ -352,12 +356,12 @@ void showLanguageInputDialog(BuildContext context,
     return true;
   }).toList();
 
-  Future<String?> onSubmitted({Language? payload, String? value}) async {
+  Future<String?> onSubmitted({ThunderLanguage? payload, String? value}) async {
     if (payload != null) {
       onLanguageSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final Language? language = languages.firstWhereOrNull((Language language) => language.name.toLowerCase().contains(value.toLowerCase()));
+      final ThunderLanguage? language = languages.firstWhereOrNull((ThunderLanguage language) => language.name.toLowerCase().contains(value.toLowerCase()));
 
       if (language != null) {
         onLanguageSelected(language);
@@ -371,7 +375,7 @@ void showLanguageInputDialog(BuildContext context,
   }
 
   if (context.mounted) {
-    showInputDialog<Language>(
+    showInputDialog<ThunderLanguage>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
@@ -382,10 +386,10 @@ void showLanguageInputDialog(BuildContext context,
   }
 }
 
-Future<List<Language>> getLanguageSuggestions(BuildContext context, String query, List<Language>? emptySuggestions) async {
+Future<List<ThunderLanguage>> getLanguageSuggestions(BuildContext context, String query, List<ThunderLanguage>? emptySuggestions) async {
   final Locale currentLocale = Localizations.localeOf(context);
 
-  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  final ThunderLanguage? currentLanguage = emptySuggestions?.firstWhereOrNull((ThunderLanguage l) => l.code == currentLocale.languageCode);
   if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
     emptySuggestions = emptySuggestions?.toList()
       ?..remove(currentLanguage)
@@ -396,11 +400,11 @@ Future<List<Language>> getLanguageSuggestions(BuildContext context, String query
     return emptySuggestions ?? [];
   }
 
-  List<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  List<ThunderLanguage> filteredLanguages = emptySuggestions?.where((ThunderLanguage language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
   return filteredLanguages;
 }
 
-Widget buildLanguageSuggestionWidget(Language payload, {void Function(Language)? onSelected, BuildContext? context}) {
+Widget buildLanguageSuggestionWidget(ThunderLanguage payload, {void Function(ThunderLanguage)? onSelected, BuildContext? context}) {
   return Tooltip(
     message: payload.name,
     preferBelow: false,

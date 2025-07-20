@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -120,7 +121,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
         ),
       GeneralCommentAction.user => UserActionBottomSheet(
           context: widget.context,
-          user: ThunderUser(widget.comment.creator!),
+          user: widget.comment.creator!,
           communityId: widget.comment.community!.id,
           isUserCommunityModerator: widget.comment.creatorIsModerator,
           isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,

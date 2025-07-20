@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a comment repository
@@ -94,7 +94,7 @@ class LemmyCommentRepository implements CommentRepository {
   Future<ThunderComment> getComment(int commentId) async {
     final response = await client.run(GetComment(id: commentId, auth: account.jwt));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -119,7 +119,7 @@ class LemmyCommentRepository implements CommentRepository {
       type: ListingType.all,
     ));
 
-    return response.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList();
+    return response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
   }
 
   @override
@@ -140,7 +140,7 @@ class LemmyCommentRepository implements CommentRepository {
       auth: account.jwt!,
     ));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -159,7 +159,7 @@ class LemmyCommentRepository implements CommentRepository {
       auth: account.jwt!,
     ));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -173,7 +173,7 @@ class LemmyCommentRepository implements CommentRepository {
       score: score,
     ));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -187,7 +187,7 @@ class LemmyCommentRepository implements CommentRepository {
       save: save,
     ));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -201,7 +201,7 @@ class LemmyCommentRepository implements CommentRepository {
       deleted: deleted,
     ));
 
-    return ThunderComment(comment: response.commentView.comment, commentView: response.commentView);
+    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
   }
 
   @override
@@ -329,6 +329,6 @@ class LemmyCommentRepository implements CommentRepository {
       creatorBlocked: false,
     );
 
-    return ThunderComment(comment: commentView.comment, commentView: commentView);
+    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }

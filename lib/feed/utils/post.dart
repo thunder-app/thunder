@@ -3,12 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/user/repository/user_repository.dart';
@@ -118,7 +119,7 @@ Future<Map<String, dynamic>> fetchFeedItems({
       List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts);
       posts.addAll(formattedPosts);
 
-      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment(comment: commentView.comment, commentView: commentView)));
+      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment.fromLemmyCommentView(commentView.toJson())));
 
       if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
       if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;

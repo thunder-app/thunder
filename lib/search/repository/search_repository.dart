@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/feed_list_type.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/account/account.dart';
 
@@ -14,7 +15,7 @@ abstract class SearchRepository {
   /// @TODO: Change the return type to an internal model
   Future<SearchResponse> search({
     required String query,
-    SearchType? type,
+    MetaSearchType? type,
     PostSortType? sort,
     FeedListType? listingType,
     int? limit,
@@ -42,7 +43,7 @@ class LemmySearchRepository implements SearchRepository {
   @override
   Future<SearchResponse> search({
     required String query,
-    SearchType? type,
+    MetaSearchType? type,
     PostSortType? sort,
     FeedListType? listingType,
     int? limit,
@@ -53,7 +54,7 @@ class LemmySearchRepository implements SearchRepository {
     final response = await client.run(Search(
       auth: account.jwt,
       q: query,
-      type: type,
+      type: type?.toLemmyType(),
       sort: sort?.toLemmyType(),
       listingType: listingType?.toLemmyType(),
       limit: limit,

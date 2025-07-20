@@ -1,27 +1,46 @@
-import 'package:lemmy_api_client/v3.dart';
+import 'package:lemmy_api_client/v3.dart' as lemmy;
+
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
-/// A wrapper around [SearchType] that includes instances
-class MetaSearchType {
-  static const MetaSearchType all = MetaSearchType(searchType: SearchType.all);
-  static const MetaSearchType comments = MetaSearchType(searchType: SearchType.comments);
-  static const MetaSearchType posts = MetaSearchType(searchType: SearchType.posts);
-  static const MetaSearchType communities = MetaSearchType(searchType: SearchType.communities);
-  static const MetaSearchType users = MetaSearchType(searchType: SearchType.users);
-  static const MetaSearchType url = MetaSearchType(searchType: SearchType.url);
-  static const MetaSearchType instances = MetaSearchType();
+enum MetaSearchType {
+  all(searchType: 'All'), // v0.18.0
+  comments(searchType: 'Comments'), // v0.18.0
+  posts(searchType: 'Posts'), // v0.18.0
+  communities(searchType: 'Communities'), // v0.18.0
+  users(searchType: 'Users'), // v0.18.0
+  url(searchType: 'Url'), // v0.18.0
+  instances(), // Custom
+  ;
 
-  /// The underlying [SearchType], if applicable
-  final SearchType? searchType;
+  final String? searchType;
+
+  const MetaSearchType({this.searchType});
 
   /// A user-friendly name
   String get name =>
-      searchType?.name ??
+      searchType ??
       switch (this) {
         instances => AppLocalizations.of(GlobalContext.context)!.instance(2),
         _ => '',
       };
 
-  const MetaSearchType({this.searchType});
+  lemmy.SearchType toLemmyType() {
+    switch (this) {
+      case MetaSearchType.all:
+        return lemmy.SearchType.all;
+      case MetaSearchType.comments:
+        return lemmy.SearchType.comments;
+      case MetaSearchType.posts:
+        return lemmy.SearchType.posts;
+      case MetaSearchType.communities:
+        return lemmy.SearchType.communities;
+      case MetaSearchType.users:
+        return lemmy.SearchType.users;
+      case MetaSearchType.url:
+        return lemmy.SearchType.url;
+      case MetaSearchType.instances:
+        throw UnimplementedError();
+    }
+  }
 }

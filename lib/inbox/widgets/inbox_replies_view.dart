@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/extensions/comment_reply_view.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 

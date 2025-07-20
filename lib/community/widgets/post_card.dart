@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/utils/post_actions.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
@@ -112,10 +112,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _onPointerUp() {
-    final int? myVote = widget.post.voteType;
-    final bool saved = widget.post.saved;
-    final bool read = widget.post.read;
-    final bool hidden = widget.post.hidden;
+    final int? myVote = widget.post.myVote;
+    final bool saved = widget.post.saved ?? false;
+    final bool read = widget.post.read ?? false;
+    final bool hidden = widget.post.hidden ?? false;
 
     _updateOverridingSwipe(false);
 
@@ -279,8 +279,8 @@ class _PostCardState extends State<PostCard> {
           dismissThreshold: dismissThreshold,
           firstActionThreshold: firstActionThreshold,
           dismissDirection: dismissDirection ?? DismissDirection.startToEnd,
-          read: read,
-          hidden: hidden,
+          read: read ?? false,
+          hidden: hidden ?? false,
         ),
         child: child,
       );

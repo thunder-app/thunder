@@ -22,11 +22,11 @@ class ModlogItemCard extends StatelessWidget {
     final l10n = GlobalContext.l10n;
 
     if (modlogEventItem.moderator != null) {
-      return l10n.performedBy(modlogEventItem.moderator!.name);
+      return l10n.performedBy(modlogEventItem.moderator!.displayNameOrName);
     }
 
     if (modlogEventItem.admin != null) {
-      return l10n.performedBy(modlogEventItem.admin!.name);
+      return l10n.performedBy(modlogEventItem.admin!.displayNameOrName);
     }
 
     switch (modlogEventItem.type) {

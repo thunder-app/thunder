@@ -1,6 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
-import 'package:thunder/core/models/models.dart';
 
 extension CommentReplyViewExtension on CommentReplyView {
   ThunderComment toComment() {
@@ -17,6 +17,6 @@ extension CommentReplyViewExtension on CommentReplyView {
       myVote: myVote as int?,
     );
 
-    return ThunderComment(comment: comment, commentView: commentView);
+    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }

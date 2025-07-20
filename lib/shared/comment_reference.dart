@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
@@ -90,8 +90,8 @@ class _CommentReferenceState extends State<CommentReference> {
     assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have both a creator and community');
 
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.title)}\n
-          ${fetchInstanceNameFromUrl(widget.comment.community!.url)}\n
+      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community!.name, widget.comment.post!.name)}\n
+          ${fetchInstanceNameFromUrl(widget.comment.community!.actorId)}\n
           ${widget.comment.creator!.name}\n
           ${widget.comment.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.upvotes!))}\n
           ${widget.comment.downvotes == 0 ? '' : AppLocalizations.of(context)!.xDownvotes(formatNumberToK(widget.comment.downvotes!))}\n
@@ -126,7 +126,7 @@ class _CommentReferenceState extends State<CommentReference> {
                               Flexible(
                                 child: ExcludeSemantics(
                                   child: Text(
-                                    widget.comment.post?.title ?? '',
+                                    widget.comment.post?.name ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -154,7 +154,7 @@ class _CommentReferenceState extends State<CommentReference> {
                                   context,
                                   widget.comment.community?.name,
                                   widget.comment.community?.title,
-                                  fetchInstanceNameFromUrl(widget.comment.community?.url),
+                                  fetchInstanceNameFromUrl(widget.comment.community?.actorId),
                                   fontScale: state.contentFontSizeScale,
                                   transformColor: (color) => color?.withValues(alpha: 0.75),
                                 ),

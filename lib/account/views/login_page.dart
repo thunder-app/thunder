@@ -480,17 +480,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       } else {
         // Check for content warning on anyonmous instance
         final account = Account(id: '', instance: _instanceTextEditingController.text, index: -1);
-        final getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo();
+        final siteResponse = await LemmyInstanceRepository(account: account).getSiteInfo();
 
         bool acceptedContentWarning = true;
 
-        if (getSiteResponse.siteView.site.contentWarning?.isNotEmpty == true) {
+        if (siteResponse.siteView.contentWarning?.isNotEmpty == true) {
           acceptedContentWarning = false;
 
           await showThunderDialog<void>(
             context: context,
             title: l10n.contentWarning,
-            contentText: getSiteResponse.siteView.site.contentWarning,
+            contentText: siteResponse.siteView.contentWarning,
             onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
             secondaryButtonText: l10n.decline,
             onPrimaryButtonPressed: (dialogContext, _) async {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 // Project imports

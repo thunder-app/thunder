@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/community/widgets/community_header/community_header_actions.dart';
 import 'package:thunder/community/widgets/community_information.dart';
@@ -9,6 +10,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -22,7 +24,7 @@ class CommunityHeader extends StatefulWidget {
   final ThunderCommunity community;
 
   /// Instance of the community
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// List of moderators for the community
   final List<ThunderUser> moderators;
@@ -129,7 +131,7 @@ class _CommunityInfo extends StatelessWidget {
           context,
           community.name,
           community.title,
-          fetchInstanceNameFromUrl(community.url),
+          fetchInstanceNameFromUrl(community.actorId),
           useDisplayName: false, // Override because we're showing title above
         ),
         const SizedBox(height: 8.0),
@@ -159,7 +161,7 @@ class _CommunityStats extends StatelessWidget {
         ),
         IconText(
           icon: Icon(Icons.library_books_rounded, size: iconSize),
-          text: formatNumberToK(community.totalPosts ?? 0),
+          text: formatNumberToK(community.posts ?? 0),
         ),
       ],
     );

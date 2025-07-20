@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
@@ -42,7 +42,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     super.dispose();
   }
 
-  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<Person> persons) {
+  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<ThunderUser> persons) {
     final l10n = AppLocalizations.of(context)!;
 
     return persons.map((person) {
@@ -65,7 +65,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: UserAvatar(user: ThunderUser(person)),
+          leading: UserAvatar(user: person),
           trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
@@ -87,7 +87,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<Community> communities) {
+  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<ThunderCommunity> communities) {
     final l10n = AppLocalizations.of(context)!;
 
     return communities.map((community) {
@@ -110,7 +110,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             // Override because we're showing display name above
             useDisplayName: false,
           ),
-          leading: CommunityAvatar(community: ThunderCommunity(community), radius: 16.0),
+          leading: CommunityAvatar(community: community, radius: 16.0),
           trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
@@ -132,23 +132,23 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Instance> instances) {
+  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Map<String, dynamic>> instances) {
     final l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
 
     return instances.map((instance) {
       return Tooltip(
-        message: instance.domain,
+        message: instance['domain'],
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-          title: Text(instance.domain, overflow: TextOverflow.ellipsis),
+          title: Text(instance['domain'], overflow: TextOverflow.ellipsis),
           leading: CircleAvatar(
             backgroundColor: theme.colorScheme.secondaryContainer,
             maxRadius: 16.0,
             child: Text(
-              instance.domain[0].toUpperCase(),
+              instance['domain'][0].toUpperCase(),
               semanticsLabel: "",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -156,7 +156,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               ),
             ),
           ),
-          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance.id
+          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance['id']
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -167,10 +167,10 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id)),
+                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance['id'])),
                 ),
           onTap: () {
-            navigateToInstancePage(context, instanceHost: instance.domain, instanceId: instance.id);
+            navigateToInstancePage(context, instanceHost: instance['domain'], instanceId: instance['id']);
           },
         ),
       );

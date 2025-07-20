@@ -7,14 +7,16 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
@@ -23,6 +25,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
@@ -126,7 +129,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
     // Logic for pre-populating the comment with the [post] for edits
     if (widget.comment != null) {
-      _bodyTextController.text = widget.comment!.body;
+      _bodyTextController.text = widget.comment!.content;
       languageId = widget.comment!.languageId;
     }
 
@@ -202,7 +205,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
             Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-            _bodyTextController.text = widget.comment?.body ?? '';
+            _bodyTextController.text = widget.comment?.content ?? '';
           },
           closable: true,
         );
@@ -227,7 +230,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       return true;
     }
 
-    return draft.body != widget.comment!.body;
+    return draft.body != widget.comment!.content;
   }
 
   @override
@@ -346,9 +349,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: UserSelector(
                                       profileModalHeading: l10n.selectAccountToCommentAs,
-                                      postActorId: widget.post?.url,
-                                      onPostChanged: (post) => postId = post.id,
-                                      parentCommentActorId: widget.parentComment?.url,
+                                      postActorId: widget.post?.apId,
+                                      onPostChanged: (ThunderPost post) => postId = post.id,
+                                      parentCommentActorId: widget.parentComment?.apId,
                                       onParentCommentChanged: (ThunderComment parentComment) {
                                         postId = parentComment.postId;
                                         parentCommentId = parentComment.id;
@@ -362,7 +365,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                     child: LanguageSelector(
                                       languageId: languageId,
-                                      onLanguageSelected: (Language? language) {
+                                      onLanguageSelected: (ThunderLanguage? language) {
                                         setState(() => languageId = language?.id);
                                       },
                                     ),
@@ -432,20 +435,20 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   ],
                                   customTapActions: {
                                     MarkdownType.username: () {
-                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (user) {
+                                      showUserInputDialog(context, title: l10n.username, onUserSelected: (ThunderUser user) {
                                         _bodyTextController.text = _bodyTextController.text.replaceRange(
                                           _bodyTextController.selection.end,
                                           _bodyTextController.selection.end,
-                                          '[@${user.username}@${fetchInstanceNameFromUrl(user.url)}](${user.url})',
+                                          '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
                                         );
                                       });
                                     },
                                     MarkdownType.community: () {
-                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
+                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (ThunderCommunity community) {
                                         _bodyTextController.text = _bodyTextController.text.replaceRange(
                                           _bodyTextController.selection.end,
                                           _bodyTextController.selection.end,
-                                          '!${community.name}@${fetchInstanceNameFromUrl(community.url)}',
+                                          '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}',
                                         );
                                       });
                                     },

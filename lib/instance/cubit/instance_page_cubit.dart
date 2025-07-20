@@ -3,9 +3,12 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/enums.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/utils/error_messages.dart';
@@ -31,7 +34,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.communities,
+        type: MetaSearchType.communities,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -40,7 +43,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       emit(state.copyWith(
         status: searchResponse.communities.isEmpty || searchResponse.communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv))],
+        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson()))],
         page: page ?? 1,
       ));
     } catch (e) {
@@ -54,7 +57,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.users,
+        type: MetaSearchType.users,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -77,7 +80,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.posts,
+        type: MetaSearchType.posts,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
@@ -100,14 +103,14 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     try {
       final searchResponse = await searchRepository.search(
         query: '',
-        type: SearchType.comments,
+        type: MetaSearchType.comments,
         sort: postSortType,
         listingType: FeedListType.local,
         limit: _pageLimit,
         page: page ?? 1,
       );
 
-      List<ThunderComment> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv))];
+      List<ThunderComment> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))];
       List<ThunderComment> commentsFinal = [];
 
       // Create a temporary Account object to use for the request
@@ -115,8 +118,8 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       for (final comment in comments) {
         try {
-          final resolveObjectResponse = await LemmySearchRepository(account: account).resolve(query: comment.url);
-          final resolvedComment = ThunderComment(comment: resolveObjectResponse.comment!.comment, commentView: resolveObjectResponse.comment!);
+          final resolveObjectResponse = await LemmySearchRepository(account: account).resolve(query: comment.apId);
+          final resolvedComment = ThunderComment.fromLemmyCommentView(resolveObjectResponse.comment!.toJson());
           commentsFinal.add(resolvedComment);
         } catch (e) {
           // If we can't resolve it, we won't even add it

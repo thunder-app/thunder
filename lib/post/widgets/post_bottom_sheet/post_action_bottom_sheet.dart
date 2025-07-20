@@ -3,18 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/community_post_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/general_post_action_bottom_sheet.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_post_action_bottom_sheet.dart';
 import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
@@ -84,14 +86,14 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   String? generateSubtitle(GeneralPostAction page) {
     ThunderPost post = widget.post;
 
-    String? communityInstance = fetchInstanceNameFromUrl(post.community?.url);
-    String? userInstance = fetchInstanceNameFromUrl(post.creator?.url);
+    String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
+    String? userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.url));
+        return generateUserFullName(context, post.creator?.displayNameOrName, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.actorId));
       case GeneralPostAction.community:
-        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.url));
+        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
       case GeneralPostAction.instance:
         return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
       default:
@@ -137,9 +139,9 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
           userInstanceId: widget.post.creator?.instanceId,
-          userInstanceUrl: widget.post.creator?.url,
+          userInstanceUrl: widget.post.creator?.actorId,
           communityInstanceId: widget.post.community?.instanceId,
-          communityInstanceUrl: widget.post.community?.url,
+          communityInstanceUrl: widget.post.community?.actorId,
           onAction: () {},
         ),
       GeneralPostAction.share => ShareActionBottomSheet(

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_information.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -21,7 +23,7 @@ class CommunityInformation extends StatelessWidget {
   final ThunderCommunity community;
 
   /// The instance that the community is hosted on
-  final ThunderInstance? instance;
+  final ThunderSite? instance;
 
   /// The moderators of the community
   final List<ThunderUser> moderators;
@@ -80,16 +82,16 @@ class CommunityStatsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (community.local != null) ...[
+        ...[
           SidebarStat(
-            icon: community.local! ? Icons.house_rounded : Icons.language_rounded,
-            value: l10n.visibility(community.local! ? CommunityVisibility.localOnly : CommunityVisibility.public),
+            icon: community.local ? Icons.house_rounded : Icons.language_rounded,
+            value: l10n.visibility(community.local ? CommunityVisibility.localOnly : CommunityVisibility.public),
           ),
           const SizedBox(height: 8.0),
         ],
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.created(DateFormat.yMMMMd().format(community.created))} · ${l10n.ago(formatTimeToString(dateTime: community.created.toIso8601String()))}',
+          value: '${l10n.created(DateFormat.yMMMMd().format(community.published))} · ${l10n.ago(formatTimeToString(dateTime: community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
@@ -103,11 +105,11 @@ class CommunityStatsList extends StatelessWidget {
           ),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.totalPosts)),
+          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.totalComments)),
+          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.comments)),
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
@@ -159,7 +161,7 @@ class CommunityModeratorList extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.55,
                         child: Text(
-                          moderator.name,
+                          moderator.displayNameOrName,
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
@@ -167,9 +169,9 @@ class CommunityModeratorList extends StatelessWidget {
                       ),
                       UserFullNameWidget(
                         context,
-                        moderator.username,
+                        moderator.name,
                         moderator.displayName,
-                        fetchInstanceNameFromUrl(moderator.url),
+                        fetchInstanceNameFromUrl(moderator.actorId),
                         textStyle: const TextStyle(fontSize: 13.0),
                         transformColor: (color) => color?.withValues(alpha: 0.6),
                         useDisplayName: false, // Override because we're showing display name above

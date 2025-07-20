@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -34,9 +34,9 @@ class CommentCardHeader extends StatelessWidget {
     final List<UserType> groups = [];
 
     if (comment.creator?.botAccount == true) groups.add(UserType.bot);
-    if (comment.creatorIsModerator) groups.add(UserType.moderator);
-    if (comment.creatorIsAdmin) groups.add(UserType.admin);
-    if (comment.postCreatorId == comment.creatorId) groups.add(UserType.op);
+    if (comment.creatorIsModerator == true) groups.add(UserType.moderator);
+    if (comment.creatorIsAdmin == true) groups.add(UserType.admin);
+    if (comment.post?.creator?.id == comment.creatorId) groups.add(UserType.op);
     if (comment.creatorId == accountId) groups.add(UserType.self);
 
     final now = DateTime.now();
@@ -78,8 +78,8 @@ class CommentCardHeader extends StatelessWidget {
                   spacing: 8.0,
                   children: [
                     UserChip(
-                      user: ThunderUser(comment.creator!),
-                      personAvatar: UserAvatar(user: ThunderUser(comment.creator!), radius: 10, thumbnailSize: 20, format: 'png'),
+                      user: comment.creator!,
+                      personAvatar: UserAvatar(user: comment.creator!, radius: 10, thumbnailSize: 20, format: 'png'),
                       userGroups: userGroups,
                       includeInstance: commentShowUserInstance,
                       ignorePointerEvents: hidden && collapseParentCommentOnGesture,
@@ -225,7 +225,7 @@ class CommentCardHeaderScore extends StatelessWidget {
 
     final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
 
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true);
+    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
     final combineCommentScores = context.select((ThunderBloc bloc) => bloc.state.combineCommentScores);
 
     // Show only vote indicator if scores are hidden

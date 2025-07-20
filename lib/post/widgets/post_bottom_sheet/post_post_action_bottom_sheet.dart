@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
@@ -204,9 +204,9 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<PostPostAction> adminActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.url).isNotEmpty;
+    final account = authState.siteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
@@ -219,7 +219,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     if (!isLoggedIn) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.post.creator?.url) {
+      if (account?.actorId == widget.post.creator?.actorId) {
         userActions = userActions.where((action) => action != PostPostAction.reportPost).toList();
       } else {
         userActions = userActions.where((action) => action != PostPostAction.editPost && action != PostPostAction.deletePost && action != PostPostAction.restorePost).toList();

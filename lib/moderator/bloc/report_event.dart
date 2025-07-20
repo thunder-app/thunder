@@ -45,7 +45,7 @@ final class ReportFeedChangeFilterTypeEvent extends ReportEvent {
 
 final class ReportFeedItemActionedEvent extends ReportEvent {
   /// This is the original PostReportView to perform the action upon. Only one of [postReportView] or [commentReportView] should be set
-  final PostReportView? postReportView;
+  final ThunderPostReport? postReportView;
 
   /// This is the original CommentReportView to perform the action upon. Only one of [postReportView] or [commentReportView] should be set
   final CommentReportView? commentReportView;

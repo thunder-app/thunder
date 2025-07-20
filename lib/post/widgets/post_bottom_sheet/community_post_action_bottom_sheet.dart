@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/divider.dart';
@@ -96,15 +97,13 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<CommunityPostAction> adminActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    // final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.url).isNotEmpty;
-    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.post.community?.actorId).isNotEmpty;
 
     final isLoggedIn = authState.isLoggedIn;
-    final blockedCommunities = authState.getSiteResponse?.myUser?.communityBlocks ?? [];
+    final blockedCommunities = authState.siteResponse?.myUser?.communityBlocks ?? [];
 
-    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.url).isNotEmpty;
+    final isCommunityBlocked = blockedCommunities.where((cbv) => cbv.community.actorId == widget.post.community?.actorId).isNotEmpty;
     final isSubscribedToCommunity = widget.post.subscribed != SubscriptionStatus.notSubscribed;
 
     if (!isLoggedIn) {

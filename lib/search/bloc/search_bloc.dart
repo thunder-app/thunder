@@ -4,8 +4,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
 import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -15,6 +17,7 @@ import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
@@ -144,7 +147,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       } else {
         searchResponse = await searchRepository.search(
           query: event.query,
-          type: event.searchType.searchType,
+          type: event.searchType,
           sort: event.postSortType,
           listingType: event.feedListType,
           limit: 15,
@@ -187,9 +190,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList(), event.favoriteCommunities),
+        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
-        comments: searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)).toList(),
+        comments: searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
         posts: await parsePosts(searchResponse?.posts ?? []),
         instances: instances,
         page: 2,
@@ -222,7 +225,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           } else {
             searchResponse = await searchRepository.search(
               query: event.query,
-              type: event.searchType.searchType,
+              type: event.searchType,
               sort: event.postSortType,
               listingType: event.feedListType,
               limit: 15,
@@ -237,9 +240,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)) ?? []];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
-          state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment(comment: cv.comment, commentView: cv)) ?? []];
+          state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())) ?? []];
           state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts ?? [])];
 
           return emit(state.copyWith(

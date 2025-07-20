@@ -8,7 +8,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/chips/community_chip.dart';
@@ -114,7 +114,7 @@ class PostBodyTitle extends StatelessWidget {
     final titleFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.titleFontSizeScale);
 
     return ScalableText(
-      HtmlUnescape().convert(post.title),
+      HtmlUnescape().convert(post.name),
       fontScale: titleFontSizeScale,
       style: theme.textTheme.titleMedium,
     );
@@ -174,11 +174,11 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
   void determineUserGroups() {
     final profileState = context.read<ProfileBloc>().state;
 
-    if (widget.post.creator?.bot == true) userGroups.add(UserType.bot);
+    if (widget.post.creator?.botAccount == true) userGroups.add(UserType.bot);
     if (widget.post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (widget.post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (widget.post.creator?.id == profileState.account.userId) userGroups.add(UserType.self);
-    if (widget.post.creator?.created.month == DateTime.now().month && widget.post.creator?.created.day == DateTime.now().day) userGroups.add(UserType.birthday);
+    if (widget.post.creator?.published.month == DateTime.now().month && widget.post.creator?.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
   }
 
   @override
@@ -211,7 +211,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
           communityAvatar: CommunityAvatar(community: community, radius: 8, thumbnailSize: 20, format: 'png'),
           communityName: community.name,
           communityTitle: community.title,
-          communityUrl: community.url,
+          communityUrl: community.actorId,
           includeInstance: postBodyShowCommunityInstance,
         )
       ],

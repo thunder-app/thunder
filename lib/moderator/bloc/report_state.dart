@@ -8,7 +8,7 @@ final class ReportState extends Equatable {
     this.reportFeedType = ReportFeedType.post,
     this.showResolved = false,
     this.communityId,
-    this.postReports = const [],
+    this.postReports = const <ThunderPostReport>[],
     this.commentReports = const [],
     this.hasReachedPostReportsEnd = false,
     this.hasReachedCommentReportsEnd = false,
@@ -29,7 +29,7 @@ final class ReportState extends Equatable {
   final int? communityId;
 
   /// The list of post reports
-  final List<PostReportView> postReports;
+  final List<ThunderPostReport> postReports;
 
   /// The list of comment reports
   final List<CommentReportView> commentReports;
@@ -51,7 +51,7 @@ final class ReportState extends Equatable {
     ReportFeedType? reportFeedType,
     bool? showResolved,
     int? communityId,
-    List<PostReportView>? postReports,
+    List<ThunderPostReport>? postReports,
     List<CommentReportView>? commentReports,
     bool? hasReachedPostReportsEnd,
     bool? hasReachedCommentReportsEnd,

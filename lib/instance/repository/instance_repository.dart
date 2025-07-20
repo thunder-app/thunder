@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a instance repository
 abstract class InstanceRepository {
   /// Fetches the site info
-  /// TODO: Switch from GetSiteResponse to ThunderSite or ThunderInstance
-  Future<GetSiteResponse> getSiteInfo();
+  Future<ThunderSiteResponse> getSiteInfo();
 
   /// Blocks a given instance
   Future<BlockInstanceResponse> block(int instanceId, bool block);
@@ -33,10 +33,11 @@ class LemmyInstanceRepository implements InstanceRepository {
   }
 
   @override
-  Future<GetSiteResponse> getSiteInfo() async {
+  Future<ThunderSiteResponse> getSiteInfo() async {
     final response = await client.run(GetSite(auth: account.jwt));
 
-    return response;
+    // Convert the Lemmy API response to our Thunder model
+    return ThunderSiteResponse.fromLemmySiteResponse(response.toJson());
   }
 
   @override

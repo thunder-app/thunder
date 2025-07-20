@@ -246,7 +246,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         color: currentAccount.anonymous == false && currentAccount.id == accounts![index].account.id ? selectedColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
-                          onTap: (currentAccount == accounts![index].account.id)
+                          onTap: (currentAccount.id == accounts![index].account.id)
                               ? null
                               : () {
                                   context.read<ProfileBloc>().add(SwitchProfile(accountId: accounts![index].account.id, reload: widget.reloadOnSave));
@@ -284,7 +284,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       height: 12,
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: currentAccount == accounts![index].account.id ? selectedColor : null,
+                                        color: currentAccount.id == accounts![index].account.id ? selectedColor : null,
                                       ),
                                     ),
                                   ),

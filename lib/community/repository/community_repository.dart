@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/models.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a community repository
@@ -52,9 +54,9 @@ class LemmyCommunityRepository implements CommunityRepository {
     final response = await client.run(GetCommunity(auth: account.jwt, id: id, name: name));
 
     return {
-      "community": ThunderCommunity(response.communityView.community, communityView: response.communityView),
-      "instance": response.site != null ? ThunderInstance(response.site!) : null,
-      "moderators": response.moderators.map((mod) => ThunderUser(mod.moderator)).toList(),
+      "community": ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson()),
+      "instance": response.site != null ? ThunderSite.fromLemmySite(response.site!.toJson()) : null,
+      "moderators": response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList(),
     };
   }
 
@@ -64,7 +66,7 @@ class LemmyCommunityRepository implements CommunityRepository {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await client.run(FollowCommunity(auth: account.jwt!, communityId: communityId, follow: follow));
-    return ThunderCommunity(response.communityView.community, communityView: response.communityView);
+    return ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
   }
 
   @override
@@ -102,6 +104,6 @@ class LemmyCommunityRepository implements CommunityRepository {
       auth: account.jwt,
     ));
 
-    return response.communities.map((cv) => ThunderCommunity(cv.community, communityView: cv)).toList();
+    return response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
   }
 }

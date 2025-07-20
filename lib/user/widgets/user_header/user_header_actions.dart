@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/post/post.dart';
@@ -12,6 +12,7 @@ import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -130,7 +131,7 @@ class _ActionChipsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final myUserId = context.read<ProfileBloc>().state.getSiteResponse?.myUser?.localUserView.person.id;
+    final myUserId = context.read<ProfileBloc>().state.siteResponse?.myUser?.localUserView.person.id;
     final isOwnProfile = user.id == myUserId;
 
     return Row(
@@ -140,7 +141,7 @@ class _ActionChipsList extends StatelessWidget {
         if (isOwnProfile) _SavedActionChip(),
         _SortActionChip(),
         if (!isOwnProfile) _LabelActionChip(user: user),
-        if (isLoggedIn && !isOwnProfile && user.admin != true) _BlockActionChip(user: user),
+        if (isLoggedIn && !isOwnProfile && user.isAdmin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
     );
@@ -326,7 +327,7 @@ class _LabelActionChip extends StatelessWidget {
       label: l10n.label,
       onPressed: () async => await showUserLabelEditorDialog(
         context,
-        UserLabel.usernameFromParts(user.name, user.url),
+        UserLabel.usernameFromParts(user.displayNameOrName, user.actorId),
       ),
     );
   }
@@ -364,11 +365,11 @@ class _BlockActionChip extends StatelessWidget {
   }
 
   bool _isUserBlocked(ProfileState state) {
-    if (state.getSiteResponse?.myUser?.personBlocks == null) {
+    if (state.siteResponse?.myUser?.personBlocks == null) {
       return false;
     }
 
-    final blockedUsers = state.getSiteResponse!.myUser!.personBlocks.map((block) => ThunderUser(block.target)).toList();
+    final blockedUsers = state.siteResponse!.myUser!.personBlocks.map((block) => block.target).toList();
     return blockedUsers.any((blockedUser) => blockedUser.id == user.id);
   }
 }
@@ -398,7 +399,7 @@ class _ShareActionChip extends StatelessWidget {
         final state = context.read<FeedBloc>().state;
 
         if (state.fullPersonView?.personView != null) {
-          showUserShareSheet(context, state.fullPersonView!.personView);
+          showUserShareSheet(context, ThunderUser.fromLemmyUserView(state.fullPersonView!.personView.toJson()));
         } else {
           debugPrint('Unable to share user: person view not available');
         }

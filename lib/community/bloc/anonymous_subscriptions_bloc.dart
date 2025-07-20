@@ -7,7 +7,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/community/helpers/anonymous_subscriptions_helper.dart';
 import 'package:thunder/community/models/anonymous_subscriptions.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 part 'anonymous_subscriptions_event.dart';
 part 'anonymous_subscriptions_state.dart';
@@ -32,7 +32,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
       emit(
         state.copyWith(
           status: AnonymousSubscriptionsStatus.success,
-          subscriptions: [...state.subscriptions]..removeWhere((e) => event.urls.contains(e.url)),
+          subscriptions: [...state.subscriptions]..removeWhere((e) => event.urls.contains(e.actorId)),
           urls: {...state.urls}..removeAll(event.urls),
         ),
       );
@@ -44,7 +44,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
   FutureOr<void> _addSubscriptions(AddSubscriptionsEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
     try {
       // Filter out already subscribed communities
-      final communities = event.communities.where((community) => !state.urls.contains(community.url)).toList();
+      final communities = event.communities.where((ThunderCommunity community) => !state.urls.contains(community.actorId)).toList();
       if (communities.isEmpty) return;
 
       await insertSubscriptions(communities.toSet());
@@ -53,7 +53,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
         state.copyWith(
           status: AnonymousSubscriptionsStatus.success,
           subscriptions: [...state.subscriptions, ...communities],
-          urls: {...state.urls}..addAll(communities.map((e) => e.url)),
+          urls: {...state.urls}..addAll(communities.map((e) => e.actorId)),
         ),
       );
     } catch (e) {
@@ -71,7 +71,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
       Map<String, ThunderCommunity> communities = {};
 
       for (final community in subscribedCommunities) {
-        communities[community.url] = community;
+        communities[community.actorId] = community;
       }
 
       emit(

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_header/user_header.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -87,16 +88,16 @@ class UserStatsList extends StatelessWidget {
       children: [
         SidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.joined(DateFormat.yMMMMd().format(user.created))} · ${l10n.ago(formatTimeToString(dateTime: user.created.toIso8601String()))}',
+          value: '${l10n.joined(DateFormat.yMMMMd().format(user.published))} · ${l10n.ago(formatTimeToString(dateTime: user.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.totalPosts)),
+          value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.totalComments)),
+          value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.comments)),
         ),
       ],
     );
@@ -114,23 +115,23 @@ class UserActivityList extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final accountAge = DateTime.now().difference(user.created);
+    final accountAge = DateTime.now().difference(user.published);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
 
-    final totalContributions = ((user.totalPosts ?? 0) + (user.totalComments ?? 0));
+    final totalContributions = ((user.posts ?? 0) + (user.comments ?? 0));
     final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
 
     int postsPerMonth;
     int commentsPerMonth;
 
-    if (user.totalPosts != null && user.totalPosts != 0) {
-      postsPerMonth = (user.totalPosts! / accountAgeMonths).truncate();
+    if (user.posts != null && user.posts != 0) {
+      postsPerMonth = (user.posts! / accountAgeMonths).truncate();
     } else {
       postsPerMonth = 0;
     }
 
-    if (user.totalComments != null && user.totalComments != 0) {
-      commentsPerMonth = (user.totalComments! / accountAgeMonths).truncate();
+    if (user.comments != null && user.comments != 0) {
+      commentsPerMonth = (user.comments! / accountAgeMonths).truncate();
     } else {
       commentsPerMonth = 0;
     }
@@ -193,7 +194,7 @@ class UserModeratorList extends StatelessWidget {
                         context,
                         community.name,
                         community.title,
-                        fetchInstanceNameFromUrl(community.url),
+                        fetchInstanceNameFromUrl(community.actorId),
                         textStyle: const TextStyle(fontSize: 13.0),
                         transformColor: (color) => color?.withValues(alpha: 0.6),
                         useDisplayName: false, // Override because we're showing display name above

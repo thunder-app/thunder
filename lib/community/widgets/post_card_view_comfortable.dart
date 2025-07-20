@@ -6,8 +6,8 @@ import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -146,13 +146,13 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final media = post.media.firstOrNull;
     final indicateRead = this.indicateRead ?? dimReadPosts;
-    final dim = indicateRead && post.read;
+    final dim = indicateRead && post.read == true;
     final textContent = post.body ?? "";
 
     final readColor = dim ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
 
     final containerColor = _getContainerColor(theme, useDarkTheme, dim);
-    final dateTime = post.updated?.toIso8601String() ?? post.created.toIso8601String();
+    final dateTime = post.updated?.toIso8601String() ?? post.published.toIso8601String();
     final edited = post.updated != null;
 
     Widget mediaView;
@@ -177,10 +177,10 @@ class PostCardViewComfortable extends StatelessWidget {
     final postCardTitle = Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
       child: PostCardTitle(
-        title: post.title,
-        hidden: post.hidden,
+        title: post.name,
+        hidden: post.hidden ?? false,
         locked: post.locked,
-        saved: post.saved,
+        saved: post.saved ?? false,
         pinned: post.featuredCommunity || post.featuredLocal,
         deleted: post.deleted,
         removed: post.removed,
@@ -212,7 +212,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 fontScale: contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: post.read ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
+                  color: post.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),
               ),
             ),
@@ -236,7 +236,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         score: post.score,
                         upvoteCount: post.upvotes,
                         downvoteCount: post.downvotes,
-                        voteType: post.voteType ?? 0,
+                        voteType: post.myVote ?? 0,
                         commentCount: post.comments,
                         unreadCommentCount: post.unreadComments,
                         dateTime: dateTime,
@@ -253,7 +253,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () => onPostActionBottomSheetPressed(context, post),
                 ),
-                if (isUserLoggedIn) PostCardActions(voteType: post.voteType ?? 0, saved: post.saved, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
+                if (isUserLoggedIn) PostCardActions(voteType: post.myVote ?? 0, saved: post.saved ?? false, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
           )

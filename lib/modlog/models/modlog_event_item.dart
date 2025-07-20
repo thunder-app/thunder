@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 
 import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/modlog/modlog.dart';
+import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Represents a modlog event based on [ModlogActionType].

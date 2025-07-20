@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
@@ -26,7 +26,7 @@ class LanguageSelector extends StatefulWidget {
   final int? languageId;
 
   /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language?) onLanguageSelected;
+  final Function(ThunderLanguage?) onLanguageSelected;
 
   @override
   State<LanguageSelector> createState() => _LanguageSelectorState();
@@ -34,7 +34,7 @@ class LanguageSelector extends StatefulWidget {
 
 class _LanguageSelectorState extends State<LanguageSelector> {
   late int? _languageId;
-  late Language? _language;
+  late ThunderLanguage? _language;
 
   @override
   void initState() {
@@ -42,8 +42,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     _languageId = widget.languageId;
 
     // Determine the language from the languageId
-    List<Language> languages = context.read<ProfileBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
+    final languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
+    _language = languages.firstWhereOrNull((ThunderLanguage language) => language.id == _languageId);
   }
 
   @override

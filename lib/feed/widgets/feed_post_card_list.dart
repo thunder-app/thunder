@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/community/widgets/post_card.dart';
@@ -124,7 +124,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
     if (isUserLoggedIn && widget.markPostReadOnScroll) {
       child = VisibilityDetector(
-        key: Key(post.url),
+        key: Key(post.apId),
         onVisibilityChanged: (info) {
           if (!isScrollingDown) return;
 

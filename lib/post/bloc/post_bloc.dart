@@ -6,14 +6,16 @@ import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -62,7 +64,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       int? postId = event.postId ?? event.post?.id;
 
       ThunderPost? post = event.post;
-      List<CommunityModeratorView>? moderators;
+      List<ThunderUser>? moderators;
       List<ThunderPost>? crossPosts;
 
       if (postId != null) {

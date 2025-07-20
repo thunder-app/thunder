@@ -9,7 +9,9 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -23,6 +25,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -398,7 +401,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                             context,
                                             community.name,
                                             community.title,
-                                            fetchInstanceNameFromUrl(community.url),
+                                            fetchInstanceNameFromUrl(community.actorId),
                                           );
                                         });
                                         _doSearch();
@@ -426,9 +429,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                         _currentCreatorFilter = user.id;
                                         _currentCreatorFilterName = generateUserFullName(
                                           context,
-                                          user.username,
+                                          user.name,
                                           user.displayName,
-                                          fetchInstanceNameFromUrl(user.url),
+                                          fetchInstanceNameFromUrl(user.actorId),
                                         );
                                       });
                                       _doSearch();
@@ -664,7 +667,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       : Container();
                 } else {
                   final pv = state.users![index];
-                  final user = ThunderUser(pv.person, userView: pv);
+                  final user = ThunderUser.fromLemmyUserView(pv.toJson());
 
                   return UserListEntry(user: user);
                 }

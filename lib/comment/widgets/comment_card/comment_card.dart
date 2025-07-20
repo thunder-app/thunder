@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/core/enums/swipe_action.dart';

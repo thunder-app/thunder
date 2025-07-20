@@ -5,9 +5,9 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
@@ -57,7 +57,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       case CommunityAction.block:
         try {
           final response = await communityRepository.block(event.communityId, event.value);
-          final community = ThunderCommunity(response.communityView.community, communityView: response.communityView);
+          final community = ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
 
           emit(state.copyWith(
             status: CommunityStatus.success,

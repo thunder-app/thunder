@@ -1,6 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 
-import 'package:thunder/core/models/models.dart';
 
 extension PersonMentionViewExtension on PersonMentionView {
   ThunderComment toComment() {
@@ -16,6 +16,6 @@ extension PersonMentionViewExtension on PersonMentionView {
       creatorBlocked: creatorBlocked,
     );
 
-    return ThunderComment(comment: comment, commentView: commentView);
+    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }

@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/utils/user_groups.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -64,11 +64,11 @@ class UserChip extends StatelessWidget {
         excludeFromSemantics: true,
         message: '${generateUserFullName(
           context,
-          user.username,
+          user.name,
           user.displayName,
-          fetchInstanceNameFromUrl(user.url),
+          fetchInstanceNameFromUrl(user.actorId),
           useDisplayName: false,
-        )}${fetchUserGroupDescriptor(userGroups, user.created)}',
+        )}${fetchUserGroupDescriptor(userGroups, user.published)}',
         preferBelow: false,
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onSurface : Colors.transparent,
@@ -83,14 +83,14 @@ class UserChip extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (showUserAvatar && personAvatar != null && user.icon != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
+                  if (showUserAvatar && personAvatar != null && user.avatar != null) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: personAvatar!),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: (constraints?.maxWidth ?? MediaQuery.sizeOf(context).width) * 0.55),
                     child: UserFullNameWidget(
                       context,
-                      user.username,
+                      user.name,
                       user.displayName,
-                      fetchInstanceNameFromUrl(user.url),
+                      fetchInstanceNameFromUrl(user.actorId),
                       includeInstance: includeInstance,
                       fontScale: state.metadataFontSizeScale,
                       transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),

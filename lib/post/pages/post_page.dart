@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -12,7 +13,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/gesture_fab.dart';
@@ -188,7 +189,7 @@ class _PostPageState extends State<PostPage> {
 
               for (int index = 0; index < comments.length; index++) {
                 final comment = comments[index];
-                if (comment.comment?.body.contains(RegExp(value!, caseSensitive: false)) == true) {
+                if (comment.comment?.content.contains(RegExp(value!, caseSensitive: false)) == true) {
                   commentSearchResults[index] = comment.comment!.id;
                 }
               }
@@ -253,7 +254,7 @@ class _PostPageState extends State<PostPage> {
         listenWhen: (previous, current) {
           if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.post != null && current.hasReachedCommentEnd) {
             // Check if the post's community is blocked by the user. If so, show a message.
-            final blockedCommunities = context.read<ProfileBloc>().state.getSiteResponse?.myUser?.communityBlocks;
+            final blockedCommunities = context.read<ProfileBloc>().state.siteResponse?.myUser?.communityBlocks;
             final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.post?.community?.id) ?? false;
 
             if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
@@ -518,16 +519,16 @@ class _PostPageState extends State<PostPage> {
                           onCreateCrossPost: () {
                             createCrossPost(
                               context,
-                              title: state.post?.title ?? '',
-                              url: state.post?.link,
+                              title: state.post?.name ?? '',
+                              url: state.post?.url,
                               text: state.post?.body,
-                              postUrl: state.post?.url,
+                              postUrl: state.post?.apId,
                             );
                           },
                           onSelectText: () {
                             showSelectableTextModal(
                               context,
-                              title: state.post?.title ?? '',
+                              title: state.post?.name ?? '',
                               text: state.post?.body ?? '',
                             );
                           },

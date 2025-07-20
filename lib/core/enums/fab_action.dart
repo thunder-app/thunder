@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-import 'package:thunder/core/models/models.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 

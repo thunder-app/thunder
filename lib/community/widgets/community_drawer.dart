@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/enums/enums.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
@@ -85,7 +84,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   ),
                   if (subscriptions.isNotEmpty)
                     ...subscriptions.map(
-                      (community) {
+                      (ThunderCommunity community) {
                         final bool isCommunitySelected = feedState.communityId == community.id;
 
                         return Padding(
@@ -99,15 +98,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             onPressed: () async {
                               Navigator.of(context).pop();
 
-                              final postSortType =
-                                  PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                              final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                               context.read<FeedBloc>().add(
                                     FeedFetchedEvent(
                                       feedType: FeedType.community,
                                       postSortType: postSortType,
                                       communityId: isLoggedIn ? community.id : null,
-                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.url) : null,
+                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
                                       reset: true,
                                       showHidden: thunderState.showHiddenPosts,
                                     ),
@@ -178,7 +176,7 @@ class UserDrawerItem extends StatelessWidget {
                       const SizedBox(width: 5),
                     ],
                     Text(
-                      isLoggedIn ? profileState.user?.username ?? '' : l10n.anonymous,
+                      isLoggedIn ? profileState.user?.name ?? '' : l10n.anonymous,
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -186,7 +184,7 @@ class UserDrawerItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  isLoggedIn ? profileState.account.instance ?? '' : anonymousInstance ?? '',
+                  isLoggedIn ? profileState.account.instance : anonymousInstance ?? '',
                   style: theme.textTheme.bodyMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -246,7 +244,7 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (profileState.moderates.isNotEmpty || profileState.user?.admin == true)
+        if (profileState.moderates.isNotEmpty || profileState.user?.isAdmin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () {
@@ -305,7 +303,7 @@ class FavoriteCommunities extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
 
-                  final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                  final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
@@ -368,7 +366,7 @@ class ModeratedCommunities extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
 
-                    final postSortType = PostSortTypeMapping.fromLemmyType(profileState.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderState.postSortTypeForInstance;
+                    final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
 
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
@@ -496,7 +494,7 @@ class CommunityItem extends StatelessWidget {
               context,
               community.name,
               community.title,
-              fetchInstanceNameFromUrl(community.url),
+              fetchInstanceNameFromUrl(community.actorId),
             )}',
             preferBelow: false,
             child: Column(
@@ -509,7 +507,7 @@ class CommunityItem extends StatelessWidget {
                   maxLines: 1,
                 ),
                 Text(
-                  fetchInstanceNameFromUrl(community.url) ?? '',
+                  fetchInstanceNameFromUrl(community.actorId) ?? '',
                   style: theme.textTheme.bodyMedium,
                   overflow: TextOverflow.ellipsis,
                 ),

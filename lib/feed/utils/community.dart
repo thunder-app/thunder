@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/favourite.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/error_messages.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/localizations/app_localizations.dart';
 
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -75,7 +75,7 @@ class _CrossPostsState extends State<CrossPosts> {
                                           context,
                                           widget.crossPosts[index].community?.name,
                                           widget.crossPosts[index].community?.title,
-                                          fetchInstanceNameFromUrl(widget.crossPosts[index].community?.url),
+                                          fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
                                           textStyle: crossPostLinkTextStyle,
                                         ),
                                       ),
@@ -121,7 +121,7 @@ class _CrossPostsState extends State<CrossPosts> {
                               context,
                               widget.crossPosts[0].community?.name,
                               widget.crossPosts[0].community?.title,
-                              fetchInstanceNameFromUrl(widget.crossPosts[0].community?.url),
+                              fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
                               textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
                             ),
                           ),

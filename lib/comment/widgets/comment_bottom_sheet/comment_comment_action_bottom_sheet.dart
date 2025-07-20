@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -85,7 +85,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
         Navigator.of(context).pop();
-        showSelectableTextModal(context, text: comment.body);
+        showSelectableTextModal(context, text: comment.content);
         return;
       case CommentBottomSheetAction.viewCommentSource:
       case CommentBottomSheetAction.viewCommentMarkdown:
@@ -197,9 +197,9 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     List<CommentBottomSheetAction> moderatorActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
     // List<CommentBottomSheetAction> adminActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.getSiteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.getSiteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.comment.community!.url).isNotEmpty;
+    final account = authState.siteResponse?.myUser?.localUserView.person;
+    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
+    final isModerator = moderatedCommunities.where((communityModerator) => communityModerator.community.actorId == widget.comment.community!.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;

@@ -11,7 +11,7 @@ enum PostStatus {
 }
 
 class PostState extends Equatable {
-  PostState({
+  const PostState({
     this.status = PostStatus.initial,
     this.post,
     this.commentNodes,
@@ -39,9 +39,9 @@ class PostState extends Equatable {
   /// The sort type of the post comments
   final CommentSortType? commentSortType;
 
-  final List<CommunityModeratorView>? moderators;
+  final List<ThunderUser>? moderators;
   final List<ThunderPost>? crossPosts;
-  ThunderPost? post;
+  final ThunderPost? post;
 
   // Comment related data
   final CommentNode? commentNodes;
@@ -80,7 +80,7 @@ class PostState extends Equatable {
     int? commentCount,
     bool? hasReachedCommentEnd,
     int? communityId,
-    List<CommunityModeratorView>? moderators,
+    List<ThunderUser>? moderators,
     List<ThunderPost>? crossPosts,
     String? errorMessage,
     CommentSortType? commentSortType,

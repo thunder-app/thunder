@@ -1,22 +1,24 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_card_metadata_item.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/avatars/community_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -83,7 +85,7 @@ class PostCardMetadata extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final postCardMetadataItems = context.select((ThunderBloc bloc) => postCardViewType == ViewMode.compact ? bloc.state.compactPostCardMetadataItems : bloc.state.cardPostCardMetadataItems);
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
+    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
     final dim = this.dim ?? false;
     final voteType = this.voteType ?? 0;
@@ -495,7 +497,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
     if (languageId == -1) {
       languageName = 'English';
     } else if (languageId != null) {
-      final languages = context.select((ProfileBloc bloc) => bloc.state.getSiteResponse?.allLanguages ?? <Language>[]);
+      final languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
       final language = languages.firstWhereOrNull((language) => language.id == languageId);
       languageName = language?.name;
     }
@@ -538,9 +540,9 @@ class CrossPostMetaData extends StatelessWidget {
       spacing: 6.0,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ScorePostCardMetaData(score: post.score, voteType: post.voteType, dim: true),
+        ScorePostCardMetaData(score: post.score, voteType: post.myVote, dim: true),
         CommentCountPostCardMetaData(commentCount: post.comments, unreadCommentCount: post.unreadComments ?? 0, dim: true),
-        DateTimePostCardMetaData(dateTime: post.created.toIso8601String(), edited: post.updated != null, dim: true),
+        DateTimePostCardMetaData(dateTime: post.published.toIso8601String(), edited: post.updated != null, dim: true),
       ],
     );
   }
@@ -585,14 +587,14 @@ class PostCommunityAndAuthor extends StatelessWidget {
               CommunityPostCardMetadata(
                 communityName: community.name,
                 displayName: community.title,
-                actorId: community.url,
+                actorId: community.actorId,
                 subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
                 dim: dim,
               ),
               UserPostCardMetadata(
-                username: user.username,
+                username: user.name,
                 displayName: user.displayName,
-                actorId: user.url,
+                actorId: user.actorId,
                 dim: dim,
               ),
             ],
@@ -601,15 +603,15 @@ class PostCommunityAndAuthor extends StatelessWidget {
           CommunityPostCardMetadata(
             communityName: community.name,
             displayName: community.title,
-            actorId: community.url,
+            actorId: community.actorId,
             subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
             dim: dim,
           )
         else if (showUsername)
           UserPostCardMetadata(
-            username: user.username,
+            username: user.name,
             displayName: user.displayName,
-            actorId: user.url,
+            actorId: user.actorId,
             dim: dim,
           ),
       ],

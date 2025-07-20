@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/models/models.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_body/post_body_action_bar.dart';
 import 'package:thunder/post/widgets/post_body/post_body_metadata.dart';
 import 'package:thunder/post/widgets/post_body/post_body_title.dart';
@@ -217,9 +217,9 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
         languageId: post.languageId,
         commentCount: post.comments,
         unreadCommentCount: post.unreadComments,
-        dateTime: post.updated?.toIso8601String() ?? post.created.toIso8601String(),
+        dateTime: post.updated?.toIso8601String() ?? post.published.toIso8601String(),
         hasBeenEdited: post.updated != null,
-        url: media.mediaType != MediaType.image ? post.link : null,
+        url: media.mediaType != MediaType.image ? post.url : null,
       ),
     );
 
@@ -231,10 +231,10 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       children.addAll([
         (showCrossPosts && sortedCrossPosts.isNotEmpty) ? SizedBox(height: 8.0) : Divider(),
         PostBodyActionsBar(
-          vote: post.voteType,
+          vote: post.myVote,
           upvotes: post.upvotes,
           downvotes: post.downvotes,
-          saved: post.saved,
+          saved: post.saved ?? false,
           locked: post.locked,
           isOwnPost: isOwnPost,
           onVote: (int score) {

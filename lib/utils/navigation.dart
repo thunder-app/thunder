@@ -8,8 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart' hide ModlogActionType, CommentSortType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -20,7 +23,6 @@ import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -33,6 +35,7 @@ import 'package:thunder/notification/repository/notification_repository.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -89,7 +92,7 @@ Future<void> navigateToInstancePage(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  GetSiteResponse? getSiteResponse;
+  ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
 
   try {
@@ -98,7 +101,7 @@ Future<void> navigateToInstancePage(
     getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
-    isBlocked = profileBloc.state.getSiteResponse?.myUser?.instanceBlocks?.any((i) => i.instance.domain == instanceHost);
+    isBlocked = profileBloc.state.siteResponse?.myUser?.instanceBlocks.any((i) => i.instance['domain'] == instanceHost);
   } catch (e) {
     // Continue if we can't get the site
   }
@@ -173,10 +176,10 @@ Future<void> navigateToPost(
   final reduceAnimations = state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
 
-  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.url
+  final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.apId
       ? _cachedPostBloc!.postBloc
       : (_cachedPostBloc = (
-          postApId: pvm.url,
+          postApId: pvm.apId,
           postBloc: post_bloc.PostBloc(account: account),
         ))
           .postBloc;
@@ -206,7 +209,7 @@ Future<void> navigateToPost(
           initialPost: postBloc.state.post ?? pvm!,
           onPostUpdated: (ThunderPost post) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(postView: post.internalPostView?.copyWith(read: true))));
+            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(read: true)));
           },
         ),
       );
@@ -588,8 +591,8 @@ Future<void> navigateToFeedPage(
             feedType: feedType,
             feedListType: feedListType,
             postSortType: postSortType ??
-                (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                    ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+                (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                    ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
                     : thunderBloc.state.postSortTypeForInstance),
             communityId: communityId,
             communityName: communityName,
@@ -623,8 +626,8 @@ Future<void> navigateToFeedPage(
         child: FeedPage(
           feedType: feedType,
           postSortType: postSortType ??
-              (profileBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                  ? PostSortTypeMapping.fromLemmyType(profileBloc.state.getSiteResponse!.myUser!.localUserView.localUser.defaultSortType)
+              (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
+                  ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
                   : thunderBloc.state.postSortTypeForInstance),
           communityName: communityName,
           communityId: communityId,

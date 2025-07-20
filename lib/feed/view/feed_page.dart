@@ -7,12 +7,13 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/enums/feed_type_subview.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -23,10 +24,12 @@ import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/feed/widgets/tagline.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_header/user_header.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -214,7 +217,7 @@ class _FeedViewState extends State<FeedView> {
 
     if (posts.isNotEmpty) {
       for (ThunderPost post in posts) {
-        if (post.read) {
+        if (post.read == true) {
           setState(() => queuedForRemoval.add(post.id));
           await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
         }
@@ -385,8 +388,8 @@ class _FeedViewState extends State<FeedView> {
                           if (state.fullPersonView != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
                             SliverToBoxAdapter(
                               child: UserHeader(
-                                user: ThunderUser(state.fullPersonView!.personView.person, userView: state.fullPersonView!.personView),
-                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity(e.community)).toList(),
+                                user: ThunderUser.fromLemmyUserView(state.fullPersonView!.personView.toJson()),
+                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity.fromLemmyCommunity(e.community.toJson())).toList(),
                                 feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
                                 onChangeFeedType: (feedType) {
                                   setState(() {
@@ -490,7 +493,7 @@ class _FeedViewState extends State<FeedView> {
     }
 
     // Get the desired post listing so we can check against current
-    final desiredFeedListType = FeedListType.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultListingType) ?? thunderBloc.state.defaultFeedListType;
+    final desiredFeedListType = authBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBloc.state.defaultFeedListType;
     final currentFeedListType = feedBloc.state.feedListType;
 
     // See if we're in a community
@@ -502,7 +505,7 @@ class _FeedViewState extends State<FeedView> {
     // - We're on a community
     // THEN navigate to the desired listing type
     if (!canPop && (desiredFeedListType != currentFeedListType || communityMode)) {
-      final postSortType = PostSortTypeMapping.fromLemmyType(authBloc.state.getSiteResponse?.myUser?.localUserView.localUser.defaultSortType) ?? thunderBloc.state.postSortTypeForInstance;
+      final postSortType = authBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBloc.state.postSortTypeForInstance;
 
       feedBloc.add(
         FeedFetchedEvent(
