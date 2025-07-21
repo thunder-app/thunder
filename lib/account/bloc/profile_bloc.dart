@@ -88,7 +88,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // Initialize the repositories with the current account
     instanceRepository = LemmyInstanceRepository(account: account);
     accountRepository = LemmyAccountRepository(account: account);
-    userRepository = LemmyUserRepository(account: account);
+    userRepository = UserRepositoryImpl(account: account);
 
     // Check to see the instance settings (for checking if downvotes are enabled)
     bool downvotesEnabled = true;
@@ -243,8 +243,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
 
       final response = await userRepository!.getUser(username: account.username, sort: PostSortType.new_, page: 1);
-      final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
-      final moderates = response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunity(cmv.community.toJson())).toList();
+      final ThunderUser user = response!['user'];
+      final List<ThunderCommunity> moderates = response['moderates'];
 
       // This eliminates an issue which has plagued me a lot which is that there's a race condition
       // with so many calls to GetAccountInformation, we can return success for the new and old account.

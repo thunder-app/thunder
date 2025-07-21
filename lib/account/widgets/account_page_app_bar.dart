@@ -10,6 +10,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -94,7 +95,7 @@ class AccountAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final feedBloc = context.watch<FeedBloc>();
-    final person = feedBloc.state.fullPersonView?.personView.person;
+    final ThunderUser? person = feedBloc.state.user;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),

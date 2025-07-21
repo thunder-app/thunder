@@ -259,7 +259,7 @@ class ThunderComment {
       apId: comment['ap_id'],
       local: comment['local'],
       path: comment['path'],
-      distinguished: comment['distinguished'],
+      distinguished: comment['distinguished'] ?? false,
       languageId: comment['language_id'],
       creator: ThunderUser.fromPiefedUser(creator),
       post: ThunderPost.fromPiefedPost(post),

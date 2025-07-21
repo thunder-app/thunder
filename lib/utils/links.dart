@@ -314,7 +314,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     showLoadingPage(context);
 
     final account = context.read<ProfileBloc>().state.account;
-    await LemmyUserRepository(account: account).getUser(username: userName);
+    await UserRepositoryImpl(account: account).getUser(username: userName);
     return true;
   } catch (e) {
     // Ignore and return false below.

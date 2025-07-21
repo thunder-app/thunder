@@ -15,7 +15,7 @@ String getAppBarTitle(FeedState state) {
   }
 
   if (state.userId != null || state.username != null) {
-    return state.fullPersonView?.personView.person.displayName ?? state.fullPersonView?.personView.person.name ?? '';
+    return state.user?.displayName ?? state.user?.name ?? '';
   }
 
   return (state.feedListType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.feedListType).label) : '';

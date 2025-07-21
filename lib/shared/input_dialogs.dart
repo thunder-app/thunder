@@ -45,8 +45,8 @@ void showUserInputDialog(BuildContext context, {required String title, required 
       if (normalizedUsername != null) {
         try {
           final account = context.read<ProfileBloc>().state.account;
-          final response = await LemmyUserRepository(account: account).getUser(username: normalizedUsername);
-          final user = ThunderUser.fromLemmyUserView(response!.personView.toJson());
+          final response = await UserRepositoryImpl(account: account).getUser(username: normalizedUsername);
+          final user = response!['user'];
 
           onUserSelected(user);
           Navigator.of(context).pop();

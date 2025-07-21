@@ -50,7 +50,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     searchRepository = LemmySearchRepository(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
     accountRepository = LemmyAccountRepository(account: account);
-    userRepository = LemmyUserRepository(account: account);
+    userRepository = UserRepositoryImpl(account: account);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,

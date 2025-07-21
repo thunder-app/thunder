@@ -398,8 +398,8 @@ class _ShareActionChip extends StatelessWidget {
 
         final state = context.read<FeedBloc>().state;
 
-        if (state.fullPersonView?.personView != null) {
-          showUserShareSheet(context, ThunderUser.fromLemmyUserView(state.fullPersonView!.personView.toJson()));
+        if (state.user != null) {
+          showUserShareSheet(context, state.user!);
         } else {
           debugPrint('Unable to share user: person view not available');
         }

@@ -47,7 +47,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     commentRepository = CommentRepositoryImpl(account: account);
     searchRepository = LemmySearchRepository(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
-    userRepository = LemmyUserRepository(account: account);
+    userRepository = UserRepositoryImpl(account: account);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -100,7 +100,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       final account = await fetchActiveProfile();
 
-      SearchResponse? searchResponse;
+      List<PersonView>? users;
+      List<CommunityView>? communities;
+      List<CommentView>? comments;
+      List<PostView>? posts;
       List<ThunderInstanceInfo> instances = [];
 
       if (event.searchType == MetaSearchType.instances) {
@@ -145,7 +148,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
         }
       } else {
-        searchResponse = await searchRepository.search(
+        final response = await searchRepository.search(
           query: event.query,
           type: event.searchType,
           sort: event.postSortType,
@@ -155,10 +158,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           communityId: event.communityId,
           creatorId: event.creatorId,
         );
+
+        users = response.users;
+        communities = response.communities;
+        comments = response.comments;
+        posts = response.posts;
       }
 
       // If there are no search results, see if this is an exact search
-      if (event.searchType == MetaSearchType.communities && searchResponse?.communities.isEmpty == true) {
+      if (event.searchType == MetaSearchType.communities && communities?.isEmpty == true) {
         // Note: We could jump straight to GetCommunity here.
         // However, getLemmyCommunity has a nice instance check that can short-circuit things
         // if the instance is not valid to start.
@@ -167,8 +175,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           try {
             final account = await fetchActiveProfile();
             final response = await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
-
-            searchResponse = searchResponse?.copyWith(communities: [response['community']]);
+            communities = [response['community']];
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -176,12 +183,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       // Check for exact user search
-      if (event.searchType == MetaSearchType.users && searchResponse?.users.isEmpty == true) {
+      if (event.searchType == MetaSearchType.users && users?.isEmpty == true) {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
             final response = await userRepository.getUser(username: userName);
-            searchResponse = searchResponse?.copyWith(users: [response!.personView]);
+            users = [response!['user']];
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -190,10 +197,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
-        users: searchResponse?.users,
-        comments: searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
-        posts: await parsePosts(searchResponse?.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? []),
+        communities: prioritizeFavorites(communities?.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
+        users: users,
+        comments: comments?.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
+        posts: await parsePosts(posts?.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? []),
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,

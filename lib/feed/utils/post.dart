@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/enums.dart';
@@ -96,9 +94,9 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
   if (userId != null || username != null) {
     do {
-      final userRepository = LemmyUserRepository(account: account);
+      final userRepository = UserRepositoryImpl(account: account);
 
-      GetPersonDetailsResponse? getPersonDetailsResponse = await userRepository.getUser(
+      Map<String, dynamic>? response = await userRepository.getUser(
         userId: userId,
         username: username,
         sort: postSortType,
@@ -106,20 +104,20 @@ Future<Map<String, dynamic>> fetchFeedItems({
         saved: showSaved,
       );
 
+      List<ThunderPost> responsePosts = response!['posts'];
+      List<ThunderComment> responseComments = response['comments'];
+
       // Remove deleted posts and comments
-      getPersonDetailsResponse = getPersonDetailsResponse!.copyWith(
-        posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
-        comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
-      );
+      responsePosts = responsePosts.where((post) => post.deleted == false).toList();
+      responseComments = responseComments.where((comment) => comment.deleted == false).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList());
+      List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
       posts.addAll(formattedPosts);
+      comments.addAll(responseComments);
 
-      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment.fromLemmyCommentView(commentView.toJson())));
-
-      if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
-      if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
+      if (responsePosts.isEmpty) hasReachedPostsEnd = true;
+      if (responseComments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
     } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
   }

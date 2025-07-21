@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -43,7 +42,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc({required this.account}) : super(const FeedState()) {
     postRepository = PostRepositoryImpl(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
-    userRepository = LemmyUserRepository(account: account);
+    userRepository = UserRepositoryImpl(account: account);
 
     /// Handles resetting the feed to its initial state
     on<ResetFeedEvent>(
@@ -458,7 +457,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         currentPage: 1,
         userId: state.userId,
         username: state.username,
-        fullPersonView: state.fullPersonView,
+        user: state.user,
+        userModerates: state.userModerates,
       ));
 
       return;
@@ -476,7 +476,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       community: null,
       communityInstance: null,
       communityModerators: [],
-      fullPersonView: null,
+      user: null,
+      userModerates: [],
       communityId: null,
       communityName: null,
       userId: null,
@@ -516,7 +517,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ThunderSite? communityInstance;
       List<ThunderUser> communityModerators = [];
 
-      GetPersonDetailsResponse? fullPersonView;
+      ThunderUser? user;
+      List<ThunderCommunity> userModerates = [];
 
       switch (event.feedType) {
         case FeedType.community:
@@ -539,7 +541,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         case FeedType.account:
           // Fetch user information
           try {
-            fullPersonView = await userRepository.getUser(userId: event.userId, username: event.username);
+            final response = await userRepository.getUser(userId: event.userId, username: event.username);
+            user = response!['user'];
+            userModerates = response['moderates'];
           } catch (e) {
             // If we are given a user feed, but we can't load the user, that's a problem! Emit an error.
             return emit(state.copyWith(
@@ -561,7 +565,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         postSortType: event.postSortType,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId ?? fullPersonView?.personView.person.id,
+        userId: event.userId ?? user?.id,
         username: event.username,
         feedTypeSubview: event.feedTypeSubview,
         showHidden: event.showHidden,
@@ -588,10 +592,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         community: community,
         communityInstance: communityInstance,
         communityModerators: communityModerators,
-        fullPersonView: fullPersonView,
+        user: user,
+        userModerates: userModerates,
         communityId: event.communityId,
         communityName: event.communityName,
-        userId: event.userId ?? fullPersonView?.personView.person.id,
+        userId: event.userId ?? user?.id,
         username: event.username,
         currentPage: currentPage,
         showHidden: event.showHidden,
