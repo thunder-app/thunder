@@ -9,6 +9,7 @@ class Accounts extends Table {
   BoolColumn get anonymous => boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
   IntColumn get listIndex => integer().withDefault(const Constant(-1))();
+  TextColumn get platform => text().nullable().map(const ThreadiversePlatformConverter())();
 }
 
 class Favorites extends Table {

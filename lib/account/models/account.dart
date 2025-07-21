@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
 
 import 'package:thunder/core/database/database.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/main.dart';
 
 class Account {
@@ -30,6 +31,9 @@ class Account {
   /// The user id of the account. This is only applicable to non-anonymous accounts
   final int? userId;
 
+  /// The platform of the account (lemmy, piefed, etc.)
+  final ThreadiversePlatform? platform;
+
   const Account({
     required this.id,
     required this.index,
@@ -39,6 +43,7 @@ class Account {
     this.displayName,
     this.jwt,
     this.userId,
+    this.platform,
   });
 
   Account copyWith({String? id, int? index}) => Account(
@@ -49,6 +54,7 @@ class Account {
         anonymous: anonymous,
         userId: userId,
         index: index ?? this.index,
+        platform: platform,
       );
 
   String get actorId => 'https://$instance/u/$username';
@@ -72,6 +78,7 @@ class Account {
               anonymous: Value(account.anonymous),
               userId: Value(account.userId),
               listIndex: Value(newIndex),
+              platform: Value(account.platform),
             ),
           );
 
@@ -101,6 +108,7 @@ class Account {
               anonymous: Value(anonymousInstance.anonymous),
               userId: Value(anonymousInstance.userId),
               listIndex: Value(newIndex),
+              platform: Value(anonymousInstance.platform),
             ),
           );
 
@@ -123,6 +131,7 @@ class Account {
                 anonymous: account.anonymous,
                 userId: account.userId,
                 index: account.listIndex,
+                platform: account.platform,
               ))
           .toList();
     } catch (e) {
@@ -143,6 +152,7 @@ class Account {
                 anonymous: account.anonymous,
                 userId: account.userId,
                 index: account.listIndex,
+                platform: account.platform,
               ))
           .toList();
     } catch (e) {
@@ -165,6 +175,7 @@ class Account {
           anonymous: account.anonymous,
           userId: account.userId,
           index: account.listIndex,
+          platform: account.platform,
         );
       });
     } catch (e) {
@@ -183,6 +194,7 @@ class Account {
             anonymous: Value(account.anonymous),
             userId: Value(account.userId),
             listIndex: Value(account.index),
+            platform: Value(account.platform),
           ));
     } catch (e) {
       debugPrint(e.toString());
