@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -80,45 +78,43 @@ ThunderPost optimisticallyRemovePost(ThunderPost post, bool remove) {
 }
 
 /// Parse a post with media
-Future<List<ThunderPost>> parsePosts(List<PostView> postViews, {String? resolutionInstance}) async {
+Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutionInstance}) async {
   final prefs = UserPreferences.instance.preferences;
   final fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) != false && prefs.getBool(LocalSettings.useCompactView.name) != true;
   final edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   final tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   final hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
 
-  List<PostView> posts = [];
+  List<ThunderPost> resolvedPosts = [];
 
   if (resolutionInstance != null) {
     // Create a temporary Account object to use for the request
     final account = Account(id: '', instance: resolutionInstance, index: -1);
 
-    for (PostView postView in postViews) {
+    for (ThunderPost post in posts) {
       try {
-        final response = await LemmySearchRepository(account: account).resolve(query: postView.post.apId);
-        posts.add(response.post!);
+        final response = await LemmySearchRepository(account: account).resolve(query: post.apId);
+        resolvedPosts.add(ThunderPost.fromLemmyPostView(response.post!.toJson()));
       } catch (e) {
         // If we can't resolve it, we won't even add it
       }
     }
   } else {
-    posts = postViews.toList();
+    resolvedPosts = posts.toList();
   }
 
-  Iterable<Future<ThunderPost>> postFutures =
-      posts.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePost(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
-
-  List<ThunderPost> parsedPosts = await Future.wait(postFutures);
+  final postFutures = resolvedPosts.expand((post) => [if (!hideNsfwPosts || (!post.nsfw && hideNsfwPosts)) parsePost(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
+  final parsedPosts = await Future.wait(postFutures);
   return parsedPosts;
 }
 
-Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
+Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
   List<Media> mediaList = [];
 
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
-  String? url = postView.post.url ?? '';
-  String? thumbnailUrl = postView.post.thumbnailUrl;
-  String? videoUrl = postView.post.embedVideoUrl;
+  String? url = post.url ?? '';
+  String? thumbnailUrl = post.thumbnailUrl;
+  String? videoUrl = post.embedVideoUrl;
 
   // First, check what type of link we're dealing with based on the url (MediaType.image, MediaType.video, MediaType.link, MediaType.text)
   bool isImage = isImageUrl(url);
@@ -136,13 +132,13 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
     mediaType = MediaType.text;
   }
 
-  Media media = Media(mediaType: mediaType, originalUrl: url, nsfw: postView.post.nsfw);
+  Media media = Media(mediaType: mediaType, originalUrl: url, nsfw: post.nsfw);
 
   // Set the proper alt text for the media
   if (media.mediaType == MediaType.text) {
-    media.altText = postView.post.body;
+    media.altText = post.body;
   } else if (media.mediaType == MediaType.image) {
-    media.altText = postView.post.altText;
+    media.altText = post.altText;
   }
 
   // Determine the media url - this is the "source" of the media (image/video)
@@ -158,10 +154,10 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
 
   Size? size;
 
-  if (useImageMetadata && postView.imageDetails != null) {
-    media.thumbnailUrl = postView.imageDetails!.link;
-    media.contentType = postView.imageDetails!.contentType;
-    size = Size(postView.imageDetails!.width.toDouble(), postView.imageDetails!.height.toDouble());
+  if (useImageMetadata && post.imageDetails != null) {
+    media.thumbnailUrl = post.imageDetails?['link'];
+    media.contentType = post.imageDetails?['contentType'];
+    size = Size(post.imageDetails?['width'].toDouble(), post.imageDetails?['height'].toDouble());
   } else if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
     media.thumbnailUrl = thumbnailUrl;
@@ -186,8 +182,7 @@ Future<ThunderPost> parsePost(PostView postView, bool fetchImageDimensions, bool
 
   media.width = scaledSize?.width;
   media.height = scaledSize?.height;
-
   mediaList.add(media);
 
-  return ThunderPost.fromLemmyPostView(postView.toJson(), media: mediaList);
+  return post.copyWith(media: mediaList);
 }

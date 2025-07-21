@@ -89,7 +89,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
       emit(state.copyWith(
         status: searchResponse.posts.isEmpty || searchResponse.posts.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
-        posts: [...(state.posts ?? []), ...(await parsePosts(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
+        posts: [...(state.posts ?? []), ...(await parsePosts(searchResponse.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList(), resolutionInstance: state.resolutionInstance))],
         page: page ?? 1,
       ));
     } catch (e) {

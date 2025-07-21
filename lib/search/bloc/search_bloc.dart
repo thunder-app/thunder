@@ -193,7 +193,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
         users: searchResponse?.users,
         comments: searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
-        posts: await parsePosts(searchResponse?.posts ?? []),
+        posts: await parsePosts(searchResponse?.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? []),
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,
@@ -243,7 +243,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())) ?? []];
           state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
           state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())) ?? []];
-          state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts ?? [])];
+          state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? [])];
 
           return emit(state.copyWith(
             status: SearchStatus.success,

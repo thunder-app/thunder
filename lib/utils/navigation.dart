@@ -163,7 +163,7 @@ Future<void> navigateToPost(
   final account = context.read<ProfileBloc>().state.account;
 
   if (pvm == null) {
-    final response = await LemmyPostRepository(account: account).getPost(postId!);
+    final response = await PostRepositoryImpl(account: account).getPost(postId!);
     pvm = response?['post'];
   }
 
@@ -276,7 +276,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
   final bool reduceAnimations = state.reduceAnimations;
 
   final account = context.read<ProfileBloc>().state.account;
-  final post = await LemmyPostRepository(account: account).getPost(comment.post!.id, commentId: comment.id);
+  final post = await PostRepositoryImpl(account: account).getPost(comment.post!.id, commentId: comment.id);
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown

@@ -173,7 +173,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the post
       if (context.mounted) showLoadingPage(context);
-      final post = await LemmyPostRepository(account: account).getPost(postId);
+      final post = await PostRepositoryImpl(account: account).getPost(postId);
 
       if (context.mounted) {
         navigateToPost(context, post: post?['post']);

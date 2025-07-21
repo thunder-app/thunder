@@ -231,7 +231,7 @@ Future<DeepLinkResult> _navigateToPost(BuildContext context, String link) async 
 
   try {
     final account = context.read<ProfileBloc>().state.account;
-    final post = await LemmyPostRepository(account: account).getPost(postId);
+    final post = await PostRepositoryImpl(account: account).getPost(postId);
 
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
 

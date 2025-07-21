@@ -349,7 +349,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,
-        imageSearchPosts: await parsePosts(posts),
+        imageSearchPosts: await parsePosts(posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList()),
         imageSearchComments: comments,
       ));
     } catch (e) {

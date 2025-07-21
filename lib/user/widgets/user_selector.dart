@@ -144,7 +144,7 @@ Future<void> temporarilySwitchAccount(
           final response = await LemmySearchRepository(account: newUser).resolve(query: postActorId!);
 
           if (response.post != null) {
-            onPostChanged((await parsePosts([response.post!])).first);
+            onPostChanged((await parsePosts([ThunderPost.fromLemmyPostView(response.post!.toJson())])).first);
           }
 
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));

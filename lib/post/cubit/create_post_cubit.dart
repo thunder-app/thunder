@@ -17,7 +17,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   late PostRepository repository;
 
   CreatePostCubit({required this.account}) : super(const CreatePostState(status: CreatePostStatus.initial)) {
-    repository = LemmyPostRepository(account: account);
+    repository = PostRepositoryImpl(account: account);
   }
 
   Future<void> clearMessage() async {

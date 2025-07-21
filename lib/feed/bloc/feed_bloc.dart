@@ -41,7 +41,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   late UserRepository userRepository;
 
   FeedBloc({required this.account}) : super(const FeedState()) {
-    postRepository = LemmyPostRepository(account: account);
+    postRepository = PostRepositoryImpl(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
     userRepository = LemmyUserRepository(account: account);
 

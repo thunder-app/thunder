@@ -31,7 +31,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   late CommunityRepository communityRepository;
 
   PostBloc({required this.account}) : super(PostState()) {
-    postRepository = LemmyPostRepository(account: account);
+    postRepository = PostRepositoryImpl(account: account);
     commentRepository = LemmyCommentRepository(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
 

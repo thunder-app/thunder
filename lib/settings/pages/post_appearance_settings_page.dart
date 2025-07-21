@@ -331,7 +331,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Generates an example post to show in the post preview
   Future<List<ThunderPost?>> getExamplePosts() async {
     final account = context.read<ProfileBloc>().state.account;
-    final repository = LemmyPostRepository(account: account);
+    final repository = PostRepositoryImpl(account: account);
 
     ThunderPost? postText = await repository.createExample(
       postTitle: 'Example Text Post',

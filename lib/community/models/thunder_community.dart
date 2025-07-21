@@ -177,4 +177,28 @@ class ThunderCommunity {
       usersActiveHalfYear: counts['users_active_half_year'],
     );
   }
+
+  factory ThunderCommunity.fromPiefedCommunity(Map<String, dynamic> community, {SubscriptionStatus? subscribed}) {
+    return ThunderCommunity(
+      id: community['id'],
+      name: community['name'],
+      title: community['title'],
+      // description: // Not available in PieFed
+      removed: community['removed'],
+      published: DateTime.parse(community['published']),
+      updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
+      deleted: community['deleted'],
+      nsfw: community['nsfw'],
+      actorId: community['actor_id'],
+      local: community['local'],
+      icon: community['icon'],
+      // banner: // Not available in PieFed
+      hidden: community['hidden'],
+      postingRestrictedToMods: community['restricted_to_mods'],
+      instanceId: community['instance_id'],
+      visibility: "Public", // Not available in PieFed
+      subscribed: subscribed,
+      bannedFromCommunity: community['banned'],
+    );
+  }
 }

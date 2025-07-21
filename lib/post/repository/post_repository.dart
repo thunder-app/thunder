@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/user/models/thunder_user.dart';
@@ -25,14 +29,16 @@ abstract class PostRepository {
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});
 
   /// Fetches posts from the API
-  Future<GetPostsResponse> getPosts({
+  Future<List<ThunderPost>> getPosts({
     int page = 1,
+    int? limit,
     FeedListType? feedListType,
     PostSortType? postSortType,
     int? communityId,
     String? communityName,
     bool showHidden = false,
     bool showSaved = false,
+    int? personId,
   });
 
   /// Creates a new post
@@ -114,57 +120,122 @@ abstract class PostRepository {
   Future<PostReportResponse> resolvePostReport(int reportId, bool resolved);
 }
 
-/// Implementation of [PostRepository] using Lemmy API
-class LemmyPostRepository implements PostRepository {
+/// Implementation of [PostRepository]
+class PostRepositoryImpl implements PostRepository {
   /// The account to use for methods invoked in this repository
   Account account;
 
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
-  LemmyPostRepository({required this.account}) {
+  PostRepositoryImpl({required this.account}) {
     client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
-    final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
 
-    // Parse the posts and add in media information which is used elsewhere in the app
-    List<ThunderPost> posts = await parsePosts([response.postView]);
-    ThunderPost post = posts.first;
+        // Parse the posts and add in media information which is used elsewhere in the app
+        List<ThunderPost> posts = await parsePosts([ThunderPost.fromLemmyPostView(response.postView.toJson())]);
+        ThunderPost post = posts.first;
 
-    // Convert cross-posts to ThunderPost objects
-    List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
-    List<ThunderUser> moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
+        // Convert cross-posts to ThunderPost objects
+        List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
+        List<ThunderUser> moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
 
-    return {
-      'post': post,
-      'moderators': moderators,
-      'crossPosts': crossPosts,
-    };
+        return {
+          'post': post,
+          'moderators': moderators,
+          'crossPosts': crossPosts,
+        };
+      case ThreadiversePlatform.piefed:
+        Map<String, dynamic> body = {
+          'id': postId,
+          'comment_id': commentId,
+        };
+
+        // Remove null values and convert values to strings
+        body.removeWhere((key, value) => value == null);
+        body = body.map((key, value) => MapEntry(key, value.toString()));
+
+        final uri = Uri.https(account.instance, '/api/alpha/post', body);
+        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
+
+        final response = await http.get(uri, headers: headers);
+
+        final json = jsonDecode(response.body);
+        final post = ThunderPost.fromPiefedPostView(json['post_view']);
+        final moderators = json['moderators'].map<ThunderUser>((mu) => ThunderUser.fromPiefedUser(mu['moderator'])).toList();
+        final crossPosts = json['cross_posts'].map<ThunderPost>((cp) => ThunderPost.fromPiefedPostView(cp)).toList();
+
+        return {
+          'post': post,
+          'moderators': moderators,
+          'crossPosts': crossPosts,
+        };
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
-  Future<GetPostsResponse> getPosts({
+  Future<List<ThunderPost>> getPosts({
     int page = 1,
+    int? limit,
+    int? personId,
     FeedListType? feedListType,
     PostSortType? postSortType,
     int? communityId,
     String? communityName,
-    bool showHidden = false,
-    bool showSaved = false,
+    bool? showHidden,
+    bool? showSaved,
+    bool? likedOnly,
   }) async {
-    return await client.run(GetPosts(
-      auth: account.jwt,
-      page: page,
-      sort: postSortType?.toLemmyType(),
-      type: feedListType?.toLemmyType(),
-      communityId: communityId,
-      communityName: communityName,
-      showHidden: showHidden,
-      savedOnly: showSaved,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetPosts(
+          auth: account.jwt,
+          page: page,
+          limit: limit,
+          sort: postSortType?.toLemmyType(),
+          type: feedListType?.toLemmyType(),
+          communityId: communityId,
+          communityName: communityName,
+          showHidden: showHidden,
+          savedOnly: showSaved,
+        ));
+        return response.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList();
+      case ThreadiversePlatform.piefed:
+        Map<String, dynamic> body = {
+          'type_': feedListType?.value,
+          'sort': postSortType?.value,
+          'page_cursor': page.toString(), // Page cursor is the page number in string format
+          'limit': limit,
+          'community_name': communityName,
+          'community_id': communityId,
+          'person_id': personId,
+          'saved_only': showSaved,
+          'liked_only': likedOnly,
+        };
+
+        // Remove null values and convert values to strings
+        body.removeWhere((key, value) => value == null);
+        body = body.map((key, value) => MapEntry(key, value.toString()));
+
+        final uri = Uri.https(account.instance, '/api/alpha/post/list', body);
+        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
+
+        final response = await http.get(uri, headers: headers);
+
+        final json = jsonDecode(response.body);
+        final posts = json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
+        return posts;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -209,7 +280,7 @@ class LemmyPostRepository implements PostRepository {
       ));
     }
 
-    final posts = await parsePosts([postResponse.postView]);
+    final posts = await parsePosts([ThunderPost.fromLemmyPostView(postResponse.postView.toJson())]);
     return posts.firstOrNull!;
   }
 
@@ -354,28 +425,26 @@ class LemmyPostRepository implements PostRepository {
     bool? saved,
     bool? read,
   }) async {
-    PostView postView = PostView(
-      post: Post(
-        id: 1,
-        name: postTitle ?? 'Example Title',
-        url: postUrl,
-        body: postBody,
-        thumbnailUrl: postThumbnailUrl,
-        altText: postAltText,
-        creatorId: 1,
-        communityId: 1,
-        removed: false,
-        locked: locked ?? false,
-        published: DateTime.now(),
-        deleted: false,
-        nsfw: nsfw ?? false,
-        apId: '',
-        local: false,
-        languageId: 0,
-        featuredCommunity: pinned ?? false,
-        featuredLocal: false,
-      ),
-      creator: Person(
+    ThunderPost post = ThunderPost(
+      id: 1,
+      name: postTitle ?? 'Example Title',
+      url: postUrl,
+      body: postBody,
+      thumbnailUrl: postThumbnailUrl,
+      altText: postAltText,
+      creatorId: 1,
+      communityId: 1,
+      removed: false,
+      locked: locked ?? false,
+      published: DateTime.now(),
+      deleted: false,
+      nsfw: nsfw ?? false,
+      apId: '',
+      local: false,
+      languageId: 0,
+      featuredCommunity: pinned ?? false,
+      featuredLocal: false,
+      creator: ThunderUser(
         id: 1,
         name: personName ?? 'Example Username',
         displayName: personDisplayName ?? 'Example Name',
@@ -387,7 +456,7 @@ class LemmyPostRepository implements PostRepository {
         botAccount: false,
         instanceId: 1,
       ),
-      community: Community(
+      community: ThunderCommunity(
         id: 1,
         name: communityName ?? 'Example Community',
         title: '',
@@ -400,26 +469,22 @@ class LemmyPostRepository implements PostRepository {
         hidden: false,
         postingRestrictedToMods: false,
         instanceId: 1,
+        visibility: 'Public',
       ),
       creatorBannedFromCommunity: false,
-      counts: PostAggregates(
-        id: 1,
-        postId: 1,
-        comments: commentCount ?? 0,
-        score: scoreCount ?? 0,
-        upvotes: 0,
-        downvotes: 0,
-        published: DateTime.now(),
-      ),
-      subscribed: SubscriptionStatus.notSubscribed.toLemmyType(),
+      comments: commentCount ?? 0,
+      score: scoreCount ?? 0,
+      upvotes: 0,
+      downvotes: 0,
+      newestCommentTime: DateTime.now(),
+      subscribed: SubscriptionStatus.notSubscribed,
       saved: saved ?? false,
       read: read ?? false,
       creatorBlocked: false,
       unreadComments: 0,
     );
 
-    List<ThunderPost> posts = await parsePosts([postView]);
-
+    List<ThunderPost> posts = await parsePosts([post]);
     return Future.value(posts.firstOrNull);
   }
 }

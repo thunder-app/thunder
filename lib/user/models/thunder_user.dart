@@ -172,4 +172,25 @@ class ThunderUser {
       isAdmin: userView['is_admin'],
     );
   }
+
+  factory ThunderUser.fromPiefedUser(Map<String, dynamic> user) {
+    return ThunderUser(
+      id: user['id'],
+      name: user['user_name'],
+      displayName: user['title'],
+      avatar: user['avatar'],
+      banned: user['banned'],
+      published: DateTime.parse(user['published']),
+      // updated: // Not available in PieFed
+      actorId: user['actor_id'],
+      // bio: // Not available in PieFed
+      local: user['local'],
+      // banner: // Not available in PieFed
+      deleted: user['deleted'],
+      // matrixUserId: // Not available in PieFed
+      botAccount: user['bot'],
+      // banExpires: // Not available in PieFed
+      instanceId: user['instance_id'],
+    );
+  }
 }
