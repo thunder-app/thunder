@@ -133,7 +133,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// Generates an example comment to show in the comment preview
   void getExampleComment() async {
     final account = context.read<ProfileBloc>().state.account;
-    final repository = LemmyCommentRepository(account: account);
+    final repository = CommentRepositoryImpl(account: account);
 
     ThunderComment comment = await repository.createExample(
       id: 1,

@@ -167,7 +167,7 @@ class PostRepositoryImpl implements PostRepository {
         final response = await http.get(uri, headers: headers);
 
         final json = jsonDecode(response.body);
-        final post = ThunderPost.fromPiefedPostView(json['post_view']);
+        final post = (await parsePosts([ThunderPost.fromPiefedPostView(json['post_view'])])).first;
         final moderators = json['moderators'].map<ThunderUser>((mu) => ThunderUser.fromPiefedUser(mu['moderator'])).toList();
         final crossPosts = json['cross_posts'].map<ThunderPost>((cp) => ThunderPost.fromPiefedPostView(cp)).toList();
 

@@ -44,7 +44,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   late UserRepository userRepository;
 
   SearchBloc({required this.account}) : super(SearchState()) {
-    commentRepository = LemmyCommentRepository(account: account);
+    commentRepository = CommentRepositoryImpl(account: account);
     searchRepository = LemmySearchRepository(account: account);
     communityRepository = LemmyCommunityRepository(account: account);
     userRepository = LemmyUserRepository(account: account);

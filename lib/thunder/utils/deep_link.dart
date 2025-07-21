@@ -311,7 +311,7 @@ Future<DeepLinkResult> _navigateToComment(BuildContext context, String link) asy
   try {
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
     final account = context.read<ProfileBloc>().state.account;
-    final comment = await LemmyCommentRepository(account: account).getComment(commentId);
+    final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
 
     navigateToComment(context, comment);
     return DeepLinkResult.successful();

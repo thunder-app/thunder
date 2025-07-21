@@ -183,7 +183,7 @@ class ThunderCommunity {
       id: community['id'],
       name: community['name'],
       title: community['title'],
-      // description: // Not available in PieFed
+      description: community['description'],
       removed: community['removed'],
       published: DateTime.parse(community['published']),
       updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
@@ -192,7 +192,7 @@ class ThunderCommunity {
       actorId: community['actor_id'],
       local: community['local'],
       icon: community['icon'],
-      // banner: // Not available in PieFed
+      banner: community['banner'],
       hidden: community['hidden'],
       postingRestrictedToMods: community['restricted_to_mods'],
       instanceId: community['instance_id'],

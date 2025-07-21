@@ -190,7 +190,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the comment
       if (context.mounted) showLoadingPage(context);
-      final comment = await LemmyCommentRepository(account: account).getComment(commentId);
+      final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
 
       if (context.mounted) {
         navigateToComment(context, comment);

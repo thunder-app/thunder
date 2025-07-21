@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
@@ -8,6 +10,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a comment repository
@@ -78,15 +81,15 @@ abstract class CommentRepository {
   });
 }
 
-/// Implementation of [CommentRepository] using Lemmy API
-class LemmyCommentRepository implements CommentRepository {
+/// Implementation of [CommentRepository]
+class CommentRepositoryImpl implements CommentRepository {
   /// The account to use for methods invoked in this repository
   Account account;
 
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
-  LemmyCommentRepository({required this.account}) {
+  CommentRepositoryImpl({required this.account}) {
     client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
@@ -107,19 +110,48 @@ class LemmyCommentRepository implements CommentRepository {
     int? limit,
     int? communityId,
   }) async {
-    final response = await client.run(GetComments(
-      auth: account.jwt,
-      communityId: communityId,
-      postId: postId,
-      parentId: parentId,
-      sort: commentSortType?.toLemmyType(),
-      limit: limit,
-      maxDepth: maxDepth,
-      page: page,
-      type: ListingType.all,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetComments(
+          auth: account.jwt,
+          communityId: communityId,
+          postId: postId,
+          parentId: parentId,
+          sort: commentSortType?.toLemmyType(),
+          limit: limit,
+          maxDepth: maxDepth,
+          page: page,
+          type: ListingType.all,
+        ));
 
-    return response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
+        return response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
+      case ThreadiversePlatform.piefed:
+        Map<String, dynamic> body = {
+          'sort': commentSortType?.value,
+          'max_depth': maxDepth,
+          'page': page,
+          'limit': limit,
+          'community_id': communityId,
+          'post_id': postId,
+          'parent_id': parentId,
+        };
+
+        // Remove null values and convert values to strings
+        body.removeWhere((key, value) => value == null);
+        body = body.map((key, value) => MapEntry(key, value.toString()));
+
+        final uri = Uri.https(account.instance, '/api/alpha/comment/list', body);
+        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
+
+        final response = await http.get(uri, headers: headers);
+
+        final json = jsonDecode(response.body);
+        final comments = json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+
+        return comments;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override

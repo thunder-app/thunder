@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> fetchReports({
       communityId: communityId,
     );
 
-    final listCommentReportsResponse = await LemmyCommentRepository(account: account).getCommentReports(
+    final listCommentReportsResponse = await CommentRepositoryImpl(account: account).getCommentReports(
       commentId: commentId,
       page: currentPage,
       limit: limit,
@@ -82,7 +82,7 @@ CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bo
 /// Logic to resolve a comment report
 Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   final account = await fetchActiveProfile();
-  final commentReportResponse = await LemmyCommentRepository(account: account).resolveCommentReport(commentReportId, resolved);
+  final commentReportResponse = await CommentRepositoryImpl(account: account).resolveCommentReport(commentReportId, resolved);
 
   return commentReportResponse.commentReportView.commentReport.resolved == resolved;
 }

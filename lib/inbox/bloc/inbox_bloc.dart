@@ -38,14 +38,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     required bool showUnreadOnly,
     required this.account,
   }) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
-    commentRepository = LemmyCommentRepository(account: account);
+    commentRepository = CommentRepositoryImpl(account: account);
     notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }
 
   /// Unnamed constructor with default state
   InboxBloc({required this.account}) : super(const InboxState()) {
-    commentRepository = LemmyCommentRepository(account: account);
+    commentRepository = CommentRepositoryImpl(account: account);
     notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }

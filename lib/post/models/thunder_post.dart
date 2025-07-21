@@ -385,7 +385,7 @@ class ThunderPost {
       featuredCommunity: post['sticky'],
       featuredLocal: false, // Not available in PieFed
       // urlContentType // Not available in PieFed
-      // altText // Not available in PieFed
+      altText: post['alt_text'],
       creator: ThunderUser.fromPiefedUser(creator),
       community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
       // imageDetails // Not available in PieFed
@@ -405,6 +405,34 @@ class ThunderPost {
       // creatorBlocked // Not available in PieFed
       myVote: postView['my_vote'],
       unreadComments: postView['unread_comments'],
+      media: media,
+    );
+  }
+
+  factory ThunderPost.fromPiefedPost(Map<String, dynamic> post, {List<Media> media = const []}) {
+    return ThunderPost(
+      id: post['id'],
+      name: post['title'],
+      url: post['url'],
+      body: post['body'],
+      creatorId: post['user_id'],
+      communityId: post['community_id'],
+      removed: post['removed'],
+      locked: post['locked'],
+      published: DateTime.parse(post['published']),
+      updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
+      deleted: post['deleted'],
+      nsfw: post['nsfw'],
+      // embedTitle // Not available in PieFed
+      // embedDescription // Not available in PieFed
+      thumbnailUrl: post['thumbnail_url'],
+      apId: post['ap_id'],
+      local: post['local'],
+      languageId: post['language_id'],
+      featuredCommunity: post['sticky'],
+      featuredLocal: false, // Not available in PieFed
+      // urlContentType // Not available in PieFed
+      altText: post['alt_text'],
       media: media,
     );
   }

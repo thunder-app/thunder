@@ -183,9 +183,9 @@ class ThunderUser {
       published: DateTime.parse(user['published']),
       // updated: // Not available in PieFed
       actorId: user['actor_id'],
-      // bio: // Not available in PieFed
+      bio: user['about'],
       local: user['local'],
-      // banner: // Not available in PieFed
+      banner: user['banner'],
       deleted: user['deleted'],
       // matrixUserId: // Not available in PieFed
       botAccount: user['bot'],

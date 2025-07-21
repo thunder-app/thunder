@@ -237,4 +237,45 @@ class ThunderComment {
       myVote: commentView['my_vote'],
     );
   }
+
+  factory ThunderComment.fromPiefedCommentView(Map<String, dynamic> commentView) {
+    final comment = commentView['comment'];
+    final creator = commentView['creator'];
+    final post = commentView['post'];
+    final community = commentView['community'];
+    final counts = commentView['counts'];
+
+    final subscribed = commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null;
+
+    return ThunderComment(
+      id: comment['id'],
+      creatorId: comment['user_id'],
+      postId: comment['post_id'],
+      content: comment['body'],
+      removed: comment['removed'],
+      published: DateTime.parse(comment['published']),
+      updated: comment['updated'] != null ? DateTime.parse(comment['updated']) : null,
+      deleted: comment['deleted'],
+      apId: comment['ap_id'],
+      local: comment['local'],
+      path: comment['path'],
+      distinguished: comment['distinguished'],
+      languageId: comment['language_id'],
+      creator: ThunderUser.fromPiefedUser(creator),
+      post: ThunderPost.fromPiefedPost(post),
+      community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
+      score: counts['score'],
+      upvotes: counts['upvotes'],
+      downvotes: counts['downvotes'],
+      childCount: counts['child_count'],
+      creatorBannedFromCommunity: commentView['creator_banned_from_community'],
+      bannedFromCommunity: commentView['banned_from_community'],
+      creatorIsModerator: commentView['creator_is_moderator'],
+      creatorIsAdmin: commentView['creator_is_admin'],
+      subscribed: subscribed,
+      saved: commentView['saved'],
+      creatorBlocked: commentView['creator_blocked'],
+      myVote: commentView['my_vote'],
+    );
+  }
 }
