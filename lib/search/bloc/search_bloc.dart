@@ -46,7 +46,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({required this.account}) : super(SearchState()) {
     commentRepository = CommentRepositoryImpl(account: account);
     searchRepository = LemmySearchRepository(account: account);
-    communityRepository = LemmyCommunityRepository(account: account);
+    communityRepository = CommunityRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
     on<StartSearchEvent>(
@@ -174,7 +174,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (communityName != null) {
           try {
             final account = await fetchActiveProfile();
-            final response = await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
+            final response = await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
             communities = [response['community']];
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
@@ -284,10 +284,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      await LemmyCommunityRepository(account: account).subscribe(event.communityId, event.follow);
+      await CommunityRepositoryImpl(account: account).subscribe(event.communityId, event.follow);
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      Map<String, dynamic> response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
+      Map<String, dynamic> response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
       ThunderCommunity community = response['community'];
 
       List<ThunderCommunity> communities;
@@ -317,7 +317,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
 
-      response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
+      response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
       community = response['community'];
 
       if (event.query.isNotEmpty || state.viewingAll) {

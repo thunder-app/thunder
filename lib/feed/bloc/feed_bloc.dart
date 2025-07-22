@@ -41,7 +41,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   FeedBloc({required this.account}) : super(const FeedState()) {
     postRepository = PostRepositoryImpl(account: account);
-    communityRepository = LemmyCommunityRepository(account: account);
+    communityRepository = CommunityRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
     /// Handles resetting the feed to its initial state

@@ -142,7 +142,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
       if (normalizedCommunity != null) {
         try {
           final account = context.read<ProfileBloc>().state.account;
-          final response = await LemmyCommunityRepository(account: account).getCommunity(name: normalizedCommunity);
+          final response = await CommunityRepositoryImpl(account: account).getCommunity(name: normalizedCommunity);
           final community = response['community'];
 
           onCommunitySelected(community);

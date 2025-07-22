@@ -285,7 +285,7 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     showLoadingPage(context);
 
     final account = context.read<ProfileBloc>().state.account;
-    await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
+    await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
     return true;
   } catch (e) {
     // Ignore and return false below.
