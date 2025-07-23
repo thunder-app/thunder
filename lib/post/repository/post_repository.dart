@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
@@ -126,17 +125,29 @@ class PostRepositoryImpl implements PostRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApiV3 lemmy;
+
+  /// The Piefed API to use for the repository
+  late PiefedApi piefed;
 
   PostRepositoryImpl({required this.account}) {
-    client = LemmyApiV3(account.instance, debug: kDebugMode);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        break;
+      case ThreadiversePlatform.piefed:
+        piefed = PiefedApi(account: account, debug: kDebugMode);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
+        final response = await lemmy.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
 
         // Parse the posts and add in media information which is used elsewhere in the app
         List<ThunderPost> posts = await parsePosts([ThunderPost.fromLemmyPostView(response.postView.toJson())]);
@@ -152,31 +163,7 @@ class PostRepositoryImpl implements PostRepository {
           'crossPosts': crossPosts,
         };
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'id': postId,
-          'comment_id': commentId,
-        };
-
-        // Remove null values and convert values to strings
-        body.removeWhere((key, value) => value == null);
-        body = body.map((key, value) => MapEntry(key, value.toString()));
-
-        final uri = Uri.https(account.instance, '/api/alpha/post', body);
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-        if (response.statusCode != 200) throw Exception('Failed to fetch post: ${response.statusCode} ${response.body}');
-
-        final json = jsonDecode(response.body);
-        final post = (await parsePosts([ThunderPost.fromPiefedPostView(json['post_view'])])).first;
-        final moderators = json['moderators'].map<ThunderUser>((mu) => ThunderUser.fromPiefedUser(mu['moderator'])).toList();
-        final crossPosts = json['cross_posts'].map<ThunderPost>((cp) => ThunderPost.fromPiefedPostView(cp)).toList();
-
-        return {
-          'post': post,
-          'moderators': moderators,
-          'crossPosts': crossPosts,
-        };
+        return await piefed.getPost(postId, commentId: commentId);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -197,7 +184,7 @@ class PostRepositoryImpl implements PostRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetPosts(
+        final response = await lemmy.run(GetPosts(
           auth: account.jwt,
           page: page,
           limit: limit,
@@ -210,31 +197,16 @@ class PostRepositoryImpl implements PostRepository {
         ));
         return response.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList();
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'type_': feedListType?.value,
-          'sort': postSortType?.value,
-          'page_cursor': page.toString(), // Page cursor is the page number in string format
-          'limit': limit,
-          'community_name': communityName,
-          'community_id': communityId,
-          'person_id': personId,
-          'saved_only': showSaved,
-          'liked_only': likedOnly,
-        };
-
-        // Remove null values and convert values to strings
-        body.removeWhere((key, value) => value == null);
-        body = body.map((key, value) => MapEntry(key, value.toString()));
-
-        final uri = Uri.https(account.instance, '/api/alpha/post/list', body);
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-        if (response.statusCode != 200) throw Exception('Failed to fetch posts: ${response.statusCode} ${response.body}');
-
-        final json = jsonDecode(response.body);
-        final posts = json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
-        return posts;
+        return await piefed.getPosts(
+          page: page,
+          limit: limit,
+          feedListType: feedListType,
+          postSortType: postSortType,
+          communityId: communityId,
+          communityName: communityName,
+          showSaved: showSaved,
+          likedOnly: likedOnly,
+        );
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -257,7 +229,7 @@ class PostRepositoryImpl implements PostRepository {
 
     PostResponse postResponse;
     if (postIdBeingEdited != null) {
-      postResponse = await client.run(EditPost(
+      postResponse = await lemmy.run(EditPost(
         auth: account.jwt!,
         name: name,
         body: body,
@@ -269,7 +241,7 @@ class PostRepositoryImpl implements PostRepository {
         languageId: languageId,
       ));
     } else {
-      postResponse = await client.run(CreatePost(
+      postResponse = await lemmy.run(CreatePost(
         auth: account.jwt!,
         communityId: communityId,
         name: name,
@@ -291,8 +263,16 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
-    return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
+        return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.votePost(postId: post.id, score: score);
+        return response.copyWith(media: post.media);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -300,8 +280,16 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
-    return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
+        return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.savePost(postId: post.id, save: save);
+        return response.copyWith(media: post.media);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -309,8 +297,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
-    return response.isSuccess();
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
+        return response.isSuccess();
+      case ThreadiversePlatform.piefed:
+        return await piefed.readPost(postIds: [postId], read: read);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -320,8 +315,18 @@ class PostRepositoryImpl implements PostRepository {
 
     List<int> failed = [];
 
-    final response = await client.run(MarkPostAsRead(auth: account.jwt!, postIds: postIds, read: read));
-    if (!response.isSuccess()) failed = List<int>.generate(postIds.length, (index) => index);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: postIds, read: read));
+        if (!response.isSuccess()) failed = List<int>.generate(postIds.length, (index) => index);
+        break;
+      case ThreadiversePlatform.piefed:
+        final success = await piefed.readPost(postIds: postIds, read: read);
+        if (!success) failed = List<int>.generate(postIds.length, (index) => index);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
 
     return failed;
   }
@@ -331,8 +336,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
-    return response.success;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
+        return response.success;
+      case ThreadiversePlatform.piefed:
+        throw Exception('Hiding posts is not supported on Piefed');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -340,8 +352,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
-    return response.postView.post.deleted == delete;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
+        return response.postView.post.deleted == delete;
+      case ThreadiversePlatform.piefed:
+        return await piefed.deletePost(postId: postId, deleted: delete);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -349,8 +368,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
-    return response.postView.post.locked == lock;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
+        return response.postView.post.locked == lock;
+      case ThreadiversePlatform.piefed:
+        return await piefed.lockPost(postId: postId, locked: lock);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -358,8 +384,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
-    return response.postView.post.featuredCommunity == pin;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
+        return response.postView.post.featuredCommunity == pin;
+      case ThreadiversePlatform.piefed:
+        return await piefed.pinPost(postId: postId, pinned: pin);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -367,8 +400,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
-    return response.postView.post.removed == remove;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
+        return response.postView.post.removed == remove;
+      case ThreadiversePlatform.piefed:
+        return await piefed.removePost(postId: postId, removed: remove, reason: reason);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -376,8 +416,16 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
-    return response;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
+        return response;
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -385,14 +433,22 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ListPostReports(
-      auth: account.jwt!,
-      postId: postId,
-      page: page,
-      limit: limit,
-      unresolvedOnly: unresolved,
-      communityId: communityId,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.run(ListPostReports(
+          auth: account.jwt!,
+          postId: postId,
+          page: page,
+          limit: limit,
+          unresolvedOnly: unresolved,
+          communityId: communityId,
+        ));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -400,11 +456,15 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ResolvePostReport(
-      auth: account.jwt!,
-      reportId: reportId,
-      resolved: resolved,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.run(ResolvePostReport(auth: account.jwt!, reportId: reportId, resolved: resolved));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
