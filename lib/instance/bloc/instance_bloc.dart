@@ -26,7 +26,7 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
   late InstanceRepository instanceRepository;
 
   InstanceBloc({required this.account}) : super(const InstanceState()) {
-    instanceRepository = LemmyInstanceRepository(account: account);
+    instanceRepository = InstanceRepositoryImpl(account: account);
 
     /// Handles clearing any messages from the state
     on<InstanceClearMessageEvent>(

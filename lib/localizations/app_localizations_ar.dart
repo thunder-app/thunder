@@ -1638,7 +1638,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance does not appear to be a valid Lemmy instance';
+    return '$instance does not appear to be a valid instance';
   }
 
   @override

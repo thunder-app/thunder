@@ -270,7 +270,7 @@ void showInstanceInputDialog(
 }) async {
   Account? account = await fetchActiveProfile();
 
-  final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
+  final getFederatedInstancesResponse = await InstanceRepositoryImpl(account: account).federated();
 
   Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {

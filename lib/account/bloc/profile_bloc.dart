@@ -74,17 +74,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<FetchProfileFavorites>(_fetchProfileFavorites, transformer: restartable());
   }
 
-  /// Resets the entire state the the initial state.
-  Future<void> _resetState(Emitter<ProfileState> emit) async {
-    return emit(ProfileState(account: account));
-  }
-
   Future<void> _initializeAuth(InitializeAuth event, Emitter<ProfileState> emit) async {
     // Check to see what the current active profile is.
     final account = await fetchActiveProfile();
 
     // Initialize the repositories with the current account
-    instanceRepository = LemmyInstanceRepository(account: account);
+    instanceRepository = InstanceRepositoryImpl(account: account);
     accountRepository = AccountRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
@@ -106,6 +101,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         isLoggedIn: !account.anonymous,
         downvotesEnabled: downvotesEnabled,
         siteResponse: () => siteResponse!,
+        moderates: [],
+        subscriptions: [],
+        favorites: [],
       ),
     );
 
@@ -135,7 +133,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       // Create a temporary instance repository to use for the site information
       tempAccount = Account(id: '', index: -1, jwt: jwt, instance: tempAccount.instance, platform: platform);
-      final siteResponse = await LemmyInstanceRepository(account: tempAccount).getSiteInfo();
+      final siteResponse = await InstanceRepositoryImpl(account: tempAccount).getSiteInfo();
 
       if (event.showContentWarning && siteResponse.site.contentWarning?.isNotEmpty == true) {
         return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => siteResponse.site.contentWarning!));

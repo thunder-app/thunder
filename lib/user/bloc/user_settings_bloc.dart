@@ -46,7 +46,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   late UserRepository userRepository;
 
   UserSettingsBloc({required this.account}) : super(const UserSettingsState()) {
-    instanceRepository = LemmyInstanceRepository(account: account);
+    instanceRepository = InstanceRepositoryImpl(account: account);
     searchRepository = LemmySearchRepository(account: account);
     communityRepository = CommunityRepositoryImpl(account: account);
     accountRepository = AccountRepositoryImpl(account: account);

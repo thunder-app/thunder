@@ -98,7 +98,7 @@ Future<void> navigateToInstancePage(
   try {
     // Get the site information by connecting to the given instance
     final account = Account(id: '', index: -1, instance: instanceHost);
-    getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
+    getSiteResponse = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
     isBlocked = profileBloc.state.siteResponse?.myUser?.instanceBlocks.any((i) => i.instance['domain'] == instanceHost);

@@ -165,6 +165,7 @@ class PostRepositoryImpl implements PostRepository {
         final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
 
         final response = await http.get(uri, headers: headers);
+        if (response.statusCode != 200) throw Exception('Failed to fetch post: ${response.statusCode} ${response.body}');
 
         final json = jsonDecode(response.body);
         final post = (await parsePosts([ThunderPost.fromPiefedPostView(json['post_view'])])).first;
@@ -229,6 +230,7 @@ class PostRepositoryImpl implements PostRepository {
         final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
 
         final response = await http.get(uri, headers: headers);
+        if (response.statusCode != 200) throw Exception('Failed to fetch posts: ${response.statusCode} ${response.body}');
 
         final json = jsonDecode(response.body);
         final posts = json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();

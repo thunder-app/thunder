@@ -23,15 +23,15 @@ abstract class InstanceRepository {
   Future<GetFederatedInstancesResponse> federated();
 }
 
-/// Implementation of [InstanceRepository] using Lemmy API
-class LemmyInstanceRepository implements InstanceRepository {
+/// Implementation of [InstanceRepository]
+class InstanceRepositoryImpl implements InstanceRepository {
   /// The account to use for methods invoked in this repository
   Account account;
 
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
-  LemmyInstanceRepository({required this.account}) {
+  InstanceRepositoryImpl({required this.account}) {
     client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 

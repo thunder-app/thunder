@@ -128,7 +128,7 @@ Future<void> _initializeLemmyClient(BuildContext context) async {
       }
 
       // Validate connection by making a simple request
-      await LemmyInstanceRepository(account: account).getSiteInfo();
+      await InstanceRepositoryImpl(account: account).getSiteInfo();
       return;
     } catch (e) {
       attempts++;

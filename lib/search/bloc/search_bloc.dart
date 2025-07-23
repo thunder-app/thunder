@@ -108,7 +108,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
+        final getFederatedInstancesResponse = await InstanceRepositoryImpl(account: account).federated();
 
         // Filter the instances down
         for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(

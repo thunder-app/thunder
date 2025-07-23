@@ -192,7 +192,7 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
     // Create a temporary Account for the request
     final account = Account(instance: url, id: '', index: -1, platform: platform);
 
-    final site = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
+    final site = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
     final instance = site.site;
 
     return ThunderInstanceInfo(
