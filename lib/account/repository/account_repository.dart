@@ -18,7 +18,8 @@ abstract class AccountRepository {
   /// Login to the Lemmy instance.
   Future<String?> login({required String username, required String password, String? totp});
 
-  Future<List<ThunderCommunity>> subscriptions({int? page, int? limit});
+  /// Fetches the user's subscribed communities.
+  Future<List<ThunderCommunity>> subscriptions();
 
   /// Fetches the user's media.
   Future<ListMediaResponse> media({int? page, int? limit});
@@ -85,7 +86,7 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<List<ThunderCommunity>> subscriptions({int? page, int? limit}) async {
+  Future<List<ThunderCommunity>> subscriptions() async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 

@@ -1,3 +1,5 @@
+import 'package:thunder/core/enums/threadiverse_platform.dart';
+
 class ThunderInstanceInfo {
   const ThunderInstanceInfo({
     this.id,
@@ -7,6 +9,8 @@ class ThunderInstanceInfo {
     this.icon,
     this.users,
     this.success = false,
+    this.platform,
+    this.contentWarning,
   });
 
   bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
@@ -31,4 +35,10 @@ class ThunderInstanceInfo {
 
   /// Whether the instance was successfully fetched.
   final bool success;
+
+  /// The platform of the instance.
+  final ThreadiversePlatform? platform;
+
+  /// The content warning of the instance.
+  final String? contentWarning;
 }

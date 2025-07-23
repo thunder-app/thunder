@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -14,7 +13,6 @@ import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/models/thunder_site_response.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -123,10 +121,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
 
-      final String instanceUrl = event.instance.replaceAll('https://', '');
+      final instanceUrl = event.instance.replaceAll('https://', '');
 
       // Detect the platform before attempting to log in
-      final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(instanceUrl);
+      final platform = await detectPlatformFromNodeInfo(instanceUrl);
 
       // Create a temporary Account to attempt to log in
       Account tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
@@ -163,9 +161,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       // Run the CheckAuth event to reset everything
       return await _initializeAuth(InitializeAuth(), emit);
-    } on LemmyApiException catch (e) {
-      return emit(state.copyWith(status: ProfileStatus.failure, error: () => e.toString()));
     } catch (e) {
+      debugPrint('Error adding profile: ${e.toString()}');
       return emit(state.copyWith(status: ProfileStatus.failure, error: () => e.toString()));
     }
   }
@@ -212,8 +209,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       add(InitializeAuth());
     }
 
-    // Check to see if the removed profile is the current profile. If so, we need to switch to an anonymous profile.
-
     return emit(state.copyWith(status: ProfileStatus.success));
   }
 
@@ -225,19 +220,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   /// This is only applicable for non-anonymous profiles.
   Future<void> _fetchProfileInformation(FetchProfileInformation event, Emitter<ProfileState> emit) async {
     final account = await fetchActiveProfile();
-
-    if (account.anonymous) {
-      return emit(
-        state.copyWith(
-          status: ProfileStatus.success,
-          reload: event.reload,
-          user: null,
-          subscriptions: [],
-          favorites: [],
-          moderates: [],
-        ),
-      );
-    }
+    if (account.anonymous) return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, user: null, subscriptions: [], favorites: [], moderates: []));
 
     try {
       emit(state.copyWith(status: ProfileStatus.loading, user: null, moderates: [], reload: event.reload));
@@ -254,6 +237,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         return emit(state.copyWith(status: ProfileStatus.success, user: null, moderates: [], reload: event.reload));
       }
     } catch (e) {
+      debugPrint('Error fetching profile information: ${e.toString()}');
       emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
@@ -271,6 +255,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       return emit(state.copyWith(status: ProfileStatus.success, siteResponse: () => response));
     } catch (e) {
+      debugPrint('Error fetching profile settings: ${e.toString()}');
       emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
@@ -282,27 +267,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       emit(state.copyWith(status: ProfileStatus.loading, reload: event.reload));
-
-      List<ThunderCommunity> subscriptions = [];
-
-      int page = 1;
-      bool hasFetchedAllSubscriptions = false;
-
-      while (!hasFetchedAllSubscriptions) {
-        final response = await accountRepository!.subscriptions(page: page, limit: 50);
-        subscriptions.addAll(response);
-
-        page++;
-        hasFetchedAllSubscriptions = response.isEmpty;
-      }
-
-      // Sort subscriptions by their name
-      subscriptions.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+      final subscriptions = await accountRepository!.subscriptions();
       emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, subscriptions: subscriptions));
 
       // Refresh the favourited communities as it might've changed.
       add(FetchProfileFavorites(reload: event.reload));
     } catch (e) {
+      debugPrint('Error fetching profile subscriptions: ${e.toString()}');
       emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
@@ -320,6 +291,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, favorites: communities));
     } catch (e) {
+      debugPrint('Error fetching profile favorites: ${e.toString()}');
       emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }

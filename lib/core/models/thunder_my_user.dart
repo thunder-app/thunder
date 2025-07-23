@@ -152,12 +152,12 @@ class ThunderMyUser {
 
     return ThunderMyUser(
       localUserView: ThunderLocalUserView.fromLemmyLocalUserView(myUser['local_user_view']),
-      follows: follows.map((f) => ThunderCommunity.fromLemmyCommunity(f['community'])).toList(),
-      moderates: moderates.map((m) => ThunderCommunity.fromLemmyCommunity(m['community'])).toList(),
-      communityBlocks: communityBlocks.map((b) => ThunderCommunity.fromLemmyCommunity(b['community'])).toList(),
-      instanceBlocks: instanceBlocks.map((b) => ThunderInstanceBlock.fromLemmyBlock(b)).toList(),
-      personBlocks: personBlocks.map((b) => ThunderUser.fromLemmyUser(b['target'])).toList(),
-      discussionLanguages: discussionLanguages,
+      follows: follows.map<ThunderCommunity>((cfv) => ThunderCommunity.fromLemmyCommunity(cfv['community'])).toList(),
+      moderates: moderates.map<ThunderCommunity>((cmv) => ThunderCommunity.fromLemmyCommunity(cmv['community'])).toList(),
+      communityBlocks: communityBlocks.map<ThunderCommunity>((cbv) => ThunderCommunity.fromLemmyCommunity(cbv['community'])).toList(),
+      instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((ibv) => ThunderInstanceBlock.fromLemmyBlock(ibv)).toList(),
+      personBlocks: personBlocks.map<ThunderUser>((pbv) => ThunderUser.fromLemmyUser(pbv['target'])).toList(),
+      discussionLanguages: discussionLanguages?.cast<int>(),
     );
   }
 

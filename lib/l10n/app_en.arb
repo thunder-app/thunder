@@ -1639,8 +1639,10 @@
   "@normal": {
     "description": "Normal name thickness/weight"
   },
-  "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
-  "@notValidLemmyInstance": {},
+  "notValidLemmyInstance": "{instance} does not appear to be a valid instance",
+  "@notValidLemmyInstance": {
+    "description": "Message for when an instance is not a valid Lemmy/PieFed instance"
+  },
   "notValidUrl": "Not a valid URL",
   "@notValidUrl": {},
   "nothingToShare": "Nothing to share",

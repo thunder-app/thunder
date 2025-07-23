@@ -1,7 +1,7 @@
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +10,6 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
-import 'package:thunder/instances.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 
@@ -204,38 +203,13 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
       icon: instance.icon,
       users: instance.users,
       success: true,
+      platform: platform,
+      contentWarning: site.site.contentWarning,
     );
   } catch (e) {
     debugPrint('Error getting instance info: $e');
     // Bad instances will throw an exception, so no icon
     return const ThunderInstanceInfo(success: false);
-  }
-}
-
-final validInstances = HashSet<String>();
-
-Future<bool> isLemmyInstance(String? url) async {
-  if (url?.isEmpty ?? true) {
-    return false;
-  }
-
-  if (instances.contains(url)) {
-    return true;
-  }
-
-  if (validInstances.contains(url)) {
-    return true;
-  }
-
-  try {
-    // Create a temporary Account for the request
-    final account = Account(instance: url!, id: '', index: -1);
-    await LemmyInstanceRepository(account: account).getSiteInfo();
-    // If we get here, it worked
-    validInstances.add(url);
-    return true;
-  } catch (e) {
-    return false;
   }
 }
 

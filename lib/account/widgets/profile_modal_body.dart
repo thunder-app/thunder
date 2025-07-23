@@ -709,12 +709,12 @@ class _ProfileSelectState extends State<ProfileSelect> {
           // No accounts and no anonymous instances left. Create a new one.
           // Detect the platform for the default instance
           final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo('lemmy.ml');
-          
+
           await Account.insertAnonymousInstance(Account(
-            id: '', 
-            instance: 'lemmy.ml', 
-            index: -1, 
-            anonymous: true, 
+            id: '',
+            instance: 'lemmy.ml',
+            index: -1,
+            anonymous: true,
             platform: platform,
           ));
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
