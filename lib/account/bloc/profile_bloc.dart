@@ -87,7 +87,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     // Initialize the repositories with the current account
     instanceRepository = LemmyInstanceRepository(account: account);
-    accountRepository = LemmyAccountRepository(account: account);
+    accountRepository = AccountRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
     // Check to see the instance settings (for checking if downvotes are enabled)
@@ -96,7 +96,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       siteResponse = await instanceRepository!.getSiteInfo().timeout(const Duration(seconds: 15));
-      downvotesEnabled = siteResponse.siteView.enableDownvotes ?? true;
+      downvotesEnabled = siteResponse.site.enableDownvotes ?? true;
     } catch (e) {
       return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
     }
@@ -132,22 +132,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       Account tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
 
       // Create a temporary account repository to use for the login
-      final response = await LemmyAccountRepository(account: tempAccount).login(username: event.username, password: event.password, totp: event.totp);
-      if (response.jwt == null) return emit(state.copyWith(status: ProfileStatus.failure));
+      final jwt = await AccountRepositoryImpl(account: tempAccount).login(username: event.username, password: event.password, totp: event.totp);
+      if (jwt == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       // Create a temporary instance repository to use for the site information
-      tempAccount = Account(id: '', index: -1, jwt: response.jwt!, instance: tempAccount.instance);
+      tempAccount = Account(id: '', index: -1, jwt: jwt, instance: tempAccount.instance, platform: platform);
       final siteResponse = await LemmyInstanceRepository(account: tempAccount).getSiteInfo();
 
-      if (event.showContentWarning && siteResponse.siteView.contentWarning?.isNotEmpty == true) {
-        return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => siteResponse.siteView.contentWarning!));
+      if (event.showContentWarning && siteResponse.site.contentWarning?.isNotEmpty == true) {
+        return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => siteResponse.site.contentWarning!));
       }
 
       // Create a new account in the database
       Account? account = Account(
         id: '',
         username: siteResponse.myUser?.localUserView.person.name,
-        jwt: response.jwt,
+        jwt: jwt,
         instance: tempAccount.instance,
         userId: siteResponse.myUser?.localUserView.person.id,
         index: -1,

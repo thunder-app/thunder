@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -34,10 +37,21 @@ class LemmyInstanceRepository implements InstanceRepository {
 
   @override
   Future<ThunderSiteResponse> getSiteInfo() async {
-    final response = await client.run(GetSite(auth: account.jwt));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetSite(auth: account.jwt));
+        return ThunderSiteResponse.fromLemmySiteResponse(response.toJson());
+      case ThreadiversePlatform.piefed:
+        final uri = Uri.https(account.instance, '/api/alpha/site');
+        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
 
-    // Convert the Lemmy API response to our Thunder model
-    return ThunderSiteResponse.fromLemmySiteResponse(response.toJson());
+        final response = await http.get(uri, headers: headers);
+
+        final json = jsonDecode(response.body);
+        return ThunderSiteResponse.fromPiefedSiteResponse(json);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override

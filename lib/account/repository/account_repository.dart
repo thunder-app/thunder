@@ -1,19 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/utils/global_context.dart';
 
 //// Interface for an account repository
 abstract class AccountRepository {
   /// Login to the Lemmy instance.
-  Future<LoginResponse> login({required String username, required String password, String? totp});
+  Future<String?> login({required String username, required String password, String? totp});
 
   Future<List<ThunderCommunity>> subscriptions({int? page, int? limit});
 
@@ -43,21 +46,42 @@ abstract class AccountRepository {
   Future<dynamic> exportSettings();
 }
 
-/// Implementation of [AccountRepository] using Lemmy API
-class LemmyAccountRepository implements AccountRepository {
+/// Implementation of [AccountRepository]
+class AccountRepositoryImpl implements AccountRepository {
   /// The account to use for methods invoked in this repository
   Account account;
 
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
-  LemmyAccountRepository({required this.account}) {
+  AccountRepositoryImpl({required this.account}) {
     client = LemmyApiV3(account.instance, debug: kDebugMode);
   }
 
   @override
-  Future<LoginResponse> login({required String username, required String password, String? totp}) async {
-    return client.run(Login(usernameOrEmail: username, password: password, totp2faToken: totp));
+  Future<String?> login({required String username, required String password, String? totp}) async {
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(Login(usernameOrEmail: username, password: password, totp2faToken: totp));
+        return response.jwt;
+      case ThreadiversePlatform.piefed:
+        Map<String, dynamic> body = {
+          'username': username,
+          'password': password,
+        };
+
+        Map<String, String> headers = {
+          'Content-Type': 'application/json',
+        };
+
+        final uri = Uri.https(account.instance, '/api/alpha/user/login');
+        final response = await http.post(uri, body: jsonEncode(body), headers: headers);
+        final json = jsonDecode(response.body);
+        return json['jwt'];
+
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -65,14 +89,22 @@ class LemmyAccountRepository implements AccountRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(ListCommunities(
-      auth: account.jwt,
-      page: page,
-      limit: 50,
-      type: FeedListType.subscribed.toLemmyType(),
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetSite(auth: account.jwt));
+        return response.myUser?.follows.map((cfv) => ThunderCommunity.fromLemmyCommunity(cfv.community.toJson())).toList() ?? [];
+      case ThreadiversePlatform.piefed:
+        final uri = Uri.https(account.instance, '/api/alpha/site');
+        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
 
-    return response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
+        final response = await http.get(uri, headers: headers);
+
+        final json = jsonDecode(response.body);
+        final subscriptions = json['my_user']['follows'].map<ThunderCommunity>((community) => ThunderCommunity.fromPiefedCommunity(community)).toList();
+        return subscriptions;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override

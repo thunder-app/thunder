@@ -49,7 +49,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     instanceRepository = LemmyInstanceRepository(account: account);
     searchRepository = LemmySearchRepository(account: account);
     communityRepository = CommunityRepositoryImpl(account: account);
-    accountRepository = LemmyAccountRepository(account: account);
+    accountRepository = AccountRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
     on<ResetUserSettingsEvent>(
@@ -190,8 +190,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     try {
       final getSiteResponse = await instanceRepository.getSiteInfo();
 
-      final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
-      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+      final personBlocks = getSiteResponse.myUser!.personBlocks..sort((a, b) => a.name.compareTo(b.name));
+      final communityBlocks = getSiteResponse.myUser!.communityBlocks..sort((a, b) => a.name.compareTo(b.name));
       final instanceBlocks = getSiteResponse.myUser!.instanceBlocks.map((instanceBlockView) => instanceBlockView.instance).toList()..sort((a, b) => a['domain'].compareTo(b['domain']));
 
       return emit(state.copyWith(

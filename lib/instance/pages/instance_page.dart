@@ -105,7 +105,7 @@ class _InstancePageState extends State<InstancePage> {
         providers: [
           BlocProvider.value(
             value: InstancePageCubit(
-              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId)!,
+              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId)!,
               resolutionInstance: (isUserLoggedIn ? accountInstance : currentAnonymousInstance)!,
               account: account,
             ),
@@ -114,7 +114,7 @@ class _InstancePageState extends State<InstancePage> {
             value: FeedBloc(
               account: Account(
                 id: '',
-                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId)!,
+                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId)!,
                 index: -1,
               ),
             ),
@@ -139,13 +139,13 @@ class _InstancePageState extends State<InstancePage> {
                         toolbarHeight: APP_BAR_HEIGHT,
                         title: ListTile(
                           title: Text(
-                            fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId) ?? '',
+                            fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId) ?? '',
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                             softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
-                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.users ?? 0))}"),
+                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.site.users ?? 0))}"),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                         ),
                         actions: [
@@ -157,7 +157,7 @@ class _InstancePageState extends State<InstancePage> {
                                 context.read<InstanceBloc>().add(InstanceActionEvent(
                                       instanceAction: InstanceAction.block,
                                       instanceId: widget.instanceId!,
-                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId),
+                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId),
                                       value: !isBlocked!,
                                     ));
                               },
@@ -169,7 +169,7 @@ class _InstancePageState extends State<InstancePage> {
                           if (viewType == SearchType.all)
                             IconButton(
                               tooltip: l10n.openInBrowser,
-                              onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.actorId),
+                              onPressed: () => handleLink(context, url: widget.getSiteResponse.site.actorId),
                               icon: Icon(
                                 Icons.open_in_browser_rounded,
                                 semanticLabel: l10n.openInBrowser,
@@ -205,7 +205,7 @@ class _InstancePageState extends State<InstancePage> {
                                     HapticFeedback.mediumImpact();
                                     navigateToModlogPage(
                                       context,
-                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.actorId) ?? '',
+                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId) ?? '',
                                     );
                                   },
                                   icon: Icons.shield_rounded,
@@ -213,7 +213,7 @@ class _InstancePageState extends State<InstancePage> {
                                 ),
                                 if (viewType != SearchType.all)
                                   ThunderPopupMenuItem(
-                                    onTap: () => handleLink(context, url: widget.getSiteResponse.siteView.actorId),
+                                    onTap: () => handleLink(context, url: widget.getSiteResponse.site.actorId),
                                     icon: Icons.open_in_browser_rounded,
                                     title: l10n.openInBrowser,
                                   ),
@@ -309,7 +309,7 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: widget.getSiteResponse.siteView),
+                                child: InstanceView(site: widget.getSiteResponse.site),
                               ),
                             ),
                           ),

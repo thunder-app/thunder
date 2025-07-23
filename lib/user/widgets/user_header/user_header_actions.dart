@@ -369,8 +369,8 @@ class _BlockActionChip extends StatelessWidget {
       return false;
     }
 
-    final blockedUsers = state.siteResponse!.myUser!.personBlocks.map((block) => block.target).toList();
-    return blockedUsers.any((blockedUser) => blockedUser.id == user.id);
+    final blockedUsers = state.siteResponse!.myUser!.personBlocks;
+    return blockedUsers.any((u) => u.id == user.id);
   }
 }
 

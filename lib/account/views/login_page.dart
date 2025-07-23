@@ -485,13 +485,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
         bool acceptedContentWarning = true;
 
-        if (siteResponse.siteView.contentWarning?.isNotEmpty == true) {
+        if (siteResponse.site.contentWarning?.isNotEmpty == true) {
           acceptedContentWarning = false;
 
           await showThunderDialog<void>(
             context: context,
             title: l10n.contentWarning,
-            contentText: siteResponse.siteView.contentWarning,
+            contentText: siteResponse.site.contentWarning,
             onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
             secondaryButtonText: l10n.decline,
             onPrimaryButtonPressed: (dialogContext, _) async {

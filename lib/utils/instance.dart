@@ -187,11 +187,14 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
 
   try {
+    final platform = await detectPlatformFromNodeInfo(url!);
+    if (platform == null) return const ThunderInstanceInfo(success: false);
+
     // Create a temporary Account for the request
-    final account = Account(instance: url!, id: '', index: -1);
+    final account = Account(instance: url, id: '', index: -1, platform: platform);
 
     final site = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
-    final instance = site.siteView;
+    final instance = site.site;
 
     return ThunderInstanceInfo(
       id: id,
@@ -203,6 +206,7 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
       success: true,
     );
   } catch (e) {
+    debugPrint('Error getting instance info: $e');
     // Bad instances will throw an exception, so no icon
     return const ThunderInstanceInfo(success: false);
   }
