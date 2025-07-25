@@ -77,19 +77,16 @@ class PiefedApi {
 
   /// Fetches a post from the Piefed API
   Future<Map<String, dynamic>> getPost(int postId, {int? commentId}) async {
-    final queryParams = {
-      'id': postId,
-      'comment_id': commentId,
-    };
+    final queryParams = {'id': postId, 'comment_id': commentId};
 
     final json = await _request(HttpMethod.get, '/api/alpha/post', queryParams);
 
-    final post = (await parsePosts([ThunderPost.fromPiefedPostView(json['post_view'])])).first;
+    final posts = await parsePosts([ThunderPost.fromPiefedPostView(json['post_view'])]);
     final moderators = json['moderators'].map<ThunderUser>((mu) => ThunderUser.fromPiefedUser(mu['moderator'])).toList();
     final crossPosts = json['cross_posts'].map<ThunderPost>((cp) => ThunderPost.fromPiefedPostView(cp)).toList();
 
     return {
-      'post': post,
+      'post': posts.first,
       'moderators': moderators,
       'crossPosts': crossPosts,
     };
@@ -121,6 +118,50 @@ class PiefedApi {
 
     final json = await _request(HttpMethod.get, '/api/alpha/post/list', queryParams);
     return json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
+  }
+
+  /// Creates a post
+  Future<ThunderPost> createPost({
+    required String title,
+    required int communityId,
+    String? url,
+    String? contents,
+    bool? nsfw,
+    int? languageId,
+  }) async {
+    final body = {
+      'title': title,
+      'community_id': communityId,
+      'url': url,
+      'body': contents,
+      'nsfw': nsfw,
+      'language_id': languageId,
+    };
+
+    final json = await _request(HttpMethod.post, '/api/alpha/post', body);
+    return ThunderPost.fromPiefedPostView(json['post_view']);
+  }
+
+  /// Edits a post
+  Future<ThunderPost> editPost({
+    required int postId,
+    required String title,
+    String? url,
+    String? contents,
+    bool? nsfw,
+    int? languageId,
+  }) async {
+    final body = {
+      'post_id': postId,
+      'title': title,
+      'url': url,
+      'body': contents,
+      'nsfw': nsfw,
+      'language_id': languageId,
+    };
+
+    final json = await _request(HttpMethod.put, '/api/alpha/post', body);
+    return ThunderPost.fromPiefedPostView(json['post_view']);
   }
 
   /// Votes on a post

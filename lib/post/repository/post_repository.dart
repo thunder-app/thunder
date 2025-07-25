@@ -149,16 +149,12 @@ class PostRepositoryImpl implements PostRepository {
       case ThreadiversePlatform.lemmy:
         final response = await lemmy.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
 
-        // Parse the posts and add in media information which is used elsewhere in the app
-        List<ThunderPost> posts = await parsePosts([ThunderPost.fromLemmyPostView(response.postView.toJson())]);
-        ThunderPost post = posts.first;
-
-        // Convert cross-posts to ThunderPost objects
-        List<ThunderPost> crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
-        List<ThunderUser> moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
+        final posts = await parsePosts([ThunderPost.fromLemmyPostView(response.postView.toJson())]);
+        final crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
+        final moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
 
         return {
-          'post': post,
+          'post': posts.first,
           'moderators': moderators,
           'crossPosts': crossPosts,
         };
@@ -227,35 +223,65 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    PostResponse postResponse;
-    if (postIdBeingEdited != null) {
-      postResponse = await lemmy.run(EditPost(
-        auth: account.jwt!,
-        name: name,
-        body: body,
-        url: url?.isEmpty == true ? null : url,
-        customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
-        altText: altText?.isEmpty == true ? null : altText,
-        nsfw: nsfw,
-        postId: postIdBeingEdited,
-        languageId: languageId,
-      ));
-    } else {
-      postResponse = await lemmy.run(CreatePost(
-        auth: account.jwt!,
-        communityId: communityId,
-        name: name,
-        body: body,
-        url: url?.isEmpty == true ? null : url,
-        customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
-        altText: altText?.isEmpty == true ? null : altText,
-        nsfw: nsfw,
-        languageId: languageId,
-      ));
-    }
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        PostResponse postResponse;
 
-    final posts = await parsePosts([ThunderPost.fromLemmyPostView(postResponse.postView.toJson())]);
-    return posts.firstOrNull!;
+        if (postIdBeingEdited != null) {
+          postResponse = await lemmy.run(EditPost(
+            auth: account.jwt!,
+            name: name,
+            body: body,
+            url: url?.isEmpty == true ? null : url,
+            customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+            altText: altText?.isEmpty == true ? null : altText,
+            nsfw: nsfw,
+            postId: postIdBeingEdited,
+            languageId: languageId,
+          ));
+        } else {
+          postResponse = await lemmy.run(CreatePost(
+            auth: account.jwt!,
+            communityId: communityId,
+            name: name,
+            body: body,
+            url: url?.isEmpty == true ? null : url,
+            customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+            altText: altText?.isEmpty == true ? null : altText,
+            nsfw: nsfw,
+            languageId: languageId,
+          ));
+        }
+
+        final posts = await parsePosts([ThunderPost.fromLemmyPostView(postResponse.postView.toJson())]);
+        return posts.firstOrNull!;
+      case ThreadiversePlatform.piefed:
+        ThunderPost? response;
+
+        if (postIdBeingEdited != null) {
+          response = await piefed.editPost(
+            postId: postIdBeingEdited,
+            title: name,
+            contents: body,
+            nsfw: nsfw,
+            languageId: languageId,
+          );
+        } else {
+          response = await piefed.createPost(
+            title: name,
+            communityId: communityId,
+            url: url,
+            contents: body,
+            nsfw: nsfw,
+            languageId: languageId,
+          );
+        }
+
+        final posts = await parsePosts([response]);
+        return posts.firstOrNull!;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
