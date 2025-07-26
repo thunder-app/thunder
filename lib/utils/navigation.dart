@@ -64,6 +64,7 @@ import 'package:thunder/user/pages/media_management_page.dart';
 import 'package:thunder/user/pages/user_settings_block_page.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
@@ -95,9 +96,11 @@ Future<void> navigateToInstancePage(
   ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
 
+  final platform = await detectPlatformFromNodeInfo(instanceHost);
+
   try {
     // Get the site information by connecting to the given instance
-    final account = Account(id: '', index: -1, instance: instanceHost);
+    final account = Account(id: '', index: -1, instance: instanceHost, platform: platform);
     getSiteResponse = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
@@ -118,7 +121,8 @@ Future<void> navigateToInstancePage(
     builder: (context) => BlocProvider.value(
       value: thunderBloc,
       child: InstancePage(
-        getSiteResponse: getSiteResponse!,
+        platform: platform!,
+        site: getSiteResponse!,
         isBlocked: isBlocked,
         instanceId: instanceId,
       ),

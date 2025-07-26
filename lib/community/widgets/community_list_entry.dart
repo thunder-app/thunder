@@ -149,7 +149,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
               try {
                 // Create a temporary Account
                 final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
-                final response = await LemmySearchRepository(account: account).resolve(query: widget.community.actorId);
+                final response = await SearchRepositoryImpl(account: account).resolve(query: widget.community.actorId);
 
                 communityId = response.community?.community.id;
               } catch (e) {

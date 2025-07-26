@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -47,7 +45,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
   UserSettingsBloc({required this.account}) : super(const UserSettingsState()) {
     instanceRepository = InstanceRepositoryImpl(account: account);
-    searchRepository = LemmySearchRepository(account: account);
+    searchRepository = SearchRepositoryImpl(account: account);
     communityRepository = CommunityRepositoryImpl(account: account);
     accountRepository = AccountRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
@@ -330,26 +328,24 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.searchingMedia));
 
     try {
-      final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
-      String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
+      final account = await fetchActiveProfile();
+      String url = Uri.https(account.instance, 'pictrs/image/${event.id}').toString();
 
-      List<PostView> posts = (await searchRepository.search(query: url, type: MetaSearchType.posts)).posts.toList();
-      List<PostView> postsByUrl = (await searchRepository.search(query: url, type: MetaSearchType.url)).posts.toList();
+      final postsResponse = await searchRepository.search(query: url, type: MetaSearchType.posts);
+      final postsByUrlResponse = await searchRepository.search(query: url, type: MetaSearchType.url);
+
+      List<ThunderPost> posts = postsResponse['posts'];
+      List<ThunderPost> postsByUrl = postsByUrlResponse['posts'];
 
       // De-dup posts found by body and URL
-      posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
+      posts.addAll(postsByUrl.where((postByUrl) => !posts.any((post) => post.id == postByUrl.id)));
 
-      List<ThunderComment> comments = (await searchRepository.search(
-        query: url,
-        type: MetaSearchType.comments,
-      ))
-          .comments
-          .map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))
-          .toList();
+      final response = await searchRepository.search(query: url, type: MetaSearchType.comments);
+      final List<ThunderComment> comments = response['comments'];
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,
-        imageSearchPosts: await parsePosts(posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList()),
+        imageSearchPosts: await parsePosts(posts),
         imageSearchComments: comments,
       ));
     } catch (e) {

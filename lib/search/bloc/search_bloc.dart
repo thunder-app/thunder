@@ -4,8 +4,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
-import 'package:thunder/comment/models/thunder_comment.dart';
 
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -21,6 +21,7 @@ import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -45,7 +46,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   SearchBloc({required this.account}) : super(SearchState()) {
     commentRepository = CommentRepositoryImpl(account: account);
-    searchRepository = LemmySearchRepository(account: account);
+    searchRepository = SearchRepositoryImpl(account: account);
     communityRepository = CommunityRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
 
@@ -93,17 +94,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
-
-      if (event.query.isEmpty && event.force != true) {
-        return emit(state.copyWith(status: SearchStatus.initial));
-      }
+      if (event.query.isEmpty && event.force != true) return emit(state.copyWith(status: SearchStatus.initial));
 
       final account = await fetchActiveProfile();
 
-      List<PersonView>? users;
-      List<CommunityView>? communities;
-      List<CommentView>? comments;
-      List<PostView>? posts;
+      List<ThunderUser>? users;
+      List<ThunderCommunity>? communities;
+      List<ThunderComment>? comments;
+      List<ThunderPost>? posts;
       List<ThunderInstanceInfo> instances = [];
 
       if (event.searchType == MetaSearchType.instances) {
@@ -159,10 +157,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           creatorId: event.creatorId,
         );
 
-        users = response.users;
-        communities = response.communities;
-        comments = response.comments;
-        posts = response.posts;
+        users = response['users'];
+        communities = response['communities'];
+        comments = response['comments'];
+        posts = response['posts'];
       }
 
       // If there are no search results, see if this is an exact search
@@ -197,10 +195,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(communities?.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
+        communities: prioritizeFavorites(communities, event.favoriteCommunities),
         users: users,
-        comments: comments?.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
-        posts: await parsePosts(posts?.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? []),
+        comments: comments,
+        posts: await parsePosts(posts ?? []),
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,
@@ -225,12 +223,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             instances: state.instances,
           ));
 
-          SearchResponse? searchResponse;
+          List<ThunderUser>? users;
+          List<ThunderCommunity>? communities;
+          List<ThunderComment>? comments;
+          List<ThunderPost>? posts;
+
           if (event.searchType == MetaSearchType.instances) {
             // Instance search is not paged, so this is a no-op.
-            //
           } else {
-            searchResponse = await searchRepository.search(
+            final response = await searchRepository.search(
               query: event.query,
               type: event.searchType,
               sort: event.postSortType,
@@ -240,24 +241,29 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               communityId: event.communityId,
               creatorId: event.creatorId,
             );
+
+            users = response['users'];
+            communities = response['communities'];
+            comments = response['comments'];
+            posts = response['posts'];
           }
 
-          if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
+          if (searchIsEmpty(event.searchType, searchResponse: {'users': users, 'communities': communities, 'comments': comments, 'posts': posts})) {
             return emit(state.copyWith(status: SearchStatus.done));
           }
 
           // Append the search results
-          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())) ?? []];
-          state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
-          state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())) ?? []];
-          state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList() ?? [])];
+          final List<ThunderCommunity> allCommunities = [...(state.communities ?? []), ...(communities ?? [])];
+          final List<ThunderUser> allUsers = [...(state.users ?? []), ...(users ?? [])];
+          final List<ThunderComment> allComments = [...(state.comments ?? []), ...(comments ?? [])];
+          final List<ThunderPost> allPosts = [...(state.posts ?? []), ...(await parsePosts(posts ?? []))];
 
           return emit(state.copyWith(
             status: SearchStatus.success,
-            communities: state.communities,
-            users: state.users,
-            comments: state.comments,
-            posts: state.posts,
+            communities: allCommunities,
+            users: allUsers,
+            comments: allComments,
+            posts: allPosts,
             instances: state.instances,
             page: state.page + 1,
           ));

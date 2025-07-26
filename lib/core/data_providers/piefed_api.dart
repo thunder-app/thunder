@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -30,7 +31,7 @@ class PiefedApi {
 
   /// Handle response from the request. Throws an exception if the request fails.
   Map<String, dynamic> _handleResponse(Uri uri, Response response) {
-    if (response.statusCode != 200) throw Exception('Failed to make request to $uri:  ${response.statusCode} ${response.body}');
+    if (response.statusCode != 200) throw Exception('Failed to make request to $uri: ${response.statusCode} ${response.body}');
     return jsonDecode(response.body);
   }
 
@@ -42,9 +43,10 @@ class PiefedApi {
       Uri uri = Uri.https(account.instance, endpoint);
       Response response;
 
+      data.removeWhere((key, value) => value == null);
+
       if (method == HttpMethod.get) {
         // Remove null values and convert values to strings
-        data.removeWhere((key, value) => value == null);
         data = data.map((key, value) => MapEntry(key, value.toString()));
 
         uri = Uri.https(account.instance, endpoint, data);
@@ -228,5 +230,27 @@ class PiefedApi {
     final json = await _request(HttpMethod.post, '/api/alpha/post/remove', body);
     final post = ThunderPost.fromPiefedPostView(json['post_view']);
     return post.removed == removed;
+  }
+
+  /// Searches for posts, comments, communities, and users
+  Future<Map<String, dynamic>> search({
+    required String query,
+    MetaSearchType? type,
+    PostSortType? sort,
+    FeedListType? listingType,
+    int? page,
+    int? limit,
+  }) async {
+    final body = {
+      'q': query,
+      'type_': type?.searchType,
+      'sort': sort?.value,
+      'listing_type': listingType?.value,
+      'page': page,
+      'limit': limit,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/search', body);
+    return json;
   }
 }

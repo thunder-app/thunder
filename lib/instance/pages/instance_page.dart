@@ -8,6 +8,7 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/widgets/community_list_entry.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
@@ -15,7 +16,6 @@ import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/instance/cubit/instance_page_cubit.dart';
 import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/instance/widgets/instance_view.dart';
-import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
@@ -32,7 +32,13 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class InstancePage extends StatefulWidget {
-  final ThunderSiteResponse getSiteResponse;
+  /// The platform of the instance.
+  final ThreadiversePlatform platform;
+
+  /// The site information for the instance.
+  final ThunderSiteResponse site;
+
+  /// Whether the instance is blocked.
   final bool? isBlocked;
 
   // This is needed (in addition to Site) specifically for blocking.
@@ -42,7 +48,8 @@ class InstancePage extends StatefulWidget {
 
   const InstancePage({
     super.key,
-    required this.getSiteResponse,
+    required this.platform,
+    required this.site,
     required this.isBlocked,
     required this.instanceId,
   });
@@ -105,7 +112,7 @@ class _InstancePageState extends State<InstancePage> {
         providers: [
           BlocProvider.value(
             value: InstancePageCubit(
-              instance: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId)!,
+              instance: fetchInstanceNameFromUrl(widget.site.site.actorId)!,
               resolutionInstance: (isUserLoggedIn ? accountInstance : currentAnonymousInstance)!,
               account: account,
             ),
@@ -114,8 +121,9 @@ class _InstancePageState extends State<InstancePage> {
             value: FeedBloc(
               account: Account(
                 id: '',
-                instance: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId)!,
+                instance: fetchInstanceNameFromUrl(widget.site.site.actorId)!,
                 index: -1,
+                platform: widget.platform,
               ),
             ),
           ),
@@ -139,13 +147,13 @@ class _InstancePageState extends State<InstancePage> {
                         toolbarHeight: APP_BAR_HEIGHT,
                         title: ListTile(
                           title: Text(
-                            fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId) ?? '',
+                            fetchInstanceNameFromUrl(widget.site.site.actorId) ?? '',
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                             softWrap: false,
                             style: theme.textTheme.titleLarge,
                           ),
-                          subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.site.users ?? 0))}"),
+                          subtitle: Text("v${widget.site.version} · ${l10n.countUsers(formatLongNumber(widget.site.site.users ?? 0))}"),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                         ),
                         actions: [
@@ -157,7 +165,7 @@ class _InstancePageState extends State<InstancePage> {
                                 context.read<InstanceBloc>().add(InstanceActionEvent(
                                       instanceAction: InstanceAction.block,
                                       instanceId: widget.instanceId!,
-                                      domain: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId),
+                                      domain: fetchInstanceNameFromUrl(widget.site.site.actorId),
                                       value: !isBlocked!,
                                     ));
                               },
@@ -169,7 +177,7 @@ class _InstancePageState extends State<InstancePage> {
                           if (viewType == SearchType.all)
                             IconButton(
                               tooltip: l10n.openInBrowser,
-                              onPressed: () => handleLink(context, url: widget.getSiteResponse.site.actorId),
+                              onPressed: () => handleLink(context, url: widget.site.site.actorId),
                               icon: Icon(
                                 Icons.open_in_browser_rounded,
                                 semanticLabel: l10n.openInBrowser,
@@ -205,7 +213,7 @@ class _InstancePageState extends State<InstancePage> {
                                     HapticFeedback.mediumImpact();
                                     navigateToModlogPage(
                                       context,
-                                      subtitle: fetchInstanceNameFromUrl(widget.getSiteResponse.site.actorId) ?? '',
+                                      subtitle: fetchInstanceNameFromUrl(widget.site.site.actorId) ?? '',
                                     );
                                   },
                                   icon: Icons.shield_rounded,
@@ -213,7 +221,7 @@ class _InstancePageState extends State<InstancePage> {
                                 ),
                                 if (viewType != SearchType.all)
                                   ThunderPopupMenuItem(
-                                    onTap: () => handleLink(context, url: widget.getSiteResponse.site.actorId),
+                                    onTap: () => handleLink(context, url: widget.site.site.actorId),
                                     icon: Icons.open_in_browser_rounded,
                                     title: l10n.openInBrowser,
                                   ),
@@ -309,7 +317,7 @@ class _InstancePageState extends State<InstancePage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Material(
-                                child: InstanceView(site: widget.getSiteResponse.site),
+                                child: InstanceView(site: widget.site.site),
                               ),
                             ),
                           ),
@@ -331,16 +339,8 @@ class _InstancePageState extends State<InstancePage> {
                             delegate: SliverChildBuilderDelegate(
                               childCount: state.users?.length,
                               (context, index) {
-                                PersonView? user = state.users?[index];
-
-                                return Material(
-                                  child: user != null
-                                      ? UserListEntry(
-                                          user: ThunderUser.fromLemmyUserView(user.toJson()),
-                                          resolutionInstance: state.resolutionInstance,
-                                        )
-                                      : Container(),
-                                );
+                                final user = state.users?[index];
+                                return Material(child: user != null ? UserListEntry(user: user, resolutionInstance: state.resolutionInstance) : Container());
                               },
                             ),
                           ),

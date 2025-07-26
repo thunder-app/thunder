@@ -74,14 +74,13 @@ Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query)
   if (query.isNotEmpty != true) return [];
 
   final account = context.read<ProfileBloc>().state.account;
-  final response = await LemmySearchRepository(account: account).search(
+  final response = await SearchRepositoryImpl(account: account).search(
     query: query,
     type: MetaSearchType.users,
     limit: 20,
   );
 
-  final users = response.users.map((pv) => ThunderUser.fromLemmyUserView(pv.toJson())).toList();
-  return users;
+  return response['users'];
 }
 
 Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {void Function(ThunderUser)? onSelected}) {
@@ -171,7 +170,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
   if (query.isNotEmpty != true) return emptySuggestions ?? [];
 
   final account = context.read<ProfileBloc>().state.account;
-  final response = await LemmySearchRepository(account: account).search(
+  final response = await SearchRepositoryImpl(account: account).search(
     query: query,
     type: MetaSearchType.communities,
     limit: 20,
@@ -188,8 +187,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
     }
   }
 
-  final communities = response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
-  return prioritizeFavorites(communities, favorites) ?? [];
+  return prioritizeFavorites(response['communities'], favorites) ?? [];
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {

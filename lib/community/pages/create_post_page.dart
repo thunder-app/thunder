@@ -14,7 +14,6 @@ import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
@@ -758,27 +757,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   void _updatePreview(String text) async {
-    SearchResponse? searchResponse;
-    if (url == text) {
-      try {
-        final account = context.read<ProfileBloc>().state.account;
+    if (url != text) return;
 
-        // Fetch cross-posts
-        searchResponse = await LemmySearchRepository(account: account).search(
-          query: url,
-          type: MetaSearchType.url,
-          sort: PostSortType.topAll,
-          listingType: FeedListType.all,
-          limit: 20,
-        );
-      } catch (e) {
-        // Ignore
-      }
+    try {
+      final account = context.read<ProfileBloc>().state.account;
+
+      // Fetch cross-posts
+      final response = await SearchRepositoryImpl(account: account).search(
+        query: url,
+        type: MetaSearchType.url,
+        sort: PostSortType.topAll,
+        listingType: FeedListType.all,
+        limit: 20,
+      );
+
+      setState(() => crossPosts = response['posts']);
+    } catch (e) {
+      // Ignore
     }
-
-    setState(() {
-      crossPosts = searchResponse?.posts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList() ?? [];
-    });
   }
 
   void _validateSubmission() {
