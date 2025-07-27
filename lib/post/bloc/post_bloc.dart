@@ -92,9 +92,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         crossPosts: crossPosts,
       ));
 
-      emit(state.copyWith(
-        status: PostStatus.loading,
-      ));
+      emit(state.copyWith(status: PostStatus.loading));
 
       CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 

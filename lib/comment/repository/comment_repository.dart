@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
@@ -87,17 +86,36 @@ class CommentRepositoryImpl implements CommentRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApiV3 lemmy;
+
+  /// The Piefed client to use for the repository
+  late PiefedApi piefed;
 
   CommentRepositoryImpl({required this.account}) {
-    client = LemmyApiV3(account.instance, debug: kDebugMode);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        break;
+      case ThreadiversePlatform.piefed:
+        piefed = PiefedApi(account: account, debug: kDebugMode);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
-    final response = await client.run(GetComment(id: commentId, auth: account.jwt));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(GetComment(id: commentId, auth: account.jwt));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.getComment(commentId);
+        return ThunderComment.fromPiefedCommentView(response['comment']);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -112,7 +130,7 @@ class CommentRepositoryImpl implements CommentRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetComments(
+        final response = await lemmy.run(GetComments(
           auth: account.jwt,
           communityId: communityId,
           postId: postId,
@@ -126,29 +144,17 @@ class CommentRepositoryImpl implements CommentRepository {
 
         return response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'sort': commentSortType?.value,
-          'max_depth': maxDepth,
-          'page': page,
-          'limit': limit,
-          'community_id': communityId,
-          'post_id': postId,
-          'parent_id': parentId,
-        };
+        final response = await piefed.getComments(
+          postId: postId,
+          page: page,
+          limit: limit,
+          maxDepth: maxDepth,
+          communityId: communityId,
+          parentId: parentId,
+          commentSortType: commentSortType,
+        );
 
-        // Remove null values and convert values to strings
-        body.removeWhere((key, value) => value == null);
-        body = body.map((key, value) => MapEntry(key, value.toString()));
-
-        final uri = Uri.https(account.instance, '/api/alpha/comment/list', body);
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-
-        final json = jsonDecode(response.body);
-        final comments = json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
-
-        return comments;
+        return response;
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -164,15 +170,27 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(CreateComment(
-      postId: postId,
-      content: content,
-      parentId: parentId,
-      languageId: languageId,
-      auth: account.jwt!,
-    ));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(CreateComment(
+          postId: postId,
+          content: content,
+          parentId: parentId,
+          languageId: languageId,
+          auth: account.jwt!,
+        ));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.createComment(
+          postId: postId,
+          content: content,
+          parentId: parentId,
+          languageId: languageId,
+        );
+        return response;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -184,14 +202,25 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(EditComment(
-      commentId: commentId,
-      content: content,
-      languageId: languageId,
-      auth: account.jwt!,
-    ));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(EditComment(
+          commentId: commentId,
+          content: content,
+          languageId: languageId,
+          auth: account.jwt!,
+        ));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.editComment(
+          commentId: commentId,
+          content: content,
+          languageId: languageId,
+        );
+        return response;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -199,13 +228,16 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(CreateCommentLike(
-      auth: account.jwt!,
-      commentId: comment.id,
-      score: score,
-    ));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(CreateCommentLike(auth: account.jwt!, commentId: comment.id, score: score));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.voteComment(commentId: comment.id, score: score);
+        return response;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -213,13 +245,16 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(SaveComment(
-      auth: account.jwt!,
-      commentId: comment.id,
-      save: save,
-    ));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(SaveComment(auth: account.jwt!, commentId: comment.id, save: save));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.saveComment(commentId: comment.id, save: save);
+        return response;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -227,13 +262,16 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(DeleteComment(
-      auth: account.jwt!,
-      commentId: comment.id,
-      deleted: deleted,
-    ));
-
-    return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(DeleteComment(auth: account.jwt!, commentId: comment.id, deleted: deleted));
+        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+      case ThreadiversePlatform.piefed:
+        final response = await piefed.deleteComment(commentId: comment.id, deleted: deleted);
+        return response;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -241,7 +279,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
+    final response = await lemmy.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
 
     return response;
   }
@@ -251,7 +289,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ListCommentReports(
+    return await lemmy.run(ListCommentReports(
       auth: account.jwt!,
       commentId: commentId,
       page: page,
@@ -266,7 +304,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ResolveCommentReport(
+    return await lemmy.run(ResolveCommentReport(
       auth: account.jwt!,
       reportId: reportId,
       resolved: resolved,
