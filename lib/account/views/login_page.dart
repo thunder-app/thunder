@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/thunder_instance_info.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -200,66 +201,79 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         ),
                       ],
                     ),
-                    secondChild: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    secondChild: Column(
+                      spacing: 8.0,
                       children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            handleLink(context, url: 'https://${_instanceTextEditingController.text}');
-                          },
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.only(left: 10, right: 16),
-                            backgroundColor: theme.colorScheme.surface,
-                            textStyle: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.insert_link_rounded,
-                                color: theme.textTheme.bodySmall?.color,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                AppLocalizations.of(context)!.openInstance,
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (!widget.anonymous) ...[
-                          const SizedBox(width: 12),
-                          OutlinedButton(
-                            onPressed: () {
-                              handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
-                            },
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.only(left: 10, right: 16),
-                              backgroundColor: theme.colorScheme.surface,
-                              textStyle: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.insert_link_rounded,
-                                  color: theme.textTheme.bodySmall?.color,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  AppLocalizations.of(context)!.createAccount,
-                                  style: theme.textTheme.bodySmall,
-                                ),
-                              ],
-                            ),
+                        // TODO: Remove once PieFed support is stable
+                        if (instanceInfo?.platform == ThreadiversePlatform.piefed) ...[
+                          Text(
+                            'PieFed support is currently in beta.\nNot all features are supported yet.',
+                            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.secondary),
+                            textAlign: TextAlign.center,
                           ),
                         ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            OutlinedButton(
+                              onPressed: () {
+                                handleLink(context, url: 'https://${_instanceTextEditingController.text}');
+                              },
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.only(left: 10, right: 16),
+                                backgroundColor: theme.colorScheme.surface,
+                                textStyle: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.insert_link_rounded,
+                                    color: theme.textTheme.bodySmall?.color,
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.openInstance,
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (!widget.anonymous) ...[
+                              const SizedBox(width: 12),
+                              OutlinedButton(
+                                onPressed: () {
+                                  handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.only(left: 10, right: 16),
+                                  backgroundColor: theme.colorScheme.surface,
+                                  textStyle: theme.textTheme.titleMedium?.copyWith(
+                                    color: theme.colorScheme.onPrimary,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.insert_link_rounded,
+                                      color: theme.textTheme.bodySmall?.color,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.createAccount,
+                                      style: theme.textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ],
                     ),
                   ),

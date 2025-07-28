@@ -193,8 +193,6 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
 Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {
   final l10n = AppLocalizations.of(context)!;
 
-  assert(payload.subscribers != null);
-
   return Tooltip(
     message: generateCommunityFullName(
       context,
@@ -228,10 +226,12 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
               ),
               Row(
                 children: [
-                  const Icon(Icons.people_rounded, size: 16),
-                  const SizedBox(width: 5),
-                  Text(formatNumberToK(payload.subscribers ?? -1)),
-                  if (payload.subscribed != SubscriptionStatus.notSubscribed) ...[
+                  if (payload.subscribers != null) ...[
+                    const Icon(Icons.people_rounded, size: 16),
+                    const SizedBox(width: 5),
+                    Text(formatNumberToK(payload.subscribers ?? -1)),
+                  ],
+                  if (payload.subscribed != null) ...[
                     Text(' · ${switch (payload.subscribed) {
                       SubscriptionStatus.pending => l10n.pending,
                       SubscriptionStatus.subscribed => l10n.subscribed,
