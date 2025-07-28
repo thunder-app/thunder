@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/thunder_site_response.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -31,8 +32,20 @@ class InstanceRepositoryImpl implements InstanceRepository {
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
+  /// The Piefed client to use for the repository
+  late PiefedApi piefed;
+
   InstanceRepositoryImpl({required this.account}) {
-    client = LemmyApiV3(account.instance, debug: kDebugMode);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        break;
+      case ThreadiversePlatform.piefed:
+        piefed = PiefedApi(account: account, debug: kDebugMode);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -59,14 +72,29 @@ class InstanceRepositoryImpl implements InstanceRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await client.run(BlockInstance(auth: account.jwt!, instanceId: instanceId, block: block));
-
-    return response;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(BlockInstance(auth: account.jwt!, instanceId: instanceId, block: block));
+        return response;
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
   Future<GetFederatedInstancesResponse> federated() async {
-    final response = await client.run(GetFederatedInstances(auth: account.jwt));
-    return response;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await client.run(GetFederatedInstances(auth: account.jwt));
+        return response;
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 }

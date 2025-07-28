@@ -279,9 +279,16 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    final response = await lemmy.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
-
-    return response;
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        final response = await lemmy.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
+        return response;
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -289,14 +296,22 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await lemmy.run(ListCommentReports(
-      auth: account.jwt!,
-      commentId: commentId,
-      page: page,
-      limit: limit,
-      unresolvedOnly: unresolved,
-      communityId: communityId,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.run(ListCommentReports(
+          auth: account.jwt!,
+          commentId: commentId,
+          page: page,
+          limit: limit,
+          unresolvedOnly: unresolved,
+          communityId: communityId,
+        ));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -304,11 +319,15 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await lemmy.run(ResolveCommentReport(
-      auth: account.jwt!,
-      reportId: reportId,
-      resolved: resolved,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.run(ResolveCommentReport(auth: account.jwt!, reportId: reportId, resolved: resolved));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override

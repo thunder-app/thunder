@@ -68,7 +68,7 @@ Future<void> pollRepliesAndShowNotifications() async {
 
   for (final Account account in accounts) {
     // Iterate through inbox replies
-    final getRepliesResponse = await LemmyNotificationRepository(account: account).replies(
+    final getRepliesResponse = await NotificationRepositoryImpl(account: account).replies(
       unread: true,
       limit: 50,
       sort: CommentSortType.old,

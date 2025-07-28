@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/thunder_site.dart';
@@ -40,8 +41,20 @@ class UserRepositoryImpl implements UserRepository {
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
+  /// The Piefed client to use for the repository
+  late PiefedApi piefed;
+
   UserRepositoryImpl({required this.account}) {
-    client = LemmyApiV3(account.instance, debug: kDebugMode);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        break;
+      case ThreadiversePlatform.piefed:
+        piefed = PiefedApi(account: account, debug: kDebugMode);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -111,6 +124,14 @@ class UserRepositoryImpl implements UserRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 }

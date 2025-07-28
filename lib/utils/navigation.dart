@@ -488,7 +488,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
 
   // Load the notifications
   while (!doneFetching) {
-    final getRepliesResponse = await LemmyNotificationRepository(account: account).replies(
+    final getRepliesResponse = await NotificationRepositoryImpl(account: account).replies(
       unread: replyId == null,
       limit: 50,
       sort: CommentSortType.new_,

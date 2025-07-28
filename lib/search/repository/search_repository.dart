@@ -114,6 +114,14 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<ResolveObjectResponse> resolve({required String query}) async {
-    return await lemmy.run(ResolveObject(q: query));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.run(ResolveObject(q: query));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 }

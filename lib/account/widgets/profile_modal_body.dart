@@ -777,7 +777,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> getUnreadNotificationCount(List<AccountExtended> accountsExtended) async {
     for (final AccountExtended account in accountsExtended) {
       try {
-        final unread = await LemmyNotificationRepository(account: account.account).unreadNotificationsCount();
+        final unread = await NotificationRepositoryImpl(account: account.account).unreadNotificationsCount();
 
         int? totalUnreadCount = unread.replies + unread.mentions + unread.privateMessages;
         if (totalUnreadCount == 0) totalUnreadCount = null;

@@ -7,10 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
+import 'package:thunder/core/models/models.dart';
 import 'package:thunder/utils/global_context.dart';
 
 //// Interface for an account repository
@@ -55,8 +57,20 @@ class AccountRepositoryImpl implements AccountRepository {
   /// The Lemmy client to use for the repository
   late LemmyApiV3 client;
 
+  /// The Piefed client to use for the repository
+  late PiefedApi piefed;
+
   AccountRepositoryImpl({required this.account}) {
-    client = LemmyApiV3(account.instance, debug: kDebugMode);
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        break;
+      case ThreadiversePlatform.piefed:
+        piefed = PiefedApi(account: account, debug: kDebugMode);
+        break;
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -101,8 +115,8 @@ class AccountRepositoryImpl implements AccountRepository {
         final response = await http.get(uri, headers: headers);
 
         final json = jsonDecode(response.body);
-        final subscriptions = json['my_user']['follows'].map<ThunderCommunity>((community) => ThunderCommunity.fromPiefedCommunity(community)).toList();
-        return subscriptions;
+        final site = ThunderSiteResponse.fromPiefedSiteResponse(json);
+        return site.myUser?.follows ?? [];
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -113,7 +127,15 @@ class AccountRepositoryImpl implements AccountRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return client.run(ListMedia(auth: account.jwt, page: page, limit: limit));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await client.run(ListMedia(auth: account.jwt, page: page, limit: limit));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -134,21 +156,29 @@ class AccountRepositoryImpl implements AccountRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(SaveUserSettings(
-      auth: account.jwt,
-      bio: bio,
-      email: email,
-      matrixUserId: matrixUserId,
-      displayName: displayName,
-      defaultListingType: defaultFeedListType?.toLemmyType(),
-      defaultSortType: defaultPostSortType?.toLemmyType(),
-      showNsfw: showNsfw,
-      showReadPosts: showReadPosts,
-      showScores: showScores,
-      botAccount: botAccount,
-      showBotAccounts: showBotAccounts,
-      discussionLanguages: discussionLanguages,
-    ));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await client.run(SaveUserSettings(
+          auth: account.jwt,
+          bio: bio,
+          email: email,
+          matrixUserId: matrixUserId,
+          displayName: displayName,
+          defaultListingType: defaultFeedListType?.toLemmyType(),
+          defaultSortType: defaultPostSortType?.toLemmyType(),
+          showNsfw: showNsfw,
+          showReadPosts: showReadPosts,
+          showScores: showScores,
+          botAccount: botAccount,
+          showBotAccounts: showBotAccounts,
+          discussionLanguages: discussionLanguages,
+        ));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -156,7 +186,15 @@ class AccountRepositoryImpl implements AccountRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ImportSettings(auth: account.jwt, data: settings));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await client.run(ImportSettings(auth: account.jwt, data: settings));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 
   @override
@@ -164,6 +202,14 @@ class AccountRepositoryImpl implements AccountRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    return await client.run(ExportSettings(auth: account.jwt));
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await client.run(ExportSettings(auth: account.jwt));
+      case ThreadiversePlatform.piefed:
+        // TODO: Implement action on Piefed
+        throw Exception('This feature is not yet available');
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
   }
 }
