@@ -43,6 +43,9 @@ class ThunderComment {
   /// The comment's language ID
   final int languageId;
 
+  /// The comment's recipient (for replies/mentions)
+  final ThunderUser? recipient;
+
   /// The comment's creator
   final ThunderUser? creator;
 
@@ -88,6 +91,9 @@ class ThunderComment {
   /// The comment's vote status
   final int? myVote;
 
+  /// Whether the comment is read (comment reply/mention)
+  final bool? read;
+
   ThunderComment({
     required this.id,
     required this.creatorId,
@@ -102,6 +108,7 @@ class ThunderComment {
     required this.path,
     required this.distinguished,
     required this.languageId,
+    this.recipient,
     this.creator,
     this.post,
     this.community,
@@ -117,6 +124,7 @@ class ThunderComment {
     this.saved,
     this.creatorBlocked,
     this.myVote,
+    this.read,
   });
 
   ThunderComment copyWith({
@@ -133,6 +141,7 @@ class ThunderComment {
     String? path,
     bool? distinguished,
     int? languageId,
+    ThunderUser? recipient,
     ThunderUser? creator,
     ThunderPost? post,
     ThunderCommunity? community,
@@ -148,6 +157,7 @@ class ThunderComment {
     bool? saved,
     bool? creatorBlocked,
     int? myVote,
+    bool? read,
   }) {
     return ThunderComment(
       id: id ?? this.id,
@@ -163,6 +173,7 @@ class ThunderComment {
       path: path ?? this.path,
       distinguished: distinguished ?? this.distinguished,
       languageId: languageId ?? this.languageId,
+      recipient: recipient ?? this.recipient,
       creator: creator ?? this.creator,
       post: post ?? this.post,
       community: community ?? this.community,
@@ -178,6 +189,7 @@ class ThunderComment {
       saved: saved ?? this.saved,
       creatorBlocked: creatorBlocked ?? this.creatorBlocked,
       myVote: myVote ?? this.myVote,
+      read: read ?? this.read,
     );
   }
 

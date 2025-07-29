@@ -5,15 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
+import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
+import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a notification repository
 abstract class NotificationRepository {
   /// Fetches any comment replies
-  Future<GetRepliesResponse> replies({
+  Future<List<ThunderComment>> replies({
     bool unread,
     int limit,
     CommentSortType sort,
@@ -85,7 +90,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<GetRepliesResponse> replies({
+  Future<List<ThunderComment>> replies({
     bool unread = false,
     int limit = 50,
     CommentSortType sort = CommentSortType.new_,
@@ -103,7 +108,43 @@ class NotificationRepositoryImpl implements NotificationRepository {
           sort: sort.toLemmyType(),
           page: page,
         ));
-        return response;
+
+        final replies = response.replies
+            .map((crv) => ThunderComment(
+                  id: crv.comment.id,
+                  creatorId: crv.creator.id,
+                  postId: crv.post.id,
+                  content: crv.comment.content,
+                  removed: crv.comment.removed,
+                  published: crv.comment.published,
+                  updated: crv.comment.updated,
+                  deleted: crv.comment.deleted,
+                  apId: crv.comment.apId,
+                  local: crv.comment.local,
+                  path: crv.comment.path,
+                  distinguished: crv.comment.distinguished,
+                  languageId: crv.comment.languageId,
+                  recipient: ThunderUser.fromLemmyUser(crv.recipient.toJson()),
+                  creator: ThunderUser.fromLemmyUser(crv.creator.toJson()),
+                  post: ThunderPost.fromLemmyPost(crv.post.toJson()),
+                  community: ThunderCommunity.fromLemmyCommunity(crv.community.toJson()),
+                  score: crv.counts.score,
+                  upvotes: crv.counts.upvotes,
+                  downvotes: crv.counts.downvotes,
+                  childCount: crv.counts.childCount,
+                  creatorBannedFromCommunity: crv.creatorBannedFromCommunity,
+                  bannedFromCommunity: crv.bannedFromCommunity,
+                  creatorIsModerator: crv.creatorIsModerator,
+                  creatorIsAdmin: crv.creatorIsAdmin,
+                  subscribed: SubscriptionStatusMapping.fromLemmyType(crv.subscribed),
+                  saved: crv.saved,
+                  creatorBlocked: crv.creatorBlocked,
+                  myVote: crv.myVote?.toInt(),
+                  read: crv.commentReply.read,
+                ))
+            .toList();
+
+        return replies;
       case ThreadiversePlatform.piefed:
         // TODO: Implement action on Piefed
         throw Exception('This feature is not yet available');

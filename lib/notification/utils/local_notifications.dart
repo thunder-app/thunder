@@ -9,16 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 import 'package:markdown/markdown.dart';
 
 // Project imports
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/extensions/comment_reply_view.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
@@ -64,11 +63,11 @@ Future<void> pollRepliesAndShowNotifications() async {
   List<Account> accounts = await Account.accounts();
   DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
 
-  Map<Account, List<CommentReplyView>> notifications = {};
+  Map<Account, List<ThunderComment>> notifications = {};
 
   for (final Account account in accounts) {
     // Iterate through inbox replies
-    final getRepliesResponse = await NotificationRepositoryImpl(account: account).replies(
+    final repliesResponse = await NotificationRepositoryImpl(account: account).replies(
       unread: true,
       limit: 50,
       sort: CommentSortType.old,
@@ -76,7 +75,7 @@ Future<void> pollRepliesAndShowNotifications() async {
     );
 
     // Only handle messages that have arrived since the last time we polled
-    final Iterable<CommentReplyView> newReplies = getRepliesResponse.replies.where((CommentReplyView commentReplyView) => commentReplyView.commentReply.published.isAfter(lastPollTime));
+    final Iterable<ThunderComment> newReplies = repliesResponse.where((comment) => comment.published.isAfter(lastPollTime));
 
     if (newReplies.isNotEmpty) notifications.putIfAbsent(account, () => newReplies.toList());
   }
@@ -93,37 +92,35 @@ Future<void> pollRepliesAndShowNotifications() async {
   // Show the notifications
   for (final entry in notifications.entries) {
     Account account = entry.key;
-    List<CommentReplyView> replies = entry.value;
+    List<ThunderComment> replies = entry.value;
 
-    for (final commentReplyView in replies) {
-      final comment = commentReplyView.toComment();
-
+    for (final comment in replies) {
       final String commentContent = cleanCommentContent(comment);
       final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
       final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
       final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-        '${commentReplyView.post.name} · ${generateCommunityFullName(
+        '${comment.post?.name} · ${generateCommunityFullName(
           null,
-          commentReplyView.community.name,
-          commentReplyView.community.title,
-          fetchInstanceNameFromUrl(commentReplyView.community.actorId),
+          comment.community?.name,
+          comment.community?.title,
+          fetchInstanceNameFromUrl(comment.community?.actorId),
           communitySeparator: communitySeparator,
           useDisplayName: useDisplayNamesForCommunities,
         )}\n$htmlComment',
         contentTitle: generateUserFullName(
           null,
-          commentReplyView.creator.name,
-          commentReplyView.creator.displayName,
-          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          comment.creator?.name,
+          comment.creator?.displayName,
+          fetchInstanceNameFromUrl(comment.creator?.actorId),
           userSeparator: userSeparator,
           useDisplayName: useDisplayNamesForUsers,
         ),
         summaryText: generateUserFullName(
           null,
-          commentReplyView.recipient.name,
-          commentReplyView.recipient.displayName,
-          fetchInstanceNameFromUrl(commentReplyView.recipient.actorId),
+          comment.recipient?.name,
+          comment.recipient?.displayName,
+          fetchInstanceNameFromUrl(comment.recipient?.actorId),
           userSeparator: userSeparator,
           useDisplayName: useDisplayNamesForUsers,
         ),
@@ -131,14 +128,14 @@ Future<void> pollRepliesAndShowNotifications() async {
       );
 
       showAndroidNotification(
-        id: commentReplyView.commentReply.id,
+        id: comment.id,
         account: account,
         bigTextStyleInformation: bigTextStyleInformation,
         title: generateUserFullName(
           null,
-          commentReplyView.creator.name,
-          commentReplyView.creator.displayName,
-          fetchInstanceNameFromUrl(commentReplyView.creator.actorId),
+          comment.creator?.name,
+          comment.creator?.displayName,
+          fetchInstanceNameFromUrl(comment.creator?.actorId),
           userSeparator: userSeparator,
           useDisplayName: useDisplayNamesForUsers,
         ),
@@ -148,7 +145,7 @@ Future<void> pollRepliesAndShowNotifications() async {
           accountId: account.id,
           inboxType: NotificationInboxType.reply,
           group: false,
-          id: commentReplyView.commentReply.id,
+          id: comment.id,
         ).toJson()),
         inboxType: NotificationInboxType.reply,
       );

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' hide ModlogActionType, CommentSortType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/comment/models/thunder_comment.dart';
@@ -480,8 +479,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   // If account is still null, we can't do anything.
   if (account == null || account.anonymous) return;
 
-  List<CommentReplyView> allReplies = [];
-  CommentReplyView? specificReply;
+  List<ThunderComment> allReplies = [];
+  ThunderComment? specificReply;
 
   bool doneFetching = false;
   int currentPage = 1;
@@ -495,10 +494,10 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
       page: currentPage,
     );
 
-    allReplies.addAll(getRepliesResponse.replies);
-    specificReply ??= getRepliesResponse.replies.firstWhereOrNull((crv) => crv.commentReply.id == replyId);
+    allReplies.addAll(getRepliesResponse);
+    specificReply ??= getRepliesResponse.firstWhereOrNull((crv) => crv.id == replyId);
 
-    doneFetching = specificReply != null || getRepliesResponse.replies.isEmpty;
+    doneFetching = specificReply != null || getRepliesResponse.isEmpty;
     ++currentPage;
   }
 
