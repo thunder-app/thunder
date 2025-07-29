@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/comment.dart';
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/notification/shared/notification_payload.dart';
 import 'package:thunder/notification/utils/notification_utils.dart';
@@ -25,7 +25,6 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/notification/shared/android_notification.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/core/extensions/person_mention_view.dart';
 
 /// Initializes push notifications for UnifiedPush.
 /// For now, initializing UnifiedPush will enable push notifications for all accounts active on the app.
@@ -159,35 +158,34 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // Notification for a mention
       if (data.containsKey('mention')) {
-        PersonMentionView personMentionView = PersonMentionView.fromJson(data['mention']);
-        final comment = personMentionView.toComment();
+        ThunderComment comment = ThunderComment.fromLemmyCommentView(data['mention']);
 
         final String commentContent = cleanCommentContent(comment);
         final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${personMentionView.post.name} · ${generateCommunityFullName(
+          '${comment.post?.name} · ${generateCommunityFullName(
             null,
-            personMentionView.community.name,
-            personMentionView.community.title,
-            fetchInstanceNameFromUrl(personMentionView.community.actorId),
+            comment.community?.name,
+            comment.community?.title,
+            fetchInstanceNameFromUrl(comment.community?.actorId),
             communitySeparator: communitySeparator,
             useDisplayName: useDisplayNamesForCommunities,
           )}\n$htmlComment',
           contentTitle: generateUserFullName(
             null,
-            personMentionView.creator.name,
-            personMentionView.creator.displayName,
-            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            comment.creator?.name,
+            comment.creator?.displayName,
+            fetchInstanceNameFromUrl(comment.creator?.actorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
           ),
           summaryText: generateUserFullName(
             null,
-            personMentionView.recipient.name,
-            personMentionView.recipient.displayName,
-            fetchInstanceNameFromUrl(personMentionView.recipient.actorId),
+            comment.recipient?.name,
+            comment.recipient?.displayName,
+            fetchInstanceNameFromUrl(comment.recipient?.actorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
           ),
@@ -195,17 +193,17 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         );
 
         List<Account> accounts = await Account.accounts();
-        Account account = accounts.firstWhere((Account account) => account.actorId == personMentionView.recipient.actorId);
+        Account account = accounts.firstWhere((Account account) => account.actorId == comment.recipient?.actorId);
 
         showAndroidNotification(
-          id: personMentionView.comment.id,
+          id: comment.id,
           account: account,
           bigTextStyleInformation: bigTextStyleInformation,
           title: generateUserFullName(
             null,
-            personMentionView.creator.name,
-            personMentionView.creator.displayName,
-            fetchInstanceNameFromUrl(personMentionView.creator.actorId),
+            comment.creator?.name,
+            comment.creator?.displayName,
+            fetchInstanceNameFromUrl(comment.creator?.actorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
           ),
@@ -215,7 +213,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
             accountId: account.id,
             inboxType: NotificationInboxType.mention,
             group: false,
-            id: personMentionView.comment.id,
+            id: comment.id,
           ).toJson()),
           inboxType: NotificationInboxType.mention,
         );

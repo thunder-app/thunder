@@ -29,7 +29,7 @@ abstract class NotificationRepository {
   });
 
   /// Fetches any comment mentions
-  Future<GetPersonMentionsResponse> mentions({
+  Future<List<ThunderComment>> mentions({
     bool unread,
     int limit,
     CommentSortType sort,
@@ -146,7 +146,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<GetPersonMentionsResponse> mentions({
+  Future<List<ThunderComment>> mentions({
     bool unread = false,
     int limit = 50,
     CommentSortType sort = CommentSortType.new_,
@@ -164,10 +164,24 @@ class NotificationRepositoryImpl implements NotificationRepository {
           sort: sort.toLemmyType(),
           page: page,
         ));
-        return response;
+        return response.mentions.map((mention) {
+          final comment = ThunderComment.fromLemmyCommentView(mention.toJson());
+
+          return comment.copyWith(
+            recipient: ThunderUser.fromLemmyUser(mention.recipient.toJson()),
+            read: mention.personMention.read,
+          );
+        }).toList();
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        final response = await piefed.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
+        return response['replies'].map<ThunderComment>((mention) {
+          final comment = ThunderComment.fromPiefedCommentView(mention);
+
+          return comment.copyWith(
+            recipient: ThunderUser.fromPiefedUser(mention['recipient']),
+            read: mention['comment_reply']['read'],
+          );
+        }).toList();
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

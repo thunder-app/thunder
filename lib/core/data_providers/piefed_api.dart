@@ -358,6 +358,19 @@ class PiefedApi {
     await _request(HttpMethod.post, '/api/alpha/comment/mark_as_read', body);
   }
 
+  /// Get comment mentions
+  Future<Map<String, dynamic>> getCommentMentions({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
+    final body = {
+      'page': page,
+      'limit': limit,
+      'sort': sort?.value,
+      'unread_only': unread,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/user/mentions', body);
+    return json;
+  }
+
   /// Mark private message as read
   Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
     final body = {'private_message_id': messageId, 'read': read};

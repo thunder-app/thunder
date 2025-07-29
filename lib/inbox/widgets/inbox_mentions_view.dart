@@ -3,20 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
-
-// Project imports
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/divider.dart';
-import 'package:thunder/core/extensions/person_mention_view.dart';
 
 class InboxMentionsView extends StatefulWidget {
-  final List<PersonMentionView> mentions;
+  final List<ThunderComment> mentions;
 
   const InboxMentionsView({super.key, this.mentions = const []});
 
@@ -48,20 +46,20 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
           SliverList.builder(
             itemCount: widget.mentions.length,
             itemBuilder: (context, index) {
-              PersonMentionView personMentionView = widget.mentions[index];
-              PersonMention personMention = personMentionView.personMention;
+              ThunderComment comment = widget.mentions[index];
+              assert(comment.read != null, 'Comment should have a read status');
 
               return Column(
                 children: [
                   CommentReference(
-                    comment: personMentionView.toComment(),
-                    isOwnComment: personMentionView.creator.id == context.read<ProfileBloc>().state.account.userId,
+                    comment: comment,
+                    isOwnComment: comment.creatorId == context.read<ProfileBloc>().state.account.userId,
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: personMention.id, value: !personMention.read)),
+                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: comment.id, value: !comment.read!)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
-                        color: personMention.read ? Colors.green : null,
+                        color: comment.read! ? Colors.green : null,
                       ),
                       visualDensity: VisualDensity.compact,
                     ),
