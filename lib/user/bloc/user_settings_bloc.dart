@@ -232,13 +232,13 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
-      final blockCommunityResponse = await communityRepository.block(event.communityId, !event.unblock);
+      final community = await communityRepository.block(event.communityId, !event.unblock);
 
       List<ThunderCommunity> updatedCommunityBlocks;
       if (event.unblock) {
         updatedCommunityBlocks = state.communityBlocks.where((community) => community.id != event.communityId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedCommunityBlocks = (state.communityBlocks + [ThunderCommunity.fromLemmyCommunityView(blockCommunityResponse.communityView.toJson())])..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = (state.communityBlocks + [community])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
@@ -258,13 +258,13 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
-      final response = await userRepository.block(event.personId, !event.unblock);
+      final user = await userRepository.block(event.personId, !event.unblock);
 
       List<ThunderUser> updatedPersonBlocks;
       if (event.unblock) {
         updatedPersonBlocks = state.personBlocks.where((person) => person.id != event.personId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedPersonBlocks = (state.personBlocks + [ThunderUser.fromLemmyUserView(response.personView.toJson())])..sort((a, b) => a.name.compareTo(b.name));
+        updatedPersonBlocks = (state.personBlocks + [user])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(

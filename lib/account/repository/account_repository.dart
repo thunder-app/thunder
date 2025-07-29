@@ -131,7 +131,7 @@ class AccountRepositoryImpl implements AccountRepository {
       case ThreadiversePlatform.lemmy:
         return await client.run(ListMedia(auth: account.jwt, page: page, limit: limit));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
+        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -174,8 +174,12 @@ class AccountRepositoryImpl implements AccountRepository {
           discussionLanguages: discussionLanguages,
         ));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        await piefed.saveUserSettings(
+          bio: bio,
+          showNsfw: showNsfw,
+          showReadPosts: showReadPosts,
+        );
+        return SaveUserSettingsResponse(success: true);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -190,7 +194,7 @@ class AccountRepositoryImpl implements AccountRepository {
       case ThreadiversePlatform.lemmy:
         return await client.run(ImportSettings(auth: account.jwt, data: settings));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
+        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -206,7 +210,7 @@ class AccountRepositoryImpl implements AccountRepository {
       case ThreadiversePlatform.lemmy:
         return await client.run(ExportSettings(auth: account.jwt));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
+        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');

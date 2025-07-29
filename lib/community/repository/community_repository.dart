@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
@@ -28,16 +26,16 @@ abstract class CommunityRepository {
   Future<ThunderCommunity> subscribe(int communityId, bool follow);
 
   /// Blocks or unblocks a community
-  Future<BlockCommunityResponse> block(int communityId, bool block);
+  Future<ThunderCommunity> block(int communityId, bool block);
 
   /// Bans or unbans a user from a community
   ///
   /// Can optionally provide a reason and expiration date (in seconds)
   /// If [removeData] is true, posts and comments from the user will also be deleted
-  Future<BanFromCommunityResponse> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false});
+  Future<ThunderUser> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false});
 
   /// Adds or removes a moderator from a community
-  Future<AddModToCommunityResponse> addModerator({required int userId, required bool added, required int communityId});
+  Future<List<ThunderUser>> addModerator({required int userId, required bool added, required int communityId});
 }
 
 /// Implementation of [CommunityRepository]
@@ -76,28 +74,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
           'moderators': response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList(),
         };
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'id': id,
-          'name': name,
-        };
-
-        // Remove null values and convert values to strings
-        body.removeWhere((key, value) => value == null);
-        body = body.map((key, value) => MapEntry(key, value.toString()));
-
-        final uri = Uri.https(account.instance, '/api/alpha/community', body);
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-
-        final json = jsonDecode(response.body);
-
-        return {
-          'community': ThunderCommunity.fromPiefedCommunityView(json['community_view']),
-          'site': json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
-          'moderators': json['moderators'].map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList(),
-          'discussion_languages': json['discussion_languages'],
-        };
+        return await piefed.getCommunity(id: id, name: name);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -113,59 +90,55 @@ class CommunityRepositoryImpl implements CommunityRepository {
         final response = await client.run(FollowCommunity(auth: account.jwt!, communityId: communityId, follow: follow));
         return ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.subscribeToCommunity(communityId: communityId, follow: follow);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<BlockCommunityResponse> block(int communityId, bool block) async {
+  Future<ThunderCommunity> block(int communityId, bool block) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         final response = await client.run(BlockCommunity(auth: account.jwt!, communityId: communityId, block: block));
-        return response;
+        return ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.blockCommunity(communityId: communityId, block: block);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<BanFromCommunityResponse> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false}) async {
+  Future<ThunderUser> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         final response = await client.run(BanFromCommunity(auth: account.jwt!, communityId: communityId, personId: userId, ban: ban, removeData: removeData, reason: reason, expires: expires));
-        return response;
+        return ThunderUser.fromLemmyUserView(response.personView.toJson());
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.banUserFromCommunity(userId: userId, communityId: communityId, ban: ban, reason: reason, expires: expires);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<AddModToCommunityResponse> addModerator({required int userId, required bool added, required int communityId}) async {
+  Future<List<ThunderUser>> addModerator({required int userId, required bool added, required int communityId}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         final response = await client.run(AddModToCommunity(auth: account.jwt!, communityId: communityId, personId: userId, added: added));
-        return response;
+        return response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList();
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.addModerator(userId: userId, communityId: communityId, added: added);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -183,8 +156,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
         ));
         return response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.getCommunities(page: 0, limit: 5, feedListType: FeedListType.local, postSortType: PostSortType.active);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

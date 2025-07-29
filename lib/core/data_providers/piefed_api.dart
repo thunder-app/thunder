@@ -5,10 +5,12 @@ import 'package:http/http.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
 import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_site.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/user/models/thunder_user.dart';
@@ -380,5 +382,143 @@ class PiefedApi {
   /// Marks all notifications as read
   Future<void> markAllNotificationsAsRead() async {
     await _request(HttpMethod.post, '/api/alpha/user/mark_all_as_read', {});
+  }
+
+  /// Save user settings
+  Future<void> saveUserSettings({
+    String? bio,
+    bool? showNsfw,
+    bool? showReadPosts,
+  }) async {
+    final body = {
+      'bio': bio,
+      'show_nsfw': showNsfw,
+      'show_read_posts': showReadPosts,
+    };
+
+    await _request(HttpMethod.put, '/api/alpha/user/save_user_settings', body);
+  }
+
+  /// Get a community
+  Future<Map<String, dynamic>> getCommunity({int? id, String? name}) async {
+    final body = {'id': id, 'name': name};
+
+    final json = await _request(HttpMethod.get, '/api/alpha/community', body);
+
+    return {
+      'community': ThunderCommunity.fromPiefedCommunityView(json['community_view']),
+      'site': json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
+      'moderators': json['moderators'].map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList(),
+      'discussion_languages': json['discussion_languages'],
+    };
+  }
+
+  /// Get a list of communities
+  Future<List<ThunderCommunity>> getCommunities({
+    int? page,
+    int? limit,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+  }) async {
+    final body = {
+      'page': page,
+      'limit': limit,
+      'type_': feedListType?.value,
+      'sort': postSortType?.value,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/community/list', body);
+    return json['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromPiefedCommunityView(cv)).toList();
+  }
+
+  /// Subscribe to a community
+  Future<ThunderCommunity> subscribeToCommunity({required int communityId, required bool follow}) async {
+    final body = {'community_id': communityId, 'follow': follow};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/community/follow', body);
+    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+  }
+
+  /// Block a community
+  Future<ThunderCommunity> blockCommunity({required int communityId, required bool block}) async {
+    final body = {'community_id': communityId, 'block': block};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/community/block', body);
+    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+  }
+
+  /// Ban a user from a community
+  Future<ThunderUser> banUserFromCommunity({
+    required int userId,
+    required int communityId,
+    required bool ban,
+    String? reason,
+    int? expires,
+  }) async {
+    if (ban) {
+      final body = {'user_id': userId, 'community_id': communityId, 'reason': reason, 'expiredAt': expires};
+
+      final json = await _request(HttpMethod.post, '/api/alpha/community/moderate/ban', body);
+      return ThunderUser.fromPiefedUser(json['bannedUser']);
+    } else {
+      final body = {'user_id': userId, 'community_id': communityId};
+
+      final json = await _request(HttpMethod.put, '/api/alpha/community/moderate/unban', body);
+      return ThunderUser.fromPiefedUser(json['bannedUser']);
+    }
+  }
+
+  /// Add a moderator to a community
+  Future<List<ThunderUser>> addModerator({required int userId, required int communityId, required bool added}) async {
+    final body = {'person_id': userId, 'community_id': communityId, 'added': added};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/community/mod', body);
+    return json['moderators'].map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList();
+  }
+
+  /// Get a user
+  Future<Map<String, dynamic>> getUser({
+    int? userId,
+    String? username,
+    PostSortType? sort,
+    int? page,
+    int? limit,
+    bool? saved,
+  }) async {
+    final body = {
+      'person_id': userId,
+      'username': username,
+      'sort': sort?.value,
+      'page': page,
+      'limit': limit,
+      'saved_only': saved,
+      'include_content': true,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/user', body);
+
+    return {
+      'user': ThunderUser.fromPiefedUserView(json['person_view']),
+      'site': json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
+      'posts': json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList(),
+      'comments': json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList(),
+      'moderates': json['moderates'].map<ThunderCommunity>((cmv) => ThunderCommunity.fromPiefedCommunity(cmv['community'])).toList(),
+    };
+  }
+
+  /// Block a user
+  Future<ThunderUser> blockUser({required int userId, required bool block}) async {
+    final body = {'person_id': userId, 'block': block};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/user/block', body);
+    return ThunderUser.fromPiefedUser(json['person_view']);
+  }
+
+  /// Block an instance
+  Future<bool> blockInstance({required int instanceId, required bool block}) async {
+    final body = {'instance_id': instanceId, 'block': block};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/site/block', body);
+    return json['blocked'];
   }
 }

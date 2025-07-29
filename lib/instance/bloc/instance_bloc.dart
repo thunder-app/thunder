@@ -55,11 +55,11 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
     switch (event.instanceAction) {
       case InstanceAction.block:
         try {
-          final response = await instanceRepository.block(event.instanceId, event.value);
+          final blocked = await instanceRepository.block(event.instanceId, event.value);
 
           emit(state.copyWith(
-            status: response.blocked == event.value ? InstanceStatus.success : InstanceStatus.failure,
-            message: response.blocked ? l10n.successfullyBlockedCommunity(event.domain ?? '') : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
+            status: blocked == event.value ? InstanceStatus.success : InstanceStatus.failure,
+            message: blocked ? l10n.successfullyBlockedCommunity(event.domain ?? '') : l10n.successfullyUnblockedCommunity(event.domain ?? ''),
           ));
         } catch (e) {
           return emit(state.copyWith(status: InstanceStatus.failure));

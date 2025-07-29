@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/account.dart';
@@ -30,7 +28,7 @@ abstract class UserRepository {
   });
 
   /// Blocks or unblocks a person
-  Future<BlockPersonResponse> block(int personId, bool block);
+  Future<ThunderUser> block(int personId, bool block);
 }
 
 /// Implementation of [UserRepository] using Lemmy API
@@ -86,50 +84,23 @@ class UserRepositoryImpl implements UserRepository {
           'moderates': response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunity(cmv.community.toJson())).toList(),
         };
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'person_id': userId,
-          'username': username,
-          'sort': sort?.value,
-          'page': page,
-          'limit': limit,
-          'saved_only': saved,
-          'include_content': true,
-        };
-
-        // Remove null values and convert values to strings
-        body.removeWhere((key, value) => value == null);
-        body = body.map((key, value) => MapEntry(key, value.toString()));
-
-        final uri = Uri.https(account.instance, '/api/alpha/user', body);
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-
-        final json = jsonDecode(response.body);
-
-        return {
-          'user': ThunderUser.fromPiefedUserView(json['person_view']),
-          'site': json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
-          'posts': json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList(),
-          'comments': json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList(),
-          'moderates': json['moderates'].map<ThunderCommunity>((cmv) => ThunderCommunity.fromPiefedCommunity(cmv['community'])).toList(),
-        };
+        return await piefed.getUser(userId: userId, username: username, sort: sort, page: page, limit: limit, saved: saved);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<BlockPersonResponse> block(int personId, bool block) async {
+  Future<ThunderUser> block(int personId, bool block) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));
+        final response = await client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));
+        return ThunderUser.fromLemmyUserView(response.personView.toJson());
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.blockUser(userId: personId, block: block);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

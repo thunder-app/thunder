@@ -60,12 +60,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     switch (event.userAction) {
       case UserAction.block:
         try {
-          final response = await userRepository.block(event.userId, event.value);
+          final user = await userRepository.block(event.userId, event.value);
 
           emit(state.copyWith(
             status: UserStatus.success,
-            user: ThunderUser.fromLemmyUserView(response.personView.toJson()),
-            message: response.blocked ? l10n.successfullyBlockedUser(response.personView.person.name) : l10n.successfullyUnblockedUser(response.personView.person.name),
+            user: user,
+            message: event.value ? l10n.successfullyBlockedUser(user.name) : l10n.successfullyUnblockedUser(user.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure, message: e.toString()));
@@ -86,7 +86,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             expires = expires ~/ 1000;
           }
 
-          final banFromCommunityResponse = await communityRepository.banUserFromCommunity(
+          final user = await communityRepository.banUserFromCommunity(
             userId: event.userId,
             ban: event.value,
             communityId: communityId,
@@ -97,10 +97,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(
             status: UserStatus.success,
-            user: ThunderUser.fromLemmyUserView(banFromCommunityResponse.personView.toJson()),
-            message: banFromCommunityResponse.banned
-                ? l10n.successfullyBannedUser(banFromCommunityResponse.personView.person.name)
-                : l10n.successfullyUnbannedUser(banFromCommunityResponse.personView.person.name),
+            user: user,
+            message: user.banned ? l10n.successfullyBannedUser(user.name) : l10n.successfullyUnbannedUser(user.name),
           ));
         } catch (e) {
           return emit(state.copyWith(status: UserStatus.failure, message: e.toString()));
@@ -113,8 +111,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           int communityId = event.metadata!['communityId'] as int;
 
-          final addModToCommunityResponse = await communityRepository.addModerator(userId: event.userId, added: event.value, communityId: communityId);
-          final communityModeratorView = addModToCommunityResponse.moderators.firstWhereOrNull((communityModeratorView) => communityModeratorView.moderator.id == event.userId);
+          final moderators = await communityRepository.addModerator(userId: event.userId, added: event.value, communityId: communityId);
+          final communityModeratorView = moderators.firstWhereOrNull((moderator) => moderator.id == event.userId);
 
           emit(state.copyWith(
             status: UserStatus.success,

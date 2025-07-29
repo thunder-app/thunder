@@ -18,7 +18,7 @@ abstract class InstanceRepository {
   Future<ThunderSiteResponse> getSiteInfo();
 
   /// Blocks a given instance
-  Future<BlockInstanceResponse> block(int instanceId, bool block);
+  Future<bool> block(int instanceId, bool block);
 
   /// Get federated instances
   Future<GetFederatedInstancesResponse> federated();
@@ -68,17 +68,16 @@ class InstanceRepositoryImpl implements InstanceRepository {
   }
 
   @override
-  Future<BlockInstanceResponse> block(int instanceId, bool block) async {
+  Future<bool> block(int instanceId, bool block) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         final response = await client.run(BlockInstance(auth: account.jwt!, instanceId: instanceId, block: block));
-        return response;
+        return response.blocked;
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.blockInstance(instanceId: instanceId, block: block);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
