@@ -779,7 +779,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
       try {
         final unread = await NotificationRepositoryImpl(account: account.account).unreadNotificationsCount();
 
-        int? totalUnreadCount = unread.replies + unread.mentions + unread.privateMessages;
+        int? totalUnreadCount = unread['replies'] + unread['mentions'] + unread['private_messages'];
         if (totalUnreadCount == 0) totalUnreadCount = null;
         setState(() => account.totalUnreadCount = totalUnreadCount);
       } catch (e) {

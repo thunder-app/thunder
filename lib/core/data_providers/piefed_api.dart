@@ -332,4 +332,40 @@ class PiefedApi {
     final json = await _request(HttpMethod.get, '/api/alpha/search', body);
     return json;
   }
+
+  /// Fetches the unread count for the current user
+  Future<Map<String, dynamic>> unreadCount() async {
+    final json = await _request(HttpMethod.get, '/api/alpha/user/unread_count', {});
+    return json;
+  }
+
+  /// Fetches comment replies
+  Future<Map<String, dynamic>> getCommentReplies({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
+    final body = {
+      'page': page,
+      'limit': limit,
+      'sort': sort?.value,
+      'unread_only': unread,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/user/replies', body);
+    return json;
+  }
+
+  /// Mark comment reply as read
+  Future<void> markCommentReplyAsRead({required int replyId, required bool read}) async {
+    final body = {'comment_reply_id': replyId, 'read': read};
+    await _request(HttpMethod.post, '/api/alpha/comment/mark_as_read', body);
+  }
+
+  /// Mark private message as read
+  Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
+    final body = {'private_message_id': messageId, 'read': read};
+    await _request(HttpMethod.post, '/api/alpha/private_message/mark_as_read', body);
+  }
+
+  /// Marks all notifications as read
+  Future<void> markAllNotificationsAsRead() async {
+    await _request(HttpMethod.post, '/api/alpha/user/mark_all_as_read', {});
+  }
 }

@@ -6,12 +6,9 @@ import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
-import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
-import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
-import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -59,7 +56,7 @@ abstract class NotificationRepository {
   });
 
   /// Fetches number of unread notifications
-  Future<GetUnreadCountResponse> unreadNotificationsCount();
+  Future<Map<String, dynamic>> unreadNotificationsCount();
 
   /// Marks all notifications as read
   Future<void> markAllNotificationsAsRead();
@@ -109,68 +106,40 @@ class NotificationRepositoryImpl implements NotificationRepository {
           page: page,
         ));
 
-        final replies = response.replies
-            .map((crv) => ThunderComment(
-                  id: crv.comment.id,
-                  creatorId: crv.creator.id,
-                  postId: crv.post.id,
-                  content: crv.comment.content,
-                  removed: crv.comment.removed,
-                  published: crv.comment.published,
-                  updated: crv.comment.updated,
-                  deleted: crv.comment.deleted,
-                  apId: crv.comment.apId,
-                  local: crv.comment.local,
-                  path: crv.comment.path,
-                  distinguished: crv.comment.distinguished,
-                  languageId: crv.comment.languageId,
-                  recipient: ThunderUser.fromLemmyUser(crv.recipient.toJson()),
-                  creator: ThunderUser.fromLemmyUser(crv.creator.toJson()),
-                  post: ThunderPost.fromLemmyPost(crv.post.toJson()),
-                  community: ThunderCommunity.fromLemmyCommunity(crv.community.toJson()),
-                  score: crv.counts.score,
-                  upvotes: crv.counts.upvotes,
-                  downvotes: crv.counts.downvotes,
-                  childCount: crv.counts.childCount,
-                  creatorBannedFromCommunity: crv.creatorBannedFromCommunity,
-                  bannedFromCommunity: crv.bannedFromCommunity,
-                  creatorIsModerator: crv.creatorIsModerator,
-                  creatorIsAdmin: crv.creatorIsAdmin,
-                  subscribed: SubscriptionStatusMapping.fromLemmyType(crv.subscribed),
-                  saved: crv.saved,
-                  creatorBlocked: crv.creatorBlocked,
-                  myVote: crv.myVote?.toInt(),
-                  read: crv.commentReply.read,
-                ))
-            .toList();
+        final replies = response.replies.map((crv) {
+          final comment = ThunderComment.fromLemmyCommentView(crv.toJson());
 
+          return comment.copyWith(
+            recipient: ThunderUser.fromLemmyUser(crv.recipient.toJson()),
+            read: crv.commentReply.read,
+          );
+        }).toList();
         return replies;
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        final response = await piefed.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
+        return response['replies'].map<ThunderComment>((crv) {
+          final comment = ThunderComment.fromPiefedCommentView(crv);
+
+          return comment.copyWith(
+            recipient: ThunderUser.fromPiefedUser(crv['recipient']),
+            read: crv['comment_reply']['read'],
+          );
+        }).toList();
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<void> markReplyAsRead({
-    required int replyId,
-    bool read = true,
-  }) async {
+  Future<void> markReplyAsRead({required int replyId, bool read = true}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkCommentReplyAsRead(
-          auth: account.jwt!,
-          commentReplyId: replyId,
-          read: read,
-        ));
+        await client.run(MarkCommentReplyAsRead(auth: account.jwt!, commentReplyId: replyId, read: read));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        await piefed.markCommentReplyAsRead(replyId: replyId, read: read);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -205,23 +174,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<void> markMentionAsRead({
-    required int mentionId,
-    bool read = true,
-  }) async {
+  Future<void> markMentionAsRead({required int mentionId, bool read = true}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkPersonMentionAsRead(
-          auth: account.jwt!,
-          personMentionId: mentionId,
-          read: read,
-        ));
+        await client.run(MarkPersonMentionAsRead(auth: account.jwt!, personMentionId: mentionId, read: read));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        await piefed.markCommentReplyAsRead(replyId: mentionId, read: read);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -254,40 +215,32 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<void> markMessageAsRead({
-    required int messageId,
-    bool read = true,
-  }) async {
+  Future<void> markMessageAsRead({required int messageId, bool read = true}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkPrivateMessageAsRead(
-          auth: account.jwt!,
-          privateMessageId: messageId,
-          read: read,
-        ));
+        await client.run(MarkPrivateMessageAsRead(auth: account.jwt!, privateMessageId: messageId, read: read));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        await piefed.markPrivateMessageAsRead(messageId: messageId, read: read);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<GetUnreadCountResponse> unreadNotificationsCount() async {
+  Future<Map<String, dynamic>> unreadNotificationsCount() async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         final response = await client.run(GetUnreadCount(auth: account.jwt!));
-        return response;
+        return response.toJson();
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        final response = await piefed.unreadCount();
+        return response;
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -302,8 +255,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       case ThreadiversePlatform.lemmy:
         await client.run(MarkAllAsRead(auth: account.jwt!));
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        await piefed.markAllNotificationsAsRead();
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

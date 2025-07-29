@@ -136,7 +136,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
 
         final unread = await notificationRepository.unreadNotificationsCount();
-        int totalUnreadCount = unread.privateMessages + unread.mentions + unread.replies;
+        int totalUnreadCount = unread['private_messages'] + unread['mentions'] + unread['replies'];
 
         return emit(
           state.copyWith(
@@ -149,9 +149,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             inboxReplyPage: 2,
             inboxPrivateMessagePage: 2,
             totalUnreadCount: totalUnreadCount,
-            repliesUnreadCount: unread.replies,
-            mentionsUnreadCount: unread.mentions,
-            messagesUnreadCount: unread.privateMessages,
+            repliesUnreadCount: unread['replies'],
+            mentionsUnreadCount: unread['mentions'],
+            messagesUnreadCount: unread['private_messages'],
             hasReachedInboxReplyEnd: repliesResponse.isEmpty || repliesResponse.length < limit,
             hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
             hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
@@ -300,14 +300,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           }
 
           final unread = await notificationRepository.unreadNotificationsCount();
-          int totalUnreadCount = unread.privateMessages + unread.mentions + unread.replies;
+          int totalUnreadCount = unread['private_messages'] + unread['mentions'] + unread['replies'];
 
           return emit(state.copyWith(
             status: InboxStatus.success,
             totalUnreadCount: totalUnreadCount,
-            repliesUnreadCount: unread.replies,
-            mentionsUnreadCount: unread.mentions,
-            messagesUnreadCount: unread.privateMessages,
+            repliesUnreadCount: unread['replies'],
+            mentionsUnreadCount: unread['mentions'],
+            messagesUnreadCount: unread['private_messages'],
             inboxReplyMarkedAsRead: event.commentReplyId,
           ));
         } catch (e) {
