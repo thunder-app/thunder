@@ -2,17 +2,13 @@ import 'dart:typed_data';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:extended_image/extended_image.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:thunder/community/bloc/image_bloc.dart';
-import 'package:thunder/account/account.dart';
+
 import 'package:thunder/shared/image_viewer.dart';
-import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/utils/global_context.dart';
 
 /// Givent a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
 ///
@@ -128,27 +124,6 @@ Size? getScaledMediaSize({double? width, double? height, double offset = 24.0, b
   double mediaMaxHeight = mediaMaxWidth / mediaRatio;
 
   return Size(mediaMaxWidth, mediaMaxHeight);
-}
-
-void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
-  final ImagePicker picker = ImagePicker();
-  String path;
-  if (imagePath == null || imagePath.isEmpty) {
-    XFile? file = await picker.pickImage(source: ImageSource.gallery);
-    path = file!.path;
-  } else {
-    path = imagePath;
-  }
-
-  try {
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfile();
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account.instance, jwt: account.jwt!, postImage: postImage));
-  } catch (e) {
-    showSnackbar(AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
-  }
 }
 
 Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {

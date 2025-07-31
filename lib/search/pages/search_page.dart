@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
@@ -153,18 +154,37 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     super.build(context);
 
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
 
-    final bool isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final String accountInstance = context.read<ProfileBloc>().state.account.instance;
-    final String? currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+    final isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
+    final currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+
+    List<ListPickerItem> searchOptions = [
+      ListPickerItem(label: l10n.communities, payload: MetaSearchType.communities, icon: Icons.people_rounded),
+      ListPickerItem(label: l10n.users, payload: MetaSearchType.users, icon: Icons.person_rounded),
+      ListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
+      ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
+      ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
+    ];
+
+    // Only keep post/comment for community search
+    if (widget.communityToSearch != null) {
+      searchOptions = searchOptions.where((option) => option.payload == MetaSearchType.posts || option.payload == MetaSearchType.comments).toList();
+    }
+
+    // PieFed only supports communities, posts, users, url
+    if (account.platform == ThreadiversePlatform.piefed) {
+      searchOptions = searchOptions
+          .where((option) => option.payload == MetaSearchType.communities || option.payload == MetaSearchType.posts || option.payload == MetaSearchType.users || option.payload == MetaSearchType.url)
+          .toList();
+    }
 
     return BlocProvider(
       create: (context) => FeedBloc(account: account),
@@ -172,9 +192,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         listeners: [
           BlocListener<FeedBloc, FeedState>(listener: (context, state) => setState(() {})),
           BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
-          BlocListener<SearchBloc, SearchState>(listener: (context, state) {
-            context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
-          }),
+          BlocListener<SearchBloc, SearchState>(listener: (context, state) => context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []))),
           BlocListener<ProfileBloc, ProfileState>(listener: (context, state) async {
             final activeProfile = await fetchActiveProfile();
 
@@ -223,7 +241,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           },
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                            hintText: l10n.searchInstance(widget.communityToSearch?.name ?? (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                            hintText: l10n.searchInstance(widget.communityToSearch?.name ?? (isUserLoggedIn ? account.instance : currentAnonymousInstance) ?? ''),
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50),
@@ -289,15 +307,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   showDragHandle: true,
                                   builder: (ctx) => BottomSheetListPicker(
                                     title: l10n.selectSearchType,
-                                    items: [
-                                      if (widget.communityToSearch == null) ...[
-                                        ListPickerItem(label: l10n.communities, payload: MetaSearchType.communities, icon: Icons.people_rounded),
-                                        ListPickerItem(label: l10n.users, payload: MetaSearchType.users, icon: Icons.person_rounded),
-                                      ],
-                                      ListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
-                                      ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
-                                      if (widget.communityToSearch == null) ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
-                                    ],
+                                    items: searchOptions,
                                     onSelect: (value) async => _setCurrentSearchType(value.payload),
                                     previouslySelected: _currentSearchType,
                                   ),
@@ -446,7 +456,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 60),
-                    child: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
+                    child: _getSearchBody(context, state, isUserLoggedIn, account.instance, currentAnonymousInstance),
                   ),
                 ],
               ),

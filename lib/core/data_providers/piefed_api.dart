@@ -521,4 +521,21 @@ class PiefedApi {
     final json = await _request(HttpMethod.post, '/api/alpha/site/block', body);
     return json['blocked'];
   }
+
+  /// Upload an image using multipart form data
+  Future<String> uploadImage(String filePath) async {
+    try {
+      final request = MultipartRequest('POST', Uri.https(account.instance, '/api/alpha/upload/image'));
+      request.headers.addAll(_buildHeaders());
+      request.files.add(await MultipartFile.fromPath('file', filePath));
+
+      final response = await request.send();
+      if (response.statusCode != 200) throw Exception('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}');
+
+      final json = await jsonDecode(await response.stream.bytesToString());
+      return json['url'];
+    } catch (e) {
+      throw Exception('Failed to upload image: $e');
+    }
+  }
 }

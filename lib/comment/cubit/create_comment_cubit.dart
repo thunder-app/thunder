@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/core/data_providers/piefed_api.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -12,8 +15,10 @@ import 'package:thunder/utils/global_context.dart';
 part 'create_comment_state.dart';
 
 class CreateCommentCubit extends Cubit<CreateCommentState> {
+  /// The current account.
   Account account;
 
+  /// The repository for the comment.
   late CommentRepository repository;
 
   CreateCommentCubit({required this.account}) : super(const CreateCommentState(status: CreateCommentStatus.initial)) {
@@ -25,21 +30,31 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
   }
 
   Future<void> uploadImages(List<String> imageFiles) async {
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfile();
+    final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    PictrsApi pictrs = PictrsApi(account.instance);
     List<String> urls = [];
 
     emit(state.copyWith(status: CreateCommentStatus.imageUploadInProgress));
 
     try {
       for (String imageFile in imageFiles) {
-        PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
-        String url = "https://${account.instance}/pictrs/image/${result.files[0].file}";
+        switch (account.platform) {
+          case ThreadiversePlatform.lemmy:
+            PictrsApi pictrs = PictrsApi(account.instance);
 
-        urls.add(url);
+            PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
+            String url = "https://${account.instance}/pictrs/image/${result.files[0].file}";
+
+            urls.add(url);
+            break;
+          case ThreadiversePlatform.piefed:
+            final url = await PiefedApi(account: account, debug: kDebugMode).uploadImage(imageFile);
+            urls.add(url);
+            break;
+          default:
+            throw Exception(l10n.unexpectedError);
+        }
 
         // Add a delay between each upload to avoid possible rate limiting
         await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));

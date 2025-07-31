@@ -119,19 +119,19 @@ class UserActivityList extends StatelessWidget {
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
 
     final totalContributions = ((user.posts ?? 0) + (user.comments ?? 0));
-    final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
+    final totalContributionsPerMonth = (totalContributions / (accountAgeMonths < 1 ? 1 : accountAgeMonths));
 
     int postsPerMonth;
     int commentsPerMonth;
 
     if (user.posts != null && user.posts != 0) {
-      postsPerMonth = (user.posts! / accountAgeMonths).truncate();
+      postsPerMonth = (user.posts! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
     } else {
       postsPerMonth = 0;
     }
 
     if (user.comments != null && user.comments != 0) {
-      commentsPerMonth = (user.comments! / accountAgeMonths).truncate();
+      commentsPerMonth = (user.comments! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
     } else {
       commentsPerMonth = 0;
     }

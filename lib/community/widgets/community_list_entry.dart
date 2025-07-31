@@ -109,13 +109,15 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
                   useDisplayName: false,
                 ),
               ),
-              Text(
-                ' · ${formatLongNumber(widget.community.subscribers!)}',
-                semanticsLabel: l10n.countSubscribers(widget.community.subscribers!),
-              ),
-              const SizedBox(width: 4),
-              const Icon(Icons.people_rounded, size: 16.0),
-              if (widget.indicateFavorites && favourited && community.subscribed == SubscriptionStatus.subscribed) ...const [
+              if (widget.community.subscribers != null) ...[
+                Text(
+                  ' · ${formatLongNumber(widget.community.subscribers!)}',
+                  semanticsLabel: l10n.countSubscribers(widget.community.subscribers!),
+                ),
+                const SizedBox(width: 4),
+                const Icon(Icons.people_rounded, size: 16.0),
+              ],
+              if (widget.indicateFavorites && favourited) ...const [
                 Text(' · '),
                 Icon(Icons.star_rounded, size: 15),
               ]
