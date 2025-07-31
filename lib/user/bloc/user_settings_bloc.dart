@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -44,11 +46,11 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   late UserRepository userRepository;
 
   UserSettingsBloc({required this.account}) : super(const UserSettingsState()) {
-    instanceRepository = InstanceRepositoryImpl(account: account);
-    searchRepository = SearchRepositoryImpl(account: account);
-    communityRepository = CommunityRepositoryImpl(account: account);
-    accountRepository = AccountRepositoryImpl(account: account);
-    userRepository = UserRepositoryImpl(account: account);
+    instanceRepository = LemmyInstanceRepository(account: account);
+    searchRepository = LemmySearchRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    accountRepository = LemmyAccountRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     on<ResetUserSettingsEvent>(
       _resetUserSettingsEvent,
@@ -188,8 +190,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     try {
       final getSiteResponse = await instanceRepository.getSiteInfo();
 
-      final personBlocks = getSiteResponse.myUser!.personBlocks..sort((a, b) => a.name.compareTo(b.name));
-      final communityBlocks = getSiteResponse.myUser!.communityBlocks..sort((a, b) => a.name.compareTo(b.name));
+      final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
+      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
       final instanceBlocks = getSiteResponse.myUser!.instanceBlocks.map((instanceBlockView) => instanceBlockView.instance).toList()..sort((a, b) => a['domain'].compareTo(b['domain']));
 
       return emit(state.copyWith(
@@ -328,20 +330,22 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.searchingMedia));
 
     try {
-      final account = await fetchActiveProfile();
-      String url = Uri.https(account.instance, 'pictrs/image/${event.id}').toString();
+      final lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+      String url = Uri.https(lemmy.host, 'pictrs/image/${event.id}').toString();
 
-      final postsResponse = await searchRepository.search(query: url, type: MetaSearchType.posts);
-      final postsByUrlResponse = await searchRepository.search(query: url, type: MetaSearchType.url);
-
-      List<ThunderPost> posts = postsResponse['posts'];
-      List<ThunderPost> postsByUrl = postsByUrlResponse['posts'];
+      List<PostView> posts = (await searchRepository.search(query: url, type: MetaSearchType.posts)).posts.toList();
+      List<PostView> postsByUrl = (await searchRepository.search(query: url, type: MetaSearchType.url)).posts.toList();
 
       // De-dup posts found by body and URL
-      posts.addAll(postsByUrl.where((postByUrl) => !posts.any((post) => post.id == postByUrl.id)));
+      posts.addAll(postsByUrl.where((postViewByUrl) => !posts.any((postView) => postView.post.id == postViewByUrl.post.id)));
 
-      final response = await searchRepository.search(query: url, type: MetaSearchType.comments);
-      final List<ThunderComment> comments = response['comments'];
+      List<ThunderComment> comments = (await searchRepository.search(
+        query: url,
+        type: MetaSearchType.comments,
+      ))
+          .comments
+          .map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))
+          .toList();
 
       return emit(state.copyWith(
         status: UserSettingsStatus.succeededSearchingMedia,

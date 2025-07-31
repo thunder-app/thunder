@@ -7,6 +7,7 @@ import 'package:thunder/comment/models/thunder_comment.dart';
 
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/core/extensions/comment_reply_view.dart';
 import 'package:thunder/core/extensions/person_mention_view.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
@@ -33,19 +34,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   /// Constructor allowing an initial set of replies to be set in the state.
   InboxBloc.initWith({
-    required List<ThunderComment> replies,
+    required List<CommentReplyView> replies,
     required bool showUnreadOnly,
     required this.account,
   }) : super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
-    commentRepository = CommentRepositoryImpl(account: account);
-    notificationRepository = NotificationRepositoryImpl(account: account);
+    commentRepository = LemmyCommentRepository(account: account);
+    notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }
 
   /// Unnamed constructor with default state
   InboxBloc({required this.account}) : super(const InboxState()) {
-    commentRepository = CommentRepositoryImpl(account: account);
-    notificationRepository = NotificationRepositoryImpl(account: account);
+    commentRepository = LemmyCommentRepository(account: account);
+    notificationRepository = LemmyNotificationRepository(account: account);
     _init();
   }
 
@@ -81,14 +82,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     try {
       PrivateMessagesResponse? privateMessagesResponse;
       GetPersonMentionsResponse? getPersonMentionsResponse;
-      List<ThunderComment> repliesResponse = [];
+      GetRepliesResponse? getRepliesResponse;
 
       if (event.reset) {
         emit(state.copyWith(status: InboxStatus.loading, errorMessage: ''));
 
         switch (event.inboxType) {
           case InboxType.replies:
-            repliesResponse = await notificationRepository.replies(
+            getRepliesResponse = await notificationRepository.replies(
               unread: !event.showAll,
               limit: limit,
               sort: event.commentSortType,
@@ -111,7 +112,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             );
             break;
           case InboxType.all:
-            repliesResponse = await notificationRepository.replies(
+            getRepliesResponse = await notificationRepository.replies(
               unread: !event.showAll,
               limit: limit,
               sort: event.commentSortType,
@@ -143,7 +144,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             status: InboxStatus.success,
             privateMessages: cleanDeletedMessages(privateMessagesResponse?.privateMessages ?? []),
             mentions: cleanDeletedMentions(getPersonMentionsResponse?.mentions ?? []),
-            replies: repliesResponse,
+            replies: getRepliesResponse?.replies.toList() ?? [], // Copy this list so that it is modifyable
             showUnreadOnly: !event.showAll,
             inboxMentionPage: 2,
             inboxReplyPage: 2,
@@ -152,7 +153,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             repliesUnreadCount: unread.replies,
             mentionsUnreadCount: unread.mentions,
             messagesUnreadCount: unread.privateMessages,
-            hasReachedInboxReplyEnd: repliesResponse.isEmpty || repliesResponse.length < limit,
+            hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
             hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
             hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
           ),
@@ -166,7 +167,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       switch (event.inboxType) {
         case InboxType.replies:
           if (state.hasReachedInboxReplyEnd) return;
-          repliesResponse = await notificationRepository.replies(
+          getRepliesResponse = await notificationRepository.replies(
             unread: state.showUnreadOnly,
             limit: limit,
             sort: event.commentSortType,
@@ -194,7 +195,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           break;
       }
 
-      List<ThunderComment> replies = List.from(state.replies)..addAll(repliesResponse);
+      List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse?.replies ?? []);
       List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse?.mentions ?? []);
       List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse?.privateMessages ?? []);
 
@@ -208,7 +209,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           inboxMentionPage: state.inboxMentionPage + 1,
           inboxReplyPage: state.inboxReplyPage + 1,
           inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
-          hasReachedInboxReplyEnd: repliesResponse.isEmpty || repliesResponse.length < limit,
+          hasReachedInboxReplyEnd: getRepliesResponse?.replies.isEmpty == true || (getRepliesResponse?.replies.length ?? 0) < limit,
           hasReachedInboxMentionEnd: getPersonMentionsResponse?.mentions.isEmpty == true || (getPersonMentionsResponse?.mentions.length ?? 0) < limit,
           hasReachedInboxPrivateMessageEnd: privateMessagesResponse?.privateMessages.isEmpty == true || (privateMessagesResponse?.privateMessages.length ?? 0) < limit,
         ),
@@ -232,12 +233,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
     int existingIndex = -1;
 
-    ThunderComment? existingCommentReplyView;
+    CommentReplyView? existingCommentReplyView;
     PersonMentionView? existingPersonMentionView;
     PrivateMessageView? existingPrivateMessageView;
 
     if (event.commentReplyId != null) {
-      existingIndex = state.replies.indexWhere((element) => element.id == event.commentReplyId);
+      existingIndex = state.replies.indexWhere((element) => element.commentReply.id == event.commentReplyId);
       existingCommentReplyView = state.replies[existingIndex];
     } else if (event.personMentionId != null) {
       existingIndex = state.mentions.indexWhere((element) => element.personMention.id == event.personMentionId);
@@ -253,7 +254,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     ThunderComment? comment;
 
     if (existingCommentReplyView != null) {
-      comment = existingCommentReplyView;
+      comment = existingCommentReplyView.toComment();
     } else if (existingPersonMentionView != null) {
       comment = existingPersonMentionView.toComment();
     }
@@ -264,7 +265,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           // Optimistically remove the reply from the list or change the status (depending on whether we're showing all)
           if (existingCommentReplyView != null) {
             if (!state.showUnreadOnly) {
-              state.replies[existingIndex] = existingCommentReplyView.copyWith(read: event.value);
+              state.replies[existingIndex] = existingCommentReplyView.copyWith(commentReply: existingCommentReplyView.commentReply.copyWith(read: event.value));
             } else if (event.value == true) {
               state.replies.remove(existingCommentReplyView);
             }
@@ -319,9 +320,11 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           if (existingCommentReplyView != null) {
             state.replies[existingIndex] = existingCommentReplyView.copyWith(
-              score: updatedComment.score,
-              upvotes: updatedComment.upvotes,
-              downvotes: updatedComment.downvotes,
+              counts: existingCommentReplyView.counts.copyWith(
+                score: updatedComment.score!,
+                upvotes: updatedComment.upvotes!,
+                downvotes: updatedComment.downvotes!,
+              ),
               myVote: updatedComment.myVote,
             );
           } else if (existingPersonMentionView != null) {
@@ -389,7 +392,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           if (existingCommentReplyView != null) {
             state.replies[existingIndex] = existingCommentReplyView.copyWith(
-              deleted: updatedComment.deleted,
+              comment: existingCommentReplyView.comment.copyWith(deleted: updatedComment.deleted),
             );
           } else if (existingPersonMentionView != null) {
             state.mentions[existingIndex] = existingPersonMentionView.copyWith(
@@ -427,7 +430,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       await notificationRepository.markAllNotificationsAsRead();
 
       // Update all the replies, mentions, and messages to be read locally
-      List<ThunderComment> updatedReplies = state.replies.map((comment) => comment.copyWith(read: true)).toList();
+      List<CommentReplyView> updatedReplies = state.replies.map((commentReplyView) => commentReplyView.copyWith(commentReply: commentReplyView.commentReply.copyWith(read: true))).toList();
       List<PersonMentionView> updatedMentions = state.mentions.map((personMentionView) => personMentionView.copyWith(personMention: personMentionView.personMention.copyWith(read: true))).toList();
       List<PrivateMessageView> updatedPrivateMessages =
           state.privateMessages.map((privateMessageView) => privateMessageView.copyWith(privateMessage: privateMessageView.privateMessage.copyWith(read: true))).toList();

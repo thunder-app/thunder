@@ -43,9 +43,6 @@ class ThunderComment {
   /// The comment's language ID
   final int languageId;
 
-  /// The comment's recipient (for replies/mentions)
-  final ThunderUser? recipient;
-
   /// The comment's creator
   final ThunderUser? creator;
 
@@ -91,9 +88,6 @@ class ThunderComment {
   /// The comment's vote status
   final int? myVote;
 
-  /// Whether the comment is read (comment reply/mention)
-  final bool? read;
-
   ThunderComment({
     required this.id,
     required this.creatorId,
@@ -108,7 +102,6 @@ class ThunderComment {
     required this.path,
     required this.distinguished,
     required this.languageId,
-    this.recipient,
     this.creator,
     this.post,
     this.community,
@@ -124,7 +117,6 @@ class ThunderComment {
     this.saved,
     this.creatorBlocked,
     this.myVote,
-    this.read,
   });
 
   ThunderComment copyWith({
@@ -141,7 +133,6 @@ class ThunderComment {
     String? path,
     bool? distinguished,
     int? languageId,
-    ThunderUser? recipient,
     ThunderUser? creator,
     ThunderPost? post,
     ThunderCommunity? community,
@@ -157,7 +148,6 @@ class ThunderComment {
     bool? saved,
     bool? creatorBlocked,
     int? myVote,
-    bool? read,
   }) {
     return ThunderComment(
       id: id ?? this.id,
@@ -173,7 +163,6 @@ class ThunderComment {
       path: path ?? this.path,
       distinguished: distinguished ?? this.distinguished,
       languageId: languageId ?? this.languageId,
-      recipient: recipient ?? this.recipient,
       creator: creator ?? this.creator,
       post: post ?? this.post,
       community: community ?? this.community,
@@ -189,7 +178,6 @@ class ThunderComment {
       saved: saved ?? this.saved,
       creatorBlocked: creatorBlocked ?? this.creatorBlocked,
       myVote: myVote ?? this.myVote,
-      read: read ?? this.read,
     );
   }
 
@@ -244,47 +232,6 @@ class ThunderComment {
       creatorIsModerator: commentView['creator_is_moderator'],
       creatorIsAdmin: commentView['creator_is_admin'],
       subscribed: commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null,
-      saved: commentView['saved'],
-      creatorBlocked: commentView['creator_blocked'],
-      myVote: commentView['my_vote'],
-    );
-  }
-
-  factory ThunderComment.fromPiefedCommentView(Map<String, dynamic> commentView) {
-    final comment = commentView['comment'];
-    final creator = commentView['creator'];
-    final post = commentView['post'];
-    final community = commentView['community'];
-    final counts = commentView['counts'];
-
-    final subscribed = commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null;
-
-    return ThunderComment(
-      id: comment['id'],
-      creatorId: comment['user_id'],
-      postId: comment['post_id'],
-      content: comment['body'],
-      removed: comment['removed'],
-      published: DateTime.parse(comment['published']),
-      updated: comment['updated'] != null ? DateTime.parse(comment['updated']) : null,
-      deleted: comment['deleted'],
-      apId: comment['ap_id'],
-      local: comment['local'],
-      path: comment['path'],
-      distinguished: comment['distinguished'] ?? false,
-      languageId: comment['language_id'],
-      creator: ThunderUser.fromPiefedUser(creator),
-      post: ThunderPost.fromPiefedPost(post),
-      community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
-      score: counts['score'],
-      upvotes: counts['upvotes'],
-      downvotes: counts['downvotes'],
-      childCount: counts['child_count'],
-      creatorBannedFromCommunity: commentView['creator_banned_from_community'],
-      bannedFromCommunity: commentView['banned_from_community'],
-      creatorIsModerator: commentView['creator_is_moderator'],
-      creatorIsAdmin: commentView['creator_is_admin'],
-      subscribed: subscribed,
       saved: commentView['saved'],
       creatorBlocked: commentView['creator_blocked'],
       myVote: commentView['my_vote'],

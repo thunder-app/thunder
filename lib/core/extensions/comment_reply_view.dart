@@ -2,7 +2,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 
 
-extension PersonMentionViewExtension on PersonMentionView {
+extension CommentReplyViewExtension on CommentReplyView {
   ThunderComment toComment() {
     final commentView = CommentView(
       comment: comment,
@@ -14,6 +14,7 @@ extension PersonMentionViewExtension on PersonMentionView {
       subscribed: subscribed,
       saved: saved,
       creatorBlocked: creatorBlocked,
+      myVote: myVote as int?,
     );
 
     return ThunderComment.fromLemmyCommentView(commentView.toJson());

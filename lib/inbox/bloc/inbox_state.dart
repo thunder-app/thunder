@@ -28,7 +28,7 @@ class InboxState extends Equatable {
 
   final List<PrivateMessageView> privateMessages;
   final List<PersonMentionView> mentions;
-  final List<ThunderComment> replies;
+  final List<CommentReplyView> replies;
 
   final bool showUnreadOnly;
 
@@ -52,7 +52,7 @@ class InboxState extends Equatable {
     String? errorMessage,
     List<PrivateMessageView>? privateMessages,
     List<PersonMentionView>? mentions,
-    List<ThunderComment>? replies,
+    List<CommentReplyView>? replies,
     bool? showUnreadOnly,
     int? inboxReplyPage,
     int? inboxMentionPage,

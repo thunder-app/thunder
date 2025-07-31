@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
@@ -10,7 +11,6 @@ import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
-import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/error_messages.dart';
 
 part 'instance_page_state.dart';
@@ -25,14 +25,14 @@ class InstancePageCubit extends Cubit<InstancePageState> {
 
   InstancePageCubit({required this.instance, required String resolutionInstance, required this.account})
       : super(InstancePageState(status: InstancePageStatus.success, resolutionInstance: resolutionInstance)) {
-    searchRepository = SearchRepositoryImpl(account: account);
+    searchRepository = LemmySearchRepository(account: account);
   }
 
   Future<void> loadCommunities({int? page, required PostSortType postSortType}) async {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final response = await searchRepository.search(
+      final searchResponse = await searchRepository.search(
         query: '',
         type: MetaSearchType.communities,
         sort: postSortType,
@@ -41,16 +41,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         page: page ?? 1,
       );
 
-      final List<ThunderCommunity> communities = response['communities'];
-      final status = communities.isEmpty || communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success;
-
-      emit(
-        state.copyWith(
-          status: status,
-          communities: [...(state.communities ?? []), ...communities],
-          page: page ?? 1,
-        ),
-      );
+      emit(state.copyWith(
+        status: searchResponse.communities.isEmpty || searchResponse.communities.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        communities: [...(state.communities ?? []), ...searchResponse.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson()))],
+        page: page ?? 1,
+      ));
     } catch (e) {
       emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
@@ -60,7 +55,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final response = await searchRepository.search(
+      final searchResponse = await searchRepository.search(
         query: '',
         type: MetaSearchType.users,
         sort: postSortType,
@@ -69,16 +64,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         page: page ?? 1,
       );
 
-      final List<ThunderUser> users = response['users'];
-      final status = users.isEmpty || users.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success;
-
-      emit(
-        state.copyWith(
-          status: status,
-          users: [...(state.users ?? []), ...users],
-          page: page ?? 1,
-        ),
-      );
+      emit(state.copyWith(
+        status: searchResponse.users.isEmpty || searchResponse.users.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        users: [...(state.users ?? []), ...searchResponse.users],
+        page: page ?? 1,
+      ));
     } catch (e) {
       emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
@@ -88,7 +78,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final response = await searchRepository.search(
+      final searchResponse = await searchRepository.search(
         query: '',
         type: MetaSearchType.posts,
         sort: postSortType,
@@ -97,16 +87,11 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         page: page ?? 1,
       );
 
-      final List<ThunderPost> posts = response['posts'];
-      final status = posts.isEmpty || posts.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success;
-
-      emit(
-        state.copyWith(
-          status: status,
-          posts: [...(state.posts ?? []), ...(await parsePosts(posts, resolutionInstance: state.resolutionInstance))],
-          page: page ?? 1,
-        ),
-      );
+      emit(state.copyWith(
+        status: searchResponse.posts.isEmpty || searchResponse.posts.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        posts: [...(state.posts ?? []), ...(await parsePosts(searchResponse.posts, resolutionInstance: state.resolutionInstance))],
+        page: page ?? 1,
+      ));
     } catch (e) {
       emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
@@ -116,7 +101,7 @@ class InstancePageCubit extends Cubit<InstancePageState> {
     if (page == 1) emit(state.copyWith(status: InstancePageStatus.loading));
 
     try {
-      final response = await searchRepository.search(
+      final searchResponse = await searchRepository.search(
         query: '',
         type: MetaSearchType.comments,
         sort: postSortType,
@@ -125,16 +110,27 @@ class InstancePageCubit extends Cubit<InstancePageState> {
         page: page ?? 1,
       );
 
-      final List<ThunderComment> comments = response['comments'];
-      final status = comments.isEmpty || comments.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success;
+      List<ThunderComment> comments = [...(state.comments ?? []), ...searchResponse.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson()))];
+      List<ThunderComment> commentsFinal = [];
 
-      emit(
-        state.copyWith(
-          status: status,
-          comments: [...(state.comments ?? []), ...comments],
-          page: page ?? 1,
-        ),
-      );
+      // Create a temporary Account object to use for the request
+      final account = Account(id: '', instance: state.resolutionInstance, index: -1);
+
+      for (final comment in comments) {
+        try {
+          final resolveObjectResponse = await LemmySearchRepository(account: account).resolve(query: comment.apId);
+          final resolvedComment = ThunderComment.fromLemmyCommentView(resolveObjectResponse.comment!.toJson());
+          commentsFinal.add(resolvedComment);
+        } catch (e) {
+          // If we can't resolve it, we won't even add it
+        }
+      }
+
+      emit(state.copyWith(
+        status: searchResponse.comments.isEmpty || searchResponse.comments.length < _pageLimit ? InstancePageStatus.done : InstancePageStatus.success,
+        comments: commentsFinal,
+        page: page ?? 1,
+      ));
     } catch (e) {
       emit(state.copyWith(status: InstancePageStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }

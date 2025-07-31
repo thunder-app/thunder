@@ -444,7 +444,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   dynamic exportSettings;
                                   try {
                                     final account = context.read<ProfileBloc>().state.account;
-                                    exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
+                                    exportSettings = await LemmyAccountRepository(account: account).exportSettings();
                                   } catch (e) {
                                     // Catch rate-limit errors
                                     showSnackbar(getExceptionErrorMessage(e));
@@ -515,7 +515,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   try {
                                     final l10n = AppLocalizations.of(GlobalContext.context)!;
                                     final account = context.read<ProfileBloc>().state.account;
-                                    final response = await AccountRepositoryImpl(account: account).importSettings(importSettings);
+                                    final response = await LemmyAccountRepository(account: account).importSettings(importSettings);
 
                                     if (response.success) {
                                       showSnackbar(l10n.accountSettingsImportedSuccessfully);

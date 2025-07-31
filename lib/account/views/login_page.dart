@@ -8,26 +8,19 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
-import 'package:thunder/core/models/thunder_instance_info.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instances.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
-  /// The callback to pop the register page.
   final VoidCallback popRegister;
-
-  /// The callback to pop the modal.
   final VoidCallback popModal;
-
-  /// Whether to login as an anonymous user.
   final bool anonymous;
 
   const LoginPage({super.key, required this.popRegister, required this.popModal, this.anonymous = false});
@@ -37,27 +30,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  /// The controller for the instance text field.
-  late TextEditingController _instanceTextEditingController;
-
-  /// The controller for the username text field.
   late TextEditingController _usernameTextEditingController;
-
-  /// The controller for the password text field.
   late TextEditingController _passwordTextEditingController;
-
-  /// The controller for the TOTP text field.
   late TextEditingController _totpTextEditingController;
-
-  /// The focus node for the username field.
+  late TextEditingController _instanceTextEditingController;
   final FocusNode _usernameFieldFocusNode = FocusNode();
 
-  /// The instance info for the current instance.
-  ThunderInstanceInfo? instanceInfo;
-
   bool showPassword = false;
+  bool fieldsFilledIn = false;
+  String? instanceIcon;
+  String? currentInstance;
   Timer? instanceTextDebounceTimer;
   Timer? instanceValidationDebounceTimer;
+  bool instanceValidated = true;
+  bool instanceAwaitingValidation = true;
   String? instanceError;
 
   bool isLoading = false;
@@ -65,33 +51,70 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
-
     _usernameTextEditingController = TextEditingController();
     _passwordTextEditingController = TextEditingController();
     _totpTextEditingController = TextEditingController();
     _instanceTextEditingController = TextEditingController();
 
-    _usernameTextEditingController.addListener(() => setState(() {}));
-    _passwordTextEditingController.addListener(() => setState(() {}));
+    _usernameTextEditingController.addListener(() {
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+        setState(() => fieldsFilledIn = true);
+      } else {
+        setState(() => fieldsFilledIn = false);
+      }
+    });
 
-    // Fetches the instance information and updates the icon
+    _passwordTextEditingController.addListener(() {
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+        setState(() => fieldsFilledIn = true);
+      } else {
+        setState(() => fieldsFilledIn = false);
+      }
+    });
+
     _instanceTextEditingController.addListener(() async {
-      if (instanceTextDebounceTimer?.isActive == true) instanceTextDebounceTimer!.cancel();
-      instanceTextDebounceTimer = Timer(const Duration(milliseconds: 300), () async {
-        if (_instanceTextEditingController.text.isEmpty) return;
-        final instanceInfo = await getInstanceInfo(_instanceTextEditingController.text);
+      if (currentInstance != _instanceTextEditingController.text) {
+        setState(() => instanceIcon = null);
+        currentInstance = _instanceTextEditingController.text;
+      }
 
-        if (instanceInfo.success) {
-          return setState(() {
-            this.instanceInfo = instanceInfo;
-            instanceError = null;
-          });
-        }
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
+        setState(() => fieldsFilledIn = true);
+      } else {
+        setState(() => fieldsFilledIn = false);
+      }
 
-        setState(() {
-          this.instanceInfo = null;
-          instanceError = GlobalContext.l10n.notValidLemmyInstance(_instanceTextEditingController.text);
+      // Debounce
+      if (instanceTextDebounceTimer?.isActive == true) {
+        instanceTextDebounceTimer!.cancel();
+      }
+      instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+        await getInstanceInfo(_instanceTextEditingController.text).then((value) {
+          // Make sure the icon we looked up still matches the text
+          if (currentInstance == _instanceTextEditingController.text) {
+            setState(() => instanceIcon = value.icon);
+          }
         });
+      });
+
+      // Debounce
+      setState(() {
+        instanceAwaitingValidation = true;
+      });
+      if (instanceValidationDebounceTimer?.isActive == true) {
+        instanceValidationDebounceTimer!.cancel();
+      }
+      instanceValidationDebounceTimer = Timer(const Duration(seconds: 1), () async {
+        await (_instanceTextEditingController.text.isEmpty ? Future<bool>.value(true) : isLemmyInstance(_instanceTextEditingController.text)).then((value) => {
+              if (currentInstance == _instanceTextEditingController.text)
+                {
+                  setState(() {
+                    instanceAwaitingValidation = false;
+                    instanceValidated = value;
+                    instanceError = AppLocalizations.of(context)!.notValidLemmyInstance(currentInstance ?? '');
+                  })
+                }
+            });
       });
     });
   }
@@ -105,17 +128,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     super.dispose();
   }
 
-  bool _areFieldsFilledIn() {
-    if (widget.anonymous) {
-      return _instanceTextEditingController.text.isNotEmpty;
-    } else {
-      return _instanceTextEditingController.text.isNotEmpty && _usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final l10n = GlobalContext.l10n;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return MultiBlocListener(
@@ -124,16 +139,46 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           listenWhen: (previous, current) {
             if (previous.status == ProfileStatus.initial && current.status == ProfileStatus.success) {
               widget.popModal();
-              showSnackbar(l10n.loginSucceeded);
+              showSnackbar(AppLocalizations.of(context)!.loginSucceeded);
             }
             return true;
           },
           listener: (listenerContext, state) async {
             if (state.status == ProfileStatus.loading) {
-              setState(() => isLoading = true);
+              setState(() {
+                isLoading = true;
+              });
             } else if (state.status == ProfileStatus.failure) {
-              setState(() => isLoading = false);
-              showSnackbar(l10n.loginFailed(state.error ?? l10n.missingErrorMessage));
+              setState(() {
+                isLoading = false;
+              });
+
+              showSnackbar(AppLocalizations.of(context)!.loginFailed(state.error ?? AppLocalizations.of(context)!.missingErrorMessage));
+            } else if (state.status == ProfileStatus.contentWarning) {
+              bool acceptedContentWarning = false;
+
+              await showThunderDialog<void>(
+                context: context,
+                title: l10n.contentWarning,
+                contentText: state.contentWarning,
+                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                secondaryButtonText: l10n.decline,
+                onPrimaryButtonPressed: (dialogContext, _) async {
+                  Navigator.of(dialogContext).pop();
+                  acceptedContentWarning = true;
+                },
+                primaryButtonText: l10n.accept,
+              );
+
+              if (context.mounted) {
+                if (acceptedContentWarning) {
+                  // Do another login attempt, this time without the content warning
+                  _handleLogin(showContentWarning: false);
+                } else {
+                  // Cancel the login
+                  context.read<ProfileBloc>().add(const CancelLoginAttempt());
+                }
+              }
             }
           },
         ),
@@ -155,19 +200,19 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 children: [
                   AnimatedCrossFade(
                     duration: const Duration(milliseconds: 500),
-                    crossFadeState: instanceInfo?.icon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    crossFadeState: instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                     firstChild: Image.asset('assets/logo.png', width: 80.0, height: 80.0),
-                    secondChild: instanceInfo?.icon == null
+                    secondChild: instanceIcon == null
                         ? Container()
                         : CircleAvatar(
-                            foregroundImage: CachedNetworkImageProvider(instanceInfo!.icon!),
+                            foregroundImage: CachedNetworkImageProvider(instanceIcon!),
                             backgroundColor: Colors.transparent,
                             maxRadius: 40,
                           ),
                   ),
                   const SizedBox(height: 12.0),
                   AnimatedCrossFade(
-                    crossFadeState: _instanceTextEditingController.text.isNotEmpty && instanceError == null ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    crossFadeState: _instanceTextEditingController.text.isNotEmpty && !instanceAwaitingValidation && instanceValidated ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                     duration: const Duration(milliseconds: 250),
                     firstChild: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -201,79 +246,66 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         ),
                       ],
                     ),
-                    secondChild: Column(
-                      spacing: 8.0,
+                    secondChild: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // TODO: Remove once PieFed support is stable
-                        if (instanceInfo?.platform == ThreadiversePlatform.piefed) ...[
-                          Text(
-                            'PieFed support is currently in beta.\nNot all features are supported yet.',
-                            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.secondary),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            OutlinedButton(
-                              onPressed: () {
-                                handleLink(context, url: 'https://${_instanceTextEditingController.text}');
-                              },
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.only(left: 10, right: 16),
-                                backgroundColor: theme.colorScheme.surface,
-                                textStyle: theme.textTheme.titleMedium?.copyWith(
-                                  color: theme.colorScheme.onPrimary,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.insert_link_rounded,
-                                    color: theme.textTheme.bodySmall?.color,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.openInstance,
-                                    style: theme.textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
+                        OutlinedButton(
+                          onPressed: () {
+                            handleLink(context, url: 'https://${_instanceTextEditingController.text}');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            backgroundColor: theme.colorScheme.surface,
+                            textStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary,
                             ),
-                            if (!widget.anonymous) ...[
-                              const SizedBox(width: 12),
-                              OutlinedButton(
-                                onPressed: () {
-                                  handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.only(left: 10, right: 16),
-                                  backgroundColor: theme.colorScheme.surface,
-                                  textStyle: theme.textTheme.titleMedium?.copyWith(
-                                    color: theme.colorScheme.onPrimary,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.insert_link_rounded,
-                                      color: theme.textTheme.bodySmall?.color,
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.createAccount,
-                                      style: theme.textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.insert_link_rounded,
+                                color: theme.textTheme.bodySmall?.color,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.openInstance,
+                                style: theme.textTheme.bodySmall,
                               ),
                             ],
-                          ],
+                          ),
                         ),
+                        if (!widget.anonymous) ...[
+                          const SizedBox(width: 12),
+                          OutlinedButton(
+                            onPressed: () {
+                              handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.only(left: 10, right: 16),
+                              backgroundColor: theme.colorScheme.surface,
+                              textStyle: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.insert_link_rounded,
+                                  color: theme.textTheme.bodySmall?.color,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.createAccount,
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -290,18 +322,20 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.instance(1),
-                        errorText: instanceError,
+                        errorText: instanceValidated ? null : instanceError,
                         errorMaxLines: 2,
                       ),
                       enableSuggestions: false,
                       onSubmitted: !widget.anonymous
                           ? (_) => _usernameFieldFocusNode.requestFocus()
                           : controller.text.isNotEmpty
-                              ? (_) => _handleLogin()
+                              ? (_) => _addAnonymousInstance(context)
                               : null,
                     ),
                     suggestionsCallback: (String pattern) {
-                      if (pattern.isNotEmpty != true) return [];
+                      if (pattern.isNotEmpty != true) {
+                        return [];
+                      }
                       return instances.where((instance) => instance.contains(pattern)).toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
@@ -309,6 +343,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     },
                     onSelected: (String suggestion) {
                       _instanceTextEditingController.text = suggestion;
+                      setState(() {
+                        instanceValidated = true;
+                      });
                     },
                     hideOnEmpty: true,
                     hideOnLoading: true,
@@ -334,7 +371,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           ),
                           const SizedBox(height: 12.0),
                           TextField(
-                            onSubmitted: (!isLoading && _areFieldsFilledIn()) ? (_) => _handleLogin() : null,
+                            onSubmitted:
+                                (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                                    ? (_) => _handleLogin()
+                                    : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                                        ? (_) => _addAnonymousInstance(context)
+                                        : null,
                             autocorrect: false,
                             controller: _passwordTextEditingController,
                             obscureText: !showPassword,
@@ -387,13 +429,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
-                    onPressed: (isLoading || !_areFieldsFilledIn()) ? null : _handleLogin,
-                    child: Text(
-                      widget.anonymous ? l10n.add : l10n.login,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: !isLoading && _areFieldsFilledIn() ? theme.colorScheme.onPrimary : theme.colorScheme.primary,
-                      ),
-                    ),
+                    onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                        ? _handleLogin
+                        : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                            ? () => _addAnonymousInstance(context)
+                            : null,
+                    child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
+                        style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
                   const SizedBox(height: 12.0),
                   TextButton(
@@ -411,61 +453,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     );
   }
 
-  void _handleLogin() async {
-    final l10n = GlobalContext.l10n;
-
-    // Prevent login if we cannot detect the platform
-    if (instanceInfo?.platform == null) {
-      showSnackbar(l10n.notValidLemmyInstance(_instanceTextEditingController.text));
-      return;
-    }
-
-    // If the instance has a content warning, display it and ask the user to accept it before proceeding
-    if (instanceInfo?.contentWarning != null) {
-      bool acceptedContentWarning = false;
-
-      await showThunderDialog<void>(
-        context: context,
-        title: l10n.contentWarning,
-        contentText: instanceInfo?.contentWarning,
-        onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-        secondaryButtonText: l10n.decline,
-        onPrimaryButtonPressed: (dialogContext, _) async {
-          Navigator.of(dialogContext).pop();
-          acceptedContentWarning = true;
-        },
-        primaryButtonText: l10n.accept,
-      );
-
-      if (!acceptedContentWarning) return;
-    }
-
+  void _handleLogin({bool showContentWarning = true}) {
     TextInput.finishAutofillContext();
-
-    // Handle anonymous login
-    if (widget.anonymous) {
-      final anonymousInstances = await Account.anonymousInstances();
-
-      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
-        setState(() => instanceError = l10n.instanceHasAlreadyBenAdded(_instanceTextEditingController.text));
-        return;
-      }
-
-      await Account.insertAnonymousInstance(Account(
-        id: '',
-        instance: _instanceTextEditingController.text,
-        index: -1,
-        anonymous: true,
-        platform: instanceInfo?.platform,
-      ));
-
-      context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
-      context.read<ProfileBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
-      widget.popRegister();
-
-      return;
-    }
-
     // Perform login authentication
     context.read<ProfileBloc>().add(
           AddProfile(
@@ -473,8 +462,52 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             password: _passwordTextEditingController.text,
             instance: _instanceTextEditingController.text.trim(),
             totp: _totpTextEditingController.text,
-            showContentWarning: false,
+            showContentWarning: showContentWarning,
           ),
         );
+  }
+
+  void _addAnonymousInstance(BuildContext context) async {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    if (await isLemmyInstance(_instanceTextEditingController.text)) {
+      final List<Account> anonymousInstances = await Account.anonymousInstances();
+      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
+        setState(() {
+          instanceValidated = false;
+          instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
+        });
+      } else {
+        // Check for content warning on anyonmous instance
+        final account = Account(id: '', instance: _instanceTextEditingController.text, index: -1);
+        final siteResponse = await LemmyInstanceRepository(account: account).getSiteInfo();
+
+        bool acceptedContentWarning = true;
+
+        if (siteResponse.siteView.contentWarning?.isNotEmpty == true) {
+          acceptedContentWarning = false;
+
+          await showThunderDialog<void>(
+            context: context,
+            title: l10n.contentWarning,
+            contentText: siteResponse.siteView.contentWarning,
+            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+            secondaryButtonText: l10n.decline,
+            onPrimaryButtonPressed: (dialogContext, _) async {
+              Navigator.of(dialogContext).pop();
+              acceptedContentWarning = true;
+            },
+            primaryButtonText: l10n.accept,
+          );
+        }
+
+        if (acceptedContentWarning) {
+          await Account.insertAnonymousInstance(Account(id: '', instance: _instanceTextEditingController.text, index: -1, anonymous: true));
+          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
+          context.read<ProfileBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
+          widget.popRegister();
+        }
+      }
+    }
   }
 }

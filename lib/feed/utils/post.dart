@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/enums.dart';
@@ -43,7 +45,8 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
     do {
-      List<ThunderPost> response = await PostRepositoryImpl(account: account).getPosts(
+      final postRepository = LemmyPostRepository(account: account);
+      GetPostsResponse getPostsResponse = await postRepository.getPosts(
         page: currentPage,
         postSortType: postSortType,
         feedListType: feedListType,
@@ -54,22 +57,24 @@ Future<Map<String, dynamic>> fetchFeedItems({
       );
 
       // Keep the length of the original response to see if there are any additional posts to fetch
-      int postResponseLength = response.length;
+      int postResponseLength = getPostsResponse.posts.length;
 
       // Remove deleted posts
-      response = response.where((post) => post.deleted == false).toList();
+      getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
       // Remove posts that contain any of the keywords in the title, body, or url
-      response = response.where((post) {
-        final title = post.name.toLowerCase();
-        final body = post.body?.toLowerCase() ?? '';
-        final url = post.url?.toLowerCase() ?? '';
+      getPostsResponse = getPostsResponse.copyWith(
+        posts: getPostsResponse.posts.where((postView) {
+          final title = postView.post.name.toLowerCase();
+          final body = postView.post.body?.toLowerCase() ?? '';
+          final url = postView.post.url?.toLowerCase() ?? '';
 
-        return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
-      }).toList();
+          return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
+        }).toList(),
+      );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(response);
+      List<ThunderPost> formattedPosts = await parsePosts(getPostsResponse.posts);
       posts.addAll(formattedPosts);
 
       if (keywordFilters.isNotEmpty) {
@@ -94,9 +99,9 @@ Future<Map<String, dynamic>> fetchFeedItems({
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
   if (userId != null || username != null) {
     do {
-      final userRepository = UserRepositoryImpl(account: account);
+      final userRepository = LemmyUserRepository(account: account);
 
-      Map<String, dynamic>? response = await userRepository.getUser(
+      GetPersonDetailsResponse? getPersonDetailsResponse = await userRepository.getUser(
         userId: userId,
         username: username,
         sort: postSortType,
@@ -104,20 +109,20 @@ Future<Map<String, dynamic>> fetchFeedItems({
         saved: showSaved,
       );
 
-      List<ThunderPost> responsePosts = response!['posts'];
-      List<ThunderComment> responseComments = response['comments'];
-
       // Remove deleted posts and comments
-      responsePosts = responsePosts.where((post) => post.deleted == false).toList();
-      responseComments = responseComments.where((comment) => comment.deleted == false).toList();
+      getPersonDetailsResponse = getPersonDetailsResponse!.copyWith(
+        posts: getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList(),
+        comments: getPersonDetailsResponse.comments.where((CommentView commentView) => commentView.comment.deleted == false).toList(),
+      );
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
+      List<ThunderPost> formattedPosts = await parsePosts(getPersonDetailsResponse.posts);
       posts.addAll(formattedPosts);
-      comments.addAll(responseComments);
 
-      if (responsePosts.isEmpty) hasReachedPostsEnd = true;
-      if (responseComments.isEmpty) hasReachedCommentsEnd = true;
+      comments.addAll(getPersonDetailsResponse.comments.map((commentView) => ThunderComment.fromLemmyCommentView(commentView.toJson())));
+
+      if (getPersonDetailsResponse.posts.isEmpty) hasReachedPostsEnd = true;
+      if (getPersonDetailsResponse.comments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
     } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
   }

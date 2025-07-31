@@ -127,7 +127,7 @@ Future<void> temporarilySwitchAccount(
       // If there is a selected community, see if we can resolve it to the new user's instance.
       if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
         try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: communityActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: communityActorId!);
 
           if (response.community != null) {
             final community = ThunderCommunity.fromLemmyCommunityView(response.community!.toJson());
@@ -141,10 +141,10 @@ Future<void> temporarilySwitchAccount(
       // If there is a selected post, see if we can resolve it to the new user's instance.
       if (postActorId?.isNotEmpty == true && onPostChanged != null) {
         try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: postActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: postActorId!);
 
           if (response.post != null) {
-            onPostChanged((await parsePosts([ThunderPost.fromLemmyPostView(response.post!.toJson())])).first);
+            onPostChanged((await parsePosts([response.post!])).first);
           }
 
           showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
@@ -157,7 +157,7 @@ Future<void> temporarilySwitchAccount(
       // If there is a selected parent comment, see if we can resolve it to the new user's instance.
       if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
         try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: parentCommentActorId!);
+          final response = await LemmySearchRepository(account: newUser).resolve(query: parentCommentActorId!);
 
           if (response.comment != null) {
             final comment = ThunderComment.fromLemmyCommentView(response.comment!.toJson());

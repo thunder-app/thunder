@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart' hide ModlogActionType, CommentSortType;
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/comment/models/thunder_comment.dart';
@@ -63,7 +64,6 @@ import 'package:thunder/user/pages/media_management_page.dart';
 import 'package:thunder/user/pages/user_settings_block_page.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 import 'package:thunder/utils/constants.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
@@ -95,12 +95,10 @@ Future<void> navigateToInstancePage(
   ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
 
-  final platform = await detectPlatformFromNodeInfo(instanceHost);
-
   try {
     // Get the site information by connecting to the given instance
-    final account = Account(id: '', index: -1, instance: instanceHost, platform: platform);
-    getSiteResponse = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
+    final account = Account(id: '', index: -1, instance: instanceHost);
+    getSiteResponse = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
 
     // Check whether this instance is blocked (we have to get our user from our current site first).
     isBlocked = profileBloc.state.siteResponse?.myUser?.instanceBlocks.any((i) => i.instance['domain'] == instanceHost);
@@ -120,8 +118,7 @@ Future<void> navigateToInstancePage(
     builder: (context) => BlocProvider.value(
       value: thunderBloc,
       child: InstancePage(
-        platform: platform!,
-        site: getSiteResponse!,
+        getSiteResponse: getSiteResponse!,
         isBlocked: isBlocked,
         instanceId: instanceId,
       ),
@@ -166,7 +163,7 @@ Future<void> navigateToPost(
   final account = context.read<ProfileBloc>().state.account;
 
   if (pvm == null) {
-    final response = await PostRepositoryImpl(account: account).getPost(postId!);
+    final response = await LemmyPostRepository(account: account).getPost(postId!);
     pvm = response?['post'];
   }
 
@@ -279,7 +276,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
   final bool reduceAnimations = state.reduceAnimations;
 
   final account = context.read<ProfileBloc>().state.account;
-  final post = await PostRepositoryImpl(account: account).getPost(comment.post!.id, commentId: comment.id);
+  final post = await LemmyPostRepository(account: account).getPost(comment.post!.id, commentId: comment.id);
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -479,25 +476,25 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
   // If account is still null, we can't do anything.
   if (account == null || account.anonymous) return;
 
-  List<ThunderComment> allReplies = [];
-  ThunderComment? specificReply;
+  List<CommentReplyView> allReplies = [];
+  CommentReplyView? specificReply;
 
   bool doneFetching = false;
   int currentPage = 1;
 
   // Load the notifications
   while (!doneFetching) {
-    final getRepliesResponse = await NotificationRepositoryImpl(account: account).replies(
+    final getRepliesResponse = await LemmyNotificationRepository(account: account).replies(
       unread: replyId == null,
       limit: 50,
       sort: CommentSortType.new_,
       page: currentPage,
     );
 
-    allReplies.addAll(getRepliesResponse);
-    specificReply ??= getRepliesResponse.firstWhereOrNull((crv) => crv.id == replyId);
+    allReplies.addAll(getRepliesResponse.replies);
+    specificReply ??= getRepliesResponse.replies.firstWhereOrNull((crv) => crv.commentReply.id == replyId);
 
-    doneFetching = specificReply != null || getRepliesResponse.isEmpty;
+    doneFetching = specificReply != null || getRepliesResponse.replies.isEmpty;
     ++currentPage;
   }
 

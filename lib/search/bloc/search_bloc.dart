@@ -4,8 +4,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
-
 import 'package:thunder/comment/models/thunder_comment.dart';
+
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
@@ -21,7 +21,6 @@ import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/search/utils/search_utils.dart';
-import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -45,10 +44,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   late UserRepository userRepository;
 
   SearchBloc({required this.account}) : super(SearchState()) {
-    commentRepository = CommentRepositoryImpl(account: account);
-    searchRepository = SearchRepositoryImpl(account: account);
-    communityRepository = CommunityRepositoryImpl(account: account);
-    userRepository = UserRepositoryImpl(account: account);
+    commentRepository = LemmyCommentRepository(account: account);
+    searchRepository = LemmySearchRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
+    userRepository = LemmyUserRepository(account: account);
 
     on<StartSearchEvent>(
       _startSearchEvent,
@@ -94,19 +93,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
-      if (event.query.isEmpty && event.force != true) return emit(state.copyWith(status: SearchStatus.initial));
+
+      if (event.query.isEmpty && event.force != true) {
+        return emit(state.copyWith(status: SearchStatus.initial));
+      }
 
       final account = await fetchActiveProfile();
 
-      List<ThunderUser>? users;
-      List<ThunderCommunity>? communities;
-      List<ThunderComment>? comments;
-      List<ThunderPost>? posts;
+      SearchResponse? searchResponse;
       List<ThunderInstanceInfo> instances = [];
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        final getFederatedInstancesResponse = await InstanceRepositoryImpl(account: account).federated();
+        final getFederatedInstancesResponse = await LemmyInstanceRepository(account: account).federated();
 
         // Filter the instances down
         for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
@@ -146,7 +145,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
         }
       } else {
-        final response = await searchRepository.search(
+        searchResponse = await searchRepository.search(
           query: event.query,
           type: event.searchType,
           sort: event.postSortType,
@@ -156,15 +155,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           communityId: event.communityId,
           creatorId: event.creatorId,
         );
-
-        users = response['users'];
-        communities = response['communities'];
-        comments = response['comments'];
-        posts = response['posts'];
       }
 
       // If there are no search results, see if this is an exact search
-      if (event.searchType == MetaSearchType.communities && communities?.isEmpty == true) {
+      if (event.searchType == MetaSearchType.communities && searchResponse?.communities.isEmpty == true) {
         // Note: We could jump straight to GetCommunity here.
         // However, getLemmyCommunity has a nice instance check that can short-circuit things
         // if the instance is not valid to start.
@@ -172,8 +166,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (communityName != null) {
           try {
             final account = await fetchActiveProfile();
-            final response = await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
-            communities = [response['community']];
+            final response = await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
+
+            searchResponse = searchResponse?.copyWith(communities: [response['community']]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -181,12 +176,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       // Check for exact user search
-      if (event.searchType == MetaSearchType.users && users?.isEmpty == true) {
+      if (event.searchType == MetaSearchType.users && searchResponse?.users.isEmpty == true) {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
             final response = await userRepository.getUser(username: userName);
-            users = [response!['user']];
+            searchResponse = searchResponse?.copyWith(users: [response!.personView]);
           } catch (e) {
             // Ignore any exceptions here and return an empty response below
           }
@@ -195,10 +190,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: prioritizeFavorites(communities, event.favoriteCommunities),
-        users: users,
-        comments: comments,
-        posts: await parsePosts(posts ?? []),
+        communities: prioritizeFavorites(searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(), event.favoriteCommunities),
+        users: searchResponse?.users,
+        comments: searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
+        posts: await parsePosts(searchResponse?.posts ?? []),
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,
@@ -223,15 +218,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             instances: state.instances,
           ));
 
-          List<ThunderUser>? users;
-          List<ThunderCommunity>? communities;
-          List<ThunderComment>? comments;
-          List<ThunderPost>? posts;
-
+          SearchResponse? searchResponse;
           if (event.searchType == MetaSearchType.instances) {
             // Instance search is not paged, so this is a no-op.
+            //
           } else {
-            final response = await searchRepository.search(
+            searchResponse = await searchRepository.search(
               query: event.query,
               type: event.searchType,
               sort: event.postSortType,
@@ -241,29 +233,24 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               communityId: event.communityId,
               creatorId: event.creatorId,
             );
-
-            users = response['users'];
-            communities = response['communities'];
-            comments = response['comments'];
-            posts = response['posts'];
           }
 
-          if (searchIsEmpty(event.searchType, searchResponse: {'users': users, 'communities': communities, 'comments': comments, 'posts': posts})) {
+          if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
             return emit(state.copyWith(status: SearchStatus.done));
           }
 
           // Append the search results
-          final List<ThunderCommunity> allCommunities = [...(state.communities ?? []), ...(communities ?? [])];
-          final List<ThunderUser> allUsers = [...(state.users ?? []), ...(users ?? [])];
-          final List<ThunderComment> allComments = [...(state.comments ?? []), ...(comments ?? [])];
-          final List<ThunderPost> allPosts = [...(state.posts ?? []), ...(await parsePosts(posts ?? []))];
+          state.communities = [...state.communities ?? [], ...searchResponse?.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())) ?? []];
+          state.users = [...state.users ?? [], ...searchResponse?.users ?? []];
+          state.comments = [...state.comments ?? [], ...searchResponse?.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())) ?? []];
+          state.posts = [...state.posts ?? [], ...await parsePosts(searchResponse?.posts ?? [])];
 
           return emit(state.copyWith(
             status: SearchStatus.success,
-            communities: allCommunities,
-            users: allUsers,
-            comments: allComments,
-            posts: allPosts,
+            communities: state.communities,
+            users: state.users,
+            comments: state.comments,
+            posts: state.posts,
             instances: state.instances,
             page: state.page + 1,
           ));
@@ -290,10 +277,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      await CommunityRepositoryImpl(account: account).subscribe(event.communityId, event.follow);
+      await LemmyCommunityRepository(account: account).subscribe(event.communityId, event.follow);
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      Map<String, dynamic> response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
+      Map<String, dynamic> response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
       ThunderCommunity community = response['community'];
 
       List<ThunderCommunity> communities;
@@ -323,7 +310,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
 
-      response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
+      response = await LemmyCommunityRepository(account: account).getCommunity(id: event.communityId);
       community = response['community'];
 
       if (event.query.isNotEmpty || state.viewingAll) {

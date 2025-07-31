@@ -10,7 +10,7 @@ class InstancePageState extends Equatable {
 
   final List<ThunderCommunity>? communities;
   final List<ThunderPost>? posts;
-  final List<ThunderUser>? users;
+  final List<PersonView>? users;
   final List<ThunderComment>? comments;
 
   const InstancePageState({
@@ -29,7 +29,7 @@ class InstancePageState extends Equatable {
     String? errorMessage,
     List<ThunderCommunity>? communities,
     List<ThunderPost>? posts,
-    List<ThunderUser>? users,
+    List<PersonView>? users,
     List<ThunderComment>? comments,
     int? page,
   }) {

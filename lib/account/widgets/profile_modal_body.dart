@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/account.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/notification/repository/notification_repository.dart';
@@ -707,16 +706,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
           profileBloc.add(SwitchProfile(accountId: accountsNotCurrent.last.id));
         } else {
           // No accounts and no anonymous instances left. Create a new one.
-          // Detect the platform for the default instance
-          final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo('lemmy.ml');
-
-          await Account.insertAnonymousInstance(Account(
-            id: '',
-            instance: 'lemmy.ml',
-            index: -1,
-            anonymous: true,
-            platform: platform,
-          ));
+          await Account.insertAnonymousInstance(const Account(id: '', instance: 'lemmy.ml', index: -1, anonymous: true));
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
           thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
           profileBloc.add(SwitchProfile(accountId: 'lemmy.ml'));
@@ -777,7 +767,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> getUnreadNotificationCount(List<AccountExtended> accountsExtended) async {
     for (final AccountExtended account in accountsExtended) {
       try {
-        final unread = await NotificationRepositoryImpl(account: account.account).unreadNotificationsCount();
+        final unread = await LemmyNotificationRepository(account: account.account).unreadNotificationsCount();
 
         int? totalUnreadCount = unread.replies + unread.mentions + unread.privateMessages;
         if (totalUnreadCount == 0) totalUnreadCount = null;

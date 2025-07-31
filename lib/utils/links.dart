@@ -173,7 +173,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the post
       if (context.mounted) showLoadingPage(context);
-      final post = await PostRepositoryImpl(account: account).getPost(postId);
+      final post = await LemmyPostRepository(account: account).getPost(postId);
 
       if (context.mounted) {
         navigateToPost(context, post: post?['post']);
@@ -190,7 +190,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       // Show the loading page while we fetch the comment
       if (context.mounted) showLoadingPage(context);
-      final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
+      final comment = await LemmyCommentRepository(account: account).getComment(commentId);
 
       if (context.mounted) {
         navigateToComment(context, comment);
@@ -285,7 +285,7 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     showLoadingPage(context);
 
     final account = context.read<ProfileBloc>().state.account;
-    await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
+    await LemmyCommunityRepository(account: account).getCommunity(name: communityName);
     return true;
   } catch (e) {
     // Ignore and return false below.
@@ -314,7 +314,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     showLoadingPage(context);
 
     final account = context.read<ProfileBloc>().state.account;
-    await UserRepositoryImpl(account: account).getUser(username: userName);
+    await LemmyUserRepository(account: account).getUser(username: userName);
     return true;
   } catch (e) {
     // Ignore and return false below.

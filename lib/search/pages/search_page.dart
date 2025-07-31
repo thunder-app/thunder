@@ -25,6 +25,7 @@ import 'package:thunder/core/models/models.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/widgets/feed_post_card_list.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/instance/widgets/instance_list_entry.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -665,7 +666,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         )
                       : Container();
                 } else {
-                  final user = state.users![index];
+                  final pv = state.users![index];
+                  final user = ThunderUser.fromLemmyUserView(pv.toJson());
+
                   return UserListEntry(user: user);
                 }
               },

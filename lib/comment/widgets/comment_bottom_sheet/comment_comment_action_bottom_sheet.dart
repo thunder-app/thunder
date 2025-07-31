@@ -26,8 +26,8 @@ enum CommentBottomSheetAction {
   editComment(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   deleteComment(icon: Icons.delete_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
   restoreComment(icon: Icons.restore_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  // removeComment(icon: Icons.delete_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  // restoreCommentAsModerator(icon: Icons.restore_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  removeComment(icon: Icons.delete_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  restoreCommentAsModerator(icon: Icons.restore_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
   ;
 
   String get name => switch (this) {
@@ -39,8 +39,8 @@ enum CommentBottomSheetAction {
         CommentBottomSheetAction.editComment => GlobalContext.l10n.editComment,
         CommentBottomSheetAction.deleteComment => GlobalContext.l10n.deleteComment,
         CommentBottomSheetAction.restoreComment => GlobalContext.l10n.restoreComment,
-        // CommentBottomSheetAction.removeComment => GlobalContext.l10n.removeComment,
-        // CommentBottomSheetAction.restoreCommentAsModerator => GlobalContext.l10n.restoreComment,
+        CommentBottomSheetAction.removeComment => GlobalContext.l10n.removeComment,
+        CommentBottomSheetAction.restoreCommentAsModerator => GlobalContext.l10n.restoreComment,
       };
 
   /// The icon to use for the action
@@ -113,12 +113,12 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       case CommentBottomSheetAction.restoreComment:
         widget.onAction(CommentAction.delete, comment, false);
         break;
-      // case CommentBottomSheetAction.removeComment:
-      // TODO: Implement remove comment
-      // break;
-      // case CommentBottomSheetAction.restoreCommentAsModerator:
-      // TODO: Implement restore comment as moderator
-      // break;
+      case CommentBottomSheetAction.removeComment:
+        // TODO: Implement remove comment
+        break;
+      case CommentBottomSheetAction.restoreCommentAsModerator:
+        // TODO: Implement restore comment as moderator
+        break;
     }
 
     Navigator.of(context).pop();
@@ -199,7 +199,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
     final account = authState.siteResponse?.myUser?.localUserView.person;
     final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((c) => c.actorId == widget.comment.community!.actorId).isNotEmpty;
+    final isModerator = moderatedCommunities.where((communityModerator) => communityModerator.community.actorId == widget.comment.community!.actorId).isNotEmpty;
     // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
     final isLoggedIn = authState.isLoggedIn;
@@ -224,10 +224,10 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       }
 
       if (isCommentRemoved == true) {
-        // moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.removeComment).toList();
+        moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.removeComment).toList();
       } else {
         generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewModlog).toList();
-        // moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.restoreCommentAsModerator).toList();
+        moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.restoreCommentAsModerator).toList();
       }
     }
 

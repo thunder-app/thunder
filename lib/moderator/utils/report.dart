@@ -28,7 +28,7 @@ Future<Map<String, dynamic>> fetchReports({
 
   // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
   do {
-    final listPostReportsResponse = await PostRepositoryImpl(account: account).getPostReports(
+    final listPostReportsResponse = await LemmyPostRepository(account: account).getPostReports(
       postId: postId,
       page: currentPage,
       limit: limit,
@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> fetchReports({
       communityId: communityId,
     );
 
-    final listCommentReportsResponse = await CommentRepositoryImpl(account: account).getCommentReports(
+    final listCommentReportsResponse = await LemmyCommentRepository(account: account).getCommentReports(
       commentId: commentId,
       page: currentPage,
       limit: limit,
@@ -69,7 +69,7 @@ ThunderPostReport optimisticallyResolvePostReport(ThunderPostReport postReport, 
 /// Logic to resolve a post report
 Future<bool> resolvePostReport(int postReportId, bool resolved) async {
   final account = await fetchActiveProfile();
-  final postReportResponse = await PostRepositoryImpl(account: account).resolvePostReport(postReportId, resolved);
+  final postReportResponse = await LemmyPostRepository(account: account).resolvePostReport(postReportId, resolved);
 
   return postReportResponse.postReportView.postReport.resolved == resolved;
 }
@@ -82,7 +82,7 @@ CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bo
 /// Logic to resolve a comment report
 Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   final account = await fetchActiveProfile();
-  final commentReportResponse = await CommentRepositoryImpl(account: account).resolveCommentReport(commentReportId, resolved);
+  final commentReportResponse = await LemmyCommentRepository(account: account).resolveCommentReport(commentReportId, resolved);
 
   return commentReportResponse.commentReportView.commentReport.resolved == resolved;
 }

@@ -255,7 +255,7 @@ class _PostPageState extends State<PostPage> {
           if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.post != null && current.hasReachedCommentEnd) {
             // Check if the post's community is blocked by the user. If so, show a message.
             final blockedCommunities = context.read<ProfileBloc>().state.siteResponse?.myUser?.communityBlocks;
-            final isCommunityBlocked = blockedCommunities?.any((c) => c.id == current.post?.community?.id) ?? false;
+            final isCommunityBlocked = blockedCommunities?.any((community) => community.community.id == current.post?.community?.id) ?? false;
 
             if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
           }

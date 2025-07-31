@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
@@ -15,7 +14,6 @@ import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
-import 'package:thunder/utils/instance.dart';
 
 Future<void> performSharedPreferencesMigration() async {
   final prefs = UserPreferences.instance.preferences;
@@ -122,16 +120,7 @@ Future<void> performSharedPreferencesMigration() async {
   final List<String>? anonymousInstances = prefs.getStringList('setting_anonymous_instances');
   try {
     for (String instance in anonymousInstances ?? []) {
-      // Detect the platform for the migrated instance
-      final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(instance);
-
-      Account anonymousInstance = Account(
-        id: '',
-        instance: instance,
-        index: -1,
-        anonymous: true,
-        platform: platform,
-      );
+      Account anonymousInstance = Account(id: '', instance: instance, index: -1, anonymous: true);
       Account.insertAnonymousInstance(anonymousInstance);
     }
 

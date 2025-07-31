@@ -1,15 +1,13 @@
-import 'dart:convert';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/instances.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/pages/loading_page.dart';
 
@@ -122,7 +120,7 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
           // Show the loading page while we resolve the post
           showLoadingPage(context);
 
-          final response = await SearchRepositoryImpl(account: account).resolve(query: text);
+          final response = await LemmySearchRepository(account: account).resolve(query: text);
           return response.post?.post.id;
         } catch (e) {
           return null;
@@ -167,7 +165,7 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
         // Show the loading page while we resolve the post
         showLoadingPage(context);
 
-        final response = await SearchRepositoryImpl(account: account).resolve(query: text);
+        final response = await LemmySearchRepository(account: account).resolve(query: text);
         return response.comment?.comment.id;
       } catch (e) {
         return null;
@@ -186,14 +184,11 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
 
   try {
-    final platform = await detectPlatformFromNodeInfo(url!);
-    if (platform == null) return const ThunderInstanceInfo(success: false);
-
     // Create a temporary Account for the request
-    final account = Account(instance: url, id: '', index: -1, platform: platform);
+    final account = Account(instance: url!, id: '', index: -1);
 
-    final site = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
-    final instance = site.site;
+    final site = await LemmyInstanceRepository(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
+    final instance = site.siteView;
 
     return ThunderInstanceInfo(
       id: id,
@@ -203,90 +198,36 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
       icon: instance.icon,
       users: instance.users,
       success: true,
-      platform: platform,
-      contentWarning: site.site.contentWarning,
     );
   } catch (e) {
-    debugPrint('Error getting instance info: $e');
     // Bad instances will throw an exception, so no icon
     return const ThunderInstanceInfo(success: false);
   }
 }
 
-/// Determines the proper ThreadiversePlatform by fetching software information from nodeinfo.
-///
-/// Given a URL, fetches the .well-known/nodeinfo endpoint and parses the JSON response
-/// to determine the underlying software platform (lemmy, piefed, etc.).
-///
-/// Returns the detected ThreadiversePlatform or null if detection fails.
-Future<ThreadiversePlatform?> detectPlatformFromNodeInfo(String url, {Duration? timeout}) async {
-  if (url.isEmpty) return null;
+final validInstances = HashSet<String>();
+
+Future<bool> isLemmyInstance(String? url) async {
+  if (url?.isEmpty ?? true) {
+    return false;
+  }
+
+  if (instances.contains(url)) {
+    return true;
+  }
+
+  if (validInstances.contains(url)) {
+    return true;
+  }
 
   try {
-    // Ensure the URL has proper protocol
-    Uri uri;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      uri = Uri.parse('https://$url');
-    } else {
-      uri = Uri.parse(url);
-    }
-
-    // Construct the nodeinfo URL
-    final nodeInfoUri = Uri(
-      scheme: uri.scheme,
-      host: uri.host,
-      port: uri.port,
-      path: '/.well-known/nodeinfo',
-    );
-
-    // Fetch the nodeinfo response
-    final response = await http.get(nodeInfoUri).timeout(timeout ?? const Duration(seconds: 5));
-
-    if (response.statusCode != 200) {
-      return null;
-    }
-
-    // Parse the JSON response
-    final Map<String, dynamic> nodeInfo = json.decode(response.body);
-
-    // Extract the nodeinfo link from the well-known response
-    String? nodeInfoUrl;
-    if (nodeInfo['links'] != null && nodeInfo['links'].isNotEmpty) {
-      // Look for a nodeinfo schema link (prefer 2.0 or 2.1)
-      for (final link in nodeInfo['links']) {
-        final rel = link['rel']?.toString();
-        if (rel != null && rel.contains('nodeinfo.diaspora.software/ns/schema/')) {
-          nodeInfoUrl = link['href']?.toString();
-          break;
-        }
-      }
-    }
-
-    if (nodeInfoUrl == null) return null;
-
-    // Fetch the actual nodeinfo document
-    final nodeInfoResponse = await http.get(Uri.parse(nodeInfoUrl)).timeout(timeout ?? const Duration(seconds: 5));
-
-    if (nodeInfoResponse.statusCode != 200) {
-      return null;
-    }
-
-    final Map<String, dynamic> nodeInfoData = json.decode(nodeInfoResponse.body);
-    final String? softwareName = nodeInfoData['software']?['name']?.toString().toLowerCase();
-
-    if (softwareName == null) return null;
-
-    // Map software names to ThreadiversePlatform
-    switch (softwareName) {
-      case 'lemmy':
-        return ThreadiversePlatform.lemmy;
-      case 'piefed':
-        return ThreadiversePlatform.piefed;
-      default:
-        return null;
-    }
+    // Create a temporary Account for the request
+    final account = Account(instance: url!, id: '', index: -1);
+    await LemmyInstanceRepository(account: account).getSiteInfo();
+    // If we get here, it worked
+    validInstances.add(url);
+    return true;
   } catch (e) {
-    // Return null if any error occurs during detection
-    return null;
+    return false;
   }
 }

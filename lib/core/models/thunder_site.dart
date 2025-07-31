@@ -5,7 +5,7 @@ import 'package:thunder/core/enums/post_sort_type.dart';
 
 class ThunderSite {
   /// The site's ID.
-  final int? id;
+  final int id;
 
   /// The site's name.
   final String name;
@@ -14,7 +14,7 @@ class ThunderSite {
   final String? sidebar;
 
   /// The site's created date.
-  final DateTime? published;
+  final DateTime published;
 
   /// The site's updated date.
   final DateTime? updated;
@@ -32,16 +32,16 @@ class ThunderSite {
   final String actorId;
 
   /// The site's last refreshed at date.
-  final DateTime? lastRefreshedAt;
+  final DateTime lastRefreshedAt;
 
   /// The site's inbox URL.
-  final String? inboxUrl;
+  final String inboxUrl;
 
   /// The site's public key.
-  final String? publicKey;
+  final String publicKey;
 
   /// The site's instance ID.
-  final int? instanceId;
+  final int instanceId;
 
   /// The site's content warning.
   final String? contentWarning;
@@ -140,19 +140,19 @@ class ThunderSite {
   final int? usersActiveHalfYear;
 
   ThunderSite({
-    this.id,
+    required this.id,
     required this.name,
     this.sidebar,
-    this.published,
+    required this.published,
     this.updated,
     this.icon,
     this.banner,
     this.description,
     required this.actorId,
-    this.lastRefreshedAt,
-    this.inboxUrl,
-    this.publicKey,
-    this.instanceId,
+    required this.lastRefreshedAt,
+    required this.inboxUrl,
+    required this.publicKey,
+    required this.instanceId,
     this.contentWarning,
     this.siteSetup,
     this.enableDownvotes,
@@ -258,28 +258,6 @@ class ThunderSite {
       usersActiveWeek: counts['users_active_week'],
       usersActiveMonth: counts['users_active_month'],
       usersActiveHalfYear: counts['users_active_half_year'],
-    );
-  }
-
-  factory ThunderSite.fromPiefedSite(Map<String, dynamic> site) {
-    return ThunderSite(
-      // id // Not available in PieFed
-      name: site['name'],
-      sidebar: site['sidebar'],
-      // published // Not available in PieFed
-      // updated // Not available in PieFed
-      icon: site['icon'],
-      // banner // Not available in PieFed
-      description: site['description'],
-      actorId: site['actor_id'],
-      // lastRefreshedAt // Not available in PieFed
-      // inboxUrl // Not available in PieFed
-      // publicKey // Not available in PieFed
-      // instanceId // Not available in PieFed
-      // contentWarning // Not available in PieFed
-      enableDownvotes: site['enable_downvotes'],
-      registrationMode: site['registration_mode'],
-      users: site['user_count'],
     );
   }
 }

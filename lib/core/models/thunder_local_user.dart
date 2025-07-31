@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
-
 import 'package:thunder/core/enums/post_sort_type.dart';
 import 'package:thunder/core/enums/feed_list_type.dart';
-import 'package:thunder/user/models/thunder_user.dart';
 
 class ThunderLocalUserVoteDisplayMode {
   /// The local user ID this vote display mode belongs to.
@@ -41,7 +39,7 @@ class ThunderLocalUserVoteDisplayMode {
 
 class ThunderLocalUser {
   /// The local user's ID.
-  final int? id;
+  final int id;
 
   /// The local user's person ID.
   final int personId;
@@ -53,7 +51,7 @@ class ThunderLocalUser {
   final bool showNsfw;
 
   /// The local user's theme.
-  final String? theme;
+  final String theme;
 
   /// The local user's default sort type.
   final PostSortType? defaultSortType;
@@ -62,13 +60,13 @@ class ThunderLocalUser {
   final FeedListType? defaultListingType;
 
   /// The local user's interface language.
-  final String? interfaceLanguage;
+  final String interfaceLanguage;
 
   /// Whether to show avatars.
-  final bool? showAvatars;
+  final bool showAvatars;
 
   /// Whether to send notifications to email.
-  final bool? sendNotificationsToEmail;
+  final bool sendNotificationsToEmail;
 
   /// Whether to show scores.
   final bool showScores;
@@ -80,22 +78,22 @@ class ThunderLocalUser {
   final bool showReadPosts;
 
   /// Whether email is verified.
-  final bool? emailVerified;
+  final bool emailVerified;
 
   /// Whether application is accepted.
-  final bool? acceptedApplication;
+  final bool acceptedApplication;
 
   /// Whether to open links in new tab.
-  final bool? openLinksInNewTab;
+  final bool openLinksInNewTab;
 
   /// Whether to blur NSFW content.
-  final bool? blurNsfw;
+  final bool blurNsfw;
 
   /// Whether to auto expand content.
-  final bool? autoExpand;
+  final bool autoExpand;
 
   /// Whether infinite scroll is enabled.
-  final bool? infiniteScrollEnabled;
+  final bool infiniteScrollEnabled;
 
   /// Whether the user is an admin.
   final bool admin;
@@ -107,43 +105,43 @@ class ThunderLocalUser {
   final bool? totp2faEnabled;
 
   /// Whether keyboard navigation is enabled.
-  final bool? enableKeyboardNavigation;
+  final bool enableKeyboardNavigation;
 
   /// Whether animated images are enabled.
-  final bool? enableAnimatedImages;
+  final bool enableAnimatedImages;
 
   /// Whether to collapse bot comments.
-  final bool? collapseBotComments;
+  final bool collapseBotComments;
 
   /// The last donation notification date.
   final DateTime? lastDonationNotification;
 
   ThunderLocalUser({
-    this.id,
+    required this.id,
     required this.personId,
     this.email,
     required this.showNsfw,
-    this.theme,
+    required this.theme,
     this.defaultSortType,
     this.defaultListingType,
-    this.interfaceLanguage,
-    this.showAvatars,
-    this.sendNotificationsToEmail,
+    required this.interfaceLanguage,
+    required this.showAvatars,
+    required this.sendNotificationsToEmail,
     required this.showScores,
     required this.showBotAccounts,
     required this.showReadPosts,
-    this.emailVerified,
-    this.acceptedApplication,
-    this.openLinksInNewTab,
-    this.blurNsfw,
-    this.autoExpand,
-    this.infiniteScrollEnabled,
+    required this.emailVerified,
+    required this.acceptedApplication,
+    required this.openLinksInNewTab,
+    required this.blurNsfw,
+    required this.autoExpand,
+    required this.infiniteScrollEnabled,
     required this.admin,
     this.postListingMode,
-    this.totp2faEnabled,
-    this.enableKeyboardNavigation,
-    this.enableAnimatedImages,
-    this.collapseBotComments,
+    required this.totp2faEnabled,
+    required this.enableKeyboardNavigation,
+    required this.enableAnimatedImages,
+    required this.collapseBotComments,
     this.lastDonationNotification,
   });
 
@@ -223,7 +221,7 @@ class ThunderLocalUser {
       emailVerified: localUser['email_verified'],
       acceptedApplication: localUser['accepted_application'],
       openLinksInNewTab: localUser['open_links_in_new_tab'],
-      blurNsfw: localUser['blur_nsfw'] ?? true,
+      blurNsfw: localUser['blur_nsfw'],
       autoExpand: localUser['auto_expand'],
       infiniteScrollEnabled: localUser['infinite_scroll_enabled'],
       admin: localUser['admin'],
@@ -233,37 +231,6 @@ class ThunderLocalUser {
       enableAnimatedImages: localUser['enable_animated_images'],
       collapseBotComments: localUser['collapse_bot_comments'],
       lastDonationNotification: localUser['last_donation_notification'] != null ? DateTime.parse(localUser['last_donation_notification']) : null,
-    );
-  }
-
-  factory ThunderLocalUser.fromPiefedLocalUser(Map<String, dynamic> localUser, ThunderUser user) {
-    return ThunderLocalUser(
-      // id // Not available in PieFed
-      personId: user.id,
-      // email // Not available in PieFed
-      showNsfw: localUser['show_nsfw'],
-      // theme // Not available in PieFed
-      defaultSortType: localUser['default_sort_type'] != null ? PostSortType.values.firstWhereOrNull((e) => e.value == localUser['default_sort_type']) : null,
-      defaultListingType: localUser['default_listing_type'] != null ? FeedListType.values.firstWhereOrNull((e) => e.value == localUser['default_listing_type']) : null,
-      // interfaceLanguage // Not available in PieFed
-      // showAvatars // Not available in PieFed
-      // sendNotificationsToEmail // Not available in PieFed
-      showScores: localUser['show_scores'],
-      showBotAccounts: localUser['show_bot_accounts'],
-      showReadPosts: localUser['show_read_posts'],
-      // emailVerified // Not available in PieFed
-      // acceptedApplication // Not available in PieFed
-      // openLinksInNewTab // Not available in PieFed
-      blurNsfw: true, // Not available in PieFed
-      // autoExpand // Not available in PieFed
-      // infiniteScrollEnabled // Not available in PieFed
-      admin: user.isAdmin ?? false,
-      // postListingMode // Not available in PieFed
-      // totp2faEnabled // Not available in PieFed
-      // enableKeyboardNavigation // Not available in PieFed
-      // enableAnimatedImages // Not available in PieFed
-      // collapseBotComments // Not available in PieFed
-      // lastDonationNotification // Not available in PieFed
     );
   }
 }

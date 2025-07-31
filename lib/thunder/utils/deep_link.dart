@@ -128,7 +128,7 @@ Future<void> _initializeLemmyClient(BuildContext context) async {
       }
 
       // Validate connection by making a simple request
-      await InstanceRepositoryImpl(account: account).getSiteInfo();
+      await LemmyInstanceRepository(account: account).getSiteInfo();
       return;
     } catch (e) {
       attempts++;
@@ -231,7 +231,7 @@ Future<DeepLinkResult> _navigateToPost(BuildContext context, String link) async 
 
   try {
     final account = context.read<ProfileBloc>().state.account;
-    final post = await PostRepositoryImpl(account: account).getPost(postId);
+    final post = await LemmyPostRepository(account: account).getPost(postId);
 
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
 
@@ -311,7 +311,7 @@ Future<DeepLinkResult> _navigateToComment(BuildContext context, String link) asy
   try {
     if (!context.mounted) return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
     final account = context.read<ProfileBloc>().state.account;
-    final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
+    final comment = await LemmyCommentRepository(account: account).getComment(commentId);
 
     navigateToComment(context, comment);
     return DeepLinkResult.successful();

@@ -32,10 +32,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   @override
   late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(-1));
   @override
-  late final GeneratedColumnWithTypeConverter<ThreadiversePlatform?, String> platform =
-      GeneratedColumn<String>('platform', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false).withConverter<ThreadiversePlatform?>($AccountsTable.$converterplatform);
-  @override
-  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex, platform];
+  List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -82,7 +79,6 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       anonymous: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}anonymous'])!,
       userId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}user_id']),
       listIndex: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
-      platform: $AccountsTable.$converterplatform.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}platform'])),
     );
   }
 
@@ -90,8 +86,6 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   $AccountsTable createAlias(String alias) {
     return $AccountsTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<ThreadiversePlatform?, String?> $converterplatform = const ThreadiversePlatformConverter();
 }
 
 class Account extends DataClass implements Insertable<Account> {
@@ -102,8 +96,7 @@ class Account extends DataClass implements Insertable<Account> {
   final bool anonymous;
   final int? userId;
   final int listIndex;
-  final ThreadiversePlatform? platform;
-  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId, required this.listIndex, this.platform});
+  const Account({required this.id, this.username, this.jwt, this.instance, required this.anonymous, this.userId, required this.listIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -122,9 +115,6 @@ class Account extends DataClass implements Insertable<Account> {
       map['user_id'] = Variable<int>(userId);
     }
     map['list_index'] = Variable<int>(listIndex);
-    if (!nullToAbsent || platform != null) {
-      map['platform'] = Variable<String>($AccountsTable.$converterplatform.toSql(platform));
-    }
     return map;
   }
 
@@ -137,7 +127,6 @@ class Account extends DataClass implements Insertable<Account> {
       anonymous: Value(anonymous),
       userId: userId == null && nullToAbsent ? const Value.absent() : Value(userId),
       listIndex: Value(listIndex),
-      platform: platform == null && nullToAbsent ? const Value.absent() : Value(platform),
     );
   }
 
@@ -151,7 +140,6 @@ class Account extends DataClass implements Insertable<Account> {
       anonymous: serializer.fromJson<bool>(json['anonymous']),
       userId: serializer.fromJson<int?>(json['userId']),
       listIndex: serializer.fromJson<int>(json['listIndex']),
-      platform: serializer.fromJson<ThreadiversePlatform?>(json['platform']),
     );
   }
   @override
@@ -165,7 +153,6 @@ class Account extends DataClass implements Insertable<Account> {
       'anonymous': serializer.toJson<bool>(anonymous),
       'userId': serializer.toJson<int?>(userId),
       'listIndex': serializer.toJson<int>(listIndex),
-      'platform': serializer.toJson<ThreadiversePlatform?>(platform),
     };
   }
 
@@ -176,8 +163,7 @@ class Account extends DataClass implements Insertable<Account> {
           Value<String?> instance = const Value.absent(),
           bool? anonymous,
           Value<int?> userId = const Value.absent(),
-          int? listIndex,
-          Value<ThreadiversePlatform?> platform = const Value.absent()}) =>
+          int? listIndex}) =>
       Account(
         id: id ?? this.id,
         username: username.present ? username.value : this.username,
@@ -186,7 +172,6 @@ class Account extends DataClass implements Insertable<Account> {
         anonymous: anonymous ?? this.anonymous,
         userId: userId.present ? userId.value : this.userId,
         listIndex: listIndex ?? this.listIndex,
-        platform: platform.present ? platform.value : this.platform,
       );
   Account copyWithCompanion(AccountsCompanion data) {
     return Account(
@@ -197,7 +182,6 @@ class Account extends DataClass implements Insertable<Account> {
       anonymous: data.anonymous.present ? data.anonymous.value : this.anonymous,
       userId: data.userId.present ? data.userId.value : this.userId,
       listIndex: data.listIndex.present ? data.listIndex.value : this.listIndex,
-      platform: data.platform.present ? data.platform.value : this.platform,
     );
   }
 
@@ -210,14 +194,13 @@ class Account extends DataClass implements Insertable<Account> {
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
           ..write('userId: $userId, ')
-          ..write('listIndex: $listIndex, ')
-          ..write('platform: $platform')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId, listIndex, platform);
+  int get hashCode => Object.hash(id, username, jwt, instance, anonymous, userId, listIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -228,8 +211,7 @@ class Account extends DataClass implements Insertable<Account> {
           other.instance == this.instance &&
           other.anonymous == this.anonymous &&
           other.userId == this.userId &&
-          other.listIndex == this.listIndex &&
-          other.platform == this.platform);
+          other.listIndex == this.listIndex);
 }
 
 class AccountsCompanion extends UpdateCompanion<Account> {
@@ -240,7 +222,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   final Value<bool> anonymous;
   final Value<int?> userId;
   final Value<int> listIndex;
-  final Value<ThreadiversePlatform?> platform;
   const AccountsCompanion({
     this.id = const Value.absent(),
     this.username = const Value.absent(),
@@ -249,7 +230,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
     this.listIndex = const Value.absent(),
-    this.platform = const Value.absent(),
   });
   AccountsCompanion.insert({
     this.id = const Value.absent(),
@@ -259,7 +239,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
     this.listIndex = const Value.absent(),
-    this.platform = const Value.absent(),
   });
   static Insertable<Account> custom({
     Expression<int>? id,
@@ -269,7 +248,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     Expression<bool>? anonymous,
     Expression<int>? userId,
     Expression<int>? listIndex,
-    Expression<String>? platform,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -279,19 +257,10 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       if (anonymous != null) 'anonymous': anonymous,
       if (userId != null) 'user_id': userId,
       if (listIndex != null) 'list_index': listIndex,
-      if (platform != null) 'platform': platform,
     });
   }
 
-  AccountsCompanion copyWith(
-      {Value<int>? id,
-      Value<String?>? username,
-      Value<String?>? jwt,
-      Value<String?>? instance,
-      Value<bool>? anonymous,
-      Value<int?>? userId,
-      Value<int>? listIndex,
-      Value<ThreadiversePlatform?>? platform}) {
+  AccountsCompanion copyWith({Value<int>? id, Value<String?>? username, Value<String?>? jwt, Value<String?>? instance, Value<bool>? anonymous, Value<int?>? userId, Value<int>? listIndex}) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -300,7 +269,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       anonymous: anonymous ?? this.anonymous,
       userId: userId ?? this.userId,
       listIndex: listIndex ?? this.listIndex,
-      platform: platform ?? this.platform,
     );
   }
 
@@ -328,9 +296,6 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     if (listIndex.present) {
       map['list_index'] = Variable<int>(listIndex.value);
     }
-    if (platform.present) {
-      map['platform'] = Variable<String>($AccountsTable.$converterplatform.toSql(platform.value));
-    }
     return map;
   }
 
@@ -343,8 +308,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
           ..write('userId: $userId, ')
-          ..write('listIndex: $listIndex, ')
-          ..write('platform: $platform')
+          ..write('listIndex: $listIndex')
           ..write(')'))
         .toString();
   }
@@ -985,6 +949,7 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
       hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _draftTypeMeta = const VerificationMeta('draftType');
   @override
   late final GeneratedColumnWithTypeConverter<DraftType, String> draftType =
       GeneratedColumn<String>('draft_type', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<DraftType>($DraftsTable.$converterdraftType);
@@ -1023,6 +988,7 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    context.handle(_draftTypeMeta, const VerificationResult.success());
     if (data.containsKey('existing_id')) {
       context.handle(_existingIdMeta, existingId.isAcceptableOrUnknown(data['existing_id']!, _existingIdMeta));
     }
@@ -1378,7 +1344,6 @@ typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
   Value<bool> anonymous,
   Value<int?> userId,
   Value<int> listIndex,
-  Value<ThreadiversePlatform?> platform,
 });
 typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
   Value<int> id,
@@ -1388,7 +1353,6 @@ typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
   Value<bool> anonymous,
   Value<int?> userId,
   Value<int> listIndex,
-  Value<ThreadiversePlatform?> platform,
 });
 
 class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTable> {
@@ -1412,9 +1376,6 @@ class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTab
   ColumnFilters<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<ThreadiversePlatform?, ThreadiversePlatform, String> get platform =>
-      $composableBuilder(column: $table.platform, builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsTable> {
@@ -1438,8 +1399,6 @@ class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsT
   ColumnOrderings<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get platform => $composableBuilder(column: $table.platform, builder: (column) => ColumnOrderings(column));
 }
 
 class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $AccountsTable> {
@@ -1463,8 +1422,6 @@ class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $Account
   GeneratedColumn<int> get userId => $composableBuilder(column: $table.userId, builder: (column) => column);
 
   GeneratedColumn<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<ThreadiversePlatform?, String> get platform => $composableBuilder(column: $table.platform, builder: (column) => column);
 }
 
 class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $AccountsTable, Account, $$AccountsTableFilterComposer, $$AccountsTableOrderingComposer, $$AccountsTableAnnotationComposer,
@@ -1484,7 +1441,6 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             Value<bool> anonymous = const Value.absent(),
             Value<int?> userId = const Value.absent(),
             Value<int> listIndex = const Value.absent(),
-            Value<ThreadiversePlatform?> platform = const Value.absent(),
           }) =>
               AccountsCompanion(
             id: id,
@@ -1494,7 +1450,6 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             anonymous: anonymous,
             userId: userId,
             listIndex: listIndex,
-            platform: platform,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -1504,7 +1459,6 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             Value<bool> anonymous = const Value.absent(),
             Value<int?> userId = const Value.absent(),
             Value<int> listIndex = const Value.absent(),
-            Value<ThreadiversePlatform?> platform = const Value.absent(),
           }) =>
               AccountsCompanion.insert(
             id: id,
@@ -1514,7 +1468,6 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             anonymous: anonymous,
             userId: userId,
             listIndex: listIndex,
-            platform: platform,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,

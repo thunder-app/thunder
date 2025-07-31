@@ -7,7 +7,7 @@ class ThunderLocalUserView {
   final ThunderLocalUser localUser;
 
   /// The local user vote display mode.
-  final ThunderLocalUserVoteDisplayMode? localUserVoteDisplayMode;
+  final ThunderLocalUserVoteDisplayMode localUserVoteDisplayMode;
 
   /// The person associated with this local user.
   final ThunderUser person;
@@ -17,7 +17,7 @@ class ThunderLocalUserView {
 
   ThunderLocalUserView({
     required this.localUser,
-    this.localUserVoteDisplayMode,
+    required this.localUserVoteDisplayMode,
     required this.person,
     this.counts,
   });
@@ -44,15 +44,64 @@ class ThunderLocalUserView {
       counts: localUserView['counts'],
     );
   }
+}
 
-  factory ThunderLocalUserView.fromPiefedLocalUserView(Map<String, dynamic> localUserView) {
-    final user = ThunderUser.fromPiefedUser(localUserView['person']);
+class ThunderCommunityFollow {
+  /// The community being followed.
+  final ThunderCommunity community;
 
-    return ThunderLocalUserView(
-      localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user'], user),
-      // localUserVoteDisplayMode // Not available in PieFed
-      person: user,
-      counts: localUserView['counts'],
+  /// The follower.
+  final ThunderUser follower;
+
+  ThunderCommunityFollow({
+    required this.community,
+    required this.follower,
+  });
+
+  factory ThunderCommunityFollow.fromLemmyFollow(Map<String, dynamic> follow) {
+    return ThunderCommunityFollow(
+      community: ThunderCommunity.fromLemmyCommunity(follow['community']),
+      follower: ThunderUser.fromLemmyUser(follow['follower']),
+    );
+  }
+}
+
+class ThunderCommunityModeration {
+  /// The community being moderated.
+  final ThunderCommunity community;
+
+  /// The moderator.
+  final ThunderUser moderator;
+
+  ThunderCommunityModeration({
+    required this.community,
+    required this.moderator,
+  });
+
+  factory ThunderCommunityModeration.fromLemmyModeration(Map<String, dynamic> moderation) {
+    return ThunderCommunityModeration(
+      community: ThunderCommunity.fromLemmyCommunity(moderation['community']),
+      moderator: ThunderUser.fromLemmyUser(moderation['moderator']),
+    );
+  }
+}
+
+class ThunderCommunityBlock {
+  /// The person doing the blocking.
+  final ThunderUser person;
+
+  /// The community being blocked.
+  final ThunderCommunity community;
+
+  ThunderCommunityBlock({
+    required this.person,
+    required this.community,
+  });
+
+  factory ThunderCommunityBlock.fromLemmyBlock(Map<String, dynamic> block) {
+    return ThunderCommunityBlock(
+      person: ThunderUser.fromLemmyUser(block['person']),
+      community: ThunderCommunity.fromLemmyCommunity(block['community']),
     );
   }
 }
@@ -80,12 +129,24 @@ class ThunderInstanceBlock {
       site: block['site'],
     );
   }
+}
 
-  factory ThunderInstanceBlock.fromPiefedBlock(Map<String, dynamic> block) {
-    return ThunderInstanceBlock(
-      person: ThunderUser.fromPiefedUser(block['person']),
-      instance: block['instance'],
-      site: block['site'],
+class ThunderPersonBlock {
+  /// The person doing the blocking.
+  final ThunderUser person;
+
+  /// The target person being blocked.
+  final ThunderUser target;
+
+  ThunderPersonBlock({
+    required this.person,
+    required this.target,
+  });
+
+  factory ThunderPersonBlock.fromLemmyBlock(Map<String, dynamic> block) {
+    return ThunderPersonBlock(
+      person: ThunderUser.fromLemmyUser(block['person']),
+      target: ThunderUser.fromLemmyUser(block['target']),
     );
   }
 }
@@ -95,19 +156,19 @@ class ThunderMyUser {
   final ThunderLocalUserView localUserView;
 
   /// Communities the user follows.
-  final List<ThunderCommunity> follows;
+  final List<ThunderCommunityFollow> follows;
 
   /// Communities the user moderates.
-  final List<ThunderCommunity> moderates;
+  final List<ThunderCommunityModeration> moderates;
 
   /// Communities the user has blocked.
-  final List<ThunderCommunity> communityBlocks;
+  final List<ThunderCommunityBlock> communityBlocks;
 
   /// Instances the user has blocked.
   final List<ThunderInstanceBlock> instanceBlocks;
 
   /// People the user has blocked.
-  final List<ThunderUser> personBlocks;
+  final List<ThunderPersonBlock> personBlocks;
 
   /// Discussion languages the user has selected.
   final List<int>? discussionLanguages;
@@ -124,11 +185,11 @@ class ThunderMyUser {
 
   ThunderMyUser copyWith({
     ThunderLocalUserView? localUserView,
-    List<ThunderCommunity>? follows,
-    List<ThunderCommunity>? moderates,
-    List<ThunderCommunity>? communityBlocks,
+    List<ThunderCommunityFollow>? follows,
+    List<ThunderCommunityModeration>? moderates,
+    List<ThunderCommunityBlock>? communityBlocks,
     List<ThunderInstanceBlock>? instanceBlocks,
-    List<ThunderUser>? personBlocks,
+    List<ThunderPersonBlock>? personBlocks,
     List<int>? discussionLanguages,
   }) {
     return ThunderMyUser(
@@ -143,39 +204,21 @@ class ThunderMyUser {
   }
 
   factory ThunderMyUser.fromLemmyMyUser(Map<String, dynamic> myUser) {
-    final follows = myUser['follows'];
-    final moderates = myUser['moderates'];
-    final communityBlocks = myUser['community_blocks'];
-    final instanceBlocks = myUser['instance_blocks'];
-    final personBlocks = myUser['person_blocks'];
-    final discussionLanguages = myUser['discussion_languages'];
+    final followsList = myUser['follows'] as List<dynamic>? ?? [];
+    final moderatesList = myUser['moderates'] as List<dynamic>? ?? [];
+    final communityBlocksList = myUser['community_blocks'] as List<dynamic>? ?? [];
+    final instanceBlocksList = myUser['instance_blocks'] as List<dynamic>? ?? [];
+    final personBlocksList = myUser['person_blocks'] as List<dynamic>? ?? [];
+    final discussionLanguages = myUser['discussion_languages'] as List<dynamic>?;
 
     return ThunderMyUser(
       localUserView: ThunderLocalUserView.fromLemmyLocalUserView(myUser['local_user_view']),
-      follows: follows.map<ThunderCommunity>((cfv) => ThunderCommunity.fromLemmyCommunity(cfv['community'])).toList(),
-      moderates: moderates.map<ThunderCommunity>((cmv) => ThunderCommunity.fromLemmyCommunity(cmv['community'])).toList(),
-      communityBlocks: communityBlocks.map<ThunderCommunity>((cbv) => ThunderCommunity.fromLemmyCommunity(cbv['community'])).toList(),
-      instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((ibv) => ThunderInstanceBlock.fromLemmyBlock(ibv)).toList(),
-      personBlocks: personBlocks.map<ThunderUser>((pbv) => ThunderUser.fromLemmyUser(pbv['target'])).toList(),
+      follows: followsList.map((f) => ThunderCommunityFollow.fromLemmyFollow(f)).toList(),
+      moderates: moderatesList.map((m) => ThunderCommunityModeration.fromLemmyModeration(m)).toList(),
+      communityBlocks: communityBlocksList.map((b) => ThunderCommunityBlock.fromLemmyBlock(b)).toList(),
+      instanceBlocks: instanceBlocksList.map((b) => ThunderInstanceBlock.fromLemmyBlock(b)).toList(),
+      personBlocks: personBlocksList.map((b) => ThunderPersonBlock.fromLemmyBlock(b)).toList(),
       discussionLanguages: discussionLanguages?.cast<int>(),
-    );
-  }
-
-  factory ThunderMyUser.fromPiefedMyUser(Map<String, dynamic> myUser) {
-    final follows = myUser['follows'];
-    final moderates = myUser['moderates'];
-    final communityBlocks = myUser['community_blocks'];
-    final instanceBlocks = myUser['instance_blocks'];
-    final personBlocks = myUser['person_blocks'];
-    final localUserView = myUser['local_user_view'];
-
-    return ThunderMyUser(
-      localUserView: ThunderLocalUserView.fromPiefedLocalUserView(localUserView),
-      follows: follows.map<ThunderCommunity>((f) => ThunderCommunity.fromPiefedCommunity(f['community'])).toList(),
-      moderates: moderates.map<ThunderCommunity>((m) => ThunderCommunity.fromPiefedCommunity(m['community'])).toList(),
-      communityBlocks: communityBlocks.map<ThunderCommunity>((b) => ThunderCommunity.fromPiefedCommunity(b['community'])).toList(),
-      instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((b) => ThunderInstanceBlock.fromPiefedBlock(b)).toList(),
-      personBlocks: personBlocks.map<ThunderUser>((b) => ThunderUser.fromPiefedUser(b['target'])).toList(),
     );
   }
 }

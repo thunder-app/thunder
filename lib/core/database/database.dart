@@ -11,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:thunder/core/database/schema_versions.dart';
 import 'package:thunder/core/database/tables.dart';
 import 'package:thunder/core/database/type_converters.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/drafts/draft_type.dart';
 
 import 'connection/connection.dart' as impl;
@@ -37,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
         );
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -72,11 +71,6 @@ class AppDatabase extends _$AppDatabase {
                 // Create the alt_text column on the drafts table
                 await m.addColumn(schema.drafts, schema.drafts.altText);
               },
-              from6To7: (m, schema) async {
-                // Add the platform column to the Accounts table and pre-fill existing accounts with 'lemmy'
-                await m.addColumn(schema.accounts, schema.accounts.platform);
-                await customStatement('UPDATE accounts SET platform = \'lemmy\'');
-              },
             ),
           );
 
@@ -110,24 +104,9 @@ Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) 
 }
 
 Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVersion) async {
-  if (fromVersion == 7 && toVersion == 6) {
-    // Drop the platform column on the accounts table
-    await database.customStatement('ALTER TABLE accounts DROP COLUMN platform');
-  } else if (fromVersion == 6 && toVersion == 5) {
+  if (fromVersion == 6 && toVersion == 5) {
     // Drop the alt_text column on the drafts table
     await database.customStatement('ALTER TABLE drafts DROP COLUMN alt_text');
-  } else if (fromVersion == 5 && toVersion == 4) {
-    // Drop the list_index column on the accounts table
-    await database.customStatement('ALTER TABLE accounts DROP COLUMN list_index');
-  } else if (fromVersion == 4 && toVersion == 3) {
-    // Drop the custom_thumbnail column on the drafts table
-    await database.customStatement('ALTER TABLE drafts DROP COLUMN custom_thumbnail');
-  } else if (fromVersion == 3 && toVersion == 2) {
-    // Drop the Drafts table
-    await database.customStatement('DROP TABLE IF EXISTS drafts');
-  } else if (fromVersion == 2 && toVersion == 1) {
-    // Drop the UserLabels table
-    await database.customStatement('DROP TABLE IF EXISTS user_labels');
   }
 }
 

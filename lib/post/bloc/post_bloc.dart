@@ -31,9 +31,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   late CommunityRepository communityRepository;
 
   PostBloc({required this.account}) : super(PostState()) {
-    postRepository = PostRepositoryImpl(account: account);
-    commentRepository = CommentRepositoryImpl(account: account);
-    communityRepository = CommunityRepositoryImpl(account: account);
+    postRepository = LemmyPostRepository(account: account);
+    commentRepository = LemmyCommentRepository(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
 
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
@@ -92,7 +92,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         crossPosts: crossPosts,
       ));
 
-      emit(state.copyWith(status: PostStatus.loading));
+      emit(state.copyWith(
+        status: PostStatus.loading,
+      ));
 
       CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 

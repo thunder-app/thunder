@@ -3002,10 +3002,10 @@ abstract class AppLocalizations {
   /// **'Normal'**
   String get normal;
 
-  /// Message for when an instance is not a valid Lemmy/PieFed instance
+  /// No description provided for @notValidLemmyInstance.
   ///
   /// In en, this message translates to:
-  /// **'{instance} does not appear to be a valid instance'**
+  /// **'{instance} does not appear to be a valid Lemmy instance'**
   String notValidLemmyInstance(Object instance);
 
   /// No description provided for @notValidUrl.

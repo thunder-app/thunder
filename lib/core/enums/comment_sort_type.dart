@@ -1,15 +1,11 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 
 enum CommentSortType {
-  hot('Hot'),
-  top('Top'),
-  new_('New'),
-  old('Old'),
-  controversial('Controversial');
-
-  final String value;
-
-  const CommentSortType(this.value);
+  hot,
+  top,
+  new_,
+  old,
+  controversial,
 }
 
 extension CommentSortTypeMapping on CommentSortType {

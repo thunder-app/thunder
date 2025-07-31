@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/drafts/draft_type.dart';
 
 class DraftTypeConverter extends TypeConverter<DraftType, String> {
@@ -13,19 +12,5 @@ class DraftTypeConverter extends TypeConverter<DraftType, String> {
   @override
   String toSql(DraftType value) {
     return value.name;
-  }
-}
-
-class ThreadiversePlatformConverter extends TypeConverter<ThreadiversePlatform?, String?> {
-  const ThreadiversePlatformConverter();
-
-  @override
-  ThreadiversePlatform? fromSql(String? fromDb) {
-    return ThreadiversePlatform.fromString(fromDb);
-  }
-
-  @override
-  String? toSql(ThreadiversePlatform? value) {
-    return value?.toStringValue();
   }
 }

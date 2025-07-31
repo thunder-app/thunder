@@ -55,7 +55,7 @@ class UserListEntry extends StatelessWidget {
             try {
               // Create a temporary Account for the request
               final account = Account(instance: resolutionInstance!, id: '', index: -1);
-              final response = await SearchRepositoryImpl(account: account).resolve(query: user.actorId);
+              final response = await LemmySearchRepository(account: account).resolve(query: user.actorId);
 
               userId = response.person?.person.id;
             } catch (e) {

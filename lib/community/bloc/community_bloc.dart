@@ -27,7 +27,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   late CommunityRepository communityRepository;
 
   CommunityBloc({required this.account}) : super(const CommunityState()) {
-    communityRepository = CommunityRepositoryImpl(account: account);
+    communityRepository = LemmyCommunityRepository(account: account);
 
     /// Handles clearing any messages from the state
     on<CommunityClearMessageEvent>(

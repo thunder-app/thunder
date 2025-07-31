@@ -13,8 +13,7 @@ final class FeedState extends Equatable {
     this.community,
     this.communityInstance,
     this.communityModerators = const [],
-    this.user,
-    this.userModerates = const [],
+    this.fullPersonView,
     this.feedListType,
     this.postSortType,
     this.communityId,
@@ -67,11 +66,8 @@ final class FeedState extends Equatable {
   /// The community moderators if applicable
   final List<ThunderUser> communityModerators;
 
-  /// The user information if applicable
-  final ThunderUser? user;
-
-  /// The communities the user moderates if applicable
-  final List<ThunderCommunity> userModerates;
+  /// The person information if applicable
+  final GetPersonDetailsResponse? fullPersonView;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -130,8 +126,7 @@ final class FeedState extends Equatable {
     ThunderCommunity? community,
     ThunderSite? communityInstance,
     List<ThunderUser>? communityModerators,
-    ThunderUser? user,
-    List<ThunderCommunity>? userModerates,
+    GetPersonDetailsResponse? fullPersonView,
     int? communityId,
     String? communityName,
     int? userId,
@@ -160,8 +155,7 @@ final class FeedState extends Equatable {
       community: community ?? this.community,
       communityInstance: communityInstance ?? this.communityInstance,
       communityModerators: communityModerators ?? this.communityModerators,
-      user: user ?? this.user,
-      userModerates: userModerates ?? this.userModerates,
+      fullPersonView: fullPersonView ?? this.fullPersonView,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
       userId: userId ?? this.userId,
@@ -191,8 +185,7 @@ final class FeedState extends Equatable {
         community,
         communityInstance,
         communityModerators,
-        user,
-        userModerates,
+        fullPersonView,
         posts,
         comments,
         hasReachedPostsEnd,

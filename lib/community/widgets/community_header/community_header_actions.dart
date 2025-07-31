@@ -136,7 +136,7 @@ class _ActionChipsList extends StatelessWidget {
     final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
     if (!isLoggedIn) return [_AnonymousSubscriptionChip(community: community)];
 
-    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.siteResponse?.myUser?.communityBlocks.any((c) => c.id == community.id) ?? false);
+    final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.siteResponse?.myUser?.communityBlocks.any((block) => block.community.id == community.id) ?? false);
     if (blocked) return [_BlockActionChip(community: community)];
 
     return [
@@ -354,8 +354,8 @@ class _BlockActionChip extends StatelessWidget {
       return false;
     }
 
-    final blockedCommunities = state.siteResponse!.myUser!.communityBlocks;
-    return blockedCommunities.any((c) => c.id == community.id);
+    final blockedCommunities = state.siteResponse!.myUser!.communityBlocks.map((block) => block.community).toList();
+    return blockedCommunities.any((blockedCommunity) => blockedCommunity.id == community.id);
   }
 }
 

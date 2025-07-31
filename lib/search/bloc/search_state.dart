@@ -3,7 +3,7 @@ part of 'search_bloc.dart';
 enum SearchStatus { initial, trending, loading, refreshing, success, empty, failure, done, performingCommentAction }
 
 class SearchState extends Equatable {
-  const SearchState({
+  SearchState({
     this.status = SearchStatus.initial,
     this.communities,
     this.trendingCommunities,
@@ -19,12 +19,12 @@ class SearchState extends Equatable {
   });
 
   final SearchStatus status;
-  final List<ThunderCommunity>? communities;
-  final List<ThunderCommunity>? trendingCommunities;
-  final List<ThunderUser>? users;
-  final List<ThunderComment>? comments;
-  final List<ThunderPost>? posts;
-  final List<ThunderInstanceInfo>? instances;
+  List<ThunderCommunity>? communities;
+  List<ThunderCommunity>? trendingCommunities;
+  List<PersonView>? users;
+  List<ThunderComment>? comments;
+  List<ThunderPost>? posts;
+  List<ThunderInstanceInfo>? instances;
 
   final String? errorMessage;
 
@@ -38,7 +38,7 @@ class SearchState extends Equatable {
     SearchStatus? status,
     List<ThunderCommunity>? communities,
     List<ThunderCommunity>? trendingCommunities,
-    List<ThunderUser>? users,
+    List<PersonView>? users,
     List<ThunderComment>? comments,
     List<ThunderPost>? posts,
     List<ThunderInstanceInfo>? instances,

@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -28,6 +29,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_header/user_header.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -383,11 +385,11 @@ class _FeedViewState extends State<FeedView> {
                                 condensed: false,
                               ),
                             ),
-                          if (state.user != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
+                          if (state.fullPersonView != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
                             SliverToBoxAdapter(
                               child: UserHeader(
-                                user: state.user!,
-                                moderates: state.userModerates,
+                                user: ThunderUser.fromLemmyUserView(state.fullPersonView!.personView.toJson()),
+                                moderates: state.fullPersonView!.moderates.map((e) => ThunderCommunity.fromLemmyCommunity(e.community.toJson())).toList(),
                                 feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
                                 onChangeFeedType: (feedType) {
                                   setState(() {

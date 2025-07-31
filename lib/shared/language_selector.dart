@@ -42,7 +42,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     _languageId = widget.languageId;
 
     // Determine the language from the languageId
-    final languages = context.read<ProfileBloc>().state.siteResponse?.allLanguages ?? <ThunderLanguage>[];
+    final languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
     _language = languages.firstWhereOrNull((ThunderLanguage language) => language.id == _languageId);
   }
 

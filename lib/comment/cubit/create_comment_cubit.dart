@@ -17,7 +17,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
   late CommentRepository repository;
 
   CreateCommentCubit({required this.account}) : super(const CreateCommentState(status: CreateCommentStatus.initial)) {
-    repository = CommentRepositoryImpl(account: account);
+    repository = LemmyCommentRepository(account: account);
   }
 
   Future<void> clearMessage() async {
