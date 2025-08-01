@@ -677,10 +677,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   });
                                 },
                                 MarkdownType.community: () {
-                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                    _bodyTextController.text = _bodyTextController.text
-                                        .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
-                                  });
+                                  showCommunityInputDialog(
+                                    context,
+                                    title: l10n.community,
+                                    account: context.read<ProfileBloc>().state.account,
+                                    onCommunitySelected: (community) {
+                                      _bodyTextController.text = _bodyTextController.text
+                                          .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
+                                    },
+                                  );
                                 },
                               },
                               imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
@@ -850,6 +855,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           showCommunityInputDialog(
             context,
             title: l10n.community,
+            account: context.read<ProfileBloc>().state.account,
             onCommunitySelected: widget.onCommunitySelected,
           );
         },

@@ -403,18 +403,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       });
                                       _doSearch();
                                     } else {
-                                      showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (ThunderCommunity community) {
-                                        setState(() {
-                                          _currentCommunityFilter = community.id;
-                                          _currentCommunityFilterName = generateCommunityFullName(
-                                            context,
-                                            community.name,
-                                            community.title,
-                                            fetchInstanceNameFromUrl(community.actorId),
-                                          );
-                                        });
-                                        _doSearch();
-                                      });
+                                      showCommunityInputDialog(
+                                        context,
+                                        title: l10n.community,
+                                        account: account,
+                                        onCommunitySelected: (ThunderCommunity community) {
+                                          setState(() {
+                                            _currentCommunityFilter = community.id;
+                                            _currentCommunityFilterName = generateCommunityFullName(
+                                              context,
+                                              community.name,
+                                              community.title,
+                                              fetchInstanceNameFromUrl(community.actorId),
+                                            );
+                                          });
+                                          _doSearch();
+                                        },
+                                      );
                                     }
                                   },
                                 ),

@@ -8,6 +8,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/account/repository/account_repository.dart';
+import 'package:thunder/community/models/favourite.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/meta_search_type.dart';
@@ -27,6 +29,7 @@ import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/marquee_widget.dart';
 import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/repository/user_repository.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -119,41 +122,54 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(ThunderCommunity) onCommunitySelected, List<ThunderCommunity>? emptySuggestions}) async {
-  final l10n = AppLocalizations.of(context)!;
+void showCommunityInputDialog(
+  BuildContext context, {
+  required String title,
+  required Account account,
+  required void Function(ThunderCommunity community) onCommunitySelected,
+  List<ThunderCommunity>? emptySuggestions,
+}) async {
+  final l10n = GlobalContext.l10n;
+
+  List<ThunderCommunity>? favoritedCommunities;
 
   try {
-    final state = context.read<ProfileBloc>().state;
-    emptySuggestions ??= state.subscriptions;
-    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), state.favorites);
+    // Fetch subscriptions from the given account
+    final favorites = await Favorite.favorites(account.id);
+    final subscriptions = await AccountRepositoryImpl(account: account).subscriptions();
+    favoritedCommunities = subscriptions.where((community) => favorites.any((favorite) => favorite.communityId == community.id)).toList();
+
+    emptySuggestions ??= prioritizeFavorites(subscriptions, favoritedCommunities);
   } catch (e) {
-    // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
+    // If this is unavailable, continue
   }
 
   Future<String?> onSubmitted({ThunderCommunity? payload, String? value}) async {
+    if (payload == null && value == null) return null;
+
     if (payload != null) {
       onCommunitySelected(payload);
       Navigator.of(context).pop();
-    } else if (value != null) {
-      // Normalize the community name
-      final normalizedCommunity = await getLemmyCommunity(value);
+      return null;
+    }
 
-      if (normalizedCommunity != null) {
-        try {
-          final account = context.read<ProfileBloc>().state.account;
-          final response = await CommunityRepositoryImpl(account: account).getCommunity(name: normalizedCommunity);
-          final community = response['community'];
+    // Normalize the community name
+    final normalizedCommunity = await getLemmyCommunity(value!);
 
-          onCommunitySelected(community);
-          Navigator.of(context).pop();
-        } catch (e) {
-          return l10n.unableToFindCommunity;
-        }
-      } else {
+    if (normalizedCommunity != null) {
+      try {
+        final response = await CommunityRepositoryImpl(account: account).getCommunity(name: normalizedCommunity);
+        final community = response['community'];
+
+        onCommunitySelected(community);
+        Navigator.of(context).pop();
+        return null;
+      } catch (e) {
         return l10n.unableToFindCommunity;
       }
     }
-    return null;
+
+    return l10n.unableToFindCommunity;
   }
 
   showInputDialog<ThunderCommunity>(
@@ -161,15 +177,20 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: l10n.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
+    getSuggestions: (query) => getCommunitySuggestions(context, query: query, account: account, emptySuggestions: emptySuggestions, favoritedCommunities: favoritedCommunities),
     suggestionBuilder: (payload) => buildCommunitySuggestionWidget(context, payload),
   );
 }
 
-Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, String query, List<ThunderCommunity>? emptySuggestions) async {
-  if (query.isNotEmpty != true) return emptySuggestions ?? [];
+Future<List<ThunderCommunity>> getCommunitySuggestions(
+  BuildContext context, {
+  required String query,
+  required Account account,
+  List<ThunderCommunity>? favoritedCommunities,
+  List<ThunderCommunity>? emptySuggestions,
+}) async {
+  if (query.isEmpty) return emptySuggestions ?? [];
 
-  final account = context.read<ProfileBloc>().state.account;
   final response = await SearchRepositoryImpl(account: account).search(
     query: query,
     type: MetaSearchType.communities,
@@ -177,21 +198,11 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(BuildContext context, Str
     sort: PostSortType.topAll,
   );
 
-  List<ThunderCommunity>? favorites;
-
-  if (context.mounted) {
-    try {
-      favorites = context.read<ProfileBloc>().state.favorites;
-    } catch (e) {
-      // Don't worry if we can't fetch favorites
-    }
-  }
-
-  return prioritizeFavorites(response['communities'], favorites) ?? [];
+  return prioritizeFavorites(response['communities'], favoritedCommunities) ?? [];
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = GlobalContext.l10n;
 
   return Tooltip(
     message: generateCommunityFullName(
@@ -224,27 +235,25 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   useDisplayName: false,
                 ),
               ),
-              Row(
-                children: [
-                  if (payload.subscribers != null) ...[
-                    const Icon(Icons.people_rounded, size: 16),
-                    const SizedBox(width: 5),
+              if (payload.subscribed != null && payload.subscribers != null) ...[
+                Row(
+                  children: [
+                    Icon(Icons.people_rounded, size: 16.0),
+                    SizedBox(width: 5.0),
                     Text(formatNumberToK(payload.subscribers ?? -1)),
-                  ],
-                  if (payload.subscribed != null) ...[
                     Text(' · ${switch (payload.subscribed) {
                       SubscriptionStatus.pending => l10n.pending,
                       SubscriptionStatus.subscribed => l10n.subscribed,
                       SubscriptionStatus.notSubscribed => '',
                       _ => '',
                     }}'),
+                    if (_getFavoriteStatus(context, payload)) ...[
+                      Text(' · '),
+                      Icon(Icons.star_rounded, size: 15.0),
+                    ],
                   ],
-                  if (_getFavoriteStatus(context, payload)) ...const [
-                    Text(' · '),
-                    Icon(Icons.star_rounded, size: 15),
-                  ],
-                ],
-              )
+                )
+              ],
             ],
           ),
         ),

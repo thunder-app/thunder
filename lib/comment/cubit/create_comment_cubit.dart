@@ -8,7 +8,6 @@ import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
