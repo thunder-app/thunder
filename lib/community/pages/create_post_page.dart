@@ -668,13 +668,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ],
                               customTapActions: {
                                 MarkdownType.username: () {
-                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (ThunderUser user) {
-                                    _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                      _bodyTextController.selection.end,
-                                      _bodyTextController.selection.end,
-                                      '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
-                                    );
-                                  });
+                                  showUserInputDialog(
+                                    context,
+                                    title: l10n.username,
+                                    account: context.read<ProfileBloc>().state.account,
+                                    onUserSelected: (ThunderUser user) {
+                                      _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                        _bodyTextController.selection.end,
+                                        _bodyTextController.selection.end,
+                                        '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
+                                      );
+                                    },
+                                  );
                                 },
                                 MarkdownType.community: () {
                                   showCommunityInputDialog(

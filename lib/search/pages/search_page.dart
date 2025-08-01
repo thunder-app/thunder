@@ -438,18 +438,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     });
                                     _doSearch();
                                   } else {
-                                    showUserInputDialog(context, title: l10n.creator, onUserSelected: (user) {
-                                      setState(() {
-                                        _currentCreatorFilter = user.id;
-                                        _currentCreatorFilterName = generateUserFullName(
-                                          context,
-                                          user.name,
-                                          user.displayName,
-                                          fetchInstanceNameFromUrl(user.actorId),
-                                        );
-                                      });
-                                      _doSearch();
-                                    });
+                                    showUserInputDialog(
+                                      context,
+                                      title: l10n.creator,
+                                      account: account,
+                                      onUserSelected: (user) {
+                                        setState(() {
+                                          _currentCreatorFilter = user.id;
+                                          _currentCreatorFilterName = generateUserFullName(
+                                            context,
+                                            user.name,
+                                            user.displayName,
+                                            fetchInstanceNameFromUrl(user.actorId),
+                                          );
+                                        });
+                                        _doSearch();
+                                      },
+                                    );
                                   }
                                 },
                               ),

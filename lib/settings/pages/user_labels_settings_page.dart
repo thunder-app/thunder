@@ -1,11 +1,14 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:thunder/user/models/user_label.dart';
 
+import 'package:collection/collection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smooth_highlight/smooth_highlight.dart';
+
+import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/localizations/app_localizations.dart';
+import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -89,6 +92,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
           showUserInputDialog(
             context,
             title: l10n.username,
+            account: context.read<ProfileBloc>().state.account,
             onUserSelected: (user) async {
               // Then show the label editor
               ({UserLabel? userLabel, bool deleted}) result = await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(user.name, user.actorId));

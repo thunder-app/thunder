@@ -34,33 +34,40 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 /// Shows a dialog which allows typing/search for a user
-void showUserInputDialog(BuildContext context, {required String title, required void Function(ThunderUser) onUserSelected}) async {
-  final l10n = AppLocalizations.of(context)!;
+void showUserInputDialog(
+  BuildContext context, {
+  required String title,
+  required Account account,
+  required void Function(ThunderUser) onUserSelected,
+}) async {
+  final l10n = GlobalContext.l10n;
 
   Future<String?> onSubmitted({ThunderUser? payload, String? value}) async {
+    if (payload == null && value == null) return null;
+
     if (payload != null) {
       onUserSelected(payload);
       Navigator.of(context).pop();
-    } else if (value != null) {
-      // Normalize the username
-      final normalizedUsername = await getLemmyUser(value);
+      return null;
+    }
 
-      if (normalizedUsername != null) {
-        try {
-          final account = context.read<ProfileBloc>().state.account;
-          final response = await UserRepositoryImpl(account: account).getUser(username: normalizedUsername);
-          final user = response!['user'];
+    // Normalize the username
+    final normalizedUsername = await getLemmyUser(value!);
 
-          onUserSelected(user);
-          Navigator.of(context).pop();
-        } catch (e) {
-          return l10n.unableToFindUser;
-        }
-      } else {
+    if (normalizedUsername != null) {
+      try {
+        final response = await UserRepositoryImpl(account: account).getUser(username: normalizedUsername);
+        final user = response!['user'];
+
+        onUserSelected(user);
+        Navigator.of(context).pop();
+        return null;
+      } catch (e) {
         return l10n.unableToFindUser;
       }
     }
-    return null;
+
+    return l10n.unableToFindUser;
   }
 
   showInputDialog<ThunderUser>(
@@ -68,15 +75,18 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     title: title,
     inputLabel: l10n.username,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getUserSuggestions(context, query),
+    getSuggestions: (query) => getUserSuggestions(context, query: query, account: account),
     suggestionBuilder: (payload) => buildUserSuggestionWidget(context, payload),
   );
 }
 
-Future<List<ThunderUser>> getUserSuggestions(BuildContext context, String query) async {
-  if (query.isNotEmpty != true) return [];
+Future<List<ThunderUser>> getUserSuggestions(
+  BuildContext context, {
+  required String query,
+  required Account account,
+}) async {
+  if (query.isEmpty) return [];
 
-  final account = context.read<ProfileBloc>().state.account;
   final response = await SearchRepositoryImpl(account: account).search(
     query: query,
     type: MetaSearchType.users,
@@ -121,7 +131,10 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
   );
 }
 
-/// Shows a dialog which allows typing/search for a community
+/// Shows a dialog which allows typing/search for a community.
+/// Given an [account], the dialog will show subscriptions and favorites of that account.
+///
+/// When searching for communities, it will use the provided [account]'s instance.
 void showCommunityInputDialog(
   BuildContext context, {
   required String title,
