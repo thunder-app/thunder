@@ -203,13 +203,13 @@ abstract class AppLocalizations {
   /// Error message for when we couldn't resolve comment to reply to
   ///
   /// In en, this message translates to:
-  /// **'The selected comment was not found on \'{instance}\'. Switching back to previous account.'**
+  /// **'The selected comment was not found on \'{instance}\''**
   String accountSwitchParentCommentNotFound(Object instance);
 
   /// Error message for when we couldn't resolve post to reply to
   ///
   /// In en, this message translates to:
-  /// **'The selected post was not found on \'{instance}\'. Switching back to previous account.'**
+  /// **'The selected post was not found on \'{instance}\''**
   String accountSwitchPostNotFound(Object instance);
 
   /// Setting heading for action colors

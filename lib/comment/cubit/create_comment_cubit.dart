@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:thunder/account/account.dart';
@@ -26,6 +27,14 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
 
   Future<void> clearMessage() async {
     emit(state.copyWith(status: CreateCommentStatus.initial, message: null));
+  }
+
+  Future<void> switchAccount(Account newAccount) async {
+    account = newAccount;
+    repository = CommentRepositoryImpl(account: account);
+
+    debugPrint('Account switched to ${account.username}@${account.instance}');
+    emit(state.copyWith(status: CreateCommentStatus.success));
   }
 
   Future<void> uploadImages(List<String> imageFiles) async {

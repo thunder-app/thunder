@@ -26,7 +26,6 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/models/thunder_user.dart';
-import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/constants.dart';
@@ -60,6 +59,12 @@ class CreateCommentPage extends StatefulWidget {
 }
 
 class _CreateCommentPageState extends State<CreateCommentPage> {
+  /// The current account
+  Account? account;
+
+  /// The account's user information
+  ThunderUser? user;
+
   /// Holds the draft type associated with the comment. This type is determined by the input parameters passed in.
   /// If [comment], it will be [DraftType.commentEdit].
   /// If [post] or [parentComment] is passed in, it will be [DraftType.commentCreate].
@@ -101,9 +106,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   /// Whether to view source for posts or comments
   bool viewSource = false;
 
-  /// The active user that was selected when the page was opened
-  Account? originalUser;
-
   /// Whether the user was temporarily changed to create the comment
   bool userChanged = false;
 
@@ -119,6 +121,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   @override
   void initState() {
     super.initState();
+
+    account = context.read<ProfileBloc>().state.account;
 
     postId = widget.post?.id ?? widget.parentComment?.postId;
     parentCommentId = widget.parentComment?.id;
@@ -237,18 +241,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    originalUser ??= context.read<ProfileBloc>().state.account;
-
-    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        if (context.mounted) {
-          restoreUser(context, originalUser);
-        }
-      },
+      onPopInvokedWithResult: (didPop, result) {},
       child: BlocProvider(
-        create: (context) => CreateCommentCubit(account: account),
+        create: (context) => CreateCommentCubit(account: account!),
         child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
           listener: (context, state) {
             if (state.status == CreateCommentStatus.success && state.comment != null) {
@@ -348,7 +345,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 16.0),
                                     child: UserSelector(
-                                      profileModalHeading: l10n.selectAccountToCommentAs,
+                                      account: account!,
                                       postActorId: widget.post?.apId,
                                       onPostChanged: (ThunderPost post) => postId = post.id,
                                       parentCommentActorId: widget.parentComment?.apId,
@@ -356,7 +353,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         postId = parentComment.postId;
                                         parentCommentId = parentComment.id;
                                       },
-                                      onUserChanged: () => userChanged = true,
+                                      onUserChanged: (account) {
+                                        setState(() {
+                                          userChanged = this.account?.instance != account.instance;
+                                          this.account = account;
+                                        });
+
+                                        context.read<CreateCommentCubit>().switchAccount(account);
+                                      },
                                       enableAccountSwitching: widget.comment == null,
                                     ),
                                   ),
@@ -438,7 +442,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       showUserInputDialog(
                                         context,
                                         title: l10n.username,
-                                        account: account,
+                                        account: account!,
                                         onUserSelected: (ThunderUser user) {
                                           _bodyTextController.text = _bodyTextController.text.replaceRange(
                                             _bodyTextController.selection.end,
@@ -452,7 +456,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       showCommunityInputDialog(
                                         context,
                                         title: l10n.community,
-                                        account: account,
+                                        account: account!,
                                         onCommunitySelected: (ThunderCommunity community) {
                                           _bodyTextController.text = _bodyTextController.text.replaceRange(
                                             _bodyTextController.selection.end,
@@ -565,18 +569,4 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           languageId: languageId,
         );
   }
-}
-
-@Deprecated('Use Draft model through database instead')
-class DraftComment {
-  String? text;
-  bool saveAsDraft = true;
-
-  DraftComment({this.text});
-
-  Map<String, dynamic> toJson() => {'text': text};
-
-  static DraftComment fromJson(Map<String, dynamic> json) => DraftComment(text: json['text']);
-
-  bool get isNotEmpty => text?.isNotEmpty == true;
 }

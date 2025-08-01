@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thunder/community/models/thunder_community.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 
@@ -77,6 +80,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
             Text(l10n.community, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             CommunitySelector(
+              account: context.read<ProfileBloc>().state.account,
               community: community,
               onCommunitySelected: (ThunderCommunity c) {
                 setState(() => community = c);

@@ -29,6 +29,15 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(status: CreatePostStatus.initial, message: null));
   }
 
+  /// Switches the account for the post.
+  Future<void> switchAccount(Account newAccount) async {
+    account = newAccount;
+    repository = PostRepositoryImpl(account: account);
+
+    debugPrint('Account switched to ${account.username}@${account.instance}');
+    emit(state.copyWith(status: CreatePostStatus.success));
+  }
+
   Future<void> uploadImages(List<String> imageFiles, {bool isPostImage = false}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);

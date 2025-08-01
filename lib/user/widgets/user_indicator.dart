@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/shared/avatars/user_avatar.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
@@ -10,7 +10,10 @@ import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/instance.dart';
 
 class UserIndicator extends StatefulWidget {
-  const UserIndicator({super.key});
+  /// The user to display.
+  final ThunderUser? user;
+
+  const UserIndicator({super.key, this.user});
 
   @override
   State<StatefulWidget> createState() => _UserIndicatorState();
@@ -27,12 +30,22 @@ class _UserIndicatorState extends State<UserIndicator> {
   void initState() {
     super.initState();
 
+    if (widget.user != null) return setState(() => user = widget.user);
+
     final state = context.read<ProfileBloc>().state;
 
     if (state.user != null) {
       setState(() => user = state.user);
     } else {
       context.read<ProfileBloc>().add(const FetchProfileInformation());
+    }
+  }
+
+  @override
+  void didUpdateWidget(UserIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.user?.id != widget.user?.id) {
+      setState(() => user = widget.user);
     }
   }
 

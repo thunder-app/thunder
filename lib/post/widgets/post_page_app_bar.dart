@@ -240,19 +240,20 @@ class PostAppBarActions extends StatelessWidget {
                 icon: Icons.select_all_rounded,
                 title: l10n.selectText,
               ),
-              ThunderPopupMenuItem(
-                onTap: () async {
-                  await temporarilySwitchAccount(
-                    context,
-                    profileModalHeading: l10n.viewPostAsDifferentAccount,
-                    onUserChanged: onUserChanged,
-                    postActorId: context.read<PostBloc>().state.post?.apId,
-                    onPostChanged: onPostChanged,
-                  );
-                },
-                icon: Icons.people_alt_rounded,
-                title: l10n.viewPostAsDifferentAccount,
-              ),
+              // TODO: Add this back once switching accounts is fixed
+              // ThunderPopupMenuItem(
+              //   onTap: () async {
+              //     await temporarilySwitchAccount(
+              //       context,
+              //       profileModalHeading: l10n.viewPostAsDifferentAccount,
+              //       onUserChanged: onUserChanged,
+              //       postActorId: context.read<PostBloc>().state.post?.apId,
+              //       onPostChanged: onPostChanged,
+              //     );
+              //   },
+              //   icon: Icons.people_alt_rounded,
+              //   title: l10n.viewPostAsDifferentAccount,
+              // ),
               if (state.post?.media.first.mediaType == MediaType.link && state.post!.media.first.originalUrl?.isNotEmpty == true)
                 ThunderPopupMenuItem(
                   onTap: () {

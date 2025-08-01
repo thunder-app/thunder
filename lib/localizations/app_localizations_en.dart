@@ -56,12 +56,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return 'The selected comment was not found on \'$instance\'. Switching back to previous account.';
+    return 'The selected comment was not found on \'$instance\'';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'The selected post was not found on \'$instance\'. Switching back to previous account.';
+    return 'The selected post was not found on \'$instance\'';
   }
 
   @override

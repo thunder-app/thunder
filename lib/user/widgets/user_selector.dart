@@ -1,46 +1,131 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/models/thunder_community.dart';
-
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/repository/search_repository.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/user/models/thunder_user.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/utils/global_context.dart';
 
-/// Creates a widget which displays a preview of the currently selected account, with the ability to change accounts.
+/// A widget that displays the currently selected user account with the ability to switch between accounts.
 ///
-/// By passing in a [communityActorId], it will attempt to resolve the community to the new user's instance (if changed),
-/// and will invoke [onCommunityChanged]. If the community could not be resolved, the callback will pass [null].
+/// This widget provides a method for switching between different user accounts and ensures that the
+/// target community, post, or comment is federated to the new account's instance before allowing
+/// the switch. If the content cannot be resolved on the new instance, the switch is blocked.
+///
+/// **Usage Examples:**
+///
+/// For creating a post in a community:
+/// ```dart
+/// UserSelector(
+///   account: currentAccount,
+///   onUserChanged: (account) => handleAccountChange(account),
+///   communityActorId: community.actorId,
+///   onCommunityChanged: (community) => handleCommunityChange(community),
+/// )
+/// ```
+///
+/// For creating a comment on a post:
+/// ```dart
+/// UserSelector(
+///   account: currentAccount,
+///   onUserChanged: (account) => handleAccountChange(account),
+///   postActorId: post.actorId,
+///   onPostChanged: (post) => handlePostChange(post),
+/// )
+/// ```
 class UserSelector extends StatefulWidget {
-  final void Function()? onUserChanged;
-  final String? profileModalHeading;
+  /// The currently selected account.
+  /// This is the account that will be displayed in the selector.
+  final Account account;
 
-  // Pass these when dealing with a community (i.e., creating a post)
+  /// Callback invoked when the user successfully switches to a different account.
+  ///
+  /// This callback is triggered after all federation checks have passed and the
+  /// new account has been confirmed to have access to the community, post, or comment.
+  ///
+  /// The [account] parameter contains the newly selected account.
+  final void Function(Account account)? onUserChanged;
+
+  // ========== Community-related parameters ==========
+  // Used when the selector is being used in the context of a community (e.g., creating a post)
+
+  /// The ActivityPub ID (actor ID) of the community to resolve when switching accounts.
+  ///
+  /// When provided, the widget will attempt to resolve this community on the new
+  /// account's instance before allowing the account switch. If the community cannot
+  /// be found on the new instance, the switch will be blocked.
   final String? communityActorId;
+
+  /// Callback invoked when the community is successfully resolved on the new account's instance.
+  ///
+  /// This callback receives the resolved [ThunderCommunity] that corresponds to
+  /// the [communityActorId] on the new instance. If the community cannot be resolved,
+  /// this callback will receive `null` and the account switch will be blocked.
+  ///
+  /// Required when [communityActorId] is provided.
   final void Function(ThunderCommunity? community)? onCommunityChanged;
 
-  // Pass these when dealing with a post (i.e., creating a comment)
-  // Unlike posts, where it's valid to have a null community (i.e., you're forced to pick a different one)
-  // It's not valid to have a null parent post/comment. Therefore if we can't resolve the objects,
-  // we will block the account switch, and the onChanged methods will never pass a null value.
+  // ========== Post-related parameters ==========
+  // Used when the selector is being used in the context of a post (e.g., creating a comment to a post)
+
+  /// The ActivityPub ID (actor ID) of the post to resolve when switching accounts.
+  ///
+  /// When provided, the widget will attempt to resolve this post on the new
+  /// account's instance before allowing the account switch. Unlike communities,
+  /// posts must be successfully resolved or the switch will be blocked.
+  ///
+  /// Used in conjunction with [onPostChanged].
   final String? postActorId;
+
+  /// Callback invoked when the post is successfully resolved on the new account's instance.
+  ///
+  /// This callback receives the resolved [ThunderPost] that corresponds to
+  /// the [postActorId] on the new instance. This callback will only be invoked
+  /// if the post is successfully resolved - failed resolution blocks the account switch.
+  ///
+  /// Required when [postActorId] is provided.
   final void Function(ThunderPost post)? onPostChanged;
+
+  // ========== Parent comment-related parameters ==========
+  // Used when replying to a specific comment
+
+  /// The ActivityPub ID (actor ID) of the parent comment to resolve when switching accounts.
+  ///
+  /// When provided, the widget will attempt to resolve this comment on the new
+  /// account's instance before allowing the account switch. The comment must be
+  /// successfully resolved or the switch will be blocked.
+  ///
+  /// Used in conjunction with [onParentCommentChanged].
   final String? parentCommentActorId;
+
+  /// Callback invoked when the parent comment is successfully resolved on the new account's instance.
+  ///
+  /// This callback receives the resolved [ThunderComment] that corresponds to
+  /// the [parentCommentActorId] on the new instance. This callback will only be invoked
+  /// if the comment is successfully resolved - failed resolution blocks the account switch.
+  ///
+  /// Required when [parentCommentActorId] is provided.
   final void Function(ThunderComment parentComment)? onParentCommentChanged;
 
-  /// Whether the user is allowed to change the active account
-  /// (e.g., it should not be allowed during edit)
+  /// Whether account switching is enabled.
+  ///
+  /// When `false`, the selector displays the current account but disables the ability
+  /// to switch to a different account. This is useful during operations like editing
+  /// where changing accounts would be inappropriate.
+  ///
+  /// Defaults to `true`.
   final bool enableAccountSwitching;
 
   const UserSelector({
     super.key,
+    required this.account,
     this.onUserChanged,
-    this.profileModalHeading,
     this.communityActorId,
     this.onCommunityChanged,
     this.postActorId,
@@ -55,32 +140,193 @@ class UserSelector extends StatefulWidget {
 }
 
 class _UserSelectorState extends State<UserSelector> {
+  /// The current user details for the selected account
+  ThunderUser? _user;
+
+  /// Whether the widget is currently loading user data
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadUserData(widget.account));
+  }
+
+  @override
+  void didUpdateWidget(UserSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.account.id != widget.account.id) _loadUserData(widget.account);
+  }
+
+  /// Loads user data for the specified account
+  Future<void> _loadUserData(Account? account) async {
+    if (_isLoading) return;
+    setState(() => _isLoading = true);
+
+    try {
+      final targetAccount = account ?? widget.account;
+      final username = targetAccount.username;
+
+      if (username == null) {
+        setState(() {
+          _user = null;
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final response = await UserRepositoryImpl(account: targetAccount).getUser(username: username);
+      final user = response?['user'] as ThunderUser?;
+
+      if (!mounted) return;
+
+      setState(() {
+        _user = user;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _user = null;
+        _isLoading = false;
+      });
+
+      debugPrint('Failed to load user data: $e');
+    }
+  }
+
+  /// Initiates the account switching process
+  Future<void> _switchProfile() async {
+    if (!widget.enableAccountSwitching) return;
+
+    final newAccount = await showModalBottomSheet<Account>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => _UserProfileSelector(widget.account),
+    );
+
+    if (newAccount == null || !mounted || widget.account.id == newAccount.id) return;
+
+    final resolvedItems = await _performAccountSwitch(newAccount);
+    if (resolvedItems != null) {
+      await _loadUserData(newAccount);
+      _invokeCallbacks(newAccount, resolvedItems);
+    }
+  }
+
+  /// Performs federation checks and resolves content on the new account's instance
+  Future<Map<String, dynamic>?> _performAccountSwitch(Account newAccount) async {
+    final l10n = GlobalContext.l10n;
+
+    try {
+      ThunderCommunity? community;
+      ThunderPost? post;
+      ThunderComment? parentComment;
+
+      // Resolve community if needed
+      if (widget.communityActorId?.isNotEmpty == true) {
+        community = await _resolveCommunity(newAccount, widget.communityActorId!);
+        if (community == null) {
+          showSnackbar(l10n.unableToFindCommunityOnInstance);
+          return null;
+        }
+      }
+
+      // Resolve post if needed
+      if (widget.postActorId?.isNotEmpty == true) {
+        post = await _resolvePost(newAccount, widget.postActorId!);
+        if (post == null) {
+          showSnackbar(l10n.accountSwitchPostNotFound(newAccount.instance));
+          return null;
+        }
+      }
+
+      // Resolve parent comment if needed
+      if (widget.parentCommentActorId?.isNotEmpty == true) {
+        parentComment = await _resolveParentComment(newAccount, widget.parentCommentActorId!);
+        if (parentComment == null) {
+          showSnackbar(l10n.accountSwitchParentCommentNotFound(newAccount.instance));
+          return null;
+        }
+      }
+
+      return {
+        'community': community,
+        'post': post,
+        'parentComment': parentComment,
+      };
+    } catch (e) {
+      showSnackbar(e.toString());
+      return null;
+    }
+  }
+
+  /// Resolves a community on the new account's instance
+  Future<ThunderCommunity?> _resolveCommunity(Account account, String actorId) async {
+    try {
+      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
+      return response.community != null ? ThunderCommunity.fromLemmyCommunityView(response.community!.toJson()) : null;
+    } catch (e) {
+      debugPrint('Failed to resolve community: $e');
+      return null;
+    }
+  }
+
+  /// Resolves a post on the new account's instance
+  Future<ThunderPost?> _resolvePost(Account account, String actorId) async {
+    try {
+      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
+      if (response.post == null) return null;
+
+      final thunderPost = ThunderPost.fromLemmyPostView(response.post!.toJson());
+      final parsedPosts = await parsePosts([thunderPost]);
+      return parsedPosts.isNotEmpty ? parsedPosts.first : null;
+    } catch (e) {
+      debugPrint('Failed to resolve post: $e');
+      return null;
+    }
+  }
+
+  /// Resolves a parent comment on the new account's instance
+  Future<ThunderComment?> _resolveParentComment(Account account, String actorId) async {
+    try {
+      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
+      return response.comment != null ? ThunderComment.fromLemmyCommentView(response.comment!.toJson()) : null;
+    } catch (e) {
+      debugPrint('Failed to resolve parent comment: $e');
+      return null;
+    }
+  }
+
+  /// Invokes the appropriate callbacks after a successful account switch
+  void _invokeCallbacks(Account newAccount, Map<String, dynamic> resolvedItems) {
+    widget.onUserChanged?.call(newAccount);
+
+    if (widget.communityActorId != null) {
+      widget.onCommunityChanged?.call(resolvedItems['community']);
+    }
+    if (widget.postActorId != null && resolvedItems['post'] != null) {
+      widget.onPostChanged?.call(resolvedItems['post'] as ThunderPost);
+    }
+    if (widget.parentCommentActorId != null && resolvedItems['parentComment'] != null) {
+      widget.onParentCommentChanged?.call(resolvedItems['parentComment'] as ThunderComment);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(-8, 0),
+      offset: const Offset(-8.0, 0),
       child: InkWell(
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: !widget.enableAccountSwitching
-            ? null
-            : () async => await temporarilySwitchAccount(
-                  context,
-                  setState: setState,
-                  profileModalHeading: widget.profileModalHeading,
-                  onUserChanged: widget.onUserChanged,
-                  communityActorId: widget.communityActorId,
-                  onCommunityChanged: widget.onCommunityChanged,
-                  postActorId: widget.postActorId,
-                  onPostChanged: widget.onPostChanged,
-                  parentCommentActorId: widget.parentCommentActorId,
-                  onParentCommentChanged: widget.onParentCommentChanged,
-                ),
+        borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+        onTap: widget.enableAccountSwitching ? _switchProfile : null,
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
+          padding: const EdgeInsets.only(left: 8.0, top: 4.0, bottom: 4.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const UserIndicator(),
+              UserIndicator(user: _user),
               if (widget.enableAccountSwitching) const Icon(Icons.chevron_right_rounded),
             ],
           ),
@@ -90,86 +336,69 @@ class _UserSelectorState extends State<UserSelector> {
   }
 }
 
-Future<void> temporarilySwitchAccount(
-  BuildContext context, {
-  void Function(VoidCallback fn)? setState,
-  String? profileModalHeading,
-  void Function()? onUserChanged,
-  String? communityActorId,
-  void Function(ThunderCommunity? community)? onCommunityChanged,
-  String? postActorId,
-  void Function(ThunderPost post)? onPostChanged,
-  String? parentCommentActorId,
-  void Function(ThunderComment parentComment)? onParentCommentChanged,
-}) async {
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
+/// Modal bottom sheet widget for selecting user accounts
+class _UserProfileSelector extends StatefulWidget {
+  /// The current account
+  final Account account;
 
-  final Account originalUser = context.read<ProfileBloc>().state.account;
+  const _UserProfileSelector(this.account);
 
-  await showProfileModalSheet(
-    context,
-    quickSelectMode: true,
-    customHeading: profileModalHeading,
-    reloadOnSwitch: false,
-  );
+  @override
+  State<_UserProfileSelector> createState() => _UserProfileSelectorState();
+}
 
-  // Wait slightly longer than the duration that is waited in the account switcher logic.
-  await Future.delayed(const Duration(milliseconds: 1500));
+class _UserProfileSelectorState extends State<_UserProfileSelector> {
+  /// The list of available user accounts
+  List<Account> _accounts = [];
 
-  if (context.mounted) {
-    Account? newUser = context.read<ProfileBloc>().state.account;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAccounts());
+  }
 
-    if (originalUser.id != newUser.id) {
-      // The user changed. Reload the widget.
-      setState?.call(() {});
-      onUserChanged?.call();
+  /// Loads all available user accounts
+  Future<void> _loadAccounts() async {
+    try {
+      final accounts = await Account.accounts().then((accounts) => accounts.where((account) => account.id != widget.account.id).toList());
 
-      // If there is a selected community, see if we can resolve it to the new user's instance.
-      if (communityActorId?.isNotEmpty == true && onCommunityChanged != null) {
-        try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: communityActorId!);
-
-          if (response.community != null) {
-            final community = ThunderCommunity.fromLemmyCommunityView(response.community!.toJson());
-            onCommunityChanged(community);
-          }
-        } catch (e) {
-          // We'll just return null if we can't find it.
-        }
-      }
-
-      // If there is a selected post, see if we can resolve it to the new user's instance.
-      if (postActorId?.isNotEmpty == true && onPostChanged != null) {
-        try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: postActorId!);
-
-          if (response.post != null) {
-            onPostChanged((await parsePosts([ThunderPost.fromLemmyPostView(response.post!.toJson())])).first);
-          }
-
-          showSnackbar(l10n.accountSwitchPostNotFound(newUser.instance));
-          if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
-        } catch (e) {
-          // We will handle this below.
-        }
-      }
-
-      // If there is a selected parent comment, see if we can resolve it to the new user's instance.
-      if (parentCommentActorId?.isNotEmpty == true && onParentCommentChanged != null) {
-        try {
-          final response = await SearchRepositoryImpl(account: newUser).resolve(query: parentCommentActorId!);
-
-          if (response.comment != null) {
-            final comment = ThunderComment.fromLemmyCommentView(response.comment!.toJson());
-            onParentCommentChanged(comment);
-          }
-
-          showSnackbar(l10n.accountSwitchParentCommentNotFound(newUser.instance));
-          if (context.mounted) context.read<ProfileBloc>().add(SwitchProfile(accountId: originalUser.id, reload: false));
-        } catch (e) {
-          // We will handle this below.
-        }
-      }
+      if (!mounted) return;
+      setState(() => _accounts = accounts);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _accounts = []);
+      debugPrint('Failed to load accounts: $e');
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = GlobalContext.l10n;
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(l10n.account(2), style: theme.textTheme.titleLarge),
+        ),
+        _accounts.isEmpty
+            ? Center(child: Text(l10n.noAccountsAdded))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: _accounts.length,
+                itemBuilder: (context, index) {
+                  final account = _accounts[index];
+                  return ListTile(
+                    title: Text(account.username ?? '-', style: theme.textTheme.titleMedium),
+                    subtitle: Text(account.instance),
+                    onTap: () => Navigator.of(context).pop(account),
+                  );
+                },
+              ),
+      ],
+    );
   }
 }

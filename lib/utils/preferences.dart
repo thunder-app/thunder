@@ -5,8 +5,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/drafts/models/draft.dart';
-import 'package:thunder/comment/comment.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/browser_mode.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -16,6 +14,36 @@ import 'package:thunder/notification/enums/notification_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
+
+@Deprecated('Use Draft model through database instead')
+class DraftComment {
+  String? text;
+  bool saveAsDraft = true;
+
+  DraftComment({this.text});
+
+  Map<String, dynamic> toJson() => {'text': text};
+
+  static DraftComment fromJson(Map<String, dynamic> json) => DraftComment(text: json['text']);
+
+  bool get isNotEmpty => text?.isNotEmpty == true;
+}
+
+@Deprecated('Use Draft model through database instead')
+class DraftPost {
+  String? title;
+  String? url;
+  String? text;
+  bool saveAsDraft = true;
+
+  DraftPost({this.title, this.url, this.text});
+
+  Map<String, dynamic> toJson() => {'title': title, 'url': url, 'text': text};
+
+  static DraftPost fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
+
+  bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
+}
 
 Future<void> performSharedPreferencesMigration() async {
   final prefs = UserPreferences.instance.preferences;

@@ -60,7 +60,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'The selected post was not found on \'$instance\'. Switching back to previous account.';
+    return 'The selected post was not found on \'$instance\'';
   }
 
   @override

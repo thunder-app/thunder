@@ -33,11 +33,11 @@
   "@accountSettingsImportedSuccessfully": {
     "description": "Message shown to user when account settings are imported successfully"
   },
-  "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'. Switching back to previous account.",
+  "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
   },
-  "accountSwitchPostNotFound": "The selected post was not found on '{instance}'. Switching back to previous account.",
+  "accountSwitchPostNotFound": "The selected post was not found on '{instance}'",
   "@accountSwitchPostNotFound": {
     "description": "Error message for when we couldn't resolve post to reply to"
   },

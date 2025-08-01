@@ -7,17 +7,17 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/community/models/thunder_community.dart';
-import 'package:thunder/core/enums/meta_search_type.dart';
-import 'package:thunder/core/enums/post_sort_type.dart';
-import 'package:thunder/core/models/thunder_language.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/enums/meta_search_type.dart';
+import 'package:thunder/core/enums/post_sort_type.dart';
+import 'package:thunder/core/models/thunder_language.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/drafts/models/draft.dart';
@@ -38,15 +38,18 @@ import 'package:thunder/shared/language_selector.dart';
 import 'package:thunder/shared/media/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/models/thunder_user.dart';
-import 'package:thunder/user/utils/restore_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/debounce.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
 class CreatePostPage extends StatefulWidget {
+  /// The community ID to create the post in
   final int? communityId;
+
+  /// The community to create the post in
   final ThunderCommunity? community;
 
   /// Whether or not to pre-populate the post with the [title], [text], [image], [url], [customThumbnail], and/or [altText]
@@ -100,6 +103,12 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
+  /// The account to use for the post
+  Account? account;
+
+  /// The account's user information
+  ThunderUser? user;
+
   /// Holds the draft type associated with the post. This type is determined by the input parameters passed in.
   /// If [post] is passed in, this will be a [DraftType.postEdit].
   /// If [communityId] or [communityView] is passed in, this will be a [DraftType.postCreate].
@@ -148,6 +157,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The id of the community that the post will be created in
   int? communityId;
 
+  /// The language ID for the post
   int? languageId;
 
   /// The community associated with the post. This is used to display the community information
@@ -169,12 +179,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
   final keyboardVisibilityController = KeyboardVisibilityController();
 
-  Account? originalUser;
   bool userChanged = false;
 
   @override
   void initState() {
     super.initState();
+
+    account = context.read<ProfileBloc>().state.account;
 
     communityId = widget.communityId;
 
@@ -377,16 +388,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
-    originalUser ??= context.read<ProfileBloc>().state.account;
 
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        if (context.mounted) {
-          restoreUser(context, originalUser);
-        }
-      },
+      onPopInvokedWithResult: (didPop, result) {},
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
         listener: (context, state) {
           if (state.status == CreatePostStatus.success && state.post != null) {
@@ -436,6 +442,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             CommunitySelector(
+                              account: account!,
                               community: community,
                               onCommunitySelected: (ThunderCommunity c) {
                                 setState(() {
@@ -447,11 +454,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                             const SizedBox(height: 4.0),
                             UserSelector(
-                              profileModalHeading: l10n.selectAccountToPostAs,
+                              account: account!,
                               communityActorId: community?.actorId,
                               onCommunityChanged: (community) {
-                                if (community == null) showSnackbar(l10n.unableToFindCommunityOnInstance);
-
                                 setState(() {
                                   communityId = community?.id;
                                   community = community;
@@ -459,7 +464,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
                                 _validateSubmission();
                               },
-                              onUserChanged: () => userChanged = true,
+                              onUserChanged: (account) {
+                                setState(() {
+                                  userChanged = this.account?.instance != account.instance;
+                                  this.account = account;
+                                });
+
+                                context.read<CreatePostCubit>().switchAccount(account);
+                              },
                               enableAccountSwitching: widget.post == null,
                             ),
                             const SizedBox(height: 12.0),
@@ -639,9 +651,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         ),
                       ),
                     ),
-                    const Divider(
-                      height: 1,
-                    ),
+                    const Divider(height: 1),
                     Container(
                       color: theme.cardColor,
                       margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -671,7 +681,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   showUserInputDialog(
                                     context,
                                     title: l10n.username,
-                                    account: context.read<ProfileBloc>().state.account,
+                                    account: account!,
                                     onUserSelected: (ThunderUser user) {
                                       _bodyTextController.text = _bodyTextController.text.replaceRange(
                                         _bodyTextController.selection.end,
@@ -685,7 +695,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   showCommunityInputDialog(
                                     context,
                                     title: l10n.community,
-                                    account: context.read<ProfileBloc>().state.account,
+                                    account: account!,
                                     onCommunitySelected: (community) {
                                       _bodyTextController.text = _bodyTextController.text
                                           .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
@@ -767,10 +777,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (url != text) return;
 
     try {
-      final account = context.read<ProfileBloc>().state.account;
-
       // Fetch cross-posts
-      final response = await SearchRepositoryImpl(account: account).search(
+      final response = await SearchRepositoryImpl(account: account!).search(
         query: url,
         type: MetaSearchType.url,
         sort: PostSortType.topAll,
@@ -833,9 +841,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 class CommunitySelector extends StatefulWidget {
   const CommunitySelector({
     super.key,
+    required this.account,
     this.community,
     required this.onCommunitySelected,
   });
+
+  /// The account to use for the post
+  final Account account;
 
   /// The initial community to be passed in
   final ThunderCommunity? community;
@@ -860,7 +872,7 @@ class _CommunitySelectorState extends State<CommunitySelector> {
           showCommunityInputDialog(
             context,
             title: l10n.community,
-            account: context.read<ProfileBloc>().state.account,
+            account: widget.account,
             onCommunitySelected: widget.onCommunitySelected,
           );
         },
@@ -911,20 +923,4 @@ class _CommunitySelectorState extends State<CommunitySelector> {
       ),
     );
   }
-}
-
-@Deprecated('Use Draft model through database instead')
-class DraftPost {
-  String? title;
-  String? url;
-  String? text;
-  bool saveAsDraft = true;
-
-  DraftPost({this.title, this.url, this.text});
-
-  Map<String, dynamic> toJson() => {'title': title, 'url': url, 'text': text};
-
-  static DraftPost fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
-
-  bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
 }
