@@ -1654,5 +1654,25 @@
     "description": "Action for viewing a post as a different account"
   },
   "createNewCrossPost": "Nieuw kruis­bericht maken",
-  "@createNewCrossPost": {}
+  "@createNewCrossPost": {},
+  "visitUserProfile": "Gebruikers­profiel bezoeken",
+  "@visitUserProfile": {},
+  "visitUserInstance": "Gebruikers­instantie bezoeken",
+  "@visitUserInstance": {
+    "description": "Action to visit the instance of a user"
+  },
+  "visitCommunityInstance": "Gemeenschaps­instantie bezoeken",
+  "@visitCommunityInstance": {
+    "description": "Action to visit the instance of a community"
+  },
+  "viewCommentSource": "Opmerkings­bron tonen",
+  "@viewCommentSource": {
+    "description": "Menu item for viewing a comment's source"
+  },
+  "viewAllComments": "Alle opmerkingen tonen",
+  "@viewAllComments": {},
+  "videoDefaultPlaybackSpeed": "Standaard­afspeelsnelheid",
+  "@videoDefaultPlaybackSpeed": {
+    "description": "Option to select the default video playback Speed"
+  }
 }
