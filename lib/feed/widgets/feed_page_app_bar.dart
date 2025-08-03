@@ -302,7 +302,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               ThunderPopupMenuItem(
                 onTap: () async {
                   HapticFeedback.mediumImpact();
-                  await navigateToModlogPage(context, subtitle: 'TODO: Implement modlog subtitle');
+                  await navigateToModlogPage(context, subtitle: context.read<ProfileBloc>().state.account.instance);
                 },
                 icon: Icons.shield_rounded,
                 title: l10n.modlog,

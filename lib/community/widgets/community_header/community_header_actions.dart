@@ -10,6 +10,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/core/models/models.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/utils/community.dart';
@@ -119,13 +120,15 @@ class _ActionChipsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final account = context.read<ProfileBloc>().state.account;
+
     return Row(
       spacing: 8.0,
       children: [
         _SortActionChip(),
         ..._getAuthenticatedActions(context),
         _SearchActionChip(),
-        _ModlogActionChip(community: community),
+        if (account.platform == ThreadiversePlatform.lemmy) _ModlogActionChip(community: community),
         _ShareActionChip(community: community),
       ],
     );
