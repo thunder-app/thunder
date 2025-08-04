@@ -747,11 +747,11 @@
   },
   "languageFilters": "Du suchst nach Sprachfiltern?",
   "@languageFilters": {},
-  "accountSwitchParentCommentNotFound": "Der ausgewählte Kommentar wurde nicht auf '{instance}'gefunden. Wechsle zu vorherigem Konto.",
+  "accountSwitchParentCommentNotFound": "Der ausgewählte Kommentar wurde nicht auf '{instance}'gefunden",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
   },
-  "accountSwitchPostNotFound": "Der gewählte Post wurde nicht auf '{instance}'gefunden. Wechsle zurück auf vorheriges Konto.",
+  "accountSwitchPostNotFound": "Der gewählte Post wurde nicht auf '{instance}'gefunden",
   "@accountSwitchPostNotFound": {
     "description": "Error message for when we couldn't resolve post to reply to"
   },
@@ -1299,7 +1299,7 @@
   },
   "nothingToShare": "Es gibt nichts zu teilen",
   "@nothingToShare": {},
-  "notValidLemmyInstance": "{instance} scheint keine gültige Lemmy-Instanz zu sein",
+  "notValidLemmyInstance": "{instance} scheint keine gültige Instanz zu sein",
   "@notValidLemmyInstance": {},
   "notificationsBehaviourSettings": "Benachrichtigungen",
   "@notificationsBehaviourSettings": {
@@ -3125,7 +3125,7 @@
   "@unfavorite": {
     "description": "Action for unfavoriting a community"
   },
-  "favorite": "Favorit",
+  "favorite": "Favorisieren",
   "@favorite": {
     "description": "Action for favoriting a community"
   },
