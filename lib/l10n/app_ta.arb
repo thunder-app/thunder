@@ -321,7 +321,7 @@
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
   },
-  "accountSwitchParentCommentNotFound": "தேர்ந்தெடுக்கப்பட்ட கருத்து '{instance}' இல் காணப்படவில்லை. முந்தைய கணக்கிற்கு மாறுகிறது.",
+  "accountSwitchParentCommentNotFound": "தேர்ந்தெடுக்கப்பட்ட கருத்து '{instance}' இல் காணப்படவில்லை",
   "@accountSwitchParentCommentNotFound": {
     "description": "Error message for when we couldn't resolve comment to reply to"
   },
@@ -637,7 +637,7 @@
   "@accountSettingsImportedSuccessfully": {
     "description": "Message shown to user when account settings are imported successfully"
   },
-  "accountSwitchPostNotFound": "தேர்ந்தெடுக்கப்பட்ட இடுகை '{instance}' இல் காணப்படவில்லை. முந்தைய கணக்கிற்கு மாறுகிறது.",
+  "accountSwitchPostNotFound": "தேர்ந்தெடுக்கப்பட்ட இடுகை '{instance}' இல் காணப்படவில்லை",
   "@accountSwitchPostNotFound": {
     "description": "Error message for when we couldn't resolve post to reply to"
   },
@@ -1667,7 +1667,7 @@
   },
   "notValidUrl": "செல்லுபடியாகும் முகவரி அல்ல",
   "@notValidUrl": {},
-  "notValidLemmyInstance": "{instance} செல்லுபடியாகும் லெம்மி உதாரணமாகத் தெரியவில்லை",
+  "notValidLemmyInstance": "{instance} செல்லுபடியாகும் உதாரணமாகத் தெரியவில்லை",
   "@notValidLemmyInstance": {},
   "nothingToShare": "பகிர எதுவும் இல்லை",
   "@nothingToShare": {},
@@ -3090,5 +3090,53 @@
   "usernameFormattingRedirect": "பயனர்பெயர் வடிவமைப்பைத் தேடுகிறீர்களா?",
   "@usernameFormattingRedirect": {
     "description": "Setting title for sending the user to the new formatting options"
+  },
+  "addOriginalPostBody": "அசல் இடுகை உடலைச் சேர்க்கவா?",
+  "@addOriginalPostBody": {
+    "description": "Prompt to add the original post body to a cross post"
+  },
+  "block": "தொகுதி",
+  "@block": {
+    "description": "Action for blocking an item"
+  },
+  "errorInitializingClient": "கிளையண்டை துவக்குவதில் பிழை",
+  "@errorInitializingClient": {
+    "description": "Error message for initializing client"
+  },
+  "errorNoActiveInstance": "செயலில் நிகழ்வு எதுவும் கிடைக்கவில்லை",
+  "@errorNoActiveInstance": {
+    "description": "Error message for no active instance found"
+  },
+  "favorite": "பிடித்த",
+  "@favorite": {
+    "description": "Action for favoriting a community"
+  },
+  "invalidUrl": "தவறான முகவரி வடிவம்",
+  "@invalidUrl": {
+    "description": "Error message for invalid URL format"
+  },
+  "noVisibleComments": "சமூகம் தடுக்கப்பட்டிருப்பதால் கருத்துகள் தெரியவில்லை.",
+  "@noVisibleComments": {
+    "description": "A message that shows up when a user navigates to a post but the associated community is blocked."
+  },
+  "performedBy": "செய்தவர்: {user}",
+  "@performedBy": {
+    "description": "Describes the user who performed an action (e.g., moderator)"
+  },
+  "switchedAccount": "{username} க்கு மாறியது",
+  "@switchedAccount": {
+    "description": "Message shown to the user when Thunder automatically switches accounts"
+  },
+  "unableToLoadPost": "இடுகையை ஏற்ற முடியவில்லை",
+  "@unableToLoadPost": {
+    "description": "Error message shown when we are unable to load a post."
+  },
+  "unblock": "தடை",
+  "@unblock": {
+    "description": "Action for unblocking an item"
+  },
+  "unfavorite": "மாறாத",
+  "@unfavorite": {
+    "description": "Action for unfavoriting a community"
   }
 }
