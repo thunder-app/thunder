@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// Error message for when we fail to communicate with Thunder notification server
   ///
   /// In en, this message translates to:
-  /// **'Failed to communicate with Thunder notification server at \'{serverAddress}\''**
+  /// **'Failed to communicate with Thunder notification server at {serverAddress}.'**
   String failedToCommunicateWithThunderNotificationServer(Object serverAddress);
 
   /// No description provided for @failedToLoadBlocks.

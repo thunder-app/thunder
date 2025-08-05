@@ -77,7 +77,7 @@ Future<bool> deleteAccountFromNotificationServer() async {
   }
 }
 
-Future<bool> requestTestNotification() async {
+Future<String?> requestTestNotification() async {
   try {
     final prefs = UserPreferences.instance.preferences;
     String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
@@ -94,9 +94,9 @@ Future<bool> requestTestNotification() async {
     );
 
     // Check if the request was successful
-    if (response.statusCode == 201) return true;
-    return false;
+    if (response.statusCode == 201) return null;
+    return response.body;
   } catch (e) {
-    return false;
+    return e.toString();
   }
 }

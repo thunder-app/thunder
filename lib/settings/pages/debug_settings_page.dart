@@ -472,10 +472,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   ),
                   onTap: inboxNotificationType == NotificationType.unifiedPush
                       ? () async {
-                          if (await requestTestNotification()) {
+                          final error = await requestTestNotification();
+
+                          if (error == null) {
                             showSnackbar(l10n.sentRequestForTestNotification);
                           } else {
-                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                            showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
                           }
                         }
                       : null,
@@ -512,10 +514,12 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                           );
 
                           if (result) {
-                            if (await requestTestNotification()) {
+                            final error = await requestTestNotification();
+
+                            if (error == null) {
                               showSnackbar(l10n.sentRequestForTestNotification);
                             } else {
-                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(pushNotificationServer ?? ''));
+                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
                             }
 
                             SystemNavigator.pop();

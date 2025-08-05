@@ -226,5 +226,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
   );
 
   // Register Thunder with UnifiedPush
-  UnifiedPush.tryUseCurrentOrDefaultDistributor();
+  bool canRegister = await UnifiedPush.tryUseCurrentOrDefaultDistributor();
+  if (canRegister) await UnifiedPush.register(instance: "thunder");
 }

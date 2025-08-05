@@ -971,7 +971,7 @@
   },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
-  "failedToCommunicateWithThunderNotificationServer": "Failed to communicate with Thunder notification server at '{serverAddress}'",
+  "failedToCommunicateWithThunderNotificationServer": "Failed to communicate with Thunder notification server at {serverAddress}.",
   "@failedToCommunicateWithThunderNotificationServer": {
     "description": "Error message for when we fail to communicate with Thunder notification server"
   },

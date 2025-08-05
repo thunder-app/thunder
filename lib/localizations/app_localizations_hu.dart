@@ -976,7 +976,7 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return 'Failed to communicate with Thunder notification server at \'$serverAddress\'';
+    return 'Failed to communicate with Thunder notification server at $serverAddress.';
   }
 
   @override
