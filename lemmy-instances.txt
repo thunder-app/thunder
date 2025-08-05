@@ -4,6 +4,7 @@ awful.systems
 beehaw.org
 discuss.online
 discuss.tchncs.de
+europe.pub
 feddit.dk
 feddit.it
 feddit.nl
@@ -13,7 +14,6 @@ feddit.uk
 infosec.pub
 lemdro.id
 leminal.space
-lemm.ee
 lemmings.world
 lemmy.blahaj.zone
 lemmy.ca
@@ -27,11 +27,11 @@ lemmy.one
 lemmy.sdf.org
 lemmy.today
 lemmy.world
-lemmy.wtf
 lemmy.zip
 lemmygrad.ml
 lemmynsfw.com
 lemy.lol
+literature.cafe
 mander.xyz
 midwest.social
 monero.town
@@ -39,7 +39,6 @@ pawb.social
 programming.dev
 reddthat.com
 sh.itjust.works
-slrpnk.net
 sopuli.xyz
 startrek.website
 szmer.info
