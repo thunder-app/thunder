@@ -338,11 +338,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   icon: Icons.local_fire_department_rounded,
                                   payload: localUser?.defaultSortType,
                                 ),
-                                options: [...SortPicker.getDefaultPostSortTypeItems(), ...topPostSortTypeItems],
+                                options: [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)],
                                 icon: Icons.sort_rounded,
                                 onChanged: (_) async {},
                                 isBottomModalScrollControlled: true,
                                 customListPicker: SortPicker(
+                                  account: account,
                                   title: l10n.defaultFeedSortType,
                                   onSelect: (value) async {
                                     context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));

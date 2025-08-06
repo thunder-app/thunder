@@ -789,13 +789,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   void showSortBottomSheet(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
+    final feedBloc = context.read<FeedBloc>();
 
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
+        account: feedBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
           setState(() {

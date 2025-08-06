@@ -127,7 +127,8 @@ class _PostPageState extends State<PostPage> {
   }
 
   void showSortBottomSheet(BuildContext context, PostState state) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
+    final postBloc = context.read<PostBloc>();
 
     HapticFeedback.mediumImpact();
 
@@ -135,6 +136,7 @@ class _PostPageState extends State<PostPage> {
       showDragHandle: true,
       context: context,
       builder: (builderContext) => CommentSortPicker(
+        account: postBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
           await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
@@ -146,7 +148,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   void replyToPost(BuildContext context, ThunderPost? post, {bool postLocked = false}) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
     final state = context.read<ProfileBloc>().state;
 
     if (postLocked) return showSnackbar(l10n.postLocked);

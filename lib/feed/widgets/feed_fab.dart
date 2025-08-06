@@ -11,6 +11,7 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -268,13 +269,15 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerChangeSort(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
+    final feedBloc = context.read<FeedBloc>();
 
     showModalBottomSheet<void>(
       showDragHandle: true,
       context: context,
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
+        account: feedBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),
         previouslySelected: context.read<FeedBloc>().state.postSortType,

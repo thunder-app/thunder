@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -16,6 +15,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/thunder_popup_menu_item.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {
@@ -74,12 +74,14 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
 
   /// Displays the sort options bottom sheet for comments, since replies and mentions are technically comments
   void showSortBottomSheet() {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
+    final inboxBloc = context.read<InboxBloc>();
 
     showModalBottomSheet<void>(
       showDragHandle: true,
       context: context,
       builder: (builderContext) => CommentSortPicker(
+        account: inboxBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
           setState(() => commentSortType = selected.payload);
@@ -92,7 +94,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     return Scaffold(
       body: BlocConsumer<InboxBloc, InboxState>(

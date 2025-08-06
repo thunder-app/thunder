@@ -281,7 +281,8 @@ class _SortActionChip extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final state = context.read<FeedBloc>().state;
+    final feedBloc = context.read<FeedBloc>();
+    final state = feedBloc.state;
 
     return ThunderActionChip(
       icon: getSortIcon(state),
@@ -295,6 +296,7 @@ class _SortActionChip extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           builder: (builderContext) => SortPicker(
+            account: feedBloc.account,
             title: l10n.sortOptions,
             onSelect: (selected) async {
               try {

@@ -1,29 +1,35 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 
+import 'package:thunder/core/enums/threadiverse_platform.dart';
+
 enum PostSortType {
   active('Active'),
   hot('Hot'),
   new_('New'),
-  old('Old'),
-  topDay('TopDay'),
-  topWeek('TopWeek'),
-  topMonth('TopMonth'),
-  topYear('TopYear'),
-  topAll('TopAll'),
-  mostComments('MostComments'),
-  newComments('NewComments'),
   topHour('TopHour'),
   topSixHour('TopSixHour'),
   topTwelveHour('TopTwelveHour'),
+  topDay('TopDay'),
+  topWeek('TopWeek'),
+  topMonth('TopMonth'),
   topThreeMonths('TopThreeMonths'),
   topSixMonths('TopSixMonths'),
   topNineMonths('TopNineMonths'),
-  controversial('Controversial'),
-  scaled('Scaled');
+  topYear('TopYear'),
+  topAll('TopAll'),
+  scaled('Scaled'),
+  old('Old', platform: ThreadiversePlatform.lemmy),
+  mostComments('MostComments', platform: ThreadiversePlatform.lemmy),
+  newComments('NewComments', platform: ThreadiversePlatform.lemmy),
+  controversial('Controversial', platform: ThreadiversePlatform.lemmy);
 
+  /// The value of the sort type for the API.
   final String value;
 
-  const PostSortType(this.value);
+  /// The platform this sort type is used on. If null, it is used on all platforms.
+  final ThreadiversePlatform? platform;
+
+  const PostSortType(this.value, {this.platform});
 }
 
 extension PostSortTypeMapping on PostSortType {

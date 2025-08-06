@@ -403,7 +403,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     icon: Icons.local_fire_department_rounded,
                     payload: defaultPostSortType,
                   ),
-                  options: [...SortPicker.getDefaultPostSortTypeItems(), ...topPostSortTypeItems],
+                  options: [...getDefaultPostSortTypeItems(), ...getTopPostSortTypeItems()],
                   icon: Icons.sort_rounded,
                   onChanged: (_) async {},
                   isBottomModalScrollControlled: true,
@@ -591,7 +591,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: ListOption(
               description: l10n.defaultCommentSortType,
               value: ListPickerItem(label: defaultCommentSortType.name, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-              options: CommentSortPicker.getCommentSortTypeItems(),
+              options: getCommentSortTypeItems(),
               icon: Icons.comment_bank_rounded,
               onChanged: (_) async {},
               customListPicker: CommentSortPicker(
@@ -603,10 +603,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               valueDisplay: Row(
                 children: [
-                  Icon(CommentSortPicker.getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).icon, size: 13),
+                  Icon(getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).icon, size: 13),
                   const SizedBox(width: 4),
                   Text(
-                    CommentSortPicker.getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).label,
+                    getCommentSortTypeItems().firstWhere((item) => item.payload == defaultCommentSortType).label,
                     style: theme.textTheme.titleSmall,
                   ),
                 ],

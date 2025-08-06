@@ -181,7 +181,8 @@ class FeedAppBarCommunityActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
-    final postSortType = context.read<FeedBloc>().state.postSortType;
+    final feedBloc = context.read<FeedBloc>();
+    final postSortType = feedBloc.state.postSortType;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -203,6 +204,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
+                  account: feedBloc.account,
                   title: l10n.sortOptions,
                   onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),
                   previouslySelected: postSortType,
@@ -246,6 +248,7 @@ class FeedAppBarUserActions extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
+                  account: feedBloc.account,
                   title: l10n.sortOptions,
                   onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),
                   previouslySelected: feedBloc.state.postSortType,
@@ -287,6 +290,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               context: context,
               isScrollControlled: true,
               builder: (builderContext) => SortPicker(
+                account: feedBloc.account,
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),
                 previouslySelected: feedBloc.state.postSortType,

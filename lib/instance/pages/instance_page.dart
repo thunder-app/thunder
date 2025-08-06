@@ -187,6 +187,7 @@ class _InstancePageState extends State<InstancePage> {
                             IconButton(
                               icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
                               onPressed: () {
+                                final feedBloc = context.read<FeedBloc>();
                                 HapticFeedback.mediumImpact();
 
                                 showModalBottomSheet<void>(
@@ -194,6 +195,7 @@ class _InstancePageState extends State<InstancePage> {
                                   context: context,
                                   isScrollControlled: true,
                                   builder: (builderContext) => SortPicker(
+                                    account: feedBloc.account,
                                     title: l10n.sortOptions,
                                     onSelect: (selected) async {
                                       postSortType = selected.payload;

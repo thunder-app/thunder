@@ -1,15 +1,21 @@
 import 'package:lemmy_api_client/v3.dart' as lemmy;
 
+import 'package:thunder/core/enums/threadiverse_platform.dart';
+
 enum CommentSortType {
   hot('Hot'),
   top('Top'),
   new_('New'),
   old('Old'),
-  controversial('Controversial');
+  controversial('Controversial', platform: ThreadiversePlatform.lemmy);
 
+  /// The value of the sort type for the API.
   final String value;
 
-  const CommentSortType(this.value);
+  /// The platform this sort type is used on. If null, it is used on all platforms.
+  final ThreadiversePlatform? platform;
+
+  const CommentSortType(this.value, {this.platform});
 }
 
 extension CommentSortTypeMapping on CommentSortType {

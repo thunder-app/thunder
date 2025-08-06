@@ -205,12 +205,15 @@ class PostAppBarActions extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
           onPressed: () {
+            final postBloc = context.read<PostBloc>();
+
             HapticFeedback.mediumImpact();
 
             showModalBottomSheet<void>(
               showDragHandle: true,
               context: context,
               builder: (builderContext) => CommentSortPicker(
+                account: postBloc.account,
                 title: l10n.sortOptions,
                 onSelect: (selected) async {
                   await onReset?.call();
@@ -282,7 +285,7 @@ class PostAppBarActions extends StatelessWidget {
     return ('', null);
   }
 
-  ListPickerItem<CommentSortType>? commentSortTypeItem = CommentSortPicker.getCommentSortTypeItems().firstWhereOrNull((item) => item.payload == state.commentSortType);
+  ListPickerItem<CommentSortType>? commentSortTypeItem = getCommentSortTypeItems().firstWhereOrNull((item) => item.payload == state.commentSortType);
 
   return (commentSortTypeItem?.label ?? '', commentSortTypeItem?.icon);
 }
