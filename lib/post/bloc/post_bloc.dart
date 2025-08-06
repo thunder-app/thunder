@@ -243,7 +243,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         commentSortType: commentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
-        page: state.commentPage,
+        page: event.commentParentId == null ? state.commentPage : null,
       );
       // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
       // so we should display an error
