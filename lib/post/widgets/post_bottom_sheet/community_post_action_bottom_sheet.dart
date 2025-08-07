@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -13,17 +11,38 @@ import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
-  viewCommunity(icon: Icons.home_work_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  subscribeToCommunity(icon: Icons.add_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  unsubscribeFromCommunity(icon: Icons.remove_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  blockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  ;
+  viewCommunity(
+    icon: Icons.home_work_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  subscribeToCommunity(
+    icon: Icons.add_circle_outline_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  unsubscribeFromCommunity(
+    icon: Icons.remove_circle_outline_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  blockCommunity(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  unblockCommunity(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  );
 
   String get name => switch (this) {
         CommunityPostAction.viewCommunity => l10n.visitCommunity,
@@ -46,14 +65,31 @@ enum CommunityPostAction {
 }
 
 /// A bottom sheet that allows the user to perform actions on a community.
-///
-/// Given a [post] and a [onAction] callback, this widget will display a list of actions that can be taken on the community.
-/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [ThunderCommunity].
 class CommunityPostActionBottomSheet extends StatefulWidget {
-  const CommunityPostActionBottomSheet({super.key, required this.post, required this.onAction});
+  const CommunityPostActionBottomSheet({
+    super.key,
+    required this.post,
+    required this.account,
+    required this.moderatedCommunities,
+    required this.blockedCommunities,
+    required this.subscribedCommunities,
+    required this.onAction,
+  });
 
   /// The post information
   final ThunderPost post;
+
+  /// The account that is performing the action
+  final Account account;
+
+  /// List of moderated communities
+  final List<ThunderCommunity> moderatedCommunities;
+
+  /// List of blocked communities
+  final List<ThunderCommunity> blockedCommunities;
+
+  /// List of subscribed communities
+  final List<ThunderCommunity> subscribedCommunities;
 
   /// Called when an action is selected
   final Function(CommunityAction communityAction, ThunderCommunity? community) onAction;
@@ -63,27 +99,38 @@ class CommunityPostActionBottomSheet extends StatefulWidget {
 }
 
 class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBottomSheet> {
-  CommunityAction? _communityAction;
+  void performAction(CommunityPostAction action) async {
+    final l10n = GlobalContext.l10n;
+    final repository = CommunityRepositoryImpl(account: widget.account);
 
-  void performAction(CommunityPostAction action) {
     switch (action) {
       case CommunityPostAction.viewCommunity:
         Navigator.of(context).pop();
         navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.post.community!.id);
         break;
       case CommunityPostAction.subscribeToCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.follow, value: true));
-        setState(() => _communityAction = CommunityAction.follow);
+        Navigator.of(context).pop();
+        final community = await repository.subscribe(widget.post.community!.id, true);
+        if (community.subscribed != SubscriptionStatus.notSubscribed) showSnackbar('Subscribed to ${community.titleOrName}');
+        widget.onAction(CommunityAction.follow, widget.post.community);
         break;
       case CommunityPostAction.unsubscribeFromCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.follow, value: false));
+        Navigator.of(context).pop();
+        final community = await repository.subscribe(widget.post.community!.id, false);
+        if (community.subscribed == SubscriptionStatus.notSubscribed) showSnackbar('Unsubscribed from ${community.titleOrName}');
+        widget.onAction(CommunityAction.follow, widget.post.community);
         break;
       case CommunityPostAction.blockCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.block, value: true));
-        setState(() => _communityAction = CommunityAction.block);
+        Navigator.of(context).pop();
+        final community = await repository.block(widget.post.community!.id, true);
+        if (community.blocked == true) showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
+        widget.onAction(CommunityAction.block, widget.post.community);
         break;
       case CommunityPostAction.unblockCommunity:
-        context.read<CommunityBloc>().add(CommunityActionEvent(communityId: widget.post.community!.id, communityAction: CommunityAction.block, value: false));
+        Navigator.of(context).pop();
+        final community = await repository.block(widget.post.community!.id, false);
+        if (community.blocked == false) showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
+        widget.onAction(CommunityAction.block, widget.post.community);
         break;
     }
   }
@@ -91,99 +138,75 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<ProfileBloc>().state;
 
-    List<CommunityPostAction> userActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<CommunityPostAction> userActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
     List<CommunityPostAction> moderatorActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    // List<CommunityPostAction> adminActions = CommunityPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isCommunityBlocked = widget.blockedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isSubscribedToCommunity = widget.subscribedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
 
-    final isLoggedIn = authState.isLoggedIn;
-    final blockedCommunities = authState.siteResponse?.myUser?.communityBlocks ?? [];
-
-    final isCommunityBlocked = blockedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
-    final isSubscribedToCommunity = widget.post.subscribed != SubscriptionStatus.notSubscribed;
-
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
+      // Should not be able to subscribe/unsubscribe/block/unblock if you are a moderator of that community
+      if (isModerator) {
+        userActions = userActions.where((action) => action != CommunityPostAction.subscribeToCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.unsubscribeFromCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.blockCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.unblockCommunity).toList();
+      }
+
+      // Should not be able to subscribe/block/unblock if you are already subscribed to the community
       if (isSubscribedToCommunity) {
         userActions = userActions.where((action) => action != CommunityPostAction.subscribeToCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.blockCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.unblockCommunity).toList();
       } else {
         userActions = userActions.where((action) => action != CommunityPostAction.unsubscribeFromCommunity).toList();
       }
 
+      // Should not be able to subscribe/unsubscribe/block if you are blocked from the community
       if (isCommunityBlocked) {
         userActions = userActions.where((action) => action != CommunityPostAction.blockCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.subscribeToCommunity).toList();
+        userActions = userActions.where((action) => action != CommunityPostAction.unsubscribeFromCommunity).toList();
       } else {
         userActions = userActions.where((action) => action != CommunityPostAction.unblockCommunity).toList();
       }
     }
 
-    return BlocListener<CommunityBloc, CommunityState>(
-      listener: (context, state) {
-        if (state.status == CommunityStatus.success) {
-          Navigator.of(context).pop();
-          if (_communityAction != null) widget.onAction(_communityAction!, state.community);
-          setState(() => _communityAction = null);
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...userActions
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...userActions
+            .map((communityPostAction) => BottomSheetAction(
+                  leading: Icon(communityPostAction.icon),
+                  title: communityPostAction.name,
+                  onTap: () => performAction(communityPostAction),
+                ))
+            .toList() as List<Widget>,
+        if (isModerator && moderatorActions.isNotEmpty) ...[
+          const ThunderDivider(sliver: false, padding: false),
+          ...moderatorActions
               .map(
                 (communityPostAction) => BottomSheetAction(
                   leading: Icon(communityPostAction.icon),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(left: 1),
+                    child: Icon(
+                      Thunder.shield,
+                      size: 20,
+                      color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
+                    ),
+                  ),
                   title: communityPostAction.name,
                   onTap: () => performAction(communityPostAction),
                 ),
               )
               .toList() as List<Widget>,
-          if (isModerator && moderatorActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...moderatorActions
-                .map(
-                  (communityPostAction) => BottomSheetAction(
-                    leading: Icon(communityPostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                      ),
-                    ),
-                    title: communityPostAction.name,
-                    onTap: () => performAction(communityPostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
-          // if (isAdmin && adminActions.isNotEmpty) ...[
-          //   const ThunderDivider(sliver: false, padding: false),
-          //   ...adminActions
-          //       .map(
-          //         (communityPostAction) => BottomSheetAction(
-          //           leading: Icon(communityPostAction.icon),
-          //           trailing: Padding(
-          //             padding: const EdgeInsets.only(left: 1),
-          //             child: Icon(
-          //               Thunder.shield_crown,
-          //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
-          //             ),
-          //           ),
-          //           title: communityPostAction.name,
-          //           onTap: () => performAction(communityPostAction),
-          //         ),
-          //       )
-          //       .toList() as List<Widget>,
-          // ],
         ],
-      ),
+      ],
     );
   }
 }

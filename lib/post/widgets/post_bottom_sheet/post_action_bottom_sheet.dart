@@ -63,12 +63,25 @@ class PostActionBottomSheet extends StatefulWidget {
 }
 
 class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
+  /// The account that is performing the action
   late Account account;
 
+  /// List of subscribed communities
+  List<ThunderCommunity> subscribedCommunities = [];
+
+  /// List of blocked communities
+  List<ThunderCommunity> blockedCommunities = [];
+
+  /// List of moderated communities
   List<ThunderCommunity> moderatedCommunities = [];
+
+  /// List of blocked users
   List<ThunderUser> blockedUsers = [];
+
+  /// List of blocked instances
   List<ThunderInstanceBlock> blockedInstances = [];
 
+  /// The current page of the bottom sheet
   GeneralPostAction currentPage = GeneralPostAction.general;
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
@@ -106,6 +119,8 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
       blockedUsers = siteInfo.myUser?.personBlocks ?? [];
       blockedInstances = siteInfo.myUser?.instanceBlocks ?? [];
       moderatedCommunities = siteInfo.myUser?.moderates ?? [];
+      blockedCommunities = siteInfo.myUser?.communityBlocks ?? [];
+      subscribedCommunities = siteInfo.myUser?.follows ?? [];
     });
   }
 
@@ -163,9 +178,19 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.community => CommunityPostActionBottomSheet(
+          account: account,
           post: widget.post,
+          moderatedCommunities: moderatedCommunities,
+          blockedCommunities: blockedCommunities,
+          subscribedCommunities: subscribedCommunities,
           onAction: (CommunityAction communityAction, ThunderCommunity? updatedCommunity) {
-            widget.onAction?.call(communityAction: communityAction, post: widget.post);
+            widget.onAction?.call(
+              communityAction: communityAction,
+              post: widget.post.copyWith(
+                community: updatedCommunity,
+                subscribed: updatedCommunity?.subscribed,
+              ),
+            );
           },
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
