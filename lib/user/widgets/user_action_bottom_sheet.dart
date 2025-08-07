@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/repository/community_repository.dart';
-import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
@@ -95,6 +94,8 @@ class UserActionBottomSheet extends StatefulWidget {
     super.key,
     required this.context,
     required this.account,
+    required this.blockedUsers,
+    required this.moderatedCommunities,
     required this.user,
     this.communityId,
     this.isUserCommunityModerator,
@@ -107,6 +108,12 @@ class UserActionBottomSheet extends StatefulWidget {
 
   /// The account that is performing the action
   final Account account;
+
+  /// List of blocked users
+  final List<ThunderUser> blockedUsers;
+
+  /// List of moderated communities
+  final List<ThunderCommunity> moderatedCommunities;
 
   /// The user that we are interacting with
   final ThunderUser user;
@@ -129,25 +136,6 @@ class UserActionBottomSheet extends StatefulWidget {
 }
 
 class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
-  List<ThunderUser> blockedUsers = [];
-  List<ThunderCommunity> moderatedCommunities = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => getUserInformation());
-  }
-
-  Future<void> getUserInformation() async {
-    final repository = InstanceRepositoryImpl(account: widget.account);
-    final siteInfo = await repository.getSiteInfo();
-
-    setState(() {
-      blockedUsers = siteInfo.myUser?.personBlocks ?? [];
-      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
-    });
-  }
-
   void performAction(UserBottomSheetAction action) async {
     final l10n = GlobalContext.l10n;
     final userRepository = UserRepositoryImpl(account: widget.account);
@@ -265,8 +253,8 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
 
-    final isModerator = moderatedCommunities.where((c) => c.id == widget.communityId).isNotEmpty;
-    final isUserBlocked = blockedUsers.where((u) => u.actorId == widget.user.actorId).isNotEmpty;
+    final isModerator = widget.moderatedCommunities.where((c) => c.id == widget.communityId).isNotEmpty;
+    final isUserBlocked = widget.blockedUsers.where((u) => u.actorId == widget.user.actorId).isNotEmpty;
 
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
     final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;

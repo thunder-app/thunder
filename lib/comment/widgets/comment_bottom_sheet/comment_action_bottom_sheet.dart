@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
+import 'package:thunder/core/models/thunder_my_user.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
@@ -57,6 +60,12 @@ class CommentActionBottomSheet extends StatefulWidget {
 }
 
 class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
+  late Account account;
+
+  List<ThunderCommunity> moderatedCommunities = [];
+  List<ThunderUser> blockedUsers = [];
+  List<ThunderInstanceBlock> blockedInstances = [];
+
   GeneralCommentAction currentPage = GeneralCommentAction.general;
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
@@ -71,14 +80,30 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   @override
   void initState() {
     super.initState();
+    account = context.read<ProfileBloc>().state.account;
+
     currentPage = widget.initialPage;
     BackButtonInterceptor.add(_handleBack);
+    WidgetsBinding.instance.addPostFrameCallback((_) => getUserInformation());
   }
 
   @override
   void dispose() {
     BackButtonInterceptor.remove(_handleBack);
     super.dispose();
+  }
+
+  Future<void> getUserInformation() async {
+    if (account.anonymous) return;
+
+    final repository = InstanceRepositoryImpl(account: account);
+    final siteInfo = await repository.getSiteInfo();
+
+    setState(() {
+      blockedUsers = siteInfo.myUser?.personBlocks ?? [];
+      blockedInstances = siteInfo.myUser?.instanceBlocks ?? [];
+      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
+    });
   }
 
   String? generateSubtitle(GeneralCommentAction page) {
@@ -125,6 +150,8 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
       GeneralCommentAction.user => UserActionBottomSheet(
           account: account,
           context: widget.context,
+          blockedUsers: blockedUsers,
+          moderatedCommunities: moderatedCommunities,
           user: widget.comment.creator!,
           communityId: widget.comment.community!.id,
           isUserCommunityModerator: widget.comment.creatorIsModerator,
@@ -135,6 +162,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
         ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
           account: account,
+          blockedInstances: blockedInstances,
           userInstanceId: widget.comment.creator!.instanceId,
           userInstanceUrl: widget.comment.creator!.actorId,
         ),

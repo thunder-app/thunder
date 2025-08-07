@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/core/models/thunder_my_user.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -61,6 +63,12 @@ class PostActionBottomSheet extends StatefulWidget {
 }
 
 class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
+  late Account account;
+
+  List<ThunderCommunity> moderatedCommunities = [];
+  List<ThunderUser> blockedUsers = [];
+  List<ThunderInstanceBlock> blockedInstances = [];
+
   GeneralPostAction currentPage = GeneralPostAction.general;
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
@@ -75,14 +83,30 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   @override
   void initState() {
     super.initState();
+    account = context.read<ProfileBloc>().state.account;
+
     currentPage = widget.initialPage;
     BackButtonInterceptor.add(_handleBack);
+    WidgetsBinding.instance.addPostFrameCallback((_) => getUserInformation());
   }
 
   @override
   void dispose() {
     BackButtonInterceptor.remove(_handleBack);
     super.dispose();
+  }
+
+  Future<void> getUserInformation() async {
+    if (account.anonymous) return;
+
+    final repository = InstanceRepositoryImpl(account: account);
+    final siteInfo = await repository.getSiteInfo();
+
+    setState(() {
+      blockedUsers = siteInfo.myUser?.personBlocks ?? [];
+      blockedInstances = siteInfo.myUser?.instanceBlocks ?? [];
+      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
+    });
   }
 
   String? generateSubtitle(GeneralPostAction page) {
@@ -106,7 +130,6 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final account = context.read<ProfileBloc>().state.account;
 
     Widget actions = switch (currentPage) {
       GeneralPostAction.general => GeneralPostActionBottomSheetPage(
@@ -120,6 +143,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
       GeneralPostAction.post => PostPostActionBottomSheet(
           account: account,
           context: widget.context,
+          moderatedCommunities: moderatedCommunities,
           post: widget.post,
           onAction: (PostAction postAction, ThunderPost? post) {
             widget.onAction?.call(postAction: postAction, post: post);
@@ -128,6 +152,8 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
       GeneralPostAction.user => UserActionBottomSheet(
           account: account,
           context: widget.context,
+          blockedUsers: blockedUsers,
+          moderatedCommunities: moderatedCommunities,
           user: widget.post.creator!,
           communityId: widget.post.community?.id,
           isUserCommunityModerator: widget.post.creatorIsModerator,
@@ -144,6 +170,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
           account: account,
+          blockedInstances: blockedInstances,
           userInstanceId: widget.post.creator?.instanceId,
           userInstanceUrl: widget.post.creator?.actorId,
           communityInstanceId: widget.post.community?.instanceId,

@@ -69,6 +69,7 @@ class InstanceActionBottomSheet extends StatefulWidget {
   const InstanceActionBottomSheet({
     super.key,
     required this.account,
+    required this.blockedInstances,
     this.communityInstanceId,
     this.communityInstanceUrl,
     this.userInstanceId,
@@ -77,6 +78,9 @@ class InstanceActionBottomSheet extends StatefulWidget {
 
   /// The account to use for the instance actions
   final Account account;
+
+  /// List of blocked instances
+  final List<ThunderInstanceBlock> blockedInstances;
 
   /// The instance id for the given community
   final int? communityInstanceId;
@@ -95,23 +99,6 @@ class InstanceActionBottomSheet extends StatefulWidget {
 }
 
 class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
-  List<ThunderInstanceBlock> blockedInstances = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => getBlockedInstances());
-  }
-
-  Future<void> getBlockedInstances() async {
-    if (widget.account.anonymous) return;
-
-    final repository = InstanceRepositoryImpl(account: widget.account);
-    final siteInfo = await repository.getSiteInfo();
-
-    setState(() => blockedInstances = siteInfo.myUser?.instanceBlocks ?? []);
-  }
-
   Future<void> performAction(InstanceBottomSheetAction action) async {
     final l10n = GlobalContext.l10n;
     final repository = InstanceRepositoryImpl(account: widget.account);
@@ -158,8 +145,8 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
     final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);
     final accountInstance = widget.account.instance;
 
-    final isCommunityInstanceBlocked = blockedInstances.where((ibv) => ibv.instance['id'] == widget.communityInstanceId).isNotEmpty;
-    final isUserInstanceBlocked = blockedInstances.where((ibv) => ibv.instance['id'] == widget.userInstanceId).isNotEmpty;
+    final isCommunityInstanceBlocked = widget.blockedInstances.where((ibv) => ibv.instance['id'] == widget.communityInstanceId).isNotEmpty;
+    final isUserInstanceBlocked = widget.blockedInstances.where((ibv) => ibv.instance['id'] == widget.userInstanceId).isNotEmpty;
 
     // Filter out actions that don't have the proper information passed in
     if (widget.communityInstanceId == null || widget.communityInstanceUrl == null) {

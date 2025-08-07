@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
-import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/post/repository/post_repository.dart';
@@ -95,13 +94,23 @@ enum PostPostAction {
 
 /// A bottom sheet that allows the user to perform actions on the post.
 class PostPostActionBottomSheet extends StatefulWidget {
-  const PostPostActionBottomSheet({super.key, required this.context, required this.account, required this.post, required this.onAction});
+  const PostPostActionBottomSheet({
+    super.key,
+    required this.context,
+    required this.account,
+    required this.moderatedCommunities,
+    required this.post,
+    required this.onAction,
+  });
 
   /// The outer context
   final BuildContext context;
 
   /// The account that is performing the action
   final Account account;
+
+  /// List of moderated communities
+  final List<ThunderCommunity> moderatedCommunities;
 
   /// The post information
   final ThunderPost post;
@@ -114,23 +123,6 @@ class PostPostActionBottomSheet extends StatefulWidget {
 }
 
 class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
-  List<ThunderCommunity> moderatedCommunities = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => getModeratedCommunities());
-  }
-
-  Future<void> getModeratedCommunities() async {
-    final repository = InstanceRepositoryImpl(account: widget.account);
-    final siteInfo = await repository.getSiteInfo();
-
-    setState(() {
-      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
-    });
-  }
-
   void performAction(PostPostAction action) async {
     final l10n = GlobalContext.l10n;
     final repository = PostRepositoryImpl(account: widget.account);
@@ -259,7 +251,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     List<PostPostAction> userActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
 
-    final isModerator = moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
+    final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
 
     final isPostLocked = widget.post.locked;
     final isPostPinnedToCommunity = widget.post.featuredCommunity; // Pin to community
