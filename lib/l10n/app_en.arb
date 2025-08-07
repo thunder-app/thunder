@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "about": "About",
   "@about": {
     "description": "About settings category."
@@ -13,11 +14,21 @@
   "@accessibilityProfilesDescription": {},
   "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
   "@account": {
-    "description": "Describes the user account"
+    "description": "Describes the user account",
+    "placeholders": {
+      "count": {
+        "description": "The number of accounts"
+      }
+    }
   },
   "accountBirthday": "Account Birthday {additionalInfo}",
   "@accountBirthday": {
-    "description": "User descriptor for accounts created on today's date"
+    "description": "User descriptor for accounts created on today's date",
+    "placeholders": {
+      "additionalInfo": {
+        "description": "Additional information about the account"
+      }
+    }
   },
   "accountSettingOverrideWarning": "Your account settings override the following settings",
   "@accountSettingOverrideWarning": {
@@ -27,7 +38,12 @@
   "@accountSettings": {},
   "accountSettingsExportedSuccessfully": "Lemmy account settings exported successfully to {savedFilePath}!",
   "@accountSettingsExportedSuccessfully": {
-    "description": "Message shown to user when account settings are exported successfully"
+    "description": "Message shown to user when account settings are exported successfully",
+    "placeholders": {
+      "savedFilePath": {
+        "description": "The path to the saved file"
+      }
+    }
   },
   "accountSettingsImportedSuccessfully": "Lemmy account settings imported successfully!",
   "@accountSettingsImportedSuccessfully": {
@@ -35,11 +51,21 @@
   },
   "accountSwitchParentCommentNotFound": "The selected comment was not found on '{instance}'",
   "@accountSwitchParentCommentNotFound": {
-    "description": "Error message for when we couldn't resolve comment to reply to"
+    "description": "Error message for when we couldn't resolve comment to reply to",
+    "placeholders": {
+      "instance": {
+        "description": "The instance name"
+      }
+    }
   },
   "accountSwitchPostNotFound": "The selected post was not found on '{instance}'",
   "@accountSwitchPostNotFound": {
-    "description": "Error message for when we couldn't resolve post to reply to"
+    "description": "Error message for when we couldn't resolve post to reply to",
+    "placeholders": {
+      "instance": {
+        "description": "The instance name"
+      }
+    }
   },
   "actionColors": "Action Colors",
   "@actionColors": {
@@ -99,6 +125,15 @@
   "@addedModToCommunity": {
     "description": "Short decription for moderator action to add a mod to a community"
   },
+  "addedUserAsCommunityModerator": "Added {username} as community moderator",
+  "@addedUserAsCommunityModerator": {
+    "description": "Short decription for moderator action to add a user as community moderator",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user"
+      }
+    }
+  },
   "admin": "Admin",
   "@admin": {
     "description": "Role name for admin"
@@ -109,7 +144,12 @@
   },
   "ago": "{time} ago",
   "@ago": {
-    "description": "Represents a duration in the past"
+    "description": "Represents a duration in the past",
+    "placeholders": {
+      "time": {
+        "description": "The duration in the past"
+      }
+    }
   },
   "all": "All",
   "@all": {},
@@ -132,7 +172,14 @@
   "always": "Always",
   "@always": {},
   "andXMore": "and {count} more",
-  "@andXMore": {},
+  "@andXMore": {
+    "description": "Represents a number of items",
+    "placeholders": {
+      "count": {
+        "description": "The number of items"
+      }
+    }
+  },
   "animations": "Animations",
   "@animations": {},
   "anonymous": "Anonymous",
@@ -159,19 +206,39 @@
   "@apply": {},
   "areNotificationsAllowedBySystem": "Notifications are allowed by system: {yesOrNo}",
   "@areNotificationsAllowedBySystem": {
-    "description": "A status indicator for whether notifications are allowed by OS permissions"
+    "description": "A status indicator for whether notifications are allowed by OS permissions",
+    "placeholders": {
+      "yesOrNo": {
+        "description": "Whether notifications are allowed by OS permissions"
+      }
+    }
   },
   "averageComments": "{x} comments/month",
   "@averageComments": {
-    "description": "Describes the average number of comments created in the past month"
+    "description": "Describes the average number of comments created in the past month",
+    "placeholders": {
+      "x": {
+        "description": "The average number of comments created in the past month"
+      }
+    }
   },
   "averageContributions": "{x} contributions/month",
   "@averageContributions": {
-    "description": "Describes the average number of contributions (both posts and comments) in the past month"
+    "description": "Describes the average number of contributions (both posts and comments) in the past month",
+    "placeholders": {
+      "x": {
+        "description": "The average number of contributions (both posts and comments) in the past month"
+      }
+    }
   },
   "averagePosts": "{x} posts/month",
   "@averagePosts": {
-    "description": "Describes the average number of posts created in the past month"
+    "description": "Describes the average number of posts created in the past month",
+    "placeholders": {
+      "x": {
+        "description": "The average number of posts created in the past month"
+      }
+    }
   },
   "back": "Back",
   "@back": {},
@@ -182,6 +249,10 @@
   "backgroundCheckWarning": "Note that notification checks will consume additional battery",
   "@backgroundCheckWarning": {
     "description": "Warning for enabling notifications"
+  },
+  "ban": "Ban",
+  "@ban": {
+    "description": "Short decription for moderator action to ban a user"
   },
   "banFromCommunity": "Ban from Community",
   "@banFromCommunity": {
@@ -260,7 +331,14 @@
     "description": "Title for link handling setting (called browserMode internally)"
   },
   "browsingAnonymously": "You are currently browsing {instance} anonymously.",
-  "@browsingAnonymously": {},
+  "@browsingAnonymously": {
+    "description": "Message shown to user when browsing anonymously",
+    "placeholders": {
+      "instance": {
+        "description": "The instance name"
+      }
+    }
+  },
   "cancel": "Cancel",
   "@cancel": {},
   "cannotReportOwnComment": "You may not submit a report for your own comment.",
@@ -305,7 +383,12 @@
   "@changeSort": {},
   "clearCache": "Clear Cache ({cacheSize})",
   "@clearCache": {
-    "description": "Label for action to clear cache in the dialog"
+    "description": "Label for action to clear cache in the dialog",
+    "placeholders": {
+      "cacheSize": {
+        "description": "The size of the cache"
+      }
+    }
   },
   "clearCacheLabel": "Clear Cache",
   "@clearCacheLabel": {
@@ -439,7 +522,12 @@
   },
   "communityEntry": "Community '{community}'",
   "@communityEntry": {
-    "description": "Entry in list for a community to perform further actions"
+    "description": "Entry in list for a community to perform further actions",
+    "placeholders": {
+      "community": {
+        "description": "The name of the community"
+      }
+    }
   },
   "communityFormat": "Community Format",
   "@communityFormat": {
@@ -515,7 +603,12 @@
   },
   "connectedToUnifiedPushDistributorApp": "Conected to {app}",
   "@connectedToUnifiedPushDistributorApp": {
-    "description": "Tell the user which UnifiedPush app we're connected to"
+    "description": "Tell the user which UnifiedPush app we're connected to",
+    "placeholders": {
+      "app": {
+        "description": "The name of the UnifiedPush app"
+      }
+    }
   },
   "contentManagement": "Content Management",
   "@contentManagement": {
@@ -553,39 +646,84 @@
   },
   "countComments": "{count} Comments",
   "@countComments": {
-    "description": "Number of comments"
+    "description": "Number of comments",
+    "placeholders": {
+      "count": {
+        "description": "The number of comments"
+      }
+    }
   },
   "countLocalSubscribers": "{count} Local Subscribers",
   "@countLocalSubscribers": {
-    "description": "Number of local subscribers"
+    "description": "Number of local subscribers",
+    "placeholders": {
+      "count": {
+        "description": "The number of local subscribers"
+      }
+    }
   },
   "countPosts": "{count} Posts",
   "@countPosts": {
-    "description": "Number of posts"
+    "description": "Number of posts",
+    "placeholders": {
+      "count": {
+        "description": "The number of posts"
+      }
+    }
   },
   "countSubscribers": "{count} Subscribers",
   "@countSubscribers": {
-    "description": "Number of subscribers"
+    "description": "Number of subscribers",
+    "placeholders": {
+      "count": {
+        "description": "The number of subscribers"
+      }
+    }
   },
   "countUsers": "{count} users",
   "@countUsers": {
-    "description": "Describes a certain number of users"
+    "description": "Describes a certain number of users",
+    "placeholders": {
+      "count": {
+        "description": "The number of users"
+      }
+    }
   },
   "countUsersActiveDay": "{count} users/day",
   "@countUsersActiveDay": {
-    "description": "Number of users active in the last day"
+    "description": "Number of users active in the last day",
+    "placeholders": {
+      "count": {
+        "description": "The number of users active in the last day"
+      }
+    }
   },
   "countUsersActiveHalfYear": "{count} users/6 mo",
   "@countUsersActiveHalfYear": {
-    "description": "Number of users active in the last half year"
+    "description": "Number of users active in the last half year",
+    "placeholders": {
+      "count": {
+        "description": "The number of users active in the last half year"
+      }
+    }
   },
   "countUsersActiveMonth": "{count} users/mo",
   "@countUsersActiveMonth": {
-    "description": "Number of users active in the last month"
+    "description": "Number of users active in the last month",
+    "placeholders": {
+      "count": {
+        "description": "The number of users active in the last month"
+      }
+    }
   },
   "countUsersActiveWeek": "{count} users/wk",
   "@countUsersActiveWeek": {
-    "description": "Number of users active in the last week"
+    "description": "Number of users active in the last week",
+    "placeholders": {
+      "count": {
+        "description": "The number of users active in the last week"
+      }
+    }
   },
   "createAccount": "Create Account",
   "@createAccount": {},
@@ -597,7 +735,12 @@
   "@createPost": {},
   "created": "Created {date}",
   "@created": {
-    "description": "The date that something was created"
+    "description": "The date that something was created",
+    "placeholders": {
+      "date": {
+        "description": "The date that something was created"
+      }
+    }
   },
   "createdToday": "Created Today",
   "@createdToday": {
@@ -607,9 +750,14 @@
   "@creator": {
     "description": "The creator filter for searches."
   },
-  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "crossPostedFrom": "cross-posted from: {postUrl}",
   "@crossPostedFrom": {
-    "description": "Initial heading for text-based cross-post"
+    "description": "Initial heading for text-based cross-post",
+    "placeholders": {
+      "postUrl": {
+        "description": "The URL of the post that was cross-posted from"
+      }
+    }
   },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},
@@ -617,7 +765,12 @@
   "@currentLongPress": {},
   "currentNotificationsMode": "Current notifications mode: {mode}",
   "@currentNotificationsMode": {
-    "description": "A status indicator for the current notifications mode"
+    "description": "A status indicator for the current notifications mode",
+    "placeholders": {
+      "mode": {
+        "description": "The current notifications mode"
+      }
+    }
   },
   "currentSinglePress": "Currently set as single press",
   "@currentSinglePress": {},
@@ -637,7 +790,12 @@
   },
   "databaseExportedSuccessfully": "The database was successfully exported to '{savedFilePath}'",
   "@databaseExportedSuccessfully": {
-    "description": "Message shown to the user when the db was successfully exported"
+    "description": "Message shown to the user when the db was successfully exported",
+    "placeholders": {
+      "savedFilePath": {
+        "description": "The path to the saved file"
+      }
+    }
   },
   "databaseImportedSuccessfully": "The database was imported successfully!",
   "@databaseImportedSuccessfully": {
@@ -749,7 +907,12 @@
   "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
   "@detailedReason": {
-    "description": "The reason for the moderation action"
+    "description": "The reason for the moderation action",
+    "placeholders": {
+      "reason": {
+        "description": "The reason for the moderation action"
+      }
+    }
   },
   "dimReadPosts": "Dim Read Posts",
   "@dimReadPosts": {
@@ -865,10 +1028,22 @@
   "@endSearch": {},
   "errorDeletingImage": "There was an error deleting the image: {error}",
   "@errorDeletingImage": {
-    "description": "Error message for deleting an image"
+    "description": "Error message for deleting an image",
+    "placeholders": {
+      "error": {
+        "description": "The error message"
+      }
+    }
   },
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
-  "@errorDownloadingMedia": {},
+  "@errorDownloadingMedia": {
+    "description": "Error message for downloading media",
+    "placeholders": {
+      "errorMessage": {
+        "description": "The error message"
+      }
+    }
+  },
   "errorImportingAccountSettings": "There was an error importing the settings. The file might not be in the right format.",
   "@errorImportingAccountSettings": {
     "description": "Message shown to user when account there was an error importing the settings"
@@ -970,13 +1145,32 @@
     "description": "Description for extra large font scale"
   },
   "failedToBlock": "Failed to block: {errorMessage}",
-  "@failedToBlock": {},
+  "@failedToBlock": {
+    "description": "Error message for when we fail to block a user",
+    "placeholders": {
+      "errorMessage": {
+        "description": "The error message"
+      }
+    }
+  },
   "failedToCommunicateWithThunderNotificationServer": "Failed to communicate with Thunder notification server at {serverAddress}.",
   "@failedToCommunicateWithThunderNotificationServer": {
-    "description": "Error message for when we fail to communicate with Thunder notification server"
+    "description": "Error message for when we fail to communicate with Thunder notification server",
+    "placeholders": {
+      "serverAddress": {
+        "description": "The address of the Thunder notification server"
+      }
+    }
   },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
-  "@failedToLoadBlocks": {},
+  "@failedToLoadBlocks": {
+    "description": "Error message for when we fail to load blocks",
+    "placeholders": {
+      "errorMessage": {
+        "description": "The error message"
+      }
+    }
+  },
   "failedToLoadVideo": "Failed to load video. Open link in browser?",
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
@@ -986,7 +1180,14 @@
     "description": "Error message when we fail to perform an action"
   },
   "failedToUnblock": "Could not unblock: {errorMessage}",
-  "@failedToUnblock": {},
+  "@failedToUnblock": {
+    "description": "Error message for when we fail to unblock a user",
+    "placeholders": {
+      "errorMessage": {
+        "description": "The error message"
+      }
+    }
+  },
   "failedToUpdateNotificationSettings": "Failed to update notification settings",
   "@failedToUpdateNotificationSettings": {
     "description": "Error message when failed to update notification settings."
@@ -1021,7 +1222,12 @@
   "@fetchAccountError": {},
   "filteringBy": "Filtering by {entity}",
   "@filteringBy": {
-    "description": "Filtering by a community or creator in search."
+    "description": "Filtering by a community or creator in search.",
+    "placeholders": {
+      "entity": {
+        "description": "The entity that is being filtered by"
+      }
+    }
   },
   "filters": "Filters",
   "@filters": {
@@ -1188,7 +1394,17 @@
     "description": "Action to import application settings."
   },
   "inReplyTo": "In reply to {post} in {community}",
-  "@inReplyTo": {},
+  "@inReplyTo": {
+    "description": "Indicates that a comment/post is in reply to a certain post in a certain community",
+    "placeholders": {
+      "post": {
+        "description": "The post that is being replied to"
+      },
+      "community": {
+        "description": "The community that the post is in"
+      }
+    }
+  },
   "in_": "in",
   "@in_": {
     "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
@@ -1213,7 +1429,12 @@
   },
   "instance": "{count, plural, zero {Instance} one {Instance} other {Instances} } ",
   "@instance": {
-    "description": "Heading for an instance"
+    "description": "Heading for an instance",
+    "placeholders": {
+      "count": {
+        "description": "The number of instances"
+      }
+    }
   },
   "instanceActions": "Instance Actions",
   "@instanceActions": {
@@ -1221,10 +1442,22 @@
   },
   "instanceEntry": "Instance '{username}'",
   "@instanceEntry": {
-    "description": "Entry in list for a instance to perform further actions"
+    "description": "Entry in list for a instance to perform further actions",
+    "placeholders": {
+      "username": {
+        "description": "The username of the instance"
+      }
+    }
   },
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
-  "@instanceHasAlreadyBenAdded": {},
+  "@instanceHasAlreadyBenAdded": {
+    "description": "Error message for when an instance has already been added",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that has already been added"
+      }
+    }
+  },
   "instanceNameColor": "Instance Name Color",
   "@instanceNameColor": {
     "description": "Setting for instance name color"
@@ -1245,7 +1478,12 @@
   },
   "joined": "Joined {x}",
   "@joined": {
-    "description": "Describes the time when a user joined the site (or was created)"
+    "description": "Describes the time when a user joined the site (or was created)",
+    "placeholders": {
+      "x": {
+        "description": "The time when a user joined the site (or was created)"
+      }
+    }
   },
   "keywordFilterDescription": "Filters posts containing any keywords in the title, body, or URL",
   "@keywordFilterDescription": {
@@ -1286,7 +1524,14 @@
     "description": "Describes using the light theme"
   },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
-  "@link": {},
+  "@link": {
+    "description": "Describes a link",
+    "placeholders": {
+      "count": {
+        "description": "The number of links"
+      }
+    }
+  },
   "linkActions": "Link Actions",
   "@linkActions": {},
   "linkHandlingCustomTabs": "Open in system browser embedded in-app",
@@ -1318,9 +1563,23 @@
     "description": "Subcategory in Setting -> General"
   },
   "loadMorePlural": "Load {count} more replies…",
-  "@loadMorePlural": {},
+  "@loadMorePlural": {
+    "description": "Load more replies",
+    "placeholders": {
+      "count": {
+        "description": "The number of replies to load"
+      }
+    }
+  },
   "loadMoreSingular": "Load {count} more reply…",
-  "@loadMoreSingular": {},
+  "@loadMoreSingular": {
+    "description": "Load more replies",
+    "placeholders": {
+      "count": {
+        "description": "The number of replies to load"
+      }
+    }
+  },
   "loading": "Loading...",
   "@loading": {
     "description": "Placeholder text for loading"
@@ -1359,7 +1618,12 @@
   },
   "loginFailed": "Could not log in. Please try again. (Error: {errorMessage})",
   "@loginFailed": {
-    "description": "Message shown to user when their login attempt failed"
+    "description": "Message shown to user when their login attempt failed",
+    "placeholders": {
+      "errorMessage": {
+        "description": "The error message"
+      }
+    }
   },
   "loginSucceeded": "Logged in.",
   "@loginSucceeded": {},
@@ -1414,13 +1678,27 @@
     "description": "Description for medium font scale"
   },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
-  "@mention": {},
+  "@mention": {
+    "description": "Describes a mention",
+    "placeholders": {
+      "count": {
+        "description": "The number of mentions"
+      }
+    }
+  },
   "menu": "Menu",
   "@menu": {
     "description": "Menu button description"
   },
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
-  "@message": {},
+  "@message": {
+    "description": "Describes a message",
+    "placeholders": {
+      "count": {
+        "description": "The number of messages"
+      }
+    }
+  },
   "metadataFontScale": "Metadata Font Scale",
   "@metadataFontScale": {
     "description": "Setting for metadata font scale"
@@ -1477,7 +1755,12 @@
   },
   "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderators}}",
   "@moderator": {
-    "description": "Role name for moderator"
+    "description": "Role name for moderator",
+    "placeholders": {
+      "count": {
+        "description": "The number of moderators"
+      }
+    }
   },
   "moderatorActions": "Moderator Actions",
   "@moderatorActions": {
@@ -1641,7 +1924,12 @@
   },
   "notValidLemmyInstance": "{instance} does not appear to be a valid instance",
   "@notValidLemmyInstance": {
-    "description": "Message for when an instance is not a valid Lemmy/PieFed instance"
+    "description": "Message for when an instance is not a valid Lemmy/PieFed instance",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that is not a valid Lemmy/PieFed instance"
+      }
+    }
   },
   "notValidUrl": "Not a valid URL",
   "@notValidUrl": {},
@@ -1649,7 +1937,12 @@
   "@nothingToShare": {},
   "notifications": "{count, plural, zero {Notification} one {Notifications} other {Notifications}}",
   "@notifications": {
-    "description": "Message formatting for notifications count."
+    "description": "Message formatting for notifications count.",
+    "placeholders": {
+      "count": {
+        "description": "The number of notifications"
+      }
+    }
   },
   "notificationsBehaviourSettings": "Notifications",
   "@notificationsBehaviourSettings": {
@@ -1729,7 +2022,12 @@
   },
   "performedBy": "Performed by: {user}",
   "@performedBy": {
-    "description": "Describes the user who performed an action (e.g., moderator)"
+    "description": "Describes the user who performed an action (e.g., moderator)",
+    "placeholders": {
+      "user": {
+        "description": "The user who performed the action"
+      }
+    }
   },
   "permissionDenied": "Thunder has not been granted permission to display notifications. Please enable in system settings.",
   "@permissionDenied": {
@@ -1842,7 +2140,14 @@
   "preview": "Preview",
   "@preview": {},
   "profileAppliedSuccessfully": "{profile} applied successfully!",
-  "@profileAppliedSuccessfully": {},
+  "@profileAppliedSuccessfully": {
+    "description": "Message shown to user when a profile is applied successfully",
+    "placeholders": {
+      "profile": {
+        "description": "The profile that was applied"
+      }
+    }
+  },
   "profileBio": "Profile Bio",
   "@profileBio": {
     "description": "Setting for profile bio"
@@ -1951,7 +2256,12 @@
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
   "@removeKeyword": {
-    "description": "Description of removing a keyword filter"
+    "description": "Description of removing a keyword filter",
+    "placeholders": {
+      "keyword": {
+        "description": "The keyword that is being removed"
+      }
+    }
   },
   "removeKeywordFilter": "Remove Keyword",
   "@removeKeywordFilter": {
@@ -1960,6 +2270,10 @@
   "removePost": "Remove Post",
   "@removePost": {
     "description": "Action to remove a post (moderator action)"
+  },
+  "removeUserData": "Remove user data",
+  "@removeUserData": {
+    "description": "Description for removing user data when banning user"
   },
   "removed": "Removed",
   "@removed": {
@@ -1987,12 +2301,28 @@
   "@removedPost": {
     "description": "Short decription for moderator action to remove a post"
   },
+  "removedUserAsCommunityModerator": "Removed {username} as community moderator",
+  "@removedUserAsCommunityModerator": {
+    "description": "Short decription for moderator action to remove a user as community moderator",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was removed as community moderator"
+      }
+    }
+  },
   "reorder": "Reorder",
   "@reorder": {
     "description": "Tooltip text for the list editor button"
   },
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
-  "@reply": {},
+  "@reply": {
+    "description": "Message formatting for reply count.",
+    "placeholders": {
+      "count": {
+        "description": "The number of replies"
+      }
+    }
+  },
   "replyColor": "Reply Color",
   "@replyColor": {
     "description": "Name of reply color setting"
@@ -2002,9 +2332,23 @@
   "replyToPost": "Reply to Post",
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
-  "@replyingTo": {},
+  "@replyingTo": {
+    "description": "Describes the author of the post that is being replied to",
+    "placeholders": {
+      "author": {
+        "description": "The author of the post that is being replied to"
+      }
+    }
+  },
   "report": "{count, plural, zero {Report} one {Report} other {Reports} } ",
-  "@report": {},
+  "@report": {
+    "description": "Message formatting for report count.",
+    "placeholders": {
+      "count": {
+        "description": "The number of reports"
+      }
+    }
+  },
   "reportComment": "Report Comment",
   "@reportComment": {},
   "reportPost": "Report Post",
@@ -2104,23 +2448,63 @@
   "searchComments": "Search Comments",
   "@searchComments": {},
   "searchCommentsFederatedWith": "Search for comments federated with {instance}",
-  "@searchCommentsFederatedWith": {},
+  "@searchCommentsFederatedWith": {
+    "description": "Placeholder text for searching for comments",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the comments are federated with"
+      }
+    }
+  },
   "searchCommunitiesFederatedWith": "Search for communities federated with {instance}",
-  "@searchCommunitiesFederatedWith": {},
+  "@searchCommunitiesFederatedWith": {
+    "description": "Placeholder text for searching for communities",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the communities are federated with"
+      }
+    }
+  },
   "searchInstance": "Search {instance}",
-  "@searchInstance": {},
+  "@searchInstance": {
+    "description": "Placeholder text for searching for an instance",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that is being searched for"
+      }
+    }
+  },
   "searchInstancesFederatedWith": "Search for instances federated with {instance}",
   "@searchInstancesFederatedWith": {
-    "description": "Placeholder text for searching for instances"
+    "description": "Placeholder text for searching for instances",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the instances are federated with"
+      }
+    }
   },
   "searchPostSearchType": "Select Post Search Type",
   "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
-  "@searchPostsFederatedWith": {},
+  "@searchPostsFederatedWith": {
+    "description": "Placeholder text for searching for posts",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the posts are federated with"
+      }
+    }
+  },
   "searchTerm": "Search term",
   "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
-  "@searchUsersFederatedWith": {},
+  "@searchUsersFederatedWith": {
+    "description": "Placeholder text for searching for users",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the users are federated with"
+      }
+    }
+  },
   "selectAccountToCommentAs": "Select account to comment as",
   "@selectAccountToCommentAs": {
     "description": "Profile modal heading for commenting as other user"
@@ -2170,7 +2554,14 @@
   "sentRequestForTestNotification": "Sent request for test notification.",
   "@sentRequestForTestNotification": {},
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
-  "@serverErrorComments": {},
+  "@serverErrorComments": {
+    "description": "Error message for when we fail to fetch more comments",
+    "placeholders": {
+      "message": {
+        "description": "The error message"
+      }
+    }
+  },
   "setAction": "Set Action",
   "@setAction": {
     "description": "Label for the action to set (short-press, long-press)"
@@ -2184,12 +2575,24 @@
     "description": "Message which indicates that the (instance) settings override the app settings"
   },
   "settingTypeNotSupported": "Settings of type {settingType} are not yet supported.",
-  "@settingTypeNotSupported": {},
+  "@settingTypeNotSupported": {
+    "description": "Error message for when a setting type is not supported",
+    "placeholders": {
+      "settingType": {
+        "description": "The type of setting that is not supported"
+      }
+    }
+  },
   "settings": "Settings",
   "@settings": {},
   "settingsExportedSuccessfully": "Settings were successfully saved to '{savedFilePath}'",
   "@settingsExportedSuccessfully": {
-    "description": "Message shown to the user when the settings were exported successfully"
+    "description": "Message shown to the user when the settings were exported successfully",
+    "placeholders": {
+      "savedFilePath": {
+        "description": "The path to the saved file"
+      }
+    }
   },
   "settingsFeedCards": "These settings apply to the cards in the main feed, actions are always available when actually opening posts.",
   "@settingsFeedCards": {
@@ -2543,27 +2946,61 @@
   "@subscriptions": {},
   "successfullyBannedUser": "Banned {username}",
   "@successfullyBannedUser": {
-    "description": "Notification for successfully banning a user"
+    "description": "Notification for successfully banning a user",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was banned"
+      }
+    }
   },
   "successfullyBlocked": "Blocked.",
   "@successfullyBlocked": {},
   "successfullyBlockedCommunity": "Blocked {communityName}",
-  "@successfullyBlockedCommunity": {},
+  "@successfullyBlockedCommunity": {
+    "description": "Notification for successfully blocking a community",
+    "placeholders": {
+      "communityName": {
+        "description": "The name of the community that was blocked"
+      }
+    }
+  },
   "successfullyBlockedUser": "Blocked {username}",
   "@successfullyBlockedUser": {
-    "description": "Notification for successfully blocking a user"
+    "description": "Notification for successfully blocking a user",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was blocked"
+      }
+    }
   },
   "successfullyUnbannedUser": "Unbanned {username}",
   "@successfullyUnbannedUser": {
-    "description": "Notification for successfully unbanning a user"
+    "description": "Notification for successfully unbanning a user",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was unbanned"
+      }
+    }
   },
   "successfullyUnblocked": "Unblocked.",
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
-  "@successfullyUnblockedCommunity": {},
+  "@successfullyUnblockedCommunity": {
+    "description": "Notification for successfully unblocking a community",
+    "placeholders": {
+      "communityName": {
+        "description": "The name of the community that was unblocked"
+      }
+    }
+  },
   "successfullyUnblockedUser": "Unblocked {username}",
   "@successfullyUnblockedUser": {
-    "description": "Notification for successfully unblocking a user"
+    "description": "Notification for successfully unblocking a user",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was unblocked"
+      }
+    }
   },
   "suchAs": "such as",
   "@suchAs": {
@@ -2575,7 +3012,12 @@
   },
   "switchedAccount": "Switched to {username}",
   "@switchedAccount": {
-    "description": "Message shown to the user when Thunder automatically switches accounts"
+    "description": "Message shown to the user when Thunder automatically switches accounts",
+    "placeholders": {
+      "username": {
+        "description": "The username of the account that was switched to"
+      }
+    }
   },
   "system": "System",
   "@system": {
@@ -2655,11 +3097,21 @@
   },
   "thunderHasBeenUpdated": "Thunder updated to {version}!",
   "@thunderHasBeenUpdated": {
-    "description": "Heading for changelog when Thunder has been updated"
+    "description": "Heading for changelog when Thunder has been updated",
+    "placeholders": {
+      "version": {
+        "description": "The version of Thunder that has been updated"
+      }
+    }
   },
   "thunderNotificationServer": "Thunder Notification Server: {server}",
   "@thunderNotificationServer": {
-    "description": "Text for the user to know what the currently selected notification server is"
+    "description": "Text for the user to know what the currently selected notification server is",
+    "placeholders": {
+      "server": {
+        "description": "The currently selected notification server"
+      }
+    }
   },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
@@ -2707,11 +3159,21 @@
   "@topYear": {},
   "totalComments": "{x} Comments",
   "@totalComments": {
-    "description": "The total comments created by a user"
+    "description": "The total comments created by a user",
+    "placeholders": {
+      "x": {
+        "description": "The total comments created by a user"
+      }
+    }
   },
   "totalPosts": "{x} Posts",
   "@totalPosts": {
-    "description": "The total posts created by a user"
+    "description": "The total posts created by a user",
+    "placeholders": {
+      "x": {
+        "description": "The total posts created by a user"
+      }
+    }
   },
   "totp": "TOTP (optional)",
   "@totp": {},
@@ -2733,7 +3195,12 @@
   "@unableToFindCommunity": {},
   "unableToFindCommunityName": "Unable to find community '{communityName}'",
   "@unableToFindCommunityName": {
-    "description": "Error message for when we are unable to find a community, including the name"
+    "description": "Error message for when we are unable to find a community, including the name",
+    "placeholders": {
+      "communityName": {
+        "description": "The name of the community that was unable to be found"
+      }
+    }
   },
   "unableToFindCommunityOnInstance": "Unable to find the selected community on the selected user's instance.",
   "@unableToFindCommunityOnInstance": {
@@ -2752,28 +3219,59 @@
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
   "unableToFindUserName": "Unable to find user '{username}'",
-  "@unableToFindUserName": {},
+  "@unableToFindUserName": {
+    "description": "Error message when we are unable to find a user",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was unable to be found"
+      }
+    }
+  },
   "unableToLoadImage": "Unable to load image",
   "@unableToLoadImage": {
     "description": "Placeholder for when we are unable to load a binary image"
   },
   "unableToLoadImageFrom": "Unable to load image from {domain}",
   "@unableToLoadImageFrom": {
-    "description": "Placeholder for when we are unable to load an image from a URL"
+    "description": "Placeholder for when we are unable to load an image from a URL",
+    "placeholders": {
+      "domain": {
+        "description": "The domain that the image is from"
+      }
+    }
   },
   "unableToLoadInstance": "Unable to load {instance}",
-  "@unableToLoadInstance": {},
+  "@unableToLoadInstance": {
+    "description": "Error message when we are unable to load an instance",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that was unable to be loaded"
+      }
+    }
+  },
   "unableToLoadPost": "Unable to load post",
   "@unableToLoadPost": {
     "description": "Error message shown when we are unable to load a post."
   },
   "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
-  "@unableToLoadPostsFrominstance": {},
+  "@unableToLoadPostsFrominstance": {
+    "description": "Error message when we are unable to load posts from an instance",
+    "placeholders": {
+      "instance": {
+        "description": "The instance that the posts are from"
+      }
+    }
+  },
   "unableToLoadReplies": "Unable to load more replies.",
   "@unableToLoadReplies": {},
   "unableToNavigateToInstance": "Unable to navigate to {instanceHost}. It may not be a valid Lemmy instance.",
   "@unableToNavigateToInstance": {
-    "description": "Error message for when we can't navigate to a Lemmy instance"
+    "description": "Error message for when we can't navigate to a Lemmy instance",
+    "placeholders": {
+      "instanceHost": {
+        "description": "The host of the instance that we are unable to navigate to"
+      }
+    }
   },
   "unableToResolveReport": "Unable to resolve report",
   "@unableToResolveReport": {
@@ -2781,7 +3279,12 @@
   },
   "unableToRetrieveChangelog": "Unable to retrieve changelog for version {version}.",
   "@unableToRetrieveChangelog": {
-    "description": "Error message for when we are unable to retrieve the changelog."
+    "description": "Error message for when we are unable to retrieve the changelog.",
+    "placeholders": {
+      "version": {
+        "description": "The version of the changelog that we are unable to retrieve"
+      }
+    }
   },
   "unbanFromCommunity": "Unban from Community",
   "@unbanFromCommunity": {
@@ -2791,9 +3294,14 @@
   "@unbannedUser": {
     "description": "Short decription for moderator action to unban a user"
   },
-  "unbannedUserFromCommunity": "Unbanned User from Community",
+  "unbannedUserFromCommunity": "Unbanned {username} from Community",
   "@unbannedUserFromCommunity": {
-    "description": "Short decription for moderator action to unban a user from a community"
+    "description": "Short decription for moderator action to unban a user from a community",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user that was unbanned from the community"
+      }
+    }
   },
   "unblock": "Unblock",
   "@unblock": {
@@ -2845,7 +3353,15 @@
   },
   "unifiedPushDistributorApp": "UnifiedPush Distributor app: {app} ({count} available)",
   "@unifiedPushDistributorApp": {
-    "description": "A status indicator telling the current state of the UnifiedPush distributor app"
+    "description": "A status indicator telling the current state of the UnifiedPush distributor app",
+    "placeholders": {
+      "app": {
+        "description": "The name of the UnifiedPush distributor app"
+      },
+      "count": {
+        "description": "The number of available UnifiedPush distributor apps"
+      }
+    }
   },
   "unifiedPushNotifications": "UnifiedPush Notifications",
   "@unifiedPushNotifications": {
@@ -2853,7 +3369,12 @@
   },
   "unifiedPushServer": "UnifiedPush Server: {server}",
   "@unifiedPushServer": {
-    "description": "Debug text that tells the user what UnifiedPush server is being used"
+    "description": "Debug text that tells the user what UnifiedPush server is being used",
+    "placeholders": {
+      "server": {
+        "description": "The UnifiedPush server that is being used"
+      }
+    }
   },
   "unifiedpush": "UnifiedPush",
   "@unifiedpush": {
@@ -2894,12 +3415,24 @@
   "unsubscribed": "Unsubscribed",
   "@unsubscribed": {},
   "updateReleased": "Update released: {version}",
-  "@updateReleased": {},
+  "@updateReleased": {
+    "description": "Message shown to the user when a new update is released",
+    "placeholders": {
+      "version": {
+        "description": "The version of the update that was released"
+      }
+    }
+  },
   "uploadImage": "Upload image",
   "@uploadImage": {},
   "uploadedDate": "Uploaded: {date}",
   "@uploadedDate": {
-    "description": "Metadata for image uploads"
+    "description": "Metadata for image uploads",
+    "placeholders": {
+      "date": {
+        "description": "The date of the image upload"
+      }
+    }
   },
   "upvote": "Upvote",
   "@upvote": {
@@ -2960,7 +3493,14 @@
     "description": "Setting subtitle for using the profile picture for the drawer"
   },
   "useSuggestedTitle": "Use suggested title: {title}",
-  "@useSuggestedTitle": {},
+  "@useSuggestedTitle": {
+    "description": "Message shown to the user when the suggested title is found",
+    "placeholders": {
+      "title": {
+        "description": "The suggested title"
+      }
+    }
+  },
   "useUnifiedPushNotifications": "Use UnifiedPush Notifications",
   "@useUnifiedPushNotifications": {
     "description": "Toggle to use UnifiedPush Notifications"
@@ -2979,7 +3519,12 @@
   },
   "userEntry": "User '{username}'",
   "@userEntry": {
-    "description": "Entry in list for a user to perform further actions"
+    "description": "Entry in list for a user to perform further actions",
+    "placeholders": {
+      "username": {
+        "description": "The username of the user"
+      }
+    }
   },
   "userFormat": "User Format",
   "@userFormat": {
@@ -3029,7 +3574,12 @@
   "@users": {},
   "versionNumber": "Version {version}",
   "@versionNumber": {
-    "description": "String for describing the current version"
+    "description": "String for describing the current version",
+    "placeholders": {
+      "version": {
+        "description": "The version of the current version"
+      }
+    }
   },
   "video": "Video",
   "@video": {
@@ -3037,7 +3587,7 @@
   },
   "videoAutoFullscreen": "Auto Fullscreen",
   "@videoAutoFullscreen": {
-    "decription": "Option to always start the video players in landscape"
+    "description": "Option to always start the video players in landscape"
   },
   "videoAutoLoop": "Loop Video",
   "@videoAutoLoop": {
@@ -3103,7 +3653,12 @@
   },
   "visibility": "Visibility: {visibility}",
   "@visibility": {
-    "description": "Visibility heading for community"
+    "description": "Visibility heading for community",
+    "placeholders": {
+      "visibility": {
+        "description": "The visibility of the community"
+      }
+    }
   },
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
@@ -3124,16 +3679,43 @@
     "description": "Heading for warning dialogs"
   },
   "xDownvotes": "{x} downvotes",
-  "@xDownvotes": {},
+  "@xDownvotes": {
+    "description": "The total downvotes of post or comment",
+    "placeholders": {
+      "x": {
+        "description": "The total downvotes of post or comment"
+      }
+    }
+  },
   "xScore": "{x} score",
   "@xScore": {
-    "description": "The total score of post or comment"
+    "description": "The total score of post or comment",
+    "placeholders": {
+      "x": {
+        "description": "The total score of post or comment"
+      }
+    }
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {},
+  "@xUpvotes": {
+    "description": "The total upvotes of post or comment",
+    "placeholders": {
+      "x": {
+        "description": "The total upvotes of post or comment"
+      }
+    }
+  },
   "xYearsOld": "{count, plural, zero {{x} year old} one {{x} year old} other {{x} years old}}",
   "@xYearsOld": {
-    "description": "An account descriptor representing how old an account is"
+    "description": "An account descriptor representing how old an account is",
+    "placeholders": {
+      "count": {
+        "description": "The number of years old the account is"
+      },
+      "x": {
+        "description": "The number of years old the account is"
+      }
+    }
   },
   "yes": "Yes",
   "@yes": {

@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Added Mod to Community'**
   String get addedModToCommunity;
 
+  /// Short decription for moderator action to add a user as community moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Added {username} as community moderator'**
+  String addedUserAsCommunityModerator(Object username);
+
   /// Role name for admin
   ///
   /// In en, this message translates to:
@@ -380,7 +386,7 @@ abstract class AppLocalizations {
   /// **'Always'**
   String get always;
 
-  /// No description provided for @andXMore.
+  /// Represents a number of items
   ///
   /// In en, this message translates to:
   /// **'and {count} more'**
@@ -481,6 +487,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Note that notification checks will consume additional battery'**
   String get backgroundCheckWarning;
+
+  /// Short decription for moderator action to ban a user
+  ///
+  /// In en, this message translates to:
+  /// **'Ban'**
+  String get ban;
 
   /// Moderator action to ban a user from a community
   ///
@@ -614,7 +626,7 @@ abstract class AppLocalizations {
   /// **'Link handling'**
   String get browserMode;
 
-  /// No description provided for @browsingAnonymously.
+  /// Message shown to user when browsing anonymously
   ///
   /// In en, this message translates to:
   /// **'You are currently browsing {instance} anonymously.'**
@@ -1235,7 +1247,7 @@ abstract class AppLocalizations {
   /// Initial heading for text-based cross-post
   ///
   /// In en, this message translates to:
-  /// **'cross-posted from:  {postUrl}'**
+  /// **'cross-posted from: {postUrl}'**
   String crossPostedFrom(Object postUrl);
 
   /// No description provided for @crossPostedTo.
@@ -1670,7 +1682,7 @@ abstract class AppLocalizations {
   /// **'There was an error deleting the image: {error}'**
   String errorDeletingImage(Object error);
 
-  /// No description provided for @errorDownloadingMedia.
+  /// Error message for downloading media
   ///
   /// In en, this message translates to:
   /// **'Could not download the media file to share: {errorMessage}'**
@@ -1832,7 +1844,7 @@ abstract class AppLocalizations {
   /// **'Extra Large'**
   String get extraLarge;
 
-  /// No description provided for @failedToBlock.
+  /// Error message for when we fail to block a user
   ///
   /// In en, this message translates to:
   /// **'Failed to block: {errorMessage}'**
@@ -1844,7 +1856,7 @@ abstract class AppLocalizations {
   /// **'Failed to communicate with Thunder notification server at {serverAddress}.'**
   String failedToCommunicateWithThunderNotificationServer(Object serverAddress);
 
-  /// No description provided for @failedToLoadBlocks.
+  /// Error message for when we fail to load blocks
   ///
   /// In en, this message translates to:
   /// **'Could not load blocks: {errorMessage}'**
@@ -1862,7 +1874,7 @@ abstract class AppLocalizations {
   /// **'Failed to perform action'**
   String get failedToPerformAction;
 
-  /// No description provided for @failedToUnblock.
+  /// Error message for when we fail to unblock a user
   ///
   /// In en, this message translates to:
   /// **'Could not unblock: {errorMessage}'**
@@ -2192,11 +2204,11 @@ abstract class AppLocalizations {
   /// **'Import Settings'**
   String get importSettings;
 
-  /// No description provided for @inReplyTo.
+  /// Indicates that a comment/post is in reply to a certain post in a certain community
   ///
   /// In en, this message translates to:
   /// **'In reply to {post} in {community}'**
-  String inReplyTo(Object community, Object post);
+  String inReplyTo(Object post, Object community);
 
   /// Connecting word used to indicate that a certain comment/post post came from a certain community
   ///
@@ -2270,7 +2282,7 @@ abstract class AppLocalizations {
   /// **'Instance \'{username}\''**
   String instanceEntry(Object username);
 
-  /// No description provided for @instanceHasAlreadyBenAdded.
+  /// Error message for when an instance has already been added
   ///
   /// In en, this message translates to:
   /// **'{instance} has already been added.'**
@@ -2372,7 +2384,7 @@ abstract class AppLocalizations {
   /// **'Light'**
   String get light;
 
-  /// No description provided for @link.
+  /// Describes a link
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero {Link} one {Link} other {Links} } '**
@@ -2426,13 +2438,13 @@ abstract class AppLocalizations {
   /// **'Links'**
   String get linksBehaviourSettings;
 
-  /// No description provided for @loadMorePlural.
+  /// Load more replies
   ///
   /// In en, this message translates to:
   /// **'Load {count} more replies…'**
   String loadMorePlural(Object count);
 
-  /// No description provided for @loadMoreSingular.
+  /// Load more replies
   ///
   /// In en, this message translates to:
   /// **'Load {count} more reply…'**
@@ -2600,7 +2612,7 @@ abstract class AppLocalizations {
   /// **'Medium'**
   String get medium;
 
-  /// No description provided for @mention.
+  /// Describes a mention
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero {Mention} one {Mention} other {Mentions} }'**
@@ -2612,7 +2624,7 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get menu;
 
-  /// No description provided for @message.
+  /// Describes a message
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero {Message} one {Message} other {Messages} }'**
@@ -3380,7 +3392,7 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview;
 
-  /// No description provided for @profileAppliedSuccessfully.
+  /// Message shown to user when a profile is applied successfully
   ///
   /// In en, this message translates to:
   /// **'{profile} applied successfully!'**
@@ -3590,6 +3602,12 @@ abstract class AppLocalizations {
   /// **'Remove Post'**
   String get removePost;
 
+  /// Description for removing user data when banning user
+  ///
+  /// In en, this message translates to:
+  /// **'Remove user data'**
+  String get removeUserData;
+
   /// Status to indicate that an item has been removed
   ///
   /// In en, this message translates to:
@@ -3632,13 +3650,19 @@ abstract class AppLocalizations {
   /// **'Removed Post'**
   String get removedPost;
 
+  /// Short decription for moderator action to remove a user as community moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {username} as community moderator'**
+  String removedUserAsCommunityModerator(Object username);
+
   /// Tooltip text for the list editor button
   ///
   /// In en, this message translates to:
   /// **'Reorder'**
   String get reorder;
 
-  /// No description provided for @reply.
+  /// Message formatting for reply count.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero {Reply} one {Reply} other {Replies} }'**
@@ -3662,13 +3686,13 @@ abstract class AppLocalizations {
   /// **'Reply to Post'**
   String get replyToPost;
 
-  /// No description provided for @replyingTo.
+  /// Describes the author of the post that is being replied to
   ///
   /// In en, this message translates to:
   /// **'Replying to {author}'**
   String replyingTo(Object author);
 
-  /// No description provided for @report.
+  /// Message formatting for report count.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero {Report} one {Report} other {Reports} } '**
@@ -3866,19 +3890,19 @@ abstract class AppLocalizations {
   /// **'Search Comments'**
   String get searchComments;
 
-  /// No description provided for @searchCommentsFederatedWith.
+  /// Placeholder text for searching for comments
   ///
   /// In en, this message translates to:
   /// **'Search for comments federated with {instance}'**
   String searchCommentsFederatedWith(Object instance);
 
-  /// No description provided for @searchCommunitiesFederatedWith.
+  /// Placeholder text for searching for communities
   ///
   /// In en, this message translates to:
   /// **'Search for communities federated with {instance}'**
   String searchCommunitiesFederatedWith(Object instance);
 
-  /// No description provided for @searchInstance.
+  /// Placeholder text for searching for an instance
   ///
   /// In en, this message translates to:
   /// **'Search {instance}'**
@@ -3896,7 +3920,7 @@ abstract class AppLocalizations {
   /// **'Select Post Search Type'**
   String get searchPostSearchType;
 
-  /// No description provided for @searchPostsFederatedWith.
+  /// Placeholder text for searching for posts
   ///
   /// In en, this message translates to:
   /// **'Search for posts federated with {instance}'**
@@ -3908,7 +3932,7 @@ abstract class AppLocalizations {
   /// **'Search term'**
   String get searchTerm;
 
-  /// No description provided for @searchUsersFederatedWith.
+  /// Placeholder text for searching for users
   ///
   /// In en, this message translates to:
   /// **'Search for users federated with {instance}'**
@@ -3998,7 +4022,7 @@ abstract class AppLocalizations {
   /// **'Sent request for test notification.'**
   String get sentRequestForTestNotification;
 
-  /// No description provided for @serverErrorComments.
+  /// Error message for when we fail to fetch more comments
   ///
   /// In en, this message translates to:
   /// **'A server error was encountered when fetching more comments: {message}'**
@@ -4028,7 +4052,7 @@ abstract class AppLocalizations {
   /// **'These settings override Thunder\'s default settings.'**
   String get settingOverrideLabel;
 
-  /// No description provided for @settingTypeNotSupported.
+  /// Error message for when a setting type is not supported
   ///
   /// In en, this message translates to:
   /// **'Settings of type {settingType} are not yet supported.'**
@@ -4640,7 +4664,7 @@ abstract class AppLocalizations {
   /// **'Blocked.'**
   String get successfullyBlocked;
 
-  /// No description provided for @successfullyBlockedCommunity.
+  /// Notification for successfully blocking a community
   ///
   /// In en, this message translates to:
   /// **'Blocked {communityName}'**
@@ -4664,7 +4688,7 @@ abstract class AppLocalizations {
   /// **'Unblocked.'**
   String get successfullyUnblocked;
 
-  /// No description provided for @successfullyUnblockedCommunity.
+  /// Notification for successfully unblocking a community
   ///
   /// In en, this message translates to:
   /// **'Unblocked {communityName}'**
@@ -5024,7 +5048,7 @@ abstract class AppLocalizations {
   /// **'Unable to find user'**
   String get unableToFindUser;
 
-  /// No description provided for @unableToFindUserName.
+  /// Error message when we are unable to find a user
   ///
   /// In en, this message translates to:
   /// **'Unable to find user \'{username}\''**
@@ -5042,7 +5066,7 @@ abstract class AppLocalizations {
   /// **'Unable to load image from {domain}'**
   String unableToLoadImageFrom(Object domain);
 
-  /// No description provided for @unableToLoadInstance.
+  /// Error message when we are unable to load an instance
   ///
   /// In en, this message translates to:
   /// **'Unable to load {instance}'**
@@ -5054,7 +5078,7 @@ abstract class AppLocalizations {
   /// **'Unable to load post'**
   String get unableToLoadPost;
 
-  /// No description provided for @unableToLoadPostsFrominstance.
+  /// Error message when we are unable to load posts from an instance
   ///
   /// In en, this message translates to:
   /// **'Unable to load posts from {instance}'**
@@ -5099,8 +5123,8 @@ abstract class AppLocalizations {
   /// Short decription for moderator action to unban a user from a community
   ///
   /// In en, this message translates to:
-  /// **'Unbanned User from Community'**
-  String get unbannedUserFromCommunity;
+  /// **'Unbanned {username} from Community'**
+  String unbannedUserFromCommunity(Object username);
 
   /// Action for unblocking an item
   ///
@@ -5258,7 +5282,7 @@ abstract class AppLocalizations {
   /// **'Unsubscribed'**
   String get unsubscribed;
 
-  /// No description provided for @updateReleased.
+  /// Message shown to the user when a new update is released
   ///
   /// In en, this message translates to:
   /// **'Update released: {version}'**
@@ -5366,7 +5390,7 @@ abstract class AppLocalizations {
   /// **'When logged in, shows the user\'s profile picture in place of the drawer icon'**
   String get useProfilePictureForDrawerSubtitle;
 
-  /// No description provided for @useSuggestedTitle.
+  /// Message shown to the user when the suggested title is found
   ///
   /// In en, this message translates to:
   /// **'Use suggested title: {title}'**
@@ -5492,7 +5516,7 @@ abstract class AppLocalizations {
   /// **'Video'**
   String get video;
 
-  /// No description provided for @videoAutoFullscreen.
+  /// Option to always start the video players in landscape
   ///
   /// In en, this message translates to:
   /// **'Auto Fullscreen'**
@@ -5636,7 +5660,7 @@ abstract class AppLocalizations {
   /// **'Warning'**
   String get warning;
 
-  /// No description provided for @xDownvotes.
+  /// The total downvotes of post or comment
   ///
   /// In en, this message translates to:
   /// **'{x} downvotes'**
@@ -5648,7 +5672,7 @@ abstract class AppLocalizations {
   /// **'{x} score'**
   String xScore(Object x);
 
-  /// No description provided for @xUpvotes.
+  /// The total upvotes of post or comment
   ///
   /// In en, this message translates to:
   /// **'{x} upvotes'**

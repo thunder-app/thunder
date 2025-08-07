@@ -112,6 +112,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addedModToCommunity => 'أضف إداري للمجتمع';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'الرئيس';
 
   @override
@@ -204,6 +209,9 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       '‍انتبه أن التحقق من الإشعارات يستهلك طاقة إضافية من البطارية';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'حظر من المجتمع';
@@ -623,7 +631,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'cross-posted from:  $postUrl';
+    return 'cross-posted from: $postUrl';
   }
 
   @override
@@ -1165,7 +1173,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importSettings => 'Import Settings';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return 'In reply to $post in $community';
   }
 
@@ -1961,6 +1969,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get removePost => 'Remove Post';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Removed';
 
   @override
@@ -1980,6 +1991,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get removedPost => 'Removed Post';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Reorder';
@@ -2817,7 +2833,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unbannedUser => 'Unbanned User';
 
   @override
-  String get unbannedUserFromCommunity => 'Unbanned User from Community';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Unbanned $username from Community';
+  }
 
   @override
   String get unblock => 'Unblock';

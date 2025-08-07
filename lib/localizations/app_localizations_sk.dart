@@ -120,6 +120,11 @@ class AppLocalizationsSk extends AppLocalizations {
   String get addedModToCommunity => 'Pridaný moderátor do komunity';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'Administrátor';
 
   @override
@@ -213,6 +218,9 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'Uvedomte si, že kontroly upozornení budú spotrebúvať viac energie';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Ban from Community';
@@ -1181,7 +1189,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get importSettings => 'Importovať nastavenia';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return 'V odpovedi na $post v $community';
   }
 
@@ -1977,6 +1985,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get removePost => 'Odstrániť príspevok';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Removed';
 
   @override
@@ -1996,6 +2007,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get removedPost => 'Vymazaný príspevok';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Reorder';
@@ -2827,7 +2843,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get unbannedUser => 'Odblokovaný používateľ';
 
   @override
-  String get unbannedUserFromCommunity => 'Odblokovaný používateľ z komunity';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Odblokovaný používateľ z komunity';
+  }
 
   @override
   String get unblock => 'Unblock';

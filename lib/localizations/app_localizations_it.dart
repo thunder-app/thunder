@@ -120,6 +120,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get addedModToCommunity => 'Aggiunto Mod Comunità';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'Admin';
 
   @override
@@ -213,6 +218,9 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'Nota che il controllo notifiche consuma batteria aggiuntiva';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Banna dalla Comunità';
@@ -1180,7 +1188,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get importSettings => 'Importa Impostazioni';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return 'In risposta a $post da $community';
   }
 
@@ -1974,6 +1982,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get removePost => 'Rimuovi Post';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Removed';
 
   @override
@@ -1993,6 +2004,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get removedPost => 'Post Rimosso';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Riordina';
@@ -2822,7 +2838,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get unbannedUser => 'Utente Sbannato';
 
   @override
-  String get unbannedUserFromCommunity => 'Sbanna Utente dalla Comunità';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Sbanna Utente dalla Comunità';
+  }
 
   @override
   String get unblock => 'Unblock';

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/account/account.dart';
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/user_type.dart';
@@ -15,28 +17,54 @@ import 'package:thunder/shared/chips/user_chip.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a user
-/// TODO: Implement admin-level actions
 enum UserBottomSheetAction {
-  viewProfile(icon: Icons.person_search_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  blockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  addUserLabel(icon: Icons.label_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  banUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  unbanUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  addUserAsCommunityModerator(icon: Icons.person_add_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  removeUserAsCommunityModerator(icon: Icons.person_remove_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  // banUser(icon: Icons.block, permissionType: PermissionType.admin, requiresAuthentication: true),
-  // unbanUser(icon: Icons.block, permissionType: PermissionType.admin, requiresAuthentication: true),
-  // purgeUser(icon: Icons.delete_rounded, permissionType: PermissionType.admin, requiresAuthentication: true),
-  // addUserAsAdmin(icon: Icons.person_add_rounded, permissionType: PermissionType.admin, requiresAuthentication: true),
-  // removeUserAsAdmin(icon: Icons.person_remove_rounded, permissionType: PermissionType.admin, requiresAuthentication: true),
-  ;
+  viewProfile(
+    icon: Icons.person_search_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  blockUser(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  unblockUser(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  addUserLabel(
+    icon: Icons.label_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  banUserFromCommunity(
+    icon: Icons.block,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  unbanUserFromCommunity(
+    icon: Icons.block,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  addUserAsCommunityModerator(
+    icon: Icons.person_add_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  removeUserAsCommunityModerator(
+    icon: Icons.person_remove_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  );
 
   String get name => switch (this) {
         UserBottomSheetAction.viewProfile => GlobalContext.l10n.visitUserProfile,
@@ -47,11 +75,6 @@ enum UserBottomSheetAction {
         UserBottomSheetAction.unbanUserFromCommunity => GlobalContext.l10n.unbanFromCommunity,
         UserBottomSheetAction.addUserAsCommunityModerator => GlobalContext.l10n.addAsCommunityModerator,
         UserBottomSheetAction.removeUserAsCommunityModerator => GlobalContext.l10n.removeAsCommunityModerator,
-        // UserPostAction.banUser => "Ban From Instance",
-        // UserPostAction.unbanUser => "Unban User From Instance",
-        // UserPostAction.purgeUser => "Purge User",
-        // UserPostAction.addUserAsAdmin => "Add As Admin",
-        // UserPostAction.removeUserAsAdmin => "Remove As Admin",
       };
 
   /// The icon to use for the action
@@ -67,14 +90,23 @@ enum UserBottomSheetAction {
 }
 
 /// A bottom sheet that allows the current user to perform actions on another user.
-///
-/// Given an [onAction] callback, this widget will display a list of actions that can be taken on the user.
-/// The [onAction] callback will be triggered when an action is performed. This is useful if the parent widget requires an updated [ThunderUser].
 class UserActionBottomSheet extends StatefulWidget {
-  const UserActionBottomSheet({super.key, required this.context, required this.user, this.communityId, this.isUserCommunityModerator, this.isUserBannedFromCommunity, required this.onAction});
+  const UserActionBottomSheet({
+    super.key,
+    required this.context,
+    required this.account,
+    required this.user,
+    this.communityId,
+    this.isUserCommunityModerator,
+    this.isUserBannedFromCommunity,
+    required this.onAction,
+  });
 
   /// The outer context
   final BuildContext context;
+
+  /// The account that is performing the action
+  final Account account;
 
   /// The user that we are interacting with
   final ThunderUser user;
@@ -97,96 +129,102 @@ class UserActionBottomSheet extends StatefulWidget {
 }
 
 class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
-  UserAction? _userAction;
+  List<ThunderUser> blockedUsers = [];
+  List<ThunderCommunity> moderatedCommunities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => getUserInformation());
+  }
+
+  Future<void> getUserInformation() async {
+    final repository = InstanceRepositoryImpl(account: widget.account);
+    final siteInfo = await repository.getSiteInfo();
+
+    setState(() {
+      blockedUsers = siteInfo.myUser?.personBlocks ?? [];
+      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
+    });
+  }
 
   void performAction(UserBottomSheetAction action) async {
+    final l10n = GlobalContext.l10n;
+    final userRepository = UserRepositoryImpl(account: widget.account);
+    final communityRepository = CommunityRepositoryImpl(account: widget.account);
+
     switch (action) {
       case UserBottomSheetAction.viewProfile:
         Navigator.of(context).pop();
         navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user.id);
         break;
       case UserBottomSheetAction.blockUser:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.user.id, userAction: UserAction.block, value: true));
-        setState(() => _userAction = UserAction.block);
+        Navigator.of(context).pop();
+        await userRepository.block(widget.user.id, true);
+        showSnackbar(l10n.successfullyBlockedUser(widget.user.displayNameOrName));
+        widget.onAction(UserAction.block, null);
         break;
       case UserBottomSheetAction.unblockUser:
-        context.read<UserBloc>().add(UserActionEvent(userId: widget.user.id, userAction: UserAction.block, value: false));
-        setState(() => _userAction = UserAction.block);
+        Navigator.of(context).pop();
+        await userRepository.block(widget.user.id, false);
+        showSnackbar(l10n.successfullyUnblockedUser(widget.user.displayNameOrName));
+        widget.onAction(UserAction.block, null);
         break;
       case UserBottomSheetAction.addUserLabel:
+        Navigator.of(context).pop();
         await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(widget.user.displayNameOrName, widget.user.actorId));
         widget.onAction(UserAction.setUserLabel, null);
-        Navigator.of(context).pop();
         break;
       case UserBottomSheetAction.banUserFromCommunity:
         showBanUserDialog();
         break;
       case UserBottomSheetAction.unbanUserFromCommunity:
-        context.read<UserBloc>().add(
-              UserActionEvent(
-                userId: widget.user.id,
-                userAction: UserAction.banFromCommunity,
-                value: false,
-                metadata: {
-                  "communityId": widget.communityId,
-                },
-              ),
-            );
-        setState(() => _userAction = UserAction.banFromCommunity);
+        Navigator.of(context).pop();
+        final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: false);
+        if (!user.banned) showSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
+        widget.onAction(UserAction.banFromCommunity, null);
         break;
       case UserBottomSheetAction.addUserAsCommunityModerator:
-        context.read<UserBloc>().add(UserActionEvent(
-              userId: widget.user.id,
-              userAction: UserAction.addModerator,
-              value: true,
-              metadata: {"communityId": widget.communityId},
-            ));
-        setState(() => _userAction = UserAction.addModerator);
+        Navigator.of(context).pop();
+        final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: true);
+        if (moderators.where((m) => m.id == widget.user.id).isNotEmpty) showSnackbar(l10n.addedUserAsCommunityModerator(widget.user.displayNameOrName));
+        widget.onAction(UserAction.addModerator, null);
         break;
       case UserBottomSheetAction.removeUserAsCommunityModerator:
-        context.read<UserBloc>().add(UserActionEvent(
-              userId: widget.user.id,
-              userAction: UserAction.addModerator,
-              value: false,
-              metadata: {"communityId": widget.communityId},
-            ));
-        setState(() => _userAction = UserAction.addModerator);
+        Navigator.of(context).pop();
+        final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: false);
+        if (moderators.where((m) => m.id == widget.user.id).isEmpty) showSnackbar(l10n.removedUserAsCommunityModerator(widget.user.displayNameOrName));
+        widget.onAction(UserAction.addModerator, null);
         break;
     }
   }
 
   void showBanUserDialog() {
-    /// The controller for the message
-    TextEditingController messageController = TextEditingController();
+    final l10n = GlobalContext.l10n;
+    final controller = TextEditingController();
 
     /// Whether or not the user data (posts and comments) should be removed from the community
     bool removeData = false;
 
     showThunderDialog(
       context: widget.context,
-      title: GlobalContext.l10n.banFromCommunity,
-      primaryButtonText: "Ban",
-      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-        widget.context.read<UserBloc>().add(
-              UserActionEvent(
-                userId: widget.user.id,
-                userAction: UserAction.banFromCommunity,
-                value: true,
-                metadata: {
-                  "communityId": widget.communityId,
-                  "reason": messageController.text,
-                  "removeData": removeData,
-                },
-              ),
-            );
-        setState(() => _userAction = UserAction.banFromCommunity);
+      title: l10n.banFromCommunity,
+      primaryButtonText: l10n.ban,
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+        final communityRepository = CommunityRepositoryImpl(account: widget.account);
+
+        final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: true, reason: controller.text, removeData: removeData);
+        if (user.banned) showSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
+        widget.onAction(UserAction.banFromCommunity, null);
+
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: GlobalContext.l10n.cancel,
+      secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => StatefulBuilder(
         builder: (context, setState) {
           return Column(
+            spacing: 16.0,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -196,28 +234,21 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
                 userGroups: const [UserType.op],
                 includeInstance: true,
               ),
-              const SizedBox(height: 16.0),
               TextFormField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
-                  labelText: GlobalContext.l10n.message(0),
+                  labelText: l10n.message(0),
                 ),
                 autofocus: true,
-                controller: messageController,
+                controller: controller,
                 maxLines: 2,
               ),
-              const SizedBox(height: 16.0),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Remove user data'),
-                  Switch(
-                    value: removeData,
-                    onChanged: (value) {
-                      setState(() => removeData = value);
-                    },
-                  ),
+                  Text(l10n.removeUserData),
+                  Switch(value: removeData, onChanged: (value) => setState(() => removeData = value)),
                 ],
               )
             ],
@@ -230,30 +261,20 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<ProfileBloc>().state;
 
-    List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<UserBottomSheetAction> userActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
     List<UserBottomSheetAction> moderatorActions = UserBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    // List<UserPostAction> adminActions = UserPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.siteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((c) => c.id == widget.communityId).isNotEmpty;
-    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
-
-    final isLoggedIn = authState.isLoggedIn;
-    final blockedUsers = authState.siteResponse?.myUser?.personBlocks ?? [];
-
     final isUserBlocked = blockedUsers.where((u) => u.actorId == widget.user.actorId).isNotEmpty;
+
     final isUserCommunityModerator = widget.isUserCommunityModerator ?? false;
     final isUserBannedFromCommunity = widget.isUserBannedFromCommunity ?? false;
-    // final isUserBannedFromInstance = widget.postViewMedia.postView.creator.banned;
-    // final isUserAdmin = widget.postViewMedia.postView.creatorIsAdmin ?? false;
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.user.actorId) {
+      if (widget.account.username == widget.user.name && widget.account.instance == fetchInstanceNameFromUrl(widget.user.actorId)) {
         userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
       }
 
@@ -275,45 +296,22 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       } else {
         moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.unbanUserFromCommunity).toList();
       }
-
-      // if (isUserBannedFromInstance) {
-      //   adminActions = adminActions.where((action) => action != UserPostAction.banUser).toList();
-      // } else {
-      //   adminActions = adminActions.where((action) => action != UserPostAction.unbanUser).toList();
-      // }
-
-      // if (isUserAdmin) {
-      //   adminActions = adminActions.where((action) => action != UserPostAction.addUserAsAdmin).toList();
-      // } else {
-      //   adminActions = adminActions.where((action) => action != UserPostAction.removeUserAsAdmin).toList();
-      // }
     }
 
-    return BlocListener<UserBloc, UserState>(
-      listener: (context, state) {
-        if (state.status == UserStatus.success) {
-          Navigator.of(context).pop();
-          if (_userAction != null) widget.onAction(_userAction!, state.user);
-          setState(() => _userAction = null);
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...userActions
-              .map(
-                (userPostAction) => BottomSheetAction(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...userActions
+            .map((userPostAction) => BottomSheetAction(
                   leading: Icon(userPostAction.icon),
                   title: userPostAction.name,
                   onTap: () => performAction(userPostAction),
-                ),
-              )
-              .toList() as List<Widget>,
-          if (isModerator && moderatorActions.isNotEmpty) ...[
-            const ThunderDivider(sliver: false, padding: false),
-            ...moderatorActions
-                .map(
-                  (userPostAction) => BottomSheetAction(
+                ))
+            .toList() as List<Widget>,
+        if (isModerator && moderatorActions.isNotEmpty) ...[
+          const ThunderDivider(sliver: false, padding: false),
+          ...moderatorActions
+              .map((userPostAction) => BottomSheetAction(
                     leading: Icon(userPostAction.icon),
                     trailing: Padding(
                       padding: const EdgeInsets.only(left: 1),
@@ -325,32 +323,10 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
                     ),
                     title: userPostAction.name,
                     onTap: () => performAction(userPostAction),
-                  ),
-                )
-                .toList() as List<Widget>,
-          ],
-          // if (isAdmin && adminActions.isNotEmpty) ...[
-          //   const ThunderDivider(sliver: false, padding: false),
-          //   ...adminActions
-          //       .map(
-          //         (userPostAction) => BottomSheetAction(
-          //           leading: Icon(userPostAction.icon),
-          //           trailing: Padding(
-          //             padding: const EdgeInsets.only(left: 1),
-          //             child: Icon(
-          //               Thunder.shield_crown,
-          //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
-          //             ),
-          //           ),
-          //           title: userPostAction.name,
-          //           onTap: () => performAction(userPostAction),
-          //         ),
-          //       )
-          //       .toList() as List<Widget>,
-          // ],
+                  ))
+              .toList() as List<Widget>,
         ],
-      ),
+      ],
     );
   }
 }

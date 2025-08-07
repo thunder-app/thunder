@@ -119,6 +119,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addedModToCommunity => 'Added Mod to Community';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'Admin';
 
   @override
@@ -211,6 +216,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'Note that notification checks will consume additional battery';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Ban from Community';
@@ -631,7 +639,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'cross-posted from:  $postUrl';
+    return 'cross-posted from: $postUrl';
   }
 
   @override
@@ -1173,7 +1181,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importSettings => 'Import Settings';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return 'In reply to $post in $community';
   }
 
@@ -1969,6 +1977,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get removePost => 'Remove Post';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Removed';
 
   @override
@@ -1988,6 +1999,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get removedPost => 'Removed Post';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Reorder';
@@ -2825,7 +2841,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get unbannedUser => 'Unbanned User';
 
   @override
-  String get unbannedUserFromCommunity => 'Unbanned User from Community';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Unbanned $username from Community';
+  }
 
   @override
   String get unblock => 'Unblock';
@@ -4234,7 +4252,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get importSettings => '导入设置';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return '回复 $post 在 $community 中';
   }
 
@@ -5685,7 +5703,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get unbannedUser => '已解除用户禁令';
 
   @override
-  String get unbannedUserFromCommunity => '已解除用户在社区中的禁令';
+  String unbannedUserFromCommunity(Object username) {
+    return '已解除用户在社区中的禁令';
+  }
 
   @override
   String get unblockCommunity => '解除社区禁令';

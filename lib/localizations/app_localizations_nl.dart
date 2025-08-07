@@ -118,6 +118,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get addedModToCommunity => 'Added Mod to Community';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'Administrator';
 
   @override
@@ -210,6 +215,9 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'Note that notification checks will consume additional battery';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Verbannen van gemeen­schap';
@@ -630,7 +638,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'cross-posted from:  $postUrl';
+    return 'cross-posted from: $postUrl';
   }
 
   @override
@@ -1174,7 +1182,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importSettings => 'Instellingen importeren';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return 'In reply to $post in $community';
   }
 
@@ -1969,6 +1977,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get removePost => 'Bericht verwĳderen';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Verwĳderd';
 
   @override
@@ -1988,6 +1999,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get removedPost => 'Bericht verwĳderd';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Opnieuw ordenen';
@@ -2824,7 +2840,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unbannedUser => 'Verbanning van gebruiker opgeheven';
 
   @override
-  String get unbannedUserFromCommunity => 'Unbanned User from Community';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Unbanned $username from Community';
+  }
 
   @override
   String get unblock => 'Deblokkeren';

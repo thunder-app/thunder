@@ -123,6 +123,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           },
         ),
       GeneralCommentAction.user => UserActionBottomSheet(
+          account: account,
           context: widget.context,
           user: widget.comment.creator!,
           communityId: widget.comment.community!.id,

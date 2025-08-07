@@ -125,6 +125,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.user => UserActionBottomSheet(
+          account: account,
           context: widget.context,
           user: widget.post.creator!,
           communityId: widget.post.community?.id,

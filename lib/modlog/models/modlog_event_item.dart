@@ -65,7 +65,7 @@ class ModlogEventItem {
       ModlogActionType.modFeaturePost => actioned ? l10n.featuredPost : l10n.unfeaturedPost,
       ModlogActionType.modRemoveComment => actioned ? l10n.removedComment : l10n.restoredComment,
       ModlogActionType.modRemoveCommunity => actioned ? l10n.removedCommunity : l10n.restoredCommunity,
-      ModlogActionType.modBanFromCommunity => actioned ? l10n.bannedUserFromCommunity : l10n.unbannedUserFromCommunity,
+      ModlogActionType.modBanFromCommunity => actioned ? l10n.banFromCommunity : l10n.unbanFromCommunity,
       ModlogActionType.modBan => actioned ? l10n.bannedUser : l10n.unbannedUser,
       ModlogActionType.modAddCommunity => actioned ? l10n.addedModToCommunity : l10n.removedModFromCommunity,
       ModlogActionType.modTransferCommunity => l10n.transferredModToCommunity,

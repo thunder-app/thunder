@@ -120,6 +120,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get addedModToCommunity => 'சமூகத்திற்கு மோட் சேர்க்கப்பட்டது';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'நிர்வாகி';
 
   @override
@@ -213,6 +218,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'அறிவிப்பு காசோலைகள் கூடுதல் பேட்டரியை நுகரும் என்பதை நினைவில் கொள்க';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'சமூகத்திலிருந்து தடை';
@@ -1191,7 +1199,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get importSettings => 'அமைப்புகளை இறக்குமதி செய்யுங்கள்';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return '$communityஇல் $postஇதற்குப் பதிலளிக்கும் விதமாக';
   }
 
@@ -2005,6 +2013,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get removePost => 'இடுகையை அகற்று';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'அகற்றப்பட்டது';
 
   @override
@@ -2025,6 +2036,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get removedPost => 'அகற்றப்பட்ட இடுகை';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'மறுவரிசை';
@@ -2869,8 +2885,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get unbannedUser => 'தடைசெய்யப்படாத பயனர்';
 
   @override
-  String get unbannedUserFromCommunity =>
-      'சமூகத்திலிருந்து தடைசெய்யப்படாத பயனர்';
+  String unbannedUserFromCommunity(Object username) {
+    return 'சமூகத்திலிருந்து தடைசெய்யப்படாத பயனர்';
+  }
 
   @override
   String get unblock => 'தடை';

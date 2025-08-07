@@ -118,6 +118,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addedModToCommunity => 'Topluluğa Mod Eklendi';
 
   @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
+
+  @override
   String get admin => 'Yönetici';
 
   @override
@@ -211,6 +216,9 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get backgroundCheckWarning =>
       'Bildirim kontrollerinin ek pil tüketeceğini unutmayın';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Topluluktan Yasakla';
@@ -1181,7 +1189,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get importSettings => 'Ayarları İçe Aktar';
 
   @override
-  String inReplyTo(Object community, Object post) {
+  String inReplyTo(Object post, Object community) {
     return '$post gönderisine $community içinde yanıt olarak';
   }
 
@@ -1978,6 +1986,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removePost => 'Gönderiyi Kaldır';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Kaldırıldı';
 
   @override
@@ -1998,6 +2009,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get removedPost => 'Kaldırılmış Gönderi';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Yeniden Sırala';
@@ -2834,8 +2850,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get unbannedUser => 'Yasağı Kaldırılmış Kullanıcı';
 
   @override
-  String get unbannedUserFromCommunity =>
-      'Kullanıcının Topluluktan Yasağı Kaldırıldı';
+  String unbannedUserFromCommunity(Object username) {
+    return 'Kullanıcının Topluluktan Yasağı Kaldırıldı';
+  }
 
   @override
   String get unblock => 'Engeli Kaldır';
