@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/account/account.dart';
-import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/instance/enums/instance_action.dart';
+import 'package:thunder/core/models/thunder_my_user.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -13,13 +12,36 @@ import 'package:thunder/utils/instance.dart';
 
 /// Defines the actions that can be taken on an instance
 enum InstanceBottomSheetAction {
-  visitCommunityInstance(icon: Icons.language_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  blockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  visitUserInstance(icon: Icons.language_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  blockUserInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  unblockUserInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  ;
+  visitCommunityInstance(
+    icon: Icons.language_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  blockCommunityInstance(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  unblockCommunityInstance(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  visitUserInstance(
+    icon: Icons.language_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  blockUserInstance(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  unblockUserInstance(
+    icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  );
 
   String get name => switch (this) {
         InstanceBottomSheetAction.visitCommunityInstance => GlobalContext.l10n.visitCommunityInstance,
@@ -43,17 +65,18 @@ enum InstanceBottomSheetAction {
 }
 
 /// A bottom sheet that allows the user to perform actions on a instance.
-///
-/// Given an [onAction] callback, this widget will display a list of actions that can be taken on the instance.
 class InstanceActionBottomSheet extends StatefulWidget {
   const InstanceActionBottomSheet({
     super.key,
+    required this.account,
     this.communityInstanceId,
     this.communityInstanceUrl,
     this.userInstanceId,
     this.userInstanceUrl,
-    required this.onAction,
   });
+
+  /// The account to use for the instance actions
+  final Account account;
 
   /// The instance id for the given community
   final int? communityInstanceId;
@@ -67,76 +90,73 @@ class InstanceActionBottomSheet extends StatefulWidget {
   /// The user actor id
   final String? userInstanceUrl;
 
-  /// Called when an action is selected
-  final Function() onAction;
-
   @override
   State<InstanceActionBottomSheet> createState() => _InstanceActionBottomSheetState();
 }
 
 class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
-  void performAction(InstanceBottomSheetAction action) {
+  List<ThunderInstanceBlock> blockedInstances = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => getBlockedInstances());
+  }
+
+  Future<void> getBlockedInstances() async {
+    if (widget.account.anonymous) return;
+
+    final repository = InstanceRepositoryImpl(account: widget.account);
+    final siteInfo = await repository.getSiteInfo();
+
+    setState(() => blockedInstances = siteInfo.myUser?.instanceBlocks ?? []);
+  }
+
+  Future<void> performAction(InstanceBottomSheetAction action) async {
+    final l10n = GlobalContext.l10n;
+    final repository = InstanceRepositoryImpl(account: widget.account);
+
+    final userInstance = fetchInstanceNameFromUrl(widget.userInstanceUrl);
+    final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);
+
     switch (action) {
       case InstanceBottomSheetAction.visitCommunityInstance:
         navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.communityInstanceUrl)!, instanceId: widget.communityInstanceId);
         break;
       case InstanceBottomSheetAction.blockCommunityInstance:
-        context.read<InstanceBloc>().add(InstanceActionEvent(
-              instanceAction: InstanceAction.block,
-              instanceId: widget.communityInstanceId!,
-              domain: fetchInstanceNameFromUrl(widget.communityInstanceUrl),
-              value: true,
-            ));
+        Navigator.of(context).pop();
+        final blocked = await repository.block(widget.communityInstanceId!, true);
+        if (blocked) showSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
         break;
       case InstanceBottomSheetAction.unblockCommunityInstance:
-        context.read<InstanceBloc>().add(InstanceActionEvent(
-              instanceAction: InstanceAction.block,
-              instanceId: widget.communityInstanceId!,
-              domain: fetchInstanceNameFromUrl(widget.communityInstanceUrl),
-              value: false,
-            ));
+        Navigator.of(context).pop();
+        final blocked = await repository.block(widget.communityInstanceId!, false);
+        if (!blocked) showSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
         break;
       case InstanceBottomSheetAction.visitUserInstance:
         navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.userInstanceUrl)!, instanceId: widget.userInstanceId);
         break;
       case InstanceBottomSheetAction.blockUserInstance:
-        context.read<InstanceBloc>().add(InstanceActionEvent(
-              instanceAction: InstanceAction.block,
-              instanceId: widget.userInstanceId!,
-              domain: fetchInstanceNameFromUrl(widget.userInstanceUrl),
-              value: true,
-            ));
+        Navigator.of(context).pop();
+        final blocked = await repository.block(widget.userInstanceId!, true);
+        if (blocked) showSnackbar(l10n.successfullyBlockedUser(userInstance!));
         break;
       case InstanceBottomSheetAction.unblockUserInstance:
-        context.read<InstanceBloc>().add(InstanceActionEvent(
-              instanceAction: InstanceAction.block,
-              instanceId: widget.userInstanceId!,
-              domain: fetchInstanceNameFromUrl(widget.userInstanceUrl),
-              value: false,
-            ));
+        Navigator.of(context).pop();
+        final blocked = await repository.block(widget.userInstanceId!, false);
+        if (!blocked) showSnackbar(l10n.successfullyUnblockedUser(userInstance!));
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<ProfileBloc>().state;
+    List<InstanceBottomSheetAction> userActions =
+        InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
 
-    List<InstanceBottomSheetAction> userActions = InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
-    // List<InstancePostAction> moderatorActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    // List<InstancePostAction> adminActions = InstancePostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
-
-    final account = authState.siteResponse?.myUser?.localUserView.person;
-    // final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
-    // final isModerator = moderatedCommunities.where((communityModeratorView) => communityModeratorView.community.actorId == widget.postViewMedia.postView.community.actorId).isNotEmpty;
-    // final isAdmin = authState.siteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
-
-    final isLoggedIn = authState.isLoggedIn;
-    final blockedInstances = authState.siteResponse?.myUser?.instanceBlocks ?? [];
-
-    final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);
     final userInstance = fetchInstanceNameFromUrl(widget.userInstanceUrl);
-    final accountInstance = fetchInstanceNameFromUrl(account?.actorId);
+    final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);
+    final accountInstance = widget.account.instance;
 
     final isCommunityInstanceBlocked = blockedInstances.where((ibv) => ibv.instance['id'] == widget.communityInstanceId).isNotEmpty;
     final isUserInstanceBlocked = blockedInstances.where((ibv) => ibv.instance['id'] == widget.userInstanceId).isNotEmpty;
@@ -159,7 +179,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
           .toList();
     }
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
       // Filter out actions that the user can't perform
@@ -190,75 +210,27 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
       userActions.removeWhere((action) => action == InstanceBottomSheetAction.blockUserInstance);
     }
 
-    return BlocListener<InstanceBloc, InstanceState>(
-      listener: (context, state) {
-        if (state.status == InstanceStatus.success) {
-          Navigator.of(context).pop();
-          widget.onAction();
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...userActions
-              .map(
-                (instancePostAction) => BottomSheetAction(
-                  leading: Icon(instancePostAction.icon),
-                  subtitle: switch (instancePostAction) {
-                    InstanceBottomSheetAction.visitCommunityInstance => communityInstance,
-                    InstanceBottomSheetAction.blockCommunityInstance => communityInstance,
-                    InstanceBottomSheetAction.unblockCommunityInstance => communityInstance,
-                    InstanceBottomSheetAction.visitUserInstance => userInstance,
-                    InstanceBottomSheetAction.blockUserInstance => userInstance,
-                    InstanceBottomSheetAction.unblockUserInstance => userInstance,
-                  },
-                  title: instancePostAction.name,
-                  onTap: () => performAction(instancePostAction),
-                ),
-              )
-              .toList() as List<Widget>,
-          // if (isModerator && moderatorActions.isNotEmpty) ...[
-          //   const ThunderDivider(sliver: false, padding: false),
-          //   ...moderatorActions
-          //       .map(
-          //         (instancePostAction) => BottomSheetAction(
-          //           leading: Icon(instancePostAction.icon),
-          //           trailing: Padding(
-          //             padding: const EdgeInsets.only(left: 1),
-          //             child: Icon(
-          //               Thunder.shield,
-          //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-          //             ),
-          //           ),
-          //           title: instancePostAction.name,
-          //           onTap: () => performAction(instancePostAction),
-          //         ),
-          //       )
-          //       .toList() as List<Widget>,
-          // ],
-          // if (isAdmin && adminActions.isNotEmpty) ...[
-          //   const ThunderDivider(sliver: false, padding: false),
-          //   ...adminActions
-          //       .map(
-          //         (instancePostAction) => BottomSheetAction(
-          //           leading: Icon(instancePostAction.icon),
-          //           trailing: Padding(
-          //             padding: const EdgeInsets.only(left: 1),
-          //             child: Icon(
-          //               Thunder.shield_crown,
-          //               size: 20,
-          //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
-          //             ),
-          //           ),
-          //           title: instancePostAction.name,
-          //           onTap: () => performAction(instancePostAction),
-          //         ),
-          //       )
-          //       .toList() as List<Widget>,
-          // ],
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...userActions
+            .map(
+              (instancePostAction) => BottomSheetAction(
+                leading: Icon(instancePostAction.icon),
+                subtitle: switch (instancePostAction) {
+                  InstanceBottomSheetAction.visitCommunityInstance => communityInstance,
+                  InstanceBottomSheetAction.blockCommunityInstance => communityInstance,
+                  InstanceBottomSheetAction.unblockCommunityInstance => communityInstance,
+                  InstanceBottomSheetAction.visitUserInstance => userInstance,
+                  InstanceBottomSheetAction.blockUserInstance => userInstance,
+                  InstanceBottomSheetAction.unblockUserInstance => userInstance,
+                },
+                title: instancePostAction.name,
+                onTap: () => performAction(instancePostAction),
+              ),
+            )
+            .toList() as List<Widget>,
+      ],
     );
   }
 }

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/community/enums/community_action.dart';
@@ -99,6 +101,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final account = context.read<ProfileBloc>().state.account;
 
     assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
 
@@ -130,14 +133,14 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           },
         ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
+          account: account,
           userInstanceId: widget.comment.creator!.instanceId,
           userInstanceUrl: widget.comment.creator!.actorId,
-          onAction: () {},
         ),
       GeneralCommentAction.share => ShareActionBottomSheet(
+          account: account,
           context: widget.context,
           comment: widget.comment,
-          onAction: () {},
         ),
     };
 

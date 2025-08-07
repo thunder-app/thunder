@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:thunder/account/bloc/profile_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/post/enums/post_action.dart';
@@ -18,15 +17,46 @@ import 'package:thunder/utils/global_context.dart';
 
 /// Defines the actions that can be taken on a post when sharing
 enum ShareBottomSheetAction {
-  shareComment(icon: Icons.comment_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  shareCommentLocal(icon: Icons.comment_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  sharePost(icon: Icons.share_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  sharePostLocal(icon: Icons.share_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  shareImage(icon: Icons.image_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  shareMedia(icon: Icons.personal_video_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  shareLink(icon: Icons.link_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  shareAdvanced(icon: Icons.screen_share_rounded, permissionType: PermissionType.user, requiresAuthentication: false),
-  ;
+  shareComment(
+    icon: Icons.comment_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  shareCommentLocal(
+    icon: Icons.comment_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  sharePost(
+    icon: Icons.share_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  sharePostLocal(
+    icon: Icons.share_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  shareImage(
+    icon: Icons.image_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  shareMedia(
+    icon: Icons.personal_video_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  shareLink(
+    icon: Icons.link_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  shareAdvanced(
+    icon: Icons.screen_share_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  );
 
   String get name => switch (this) {
         ShareBottomSheetAction.shareComment => GlobalContext.l10n.shareComment,
@@ -52,13 +82,14 @@ enum ShareBottomSheetAction {
 }
 
 /// A bottom sheet that allows the user to perform share actions.
-///
-/// Given a [post] or a [comment], and a [onAction] callback, this widget will display a list of share actions that can be taken.
 class ShareActionBottomSheet extends StatefulWidget {
-  const ShareActionBottomSheet({super.key, required this.context, this.post, this.comment, required this.onAction});
+  const ShareActionBottomSheet({super.key, required this.context, required this.account, this.post, this.comment});
 
   /// The parent context
   final BuildContext context;
+
+  /// The account to use for the share actions
+  final Account account;
 
   /// The post information
   final ThunderPost? post;
@@ -66,46 +97,45 @@ class ShareActionBottomSheet extends StatefulWidget {
   /// The comment information
   final ThunderComment? comment;
 
-  /// Called when an action is selected
-  final Function() onAction;
-
   @override
   State<ShareActionBottomSheet> createState() => _ShareActionBottomSheetState();
 }
 
 class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
   String generateCommentUrl(int commentId) {
-    final account = context.read<ProfileBloc>().state.account;
+    final account = widget.account;
     return 'https://${account.instance}/comment/$commentId';
   }
 
   String generatePostUrl(int postId) {
-    final account = context.read<ProfileBloc>().state.account;
+    final account = widget.account;
     return 'https://${account.instance}/post/$postId';
   }
 
   void retrieveMedia(String? url) async {
+    final l10n = GlobalContext.l10n;
+
     if (url == null) return;
 
     try {
       // Try to get the cached image first
-      var media = await DefaultCacheManager().getFileFromCache(url);
+      final media = await DefaultCacheManager().getFileFromCache(url);
       File? mediaFile = media?.file;
 
       if (media == null) {
-        showSnackbar(GlobalContext.l10n.downloadingMedia);
+        showSnackbar(l10n.downloadingMedia);
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
       await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)]));
     } catch (e) {
-      showSnackbar(GlobalContext.l10n.errorDownloadingMedia(e));
+      showSnackbar(l10n.errorDownloadingMedia(e));
     }
   }
 
   void performAction(ShareBottomSheetAction action) {
-    ThunderPost? post = widget.post;
-    ThunderComment? comment = widget.comment;
+    final post = widget.post;
+    final comment = widget.comment;
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
@@ -136,8 +166,9 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
   }
 
   String? generateSubtitle(ShareBottomSheetAction action) {
-    ThunderPost? post = widget.post;
-    ThunderComment? comment = widget.comment;
+    final l10n = GlobalContext.l10n;
+    final post = widget.post;
+    final comment = widget.comment;
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
@@ -155,7 +186,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       case ShareBottomSheetAction.shareLink:
         return post!.media.first.originalUrl;
       case ShareBottomSheetAction.shareAdvanced:
-        return GlobalContext.l10n.useAdvancedShareSheet;
+        return l10n.useAdvancedShareSheet;
     }
   }
 
@@ -204,10 +235,10 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         ...userActions
             .map(
               (sharePostAction) => BottomSheetAction(
+                title: sharePostAction.name,
+                subtitle: generateSubtitle(sharePostAction),
                 leading: Icon(sharePostAction.icon),
                 trailing: sharePostAction == ShareBottomSheetAction.shareAdvanced ? const Icon(Icons.chevron_right_rounded) : null,
-                subtitle: generateSubtitle(sharePostAction),
-                title: sharePostAction.name,
                 onTap: () => performAction(sharePostAction),
               ),
             )

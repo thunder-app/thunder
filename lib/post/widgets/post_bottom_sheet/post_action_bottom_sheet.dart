@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/account/bloc/profile_bloc.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/localizations/app_localizations.dart';
-
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -104,6 +106,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final account = context.read<ProfileBloc>().state.account;
 
     Widget actions = switch (currentPage) {
       GeneralPostAction.general => GeneralPostActionBottomSheetPage(
@@ -138,16 +141,16 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
+          account: account,
           userInstanceId: widget.post.creator?.instanceId,
           userInstanceUrl: widget.post.creator?.actorId,
           communityInstanceId: widget.post.community?.instanceId,
           communityInstanceUrl: widget.post.community?.actorId,
-          onAction: () {},
         ),
       GeneralPostAction.share => ShareActionBottomSheet(
+          account: account,
           context: widget.context,
           post: widget.post,
-          onAction: () {},
         ),
     };
 
