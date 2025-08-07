@@ -105,6 +105,7 @@ class PostCardViewComfortable extends StatelessWidget {
       post,
       onAction: ({postAction, userAction, communityAction, post}) {
         if (postAction == null && userAction == null && communityAction == null) return;
+        if (post != null) context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
 
         switch (postAction) {
           case PostAction.hide:

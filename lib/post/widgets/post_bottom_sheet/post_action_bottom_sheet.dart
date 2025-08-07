@@ -118,10 +118,11 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.post => PostPostActionBottomSheet(
+          account: account,
           context: widget.context,
           post: widget.post,
           onAction: (PostAction postAction, ThunderPost? post) {
-            widget.onAction?.call(postAction: postAction, post: widget.post);
+            widget.onAction?.call(postAction: postAction, post: post);
           },
         ),
       GeneralPostAction.user => UserActionBottomSheet(

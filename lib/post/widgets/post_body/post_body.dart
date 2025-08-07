@@ -252,6 +252,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
               page: GeneralPostAction.share,
               onAction: ({postAction, userAction, communityAction, post}) {
                 if (postAction == null && userAction == null && communityAction == null) return;
+                if (post != null) context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
 
                 switch (postAction) {
                   case PostAction.hide:

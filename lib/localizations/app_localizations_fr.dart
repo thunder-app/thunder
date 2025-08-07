@@ -786,6 +786,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deletedByModerator => 'deleted by moderator';
 
   @override
+  String get deletedPost => 'Deleted post';
+
+  @override
   String get deselectUndeterminedWarning =>
       'If you deselect Undetermined, you will not see most content.';
 
@@ -1802,6 +1805,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pinned => 'Pinned';
 
   @override
+  String get pinnedPostToCommunity => 'Pinned post to community';
+
+  @override
   String get placeholderText =>
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
@@ -2073,6 +2079,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reportPost => 'Report Post';
+
+  @override
+  String get reportedPost => 'Reported post';
 
   @override
   String get reporter => 'Reporter:';
@@ -2937,6 +2946,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get unpinPostFromCommunity => 'Unpin Post from Community';
+
+  @override
+  String get unpinnedPostFromCommunity => 'Unpinned post from community';
 
   @override
   String get unreachable => 'Unreachable';

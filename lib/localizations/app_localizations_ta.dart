@@ -778,6 +778,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get deletedByModerator => 'மதிப்பீட்டாளரால் நீக்கப்பட்டது';
 
   @override
+  String get deletedPost => 'Deleted post';
+
+  @override
   String get deselectUndeterminedWarning =>
       'நீங்கள் தீர்மானிக்கப்படாமல் தேர்வுசெய்தால், நீங்கள் பெரும்பாலான உள்ளடக்கங்களைக் காண மாட்டீர்கள்.';
 
@@ -1810,6 +1813,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get pinned => 'குத்திவைக்கப்பட்டது';
 
   @override
+  String get pinnedPostToCommunity => 'Pinned post to community';
+
+  @override
   String get placeholderText =>
       'லோரெம் மிகவும் கேரட், தக்காளி இளங்கலை உருவாக்குபவர், ஆனால் நான் ஒரு இன்கோடில் இருப்பேன், ஒரு சிறந்த நேரத்தின் வலி. ஒரு விசித்திரமான மன்னிப்பைச் செய்வதற்காக, உல்லாம்கோ வேலையை அவர் பயன்படுத்துகிறார், இதன் விளைவாக வசதியின் அலிகிபிப் தவிர. வீட்டுப்பாடம் அல்லது விமர்சிக்கப்பட்ட இன்பத்தில் வலி ஏற்பட்ட வலி ஒரு இணை வலி கால்பந்து தப்பிக்கும். தவிர, அவர்கள் செய்ய ஆர்வமுள்ள கண்மூடித்தனமானவர்கள், சேவைகள் தின்பண்டங்கள் என்ற ஆன்மாவை கைவிடுகின்றன என்பதில் அவர்கள் தவறு செய்கிறார்கள்.';
 
@@ -2089,6 +2095,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reportPost => 'அறிக்கை இடுகை';
+
+  @override
+  String get reportedPost => 'Reported post';
 
   @override
   String get reporter => 'நிருபர்:';
@@ -2953,6 +2962,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get unpinPostFromCommunity =>
       'சமூகத்திலிருந்து இடுக்கையை அவிழ்த்து விடுங்கள்';
+
+  @override
+  String get unpinnedPostFromCommunity => 'Unpinned post from community';
 
   @override
   String get unreachable => 'அணுக முடியாதது';

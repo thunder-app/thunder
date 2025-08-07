@@ -903,6 +903,10 @@
   "@deletedByModerator": {
     "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
   },
+  "deletedPost": "Deleted post",
+  "@deletedPost": {
+    "description": "Message shown when a post is deleted"
+  },
   "deselectUndeterminedWarning": "If you deselect Undetermined, you will not see most content.",
   "@deselectUndeterminedWarning": {},
   "detailedReason": "Reason: {reason}",
@@ -2049,6 +2053,10 @@
   "@pinned": {
     "description": "Status to indicate that an item has been pinned"
   },
+  "pinnedPostToCommunity": "Pinned post to community",
+  "@pinnedPostToCommunity": {
+    "description": "Message shown when a post is pinned to a community"
+  },
   "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
@@ -2354,6 +2362,10 @@
   "reportPost": "Report Post",
   "@reportPost": {
     "description": "Action to report a post (moderator action)"
+  },
+  "reportedPost": "Reported post",
+  "@reportedPost": {
+    "description": "Message shown when a post is reported"
   },
   "reporter": "Reporter:",
   "@reporter": {
@@ -3395,6 +3407,10 @@
   "unpinPostFromCommunity": "Unpin Post from Community",
   "@unpinPostFromCommunity": {
     "description": "Moderator action to unpin a post from a community"
+  },
+  "unpinnedPostFromCommunity": "Unpinned post from community",
+  "@unpinnedPostFromCommunity": {
+    "description": "Message shown when a post is unpinned from a community"
   },
   "unreachable": "Unreachable",
   "@unreachable": {

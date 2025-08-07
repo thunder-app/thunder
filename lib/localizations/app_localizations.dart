@@ -1466,6 +1466,12 @@ abstract class AppLocalizations {
   /// **'deleted by moderator'**
   String get deletedByModerator;
 
+  /// Message shown when a post is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted post'**
+  String get deletedPost;
+
   /// No description provided for @deselectUndeterminedWarning.
   ///
   /// In en, this message translates to:
@@ -3224,6 +3230,12 @@ abstract class AppLocalizations {
   /// **'Pinned'**
   String get pinned;
 
+  /// Message shown when a post is pinned to a community
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned post to community'**
+  String get pinnedPostToCommunity;
+
   /// Placeholder text for any previews. This comes from https://www.lipsum.com/
   ///
   /// In en, this message translates to:
@@ -3709,6 +3721,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report Post'**
   String get reportPost;
+
+  /// Message shown when a post is reported
+  ///
+  /// In en, this message translates to:
+  /// **'Reported post'**
+  String get reportedPost;
 
   /// Name of reporter that reported a post/comment
   ///
@@ -5245,6 +5263,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unpin Post from Community'**
   String get unpinPostFromCommunity;
+
+  /// Message shown when a post is unpinned from a community
+  ///
+  /// In en, this message translates to:
+  /// **'Unpinned post from community'**
+  String get unpinnedPostFromCommunity;
 
   /// Describes an instance that is currently unreachable
   ///

@@ -1,34 +1,72 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/account/account.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/models/thunder_post.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
-/// Defines the actions that can be taken on a user
-/// TODO: Implement admin-level actions
+/// Defines the actions that can be taken on a post
 enum PostPostAction {
-  reportPost(icon: Icons.flag_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  editPost(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  deletePost(icon: Icons.delete_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  restorePost(icon: Icons.restore_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  lockPost(icon: Icons.lock_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  unlockPost(icon: Icons.lock_open_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  removePost(icon: Icons.delete_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  restorePostAsModerator(icon: Icons.restore_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  pinPostToCommunity(icon: Icons.pin, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  unpinPostFromCommunity(icon: Icons.pin, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  // pinPostToInstance(icon: Icons.pin, permissionType: PermissionType.admin, requiresAuthentication: true),
-  // unpinPostFromInstance(icon: Icons.pin, permissionType: PermissionType.admin, requiresAuthentication: true),
-  ;
+  reportPost(
+    icon: Icons.flag_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  editPost(
+    icon: Icons.edit_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  deletePost(
+    icon: Icons.delete_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  restorePost(
+    icon: Icons.restore_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  lockPost(
+    icon: Icons.lock_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  unlockPost(
+    icon: Icons.lock_open_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  removePost(
+    icon: Icons.delete_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  restorePostAsModerator(
+    icon: Icons.restore_rounded,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  pinPostToCommunity(
+    icon: Icons.pin,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  ),
+  unpinPostFromCommunity(
+    icon: Icons.pin,
+    permissionType: PermissionType.moderator,
+    requiresAuthentication: true,
+  );
 
   String get name => switch (this) {
         PostPostAction.reportPost => GlobalContext.l10n.reportPost,
@@ -41,8 +79,6 @@ enum PostPostAction {
         PostPostAction.restorePostAsModerator => GlobalContext.l10n.restorePost,
         PostPostAction.pinPostToCommunity => GlobalContext.l10n.pinPostToCommunity,
         PostPostAction.unpinPostFromCommunity => GlobalContext.l10n.unpinPostFromCommunity,
-        // PostPostAction.pinPostToInstance => "Pin Post To Instance",
-        // PostPostAction.unpinPostFromInstance => "Unpin Post From Instance",
       };
 
   /// The icon to use for the action
@@ -58,14 +94,14 @@ enum PostPostAction {
 }
 
 /// A bottom sheet that allows the user to perform actions on the post.
-///
-/// Given a [post] and a [onAction] callback, this widget will display a list of actions that can be taken on the post.
-/// The [onAction] callback will be triggered when an action is performed.
 class PostPostActionBottomSheet extends StatefulWidget {
-  const PostPostActionBottomSheet({super.key, required this.context, required this.post, required this.onAction});
+  const PostPostActionBottomSheet({super.key, required this.context, required this.account, required this.post, required this.onAction});
 
   /// The outer context
   final BuildContext context;
+
+  /// The account that is performing the action
+  final Account account;
 
   /// The post information
   final ThunderPost post;
@@ -78,8 +114,26 @@ class PostPostActionBottomSheet extends StatefulWidget {
 }
 
 class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
+  List<ThunderCommunity> moderatedCommunities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => getModeratedCommunities());
+  }
+
+  Future<void> getModeratedCommunities() async {
+    final repository = InstanceRepositoryImpl(account: widget.account);
+    final siteInfo = await repository.getSiteInfo();
+
+    setState(() {
+      moderatedCommunities = siteInfo.myUser?.moderates ?? [];
+    });
+  }
+
   void performAction(PostPostAction action) async {
-    final post = widget.post;
+    final l10n = GlobalContext.l10n;
+    final repository = PostRepositoryImpl(account: widget.account);
 
     switch (action) {
       case PostPostAction.reportPost:
@@ -87,23 +141,31 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         return;
       case PostPostAction.editPost:
         Navigator.of(context).pop();
-        navigateToCreatePostPage(context, communityId: post.community?.id, post: post);
+        navigateToCreatePostPage(context, communityId: widget.post.community?.id, post: widget.post);
         return;
       case PostPostAction.deletePost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: post.id, value: true));
+        final deleted = await repository.delete(widget.post.id, true);
+        if (deleted) showSnackbar(l10n.deletedPost);
+        widget.onAction(PostAction.delete, widget.post.copyWith(deleted: true));
         break;
       case PostPostAction.restorePost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.delete, postId: post.id, value: false));
+        final deleted = await repository.delete(widget.post.id, false);
+        if (!deleted) showSnackbar(l10n.restoredPost);
+        widget.onAction(PostAction.delete, widget.post.copyWith(deleted: false));
         break;
       case PostPostAction.lockPost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: post.id, value: true));
+        final locked = await repository.lock(widget.post.id, true);
+        if (locked) showSnackbar(l10n.lockedPost);
+        widget.onAction(PostAction.lock, widget.post.copyWith(locked: true));
         break;
       case PostPostAction.unlockPost:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.lock, postId: post.id, value: false));
+        final locked = await repository.lock(widget.post.id, false);
+        if (!locked) showSnackbar(l10n.unlockedPost);
+        widget.onAction(PostAction.lock, widget.post.copyWith(locked: false));
         break;
       case PostPostAction.removePost:
         showRemovePostReasonDialog();
@@ -113,48 +175,46 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         break;
       case PostPostAction.pinPostToCommunity:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: post.id, value: true));
+        final pinned = await repository.pinCommunity(widget.post.id, true);
+        if (pinned) showSnackbar(l10n.pinnedPostToCommunity);
+        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(featuredCommunity: true));
         break;
       case PostPostAction.unpinPostFromCommunity:
         Navigator.of(context).pop();
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.pinCommunity, postId: post.id, value: false));
+        final pinned = await repository.pinCommunity(widget.post.id, false);
+        if (!pinned) showSnackbar(l10n.unpinnedPostFromCommunity);
+        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(featuredCommunity: false));
         break;
-      // case PostPostAction.pinPostToInstance:
-      //   Navigator.of(context).pop();
-      //   return;
-      // case PostPostAction.unpinPostFromInstance:
-      //   Navigator.of(context).pop();
-      //   return;
     }
   }
 
   void showReportPostDialog() {
     Navigator.of(context).pop();
-    final TextEditingController messageController = TextEditingController();
+    final l10n = GlobalContext.l10n;
+    final controller = TextEditingController();
 
     showThunderDialog(
       context: widget.context,
-      title: GlobalContext.l10n.reportPost,
-      primaryButtonText: GlobalContext.l10n.report(1),
-      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-        widget.context.read<FeedBloc>().add(
-              FeedItemActionedEvent(
-                postAction: PostAction.report,
-                postId: widget.post.id,
-                value: messageController.text,
-              ),
-            );
+      title: l10n.reportPost,
+      primaryButtonText: l10n.report(1),
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+        final repository = PostRepositoryImpl(account: widget.account);
+
+        await repository.report(widget.post.id, controller.text);
+        showSnackbar(l10n.reportedPost);
+        widget.onAction(PostAction.report, null);
+
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: GlobalContext.l10n.cancel,
+      secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: GlobalContext.l10n.message(0),
+          labelText: l10n.message(0),
         ),
         autofocus: true,
-        controller: messageController,
+        controller: controller,
         maxLines: 4,
       ),
     );
@@ -162,34 +222,31 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
   void showRemovePostReasonDialog() {
     Navigator.of(context).pop();
-    final TextEditingController messageController = TextEditingController();
+    final l10n = GlobalContext.l10n;
+    final controller = TextEditingController();
 
     showThunderDialog(
       context: widget.context,
-      title: widget.post.removed ? GlobalContext.l10n.restorePost : GlobalContext.l10n.removalReason,
-      primaryButtonText: widget.post.removed ? GlobalContext.l10n.restore : GlobalContext.l10n.remove,
-      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-        widget.context.read<FeedBloc>().add(
-              FeedItemActionedEvent(
-                postAction: PostAction.remove,
-                postId: widget.post.id,
-                value: {
-                  'remove': !widget.post.removed,
-                  'reason': messageController.text,
-                },
-              ),
-            );
+      title: widget.post.removed ? l10n.restorePost : l10n.removalReason,
+      primaryButtonText: widget.post.removed ? l10n.restore : l10n.remove,
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+        final repository = PostRepositoryImpl(account: widget.account);
+
+        final removed = await repository.remove(widget.post.id, !widget.post.removed, controller.text);
+        removed ? showSnackbar(l10n.removedPost) : showSnackbar(l10n.restoredPost);
+        widget.onAction(PostAction.remove, widget.post.copyWith(removed: !widget.post.removed));
+
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: GlobalContext.l10n.cancel,
+      secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: GlobalContext.l10n.message(0),
+          labelText: l10n.message(0),
         ),
         autofocus: true,
-        controller: messageController,
+        controller: controller,
         maxLines: 4,
       ),
     );
@@ -198,28 +255,21 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<ProfileBloc>().state;
 
     List<PostPostAction> userActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
     List<PostPostAction> moderatorActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    // List<PostPostAction> adminActions = PostPostAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.siteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
     final isModerator = moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
-    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
 
-    final isLoggedIn = authState.isLoggedIn;
     final isPostLocked = widget.post.locked;
     final isPostPinnedToCommunity = widget.post.featuredCommunity; // Pin to community
-    // final isPostPinnedToInstance = widget.postViewMedia.postView.post.featuredLocal; // Pin to instance
     final isPostDeleted = widget.post.deleted; // Deleted by the user
     final isPostRemoved = widget.post.removed; // Removed by a moderator
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.post.creator?.actorId) {
+      if (widget.account.username == widget.post.creator?.name && widget.account.instance == fetchInstanceNameFromUrl(widget.post.creator?.actorId)) {
         userActions = userActions.where((action) => action != PostPostAction.reportPost).toList();
       } else {
         userActions = userActions.where((action) => action != PostPostAction.editPost && action != PostPostAction.deletePost && action != PostPostAction.restorePost).toList();
@@ -248,66 +298,36 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       } else {
         moderatorActions = moderatorActions.where((action) => action != PostPostAction.unpinPostFromCommunity).toList();
       }
-
-      // if (isPostPinnedToInstance) {
-      //   adminActions = adminActions.where((action) => action != PostPostAction.pinPostToInstance).toList();
-      // } else {
-      //   adminActions = adminActions.where((action) => action != PostPostAction.unpinPostFromInstance).toList();
-      // }
     }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions
-            .map(
-              (postPostAction) => BottomSheetAction(
-                leading: Icon(postPostAction.icon),
-                title: postPostAction.name,
-                onTap: () => performAction(postPostAction),
-              ),
-            )
+            .map((postPostAction) => BottomSheetAction(
+                  leading: Icon(postPostAction.icon),
+                  title: postPostAction.name,
+                  onTap: () => performAction(postPostAction),
+                ))
             .toList() as List<Widget>,
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions
-              .map(
-                (postPostAction) => BottomSheetAction(
-                  leading: Icon(postPostAction.icon),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Icon(
-                      Thunder.shield,
-                      size: 20,
-                      color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
+              .map((postPostAction) => BottomSheetAction(
+                    leading: Icon(postPostAction.icon),
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(left: 1),
+                      child: Icon(
+                        Thunder.shield,
+                        size: 20,
+                        color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
+                      ),
                     ),
-                  ),
-                  title: postPostAction.name,
-                  onTap: () => performAction(postPostAction),
-                ),
-              )
+                    title: postPostAction.name,
+                    onTap: () => performAction(postPostAction),
+                  ))
               .toList() as List<Widget>,
         ],
-        // if (isAdmin && adminActions.isNotEmpty) ...[
-        //   const ThunderDivider(sliver: false, padding: false),
-        //   ...adminActions
-        //       .map(
-        //         (postPostAction) => BottomSheetAction(
-        //           leading: Icon(postPostAction.icon),
-        //           trailing: Padding(
-        //             padding: const EdgeInsets.only(left: 1),
-        //             child: Icon(
-        //               Thunder.shield_crown,
-        //               size: 20,
-        //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
-        //             ),
-        //           ),
-        //           title: postPostAction.name,
-        //           onTap: () => performAction(postPostAction),
-        //         ),
-        //       )
-        //       .toList() as List<Widget>,
-        // ],
       ],
     );
   }

@@ -210,6 +210,7 @@ class _PostCardState extends State<PostCard> {
           widget.post,
           onAction: ({postAction, userAction, communityAction, post}) {
             if (postAction == null && userAction == null && communityAction == null) return;
+            if (post != null) context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
 
             if (postAction == PostAction.hide) {
               context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
