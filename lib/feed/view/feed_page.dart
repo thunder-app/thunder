@@ -25,7 +25,6 @@ import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/user_header/user_header.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/navigation.dart';
@@ -277,186 +276,175 @@ class _FeedViewState extends State<FeedView> {
     bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
     bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserBloc, UserState>(
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        child: BlocConsumer<FeedBloc, FeedState>(
+          listenWhen: (previous, current) {
+            if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+            if (previous.dismissReadId != current.dismissReadId) dismissRead();
+            if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
+            if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
+            if (current.excessiveApiCalls) {
+              showSnackbar(
+                l10n.excessiveApiCallsWarning,
+                trailingIcon: Icons.settings_rounded,
+                trailingAction: () => navigateToSettingPage(context, LocalSettings.settingsPageFilters, settingToHighlight: LocalSettings.keywordFilters),
+              );
+            }
+            return true;
+          },
           listener: (context, state) {
-            if (state.message != null) {
+            // Continue to fetch more items as long as the device view is not scrollable.
+            // This is to avoid cases where more items cannot be fetched because the conditions are not met
+            if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
+              Future.delayed(const Duration(milliseconds: 500), () {
+                if (!mounted) return;
+                bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+                if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
+              });
+            }
+
+            if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser) && state.message != null) {
               showSnackbar(state.message!);
+              context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
             }
           },
-        ),
-      ],
-      child: Scaffold(
-        body: SafeArea(
-          top: false,
-          child: BlocConsumer<FeedBloc, FeedState>(
-            listenWhen: (previous, current) {
-              if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-              if (previous.dismissReadId != current.dismissReadId) dismissRead();
-              if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
-              if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
-              if (current.excessiveApiCalls) {
-                showSnackbar(
-                  l10n.excessiveApiCallsWarning,
-                  trailingIcon: Icons.settings_rounded,
-                  trailingAction: () => navigateToSettingPage(context, LocalSettings.settingsPageFilters, settingToHighlight: LocalSettings.keywordFilters),
-                );
-              }
-              return true;
-            },
-            listener: (context, state) {
-              // Continue to fetch more items as long as the device view is not scrollable.
-              // This is to avoid cases where more items cannot be fetched because the conditions are not met
-              if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  if (!mounted) return;
-                  bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                  if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
-                });
-              }
+          builder: (context, state) {
+            final theme = Theme.of(context);
+            List<ThunderPost> posts = state.posts;
+            List<ThunderComment> comments = state.comments;
 
-              if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser) && state.message != null) {
-                showSnackbar(state.message!);
-                context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
-              }
-            },
-            builder: (context, state) {
-              final theme = Theme.of(context);
-              List<ThunderPost> posts = state.posts;
-              List<ThunderComment> comments = state.comments;
-
-              return RefreshIndicator(
-                onRefresh: () async {
-                  HapticFeedback.mediumImpact();
-                  triggerRefresh(context);
-                },
-                edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
-                child: Stack(
-                  children: [
-                    CustomScrollView(
-                      controller: _scrollController,
-                      slivers: <Widget>[
-                        widget.feedType == FeedType.account
-                            ? AccountPageAppBar(scrollController: _scrollController)
-                            : FeedPageAppBar(scrollController: _scrollController, scaffoldStateKey: widget.scaffoldStateKey),
-                        // Display loading indicator until the feed is fetched
-                        if (state.status == FeedStatus.initial)
-                          const SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: Center(child: CircularProgressIndicator()),
+            return RefreshIndicator(
+              onRefresh: () async {
+                HapticFeedback.mediumImpact();
+                triggerRefresh(context);
+              },
+              edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    controller: _scrollController,
+                    slivers: <Widget>[
+                      widget.feedType == FeedType.account
+                          ? AccountPageAppBar(scrollController: _scrollController)
+                          : FeedPageAppBar(scrollController: _scrollController, scaffoldStateKey: widget.scaffoldStateKey),
+                      // Display loading indicator until the feed is fetched
+                      if (state.status == FeedStatus.initial)
+                        const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      if (state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser)
+                        SliverToBoxAdapter(
+                          child: Container(),
+                        ),
+                      // Display tagline and list of posts once they are fetched
+                      if (state.status != FeedStatus.initial && (state.status != FeedStatus.failureLoadingCommunity || state.status != FeedStatus.failureLoadingUser)) ...[
+                        SliverToBoxAdapter(
+                          child: Visibility(
+                            visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
+                            child: TagLine(),
                           ),
-                        if (state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser)
+                        ),
+                        if (state.community != null && state.feedType == FeedType.community)
                           SliverToBoxAdapter(
-                            child: Container(),
+                            child: CommunityHeader(
+                              community: state.community!,
+                              instance: state.communityInstance,
+                              moderators: state.communityModerators,
+                              condensed: false,
+                            ),
                           ),
-                        // Display tagline and list of posts once they are fetched
-                        if (state.status != FeedStatus.initial && (state.status != FeedStatus.failureLoadingCommunity || state.status != FeedStatus.failureLoadingUser)) ...[
+                        if (state.user != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
                           SliverToBoxAdapter(
-                            child: Visibility(
-                              visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                              child: TagLine(),
+                            child: UserHeader(
+                              user: state.user!,
+                              moderates: state.userModerates,
+                              feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
+                              onChangeFeedType: (feedType) {
+                                setState(() {
+                                  selectedUserOption[0] = feedType == FeedTypeSubview.post;
+                                  selectedUserOption[1] = feedType == FeedTypeSubview.comment;
+                                });
+                              },
+                              condensed: false,
                             ),
                           ),
-                          if (state.community != null && state.feedType == FeedType.community)
-                            SliverToBoxAdapter(
-                              child: CommunityHeader(
-                                community: state.community!,
-                                instance: state.communityInstance,
-                                moderators: state.communityModerators,
-                                condensed: false,
+                        selectedUserOption[1]
+                            // Widget representing the list of user comments on the feed
+                            ? FeedCommentCardList(
+                                comments: comments,
+                                tabletMode: tabletMode,
+                              )
+                            :
+                            // Widget representing the list of posts on the feed
+                            FeedPostCardList(
+                                posts: posts,
+                                tabletMode: tabletMode,
+                                markPostReadOnScroll: markPostReadOnScroll,
+                                queuedForRemoval: queuedForRemoval,
+                                dimReadPosts: state.feedType == FeedType.account ? false : null,
                               ),
-                            ),
-                          if (state.user != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
-                            SliverToBoxAdapter(
-                              child: UserHeader(
-                                user: state.user!,
-                                moderates: state.userModerates,
-                                feedType: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment,
-                                onChangeFeedType: (feedType) {
-                                  setState(() {
-                                    selectedUserOption[0] = feedType == FeedTypeSubview.post;
-                                    selectedUserOption[1] = feedType == FeedTypeSubview.comment;
-                                  });
-                                },
-                                condensed: false,
-                              ),
-                            ),
-                          selectedUserOption[1]
-                              // Widget representing the list of user comments on the feed
-                              ? FeedCommentCardList(
-                                  comments: comments,
-                                  tabletMode: tabletMode,
-                                )
-                              :
-                              // Widget representing the list of posts on the feed
-                              FeedPostCardList(
-                                  posts: posts,
-                                  tabletMode: tabletMode,
-                                  markPostReadOnScroll: markPostReadOnScroll,
-                                  queuedForRemoval: queuedForRemoval,
-                                  dimReadPosts: state.feedType == FeedType.account ? false : null,
-                                ),
-                          // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                          if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
-                            SliverToBoxAdapter(
-                              child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
-                                  ? const FeedReachedEnd()
-                                  : Container(
-                                      height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                      child: const CircularProgressIndicator(),
-                                    ),
-                            ),
-                        ],
+                        // Widget representing the bottom of the feed (reached end or loading more posts indicators)
+                        if (state.status != FeedStatus.failureLoadingCommunity && state.status != FeedStatus.failureLoadingUser)
+                          SliverToBoxAdapter(
+                            child: ((selectedUserOption[0] && state.hasReachedPostsEnd) || (selectedUserOption[1] && state.hasReachedCommentsEnd))
+                                ? const FeedReachedEnd()
+                                : Container(
+                                    height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                          ),
+                      ],
+                    ],
+                  ),
+                  // Widget to host the feed FAB when navigating to new page
+                  AnimatedOpacity(
+                    opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                    curve: Curves.easeInOut,
+                    duration: const Duration(milliseconds: 250),
+                    child: Stack(
+                      children: [
+                        IgnorePointer(
+                            child: Container(
+                          color: theme.colorScheme.surface.withValues(alpha: 0.95),
+                        )),
+                        if (thunderBloc.state.isFabOpen)
+                          ModalBarrier(
+                            color: null,
+                            dismissible: true,
+                            onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                          ),
                       ],
                     ),
-                    // Widget to host the feed FAB when navigating to new page
+                  ),
+                  if (Navigator.of(context).canPop() &&
+                      (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
+                      thunderBloc.state.enableFeedsFab &&
+                      state.feedType != FeedType.account)
                     AnimatedOpacity(
-                      opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                      curve: Curves.easeInOut,
-                      duration: const Duration(milliseconds: 250),
-                      child: Stack(
-                        children: [
-                          IgnorePointer(
-                              child: Container(
-                            color: theme.colorScheme.surface.withValues(alpha: 0.95),
-                          )),
-                          if (thunderBloc.state.isFabOpen)
-                            ModalBarrier(
-                              color: null,
-                              dismissible: true,
-                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            ),
-                        ],
+                      opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.easeIn,
+                      child: Container(
+                        margin: const EdgeInsets.all(16),
+                        child: FeedFAB(heroTag: state.communityName ?? state.username),
                       ),
                     ),
-                    if (Navigator.of(context).canPop() &&
-                        (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
-                        thunderBloc.state.enableFeedsFab &&
-                        state.feedType != FeedType.account)
-                      AnimatedOpacity(
-                        opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 150),
-                        curve: Curves.easeIn,
-                        child: Container(
-                          margin: const EdgeInsets.all(16),
-                          child: FeedFAB(heroTag: state.communityName ?? state.username),
-                        ),
+                  if (hideTopBarOnScroll)
+                    Positioned(
+                      child: Container(
+                        height: MediaQuery.of(context).padding.top,
+                        color: theme.colorScheme.surface,
                       ),
-                    if (hideTopBarOnScroll)
-                      Positioned(
-                        child: Container(
-                          height: MediaQuery.of(context).padding.top,
-                          color: theme.colorScheme.surface,
-                        ),
-                      )
-                  ],
-                ),
-              );
-            },
-          ),
+                    )
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

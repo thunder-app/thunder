@@ -38,7 +38,6 @@ import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/thunder/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:thunder/thunder/thunder.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/preferences.dart';
@@ -243,7 +242,6 @@ class _ThunderAppState extends State<ThunderApp> {
                       return MultiBlocProvider(
                         key: ValueKey('account_${account.id}'),
                         providers: [
-                          BlocProvider(create: (context) => UserBloc(account: account)),
                           BlocProvider(create: (context) => InboxBloc(account: account)..add(GetInboxEvent(reset: true))),
                           BlocProvider(create: (context) => SearchBloc(account: account)),
                           BlocProvider(create: (context) => FeedBloc(account: account)),

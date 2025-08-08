@@ -10,10 +10,9 @@ import 'package:thunder/feed/utils/user_share.dart';
 import 'package:thunder/post/post.dart';
 import 'package:thunder/shared/chips/thunder_action_chip.dart';
 import 'package:thunder/shared/sort_picker.dart';
-import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/models/user_label.dart';
+import 'package:thunder/user/repository/user_repository.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -41,16 +40,11 @@ class UserHeaderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
-
-    return BlocProvider<UserBloc>(
-      create: (context) => UserBloc(account: account),
-      child: _UserActionsContent(
-        user: user,
-        moderates: moderates,
-        feedType: feedType,
-        onChangeFeedType: onChangeFeedType,
-      ),
+    return _UserActionsContent(
+      user: user,
+      moderates: moderates,
+      feedType: feedType,
+      onChangeFeedType: onChangeFeedType,
     );
   }
 }
@@ -78,32 +72,18 @@ class _UserActionsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserBloc, UserState>(
-      listener: _handleUserStateChange,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0).copyWith(bottom: 8.0),
-          child: _ActionChipsList(
-            user: user,
-            moderates: moderates,
-            feedType: feedType,
-            onChangeFeedType: onChangeFeedType,
-          ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0).copyWith(bottom: 8.0),
+        child: _ActionChipsList(
+          user: user,
+          moderates: moderates,
+          feedType: feedType,
+          onChangeFeedType: onChangeFeedType,
         ),
       ),
     );
-  }
-
-  /// Handles user state changes and updates the profile accordingly.
-  void _handleUserStateChange(BuildContext context, UserState state) {
-    if (state.status == UserStatus.success && state.user != null) {
-      try {
-        context.read<ProfileBloc>().add(FetchProfileSettings());
-      } catch (e) {
-        debugPrint('ProfileBloc not available: $e');
-      }
-    }
   }
 }
 
@@ -349,18 +329,18 @@ class _BlockActionChip extends StatelessWidget {
 
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        if (state.status == ProfileStatus.failure && state.error != null) {
-          debugPrint(state.error);
-        }
-
         final blocked = _isUserBlocked(state);
 
         return ThunderActionChip(
           icon: blocked ? Icons.undo_rounded : Icons.block_rounded,
           label: blocked ? l10n.unblock : l10n.block,
-          onPressed: () {
+          onPressed: () async {
             HapticFeedback.heavyImpact();
-            context.read<UserBloc>().add(UserActionEvent(userAction: UserAction.block, userId: user.id, value: !blocked));
+
+            final repository = UserRepositoryImpl(account: state.account);
+            await repository.block(user.id, !blocked);
+
+            context.read<ProfileBloc>().add(FetchProfileSettings());
           },
         );
       },
