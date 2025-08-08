@@ -423,6 +423,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get comment => 'Commento';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'Commenti';
 
   @override
@@ -767,6 +770,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'rimosso da moderatore';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2056,6 +2062,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reportPost => 'Segnala Post';
+
+  @override
+  String get reportedComment => 'Reported comment';
 
   @override
   String get reportedPost => 'Reported post';

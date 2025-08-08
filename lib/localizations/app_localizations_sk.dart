@@ -422,6 +422,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get comment => 'Komentár';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'Komentáre';
 
   @override
@@ -769,6 +772,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'deleted by moderator';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2059,6 +2065,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get reportPost => 'Report Post';
+
+  @override
+  String get reportedComment => 'Reported comment';
 
   @override
   String get reportedPost => 'Reported post';

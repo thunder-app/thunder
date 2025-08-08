@@ -414,6 +414,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get comment => 'Kommentti';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'Kommentit';
 
   @override
@@ -761,6 +764,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'deleted by moderator';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2046,6 +2052,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get reportPost => 'Report Post';
 
   @override
+  String get reportedComment => 'Reported comment';
+
+  @override
   String get reportedPost => 'Reported post';
 
   @override
@@ -2079,7 +2088,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get restorePost => 'Restore Post';
 
   @override
-  String get restoredComment => 'Restored Comment';
+  String get restoredComment => 'Restored comment';
 
   @override
   String get restoredCommentFromDraft => 'Kommentti palautettu luonnoksesta';

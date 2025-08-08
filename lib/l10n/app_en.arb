@@ -478,6 +478,10 @@
   },
   "comment": "Comment",
   "@comment": {},
+  "commentActions": "Comment Actions",
+  "@commentActions": {
+    "description": "Title for the comment actions bottom sheet"
+  },
   "commentBehaviourSettings": "Comments",
   "@commentBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -902,6 +906,10 @@
   "deletedByModerator": "deleted by moderator",
   "@deletedByModerator": {
     "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+  },
+  "deletedComment": "Deleted comment",
+  "@deletedComment": {
+    "description": "Message shown when a comment is deleted"
   },
   "deletedPost": "Deleted post",
   "@deletedPost": {
@@ -2363,6 +2371,10 @@
   "@reportPost": {
     "description": "Action to report a post (moderator action)"
   },
+  "reportedComment": "Reported comment",
+  "@reportedComment": {
+    "description": "Message shown when a comment is reported"
+  },
   "reportedPost": "Reported post",
   "@reportedPost": {
     "description": "Message shown when a post is reported"
@@ -2403,7 +2415,7 @@
   "@restorePost": {
     "description": "Action to restore a post (moderator action)"
   },
-  "restoredComment": "Restored Comment",
+  "restoredComment": "Restored comment",
   "@restoredComment": {
     "description": "Short decription for moderator action to restore a comment"
   },

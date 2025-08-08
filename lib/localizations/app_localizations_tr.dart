@@ -420,6 +420,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get comment => 'Yorum';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'Yorumlar';
 
   @override
@@ -768,6 +771,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'moderatör tarafından silindi';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2066,6 +2072,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get reportPost => 'Gönderiyi Şikayet Et';
+
+  @override
+  String get reportedComment => 'Reported comment';
 
   @override
   String get reportedPost => 'Reported post';

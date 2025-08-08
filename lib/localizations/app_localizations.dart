@@ -872,6 +872,12 @@ abstract class AppLocalizations {
   /// **'Comment'**
   String get comment;
 
+  /// Title for the comment actions bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Comment Actions'**
+  String get commentActions;
+
   /// Subcategory in Setting -> General
   ///
   /// In en, this message translates to:
@@ -1465,6 +1471,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'deleted by moderator'**
   String get deletedByModerator;
+
+  /// Message shown when a comment is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted comment'**
+  String get deletedComment;
 
   /// Message shown when a post is deleted
   ///
@@ -3722,6 +3734,12 @@ abstract class AppLocalizations {
   /// **'Report Post'**
   String get reportPost;
 
+  /// Message shown when a comment is reported
+  ///
+  /// In en, this message translates to:
+  /// **'Reported comment'**
+  String get reportedComment;
+
   /// Message shown when a post is reported
   ///
   /// In en, this message translates to:
@@ -3791,7 +3809,7 @@ abstract class AppLocalizations {
   /// Short decription for moderator action to restore a comment
   ///
   /// In en, this message translates to:
-  /// **'Restored Comment'**
+  /// **'Restored comment'**
   String get restoredComment;
 
   /// No description provided for @restoredCommentFromDraft.

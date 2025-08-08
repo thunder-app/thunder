@@ -422,6 +422,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get comment => 'Komentarz';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'Komentarze';
 
   @override
@@ -772,6 +775,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'deleted by moderator';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2061,6 +2067,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get reportPost => 'Report Post';
 
   @override
+  String get reportedComment => 'Reported comment';
+
+  @override
   String get reportedPost => 'Reported post';
 
   @override
@@ -2094,7 +2103,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get restorePost => 'Restore Post';
 
   @override
-  String get restoredComment => 'Restored Comment';
+  String get restoredComment => 'Restored comment';
 
   @override
   String get restoredCommentFromDraft => 'Przywróć komentarz z wersji roboczej';

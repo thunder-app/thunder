@@ -40,7 +40,7 @@ enum GeneralCommentAction {
 
     return switch (this) {
       GeneralCommentAction.general => l10n.actions,
-      GeneralCommentAction.comment => 'Comment Actions',
+      GeneralCommentAction.comment => l10n.commentActions,
       GeneralCommentAction.user => l10n.userActions,
       GeneralCommentAction.instance => l10n.instanceActions,
       GeneralCommentAction.share => l10n.share,

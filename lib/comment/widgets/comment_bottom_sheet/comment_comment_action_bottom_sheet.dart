@@ -151,13 +151,13 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       case CommentBottomSheetAction.deleteComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, true);
-        if (updatedComment.deleted) showSnackbar('Deleted comment');
+        if (updatedComment.deleted) showSnackbar(l10n.deletedComment);
         widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: true));
         break;
       case CommentBottomSheetAction.restoreComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, false);
-        if (!updatedComment.deleted) showSnackbar('Restored comment');
+        if (!updatedComment.deleted) showSnackbar(l10n.restoredComment);
         widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: false));
         break;
     }
@@ -176,7 +176,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         final repository = CommentRepositoryImpl(account: widget.account);
 
         await repository.report(widget.comment.id, controller.text);
-        showSnackbar('Reported comment');
+        showSnackbar(l10n.reportedComment);
         widget.onAction(CommentAction.report, widget.comment);
 
         Navigator.of(dialogContext).pop();

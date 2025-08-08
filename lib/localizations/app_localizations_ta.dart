@@ -425,6 +425,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get comment => 'கருத்து';
 
   @override
+  String get commentActions => 'Comment Actions';
+
+  @override
   String get commentBehaviourSettings => 'கருத்துகள்';
 
   @override
@@ -776,6 +779,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get deletedByModerator => 'மதிப்பீட்டாளரால் நீக்கப்பட்டது';
+
+  @override
+  String get deletedComment => 'Deleted comment';
 
   @override
   String get deletedPost => 'Deleted post';
@@ -2095,6 +2101,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reportPost => 'அறிக்கை இடுகை';
+
+  @override
+  String get reportedComment => 'Reported comment';
 
   @override
   String get reportedPost => 'Reported post';
