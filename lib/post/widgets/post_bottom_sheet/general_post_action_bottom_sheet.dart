@@ -279,7 +279,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
       children: [
         if (quickActions.isNotEmpty)
           MultiPickerItem(
-            pickerItems: quickActions.map((quickPostAction) {
+            pickerItems: quickActions.map<PickerItemData>((quickPostAction) {
               Function()? onSelected;
 
               if (quickPostAction == GeneralQuickPostAction.downvote && !widget.downvotesEnabled) {
@@ -297,15 +297,15 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
               );
             }).toList(),
           ),
-        ...submenus
-            .map((page) => BottomSheetAction(
-                  leading: Icon(page.icon),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  title: page.name,
-                  subtitle: generateSubtitle(page),
-                  onTap: () => widget.onSwitchActivePage(page),
-                ))
-            .toList() as List<Widget>,
+        ...submenus.map<Widget>(
+          (page) => BottomSheetAction(
+            leading: Icon(page.icon),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            title: page.name,
+            subtitle: generateSubtitle(page),
+            onTap: () => widget.onSwitchActivePage(page),
+          ),
+        ),
       ],
     );
   }

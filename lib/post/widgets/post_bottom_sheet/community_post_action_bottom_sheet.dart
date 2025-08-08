@@ -115,25 +115,25 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, true);
         if (community.subscribed != SubscriptionStatus.notSubscribed) showSnackbar('Subscribed to ${community.titleOrName}');
-        widget.onAction(CommunityAction.follow, widget.post.community);
+        widget.onAction(CommunityAction.follow, community);
         break;
       case CommunityPostAction.unsubscribeFromCommunity:
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, false);
         if (community.subscribed == SubscriptionStatus.notSubscribed) showSnackbar('Unsubscribed from ${community.titleOrName}');
-        widget.onAction(CommunityAction.follow, widget.post.community);
+        widget.onAction(CommunityAction.follow, community);
         break;
       case CommunityPostAction.blockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, true);
         if (community.blocked == true) showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
-        widget.onAction(CommunityAction.block, widget.post.community);
+        widget.onAction(CommunityAction.block, community);
         break;
       case CommunityPostAction.unblockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, false);
         if (community.blocked == false) showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
-        widget.onAction(CommunityAction.block, widget.post.community);
+        widget.onAction(CommunityAction.block, community);
         break;
     }
   }
@@ -182,32 +182,30 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions
-            .map((communityPostAction) => BottomSheetAction(
-                  leading: Icon(communityPostAction.icon),
-                  title: communityPostAction.name,
-                  onTap: () => performAction(communityPostAction),
-                ))
-            .toList() as List<Widget>,
+        ...userActions.map<Widget>(
+          (communityPostAction) => BottomSheetAction(
+            leading: Icon(communityPostAction.icon),
+            title: communityPostAction.name,
+            onTap: () => performAction(communityPostAction),
+          ),
+        ),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
-          ...moderatorActions
-              .map(
-                (communityPostAction) => BottomSheetAction(
-                  leading: Icon(communityPostAction.icon),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Icon(
-                      Thunder.shield,
-                      size: 20,
-                      color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                    ),
-                  ),
-                  title: communityPostAction.name,
-                  onTap: () => performAction(communityPostAction),
+          ...moderatorActions.map<Widget>(
+            (communityPostAction) => BottomSheetAction(
+              leading: Icon(communityPostAction.icon),
+              trailing: Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Icon(
+                  Thunder.shield,
+                  size: 20,
+                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),
-              )
-              .toList() as List<Widget>,
+              ),
+              title: communityPostAction.name,
+              onTap: () => performAction(communityPostAction),
+            ),
+          ),
         ],
       ],
     );

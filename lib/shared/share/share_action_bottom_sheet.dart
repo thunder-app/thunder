@@ -232,17 +232,15 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions
-            .map(
-              (sharePostAction) => BottomSheetAction(
-                title: sharePostAction.name,
-                subtitle: generateSubtitle(sharePostAction),
-                leading: Icon(sharePostAction.icon),
-                trailing: sharePostAction == ShareBottomSheetAction.shareAdvanced ? const Icon(Icons.chevron_right_rounded) : null,
-                onTap: () => performAction(sharePostAction),
-              ),
-            )
-            .toList() as List<Widget>,
+        ...userActions.map<Widget>(
+          (sharePostAction) => BottomSheetAction(
+            title: sharePostAction.name,
+            subtitle: generateSubtitle(sharePostAction),
+            leading: Icon(sharePostAction.icon),
+            trailing: sharePostAction == ShareBottomSheetAction.shareAdvanced ? const Icon(Icons.chevron_right_rounded) : null,
+            onTap: () => performAction(sharePostAction),
+          ),
+        ),
       ],
     );
   }

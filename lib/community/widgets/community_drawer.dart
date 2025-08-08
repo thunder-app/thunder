@@ -83,7 +83,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
                   ),
                   if (subscriptions.isNotEmpty)
-                    ...subscriptions.map(
+                    ...subscriptions.map<Widget>(
                       (ThunderCommunity community) {
                         final bool isCommunitySelected = feedState.communityId == community.id;
 
@@ -115,7 +115,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                           ),
                         );
                       },
-                    ).toList() as List<Widget>,
+                    ),
                   if (subscriptions.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),

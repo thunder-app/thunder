@@ -239,26 +239,30 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions.map<Widget>((commentBottomSheetAction) => BottomSheetAction(
-              leading: Icon(commentBottomSheetAction.icon),
-              title: commentBottomSheetAction.name,
-              onTap: () => performAction(commentBottomSheetAction),
-            )),
+        ...userActions.map<Widget>(
+          (commentBottomSheetAction) => BottomSheetAction(
+            leading: Icon(commentBottomSheetAction.icon),
+            title: commentBottomSheetAction.name,
+            onTap: () => performAction(commentBottomSheetAction),
+          ),
+        ),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
-          ...moderatorActions.map<Widget>((commentBottomSheetAction) => BottomSheetAction(
-                leading: Icon(commentBottomSheetAction.icon),
-                trailing: Padding(
-                  padding: const EdgeInsets.only(left: 1),
-                  child: Icon(
-                    Thunder.shield,
-                    size: 20,
-                    color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                  ),
+          ...moderatorActions.map<Widget>(
+            (commentBottomSheetAction) => BottomSheetAction(
+              leading: Icon(commentBottomSheetAction.icon),
+              trailing: Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Icon(
+                  Thunder.shield,
+                  size: 20,
+                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),
-                title: commentBottomSheetAction.name,
-                onTap: () => performAction(commentBottomSheetAction),
-              )),
+              ),
+              title: commentBottomSheetAction.name,
+              onTap: () => performAction(commentBottomSheetAction),
+            ),
+          ),
         ],
       ],
     );

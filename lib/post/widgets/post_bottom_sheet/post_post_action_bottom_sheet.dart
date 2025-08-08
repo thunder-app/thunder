@@ -299,30 +299,30 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions
-            .map((postPostAction) => BottomSheetAction(
-                  leading: Icon(postPostAction.icon),
-                  title: postPostAction.name,
-                  onTap: () => performAction(postPostAction),
-                ))
-            .toList() as List<Widget>,
+        ...userActions.map<Widget>(
+          (postPostAction) => BottomSheetAction(
+            leading: Icon(postPostAction.icon),
+            title: postPostAction.name,
+            onTap: () => performAction(postPostAction),
+          ),
+        ),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
-          ...moderatorActions
-              .map((postPostAction) => BottomSheetAction(
-                    leading: Icon(postPostAction.icon),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(left: 1),
-                      child: Icon(
-                        Thunder.shield,
-                        size: 20,
-                        color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                      ),
-                    ),
-                    title: postPostAction.name,
-                    onTap: () => performAction(postPostAction),
-                  ))
-              .toList() as List<Widget>,
+          ...moderatorActions.map<Widget>(
+            (postPostAction) => BottomSheetAction(
+              leading: Icon(postPostAction.icon),
+              trailing: Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Icon(
+                  Thunder.shield,
+                  size: 20,
+                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
+                ),
+              ),
+              title: postPostAction.name,
+              onTap: () => performAction(postPostAction),
+            ),
+          ),
         ],
       ],
     );

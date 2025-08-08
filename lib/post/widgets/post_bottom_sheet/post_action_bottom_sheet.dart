@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/models/thunder_my_user.dart';
-import 'package:thunder/instance/repository/instance_repository.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -23,6 +22,7 @@ import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/shared/profile_site_info_cache.dart';
 
 /// Programatically show the post action bottom sheet
 void showPostActionBottomModalSheet(
@@ -111,9 +111,9 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   Future<void> getUserInformation() async {
     if (account.anonymous) return;
 
-    final repository = InstanceRepositoryImpl(account: account);
-    final siteInfo = await repository.getSiteInfo();
+    final siteInfo = await ProfileSiteInfoCache.instance.get(account);
 
+    if (!mounted) return;
     setState(() {
       downvotesEnabled = siteInfo.site.enableDownvotes ?? true;
       blockedUsers = siteInfo.myUser?.personBlocks ?? [];
@@ -176,6 +176,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           isUserCommunityModerator: widget.post.creatorIsModerator,
           isUserBannedFromCommunity: widget.post.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
+            ProfileSiteInfoCache.instance.markDirty(account);
             widget.onAction?.call(userAction: userAction, post: widget.post);
           },
         ),
@@ -186,6 +187,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           blockedCommunities: blockedCommunities,
           subscribedCommunities: subscribedCommunities,
           onAction: (CommunityAction communityAction, ThunderCommunity? updatedCommunity) {
+            ProfileSiteInfoCache.instance.markDirty(account);
             widget.onAction?.call(
               communityAction: communityAction,
               post: widget.post.copyWith(
@@ -202,6 +204,9 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           userInstanceUrl: widget.post.creator?.actorId,
           communityInstanceId: widget.post.community?.instanceId,
           communityInstanceUrl: widget.post.community?.actorId,
+          onAction: () {
+            ProfileSiteInfoCache.instance.markDirty(account);
+          },
         ),
       GeneralPostAction.share => ShareActionBottomSheet(
           account: account,

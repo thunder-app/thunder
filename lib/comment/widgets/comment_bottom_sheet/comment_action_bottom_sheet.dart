@@ -13,7 +13,7 @@ import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/models/thunder_my_user.dart';
-import 'package:thunder/instance/repository/instance_repository.dart';
+import 'package:thunder/shared/profile_site_info_cache.dart';
 import 'package:thunder/instance/widgets/instance_action_bottom_sheet.dart';
 import 'package:thunder/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
@@ -106,9 +106,9 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   Future<void> getUserInformation() async {
     if (account.anonymous) return;
 
-    final repository = InstanceRepositoryImpl(account: account);
-    final siteInfo = await repository.getSiteInfo();
+    final siteInfo = await ProfileSiteInfoCache.instance.get(account);
 
+    if (!mounted) return;
     setState(() {
       downvotesEnabled = siteInfo.site.enableDownvotes ?? true;
       blockedUsers = siteInfo.myUser?.personBlocks ?? [];
@@ -167,6 +167,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           isUserCommunityModerator: widget.comment.creatorIsModerator,
           isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
+            ProfileSiteInfoCache.instance.markDirty(account);
             widget.onAction?.call(userAction: userAction, comment: widget.comment);
           },
         ),
@@ -175,6 +176,9 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           blockedInstances: blockedInstances,
           userInstanceId: widget.comment.creator!.instanceId,
           userInstanceUrl: widget.comment.creator!.actorId,
+          onAction: () {
+            ProfileSiteInfoCache.instance.markDirty(account);
+          },
         ),
       GeneralCommentAction.share => ShareActionBottomSheet(
           account: account,

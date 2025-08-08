@@ -74,6 +74,7 @@ class InstanceActionBottomSheet extends StatefulWidget {
     this.communityInstanceUrl,
     this.userInstanceId,
     this.userInstanceUrl,
+    this.onAction,
   });
 
   /// The account to use for the instance actions
@@ -93,6 +94,9 @@ class InstanceActionBottomSheet extends StatefulWidget {
 
   /// The user actor id
   final String? userInstanceUrl;
+
+  /// Optional callback fired when a change occurs (e.g., block/unblock)
+  final VoidCallback? onAction;
 
   @override
   State<InstanceActionBottomSheet> createState() => _InstanceActionBottomSheetState();
@@ -114,11 +118,13 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, true);
         if (blocked) showSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
+        widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.unblockCommunityInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, false);
         if (!blocked) showSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
+        widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.visitUserInstance:
         navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.userInstanceUrl)!, instanceId: widget.userInstanceId);
@@ -127,11 +133,13 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.userInstanceId!, true);
         if (blocked) showSnackbar(l10n.successfullyBlockedUser(userInstance!));
+        widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.unblockUserInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.userInstanceId!, false);
         if (!blocked) showSnackbar(l10n.successfullyUnblockedUser(userInstance!));
+        widget.onAction?.call();
         break;
     }
   }
@@ -200,23 +208,21 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions
-            .map(
-              (instancePostAction) => BottomSheetAction(
-                leading: Icon(instancePostAction.icon),
-                subtitle: switch (instancePostAction) {
-                  InstanceBottomSheetAction.visitCommunityInstance => communityInstance,
-                  InstanceBottomSheetAction.blockCommunityInstance => communityInstance,
-                  InstanceBottomSheetAction.unblockCommunityInstance => communityInstance,
-                  InstanceBottomSheetAction.visitUserInstance => userInstance,
-                  InstanceBottomSheetAction.blockUserInstance => userInstance,
-                  InstanceBottomSheetAction.unblockUserInstance => userInstance,
-                },
-                title: instancePostAction.name,
-                onTap: () => performAction(instancePostAction),
-              ),
-            )
-            .toList() as List<Widget>,
+        ...userActions.map<Widget>(
+          (instancePostAction) => BottomSheetAction(
+            leading: Icon(instancePostAction.icon),
+            subtitle: switch (instancePostAction) {
+              InstanceBottomSheetAction.visitCommunityInstance => communityInstance,
+              InstanceBottomSheetAction.blockCommunityInstance => communityInstance,
+              InstanceBottomSheetAction.unblockCommunityInstance => communityInstance,
+              InstanceBottomSheetAction.visitUserInstance => userInstance,
+              InstanceBottomSheetAction.blockUserInstance => userInstance,
+              InstanceBottomSheetAction.unblockUserInstance => userInstance,
+            },
+            title: instancePostAction.name,
+            onTap: () => performAction(instancePostAction),
+          ),
+        ),
       ],
     );
   }
