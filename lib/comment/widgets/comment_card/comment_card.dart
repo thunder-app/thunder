@@ -242,45 +242,40 @@ class _CommentCardState extends State<CommentCard> {
                       context,
                       widget.comment,
                       isShowingSource: viewSource,
-                      onAction: ({commentAction, required comment, communityAction, userAction, value}) async {
-                        if (commentAction != null) {
-                          switch (commentAction) {
-                            case CommentAction.vote:
-                              widget.onVoteAction?.call(comment.id, value);
-                              break;
-                            case CommentAction.save:
-                              widget.onSaveAction?.call(comment.id, value);
-                              break;
-                            case CommentAction.reply:
-                              return navigateToCreateCommentPage(
-                                context,
-                                comment: null,
-                                parentComment: comment,
-                                onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
-                              );
-                            case CommentAction.edit:
-                              return navigateToCreateCommentPage(
-                                context,
-                                comment: comment,
-                                parentComment: null,
-                                onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
-                              );
-                            case CommentAction.delete:
-                              widget.onDeleteAction?.call(comment.id, value);
-                              break;
-                            case CommentAction.report:
-                              context.read<PostBloc>().add(ReportCommentEvent(commentId: comment.id, message: value));
-                              break;
-                            case CommentAction.viewSource:
-                              setState(() => viewSource = !viewSource);
-                              break;
-                            default:
-                              break;
-                          }
-                        } else if (communityAction != null) {
-                          // @todo - implement community actions
-                        } else if (userAction != null) {
-                          setState(() {});
+                      onAction: ({commentAction, communityAction, userAction, comment}) async {
+                        if (comment != null) context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
+
+                        switch (commentAction) {
+                          case CommentAction.reply:
+                            return navigateToCreateCommentPage(
+                              context,
+                              comment: null,
+                              parentComment: comment,
+                              onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
+                            );
+                          case CommentAction.edit:
+                            return navigateToCreateCommentPage(
+                              context,
+                              comment: comment,
+                              parentComment: null,
+                              onCommentSuccess: (comment, isEdit) => widget.onReplyEditAction?.call(comment, isEdit),
+                            );
+                          case CommentAction.viewSource:
+                            setState(() => viewSource = !viewSource);
+                            break;
+                          default:
+                            break;
+                        }
+
+                        switch (communityAction) {
+                          default:
+                            break;
+                        }
+
+                        switch (userAction) {
+                          default:
+                            setState(() {});
+                            break;
                         }
                       },
                     );

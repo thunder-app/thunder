@@ -64,36 +64,32 @@ class CommentCardActions extends StatelessWidget {
                 context,
                 comment,
                 isShowingSource: viewSource,
-                onAction: ({commentAction, required comment, communityAction, userAction, value}) {
-                  if (commentAction != null) {
-                    switch (commentAction) {
-                      case CommentAction.vote:
-                        onVoteAction(comment.id, value);
-                        break;
-                      case CommentAction.save:
-                        onSaveAction(comment.id, value);
-                        break;
-                      case CommentAction.reply:
-                        onReplyEditAction(comment, false);
-                        break;
-                      case CommentAction.edit:
-                        onReplyEditAction(comment, true);
-                        break;
-                      case CommentAction.delete:
-                        onDeleteAction(comment.id, value);
-                        break;
-                      case CommentAction.report:
-                        context.read<PostBloc>().add(ReportCommentEvent(commentId: comment.id, message: value));
-                        break;
-                      case CommentAction.viewSource:
-                        onViewSourceToggled();
-                        break;
-                      default:
-                        break;
-                    }
-                  } else if (communityAction != null) {
-                    // TODO - implement community actions
-                  } else if (userAction != null) {}
+                onAction: ({commentAction, communityAction, userAction, comment}) {
+                  if (comment != null) context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
+
+                  switch (commentAction) {
+                    case CommentAction.reply:
+                      onReplyEditAction(comment!, false);
+                      break;
+                    case CommentAction.edit:
+                      onReplyEditAction(comment!, true);
+                      break;
+                    case CommentAction.viewSource:
+                      onViewSourceToggled();
+                      break;
+                    default:
+                      break;
+                  }
+
+                  switch (communityAction) {
+                    default:
+                      break;
+                  }
+
+                  switch (userAction) {
+                    default:
+                      break;
+                  }
                 },
               );
               HapticFeedback.mediumImpact();

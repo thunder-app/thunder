@@ -27,7 +27,7 @@ void showCommentActionBottomModalSheet(
   ThunderComment comment, {
   bool isShowingSource = false,
   GeneralCommentAction page = GeneralCommentAction.general,
-  void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required ThunderComment comment, dynamic value})? onAction,
+  void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, ThunderComment? comment})? onAction,
 }) {
   showModalBottomSheet(
     context: context,
@@ -53,19 +53,29 @@ class CommentActionBottomSheet extends StatefulWidget {
   final GeneralCommentAction initialPage;
 
   /// The callback that is called when an action is performed
-  final void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, required ThunderComment comment, dynamic value})? onAction;
+  final void Function({CommentAction? commentAction, UserAction? userAction, CommunityAction? communityAction, ThunderComment? comment})? onAction;
 
   @override
   State<CommentActionBottomSheet> createState() => _CommentActionBottomSheetState();
 }
 
 class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
+  /// The account that is performing the action
   late Account account;
 
+  /// Whether or not the downvotes are enabled
+  bool downvotesEnabled = true;
+
+  /// List of moderated communities
   List<ThunderCommunity> moderatedCommunities = [];
+
+  /// List of blocked users
   List<ThunderUser> blockedUsers = [];
+
+  /// List of blocked instances
   List<ThunderInstanceBlock> blockedInstances = [];
 
+  /// The current page of the bottom sheet
   GeneralCommentAction currentPage = GeneralCommentAction.general;
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
@@ -100,6 +110,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
     final siteInfo = await repository.getSiteInfo();
 
     setState(() {
+      downvotesEnabled = siteInfo.site.enableDownvotes ?? true;
       blockedUsers = siteInfo.myUser?.personBlocks ?? [];
       blockedInstances = siteInfo.myUser?.instanceBlocks ?? [];
       moderatedCommunities = siteInfo.myUser?.moderates ?? [];
@@ -108,8 +119,6 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
 
   String? generateSubtitle(GeneralCommentAction page) {
     final comment = widget.comment;
-
-    assert(comment.creator != null, 'Comment must have a creator');
 
     String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
 
@@ -126,25 +135,26 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final account = context.read<ProfileBloc>().state.account;
-
-    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
 
     Widget actions = switch (currentPage) {
       GeneralCommentAction.general => GeneralCommentActionBottomSheetPage(
+          account: account,
           context: widget.context,
+          downvotesEnabled: downvotesEnabled,
           comment: widget.comment,
           onSwitchActivePage: (page) => setState(() => currentPage = page),
-          onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
+          onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
+            widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
           },
         ),
       GeneralCommentAction.comment => CommentCommentActionBottomSheet(
+          account: account,
+          moderatedCommunities: moderatedCommunities,
           context: widget.context,
           comment: widget.comment,
           isShowingSource: widget.isShowingSource,
-          onAction: (CommentAction commentAction, ThunderComment? updatedComment, dynamic value) {
-            widget.onAction?.call(commentAction: commentAction, comment: widget.comment, value: value);
+          onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
+            widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
           },
         ),
       GeneralCommentAction.user => UserActionBottomSheet(

@@ -67,18 +67,22 @@ enum PostPostAction {
     requiresAuthentication: true,
   );
 
-  String get name => switch (this) {
-        PostPostAction.reportPost => GlobalContext.l10n.reportPost,
-        PostPostAction.editPost => GlobalContext.l10n.editPost,
-        PostPostAction.deletePost => GlobalContext.l10n.deletePost,
-        PostPostAction.restorePost => GlobalContext.l10n.restorePost,
-        PostPostAction.lockPost => GlobalContext.l10n.lockPost,
-        PostPostAction.unlockPost => GlobalContext.l10n.unlockPost,
-        PostPostAction.removePost => GlobalContext.l10n.removePost,
-        PostPostAction.restorePostAsModerator => GlobalContext.l10n.restorePost,
-        PostPostAction.pinPostToCommunity => GlobalContext.l10n.pinPostToCommunity,
-        PostPostAction.unpinPostFromCommunity => GlobalContext.l10n.unpinPostFromCommunity,
-      };
+  String get name {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      PostPostAction.reportPost => l10n.reportPost,
+      PostPostAction.editPost => l10n.editPost,
+      PostPostAction.deletePost => l10n.deletePost,
+      PostPostAction.restorePost => l10n.restorePost,
+      PostPostAction.lockPost => l10n.lockPost,
+      PostPostAction.unlockPost => l10n.unlockPost,
+      PostPostAction.removePost => l10n.removePost,
+      PostPostAction.restorePostAsModerator => l10n.restorePost,
+      PostPostAction.pinPostToCommunity => l10n.pinPostToCommunity,
+      PostPostAction.unpinPostFromCommunity => l10n.unpinPostFromCommunity,
+    };
+  }
 
   /// The icon to use for the action
   final IconData icon;

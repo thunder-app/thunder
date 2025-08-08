@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
@@ -53,12 +54,36 @@ enum GeneralCommentAction {
 }
 
 enum GeneralQuickCommentAction {
-  upvote(enabledIcon: Icons.arrow_upward_rounded, disabledIcon: Icons.arrow_upward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  downvote(enabledIcon: Icons.arrow_downward_rounded, disabledIcon: Icons.arrow_downward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  save(enabledIcon: Icons.star_rounded, disabledIcon: Icons.star_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  reply(enabledIcon: Icons.reply_rounded, disabledIcon: Icons.reply_outlined, permissionType: PermissionType.user, requiresAuthentication: true),
-  edit(enabledIcon: Icons.edit_rounded, disabledIcon: Icons.edit_outlined, permissionType: PermissionType.user, requiresAuthentication: true),
-  ;
+  upvote(
+    enabledIcon: Icons.arrow_upward_rounded,
+    disabledIcon: Icons.arrow_upward_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  downvote(
+    enabledIcon: Icons.arrow_downward_rounded,
+    disabledIcon: Icons.arrow_downward_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  save(
+    enabledIcon: Icons.star_rounded,
+    disabledIcon: Icons.star_outline_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  reply(
+    enabledIcon: Icons.reply_rounded,
+    disabledIcon: Icons.reply_outlined,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  edit(
+    enabledIcon: Icons.edit_rounded,
+    disabledIcon: Icons.edit_outlined,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  );
 
   /// The icon to use for the action when it is enabled
   final IconData enabledIcon;
@@ -76,21 +101,34 @@ enum GeneralQuickCommentAction {
 }
 
 /// Defines the general top-level actions that can be taken on a comment.
-/// Given a [comment] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the comment.
 class GeneralCommentActionBottomSheetPage extends StatefulWidget {
-  const GeneralCommentActionBottomSheetPage({super.key, required this.context, required this.comment, required this.onSwitchActivePage, required this.onAction});
+  const GeneralCommentActionBottomSheetPage({
+    super.key,
+    required this.context,
+    required this.account,
+    required this.comment,
+    required this.downvotesEnabled,
+    required this.onSwitchActivePage,
+    required this.onAction,
+  });
 
   /// The outer context
   final BuildContext context;
 
+  /// The account that is performing the action
+  final Account account;
+
   /// The comment information
   final ThunderComment comment;
+
+  /// Whether or not the downvotes are enabled
+  final bool downvotesEnabled;
 
   /// Called when the active page is changed
   final Function(GeneralCommentAction page) onSwitchActivePage;
 
   /// Called when an action is selected
-  final Function(CommentAction commentAction, ThunderComment? comment, dynamic value) onAction;
+  final Function(CommentAction commentAction, ThunderComment? comment) onAction;
 
   @override
   State<GeneralCommentActionBottomSheetPage> createState() => _GeneralCommentActionBottomSheetPageState();
@@ -99,13 +137,12 @@ class GeneralCommentActionBottomSheetPage extends StatefulWidget {
 class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActionBottomSheetPage> {
   String? generateSubtitle(GeneralCommentAction page) {
     final comment = widget.comment;
-    assert(comment.creator != null, 'Comment must have a creator');
 
-    String? userInstance = fetchInstanceNameFromUrl(comment.creator!.actorId);
+    final userInstance = fetchInstanceNameFromUrl(comment.creator?.actorId);
 
     switch (page) {
       case GeneralCommentAction.user:
-        return generateUserFullName(context, comment.creator!.name, comment.creator!.displayName, userInstance);
+        return generateUserFullName(context, comment.creator?.name, comment.creator?.displayName, userInstance);
       case GeneralCommentAction.instance:
         return userInstance;
       default:
@@ -113,30 +150,34 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
     }
   }
 
-  void performAction(GeneralQuickCommentAction action) {
-    final comment = widget.comment;
+  void performAction(GeneralQuickCommentAction action) async {
+    final repository = CommentRepositoryImpl(account: widget.account);
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        widget.onAction(CommentAction.vote, comment, comment.myVote == 1 ? 0 : 1);
+        Navigator.of(context).pop();
+        final comment = await repository.vote(widget.comment, widget.comment.myVote == 1 ? 0 : 1);
+        widget.onAction(CommentAction.vote, comment);
         break;
       case GeneralQuickCommentAction.downvote:
-        widget.onAction(CommentAction.vote, comment, comment.myVote == -1 ? 0 : -1);
+        Navigator.of(context).pop();
+        final comment = await repository.vote(widget.comment, widget.comment.myVote == -1 ? 0 : -1);
+        widget.onAction(CommentAction.vote, comment);
         break;
       case GeneralQuickCommentAction.save:
-        widget.onAction(CommentAction.save, comment, comment.saved == true ? false : true);
+        Navigator.of(context).pop();
+        final comment = await repository.save(widget.comment, !(widget.comment.saved ?? false));
+        widget.onAction(CommentAction.save, comment);
         break;
       case GeneralQuickCommentAction.reply:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.reply, comment, null);
+        widget.onAction(CommentAction.reply, widget.comment);
         return;
       case GeneralQuickCommentAction.edit:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.edit, comment, null);
+        widget.onAction(CommentAction.edit, widget.comment);
         return;
     }
-
-    Navigator.of(context).pop();
   }
 
   IconData getIcon(GeneralQuickCommentAction action) {
@@ -209,52 +250,51 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.read<ProfileBloc>().state;
-    final isLoggedIn = profileState.isLoggedIn;
-
     List<GeneralQuickCommentAction> quickActions = GeneralQuickCommentAction.values.where((element) => element.permissionType == PermissionType.user).toList();
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      // Hide downvoted if instance does not support it
-      if (!profileState.downvotesEnabled) {
-        quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.downvote).toList();
-      }
-
       // Hide edit if the comment is not made by the current user
-      if (widget.comment.creator?.actorId != profileState.account.actorId) {
+      if (widget.account.username != widget.comment.creator?.name || widget.account.instance != fetchInstanceNameFromUrl(widget.comment.creator?.actorId)) {
         quickActions = quickActions.where((action) => action != GeneralQuickCommentAction.edit).toList();
       }
     }
 
     // Determine the available sub-menus to display
     List<GeneralCommentAction> submenus = GeneralCommentAction.values.where((page) => page != GeneralCommentAction.general).toList();
+    if (widget.account.anonymous) submenus = submenus.where((action) => action != GeneralCommentAction.comment).toList();
 
     return Column(
       children: [
         if (quickActions.isNotEmpty)
           MultiPickerItem(
-            pickerItems: quickActions
-                .map((generalQuickCommentAction) => PickerItemData(
-                      icon: getIcon(generalQuickCommentAction),
-                      label: getLabel(generalQuickCommentAction),
-                      foregroundColor: getForegroundColor(generalQuickCommentAction),
-                      backgroundColor: getBackgroundColor(generalQuickCommentAction),
-                      onSelected: isLoggedIn ? () => performAction(generalQuickCommentAction) : null,
-                    ))
-                .toList(),
+            pickerItems: quickActions.map((quickCommentAction) {
+              Function()? onSelected;
+
+              if (quickCommentAction == GeneralQuickCommentAction.downvote && !widget.downvotesEnabled) {
+                onSelected = null;
+              } else {
+                onSelected = widget.account.anonymous ? null : () => performAction(quickCommentAction);
+              }
+
+              return PickerItemData(
+                icon: getIcon(quickCommentAction),
+                label: getLabel(quickCommentAction),
+                foregroundColor: getForegroundColor(quickCommentAction),
+                backgroundColor: getBackgroundColor(quickCommentAction),
+                onSelected: onSelected,
+              );
+            }).toList(),
           ),
         ...submenus
-            .map(
-              (page) => BottomSheetAction(
-                leading: Icon(page.icon),
-                trailing: const Icon(Icons.chevron_right_rounded),
-                title: page.name,
-                subtitle: generateSubtitle(page),
-                onTap: () => widget.onSwitchActivePage(page),
-              ),
-            )
+            .map((page) => BottomSheetAction(
+                  leading: Icon(page.icon),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  title: page.name,
+                  subtitle: generateSubtitle(page),
+                  onTap: () => widget.onSwitchActivePage(page),
+                ))
             .toList() as List<Widget>,
       ],
     );

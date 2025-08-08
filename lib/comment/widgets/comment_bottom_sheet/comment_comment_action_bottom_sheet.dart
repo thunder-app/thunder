@@ -1,47 +1,79 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
+import 'package:thunder/comment/repository/comment_repository.dart';
+import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/modlog/modlog.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/divider.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/selectable_text_modal.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigation.dart';
 
 /// Defines the actions that can be taken on a comment
-/// TODO: Implement admin-level actions
 enum CommentBottomSheetAction {
-  selectCommentText(icon: Icons.select_all_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
-  viewCommentSource(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
-  viewCommentMarkdown(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
-  viewModlog(icon: Icons.history_rounded, permissionType: PermissionType.all, requiresAuthentication: true),
-  reportComment(icon: Icons.flag_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  editComment(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  deleteComment(icon: Icons.delete_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  restoreComment(icon: Icons.restore_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  // removeComment(icon: Icons.delete_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  // restoreCommentAsModerator(icon: Icons.restore_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
-  ;
+  selectCommentText(
+    icon: Icons.select_all_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  viewCommentSource(
+    icon: Icons.code_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  viewCommentMarkdown(
+    icon: Icons.code_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: false,
+  ),
+  viewModlog(
+    icon: Icons.history_rounded,
+    permissionType: PermissionType.all,
+    requiresAuthentication: true,
+  ),
+  reportComment(
+    icon: Icons.flag_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  editComment(
+    icon: Icons.edit_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  deleteComment(
+    icon: Icons.delete_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  restoreComment(
+    icon: Icons.restore_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  );
 
-  String get name => switch (this) {
-        CommentBottomSheetAction.selectCommentText => GlobalContext.l10n.selectText,
-        CommentBottomSheetAction.viewCommentSource => GlobalContext.l10n.viewCommentSource,
-        CommentBottomSheetAction.viewCommentMarkdown => GlobalContext.l10n.viewOriginal,
-        CommentBottomSheetAction.viewModlog => GlobalContext.l10n.viewModlog,
-        CommentBottomSheetAction.reportComment => GlobalContext.l10n.reportComment,
-        CommentBottomSheetAction.editComment => GlobalContext.l10n.editComment,
-        CommentBottomSheetAction.deleteComment => GlobalContext.l10n.deleteComment,
-        CommentBottomSheetAction.restoreComment => GlobalContext.l10n.restoreComment,
-        // CommentBottomSheetAction.removeComment => GlobalContext.l10n.removeComment,
-        // CommentBottomSheetAction.restoreCommentAsModerator => GlobalContext.l10n.restoreComment,
-      };
+  String get name {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      CommentBottomSheetAction.selectCommentText => l10n.selectText,
+      CommentBottomSheetAction.viewCommentSource => l10n.viewCommentSource,
+      CommentBottomSheetAction.viewCommentMarkdown => l10n.viewOriginal,
+      CommentBottomSheetAction.viewModlog => l10n.viewModlog,
+      CommentBottomSheetAction.reportComment => l10n.reportComment,
+      CommentBottomSheetAction.editComment => l10n.editComment,
+      CommentBottomSheetAction.deleteComment => l10n.deleteComment,
+      CommentBottomSheetAction.restoreComment => l10n.restoreComment,
+    };
+  }
 
   /// The icon to use for the action
   final IconData icon;
@@ -56,14 +88,25 @@ enum CommentBottomSheetAction {
 }
 
 /// A bottom sheet that allows the user to perform actions on the comment.
-///
-/// Given a [comment] and a [onAction] callback, this widget will display a list of actions that can be taken on the comment.
-/// The [onAction] callback will be triggered when an action is performed.
 class CommentCommentActionBottomSheet extends StatefulWidget {
-  const CommentCommentActionBottomSheet({super.key, required this.context, required this.comment, this.isShowingSource = false, required this.onAction});
+  const CommentCommentActionBottomSheet({
+    super.key,
+    required this.context,
+    required this.account,
+    required this.moderatedCommunities,
+    required this.comment,
+    this.isShowingSource = false,
+    required this.onAction,
+  });
 
   /// The outer context
   final BuildContext context;
+
+  /// The account that is performing the action
+  final Account account;
+
+  /// List of moderated communities
+  final List<ThunderCommunity> moderatedCommunities;
 
   /// The comment information
   final ThunderComment comment;
@@ -72,7 +115,7 @@ class CommentCommentActionBottomSheet extends StatefulWidget {
   final bool isShowingSource;
 
   /// Called when an action is selected
-  final Function(CommentAction commentAction, ThunderComment comment, dynamic value) onAction;
+  final Function(CommentAction commentAction, ThunderComment comment) onAction;
 
   @override
   State<CommentCommentActionBottomSheet> createState() => _CommentCommentActionBottomSheetState();
@@ -80,227 +123,143 @@ class CommentCommentActionBottomSheet extends StatefulWidget {
 
 class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBottomSheet> {
   void performAction(CommentBottomSheetAction action) async {
-    final comment = widget.comment;
+    final l10n = GlobalContext.l10n;
+    final repository = CommentRepositoryImpl(account: widget.account);
 
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
         Navigator.of(context).pop();
-        showSelectableTextModal(context, text: comment.content);
+        showSelectableTextModal(context, text: widget.comment.content);
         return;
       case CommentBottomSheetAction.viewCommentSource:
       case CommentBottomSheetAction.viewCommentMarkdown:
-        widget.onAction(CommentAction.viewSource, comment, null);
+        Navigator.of(context).pop();
+
+        widget.onAction(CommentAction.viewSource, widget.comment);
         break;
       case CommentBottomSheetAction.viewModlog:
         Navigator.of(context).pop();
-        await navigateToModlogPage(
-          context,
-          subtitle: GlobalContext.l10n.removedComment,
-          modlogActionType: ModlogActionType.modRemoveComment,
-          commentId: comment.id,
-        );
+        await navigateToModlogPage(context, subtitle: l10n.removedComment, modlogActionType: ModlogActionType.modRemoveComment, commentId: widget.comment.id);
         return;
       case CommentBottomSheetAction.reportComment:
         showReportCommentDialog();
         return;
       case CommentBottomSheetAction.editComment:
         Navigator.of(context).pop();
-        widget.onAction(CommentAction.edit, comment, null);
+        widget.onAction(CommentAction.edit, widget.comment);
         return;
       case CommentBottomSheetAction.deleteComment:
-        widget.onAction(CommentAction.delete, comment, true);
+        Navigator.of(context).pop();
+        final updatedComment = await repository.delete(widget.comment, true);
+        if (updatedComment.deleted) showSnackbar('Deleted comment');
+        widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: true));
         break;
       case CommentBottomSheetAction.restoreComment:
-        widget.onAction(CommentAction.delete, comment, false);
+        Navigator.of(context).pop();
+        final updatedComment = await repository.delete(widget.comment, false);
+        if (!updatedComment.deleted) showSnackbar('Restored comment');
+        widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: false));
         break;
-      // case CommentBottomSheetAction.removeComment:
-      // TODO: Implement remove comment
-      // break;
-      // case CommentBottomSheetAction.restoreCommentAsModerator:
-      // TODO: Implement restore comment as moderator
-      // break;
     }
-
-    Navigator.of(context).pop();
   }
 
   void showReportCommentDialog() {
     Navigator.of(context).pop();
-    final TextEditingController messageController = TextEditingController();
+    final l10n = GlobalContext.l10n;
+    final controller = TextEditingController();
 
     showThunderDialog(
       context: widget.context,
-      title: GlobalContext.l10n.reportComment,
-      primaryButtonText: GlobalContext.l10n.report(1),
-      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-        widget.onAction(CommentAction.report, widget.comment, messageController.text);
+      title: l10n.reportComment,
+      primaryButtonText: l10n.report(1),
+      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+        final repository = CommentRepositoryImpl(account: widget.account);
+
+        await repository.report(widget.comment.id, controller.text);
+        showSnackbar('Reported comment');
+        widget.onAction(CommentAction.report, widget.comment);
+
         Navigator.of(dialogContext).pop();
       },
-      secondaryButtonText: GlobalContext.l10n.cancel,
+      secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: GlobalContext.l10n.message(0),
+          labelText: l10n.message(0),
         ),
         autofocus: true,
-        controller: messageController,
+        controller: controller,
         maxLines: 4,
       ),
     );
   }
 
-  // void showRemovePostReasonDialog() {
-  //   Navigator.of(context).pop();
-  //   final TextEditingController messageController = TextEditingController();
-
-  //   showThunderDialog(
-  //     context: widget.context,
-  //     title: widget.postViewMedia.postView.post.removed ?GlobalContext.l10n.restorePost :GlobalContext.l10n.removalReason,
-  //     primaryButtonText: widget.postViewMedia.postView.post.removed ?GlobalContext.l10n.restore :GlobalContext.l10n.remove,
-  //     onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-  //       widget.context.read<FeedBloc>().add(
-  //             FeedItemActionedEvent(
-  //               postAction: PostAction.remove,
-  //               postId: widget.postViewMedia.postView.post.id,
-  //               value: {
-  //                 'remove': !widget.postViewMedia.postView.post.removed,
-  //                 'reason': messageController.text,
-  //               },
-  //             ),
-  //           );
-  //       Navigator.of(dialogContext).pop();
-  //     },
-  //     secondaryButtonText:GlobalContext.l10n.cancel,
-  //     onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
-  //     contentWidgetBuilder: (_) => TextFormField(
-  //       decoration: InputDecoration(
-  //         border: const OutlineInputBorder(),
-  //         labelText:GlobalContext.l10n.message(0),
-  //       ),
-  //       autofocus: true,
-  //       controller: messageController,
-  //       maxLines: 4,
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = context.read<ProfileBloc>().state;
 
-    assert(widget.comment.creator != null && widget.comment.community != null, 'Comment must have a creator and community');
-
-    List<CommentBottomSheetAction> generalActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.all).toList();
-    List<CommentBottomSheetAction> userActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user).toList();
+    List<CommentBottomSheetAction> userActions =
+        CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
     List<CommentBottomSheetAction> moderatorActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
-    // List<CommentBottomSheetAction> adminActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.admin).toList();
 
-    final account = authState.siteResponse?.myUser?.localUserView.person;
-    final moderatedCommunities = authState.siteResponse?.myUser?.moderates ?? [];
-    final isModerator = moderatedCommunities.where((c) => c.actorId == widget.comment.community!.actorId).isNotEmpty;
-    // final isAdmin = authState.getSiteResponse?.admins.where((personView) => personView.person.actorId == account?.actorId).isNotEmpty ?? false;
+    final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.comment.community?.actorId).isNotEmpty;
 
-    final isLoggedIn = authState.isLoggedIn;
-    final isCommentDeleted = widget.comment.deleted; // Deleted by the user
-    final isCommentRemoved = widget.comment.removed; // Removed by a moderator
+    final isCommentDeleted = widget.comment.deleted;
+    final isCommentRemoved = widget.comment.removed;
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      if (account?.actorId == widget.comment.creator!.actorId) {
+      if (widget.account.username == widget.comment.creator?.name && widget.account.instance == fetchInstanceNameFromUrl(widget.comment.creator?.actorId)) {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.reportComment).toList();
       } else {
-        userActions = userActions
-            .where((action) => action != CommentBottomSheetAction.editComment && action != CommentBottomSheetAction.deleteComment && action != CommentBottomSheetAction.restoreComment)
-            .toList();
+        userActions = userActions.where((action) => action != CommentBottomSheetAction.editComment).toList();
+        userActions = userActions.where((action) => action != CommentBottomSheetAction.deleteComment).toList();
+        userActions = userActions.where((action) => action != CommentBottomSheetAction.restoreComment).toList();
       }
 
-      if (isCommentDeleted == true) {
+      if (isCommentDeleted) {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.deleteComment).toList();
       } else {
         userActions = userActions.where((action) => action != CommentBottomSheetAction.restoreComment).toList();
       }
 
-      if (isCommentRemoved == true) {
-        // moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.removeComment).toList();
-      } else {
-        generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewModlog).toList();
-        // moderatorActions = moderatorActions.where((action) => action != CommentBottomSheetAction.restoreCommentAsModerator).toList();
+      if (!isCommentRemoved) {
+        userActions = userActions.where((action) => action != CommentBottomSheetAction.viewModlog).toList();
       }
     }
 
     if (widget.isShowingSource) {
-      generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewCommentSource).toList();
+      userActions = userActions.where((action) => action != CommentBottomSheetAction.viewCommentSource).toList();
     } else {
-      generalActions = generalActions.where((action) => action != CommentBottomSheetAction.viewCommentMarkdown).toList();
+      userActions = userActions.where((action) => action != CommentBottomSheetAction.viewCommentMarkdown).toList();
     }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...generalActions
-            .map(
-              (postPostAction) => BottomSheetAction(
-                leading: Icon(postPostAction.icon),
-                title: postPostAction.name,
-                onTap: () => performAction(postPostAction),
-              ),
-            )
-            .toList() as List<Widget>,
-        if (userActions.isNotEmpty) ...[
-          const ThunderDivider(sliver: false, padding: false),
-          ...userActions
-              .map(
-                (postPostAction) => BottomSheetAction(
-                  leading: Icon(postPostAction.icon),
-                  title: postPostAction.name,
-                  onTap: () => performAction(postPostAction),
-                ),
-              )
-              .toList() as List<Widget>
-        ],
+        ...userActions.map<Widget>((commentBottomSheetAction) => BottomSheetAction(
+              leading: Icon(commentBottomSheetAction.icon),
+              title: commentBottomSheetAction.name,
+              onTap: () => performAction(commentBottomSheetAction),
+            )),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
-          ...moderatorActions
-              .map(
-                (postPostAction) => BottomSheetAction(
-                  leading: Icon(postPostAction.icon),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Icon(
-                      Thunder.shield,
-                      size: 20,
-                      color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                    ),
+          ...moderatorActions.map<Widget>((commentBottomSheetAction) => BottomSheetAction(
+                leading: Icon(commentBottomSheetAction.icon),
+                trailing: Padding(
+                  padding: const EdgeInsets.only(left: 1),
+                  child: Icon(
+                    Thunder.shield,
+                    size: 20,
+                    color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                   ),
-                  title: postPostAction.name,
-                  onTap: () => performAction(postPostAction),
                 ),
-              )
-              .toList() as List<Widget>,
+                title: commentBottomSheetAction.name,
+                onTap: () => performAction(commentBottomSheetAction),
+              )),
         ],
-        // if (isAdmin && adminActions.isNotEmpty) ...[
-        //   const ThunderDivider(sliver: false, padding: false),
-        //   ...adminActions
-        //       .map(
-        //         (postPostAction) => BottomSheetAction(
-        //           leading: Icon(postPostAction.icon),
-        //           trailing: Padding(
-        //             padding: const EdgeInsets.only(left: 1),
-        //             child: Icon(
-        //               Thunder.shield_crown,
-        //               size: 20,
-        //               color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.red),
-        //             ),
-        //           ),
-        //           title: postPostAction.name,
-        //           onTap: () => performAction(postPostAction),
-        //         ),
-        //       )
-        //       .toList() as List<Widget>,
-        // ],
       ],
     );
   }

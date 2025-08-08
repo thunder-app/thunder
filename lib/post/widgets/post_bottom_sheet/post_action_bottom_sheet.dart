@@ -52,7 +52,7 @@ class PostActionBottomSheet extends StatefulWidget {
   final GeneralPostAction initialPage;
 
   /// The callback that is called when an action is performed
-  final void Function({PostAction? postAction, UserAction? userAction, CommunityAction? communityAction, required ThunderPost? post})? onAction;
+  final void Function({PostAction? postAction, UserAction? userAction, CommunityAction? communityAction, ThunderPost? post})? onAction;
 
   @override
   State<PostActionBottomSheet> createState() => _PostActionBottomSheetState();
