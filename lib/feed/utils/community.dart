@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/enums/community_action.dart';
-import 'package:thunder/community/models/thunder_community.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/community/repository/community_repository.dart';
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/favourite.dart';
@@ -63,7 +63,7 @@ List<ThunderCommunity>? prioritizeFavorites(List<ThunderCommunity>? communities,
 /// Requires a [CommunityBloc] to be provided in the context.
 ///
 /// When subcribed, shows a confirmation dialog for unsubscription.
-Future<void> handleSubscription(BuildContext context, ThunderCommunity community) async {
+Future<ThunderCommunity?> handleSubscription(BuildContext context, ThunderCommunity community) async {
   final l10n = GlobalContext.l10n;
   final isSubscribed = community.subscribed != SubscriptionStatus.notSubscribed;
 
@@ -83,11 +83,10 @@ Future<void> handleSubscription(BuildContext context, ThunderCommunity community
       primaryButtonText: l10n.confirm,
     );
 
-    if (!shouldUnsubscribe) return;
+    if (!shouldUnsubscribe) return null;
   }
 
-  context.read<CommunityBloc>().add(CommunityActionEvent(communityId: community.id, communityAction: CommunityAction.follow, value: !isSubscribed));
+  final account = context.read<ProfileBloc>().state.account;
+  final repository = CommunityRepositoryImpl(account: account);
+  return await repository.subscribe(community.id, !isSubscribed);
 }
-
-// String generatePostUrl(int id) => 'https://${lemmyApiV3.host}/post/$id';
-// String generateCommentUrl(int id) => 'https://${lemmyApiV3.host}/comment/$id';

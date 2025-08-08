@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header/community_header.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -281,13 +280,6 @@ class _FeedViewState extends State<FeedView> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<CommunityBloc, CommunityState>(
-          listener: (context, state) {
-            if (state.message != null) {
-              showSnackbar(state.message!);
-            }
-          },
-        ),
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
             if (state.message != null) {

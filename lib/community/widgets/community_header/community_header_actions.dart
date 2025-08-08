@@ -5,9 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
@@ -43,12 +42,7 @@ class CommunityHeaderActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
-
-    return BlocProvider<CommunityBloc>(
-      create: (context) => CommunityBloc(account: account),
-      child: _CommunityActionsContent(community: community, instance: instance, moderators: moderators),
-    );
+    return _CommunityActionsContent(community: community, instance: instance, moderators: moderators);
   }
 }
 
@@ -71,33 +65,13 @@ class _CommunityActionsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CommunityBloc, CommunityState>(
-      listener: (context, state) {},
-      listenWhen: (previous, current) => _handleCommunityStateChange(context, previous, current),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0).copyWith(bottom: 8.0),
-          child: _ActionChipsList(community: community, instance: instance, moderators: moderators),
-        ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0).copyWith(bottom: 8.0),
+        child: _ActionChipsList(community: community, instance: instance, moderators: moderators),
       ),
     );
-  }
-
-  /// Handles community state changes and updates the feed accordingly.
-  bool _handleCommunityStateChange(BuildContext context, CommunityState previous, CommunityState current) {
-    if (previous.status == current.status) return false;
-
-    if (previous.community?.subscribed != current.community?.subscribed) {
-      context.read<ProfileBloc>().add(FetchProfileSubscriptions());
-    }
-
-    if (previous.community?.blocked != current.community?.blocked) {
-      context.read<ProfileBloc>().add(FetchProfileSettings());
-    }
-
-    if (current.community != null) context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: current.community!));
-    return true;
   }
 }
 
@@ -206,16 +180,16 @@ class _SubscriptionActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CommunityBloc, CommunityState>(
-      listener: _handleSubscriptionStateChange,
-      builder: (context, state) => ThunderActionChip(
-        icon: _getSubscriptionIcon(community.subscribed!),
-        label: _getSubscriptionLabel(community.subscribed!),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          handleSubscription(context, community);
-        },
-      ),
+    return ThunderActionChip(
+      icon: _getSubscriptionIcon(community.subscribed!),
+      label: _getSubscriptionLabel(community.subscribed!),
+      onPressed: () async {
+        HapticFeedback.mediumImpact();
+        final updatedCommunity = await handleSubscription(context, community);
+
+        if (community.subscribed != updatedCommunity?.subscribed) context.read<ProfileBloc>().add(FetchProfileSubscriptions());
+        if (updatedCommunity != null) context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: updatedCommunity));
+      },
     );
   }
 
@@ -235,16 +209,6 @@ class _SubscriptionActionChip extends StatelessWidget {
       SubscriptionStatus.pending => l10n.pending,
       SubscriptionStatus.subscribed => l10n.unsubscribe,
     };
-  }
-
-  void _handleSubscriptionStateChange(BuildContext context, CommunityState state) {
-    if (state.status == CommunityStatus.success && state.community != null) {
-      try {
-        context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: state.community!));
-      } catch (e) {
-        debugPrint('Failed to update feed after subscription change: $e');
-      }
-    }
   }
 }
 
@@ -345,9 +309,14 @@ class _BlockActionChip extends StatelessWidget {
         return ThunderActionChip(
           icon: blocked ? Icons.undo_rounded : Icons.block_rounded,
           label: blocked ? l10n.unblock : l10n.block,
-          onPressed: () {
+          onPressed: () async {
             HapticFeedback.heavyImpact();
-            context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: community.id, value: !blocked));
+
+            final repository = CommunityRepositoryImpl(account: state.account);
+            final updatedCommunity = await repository.block(community.id, !blocked);
+
+            context.read<ProfileBloc>().add(FetchProfileSettings());
+            context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: updatedCommunity));
           },
         );
       },

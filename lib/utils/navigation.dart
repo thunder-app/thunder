@@ -17,7 +17,6 @@ import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/enums/enums.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -205,7 +204,6 @@ Future<void> navigateToPost(
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: postBloc),
           BlocProvider(create: (context) => InstanceBloc(account: account)),
-          BlocProvider(create: (context) => CommunityBloc(account: account)),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
@@ -581,7 +579,6 @@ Future<void> navigateToFeedPage(
   // Push navigation
   ProfileBloc profileBloc = context.read<ProfileBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  CommunityBloc communityBloc = context.read<CommunityBloc>();
   InstanceBloc instanceBloc = context.read<InstanceBloc>();
   AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
@@ -623,7 +620,6 @@ Future<void> navigateToFeedPage(
         BlocProvider.value(value: thunderBloc),
         BlocProvider.value(value: instanceBloc),
         BlocProvider.value(value: anonymousSubscriptionsBloc),
-        BlocProvider.value(value: communityBloc),
       ],
       child: Material(
         child: FeedPage(

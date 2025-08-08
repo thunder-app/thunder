@@ -4,10 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
+import 'package:thunder/community/repository/community_repository.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -43,9 +42,13 @@ class CommunityListEntry extends StatefulWidget {
 }
 
 class _CommunityListEntryState extends State<CommunityListEntry> {
-  void onSubscribe(bool subscribed, bool isUserLoggedIn) {
+  void onSubscribe(bool subscribed, bool isUserLoggedIn) async {
     if (isUserLoggedIn) {
-      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: widget.community.id, value: !subscribed));
+      final account = context.read<ProfileBloc>().state.account;
+      final repository = CommunityRepositoryImpl(account: account);
+
+      await repository.subscribe(widget.community.id, !subscribed);
+      context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
     } else {
       if (!subscribed) {
         context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {widget.community}));
@@ -81,89 +84,84 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
       _ => '',
     };
 
-    return BlocListener<CommunityBloc, CommunityState>(
-      listener: (context, state) {
-        if (state.status == CommunityStatus.success) context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
-      },
-      child: Tooltip(
-        excludeFromSemantics: true,
-        message: '${widget.community.title}\n${generateCommunityFullName(
-          context,
-          widget.community.name,
-          widget.community.title,
-          fetchInstanceNameFromUrl(widget.community.actorId),
-        )}',
-        preferBelow: false,
-        child: ListTile(
-          leading: CommunityAvatar(community: widget.community, radius: 25),
-          title: Text(widget.community.title, overflow: TextOverflow.ellipsis),
-          subtitle: Row(
-            children: [
-              Flexible(
-                child: CommunityFullNameWidget(
-                  context,
-                  widget.community.name,
-                  widget.community.title,
-                  fetchInstanceNameFromUrl(widget.community.actorId),
-                  // Override because we're showing display name above
-                  useDisplayName: false,
-                ),
+    return Tooltip(
+      excludeFromSemantics: true,
+      message: '${widget.community.title}\n${generateCommunityFullName(
+        context,
+        widget.community.name,
+        widget.community.title,
+        fetchInstanceNameFromUrl(widget.community.actorId),
+      )}',
+      preferBelow: false,
+      child: ListTile(
+        leading: CommunityAvatar(community: widget.community, radius: 25),
+        title: Text(widget.community.title, overflow: TextOverflow.ellipsis),
+        subtitle: Row(
+          children: [
+            Flexible(
+              child: CommunityFullNameWidget(
+                context,
+                widget.community.name,
+                widget.community.title,
+                fetchInstanceNameFromUrl(widget.community.actorId),
+                // Override because we're showing display name above
+                useDisplayName: false,
               ),
-              if (widget.community.subscribers != null) ...[
-                Text(
-                  ' · ${formatLongNumber(widget.community.subscribers!)}',
-                  semanticsLabel: l10n.countSubscribers(widget.community.subscribers!),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.people_rounded, size: 16.0),
-              ],
-              if (widget.indicateFavorites && favourited) ...const [
-                Text(' · '),
-                Icon(Icons.star_rounded, size: 15),
-              ]
+            ),
+            if (widget.community.subscribers != null) ...[
+              Text(
+                ' · ${formatLongNumber(widget.community.subscribers!)}',
+                semanticsLabel: l10n.countSubscribers(widget.community.subscribers!),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.people_rounded, size: 16.0),
             ],
-          ),
-          trailing: widget.resolutionInstance == null
-              ? IconButton(
-                  onPressed: () {
-                    onSubscribe(community.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
-                    showSnackbar(community.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
-                  },
-                  icon: Semantics(
-                    label: subscriptionButtonLabel,
-                    child: Icon(
-                      switch (community.subscribed) {
-                        SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
-                        SubscriptionStatus.pending => Icons.pending_outlined,
-                        SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
-                        _ => null,
-                      },
-                    ),
-                  ),
-                  tooltip: subscriptionButtonLabel,
-                  visualDensity: VisualDensity.compact,
-                )
-              : null,
-          onTap: () async {
-            int? communityId = widget.community.id;
-
-            if (widget.resolutionInstance != null) {
-              try {
-                // Create a temporary Account
-                final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
-                final response = await SearchRepositoryImpl(account: account).resolve(query: widget.community.actorId);
-
-                communityId = response.community?.community.id;
-              } catch (e) {
-                // If we can't find it, then we'll get a standard error message about communityId being un-navigable
-              }
-            }
-
-            if (context.mounted) {
-              navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
-            }
-          },
+            if (widget.indicateFavorites && favourited) ...const [
+              Text(' · '),
+              Icon(Icons.star_rounded, size: 15),
+            ]
+          ],
         ),
+        trailing: widget.resolutionInstance == null
+            ? IconButton(
+                onPressed: () {
+                  onSubscribe(community.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
+                  showSnackbar(community.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                },
+                icon: Semantics(
+                  label: subscriptionButtonLabel,
+                  child: Icon(
+                    switch (community.subscribed) {
+                      SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
+                      SubscriptionStatus.pending => Icons.pending_outlined,
+                      SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
+                      _ => null,
+                    },
+                  ),
+                ),
+                tooltip: subscriptionButtonLabel,
+                visualDensity: VisualDensity.compact,
+              )
+            : null,
+        onTap: () async {
+          int? communityId = widget.community.id;
+
+          if (widget.resolutionInstance != null) {
+            try {
+              // Create a temporary Account
+              final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
+              final response = await SearchRepositoryImpl(account: account).resolve(query: widget.community.actorId);
+
+              communityId = response.community?.community.id;
+            } catch (e) {
+              // If we can't find it, then we'll get a standard error message about communityId being un-navigable
+            }
+          }
+
+          if (context.mounted) {
+            navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
+          }
+        },
       ),
     );
   }
