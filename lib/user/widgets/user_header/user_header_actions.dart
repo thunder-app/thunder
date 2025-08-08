@@ -172,6 +172,7 @@ class _SavedActionChipState extends State<_SavedActionChip> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
     return ThunderActionChip(

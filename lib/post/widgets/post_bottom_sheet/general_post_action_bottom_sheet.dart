@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/core/enums/full_name.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/core/enums/threadiverse_platform.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/models/thunder_post.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
+import 'package:thunder/post/repository/post_repository.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Defines the general actions that can be taken on a post
@@ -21,24 +23,32 @@ enum GeneralPostAction {
   instance(icon: Icons.language_rounded),
   share(icon: Icons.share);
 
-  String get name => switch (this) {
-        GeneralPostAction.post => l10n.post,
-        GeneralPostAction.user => l10n.user,
-        GeneralPostAction.community => l10n.community,
-        GeneralPostAction.instance => l10n.instance(1),
-        GeneralPostAction.share => l10n.share,
-        GeneralPostAction.general => l10n.actions,
-      };
+  String get name {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      GeneralPostAction.post => l10n.post,
+      GeneralPostAction.user => l10n.user,
+      GeneralPostAction.community => l10n.community,
+      GeneralPostAction.instance => l10n.instance(1),
+      GeneralPostAction.share => l10n.share,
+      GeneralPostAction.general => l10n.actions,
+    };
+  }
 
   /// The title to use for the action. This is shown when the given page is active
-  String get title => switch (this) {
-        GeneralPostAction.post => l10n.postActions,
-        GeneralPostAction.user => l10n.userActions,
-        GeneralPostAction.community => l10n.communityActions,
-        GeneralPostAction.instance => l10n.instanceActions,
-        GeneralPostAction.share => l10n.share,
-        GeneralPostAction.general => l10n.actions,
-      };
+  String get title {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      GeneralPostAction.post => l10n.postActions,
+      GeneralPostAction.user => l10n.userActions,
+      GeneralPostAction.community => l10n.communityActions,
+      GeneralPostAction.instance => l10n.instanceActions,
+      GeneralPostAction.share => l10n.share,
+      GeneralPostAction.general => l10n.actions,
+    };
+  }
 
   /// The icon to use for the action
   final IconData icon;
@@ -47,12 +57,36 @@ enum GeneralPostAction {
 }
 
 enum GeneralQuickPostAction {
-  upvote(enabledIcon: Icons.arrow_upward_rounded, disabledIcon: Icons.arrow_upward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  downvote(enabledIcon: Icons.arrow_downward_rounded, disabledIcon: Icons.arrow_downward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  save(enabledIcon: Icons.star_rounded, disabledIcon: Icons.star_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  read(enabledIcon: Icons.mark_email_read_outlined, disabledIcon: Icons.mark_email_unread_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  hide(enabledIcon: Icons.visibility_off_rounded, disabledIcon: Icons.visibility_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
-  ;
+  upvote(
+    enabledIcon: Icons.arrow_upward_rounded,
+    disabledIcon: Icons.arrow_upward_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  downvote(
+    enabledIcon: Icons.arrow_downward_rounded,
+    disabledIcon: Icons.arrow_downward_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  save(
+    enabledIcon: Icons.star_rounded,
+    disabledIcon: Icons.star_outline_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  read(
+    enabledIcon: Icons.mark_email_read_outlined,
+    disabledIcon: Icons.mark_email_unread_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  hide(
+    enabledIcon: Icons.visibility_off_rounded,
+    disabledIcon: Icons.visibility_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  );
 
   /// The icon to use for the action when it is enabled
   final IconData enabledIcon;
@@ -70,15 +104,28 @@ enum GeneralQuickPostAction {
 }
 
 /// Defines the general top-levelactions that can be taken on a post.
-/// Given a [post] and a [onSwitchActivePage] callback, this widget will display a list of actions that can be taken on the post.
 class GeneralPostActionBottomSheetPage extends StatefulWidget {
-  const GeneralPostActionBottomSheetPage({super.key, required this.context, required this.post, required this.onSwitchActivePage, required this.onAction});
+  const GeneralPostActionBottomSheetPage({
+    super.key,
+    required this.context,
+    required this.account,
+    required this.post,
+    required this.downvotesEnabled,
+    required this.onSwitchActivePage,
+    required this.onAction,
+  });
 
   /// The outer context
   final BuildContext context;
 
+  /// The account that is performing the action
+  final Account account;
+
   /// The post information
   final ThunderPost post;
+
+  /// Whether or not the downvotes are enabled
+  final bool downvotesEnabled;
 
   /// Called when the active page is changed
   final Function(GeneralPostAction page) onSwitchActivePage;
@@ -92,16 +139,16 @@ class GeneralPostActionBottomSheetPage extends StatefulWidget {
 
 class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBottomSheetPage> {
   String? generateSubtitle(GeneralPostAction page) {
-    ThunderPost post = widget.post;
+    final post = widget.post;
 
-    String? communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
-    String? userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
+    final userInstance = fetchInstanceNameFromUrl(post.creator?.actorId);
+    final communityInstance = fetchInstanceNameFromUrl(post.community?.actorId);
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, post.creator?.displayNameOrName, post.creator?.displayName, fetchInstanceNameFromUrl(post.creator?.actorId));
+        return generateUserFullName(context, post.creator?.displayNameOrName, post.creator?.displayName, userInstance);
       case GeneralPostAction.community:
-        return generateCommunityFullName(context, post.community?.name, post.community?.title, fetchInstanceNameFromUrl(post.community?.actorId));
+        return generateCommunityFullName(context, post.community?.name, post.community?.title, communityInstance);
       case GeneralPostAction.instance:
         return (communityInstance == userInstance) ? '$communityInstance' : '$communityInstance • $userInstance';
       default:
@@ -109,29 +156,36 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     }
   }
 
-  void performAction(GeneralQuickPostAction action) {
-    final post = widget.post;
+  void performAction(GeneralQuickPostAction action) async {
+    final repository = PostRepositoryImpl(account: widget.account);
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.myVote == 1 ? 0 : 1));
+        Navigator.of(context).pop();
+        final post = await repository.vote(widget.post, widget.post.myVote == 1 ? 0 : 1);
+        widget.onAction(PostAction.vote, post);
         break;
       case GeneralQuickPostAction.downvote:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: post.id, value: post.myVote == -1 ? 0 : -1));
+        Navigator.of(context).pop();
+        final post = await repository.vote(widget.post, widget.post.myVote == -1 ? 0 : -1);
+        widget.onAction(PostAction.vote, post);
         break;
       case GeneralQuickPostAction.save:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: post.id, value: !(post.saved ?? false)));
+        Navigator.of(context).pop();
+        final post = await repository.save(widget.post, !(widget.post.saved ?? false));
+        widget.onAction(PostAction.save, post);
         break;
       case GeneralQuickPostAction.read:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: post.id, value: !(post.read ?? false)));
+        Navigator.of(context).pop();
+        final success = await repository.read(widget.post.id, !(widget.post.read ?? false));
+        widget.onAction(PostAction.read, widget.post.copyWith(read: success ? !(widget.post.read ?? false) : null));
         break;
       case GeneralQuickPostAction.hide:
-        widget.context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.hide, postId: post.id, value: post.hidden == true ? false : true));
-        widget.onAction(PostAction.hide, post);
+        Navigator.of(context).pop();
+        final hidden = await repository.hide(widget.post.id, !(widget.post.hidden ?? false));
+        widget.onAction(PostAction.hide, widget.post.copyWith(hidden: hidden));
         break;
     }
-
-    Navigator.of(context).pop();
   }
 
   IconData getIcon(GeneralQuickPostAction action) {
@@ -152,6 +206,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   }
 
   String getLabel(GeneralQuickPostAction action) {
+    final l10n = GlobalContext.l10n;
     final post = widget.post;
 
     switch (action) {
@@ -205,51 +260,51 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<ProfileBloc>().state;
-    final isLoggedIn = authState.isLoggedIn;
-
     List<GeneralQuickPostAction> quickActions = GeneralQuickPostAction.values.where((element) => element.permissionType == PermissionType.user).toList();
 
-    if (!isLoggedIn) {
+    if (widget.account.anonymous) {
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
-      // Hide downvoted if instance does not support it
-      if (!authState.downvotesEnabled) {
-        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.downvote).toList();
+      // Hide hide action if account is not Lemmy platform
+      if (widget.account.platform != ThreadiversePlatform.lemmy) {
+        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.hide).toList();
       }
     }
 
     // Determine the available sub-menus to display
     List<GeneralPostAction> submenus = GeneralPostAction.values.where((page) => page != GeneralPostAction.general).toList();
-
-    if (!isLoggedIn) {
-      submenus = submenus.where((action) => action != GeneralPostAction.post).toList();
-    }
+    if (widget.account.anonymous) submenus = submenus.where((action) => action != GeneralPostAction.post).toList();
 
     return Column(
       children: [
         if (quickActions.isNotEmpty)
           MultiPickerItem(
-            pickerItems: GeneralQuickPostAction.values
-                .map((generalQuickPostAction) => PickerItemData(
-                      icon: getIcon(generalQuickPostAction),
-                      label: getLabel(generalQuickPostAction),
-                      foregroundColor: getForegroundColor(generalQuickPostAction),
-                      backgroundColor: getBackgroundColor(generalQuickPostAction),
-                      onSelected: isLoggedIn ? () => performAction(generalQuickPostAction) : null,
-                    ))
-                .toList(),
+            pickerItems: quickActions.map((quickPostAction) {
+              Function()? onSelected;
+
+              if (quickPostAction == GeneralQuickPostAction.downvote && !widget.downvotesEnabled) {
+                onSelected = null;
+              } else {
+                onSelected = widget.account.anonymous ? null : () => performAction(quickPostAction);
+              }
+
+              return PickerItemData(
+                icon: getIcon(quickPostAction),
+                label: getLabel(quickPostAction),
+                foregroundColor: getForegroundColor(quickPostAction),
+                backgroundColor: getBackgroundColor(quickPostAction),
+                onSelected: onSelected,
+              );
+            }).toList(),
           ),
         ...submenus
-            .map(
-              (page) => BottomSheetAction(
-                leading: Icon(page.icon),
-                trailing: const Icon(Icons.chevron_right_rounded),
-                title: page.name,
-                subtitle: generateSubtitle(page),
-                onTap: () => widget.onSwitchActivePage(page),
-              ),
-            )
+            .map((page) => BottomSheetAction(
+                  leading: Icon(page.icon),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  title: page.name,
+                  subtitle: generateSubtitle(page),
+                  onTap: () => widget.onSwitchActivePage(page),
+                ))
             .toList() as List<Widget>,
       ],
     );

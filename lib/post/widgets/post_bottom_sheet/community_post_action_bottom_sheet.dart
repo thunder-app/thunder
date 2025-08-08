@@ -8,7 +8,6 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/models/thunder_post.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -44,13 +43,17 @@ enum CommunityPostAction {
     requiresAuthentication: true,
   );
 
-  String get name => switch (this) {
-        CommunityPostAction.viewCommunity => l10n.visitCommunity,
-        CommunityPostAction.subscribeToCommunity => l10n.subscribeToCommunity,
-        CommunityPostAction.unsubscribeFromCommunity => l10n.unsubscribeFromCommunity,
-        CommunityPostAction.blockCommunity => l10n.blockCommunity,
-        CommunityPostAction.unblockCommunity => l10n.unblockCommunity,
-      };
+  String get name {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      CommunityPostAction.viewCommunity => l10n.visitCommunity,
+      CommunityPostAction.subscribeToCommunity => l10n.subscribeToCommunity,
+      CommunityPostAction.unsubscribeFromCommunity => l10n.unsubscribeFromCommunity,
+      CommunityPostAction.blockCommunity => l10n.blockCommunity,
+      CommunityPostAction.unblockCommunity => l10n.unblockCommunity,
+    };
+  }
 
   /// The icon to use for the action
   final IconData icon;

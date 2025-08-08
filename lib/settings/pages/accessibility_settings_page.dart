@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 
+import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/accessibility_profile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 
 class AccessibilitySettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -86,7 +86,8 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.accessibility), centerTitle: false),

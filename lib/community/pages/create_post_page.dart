@@ -24,7 +24,6 @@ import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/post/models/thunder_post.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
@@ -227,6 +226,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       // If the post is a cross-post, then prompt the user if they want to add the original post body
       if (widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          final l10n = GlobalContext.l10n;
+
           showSnackbar(
             l10n.addOriginalPostBody,
             duration: const Duration(seconds: 10),
@@ -281,6 +282,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     Draft draft = _generateDraft();
 
     if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      final l10n = GlobalContext.l10n;
+
       Draft.upsertDraft(draft);
       showSnackbar(l10n.postSavedAsDraft);
     } else {

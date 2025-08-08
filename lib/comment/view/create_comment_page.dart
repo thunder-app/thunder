@@ -17,7 +17,6 @@ import 'package:thunder/core/models/thunder_language.dart';
 import 'package:thunder/drafts/models/draft.dart';
 import 'package:thunder/comment/comment.dart';
 import 'package:thunder/post/models/thunder_post.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/drafts/draft_type.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/post/widgets/post_body/post_body.dart';
@@ -29,6 +28,7 @@ import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_selector.dart';
 import 'package:thunder/utils/colors.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/media/image.dart';
 
@@ -160,6 +160,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     Draft draft = _generateDraft();
 
     if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
+      final l10n = GlobalContext.l10n;
+
       Draft.upsertDraft(draft);
       showSnackbar(l10n.commentSavedAsDraft);
     } else {

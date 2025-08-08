@@ -9,7 +9,6 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/community/models/thunder_community.dart';
 import 'package:thunder/core/models/thunder_my_user.dart';
 import 'package:thunder/instance/repository/instance_repository.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/full_name.dart';
@@ -24,9 +23,6 @@ import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/user/widgets/user_action_bottom_sheet.dart';
 import 'package:thunder/user/enums/user_action.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/global_context.dart';
-
-final l10n = AppLocalizations.of(GlobalContext.context)!;
 
 /// Programatically show the post action bottom sheet
 void showPostActionBottomModalSheet(
@@ -65,6 +61,9 @@ class PostActionBottomSheet extends StatefulWidget {
 class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   /// The account that is performing the action
   late Account account;
+
+  /// Whether or not the downvotes are enabled
+  bool downvotesEnabled = true;
 
   /// List of subscribed communities
   List<ThunderCommunity> subscribedCommunities = [];
@@ -116,6 +115,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
     final siteInfo = await repository.getSiteInfo();
 
     setState(() {
+      downvotesEnabled = siteInfo.site.enableDownvotes ?? true;
       blockedUsers = siteInfo.myUser?.personBlocks ?? [];
       blockedInstances = siteInfo.myUser?.instanceBlocks ?? [];
       moderatedCommunities = siteInfo.myUser?.moderates ?? [];
@@ -148,11 +148,13 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
 
     Widget actions = switch (currentPage) {
       GeneralPostAction.general => GeneralPostActionBottomSheetPage(
+          account: account,
           context: widget.context,
+          downvotesEnabled: downvotesEnabled,
           post: widget.post,
           onSwitchActivePage: (page) => setState(() => currentPage = page),
           onAction: (PostAction postAction, ThunderPost? post) {
-            widget.onAction?.call(postAction: postAction, post: widget.post);
+            widget.onAction?.call(postAction: postAction, post: post);
           },
         ),
       GeneralPostAction.post => PostPostActionBottomSheet(

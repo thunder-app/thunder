@@ -7,10 +7,10 @@ import 'package:thunder/comment/comment.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/enums/full_name.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/widgets/post_bottom_sheet/post_action_bottom_sheet.dart';
 import 'package:thunder/shared/bottom_sheet_action.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
 /// Defines the general actions that can be taken on a comment
@@ -21,22 +21,30 @@ enum GeneralCommentAction {
   instance(icon: Icons.language_rounded),
   share(icon: Icons.share);
 
-  String get name => switch (this) {
-        GeneralCommentAction.general => l10n.actions,
-        GeneralCommentAction.comment => l10n.comment,
-        GeneralCommentAction.user => l10n.user,
-        GeneralCommentAction.instance => l10n.instance(1),
-        GeneralCommentAction.share => l10n.share,
-      };
+  String get name {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      GeneralCommentAction.general => l10n.actions,
+      GeneralCommentAction.comment => l10n.comment,
+      GeneralCommentAction.user => l10n.user,
+      GeneralCommentAction.instance => l10n.instance(1),
+      GeneralCommentAction.share => l10n.share,
+    };
+  }
 
   /// The title to use for the action. This is shown when the given page is active
-  String get title => switch (this) {
-        GeneralCommentAction.general => l10n.actions,
-        GeneralCommentAction.comment => 'Comment Actions',
-        GeneralCommentAction.user => l10n.userActions,
-        GeneralCommentAction.instance => l10n.instanceActions,
-        GeneralCommentAction.share => l10n.share,
-      };
+  String get title {
+    final l10n = GlobalContext.l10n;
+
+    return switch (this) {
+      GeneralCommentAction.general => l10n.actions,
+      GeneralCommentAction.comment => 'Comment Actions',
+      GeneralCommentAction.user => l10n.userActions,
+      GeneralCommentAction.instance => l10n.instanceActions,
+      GeneralCommentAction.share => l10n.share,
+    };
+  }
 
   /// The icon to use for the action
   final IconData icon;
@@ -149,6 +157,7 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   }
 
   String getLabel(GeneralQuickCommentAction action) {
+    final l10n = GlobalContext.l10n;
     final comment = widget.comment;
 
     switch (action) {
