@@ -33,7 +33,6 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/notification/notifications.dart';
 import 'package:thunder/notification/shared/notification_server.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -244,7 +243,6 @@ class _ThunderAppState extends State<ThunderApp> {
                       return MultiBlocProvider(
                         key: ValueKey('account_${account.id}'),
                         providers: [
-                          BlocProvider(create: (context) => InstanceBloc(account: account)),
                           BlocProvider(create: (context) => UserBloc(account: account)),
                           BlocProvider(create: (context) => InboxBloc(account: account)..add(GetInboxEvent(reset: true))),
                           BlocProvider(create: (context) => SearchBloc(account: account)),

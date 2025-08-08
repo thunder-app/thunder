@@ -20,7 +20,6 @@ import 'package:thunder/feed/widgets/feed_post_card_list.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/feed/widgets/tagline.dart';
-import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/post/models/thunder_post.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -281,13 +280,6 @@ class _FeedViewState extends State<FeedView> {
     return MultiBlocListener(
       listeners: [
         BlocListener<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state.message != null) {
-              showSnackbar(state.message!);
-            }
-          },
-        ),
-        BlocListener<InstanceBloc, InstanceState>(
           listener: (context, state) {
             if (state.message != null) {
               showSnackbar(state.message!);
