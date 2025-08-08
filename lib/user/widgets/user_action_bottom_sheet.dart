@@ -264,6 +264,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     } else {
       if (widget.account.username == widget.user.name && widget.account.instance == fetchInstanceNameFromUrl(widget.user.actorId)) {
         userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
+        moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.addUserAsCommunityModerator && action != UserBottomSheetAction.removeUserAsCommunityModerator).toList();
       }
 
       if (isUserBlocked) {

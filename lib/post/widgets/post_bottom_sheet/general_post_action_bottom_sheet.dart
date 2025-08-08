@@ -146,7 +146,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (page) {
       case GeneralPostAction.user:
-        return generateUserFullName(context, post.creator?.displayNameOrName, post.creator?.displayName, userInstance);
+        return generateUserFullName(context, post.creator?.name, post.creator?.displayName, userInstance);
       case GeneralPostAction.community:
         return generateCommunityFullName(context, post.community?.name, post.community?.title, communityInstance);
       case GeneralPostAction.instance:
