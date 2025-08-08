@@ -370,89 +370,87 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             toolbarHeight: APP_BAR_HEIGHT,
             pinned: true,
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.guestModeFeedSettings, style: theme.textTheme.titleMedium),
-                      Text(l10n.guestModeFeedSettingsLabel),
-                    ],
-                  ),
-                ),
-                ListOption(
-                  description: l10n.defaultFeedType,
-                  value: ListPickerItem(label: defaultFeedListType.value, icon: Icons.feed, payload: defaultFeedListType),
-                  options: [
-                    ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
-                    ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
+          SliverList.list(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.guestModeFeedSettings, style: theme.textTheme.titleMedium),
+                    Text(l10n.guestModeFeedSettingsLabel),
                   ],
-                  icon: Icons.filter_alt_rounded,
-                  onChanged: (value) => setPreferences(LocalSettings.defaultFeedListType, value.payload.name),
-                  highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.defaultFeedListType,
-                  highlightedSetting: settingToHighlight,
                 ),
-                ListOption(
-                  description: l10n.defaultFeedSortType,
-                  value: ListPickerItem(
-                    label: allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
-                    icon: Icons.local_fire_department_rounded,
-                    payload: defaultPostSortType,
-                  ),
-                  options: [...getDefaultPostSortTypeItems(), ...getTopPostSortTypeItems()],
-                  icon: Icons.sort_rounded,
-                  onChanged: (_) async {},
-                  isBottomModalScrollControlled: true,
-                  customListPicker: SortPicker(
-                    title: l10n.defaultFeedSortType,
-                    onSelect: (value) async {
-                      setPreferences(LocalSettings.defaultFeedPostSortType, value.payload.name);
-                    },
-                    previouslySelected: defaultPostSortType,
-                  ),
-                  valueDisplay: Row(
-                    children: [
-                      Icon(allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).icon, size: 13),
-                      const SizedBox(width: 4),
-                      Text(
-                        allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
-                        style: theme.textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-                  highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.defaultFeedPostSortType,
-                  highlightedSetting: settingToHighlight,
+              ),
+              ListOption(
+                description: l10n.defaultFeedType,
+                value: ListPickerItem(label: defaultFeedListType.value, icon: Icons.feed, payload: defaultFeedListType),
+                options: [
+                  ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
+                  ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
+                ],
+                icon: Icons.filter_alt_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.defaultFeedListType, value.payload.name),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.defaultFeedListType,
+                highlightedSetting: settingToHighlight,
+              ),
+              ListOption(
+                description: l10n.defaultFeedSortType,
+                value: ListPickerItem(
+                  label: allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
+                  icon: Icons.local_fire_department_rounded,
+                  payload: defaultPostSortType,
                 ),
-                ToggleOption(
-                  description: l10n.hideNsfwPostsFromFeed,
-                  value: hideNsfwPosts,
-                  iconEnabled: Icons.no_adult_content,
-                  iconDisabled: Icons.no_adult_content,
-                  onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
-                  highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.hideNsfwPosts,
-                  highlightedSetting: settingToHighlight,
+                options: [...getDefaultPostSortTypeItems(), ...getTopPostSortTypeItems()],
+                icon: Icons.sort_rounded,
+                onChanged: (_) async {},
+                isBottomModalScrollControlled: true,
+                customListPicker: SortPicker(
+                  title: l10n.defaultFeedSortType,
+                  onSelect: (value) async {
+                    setPreferences(LocalSettings.defaultFeedPostSortType, value.payload.name);
+                  },
+                  previouslySelected: defaultPostSortType,
                 ),
-                SettingsListTile(
-                  icon: Icons.manage_accounts_rounded,
-                  description: l10n.lookingForAccountSpecificFeedSettings,
-                  widget: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
-                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccount),
-                  highlightKey: settingToHighlightKey,
-                  setting: null,
-                  highlightedSetting: settingToHighlight,
+                valueDisplay: Row(
+                  children: [
+                    Icon(allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).icon, size: 13),
+                    const SizedBox(width: 4),
+                    Text(
+                      allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ],
                 ),
-                const ThunderDivider(sliver: false),
-              ],
-            ),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.defaultFeedPostSortType,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.hideNsfwPostsFromFeed,
+                value: hideNsfwPosts,
+                iconEnabled: Icons.no_adult_content,
+                iconDisabled: Icons.no_adult_content,
+                onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.hideNsfwPosts,
+                highlightedSetting: settingToHighlight,
+              ),
+              SettingsListTile(
+                icon: Icons.manage_accounts_rounded,
+                description: l10n.lookingForAccountSpecificFeedSettings,
+                widget: const SizedBox(
+                  height: 42.0,
+                  child: Icon(Icons.chevron_right_rounded),
+                ),
+                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccount),
+                highlightKey: settingToHighlightKey,
+                setting: null,
+                highlightedSetting: settingToHighlight,
+              ),
+              const ThunderDivider(sliver: false),
+            ],
           ),
           SliverToBoxAdapter(
             child: Padding(

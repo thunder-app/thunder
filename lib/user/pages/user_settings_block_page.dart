@@ -337,6 +337,6 @@ class UserSettingBlockList extends StatelessWidget {
       return Center(child: Text(emptyText ?? "", style: TextStyle(color: theme.hintColor)));
     }
 
-    return CustomScrollView(slivers: [SliverList(delegate: SliverChildListDelegate(items))]);
+    return CustomScrollView(slivers: [SliverList.list(children: items)]);
   }
 }

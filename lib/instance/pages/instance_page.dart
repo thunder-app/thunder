@@ -316,27 +316,23 @@ class _InstancePageState extends State<InstancePage> {
                           ),
                         ),
                       if (viewType == SearchType.communities)
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            childCount: state.communities?.length,
-                            (context, index) {
-                              final community = state.communities?[index];
+                        SliverList.builder(
+                          itemCount: state.communities?.length,
+                          itemBuilder: (context, index) {
+                            final community = state.communities?[index];
 
-                              return Material(
-                                child: community != null ? CommunityListEntry(community: community, resolutionInstance: state.resolutionInstance) : Container(),
-                              );
-                            },
-                          ),
+                            return Material(
+                              child: community != null ? CommunityListEntry(community: community, resolutionInstance: state.resolutionInstance) : Container(),
+                            );
+                          },
                         ),
                       if (viewType == SearchType.users)
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            childCount: state.users?.length,
-                            (context, index) {
-                              final user = state.users?[index];
-                              return Material(child: user != null ? UserListEntry(user: user, resolutionInstance: state.resolutionInstance) : Container());
-                            },
-                          ),
+                        SliverList.builder(
+                          itemCount: state.users?.length,
+                          itemBuilder: (context, index) {
+                            final user = state.users?[index];
+                            return Material(child: user != null ? UserListEntry(user: user, resolutionInstance: state.resolutionInstance) : Container());
+                          },
                         ),
                       if (viewType == SearchType.posts)
                         FeedPostCardList(
@@ -345,16 +341,14 @@ class _InstancePageState extends State<InstancePage> {
                           tabletMode: tabletMode,
                         ),
                       if (viewType == SearchType.comments)
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            childCount: state.comments?.length,
-                            (context, index) {
-                              final comment = state.comments?[index];
-                              return Material(
-                                child: comment != null ? CommentListEntry(comment: comment) : Container(),
-                              );
-                            },
-                          ),
+                        SliverList.builder(
+                          itemCount: state.comments?.length,
+                          itemBuilder: (context, index) {
+                            final comment = state.comments?[index];
+                            return Material(
+                              child: comment != null ? CommentListEntry(comment: comment) : Container(),
+                            );
+                          },
                         ),
                     ],
                     if (state.status == InstancePageStatus.success && viewType != SearchType.all) ...[

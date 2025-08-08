@@ -105,55 +105,53 @@ class _SettingsPageState extends State<SettingsPage> {
           const SliverToBoxAdapter(
             child: SizedBox(height: 10),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate.fixed(
-              topics
-                  .map(
-                    (SettingTopic topic) => ListTile(
-                      title: Text(topic.title),
-                      leading: Icon(topic.icon),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () {
-                        if (topic.path == SETTINGS_ABOUT_PAGE) {
-                          navigateToSettingPage(context, LocalSettings.settingsPageAbout);
-                        } else if (topic.path == SETTINGS_ACCOUNT_PAGE) {
-                          navigateToSettingPage(context, LocalSettings.settingsPageAccount);
-                        } else {
-                          switch (topic.path) {
-                            case SETTINGS_GENERAL_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageGeneral);
-                              break;
-                            case SETTINGS_FILTERS_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageFilters);
-                              break;
-                            case SETTINGS_APPEARANCE_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageAppearance);
-                              break;
-                            case SETTINGS_GESTURES_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageGestures);
-                              break;
-                            case SETTINGS_VIDEO_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageVideo);
-                              break;
-                            case SETTINGS_FAB_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageFloatingActionButton);
-                              break;
-                            case SETTINGS_ACCESSIBILITY_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageAccessibility);
-                              break;
-                            case SETTINGS_USER_LABELS_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageUserLabels);
-                              break;
-                            case SETTINGS_DEBUG_PAGE:
-                              navigateToSettingPage(context, LocalSettings.settingsPageDebug);
-                              break;
-                          }
+          SliverList.list(
+            children: topics
+                .map(
+                  (SettingTopic topic) => ListTile(
+                    title: Text(topic.title),
+                    leading: Icon(topic.icon),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () {
+                      if (topic.path == SETTINGS_ABOUT_PAGE) {
+                        navigateToSettingPage(context, LocalSettings.settingsPageAbout);
+                      } else if (topic.path == SETTINGS_ACCOUNT_PAGE) {
+                        navigateToSettingPage(context, LocalSettings.settingsPageAccount);
+                      } else {
+                        switch (topic.path) {
+                          case SETTINGS_GENERAL_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageGeneral);
+                            break;
+                          case SETTINGS_FILTERS_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageFilters);
+                            break;
+                          case SETTINGS_APPEARANCE_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageAppearance);
+                            break;
+                          case SETTINGS_GESTURES_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageGestures);
+                            break;
+                          case SETTINGS_VIDEO_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageVideo);
+                            break;
+                          case SETTINGS_FAB_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageFloatingActionButton);
+                            break;
+                          case SETTINGS_ACCESSIBILITY_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageAccessibility);
+                            break;
+                          case SETTINGS_USER_LABELS_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageUserLabels);
+                            break;
+                          case SETTINGS_DEBUG_PAGE:
+                            navigateToSettingPage(context, LocalSettings.settingsPageDebug);
+                            break;
                         }
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
+                      }
+                    },
+                  ),
+                )
+                .toList(),
           ),
           SliverFillRemaining(
             hasScrollBody: false,

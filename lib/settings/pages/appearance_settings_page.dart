@@ -26,36 +26,32 @@ class AppearanceSettingsPage extends StatelessWidget {
             pinned: true,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                ListTile(
-                  title: Text(l10n.theming),
-                  leading: const Icon(Icons.text_fields),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming),
-                ),
-              ],
-            ),
+          SliverList.list(
+            children: [
+              ListTile(
+                title: Text(l10n.theming),
+                leading: const Icon(Icons.text_fields),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming),
+              ),
+            ],
           ),
           const ThunderDivider(sliver: true),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                ListTile(
-                  title: Text(l10n.posts),
-                  leading: const Icon(Icons.splitscreen_rounded),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearancePosts),
-                ),
-                ListTile(
-                  title: Text(l10n.comments),
-                  leading: const Icon(Icons.comment_rounded),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceComments),
-                ),
-              ],
-            ),
+          SliverList.list(
+            children: [
+              ListTile(
+                title: Text(l10n.posts),
+                leading: const Icon(Icons.splitscreen_rounded),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearancePosts),
+              ),
+              ListTile(
+                title: Text(l10n.comments),
+                leading: const Icon(Icons.comment_rounded),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceComments),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,6 +17,7 @@ import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigation.dart';
 import 'package:thunder/user/enums/user_action.dart';
+import 'package:thunder/shared/multi_action_dismissible.dart';
 
 class PostCard extends StatefulWidget {
   /// The associated post information to display in the card.
@@ -73,32 +73,8 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  /// The current point at which the user drags the comment
-  double dismissThreshold = 0;
-
-  /// The current swipe action that would be performed if the user let go off the screen
-  SwipeAction? swipeAction;
-
-  /// Determines the direction that the user is allowed to drag (to enable/disable swipe gestures)
-  DismissDirection? dismissDirection;
-
-  /// The first action threshold to trigger the left or right actions (upvote/reply)
-  static const double firstActionThreshold = 0.15;
-
-  /// The second action threshold to trigger the left or right actions (downvote/save)
-  static const double secondActionThreshold = 0.35;
-
-  /// User Settings
   bool isUserLoggedIn = false;
-
-  /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
-  bool isOverridingSwipeGestureAction = false;
-
-  /// The vertical drag distance between moves
-  double verticalDragDistance = 0;
-
-  /// The last timestamp of the pointer move event. This is used to debounce the pointer move event
-  int _lastPointerMoveTimestamp = 0;
+  double _lastVerticalDy = 0.0;
 
   @override
   void initState() {
@@ -106,56 +82,25 @@ class _PostCardState extends State<PostCard> {
     isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
   }
 
-  void _updateOverridingSwipe(bool override) {
-    if (isOverridingSwipeGestureAction == override) return;
-    setState(() => isOverridingSwipeGestureAction = override);
-  }
-
-  void _onPointerUp() {
+  void _onAction(SwipeAction action) {
     final int? myVote = widget.post.myVote;
     final bool saved = widget.post.saved ?? false;
     final bool read = widget.post.read ?? false;
     final bool hidden = widget.post.hidden ?? false;
 
-    _updateOverridingSwipe(false);
-
-    if (swipeAction != null && swipeAction != SwipeAction.none) {
-      triggerPostAction(
-        context: context,
-        swipeAction: swipeAction,
-        onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-        onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
-        onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
-        onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
-        voteType: myVote ?? 0,
-        saved: saved,
-        read: read,
-        hidden: hidden,
-        post: widget.post,
-      );
-    }
-
-    widget.onUpAction(verticalDragDistance);
-  }
-
-  void _onPointerMove(PointerMoveEvent event, DismissDirection currentSwipeDirection) {
-    // Only process every 16ms (roughly 60fps)
-    final now = DateTime.now().millisecondsSinceEpoch;
-    if (now - _lastPointerMoveTimestamp < 16) return;
-    _lastPointerMoveTimestamp = now;
-
-    verticalDragDistance = event.delta.dy;
-
-    if (currentSwipeDirection != DismissDirection.endToStart) return;
-
-    final horizontalDragDistance = event.delta.dx;
-    final isSwipingRight = horizontalDragDistance > 0;
-
-    if (isSwipingRight && !isOverridingSwipeGestureAction && dismissThreshold == 0.0) {
-      _updateOverridingSwipe(true);
-    } else if (!isSwipingRight && isOverridingSwipeGestureAction) {
-      _updateOverridingSwipe(false);
-    }
+    triggerPostAction(
+      context: context,
+      swipeAction: action,
+      onSaveAction: (int postId, bool newSaved) => widget.onSaveAction(newSaved),
+      onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
+      onToggleReadAction: (int postId, bool newRead) => widget.onReadAction(newRead),
+      onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
+      voteType: myVote ?? 0,
+      saved: saved,
+      read: read,
+      hidden: hidden,
+      post: widget.post,
+    );
   }
 
   @override
@@ -229,69 +174,44 @@ class _PostCardState extends State<PostCard> {
       ),
     );
 
-    // Wrap the post card in a Dismissible to handle swipe actions if swipe gestures are enabled
     if (currentSwipeDirection != DismissDirection.none) {
-      final read = widget.post.read;
-      final hidden = widget.post.hidden;
+      final read = widget.post.read ?? false;
+      final hidden = widget.post.hidden ?? false;
 
-      final leftPrimary = state.leftPrimaryPostGesture;
-      final leftSecondary = state.leftSecondaryPostGesture;
-      final rightPrimary = state.rightPrimaryPostGesture;
-      final rightSecondary = state.rightSecondaryPostGesture;
+      final actionThresholds = [0.15, 0.35];
+      final leftActions = [state.leftPrimaryPostGesture, state.leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
+      final rightActions = [state.rightPrimaryPostGesture, state.rightSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
 
-      bool shouldTriggerHaptic = false;
-
-      child = Dismissible(
+      child = MultiActionDismissible(
         key: ObjectKey(widget.post.id),
-        direction: isOverridingSwipeGestureAction ? DismissDirection.none : currentSwipeDirection,
-        resizeDuration: Duration.zero,
-        dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-        confirmDismiss: (_) async => false,
-        onUpdate: (details) {
-          if ((dismissThreshold - details.progress).abs() < 0.01) return;
-
-          SwipeAction? updatedAction;
-          final bool isStartToEnd = details.direction == DismissDirection.startToEnd;
-
-          if (details.progress > firstActionThreshold) {
-            if (isStartToEnd) {
-              updatedAction = details.progress < secondActionThreshold ? leftPrimary : (leftSecondary != SwipeAction.none ? leftSecondary : leftPrimary);
-            } else {
-              updatedAction = details.progress < secondActionThreshold ? rightPrimary : (rightSecondary != SwipeAction.none ? rightSecondary : rightPrimary);
-            }
-          }
-
-          if (updatedAction == SwipeAction.hide) {
-            updatedAction = SwipeAction.none;
-          }
-
-          shouldTriggerHaptic = updatedAction != swipeAction && updatedAction != null;
-
-          setState(() {
-            dismissThreshold = details.progress;
-            dismissDirection = details.direction;
-            swipeAction = updatedAction;
-          });
-
-          if (shouldTriggerHaptic) HapticFeedback.mediumImpact();
-        },
-        background: PostCardActionBackground(
-          swipeAction: swipeAction,
-          dismissThreshold: dismissThreshold,
-          firstActionThreshold: firstActionThreshold,
-          dismissDirection: dismissDirection ?? DismissDirection.startToEnd,
-          read: read ?? false,
-          hidden: hidden ?? false,
+        direction: widget.disableSwiping ? DismissDirection.none : currentSwipeDirection,
+        leftActions: leftActions,
+        rightActions: rightActions,
+        actionThresholds: actionThresholds,
+        onAction: (action) => _onAction(action),
+        onPointerDown: widget.onDownAction,
+        onDragEnd: (dy) => widget.onUpAction(dy),
+        backgroundBuilder: (context, dir, progress, action) => PostCardActionBackground(
+          swipeAction: action,
+          dismissThreshold: progress,
+          firstActionThreshold: actionThresholds.first,
+          dismissDirection: dir,
+          read: read,
+          hidden: hidden,
         ),
         child: child,
+      );
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [child, const FeedCardDivider()],
       );
     }
 
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (_) => widget.onDownAction(),
-      onPointerUp: (_) => _onPointerUp(),
-      onPointerMove: (event) => _onPointerMove(event, currentSwipeDirection),
+      onPointerMove: (event) => _lastVerticalDy = event.delta.dy,
+      onPointerUp: (_) => widget.onUpAction(_lastVerticalDy),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [child, const FeedCardDivider()],

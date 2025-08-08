@@ -72,60 +72,58 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
         child: CustomScrollView(
           slivers: [
             SliverPinnedHeader(child: UserDrawerItem(navigateToAccount: widget.navigateToAccount)),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  const FeedDrawerItems(),
-                  const FavoriteCommunities(),
-                  const ModeratedCommunities(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
-                    child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
-                  ),
-                  if (subscriptions.isNotEmpty)
-                    ...subscriptions.map<Widget>(
-                      (ThunderCommunity community) {
-                        final bool isCommunitySelected = feedState.communityId == community.id;
+            SliverList.list(
+              children: [
+                const FeedDrawerItems(),
+                const FavoriteCommunities(),
+                const ModeratedCommunities(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
+                  child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
+                ),
+                if (subscriptions.isNotEmpty)
+                  ...subscriptions.map<Widget>(
+                    (ThunderCommunity community) {
+                      final bool isCommunitySelected = feedState.communityId == community.id;
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              alignment: Alignment.centerLeft,
-                              minimumSize: const Size.fromHeight(50),
-                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
-                            ),
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-
-                              final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
-
-                              context.read<FeedBloc>().add(
-                                    FeedFetchedEvent(
-                                      feedType: FeedType.community,
-                                      postSortType: postSortType,
-                                      communityId: isLoggedIn ? community.id : null,
-                                      communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
-                                      reset: true,
-                                      showHidden: thunderState.showHiddenPosts,
-                                    ),
-                                  );
-                            },
-                            child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            alignment: Alignment.centerLeft,
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                           ),
-                        );
-                      },
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+
+                            final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
+
+                            context.read<FeedBloc>().add(
+                                  FeedFetchedEvent(
+                                    feedType: FeedType.community,
+                                    postSortType: postSortType,
+                                    communityId: isLoggedIn ? community.id : null,
+                                    communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
+                                    reset: true,
+                                    showHidden: thunderState.showHiddenPosts,
+                                  ),
+                                );
+                          },
+                          child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                        ),
+                      );
+                    },
+                  ),
+                if (subscriptions.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                    child: Text(
+                      l10n.noSubscriptions,
+                      style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
                     ),
-                  if (subscriptions.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-                      child: Text(
-                        l10n.noSubscriptions,
-                        style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                      ),
-                    ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ],
         ),
