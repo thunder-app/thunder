@@ -1,11 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'package:thunder/localizations/app_localizations.dart';
+import 'package:collection/collection.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 
 class SettingTopic {
@@ -24,13 +24,13 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final SearchController _searchController = SearchController();
+  final searchController = SearchController();
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
-    final List<SettingTopic> topics = [
+    final topics = [
       SettingTopic(title: l10n.general, icon: Icons.settings, path: SETTINGS_GENERAL_PAGE),
       SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: SETTINGS_FILTERS_PAGE),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: SETTINGS_APPEARANCE_PAGE),
@@ -47,64 +47,51 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text(l10n.settings),
-            centerTitle: false,
-            toolbarHeight: APP_BAR_HEIGHT,
-            pinned: true,
-          ),
+          SliverAppBar(title: Text(l10n.settings), centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, pinned: true),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18).copyWith(top: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 18.0).copyWith(top: 16.0),
               child: FocusableActionDetector(
                 onFocusChange: (focused) {
                   if (focused) {
                     FocusScope.of(context).unfocus();
-                    _searchController.text = '';
+                    searchController.clear();
                   }
                 },
                 child: SearchAnchor.bar(
-                  searchController: _searchController,
+                  searchController: searchController,
                   barHintText: l10n.search,
-                  barElevation: const WidgetStatePropertyAll(0.0),
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
-                    final List<LocalSettings> localSettings = LocalSettings.values
-                        .where((item) =>
-                            item.searchable &&
-                            l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(
-                                  controller.text.toLowerCase(),
-                                ))
-                        .toSet()
-                        .toList();
+                    final theme = Theme.of(context);
 
-                    localSettings.removeWhere((setting) => setting.key.isEmpty);
-                    localSettings.sortBy((setting) => setting.key);
+                    final query = controller.text.toLowerCase();
+                    final settings = LocalSettings.values.where((item) => item.searchable && l10n.getLocalSettingLocalization(item.key).toLowerCase().contains(query)).toList();
 
-                    return List<ListTile>.generate(
-                      localSettings.length,
-                      (index) => ListTile(
-                        subtitle: Text(localSettings[index].isPage
-                            ? l10n.settingsPage
-                            : "${l10n.getLocalSettingLocalization(localSettings[index].category.toString())}${' > ${l10n.getLocalSettingLocalization(localSettings[index].subCategory.toString())}'}"),
+                    settings.removeWhere((setting) => setting.key.isEmpty);
+                    settings.sortBy((setting) => setting.key);
+
+                    return List<ListTile>.generate(settings.length, (index) {
+                      final setting = settings[index];
+                      final key = l10n.getLocalSettingLocalization(setting.key);
+                      final category = l10n.getLocalSettingLocalization(setting.category.toString());
+                      final subCategory = l10n.getLocalSettingLocalization(setting.subCategory.toString());
+
+                      return ListTile(
+                        title: Text(key, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        subtitle: Text(setting.isPage ? l10n.settingsPage : "$category > $subCategory"),
                         onTap: () {
                           controller.closeView(null);
                           controller.clear();
-                          navigateToSettingPage(context, localSettings[index]);
+                          navigateToSettingPage(context, setting);
                         },
-                        title: Text(
-                          l10n.getLocalSettingLocalization(localSettings[index].key),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    );
+                      );
+                    });
                   },
                 ),
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 10),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
           SliverList.list(
             children: topics
                 .map(

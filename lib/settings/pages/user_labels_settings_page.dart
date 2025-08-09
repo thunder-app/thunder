@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/account/bloc/profile_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/user/models/user_label.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/post/utils/user_label_utils.dart';
@@ -15,6 +14,7 @@ import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/full_name_widgets.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 
 class UserLabelSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -82,8 +82,8 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -104,103 +104,96 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
       ),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text(l10n.userLabels),
-            centerTitle: false,
-            toolbarHeight: APP_BAR_HEIGHT,
-            pinned: true,
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-              child: Text(
-                l10n.userLabelsSettingsPageDescription,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+          SliverAppBar(title: Text(l10n.userLabels), centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, pinned: true),
+          SliverList.list(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                child: Text(
+                  l10n.userLabelsSettingsPageDescription,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                  ),
                 ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.userLabels ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.userLabels,
-              enabled: settingToHighlight == LocalSettings.userLabels,
-              color: theme.colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(l10n.userLabels, style: theme.textTheme.titleMedium),
-                  ],
+              SmoothHighlight(
+                key: settingToHighlight == LocalSettings.userLabels ? settingToHighlightKey : null,
+                useInitialHighLight: settingToHighlight == LocalSettings.userLabels,
+                enabled: settingToHighlight == LocalSettings.userLabels,
+                color: theme.colorScheme.primaryContainer,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(l10n.userLabels, style: theme.textTheme.titleMedium),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: userLabels.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                      child: Text(
-                        l10n.noUserLabels,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: userLabels.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Text(
+                          l10n.noUserLabels,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                          ),
                         ),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: userLabels.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-                          title: UserFullNameWidget(
-                            context,
-                            UserLabel.partsFromUsername(userLabels[index].username).username,
-                            null,
-                            UserLabel.partsFromUsername(userLabels[index].username).instance,
-                            textStyle: theme.textTheme.bodyLarge,
-                          ),
-                          subtitle: Text(userLabels[index].label),
-                          trailing: IconButton(
-                            icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                            onPressed: () async {
-                              bool result = false;
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: userLabels.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
+                            title: UserFullNameWidget(
+                              context,
+                              UserLabel.partsFromUsername(userLabels[index].username).username,
+                              null,
+                              UserLabel.partsFromUsername(userLabels[index].username).instance,
+                              textStyle: theme.textTheme.bodyLarge,
+                            ),
+                            subtitle: Text(userLabels[index].label),
+                            trailing: IconButton(
+                              icon: Icon(Icons.clear, semanticLabel: l10n.remove),
+                              onPressed: () async {
+                                bool result = false;
 
-                              await showThunderDialog<void>(
-                                context: context,
-                                title: l10n.confirm,
-                                contentText: l10n.deleteUserLabelConfirmation,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                secondaryButtonText: l10n.cancel,
-                                onPrimaryButtonPressed: (dialogContext, _) async {
-                                  Navigator.of(dialogContext).pop();
-                                  result = true;
-                                },
-                                primaryButtonText: l10n.delete,
-                              );
+                                await showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.confirm,
+                                  contentText: l10n.deleteUserLabelConfirmation,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    Navigator.of(dialogContext).pop();
+                                    result = true;
+                                  },
+                                  primaryButtonText: l10n.delete,
+                                );
 
-                              if (result) {
-                                UserLabel.deleteUserLabel(userLabels[index].username);
-                                _updateChangedUserLabel((userLabel: userLabels[index], deleted: true));
-                              }
+                                if (result) {
+                                  UserLabel.deleteUserLabel(userLabels[index].username);
+                                  _updateChangedUserLabel((userLabel: userLabels[index], deleted: true));
+                                }
+                              },
+                            ),
+                            onTap: () async {
+                              ({bool deleted, UserLabel? userLabel}) result = await showUserLabelEditorDialog(context, userLabels[index].username);
+                              _updateChangedUserLabel(result);
                             },
-                          ),
-                          onTap: () async {
-                            ({bool deleted, UserLabel? userLabel}) result = await showUserLabelEditorDialog(context, userLabels[index].username);
-                            _updateChangedUserLabel(result);
-                          },
-                        );
-                      },
-                    ),
-            ),
+                          );
+                        },
+                      ),
+              ),
+              SizedBox(height: 128.0),
+            ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
       ),
     );

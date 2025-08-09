@@ -8,15 +8,15 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_file_dialog/flutter_file_dialog.dart";
 import "package:html/parser.dart";
+import "package:path_provider/path_provider.dart";
+import 'package:markdown/markdown.dart' hide Text;
+
 import "package:thunder/account/repository/account_repository.dart";
 import "package:thunder/core/enums/threadiverse_platform.dart";
 import "package:thunder/core/models/thunder_local_user.dart";
 import "package:thunder/core/models/thunder_my_user.dart";
 import "package:thunder/core/models/thunder_site_response.dart";
 import 'package:thunder/localizations/app_localizations.dart';
-import "package:path_provider/path_provider.dart";
-import 'package:markdown/markdown.dart' hide Text;
-
 import 'package:thunder/account/account.dart';
 import "package:thunder/core/enums/enums.dart";
 import "package:thunder/core/enums/local_settings.dart";
@@ -94,7 +94,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     final account = context.read<ProfileBloc>().state.account;
 

@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/account/bloc/profile_bloc.dart';
-import 'package:thunder/localizations/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
@@ -30,6 +29,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 
 class PostAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -350,7 +350,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       personDisplayName: 'User',
       personInstance: 'lemmy.world',
       communityName: 'Thunder',
-      postUrl: 'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
+      postUrl: 'https://raw.githubusercontent.com/thunder-app/thunder/refs/heads/develop/assets/logo.png',
       nsfw: true,
       read: false,
       scoreCount: 102,
@@ -420,8 +420,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
 
     return Scaffold(
       body: CustomScrollView(
@@ -455,646 +455,582 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               const SizedBox(width: 8.0),
             ],
           ),
-          SliverToBoxAdapter(
-            child: ExpandableNotifier(
-              controller: expandableController,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l10n.preview,
-                            style: theme.textTheme.titleMedium,
+          SliverList.list(
+            children: [
+              ExpandableNotifier(
+                controller: expandableController,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.preview,
+                              style: theme.textTheme.titleMedium,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                            semanticLabel: expandableController.expanded ? l10n.collapsePostPreview : l10n.expandPostPreview,
-                          ),
-                          onPressed: () {
-                            expandableController.toggle();
-                            setState(() {});
-                          },
-                        )
-                      ],
+                          IconButton(
+                            icon: Icon(
+                              expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                              semanticLabel: expandableController.expanded ? l10n.collapsePostPreview : l10n.expandPostPreview,
+                            ),
+                            onPressed: () {
+                              expandableController.toggle();
+                              setState(() {});
+                            },
+                          )
+                        ],
+                      ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                      child: Text(
+                        l10n.postPreview,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ),
+                    Expandable(
+                      controller: expandableController,
+                      collapsed: Container(),
+                      expanded: FutureBuilder<List<ThunderPost?>>(
+                        future: getExamplePosts(),
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) return Container();
+                          final account = context.read<ProfileBloc>().state.account;
+
+                          return BlocProvider(
+                            create: (context) => FeedBloc(account: account),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final post = snapshot.data![index]!;
+                                final creator = post.creator!;
+                                final community = post.community!;
+
+                                return Column(
+                                  children: [
+                                    (useCompactView)
+                                        ? IgnorePointer(
+                                            child: PostCardViewCompact(
+                                              post: post,
+                                              creator: creator,
+                                              community: community,
+                                              indicateRead: dimReadPosts,
+                                              isLastTapped: false,
+                                            ),
+                                          )
+                                        : IgnorePointer(
+                                            child: PostCardViewComfortable(
+                                              post: snapshot.data![index]!,
+                                              hideThumbnails: hideThumbnails,
+                                              hideNsfwPreviews: hideNsfwPreviews,
+                                              markPostReadOnMediaView: false,
+                                              isUserLoggedIn: true,
+                                              indicateRead: dimReadPosts,
+                                              edgeToEdgeImages: showEdgeToEdgeImages,
+                                              showTitleFirst: showTitleFirst,
+                                              showFullHeightImages: showFullHeightImages,
+                                              showTextContent: showTextContent,
+                                              onVoteAction: (voteType) {},
+                                              onSaveAction: (saved) {},
+                                              isLastTapped: false,
+                                            ),
+                                          ),
+                                    const FeedCardDivider(),
+                                  ],
+                                );
+                              },
+                              itemCount: snapshot.data!.length,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+              ),
+              ListOption(
+                description: l10n.postViewType,
+                value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
+                options: [
+                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
+                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
+                ],
+                icon: Icons.view_list_rounded,
+                onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.useCompactView,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.hideNsfwPreviews,
+                value: hideNsfwPreviews,
+                iconEnabled: Icons.no_adult_content,
+                iconDisabled: Icons.no_adult_content,
+                onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.hideNsfwPreviews,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.hideThumbnails,
+                value: hideThumbnails,
+                iconEnabled: Icons.hide_image_outlined,
+                iconDisabled: Icons.image_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.hideThumbnails,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostCommunityIcons,
+                value: showCommunityIcons,
+                iconEnabled: Icons.groups,
+                iconDisabled: Icons.groups,
+                onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostCommunityIcons,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostAuthor,
+                subtitle: l10n.showPostAuthorSubtitle,
+                value: showPostAuthor,
+                iconEnabled: Icons.person_rounded,
+                iconDisabled: Icons.person_off_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostAuthor,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showUserInstance,
+                value: postShowUserInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.postShowUserInstance,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.dimReadPosts,
+                subtitle: l10n.dimReadPosts,
+                value: dimReadPosts,
+                iconEnabled: Icons.chrome_reader_mode,
+                iconDisabled: Icons.chrome_reader_mode_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.dimReadPosts,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showFullDate,
+                subtitle: l10n.showFullDateDescription,
+                value: showFullPostDate,
+                iconEnabled: Icons.date_range_rounded,
+                iconDisabled: Icons.date_range_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showFullPostDate,
+                highlightedSetting: settingToHighlight,
+              ),
+              ListOption(
+                description: l10n.dateFormat,
+                disabled: !showFullPostDate,
+                value: ListPickerItem(
+                  label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
+                  icon: Icons.access_time_filled_rounded,
+                  payload: selectedDateFormat,
+                  capitalizeLabel: false,
+                ),
+                options: dateFormats
+                    .map(
+                      (DateFormat dateFormat) => ListPickerItem(
+                        icon: Icons.access_time_filled_rounded,
+                        label: dateFormat.format(DateTime.now()),
+                        payload: dateFormat,
+                        subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
+                      ),
+                    )
+                    .toList(),
+                icon: Icons.access_time_filled_rounded,
+                onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.dateFormat,
+                highlightedSetting: settingToHighlight,
+              ),
+              ListOption(
+                description: l10n.dividerAppearance,
+                value: const ListPickerItem(payload: -1),
+                icon: Icons.splitscreen_rounded,
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.dividerAppearance,
+                highlightedSetting: settingToHighlight,
+                customListPicker: StatefulBuilder(
+                  builder: (context, setState) {
+                    return BottomSheetListPicker(
+                      title: l10n.dividerAppearance,
+                      heading: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.preview, style: theme.textTheme.titleMedium),
+                          const SizedBox(height: 20.0),
+                          const FeedCardDivider(),
+                          const SizedBox(height: 16.0),
+                        ],
+                      ),
+                      items: [
+                        ListPickerItem<int>(
+                          customWidget: ListTile(
+                            title: Text(l10n.thickness),
+                            contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                            trailing: DropdownButton<FeedCardDividerThickness>(
+                              value: feedCardDividerThickness,
+                              underline: const SizedBox(),
+                              items: [
+                                DropdownMenuItem(
+                                  value: FeedCardDividerThickness.compact,
+                                  child: Text(l10n.compact),
+                                ),
+                                DropdownMenuItem(
+                                  value: FeedCardDividerThickness.standard,
+                                  child: Text(l10n.standard),
+                                ),
+                                DropdownMenuItem(
+                                  value: FeedCardDividerThickness.comfortable,
+                                  child: Text(l10n.comfortable),
+                                )
+                              ],
+                              onChanged: (FeedCardDividerThickness? value) {
+                                setPreferences(LocalSettings.feedCardDividerThickness, value);
+                                setState(() {}); // Trigger rebuild
+                              },
+                            ),
+                          ),
+                          payload: -1,
+                        ),
+                        ListPickerItem<int>(
+                          customWidget: ListTile(
+                            title: Text(l10n.color),
+                            contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                            trailing: DropdownButton<Color>(
+                              menuMaxHeight: 500.0,
+                              value: feedCardDividerColor,
+                              underline: const SizedBox(),
+                              items: CustomThemeType.values
+                                  .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
+                                        alignment: Alignment.center,
+                                        value: Color(customThemeType.primaryColor.toARGB32()),
+                                        child: CircleAvatar(
+                                          radius: 16.0,
+                                          backgroundColor: Color.alphaBlend(
+                                            theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                            Color(customThemeType.primaryColor.toARGB32()),
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                                ..insert(
+                                  0,
+                                  const DropdownMenuItem<Color>(
+                                    alignment: Alignment.center,
+                                    value: Colors.transparent,
+                                    child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                  ),
+                                ),
+                              onChanged: (Color? value) {
+                                setPreferences(LocalSettings.feedCardDividerColor, value);
+                                setState(() {}); // Trigger rebuild
+                              },
+                            ),
+                          ),
+                          payload: -1,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 32.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.compactViewSettings, style: theme.textTheme.titleMedium),
+                    Text(
+                      l10n.compactViewDescription,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SmoothHighlight(
+                key: settingToHighlight == LocalSettings.compactPostCardMetadataItems ? settingToHighlightKey : null,
+                useInitialHighLight: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
+                enabled: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
+                color: theme.colorScheme.primaryContainer,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: buildCompactViewMetadataPreview(isDisabled: useCompactView == false),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                child: Text(
+                  l10n.postMetadataInstructions,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                    child: Text(
-                      l10n.postPreview,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.all(8.0),
+                child: PostCardMetadataDraggableTarget(
+                  isDisabled: useCompactView == false,
+                  containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
+                  onAcceptedData: (data) {
+                    List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..remove(data);
+
+                    setState(() {
+                      compactPostCardMetadataItems = newCompactPostCardMetadataItems;
+                      setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 8.0),
+              ToggleOption(
+                description: l10n.showThumbnailPreviewOnRight,
+                value: showThumbnailPreviewOnRight,
+                iconEnabled: Icons.switch_left_rounded,
+                iconDisabled: Icons.switch_right_rounded,
+                onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showThumbnailPreviewOnRight,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showTextPostIndicator,
+                value: showTextPostIndicator,
+                iconEnabled: Icons.article,
+                iconDisabled: Icons.article_outlined,
+                onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showTextPostIndicator,
+                highlightedSetting: settingToHighlight,
+              ),
+              SizedBox(height: 32.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.cardViewSettings, style: theme.textTheme.titleMedium),
+                    Text(
+                      l10n.cardViewDescription,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                       ),
                     ),
-                  ),
-                  Expandable(
-                    controller: expandableController,
-                    collapsed: Container(),
-                    expanded: FutureBuilder<List<ThunderPost?>>(
-                      future: getExamplePosts(),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return Container();
-                        final account = context.read<ProfileBloc>().state.account;
-
-                        return BlocProvider(
-                          create: (context) => FeedBloc(account: account),
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final post = snapshot.data![index]!;
-                              final creator = post.creator!;
-                              final community = post.community!;
-
-                              return Column(
-                                children: [
-                                  (useCompactView)
-                                      ? IgnorePointer(
-                                          child: PostCardViewCompact(
-                                            post: post,
-                                            creator: creator,
-                                            community: community,
-                                            indicateRead: dimReadPosts,
-                                            isLastTapped: false,
-                                          ),
-                                        )
-                                      : IgnorePointer(
-                                          child: PostCardViewComfortable(
-                                            post: snapshot.data![index]!,
-                                            hideThumbnails: hideThumbnails,
-                                            hideNsfwPreviews: hideNsfwPreviews,
-                                            markPostReadOnMediaView: false,
-                                            isUserLoggedIn: true,
-                                            indicateRead: dimReadPosts,
-                                            edgeToEdgeImages: showEdgeToEdgeImages,
-                                            showTitleFirst: showTitleFirst,
-                                            showFullHeightImages: showFullHeightImages,
-                                            showTextContent: showTextContent,
-                                            onVoteAction: (voteType) {},
-                                            onSaveAction: (saved) {},
-                                            isLastTapped: false,
-                                          ),
-                                        ),
-                                  const FeedCardDivider(),
-                                ],
-                              );
-                            },
-                            itemCount: snapshot.data!.length,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.postViewType,
-              value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
-              options: [
-                ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
-                ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
-              ],
-              icon: Icons.view_list_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.useCompactView,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideNsfwPreviews,
-              value: hideNsfwPreviews,
-              iconEnabled: Icons.no_adult_content,
-              iconDisabled: Icons.no_adult_content,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.hideNsfwPreviews,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.hideThumbnails,
-              value: hideThumbnails,
-              iconEnabled: Icons.hide_image_outlined,
-              iconDisabled: Icons.image_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.hideThumbnails,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostCommunityIcons,
-              value: showCommunityIcons,
-              iconEnabled: Icons.groups,
-              iconDisabled: Icons.groups,
-              onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostCommunityIcons,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostAuthor,
-              subtitle: l10n.showPostAuthorSubtitle,
-              value: showPostAuthor,
-              iconEnabled: Icons.person_rounded,
-              iconDisabled: Icons.person_off_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostAuthor,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showUserInstance,
-              value: postShowUserInstance,
-              iconEnabled: Icons.dns_sharp,
-              iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.postShowUserInstance,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.dimReadPosts,
-              subtitle: l10n.dimReadPosts,
-              value: dimReadPosts,
-              iconEnabled: Icons.chrome_reader_mode,
-              iconDisabled: Icons.chrome_reader_mode_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.dimReadPosts,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showFullDate,
-              subtitle: l10n.showFullDateDescription,
-              value: showFullPostDate,
-              iconEnabled: Icons.date_range_rounded,
-              iconDisabled: Icons.date_range_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showFullPostDate,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.dateFormat,
-              disabled: !showFullPostDate,
-              value: ListPickerItem(
-                label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
-                icon: Icons.access_time_filled_rounded,
-                payload: selectedDateFormat,
-                capitalizeLabel: false,
-              ),
-              options: dateFormats
-                  .map(
-                    (DateFormat dateFormat) => ListPickerItem(
-                      icon: Icons.access_time_filled_rounded,
-                      label: dateFormat.format(DateTime.now()),
-                      payload: dateFormat,
-                      subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
-                    ),
-                  )
-                  .toList(),
-              icon: Icons.access_time_filled_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.dateFormat,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.dividerAppearance,
-              value: const ListPickerItem(payload: -1),
-              icon: Icons.splitscreen_rounded,
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.dividerAppearance,
-              highlightedSetting: settingToHighlight,
-              customListPicker: StatefulBuilder(
-                builder: (context, setState) {
-                  return BottomSheetListPicker(
-                    title: l10n.dividerAppearance,
-                    heading: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(l10n.preview, style: theme.textTheme.titleMedium),
-                        const SizedBox(height: 20.0),
-                        const FeedCardDivider(),
-                        const SizedBox(height: 16.0),
-                      ],
-                    ),
-                    items: [
-                      ListPickerItem<int>(
-                        customWidget: ListTile(
-                          title: Text(l10n.thickness),
-                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
-                          trailing: DropdownButton<FeedCardDividerThickness>(
-                            value: feedCardDividerThickness,
-                            underline: const SizedBox(),
-                            items: [
-                              DropdownMenuItem(
-                                value: FeedCardDividerThickness.compact,
-                                child: Text(l10n.compact),
-                              ),
-                              DropdownMenuItem(
-                                value: FeedCardDividerThickness.standard,
-                                child: Text(l10n.standard),
-                              ),
-                              DropdownMenuItem(
-                                value: FeedCardDividerThickness.comfortable,
-                                child: Text(l10n.comfortable),
-                              )
-                            ],
-                            onChanged: (FeedCardDividerThickness? value) {
-                              setPreferences(LocalSettings.feedCardDividerThickness, value);
-                              setState(() {}); // Trigger rebuild
-                            },
-                          ),
-                        ),
-                        payload: -1,
-                      ),
-                      ListPickerItem<int>(
-                        customWidget: ListTile(
-                          title: Text(l10n.color),
-                          contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
-                          trailing: DropdownButton<Color>(
-                            menuMaxHeight: 500.0,
-                            value: feedCardDividerColor,
-                            underline: const SizedBox(),
-                            items: CustomThemeType.values
-                                .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
-                                      alignment: Alignment.center,
-                                      value: Color(customThemeType.primaryColor.toARGB32()),
-                                      child: CircleAvatar(
-                                        radius: 16.0,
-                                        backgroundColor: Color.alphaBlend(
-                                          theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                          Color(customThemeType.primaryColor.toARGB32()),
-                                        ),
-                                      ),
-                                    ))
-                                .toList()
-                              ..insert(
-                                0,
-                                const DropdownMenuItem<Color>(
-                                  alignment: Alignment.center,
-                                  value: Colors.transparent,
-                                  child: CircleAvatar(radius: 16.0, child: Text('D')),
-                                ),
-                              ),
-                            onChanged: (Color? value) {
-                              setPreferences(LocalSettings.feedCardDividerColor, value);
-                              setState(() {}); // Trigger rebuild
-                            },
-                          ),
-                        ),
-                        payload: -1,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.compactViewSettings, style: theme.textTheme.titleMedium),
-                  Text(
-                    l10n.compactViewDescription,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.compactPostCardMetadataItems ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
-              enabled: settingToHighlight == LocalSettings.compactPostCardMetadataItems,
-              color: theme.colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: buildCompactViewMetadataPreview(isDisabled: useCompactView == false),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-              child: Text(
-                l10n.postMetadataInstructions,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                  ],
                 ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
-              margin: const EdgeInsets.symmetric(horizontal: 16.0),
-              padding: const EdgeInsets.all(8.0),
-              child: PostCardMetadataDraggableTarget(
-                isDisabled: useCompactView == false,
-                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !compactPostCardMetadataItems.contains(element)).toList(),
-                onAcceptedData: (data) {
-                  List<PostCardMetadataItem> newCompactPostCardMetadataItems = List.from(compactPostCardMetadataItems)..remove(data);
-
-                  setState(() {
-                    compactPostCardMetadataItems = newCompactPostCardMetadataItems;
-                    setPreferences(LocalSettings.compactPostCardMetadataItems, compactPostCardMetadataItems.map((e) => e.name).toList());
-                  });
-                },
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showThumbnailPreviewOnRight,
-              value: showThumbnailPreviewOnRight,
-              iconEnabled: Icons.switch_left_rounded,
-              iconDisabled: Icons.switch_right_rounded,
-              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showThumbnailPreviewOnRight,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showTextPostIndicator,
-              value: showTextPostIndicator,
-              iconEnabled: Icons.article,
-              iconDisabled: Icons.article_outlined,
-              onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showTextPostIndicator,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.cardViewSettings, style: theme.textTheme.titleMedium),
-                  Text(
-                    l10n.cardViewDescription,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SmoothHighlight(
-              key: settingToHighlight == LocalSettings.cardPostCardMetadataItems ? settingToHighlightKey : null,
-              useInitialHighLight: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
-              enabled: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
-              color: theme.colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: buildCardViewMetadataPreview(isDisabled: useCompactView == true),
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-              child: Text(
-                l10n.postMetadataInstructions,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+              SmoothHighlight(
+                key: settingToHighlight == LocalSettings.cardPostCardMetadataItems ? settingToHighlightKey : null,
+                useInitialHighLight: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+                enabled: settingToHighlight == LocalSettings.cardPostCardMetadataItems,
+                color: theme.colorScheme.primaryContainer,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: buildCardViewMetadataPreview(isDisabled: useCompactView == true),
                 ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
-              margin: const EdgeInsets.symmetric(horizontal: 16.0),
-              padding: const EdgeInsets.all(8.0),
-              child: PostCardMetadataDraggableTarget(
-                isDisabled: useCompactView == true,
-                containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
-                onAcceptedData: (data) {
-                  List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..remove(data);
-
-                  setState(() {
-                    cardPostCardMetadataItems = newCardPostCardMetadataItems;
-                    setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
-                  });
-                },
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 8.0)),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostTitleFirst,
-              value: showTitleFirst,
-              iconEnabled: Icons.vertical_align_top_rounded,
-              iconDisabled: Icons.vertical_align_bottom_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostTitleFirst,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showFullHeightImages,
-              value: showFullHeightImages,
-              iconEnabled: Icons.image_rounded,
-              iconDisabled: Icons.image_outlined,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostFullHeightImages,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showEdgeToEdgeImages,
-              value: showEdgeToEdgeImages,
-              iconEnabled: Icons.fit_screen_rounded,
-              iconDisabled: Icons.fit_screen_outlined,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostEdgeToEdgeImages,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostTextContentPreview,
-              value: showTextContent,
-              iconEnabled: Icons.notes_rounded,
-              iconDisabled: Icons.notes_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostTextContentPreview,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostVoteActions,
-              value: showVoteActions,
-              iconEnabled: Icons.import_export_rounded,
-              iconDisabled: Icons.import_export_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostVoteActions,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostSaveAction,
-              value: showSaveAction,
-              iconEnabled: Icons.star_rounded,
-              iconDisabled: Icons.star_border_rounded,
-              onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showPostSaveAction,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.postBodySettings, style: theme.textTheme.titleMedium),
-                  Text(
-                    l10n.postBodySettingsDescription,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                    ),
+              SizedBox(height: 16.0),
+              Container(
+                margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                child: Text(
+                  l10n.postMetadataInstructions,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showCrossPosts,
-              value: showCrossPosts,
-              iconEnabled: Icons.repeat_on_rounded,
-              iconDisabled: Icons.repeat_rounded,
-              onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.showCrossPosts,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListOption(
-              description: l10n.postBodyViewType,
-              value: ListPickerItem(
-                  label: switch (postBodyViewType) {
-                    PostBodyViewType.condensed => l10n.condensed,
-                    PostBodyViewType.expanded => l10n.expanded,
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0)),
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.all(8.0),
+                child: PostCardMetadataDraggableTarget(
+                  isDisabled: useCompactView == true,
+                  containedPostCardMetadataItems: PostCardMetadataItem.values.where((element) => !cardPostCardMetadataItems.contains(element)).toList(),
+                  onAcceptedData: (data) {
+                    List<PostCardMetadataItem> newCardPostCardMetadataItems = List.from(cardPostCardMetadataItems)..remove(data);
+
+                    setState(() {
+                      cardPostCardMetadataItems = newCardPostCardMetadataItems;
+                      setPreferences(LocalSettings.cardPostCardMetadataItems, cardPostCardMetadataItems.map((e) => e.name).toList());
+                    });
                   },
-                  icon: Icons.crop_16_9_rounded,
-                  payload: postBodyViewType,
-                  capitalizeLabel: false),
-              options: [
-                ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
-                ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
-              ],
-              icon: Icons.view_list_rounded,
-              onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.postBodyViewType,
-              highlightedSetting: settingToHighlight,
-            ),
+                ),
+              ),
+              SizedBox(height: 8.0),
+              ToggleOption(
+                description: l10n.showPostTitleFirst,
+                value: showTitleFirst,
+                iconEnabled: Icons.vertical_align_top_rounded,
+                iconDisabled: Icons.vertical_align_bottom_rounded,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostTitleFirst,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showFullHeightImages,
+                value: showFullHeightImages,
+                iconEnabled: Icons.image_rounded,
+                iconDisabled: Icons.image_outlined,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostFullHeightImages,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showEdgeToEdgeImages,
+                value: showEdgeToEdgeImages,
+                iconEnabled: Icons.fit_screen_rounded,
+                iconDisabled: Icons.fit_screen_outlined,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostEdgeToEdgeImages,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostTextContentPreview,
+                value: showTextContent,
+                iconEnabled: Icons.notes_rounded,
+                iconDisabled: Icons.notes_rounded,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostTextContentPreview,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostVoteActions,
+                value: showVoteActions,
+                iconEnabled: Icons.import_export_rounded,
+                iconDisabled: Icons.import_export_rounded,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostVoteActions,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostSaveAction,
+                value: showSaveAction,
+                iconEnabled: Icons.star_rounded,
+                iconDisabled: Icons.star_border_rounded,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostSaveAction,
+                highlightedSetting: settingToHighlight,
+              ),
+              SizedBox(height: 32.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.postBodySettings, style: theme.textTheme.titleMedium),
+                    Text(
+                      l10n.postBodySettingsDescription,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ToggleOption(
+                description: l10n.showCrossPosts,
+                value: showCrossPosts,
+                iconEnabled: Icons.repeat_on_rounded,
+                iconDisabled: Icons.repeat_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showCrossPosts,
+                highlightedSetting: settingToHighlight,
+              ),
+              ListOption(
+                description: l10n.postBodyViewType,
+                value: ListPickerItem(
+                    label: switch (postBodyViewType) {
+                      PostBodyViewType.condensed => l10n.condensed,
+                      PostBodyViewType.expanded => l10n.expanded,
+                    },
+                    icon: Icons.crop_16_9_rounded,
+                    payload: postBodyViewType,
+                    capitalizeLabel: false),
+                options: [
+                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
+                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
+                ],
+                icon: Icons.view_list_rounded,
+                onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.postBodyViewType,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showUserInstance,
+                value: postBodyShowUserInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.postBodyShowUserInstance,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.postBodyShowCommunityInstance,
+                value: postBodyShowCommunityInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.postBodyShowCommunityInstance,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostCommunityIcons,
+                value: postBodyShowCommunityAvatar,
+                iconEnabled: Icons.groups,
+                iconDisabled: Icons.groups,
+                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.postBodyShowCommunityAvatar,
+                highlightedSetting: settingToHighlight,
+              ),
+              SizedBox(height: 128.0),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showUserInstance,
-              value: postBodyShowUserInstance,
-              iconEnabled: Icons.dns_sharp,
-              iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.postBodyShowUserInstance,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.postBodyShowCommunityInstance,
-              value: postBodyShowCommunityInstance,
-              iconEnabled: Icons.dns_sharp,
-              iconDisabled: Icons.dns_outlined,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.postBodyShowCommunityInstance,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ToggleOption(
-              description: l10n.showPostCommunityIcons,
-              value: postBodyShowCommunityAvatar,
-              iconEnabled: Icons.groups,
-              iconDisabled: Icons.groups,
-              onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
-              highlightKey: settingToHighlightKey,
-              setting: LocalSettings.postBodyShowCommunityAvatar,
-              highlightedSetting: settingToHighlight,
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
       ),
     );
@@ -1102,7 +1038,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   Widget buildCardViewMetadataPreview({bool isDisabled = false}) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1335,7 +1271,7 @@ class PostCardMetadataDraggableTarget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     return AbsorbPointer(
       absorbing: isDisabled,

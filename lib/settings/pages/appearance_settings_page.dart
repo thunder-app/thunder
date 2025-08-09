@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/localizations/app_localizations.dart';
-
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/shared/divider.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/navigation.dart';
 
 class AppearanceSettingsPage extends StatelessWidget {
@@ -14,31 +13,22 @@ class AppearanceSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text(l10n.appearance),
-            centerTitle: false,
-            toolbarHeight: APP_BAR_HEIGHT,
-            pinned: true,
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverAppBar(title: Text(l10n.appearance), centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, pinned: true),
           SliverList.list(
             children: [
+              SizedBox(height: 16.0),
               ListTile(
                 title: Text(l10n.theming),
                 leading: const Icon(Icons.text_fields),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming),
               ),
-            ],
-          ),
-          const ThunderDivider(sliver: true),
-          SliverList.list(
-            children: [
+              const ThunderDivider(sliver: false),
               ListTile(
                 title: Text(l10n.posts),
                 leading: const Icon(Icons.splitscreen_rounded),

@@ -8,8 +8,8 @@ import 'package:thunder/account/account.dart';
 import 'package:thunder/comment/models/thunder_comment.dart';
 import 'package:thunder/core/data_providers/piefed_api.dart';
 import 'package:thunder/core/enums/comment_sort_type.dart';
-import 'package:thunder/core/enums/subscription_status.dart';
 import 'package:thunder/core/enums/threadiverse_platform.dart';
+import 'package:thunder/user/models/thunder_user.dart';
 import 'package:thunder/utils/global_context.dart';
 
 /// Interface for a comment repository
@@ -342,82 +342,45 @@ class CommentRepositoryImpl implements CommentRepository {
     DateTime? commentPublished,
     int? commentChildCount,
     String? personName,
+    String? personAvatar,
     bool? isPersonAdmin,
     bool? isBotAccount,
     bool? saved,
   }) async {
-    CommentView commentView = CommentView(
-      comment: Comment(
-        id: id ?? 1,
-        creatorId: commentCreatorId ?? 1,
-        postId: 1,
-        content: commentContent ?? 'This is an example comment',
-        removed: false,
-        published: commentPublished ?? DateTime.now(),
-        deleted: false,
-        apId: '',
-        local: false,
-        path: path ?? '0.1',
-        distinguished: false,
-        languageId: 1,
-      ),
-      creator: Person(
+    return ThunderComment(
+      id: id ?? 1,
+      creatorId: commentCreatorId ?? 1,
+      postId: 1,
+      content: commentContent ?? 'Example Comment',
+      removed: false,
+      published: commentPublished ?? DateTime.now(),
+      deleted: false,
+      apId: 'https://example.com/comment/$id',
+      local: false,
+      path: path ?? '',
+      distinguished: false,
+      languageId: 0,
+      score: commentScore ?? 0,
+      upvotes: commentUpvotes ?? 0,
+      downvotes: commentDownvotes ?? 0,
+      childCount: commentChildCount ?? 0,
+      creatorBannedFromCommunity: false,
+      bannedFromCommunity: false,
+      creatorIsModerator: false,
+      creatorIsAdmin: isPersonAdmin ?? false,
+      saved: saved ?? false,
+      creator: ThunderUser(
         id: 1,
         name: personName ?? 'Example Username',
         banned: false,
         published: DateTime.now(),
-        actorId: 'https://lemmy.world/u/testuser',
+        actorId: 'https://example.com/user/$personName',
         local: false,
         deleted: false,
         botAccount: isBotAccount ?? false,
         instanceId: 1,
-        admin: isPersonAdmin ?? false,
+        avatar: personAvatar,
       ),
-      post: Post(
-        id: 1,
-        name: 'Example Title',
-        creatorId: 1,
-        communityId: 1,
-        removed: false,
-        locked: false,
-        published: DateTime.now(),
-        deleted: false,
-        nsfw: false,
-        apId: '',
-        local: false,
-        languageId: 1,
-        featuredCommunity: false,
-        featuredLocal: false,
-      ),
-      community: Community(
-        id: 1,
-        name: 'Example Community',
-        removed: false,
-        published: DateTime.now(),
-        deleted: false,
-        nsfw: false,
-        local: false,
-        title: '',
-        actorId: '',
-        hidden: false,
-        postingRestrictedToMods: false,
-        instanceId: 1,
-      ),
-      counts: CommentAggregates(
-        id: 1,
-        commentId: 1,
-        score: commentScore ?? 1,
-        upvotes: commentUpvotes ?? 1,
-        downvotes: commentDownvotes ?? 1,
-        published: DateTime.now(),
-        childCount: commentChildCount ?? 0,
-      ),
-      creatorBannedFromCommunity: false,
-      subscribed: SubscriptionStatus.notSubscribed.toLemmyType(),
-      saved: saved ?? false,
-      creatorBlocked: false,
     );
-
-    return ThunderComment.fromLemmyCommentView(commentView.toJson());
   }
 }
