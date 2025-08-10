@@ -1,0 +1,532 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/message_format.dart';
+import 'package:link_preview_generator/link_preview_generator.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/community/community.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+
+import 'package:thunder/src/features/comment/comment.dart';
+import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/core/enums/browser_mode.dart';
+import 'package:thunder/src/core/enums/local_settings.dart';
+import 'package:thunder/src/core/enums/video_player_mode.dart';
+import 'package:thunder/instances.dart';
+import 'package:thunder/src/features/modlog/modlog.dart';
+import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/shared/pages/loading_page.dart';
+import 'package:thunder/src/shared/picker_item.dart';
+import 'package:thunder/src/shared/utils/media/image.dart';
+import 'package:thunder/src/shared/utils/media/video.dart';
+import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/features/user/user.dart';
+
+class LinkInfo {
+  String? imageURL;
+  String? title;
+
+  LinkInfo({this.imageURL, this.title});
+}
+
+Future<LinkInfo> getLinkInfo(String url) async {
+  try {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+      final metatags = document.getElementsByTagName('meta');
+
+      String imageURL = '';
+      String title = '';
+
+      for (final metatag in metatags) {
+        final property = metatag.attributes['property'];
+        final content = metatag.attributes['content'];
+
+        if (property == 'og:image') {
+          imageURL = content ?? '';
+        } else if (property == 'og:title') {
+          title = content ?? '';
+        }
+      }
+
+      return LinkInfo(imageURL: imageURL, title: title);
+    } else {
+      throw Exception('Unable to fetch link information');
+    }
+  } catch (e) {
+    return LinkInfo();
+  }
+}
+
+void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
+  ThunderState state = context.read<ThunderBloc>().state;
+
+  bool launchInExternalApp = false;
+  bool launchInCustomTab = false;
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) {
+    launchInExternalApp = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.external) {
+    launchInExternalApp = true;
+  }
+
+  if (isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) {
+    launchInCustomTab = true;
+  } else if (!isVideo && state.browserMode == BrowserMode.customTabs) {
+    launchInCustomTab = true;
+  }
+
+  if (launchInExternalApp || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
+    hideLoadingPage(context, delay: true);
+    url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
+  } else if (launchInCustomTab) {
+    // Launches the link within a custom tab
+    hideLoadingPage(context, delay: true);
+
+    launchUrl(
+      Uri.parse(url),
+      customTabsOptions: CustomTabsOptions(
+        browser: const CustomTabsBrowserConfiguration(
+          prefersDefaultBrowser: true,
+        ),
+        colorSchemes: CustomTabsColorSchemes(
+          defaultPrams: CustomTabsColorSchemeParams(
+            toolbarColor: Theme.of(context).canvasColor,
+          ),
+        ),
+        shareState: CustomTabsShareState.browserDefault,
+        urlBarHidingEnabled: true,
+        showTitle: true,
+        instantAppsEnabled: true,
+      ),
+      safariVCOptions: SafariViewControllerOptions(
+        preferredBarTintColor: Theme.of(context).canvasColor,
+        preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+        barCollapsingEnabled: true,
+        entersReaderIfAvailable: state.openInReaderMode,
+      ),
+    );
+  } else if (state.browserMode == BrowserMode.inApp) {
+    // Launches the link within the in-app browser if possible
+    // Check if the scheme is not https, in which case the in-app browser can't handle it
+    Uri? uri = Uri.tryParse(url);
+
+    if (uri != null && uri.scheme != 'https') {
+      // Although a non-https scheme is an indication that this link is intended for another app,
+      // we actually have to change it back to https in order for the intent to be properly passed to another app.
+      hideLoadingPage(context, delay: true);
+      url_launcher.launchUrl(uri, mode: url_launcher.LaunchMode.externalApplication);
+    } else {
+      navigateToWebView(context, url);
+    }
+  }
+}
+
+/// A universal way of handling links in Thunder.
+/// Attempts to perform in-app navigtion to communities, users, posts, and comments
+/// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
+void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
+  final account = context.read<ProfileBloc>().state.account;
+
+  // Try navigating to community
+  String? communityName = await getLemmyCommunity(url);
+  if (communityName != null && (!context.mounted || await _testValidCommunity(context, url, communityName, communityName.split('@')[1]))) {
+    try {
+      if (context.mounted) {
+        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
+        return;
+      }
+    } catch (e) {
+      // Ignore exception, if it's not a valid community we'll perform the next fallback
+    }
+  }
+
+  // Try navigating to user
+  String? username = await getLemmyUser(url);
+  if (username != null && (!context.mounted || await _testValidUser(context, url, username, username.split('@')[1]))) {
+    try {
+      if (context.mounted) {
+        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
+        return;
+      }
+    } catch (e) {
+      // Ignore exception, if it's not a valid user, we'll perform the next fallback
+    }
+  }
+
+  // Try navigating to post
+  int? postId = await getLemmyPostId(context, url);
+  if (postId != null) {
+    try {
+      // Show the loading page while we fetch the post
+      if (context.mounted) showLoadingPage(context);
+      final post = await PostRepositoryImpl(account: account).getPost(postId);
+
+      if (context.mounted) {
+        navigateToPost(context, post: post?['post']);
+        return;
+      }
+    } catch (e) {
+      // Ignore exception, if it's not a valid post, we'll perform the next fallback
+    }
+  }
+
+  // Try navigating to comment
+  int? commentId = await getLemmyCommentId(context, url);
+  if (commentId != null) {
+    try {
+      // Show the loading page while we fetch the comment
+      if (context.mounted) showLoadingPage(context);
+      final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
+
+      if (context.mounted) {
+        navigateToComment(context, comment);
+        return;
+      }
+    } catch (e) {
+      // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+    }
+  }
+
+  // Try navigate to modlog
+  Uri? uri = Uri.tryParse(url);
+  if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
+    try {
+      await navigateToModlogPage(
+        context,
+        modlogActionType: ModlogActionType.values.firstWhere(
+          (type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(),
+          orElse: () => ModlogActionType.all,
+        ),
+        communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
+        userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
+        moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),
+        subtitle: uri.host,
+      );
+      return;
+    } catch (e) {
+      // Ignore exception, if it's not a valid modlog link, we'll perform the next fallback
+    }
+  }
+
+  // Try opening it as an image
+  try {
+    if (isImageUrl(url) && context.mounted) {
+      showImageViewer(context, url: url);
+      return;
+    }
+  } catch (e) {
+    // Ignore the exception and fall back.
+  }
+
+  // try opening as a video
+  try {
+    if (isVideoUrl(url) && context.mounted && !forceOpenInBrowser) {
+      showVideoPlayer(context, url: url, postId: postId);
+      return;
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+
+  // Try to see if it's an internal link
+  if (url.startsWith('thunder://')) {
+    String link = url;
+    link = link.replaceFirst('thunder://', '');
+
+    if (link.startsWith('setting-')) {
+      String setting = link.replaceFirst('setting-', '');
+      navigateToSettingPage(context, LocalSettings.values.firstWhere((localSetting) => localSetting.name == setting));
+      return;
+    }
+  }
+
+  // Fallback: open link in browser
+  if (context.mounted) {
+    _openLink(context, url: url);
+  }
+}
+
+/// A universal way of handling video links by opening them in the browser/external player
+void handleVideoLink(BuildContext context, {required String url}) async {
+  _openLink(context, url: url, isVideo: isVideoUrl(url));
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy community.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidCommunity(BuildContext context, String link, String communityName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    // Since this may take a while, show a loading page.
+    showLoadingPage(context);
+
+    final account = context.read<ProfileBloc>().state.account;
+    await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
+}
+
+/// This is a helper method which helps [handleLink] determine whether a link refers to a valid Lemmy user.
+/// If the passed in link is not a valid URI, then there's no point in doing any fallback, so assume it passes.
+/// If the passed in [instance] is a known Lemmy instance, then it passes.
+/// If we can retrieve the passed in object, then it passes.
+/// Otherwise it fails.
+Future<bool> _testValidUser(BuildContext context, String link, String userName, String instance) async {
+  Uri? uri = Uri.tryParse(link);
+  if (uri == null || !uri.hasScheme) {
+    return true;
+  }
+
+  if (instances.contains(instance)) {
+    return true;
+  }
+
+  try {
+    // Since this may take a while, show a loading page.
+    showLoadingPage(context);
+
+    final account = context.read<ProfileBloc>().state.account;
+    await UserRepositoryImpl(account: account).getUser(username: userName);
+    return true;
+  } catch (e) {
+    // Ignore and return false below.
+  }
+
+  return false;
+}
+
+void handleLinkLongPress(BuildContext context, String text, String? url, {LinkBottomSheetPage initialPage = LinkBottomSheetPage.general, void Function(String)? customNavigation}) {
+  HapticFeedback.mediumImpact();
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (ctx) => LinkBottomSheet(
+      text: text,
+      url: url,
+      initialPage: initialPage,
+      customNavigation: customNavigation,
+    ),
+  );
+}
+
+enum LinkBottomSheetPage {
+  general,
+  alternateLinks,
+}
+
+class LinkBottomSheet extends StatefulWidget {
+  final String? url;
+  final String text;
+  final LinkBottomSheetPage initialPage;
+  final void Function(String)? customNavigation;
+
+  const LinkBottomSheet({
+    super.key,
+    required this.text,
+    required this.url,
+    this.initialPage = LinkBottomSheetPage.general,
+    this.customNavigation,
+  });
+
+  @override
+  State<LinkBottomSheet> createState() => _LinkBottomSheetState();
+}
+
+class _LinkBottomSheetState extends State<LinkBottomSheet> {
+  LinkBottomSheetPage? page;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    bool isValidUrl = widget.url?.startsWith('http') ?? false;
+
+    return SingleChildScrollView(
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        alignment: Alignment.bottomCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Material(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: (page ?? widget.initialPage) == LinkBottomSheetPage.general ? null : () => setState(() => page = LinkBottomSheetPage.general),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            if ((page ?? widget.initialPage) != LinkBottomSheetPage.general) ...[
+                              const Icon(Icons.chevron_left, size: 30),
+                              const SizedBox(width: 12),
+                            ],
+                            Text(
+                              switch (page ?? widget.initialPage) {
+                                LinkBottomSheetPage.alternateLinks => l10n.alternateSources,
+                                _ => l10n.linkActions,
+                              },
+                              style: theme.textTheme.titleLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (isValidUrl && (page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: LinkPreviewGenerator(
+                    link: widget.url!,
+                    placeholderWidget: const CircularProgressIndicator(),
+                    linkPreviewStyle: LinkPreviewStyle.large,
+                    cacheDuration: Duration.zero,
+                    onTap: null,
+                    bodyTextOverflow: TextOverflow.fade,
+                    graphicFit: BoxFit.scaleDown,
+                    removeElevation: true,
+                    backgroundColor: theme.dividerColor.withValues(alpha: 0.25),
+                    borderRadius: 10,
+                    useDefaultOnTap: false,
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+              Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Text(widget.url!),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              if ((page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
+                PickerItem(
+                  label: l10n.open,
+                  icon: Icons.language,
+                  onSelected: () => handleLinkTap(context, thunderState, widget.text, widget.url),
+                ),
+                PickerItem(
+                  label: l10n.copy,
+                  icon: Icons.copy_rounded,
+                  onSelected: () => Clipboard.setData(ClipboardData(text: widget.url ?? widget.text)),
+                ),
+                PickerItem(
+                  label: l10n.share,
+                  icon: Icons.share_rounded,
+                  onSelected: () => SharePlus.instance.share(ShareParams(text: widget.url ?? widget.text)),
+                ),
+                PickerItem(
+                  label: l10n.alternateSources,
+                  icon: Icons.link_rounded,
+                  onSelected: () => setState(() => page = LinkBottomSheetPage.alternateLinks),
+                  trailingIcon: Icons.chevron_right_rounded,
+                ),
+              ],
+              if ((page ?? widget.initialPage) == LinkBottomSheetPage.alternateLinks)
+                ...generateAlternateSources(widget.url ?? widget.text).map((alternateSource) {
+                  return PickerItem(
+                    label: alternateSource.sourceName,
+                    subtitle: alternateSource.link,
+                    icon: Icons.archive_rounded,
+                    onSelected: () {
+                      if (widget.customNavigation != null) {
+                        widget.customNavigation!.call(alternateSource.link);
+                      } else {
+                        handleLink(context, url: alternateSource.link);
+                      }
+
+                      Navigator.of(context).pop();
+                    },
+                    trailingIcon: Icons.chevron_right_rounded,
+                  );
+                }),
+              const SizedBox(height: 40.0),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
+  Uri? parsedUri = Uri.tryParse(url ?? '') ?? Uri.tryParse(text);
+
+  String parsedUrl = text;
+
+  if (parsedUri != null && parsedUri.host.isNotEmpty) {
+    parsedUrl = parsedUri.toString();
+  } else {
+    parsedUrl = url ?? '';
+  }
+
+  // The markdown link processor treats URLs with @ as emails and prepends "mailto:".
+  // If the URL contains that, but the text doesn't, we can remove it.
+  if (parsedUrl.startsWith('mailto:') && !text.startsWith('mailto:')) {
+    parsedUrl = parsedUrl.replaceFirst('mailto:', '');
+  }
+
+  if (context.mounted) {
+    handleLink(context, url: parsedUrl);
+  }
+}
+
+List<({String sourceName, String link})> generateAlternateSources(String link) {
+  return _alternateSources.map((alternateSource) {
+    return (sourceName: alternateSource.sourceName, link: alternateSource.template.format({'link': link}));
+  }).toList();
+}
+
+List<({String sourceName, MessageFormat template})> _alternateSources = [
+  (sourceName: 'Archive Today', template: MessageFormat('https://archive.today/{link}')),
+  (sourceName: 'Internet Archive', template: MessageFormat('https://web.archive.org/save/{link}')),
+  (sourceName: 'Ground News', template: MessageFormat('https://ground.news/find?url={link}')),
+];

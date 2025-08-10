@@ -1,31 +1,14 @@
-**/dgph
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
-**/*sync/
-.sconsign.dblite
-.tags*
-**/.vagrant/
-**/DerivedData/
-Icon?
-**/Pods/
-**/.symlinks/
-profile
-xcuserdata
-**/.generated/
-Flutter/App.framework
-Flutter/Flutter.framework
-Flutter/Flutter.podspec
-Flutter/Generated.xcconfig
-Flutter/ephemeral/
-Flutter/app.flx
-Flutter/app.zip
-Flutter/flutter_assets/
-Flutter/flutter_export_environment.sh
-ServiceDefinitions.json
+# iOS/XCode
+.symlinks
+Pods
 Runner/GeneratedPluginRegistrant.*
+xcuserdata
+
+# Flutter
+Flutter/ephemeral/
+Flutter/Generated.xcconfig
+Flutter/flutter_export_environment.sh
+Flutter/Flutter.podspec
 
 # Exceptions to above rules.
 !default.mode1v3

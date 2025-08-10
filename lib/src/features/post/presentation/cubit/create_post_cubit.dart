@@ -1,0 +1,115 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:lemmy_api_client/pictrs.dart';
+
+import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/network/piefed_api.dart';
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/shared/utils/error_messages.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
+
+part 'create_post_state.dart';
+
+class CreatePostCubit extends Cubit<CreatePostState> {
+  /// The current account.
+  Account account;
+
+  /// The repository for the post.
+  late PostRepository repository;
+
+  CreatePostCubit({required this.account}) : super(const CreatePostState(status: CreatePostStatus.initial)) {
+    repository = PostRepositoryImpl(account: account);
+  }
+
+  Future<void> clearMessage() async {
+    emit(state.copyWith(status: CreatePostStatus.initial, message: null));
+  }
+
+  /// Switches the account for the post.
+  Future<void> switchAccount(Account newAccount) async {
+    account = newAccount;
+    repository = PostRepositoryImpl(account: account);
+
+    debugPrint('Account switched to ${account.username}@${account.instance}');
+    emit(state.copyWith(status: CreatePostStatus.success));
+  }
+
+  Future<void> uploadImages(List<String> imageFiles, {bool isPostImage = false}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    List<String> urls = [];
+
+    isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadInProgress)) : emit(state.copyWith(status: CreatePostStatus.imageUploadInProgress));
+
+    try {
+      for (String imageFile in imageFiles) {
+        switch (account.platform) {
+          case ThreadiversePlatform.lemmy:
+            PictrsApi pictrs = PictrsApi(account.instance);
+
+            PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
+            String url = "https://${account.instance}/pictrs/image/${result.files[0].file}";
+
+            urls.add(url);
+            break;
+          case ThreadiversePlatform.piefed:
+            final url = await PiefedApi(account: account, debug: kDebugMode).uploadImage(imageFile);
+            urls.add(url);
+            break;
+          default:
+            throw Exception(l10n.unexpectedError);
+        }
+
+        // Add a delay between each upload to avoid possible rate limiting
+        await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));
+      }
+
+      isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadSuccess, imageUrls: urls)) : emit(state.copyWith(status: CreatePostStatus.imageUploadSuccess, imageUrls: urls));
+    } catch (e) {
+      isPostImage
+          ? emit(state.copyWith(status: CreatePostStatus.postImageUploadFailure, message: e.toString()))
+          : emit(state.copyWith(status: CreatePostStatus.imageUploadFailure, message: e.toString()));
+    }
+  }
+
+  /// Creates or edits a post. When successful, it emits the newly created/updated post in the form of a [PostViewMedia]
+  /// and returns the newly created post id.
+  Future<int?> createOrEditPost({
+    required int communityId,
+    required String name,
+    String? body,
+    String? url,
+    String? customThumbnail,
+    String? altText,
+    bool? nsfw,
+    int? postIdBeingEdited,
+    int? languageId,
+  }) async {
+    emit(state.copyWith(status: CreatePostStatus.submitting));
+
+    try {
+      final post = await repository.create(
+        communityId: communityId,
+        name: name,
+        body: body,
+        url: url,
+        customThumbnail: customThumbnail,
+        altText: altText,
+        nsfw: nsfw,
+        postIdBeingEdited: postIdBeingEdited,
+        languageId: languageId,
+      );
+
+      emit(state.copyWith(status: CreatePostStatus.success, post: post));
+      return post.id;
+    } catch (e) {
+      emit(state.copyWith(status: CreatePostStatus.error, message: getExceptionErrorMessage(e)));
+    }
+
+    return null;
+  }
+}

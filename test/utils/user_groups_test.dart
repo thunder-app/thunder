@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:thunder/core/enums/user_type.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/user/utils/user_groups.dart';
+import 'package:thunder/src/core/enums/user_type.dart';
+import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/features/user/user.dart';
 
 import '../widgets/base_widget.dart';
 

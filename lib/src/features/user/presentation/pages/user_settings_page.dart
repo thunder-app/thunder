@@ -1,0 +1,624 @@
+import "dart:async";
+import "dart:convert";
+import "dart:io";
+
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_file_dialog/flutter_file_dialog.dart";
+import "package:html/parser.dart";
+import "package:path_provider/path_provider.dart";
+import 'package:markdown/markdown.dart' hide Text;
+
+import "package:thunder/src/core/enums/threadiverse_platform.dart";
+import "package:thunder/src/core/models/thunder_local_user.dart";
+import "package:thunder/src/core/models/thunder_my_user.dart";
+import "package:thunder/src/core/models/thunder_site_response.dart";
+import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/features/account/account.dart';
+import "package:thunder/src/core/enums/enums.dart";
+import "package:thunder/src/core/enums/local_settings.dart";
+import "package:thunder/src/features/settings/settings.dart";
+import "package:thunder/src/shared/dialogs.dart";
+import "package:thunder/src/shared/snackbar.dart";
+import "package:thunder/src/shared/sort_picker.dart";
+import "package:thunder/src/app/widgets/thunder_icons.dart";
+import "package:thunder/src/features/user/user.dart";
+import "package:thunder/src/shared/utils/bottom_sheet_list_picker.dart";
+import "package:thunder/src/shared/utils/constants.dart";
+import "package:thunder/src/shared/utils/error_messages.dart";
+import "package:thunder/src/app/utils/global_context.dart";
+import "package:thunder/src/shared/utils/links.dart";
+import "package:thunder/src/app/utils/navigation.dart";
+
+/// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
+class UserSettingsPage extends StatefulWidget {
+  /// The setting to be highlighted when searching
+  final LocalSettings? settingToHighlight;
+
+  const UserSettingsPage({super.key, this.settingToHighlight});
+
+  @override
+  State<UserSettingsPage> createState() => _UserSettingsPageState();
+}
+
+class _UserSettingsPageState extends State<UserSettingsPage> {
+  /// Text controller for the user's display name
+  TextEditingController displayNameTextController = TextEditingController();
+
+  /// Text controller for the profile bio
+  TextEditingController bioTextController = TextEditingController();
+
+  /// Text controller for the user's email
+  TextEditingController emailTextController = TextEditingController();
+
+  /// Text controller for the user's matrix id
+  TextEditingController matrixUserTextController = TextEditingController();
+
+  GlobalKey settingToHighlightKey = GlobalKey();
+  LocalSettings? settingToHighlight;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+
+    if (widget.settingToHighlight != null) {
+      setState(() => settingToHighlight = widget.settingToHighlight);
+
+      // Need some delay to finish building, even though we're in a post-frame callback.
+      Timer(const Duration(milliseconds: 500), () {
+        if (settingToHighlightKey.currentContext != null) {
+          // Ensure that the selected setting is visible on the screen
+          Scrollable.ensureVisible(
+            settingToHighlightKey.currentContext!,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+        }
+
+        // Give time for the highlighting to appear, then turn it off
+        Timer(const Duration(seconds: 1), () {
+          setState(() => settingToHighlight = null);
+        });
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
+
+    final account = context.read<ProfileBloc>().state.account;
+
+    // TODO: Add support for Piefed account settings
+    if (account.platform == ThreadiversePlatform.piefed) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.accountSettings)),
+        body: const Center(child: Text("This feature is not yet available.")),
+      );
+    }
+
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) context.read<ProfileBloc>().add(FetchProfileSettings());
+      },
+      child: Scaffold(
+        body: SafeArea(
+          top: false,
+          child: BlocListener<ProfileBloc, ProfileState>(
+            listener: (context, state) {
+              if (!context.mounted) return;
+              context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+              context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+            },
+            child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+              listener: (context, state) {
+                if (state.status == UserSettingsStatus.failure) {
+                  showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+                }
+              },
+              builder: (context, state) {
+                ThunderSiteResponse? siteResponse = state.siteResponse;
+
+                ThunderMyUser? myUser = siteResponse?.myUser;
+                ThunderLocalUser? localUser = myUser?.localUserView.localUser;
+                ThunderUser? person = myUser?.localUserView.person;
+
+                return CustomScrollView(
+                  physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
+                  slivers: [
+                    SliverAppBar(
+                      pinned: true,
+                      floating: true,
+                      centerTitle: false,
+                      toolbarHeight: APP_BAR_HEIGHT,
+                      title: Text(l10n.accountSettings),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.people_alt_rounded),
+                          onPressed: () => showProfileModalSheet(context),
+                        ),
+                      ],
+                    ),
+                    switch (state.status) {
+                      UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                      UserSettingsStatus.initial => const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      _ => SliverList.list(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const UserIndicator(),
+                                  IconButton(
+                                    icon: const Icon(Icons.logout_rounded),
+                                    onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.userSettingDescription,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.person_rounded,
+                              description: l10n.displayName,
+                              subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                displayNameTextController.text = person?.displayName ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.displayName,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: displayNameTextController,
+                                    decoration: InputDecoration(hintText: l10n.displayName),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDisplayName,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.note_rounded,
+                              description: l10n.profileBio,
+                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                              subtitleMaxLines: 1,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                bioTextController.text = person?.bio ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.profileBio,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: bioTextController,
+                                    minLines: 8,
+                                    maxLines: 8,
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      hintText: l10n.profileBio,
+                                    ),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountProfileBio,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.email_rounded,
+                              description: l10n.email,
+                              subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                emailTextController.text = localUser?.email ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.email,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: emailTextController,
+                                    decoration: InputDecoration(hintText: l10n.email),
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountEmail,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.person_rounded,
+                              description: l10n.matrixUser,
+                              subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
+                              widget: const Padding(padding: EdgeInsets.all(20.0)),
+                              onTap: () {
+                                matrixUserTextController.text = person?.matrixUserId ?? "";
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.matrixUser,
+                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                    controller: matrixUserTextController,
+                                    decoration: const InputDecoration(hintText: "@user:instance"),
+                                  ),
+                                  primaryButtonText: l10n.save,
+                                  onPrimaryButtonPressed: (dialogContext, _) {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountMatrixUser,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                              child: Text(
+                                l10n.settingOverrideLabel,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+                                ),
+                              ),
+                            ),
+                            ListOption(
+                              description: l10n.defaultFeedType,
+                              value: ListPickerItem(label: localUser?.defaultListingType?.value ?? "", icon: Icons.feed, payload: localUser?.defaultListingType),
+                              options: [
+                                ListPickerItem(icon: Icons.view_list_rounded, label: FeedListType.subscribed.value, payload: FeedListType.subscribed),
+                                ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
+                                ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
+                              ],
+                              icon: Icons.filter_alt_rounded,
+                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultFeedListType: value.payload)),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedType,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ListOption(
+                              description: l10n.defaultFeedSortType,
+                              value: ListPickerItem(
+                                label: localUser?.defaultSortType?.name ?? "",
+                                icon: Icons.local_fire_department_rounded,
+                                payload: localUser?.defaultSortType,
+                              ),
+                              options: [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)],
+                              icon: Icons.sort_rounded,
+                              onChanged: (_) async {},
+                              isBottomModalScrollControlled: true,
+                              customListPicker: SortPicker(
+                                account: account,
+                                title: l10n.defaultFeedSortType,
+                                onSelect: (value) async {
+                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
+                                },
+                                previouslySelected: localUser?.defaultSortType,
+                              ),
+                              valueDisplay: Row(
+                                children: [
+                                  Icon(allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).icon, size: 13),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).label,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                ],
+                              ),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDefaultFeedSortType,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showNsfwContent,
+                              value: localUser?.showNsfw,
+                              iconEnabled: Icons.no_adult_content,
+                              iconDisabled: Icons.no_adult_content,
+                              onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowNsfwContent,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showScores,
+                              value: localUser?.showScores,
+                              iconEnabled: Icons.onetwothree_rounded,
+                              iconDisabled: Icons.onetwothree_rounded,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowScores,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showReadPosts,
+                              value: localUser?.showReadPosts,
+                              iconEnabled: Icons.fact_check_rounded,
+                              iconDisabled: Icons.fact_check_outlined,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowReadPosts,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.bot,
+                              value: person?.botAccount,
+                              iconEnabled: Thunder.robot,
+                              iconDisabled: Thunder.robot,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountIsBot,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            ToggleOption(
+                              description: l10n.showBotAccounts,
+                              value: localUser?.showBotAccounts,
+                              iconEnabled: Thunder.robot,
+                              iconDisabled: Thunder.robot,
+                              iconSpacing: 14.0,
+                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountShowBotAccounts,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.language_rounded,
+                              description: l10n.discussionLanguages,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.discussionLanguages,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.block_rounded,
+                              description: l10n.blockSettingLabel,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountBlocks,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.importExportSettings, style: theme.textTheme.titleMedium),
+                                  Text(l10n.importExportLemmyAccountSettingsSubtitle),
+                                ],
+                              ),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.file_download_rounded,
+                              description: l10n.exportLemmyAccountSettingsDescription,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                dynamic exportSettings;
+                                try {
+                                  final account = context.read<ProfileBloc>().state.account;
+                                  exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
+                                } catch (e) {
+                                  // Catch rate-limit errors
+                                  showSnackbar(getExceptionErrorMessage(e));
+                                  return;
+                                }
+
+                                try {
+                                  final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
+                                  // Use the same naming convention as the web UI
+                                  String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
+                                  final filePath = '$initialFilePath/$initialFileName';
+
+                                  final File file = File(filePath);
+                                  await file.writeAsString(jsonEncode(exportSettings));
+
+                                  final String? savedFilePath = await FlutterFileDialog.saveFile(
+                                    params: SaveFileDialogParams(
+                                      mimeTypesFilter: ['application/json'],
+                                      sourceFilePath: filePath,
+                                      fileName: initialFileName,
+                                    ),
+                                  );
+
+                                  if (savedFilePath?.isNotEmpty == true) {
+                                    showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
+                                  } else {
+                                    showSnackbar(l10n.errorSavingAccountSettings);
+                                  }
+                                } catch (e) {
+                                  showSnackbar('${l10n.errorSavingAccountSettings} $e');
+                                }
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountExportSettings,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.file_upload_rounded,
+                              description: l10n.importLemmyAccountSettingsDescription,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                String importSettings;
+
+                                try {
+                                  final filePath = await FlutterFileDialog.pickFile(
+                                    params: const OpenFileDialogParams(
+                                      fileExtensionsFilter: ['json'],
+                                    ),
+                                  );
+
+                                  if (filePath != null) {
+                                    importSettings = await File(filePath).readAsString();
+                                  } else {
+                                    showSnackbar(l10n.errorLoadingAccountSettings);
+                                    return;
+                                  }
+                                } catch (e) {
+                                  if (e is FormatException) {
+                                    showSnackbar(l10n.errorParsingJson);
+                                  } else if ((e as PlatformException?)?.code == "invalid_file_extension") {
+                                    showSnackbar(l10n.youMustSelectAJsonFile);
+                                  } else {
+                                    showSnackbar('${l10n.errorLoadingAccountSettings} $e');
+                                  }
+                                  return;
+                                }
+
+                                try {
+                                  final l10n = AppLocalizations.of(GlobalContext.context)!;
+                                  final account = context.read<ProfileBloc>().state.account;
+                                  final response = await AccountRepositoryImpl(account: account).importSettings(importSettings);
+
+                                  if (response.success) {
+                                    showSnackbar(l10n.accountSettingsImportedSuccessfully);
+
+                                    // Reload the current page we're on to reflect changes to account settings
+                                    context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
+                                    context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+                                  } else {
+                                    showSnackbar(l10n.errorImportingAccountSettings);
+                                  }
+                                } catch (e) {
+                                  showSnackbar(getExceptionErrorMessage(e));
+                                }
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountImportSettings,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
+                            ),
+                            SettingsListTile(
+                              icon: Icons.password,
+                              description: l10n.changePassword,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.changePassword,
+                                  contentText: l10n.changePasswordWarning,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  secondaryButtonText: l10n.cancel,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      final account = context.read<ProfileBloc>().state.account;
+
+                                      handleLink(context, url: "https://${account.instance}/settings");
+                                    }
+                                  },
+                                  primaryButtonText: l10n.confirm,
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountChangePassword,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.delete_forever_rounded,
+                              description: l10n.deleteAccount,
+                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                showThunderDialog<void>(
+                                  context: context,
+                                  title: l10n.deleteAccount,
+                                  contentText: l10n.deleteAccountDescription,
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  primaryButtonText: l10n.confirm,
+                                  onPrimaryButtonPressed: (dialogContext, _) async {
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                      final account = context.read<ProfileBloc>().state.account;
+
+                                      handleLink(context, url: "https://${account.instance}/settings");
+                                    }
+                                  },
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountDeleteAccount,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            SettingsListTile(
+                              icon: Icons.hide_image_rounded,
+                              description: l10n.manageMedia,
+                              widget: const SizedBox(
+                                height: 42.0,
+                                child: Icon(Icons.chevron_right_rounded),
+                              ),
+                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
+                              highlightKey: settingToHighlightKey,
+                              setting: LocalSettings.accountManageMedia,
+                              highlightedSetting: settingToHighlight,
+                            ),
+                            const SizedBox(height: 100.0),
+                          ],
+                        ),
+                    }
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
