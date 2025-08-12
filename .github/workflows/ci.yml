@@ -57,7 +57,7 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Pre-format generated localizations
-        run: dart format lib/localizations -l 200
+        run: dart format lib/l10n/generated -l 200
 
       - name: Formatting
         run: dart format -o none --set-exit-if-changed -l 200 lib
