@@ -72,23 +72,23 @@ jobs:
         with:
           file-path: pubspec.yaml
 
-      # Read the globals.dart file
-      - name: Read globals.dart version
+      # Read the app_config.dart file
+      - name: Read app_config.dart version
         id: output-globals-version
         uses: juliangruber/read-file-action@v1
         with:
-          path: lib/globals.dart
+          path: lib/src/core/config/app_config.dart
 
-      # Get just the first line of the globals.dart file
-      - name: Get first line of globals.dart file
+      # Get just the first line of the app_config.dart file
+      - name: Get first line of app_config.dart file
         uses: jungwinter/split@v2
         id: split-globals-output
         with:
           msg: ${{ steps.output-globals-version.outputs.content }}
           separator: '\n'
 
-      # Assert that the version has been updated in globals
-      - name: Assert globals.dart has correct version
+      # Assert that the version has been updated in app_config.dart
+      - name: Assert app_config.dart has correct version
         uses: nick-fields/assert-action@v1
         with:
           expected: const String currentVersion = '${{ steps.output-pubspec-version.outputs.version-number }}';
