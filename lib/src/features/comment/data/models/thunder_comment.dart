@@ -10,6 +10,9 @@ class ThunderComment {
   /// The comment's creator ID
   final int creatorId;
 
+  /// The comment reply/mention ID (for replies/mentions)
+  final int? replyMentionId;
+
   /// The comment's post ID
   final int postId;
 
@@ -97,6 +100,7 @@ class ThunderComment {
   ThunderComment({
     required this.id,
     required this.creatorId,
+    this.replyMentionId,
     required this.postId,
     required this.content,
     required this.removed,
@@ -130,6 +134,7 @@ class ThunderComment {
   ThunderComment copyWith({
     int? id,
     int? creatorId,
+    int? replyMentionId,
     int? postId,
     String? content,
     bool? removed,
@@ -162,6 +167,7 @@ class ThunderComment {
     return ThunderComment(
       id: id ?? this.id,
       creatorId: creatorId ?? this.creatorId,
+      replyMentionId: replyMentionId ?? this.replyMentionId,
       postId: postId ?? this.postId,
       content: content ?? this.content,
       removed: removed ?? this.removed,
@@ -211,7 +217,7 @@ class ThunderComment {
     );
   }
 
-  factory ThunderComment.fromLemmyCommentView(Map<String, dynamic> commentView) {
+  factory ThunderComment.fromLemmyCommentView(Map<String, dynamic> commentView, {int? replyMentionId}) {
     final comment = commentView['comment'];
     final creator = commentView['creator'];
     final post = commentView['post'];
@@ -221,6 +227,7 @@ class ThunderComment {
     return ThunderComment(
       id: comment['id'],
       creatorId: comment['creator_id'],
+      replyMentionId: replyMentionId,
       postId: comment['post_id'],
       content: comment['content'],
       removed: comment['removed'],

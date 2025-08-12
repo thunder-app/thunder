@@ -233,10 +233,16 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     ThunderComment? existingPersonMentionView;
     PrivateMessageView? existingPrivateMessageView;
 
-    if (event.commentReplyId != null) {
+    if (event.commentReplyId != null && event.action == CommentAction.read) {
+      existingIndex = state.replies.indexWhere((element) => element.replyMentionId == event.commentReplyId);
+      existingCommentReplyView = state.replies[existingIndex];
+    } else if (event.commentReplyId != null && event.action != CommentAction.read) {
       existingIndex = state.replies.indexWhere((element) => element.id == event.commentReplyId);
       existingCommentReplyView = state.replies[existingIndex];
-    } else if (event.personMentionId != null) {
+    } else if (event.personMentionId != null && event.action == CommentAction.read) {
+      existingIndex = state.mentions.indexWhere((element) => element.replyMentionId == event.personMentionId);
+      existingPersonMentionView = state.mentions[existingIndex];
+    } else if (event.personMentionId != null && event.action != CommentAction.read) {
       existingIndex = state.mentions.indexWhere((element) => element.id == event.personMentionId);
       existingPersonMentionView = state.mentions[existingIndex];
     } else if (event.privateMessageId != null) {

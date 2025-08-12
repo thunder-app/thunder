@@ -76,7 +76,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       );
                     },
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: reply.id, value: !reply.read!)),
+                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: reply.replyMentionId!, value: !reply.read!)),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,

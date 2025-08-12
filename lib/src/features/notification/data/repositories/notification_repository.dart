@@ -111,6 +111,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           return comment.copyWith(
             recipient: ThunderUser.fromLemmyUser(crv.recipient.toJson()),
+            replyMentionId: crv.commentReply.id,
             read: crv.commentReply.read,
           );
         }).toList();
@@ -122,6 +123,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           return comment.copyWith(
             recipient: ThunderUser.fromPiefedUser(crv['recipient']),
+            replyMentionId: crv['comment_reply']['id'],
             read: crv['comment_reply']['read'],
           );
         }).toList();
@@ -169,6 +171,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           return comment.copyWith(
             recipient: ThunderUser.fromLemmyUser(mention.recipient.toJson()),
+            replyMentionId: mention.personMention.id,
             read: mention.personMention.read,
           );
         }).toList();
@@ -179,6 +182,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           return comment.copyWith(
             recipient: ThunderUser.fromPiefedUser(mention['recipient']),
+            replyMentionId: mention['comment_reply']['id'],
             read: mention['comment_reply']['read'],
           );
         }).toList();
