@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/colors.dart';
 

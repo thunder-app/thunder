@@ -9,7 +9,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/utils/date_time.dart';

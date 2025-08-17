@@ -19,7 +19,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/core/enums/post_body_view_type.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/conditional_parent_widget.dart';
 import 'package:thunder/src/shared/cross_posts.dart';
 import 'package:thunder/src/shared/widgets/media/media_view.dart';

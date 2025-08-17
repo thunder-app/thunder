@@ -12,7 +12,7 @@ import 'package:unifiedpush/unifiedpush.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/dialogs.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 

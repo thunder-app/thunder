@@ -9,7 +9,7 @@ import 'package:thunder/src/core/enums/fab_action.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/src/shared/utils/constants.dart';

@@ -14,7 +14,7 @@ import 'package:thunder/src/shared/utils/links.dart';
 import 'package:thunder/src/shared/image_preview.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/markdown/extended_markdown.dart';
+import 'package:thunder/src/shared/markdown/extended_markdown.dart';
 
 enum CustomMarkdownType { superscript, subscript }
 

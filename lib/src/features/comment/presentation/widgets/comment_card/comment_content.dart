@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/conditional_parent_widget.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';

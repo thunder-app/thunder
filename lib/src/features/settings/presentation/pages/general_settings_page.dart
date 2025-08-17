@@ -24,7 +24,7 @@ import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/shared/comment_sort_picker.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/dialogs.dart';
 import 'package:thunder/src/shared/divider.dart';
 import 'package:thunder/src/shared/snackbar.dart';

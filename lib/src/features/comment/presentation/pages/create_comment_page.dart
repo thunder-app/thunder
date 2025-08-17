@@ -17,7 +17,7 @@ import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/language_selector.dart';
 import 'package:thunder/src/shared/snackbar.dart';
