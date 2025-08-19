@@ -84,40 +84,11 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
         leadingWidth: widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn ? 50 : null,
         leading: feedBloc.state.status == FeedStatus.initial
             ? null
-            : widget.scaffoldStateKey != null && thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Semantics(
-                      label: MaterialLocalizations.of(context).openAppDrawerTooltip,
-                      child: Stack(
-                        children: [
-                          if (user != null)
-                            Align(
-                              alignment: Alignment.center,
-                              child: UserAvatar(user: user!),
-                            ),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: () => _openDrawerOrGoBack(context, feedBloc),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    icon: widget.scaffoldStateKey == null
-                        ? (!kIsWeb && Platform.isIOS
-                            ? Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                              )
-                            : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                        : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-                    onPressed: () => _openDrawerOrGoBack(context, feedBloc),
-                  ),
+            : _FeedDrawerButton(
+                isRoot: widget.scaffoldStateKey != null,
+                showProfilePicture: thunderBloc.state.useProfilePictureForDrawer && profileState.isLoggedIn,
+                onTap: () => _openDrawerOrGoBack(context, feedBloc),
+              ),
         actions: (feedBloc.state.status != FeedStatus.initial && feedBloc.state.status != FeedStatus.failureLoadingCommunity && feedBloc.state.status != FeedStatus.failureLoadingUser)
             ? [
                 if (feedBloc.state.feedType == FeedType.general) const FeedAppBarGeneralActions(),
@@ -313,6 +284,78 @@ class FeedAppBarGeneralActions extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The drawer button for the feed page app bar.
+///
+/// If [showProfilePicture] is true, then the profile picture will be shown. Otherwise, it falls back to the default back button.
+class _FeedDrawerButton extends StatelessWidget {
+  const _FeedDrawerButton({
+    required this.showProfilePicture,
+    required this.onTap,
+    required this.isRoot,
+  });
+
+  /// Whether the feed is the main feed. This is defined by a non-null [scaffoldStateKey].
+  final bool isRoot;
+
+  /// Whether to display the profile picture in place of the drawer icon.
+  final bool showProfilePicture;
+
+  /// The function to call when the drawer is tapped.
+  final Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // Show profile picture only if it's the root feed and profile picture is enabled
+    if (isRoot && showProfilePicture) return _buildProfilePictureButton(context);
+    return _buildIconButton(context);
+  }
+
+  Widget _buildProfilePictureButton(BuildContext context) {
+    final state = context.read<ProfileBloc>().state;
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Semantics(
+        label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+        child: Stack(
+          children: [
+            if (state.user != null)
+              Align(
+                alignment: Alignment.center,
+                child: UserAvatar(user: state.user!),
+              ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onTap,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(BuildContext context) {
+    final IconData icon;
+    final String semanticLabel;
+
+    if (isRoot) {
+      icon = Icons.menu;
+      semanticLabel = MaterialLocalizations.of(context).openAppDrawerTooltip;
+    } else {
+      icon = (!kIsWeb && Platform.isIOS) ? Icons.arrow_back_ios_new_rounded : Icons.arrow_back_rounded;
+      semanticLabel = MaterialLocalizations.of(context).backButtonTooltip;
+    }
+
+    return IconButton(
+      icon: Icon(icon, semanticLabel: semanticLabel),
+      onPressed: onTap,
     );
   }
 }
