@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
@@ -33,8 +32,6 @@ class FeedPageAppBar extends StatefulWidget {
 }
 
 class _FeedPageAppBarState extends State<FeedPageAppBar> {
-  ThunderUser? user;
-
   /// Boolean which indicates whether the title on the app bar should be shown
   bool showAppBarTitle = false;
 
@@ -64,8 +61,6 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
     final feedBloc = context.read<FeedBloc>();
     final thunderBloc = context.read<ThunderBloc>();
     final ProfileState profileState = context.read<ProfileBloc>().state;
-
-    user = profileState.reload ? profileState.user : user;
 
     return BlocListener<FeedBloc, FeedState>(
       listenWhen: (previous, current) => current.status == FeedStatus.initial,
