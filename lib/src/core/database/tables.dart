@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import 'package:thunder/src/core/database/type_converters.dart';
 
 class Accounts extends Table {
