@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:thunder/src/core/database/schema_versions.dart';
 import 'package:thunder/src/core/database/tables.dart';
@@ -129,47 +124,4 @@ Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVe
     // Drop the UserLabels table
     await database.customStatement('DROP TABLE IF EXISTS user_labels');
   }
-}
-
-Future<String?> exportDatabase() async {
-  final Directory dbFolder = await getApplicationDocumentsDirectory();
-  final File file = File(join(dbFolder.path, 'thunder.sqlite'));
-
-  return await FlutterFileDialog.saveFile(
-    params: SaveFileDialogParams(
-      mimeTypesFilter: ['application/octet-stream'],
-      sourceFilePath: file.path,
-      fileName: 'thunder.sqlite',
-    ),
-  );
-}
-
-Future<bool> importDatabase() async {
-  final String? filePath = await FlutterFileDialog.pickFile(
-    params: const OpenFileDialogParams(
-      fileExtensionsFilter: ['sqlite'],
-    ),
-  );
-
-  if (filePath != null) {
-    final Directory dbFolder = await getApplicationDocumentsDirectory();
-    final File file = File(join(dbFolder.path, 'thunder.sqlite'));
-
-    try {
-      // Read the selected db file
-      final List<int> bytes = await File(filePath).readAsBytes();
-
-      // Write the file out the location we read it from
-      await file.writeAsBytes(bytes, flush: true);
-
-      // Since the db calls go straight to the file, we don't need to reload anything
-      return true;
-    } catch (e) {
-      debugPrint('Error importing sqlite db: $e');
-    }
-  } else {
-    debugPrint("Database import operation cancelled by user.");
-  }
-
-  return false;
 }

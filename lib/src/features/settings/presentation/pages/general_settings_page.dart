@@ -9,12 +9,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:thunder/src/core/database/database_utils.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/database/database.dart' hide Account;
 import 'package:thunder/src/core/enums/browser_mode.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/image_caching_mode.dart';
