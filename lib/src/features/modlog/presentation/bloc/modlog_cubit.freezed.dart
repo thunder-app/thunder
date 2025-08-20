@@ -35,7 +35,8 @@ mixin _$ModlogState {
   int? get commentId => throw _privateConstructorUsedError;
 
   /// The list of modlog events.
-  List<ModlogEventItem> get modlogEventItems => throw _privateConstructorUsedError;
+  List<ModlogEventItem> get modlogEventItems =>
+      throw _privateConstructorUsedError;
 
   /// Whether the end of the modlog has been reached.
   bool get hasReachedEnd => throw _privateConstructorUsedError;
@@ -49,12 +50,15 @@ mixin _$ModlogState {
   /// Create a copy of ModlogState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ModlogStateCopyWith<ModlogState> get copyWith => throw _privateConstructorUsedError;
+  $ModlogStateCopyWith<ModlogState> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ModlogStateCopyWith<$Res> {
-  factory $ModlogStateCopyWith(ModlogState value, $Res Function(ModlogState) then) = _$ModlogStateCopyWithImpl<$Res, ModlogState>;
+  factory $ModlogStateCopyWith(
+          ModlogState value, $Res Function(ModlogState) then) =
+      _$ModlogStateCopyWithImpl<$Res, ModlogState>;
   @useResult
   $Res call(
       {ModlogStatus status,
@@ -70,7 +74,8 @@ abstract class $ModlogStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ModlogStateCopyWithImpl<$Res, $Val extends ModlogState> implements $ModlogStateCopyWith<$Res> {
+class _$ModlogStateCopyWithImpl<$Res, $Val extends ModlogState>
+    implements $ModlogStateCopyWith<$Res> {
   _$ModlogStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -140,8 +145,11 @@ class _$ModlogStateCopyWithImpl<$Res, $Val extends ModlogState> implements $Modl
 }
 
 /// @nodoc
-abstract class _$$ModlogStateImplCopyWith<$Res> implements $ModlogStateCopyWith<$Res> {
-  factory _$$ModlogStateImplCopyWith(_$ModlogStateImpl value, $Res Function(_$ModlogStateImpl) then) = __$$ModlogStateImplCopyWithImpl<$Res>;
+abstract class _$$ModlogStateImplCopyWith<$Res>
+    implements $ModlogStateCopyWith<$Res> {
+  factory _$$ModlogStateImplCopyWith(
+          _$ModlogStateImpl value, $Res Function(_$ModlogStateImpl) then) =
+      __$$ModlogStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -158,8 +166,12 @@ abstract class _$$ModlogStateImplCopyWith<$Res> implements $ModlogStateCopyWith<
 }
 
 /// @nodoc
-class __$$ModlogStateImplCopyWithImpl<$Res> extends _$ModlogStateCopyWithImpl<$Res, _$ModlogStateImpl> implements _$$ModlogStateImplCopyWith<$Res> {
-  __$$ModlogStateImplCopyWithImpl(_$ModlogStateImpl _value, $Res Function(_$ModlogStateImpl) _then) : super(_value, _then);
+class __$$ModlogStateImplCopyWithImpl<$Res>
+    extends _$ModlogStateCopyWithImpl<$Res, _$ModlogStateImpl>
+    implements _$$ModlogStateImplCopyWith<$Res> {
+  __$$ModlogStateImplCopyWithImpl(
+      _$ModlogStateImpl _value, $Res Function(_$ModlogStateImpl) _then)
+      : super(_value, _then);
 
   /// Create a copy of ModlogState
   /// with the given fields replaced by the non-null parameter values.
@@ -272,7 +284,8 @@ class _$ModlogStateImpl extends _ModlogState {
   @override
   @JsonKey()
   List<ModlogEventItem> get modlogEventItems {
-    if (_modlogEventItems is EqualUnmodifiableListView) return _modlogEventItems;
+    if (_modlogEventItems is EqualUnmodifiableListView)
+      return _modlogEventItems;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modlogEventItems);
   }
@@ -302,27 +315,45 @@ class _$ModlogStateImpl extends _ModlogState {
         (other.runtimeType == runtimeType &&
             other is _$ModlogStateImpl &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.modlogActionType, modlogActionType) || other.modlogActionType == modlogActionType) &&
-            (identical(other.communityId, communityId) || other.communityId == communityId) &&
+            (identical(other.modlogActionType, modlogActionType) ||
+                other.modlogActionType == modlogActionType) &&
+            (identical(other.communityId, communityId) ||
+                other.communityId == communityId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.moderatorId, moderatorId) || other.moderatorId == moderatorId) &&
-            (identical(other.commentId, commentId) || other.commentId == commentId) &&
-            const DeepCollectionEquality().equals(other._modlogEventItems, _modlogEventItems) &&
-            (identical(other.hasReachedEnd, hasReachedEnd) || other.hasReachedEnd == hasReachedEnd) &&
-            (identical(other.currentPage, currentPage) || other.currentPage == currentPage) &&
+            (identical(other.moderatorId, moderatorId) ||
+                other.moderatorId == moderatorId) &&
+            (identical(other.commentId, commentId) ||
+                other.commentId == commentId) &&
+            const DeepCollectionEquality()
+                .equals(other._modlogEventItems, _modlogEventItems) &&
+            (identical(other.hasReachedEnd, hasReachedEnd) ||
+                other.hasReachedEnd == hasReachedEnd) &&
+            (identical(other.currentPage, currentPage) ||
+                other.currentPage == currentPage) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, modlogActionType, communityId, userId, moderatorId, commentId, const DeepCollectionEquality().hash(_modlogEventItems), hasReachedEnd, currentPage, message);
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      modlogActionType,
+      communityId,
+      userId,
+      moderatorId,
+      commentId,
+      const DeepCollectionEquality().hash(_modlogEventItems),
+      hasReachedEnd,
+      currentPage,
+      message);
 
   /// Create a copy of ModlogState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ModlogStateImplCopyWith<_$ModlogStateImpl> get copyWith => __$$ModlogStateImplCopyWithImpl<_$ModlogStateImpl>(this, _$identity);
+  _$$ModlogStateImplCopyWith<_$ModlogStateImpl> get copyWith =>
+      __$$ModlogStateImplCopyWithImpl<_$ModlogStateImpl>(this, _$identity);
 }
 
 abstract class _ModlogState extends ModlogState {
@@ -383,5 +414,6 @@ abstract class _ModlogState extends ModlogState {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ModlogStateImplCopyWith<_$ModlogStateImpl> get copyWith => throw _privateConstructorUsedError;
+  _$$ModlogStateImplCopyWith<_$ModlogStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

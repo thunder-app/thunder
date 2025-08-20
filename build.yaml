@@ -5,3 +5,4 @@ targets:
         options:
           databases:
             thunder: lib/src/core/database/database.dart
+          schema_dir: lib/src/core/database/schemas/

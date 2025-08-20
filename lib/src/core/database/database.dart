@@ -3,92 +3,86 @@ import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
-import 'package:thunder/src/core/database/schema_versions.dart';
 import 'package:thunder/src/core/database/tables.dart';
 import 'package:thunder/src/core/database/type_converters.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 
-import 'connection/connection.dart' as impl;
-
+import 'database.steps.dart';
 part 'database.g.dart';
 
 @DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase()
-      : super(
-          driftDatabase(
-            name: 'thunder',
-            web: DriftWebOptions(
-              sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-              driftWorker: Uri.parse('drift_worker.js'),
-              onResult: (result) {
-                if (result.missingFeatures.isNotEmpty) {
-                  debugPrint('Using ${result.chosenImplementation} due to unsupported browser features: ${result.missingFeatures}');
-                }
-              },
-            ),
-          ),
-        );
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
   int get schemaVersion => 7;
 
+  static QueryExecutor _openConnection() {
+    return driftDatabase(
+      name: 'thunder',
+      native: const DriftNativeOptions(),
+    );
+  }
+
   @override
-  MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (Migrator m) async {
-          await m.createAll();
-        },
-        onUpgrade: (m, from, to) async {
-          await customStatement('PRAGMA foreign_keys = OFF');
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+      },
+      onUpgrade: (m, from, to) async {
+        await customStatement('PRAGMA foreign_keys = OFF');
 
-          await m.runMigrationSteps(
-            from: from,
-            to: to,
-            steps: migrationSteps(
-              from1To2: (m, schema) async {
-                // Create the UserLabels table
-                await m.createTable(schema.userLabels);
-              },
-              from2To3: (m, schema) async {
-                // Create the Drafts table
-                await m.createTable(schema.drafts);
-              },
-              from3To4: (m, schema) async {
-                // Create the custom_thumbnail column on the drafts table
-                await m.addColumn(schema.drafts, schema.drafts.customThumbnail);
-              },
-              from4To5: (m, schema) async {
-                // Add the list_index column to the Accounts table and use id as the default value
-                await m.addColumn(schema.accounts, schema.accounts.listIndex);
-                await customStatement('UPDATE accounts SET list_index = id');
-              },
-              from5To6: (m, schema) async {
-                // Create the alt_text column on the drafts table
-                await m.addColumn(schema.drafts, schema.drafts.altText);
-              },
-              from6To7: (m, schema) async {
-                // Add the platform column to the Accounts table and pre-fill existing accounts with 'lemmy'
-                await m.addColumn(schema.accounts, schema.accounts.platform);
-                await customStatement('UPDATE accounts SET platform = \'lemmy\'');
-              },
-            ),
-          );
+        await m.runMigrationSteps(
+          from: from,
+          to: to,
+          steps: migrationSteps(
+            from1To2: (m, schema) async {
+              // Create the UserLabels table
+              await m.createTable(schema.userLabels);
+            },
+            from2To3: (m, schema) async {
+              // Create the Drafts table
+              await m.createTable(schema.drafts);
+            },
+            from3To4: (m, schema) async {
+              // Create the custom_thumbnail column on the drafts table
+              await m.addColumn(schema.drafts, schema.drafts.customThumbnail);
+            },
+            from4To5: (m, schema) async {
+              // Add the list_index column to the Accounts table and use id as the default value
+              await m.addColumn(schema.accounts, schema.accounts.listIndex);
+              await customStatement('UPDATE accounts SET list_index = id');
+            },
+            from5To6: (m, schema) async {
+              // Create the alt_text column on the drafts table
+              await m.addColumn(schema.drafts, schema.drafts.altText);
+            },
+            from6To7: (m, schema) async {
+              // Add the platform column to the Accounts table and pre-fill existing accounts with 'lemmy'
+              await m.addColumn(schema.accounts, schema.accounts.platform);
+              await customStatement('UPDATE accounts SET platform = \'lemmy\'');
+            },
+          ),
+        );
 
-          if (kDebugMode) {
-            // Fail if the migration broke foreign keys
-            final wrongForeignKeys = await customSelect('PRAGMA foreign_key_check').get();
-            assert(wrongForeignKeys.isEmpty, '${wrongForeignKeys.map((e) => e.data)}');
-          }
-          await impl.validateDatabaseSchema(this);
-          await customStatement('PRAGMA foreign_keys = ON;');
-        },
-        beforeOpen: (details) async {
-          if (details.versionBefore != null && details.versionBefore! > details.versionNow) {
-            await _onDowngrade(this, details.versionBefore!, details.versionNow);
-          }
-        },
-      );
+        if (kDebugMode) {
+          // Fail if the migration broke foreign keys
+          final wrongForeignKeys = await customSelect('PRAGMA foreign_key_check').get();
+          assert(wrongForeignKeys.isEmpty, '${wrongForeignKeys.map((e) => e.data)}');
+        }
+
+        await customStatement('PRAGMA foreign_keys = ON;');
+      },
+      beforeOpen: (details) async {
+        if (details.versionBefore != null && details.versionBefore! > details.versionNow) {
+          // Manually downgrade the database if the version before is greater than the version now
+          await _onDowngrade(this, details.versionBefore!, details.versionNow);
+        }
+      },
+    );
+  }
 }
 
 Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) async {
