@@ -183,21 +183,13 @@ Resolution: Ensure you have a valid Java 8 installation on your machine.
 
 ## Database
 
-Thunder uses the [Drift database](https://drift.simonbinder.eu/) package (a wrapper around SQLite) to store information about the user's accounts, favorites, anonymous subscriptions, and user labels.
+Thunder uses [Drift](https://drift.simonbinder.eu/) (a wrapper around SQLite) to store information about the user's accounts, favorites, and more. If you happen to work on a contribution which involves updating the database schema, you can follow these steps.
 
-If you happen to work on a contribution which involves updating the database schema, you can follow these steps.
-
-1. Update schema version in `lib\core\database\database.dart`
-2. Add new tables/columns in `lib\core\database\tables.dart`
-3. Export schema
-	- `dart run drift_dev schema dump lib/core/database/database.dart drift_schemas/`
-4. Update migrations
-    -  `dart run drift_dev schema steps drift_schemas/ lib/core/database/schema_versions.dart`
-5. Go back to `lib\core\database\database.dart` and implement the migration function
-6. Update the auto-generated db table models
-	- `dart run build_runner build`
-7. Reformat the auto-generated files
-    - `dart format --set-exit-if-changed -l 200 lib`
+1. Add any new tables or columns in `lib\src\core\database\tables.dart`
+2. Increment the schema version in `lib\src\core\database\database.dart`
+3. Run `dart run drift_dev make-migrations` to generate the proper migration logic and tests. This will automatically create the new schema version.
+4. Implement the migration logic in `lib\src\core\database\database.dart`
+5. Run build_runner to regenerate the files: `dart run build_runner build`
 
 ## Conventions
 
