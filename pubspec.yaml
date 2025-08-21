@@ -96,6 +96,7 @@ dependencies:
   youtube_player_iframe: "^5.2.0"
   freezed_annotation: ^2.4.4
   freezed: ^2.5.7
+  sqlite3_flutter_libs: ^0.5.39
 
 dev_dependencies:
   flutter_test:

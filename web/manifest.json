@@ -1,11 +1,11 @@
 {
-    "name": "thunder",
-    "short_name": "thunder",
+    "name": "Thunder",
+    "short_name": "Thunder",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#212123",
     "theme_color": "#212123",
-    "description": "A new Flutter project.",
+    "description": "An open-source cross-platform Lemmy client",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
