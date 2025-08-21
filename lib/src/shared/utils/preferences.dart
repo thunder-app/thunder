@@ -12,7 +12,6 @@ import 'package:thunder/src/core/enums/theme_type.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
 
 @Deprecated('Use Draft model through database instead')
 class DraftComment {
@@ -149,15 +148,12 @@ Future<void> performSharedPreferencesMigration() async {
   final List<String>? anonymousInstances = prefs.getStringList('setting_anonymous_instances');
   try {
     for (String instance in anonymousInstances ?? []) {
-      // Detect the platform for the migrated instance
-      final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(instance);
-
       Account anonymousInstance = Account(
         id: '',
         instance: instance,
         index: -1,
         anonymous: true,
-        platform: platform,
+        platform: ThreadiversePlatform.lemmy,
       );
       Account.insertAnonymousInstance(anonymousInstance);
     }

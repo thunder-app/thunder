@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -14,6 +14,7 @@ import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/features/user/user.dart';
+import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
@@ -707,19 +708,17 @@ class _ProfileSelectState extends State<ProfileSelect> {
           profileBloc.add(SwitchProfile(accountId: accountsNotCurrent.last.id));
         } else {
           // No accounts and no anonymous instances left. Create a new one.
-          // Detect the platform for the default instance
-          final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo('lemmy.ml');
-
           await Account.insertAnonymousInstance(Account(
             id: '',
-            instance: 'lemmy.ml',
+            instance: DEFAULT_INSTANCE,
             index: -1,
             anonymous: true,
-            platform: platform,
+            platform: ThreadiversePlatform.lemmy,
           ));
+
           thunderBloc.add(const OnSetCurrentAnonymousInstance(null));
-          thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
-          profileBloc.add(SwitchProfile(accountId: 'lemmy.ml'));
+          thunderBloc.add(const OnSetCurrentAnonymousInstance(DEFAULT_INSTANCE));
+          profileBloc.add(SwitchProfile(accountId: DEFAULT_INSTANCE));
         }
 
         setState(() {

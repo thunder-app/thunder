@@ -1,14 +1,14 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/shared/utils/constants.dart';
 
 /// Fetches the currently active profile. This includes logged in and anonymous accounts.
 ///
@@ -36,13 +36,10 @@ Future<Account> fetchActiveProfile() async {
     return account;
   }
 
-  // No anonymous account found. Let's create a new default one.TODO: Allow changing of default instance.
-  final defaultInstance = 'lemmy.ml';
+  // No anonymous account found. Let's create a new default one. TODO: Allow changing of default instance.
+  final defaultInstance = DEFAULT_INSTANCE;
 
-  // Detect the platform for the default instance
-  final ThreadiversePlatform? platform = await detectPlatformFromNodeInfo(defaultInstance);
-
-  account = await Account.insertAnonymousInstance(Account(id: '', instance: defaultInstance, index: -1, anonymous: true, platform: platform));
+  account = await Account.insertAnonymousInstance(Account(id: '', instance: defaultInstance, index: -1, anonymous: true, platform: ThreadiversePlatform.lemmy));
   if (account == null) throw Exception("Failed to create default profile");
 
   // Set this instance as the default anonymous instance.

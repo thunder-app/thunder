@@ -264,7 +264,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       VideoPlayBackSpeed videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(UserPreferences.getLocalSetting(LocalSettings.videoDefaultPlaybackSpeed) ?? VideoPlayBackSpeed.normal.name);
       VideoPlayerMode videoPlayerMode = VideoPlayerMode.values.byName(UserPreferences.getLocalSetting(LocalSettings.videoPlayerMode) ?? VideoPlayerMode.inApp.name);
 
-      String currentAnonymousInstance = UserPreferences.getLocalSetting(LocalSettings.currentAnonymousInstance) ?? 'lemmy.ml';
+      String currentAnonymousInstance = UserPreferences.getLocalSetting(LocalSettings.currentAnonymousInstance) ?? DEFAULT_INSTANCE;
 
       return emit(state.copyWith(
         status: ThunderStatus.success,

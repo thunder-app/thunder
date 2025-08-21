@@ -168,7 +168,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
-    this.currentAnonymousInstance = 'lemmy.ml',
+    this.currentAnonymousInstance = DEFAULT_INSTANCE,
 
     /// --------------------------------- UI Events ---------------------------------
     // Expand/Close FAB event
