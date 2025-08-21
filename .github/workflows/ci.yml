@@ -56,6 +56,13 @@ jobs:
         # We'll ignore info and warnings when performing this step
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      - name: Find all auto-generated files (.g.dart, .steps.dart, .freezed.dart)
+        run: find . -name "*.g.dart" -o -name "*.steps.dart" -o -name "*.freezed.dart"
+        id: find-generated-files
+      
+      - name: Pre-format auto-generated files
+        run: dart format ${{ steps.find-generated-files.outputs.files }} -l 200
+
       - name: Pre-format generated localizations
         run: dart format lib/l10n/generated -l 200
 
