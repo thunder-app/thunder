@@ -53,7 +53,7 @@ Future<void> pollRepliesAndShowNotifications() async {
   final prefs = UserPreferences.instance.preferences;
 
   // Ensure that the db is initialized before attempting to access below.
-  await initializeDatabase();
+  initializeDatabase();
 
   List<Account> accounts = await Account.accounts();
   DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();

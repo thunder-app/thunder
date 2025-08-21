@@ -69,7 +69,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
     },
     onMessage: (PushMessage message, String instance) async {
       // Ensure that the db is initialized before attempting to access below.
-      await initializeDatabase();
+      initializeDatabase();
 
       final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
       final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);

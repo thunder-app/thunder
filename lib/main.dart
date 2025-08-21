@@ -18,14 +18,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 // Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/database/database.dart';
-import 'package:thunder/src/core/database/migrations.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/enums/theme_type.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
@@ -43,29 +40,8 @@ import 'package:thunder/src/shared/utils/language/language.dart';
 
 late AppDatabase database;
 
-bool _isDatabaseInitialized = false;
-
-Future<void> initializeDatabase() async {
-  if (_isDatabaseInitialized) return;
-
-  if (kIsWeb) {
-    database = AppDatabase();
-    return;
-  }
-
-  // There is a specific ordering here.
-  // We're checking to see if the drift database exists. If it doesn't exist, we perform migration from the old SQLite database.
-  // The ordering matters here as  database = AppDatabase() will create the database if it doesn't exist.
-  File dbFile = File(join((await getApplicationDocumentsDirectory()).path, 'thunder.sqlite'));
-
+void initializeDatabase() {
   database = AppDatabase();
-
-  if (!await dbFile.exists()) {
-    debugPrint('Migrating from SQLite db.');
-    await migrateToSQLite(database);
-  }
-
-  _isDatabaseInitialized = true;
 }
 
 void main() async {
@@ -85,7 +61,8 @@ void main() async {
   // Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  await initializeDatabase();
+  // Initialize the database
+  initializeDatabase();
 
   // Clear image cache
   await clearExtendedImageCache();
