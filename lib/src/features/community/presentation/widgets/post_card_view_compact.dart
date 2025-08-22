@@ -118,7 +118,7 @@ class PostCardViewCompact extends StatelessWidget {
                   unreadCommentCount: post.unreadComments,
                   dateTime: dateTime,
                   edited: edited,
-                  url: mediaUrl,
+                  url: post.media.firstOrNull?.mediaType == MediaType.image ? null : mediaUrl,
                   languageId: post.languageId,
                   dim: dim,
                 ),

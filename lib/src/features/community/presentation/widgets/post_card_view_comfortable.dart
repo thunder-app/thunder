@@ -237,7 +237,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         unreadCommentCount: post.unreadComments,
                         dateTime: dateTime,
                         edited: edited,
-                        url: media?.originalUrl,
+                        url: media?.mediaType == MediaType.image ? null : media?.originalUrl,
                         languageId: post.languageId,
                         dim: dim,
                       ),

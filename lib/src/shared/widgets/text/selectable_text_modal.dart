@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html_unescape/html_unescape_small.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
@@ -115,7 +114,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                        HtmlUnescape().convert(title!),
+                                        title!,
                                         style: theme.textTheme.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * thunderState.titleFontSizeScale.textScaleFactor),

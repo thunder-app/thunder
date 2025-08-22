@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:html_unescape/html_unescape_small.dart';
+
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
@@ -108,7 +110,13 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
   return parsedPosts;
 }
 
+/// Perform some pre-processing on the post before displaying it.
+///
+/// This includes unescaping the title and parsing any associated media.
 Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
+  final html = HtmlUnescape();
+  final title = html.convert(post.name);
+
   List<Media> mediaList = [];
 
   // There are three sources of URLs: the main url attached to the post, the thumbnail url attached to the post, and the video url attached to the post
@@ -184,5 +192,5 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
   media.height = scaledSize?.height;
   mediaList.add(media);
 
-  return post.copyWith(media: mediaList);
+  return post.copyWith(media: mediaList, name: title);
 }

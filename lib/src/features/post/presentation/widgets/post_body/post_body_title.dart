@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html_unescape/html_unescape_small.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
@@ -114,7 +113,7 @@ class PostBodyTitle extends StatelessWidget {
     final titleFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.titleFontSizeScale);
 
     return ScalableText(
-      HtmlUnescape().convert(post.name),
+      post.name,
       fontScale: titleFontSizeScale,
       style: theme.textTheme.titleMedium,
     );

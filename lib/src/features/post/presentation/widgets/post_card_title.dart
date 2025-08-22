@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html_unescape/html_unescape_small.dart';
 
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -45,8 +44,6 @@ class PostCardTitle extends StatelessWidget {
     this.dim = false,
   });
 
-  static final _html = HtmlUnescape();
-
   Color? _getDimmedColor(Color? color) => color?.withValues(alpha: 0.55);
 
   /// Returns the color of the title.
@@ -78,7 +75,7 @@ class PostCardTitle extends StatelessWidget {
         children: [
           WidgetSpan(child: statuses),
           TextSpan(
-            text: _html.convert(title),
+            text: title,
             style: textStyle?.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: fontSize,
