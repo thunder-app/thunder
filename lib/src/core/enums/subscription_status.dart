@@ -1,38 +1,16 @@
-import 'package:lemmy_api_client/v3.dart' as lemmy;
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 
 enum SubscriptionStatus {
   subscribed('Subscribed'),
   notSubscribed('NotSubscribed'),
   pending('Pending');
 
+  /// The name of the subscription status.
   final String name;
 
-  const SubscriptionStatus(this.name);
-}
+  /// The platform this subscription status is used on. If null, it is used on all platforms.
+  final ThreadiversePlatform? platform;
 
-extension SubscriptionStatusMapping on SubscriptionStatus {
-  /// Converts a local SubscriptionStatus to lemmy API SubscribedType
-  lemmy.SubscribedType toLemmyType() {
-    switch (this) {
-      case SubscriptionStatus.subscribed:
-        return lemmy.SubscribedType.subscribed;
-      case SubscriptionStatus.notSubscribed:
-        return lemmy.SubscribedType.notSubscribed;
-      case SubscriptionStatus.pending:
-        return lemmy.SubscribedType.pending;
-    }
-  }
-
-  /// Converts a lemmy API SubscribedType to local SubscriptionStatus
-  static SubscriptionStatus fromLemmyType(lemmy.SubscribedType? lemmyType) {
-    switch (lemmyType) {
-      case lemmy.SubscribedType.subscribed:
-        return SubscriptionStatus.subscribed;
-      case lemmy.SubscribedType.pending:
-        return SubscriptionStatus.pending;
-      case lemmy.SubscribedType.notSubscribed:
-      case null:
-        return SubscriptionStatus.notSubscribed;
-    }
-  }
+  // ignore: unused_element_parameter
+  const SubscriptionStatus(this.name, {this.platform});
 }

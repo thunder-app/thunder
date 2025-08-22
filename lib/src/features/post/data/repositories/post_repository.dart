@@ -2,24 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/models/thunder_post_report.dart';
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-
-extension on MarkPostAsReadResponse {
-  bool isSuccess() {
-    return postView != null || success == true;
-  }
-}
 
 /// Interface for a post repository
 abstract class PostRepository {
@@ -103,10 +97,10 @@ abstract class PostRepository {
 
   /// Reports a post
   /// @TODO: Change the return type to an internal model
-  Future<PostReportResponse> report(int postId, String reason);
+  Future<void> report(int postId, String reason);
 
   /// Get post reports
-  Future<ListPostReportsResponse> getPostReports({
+  Future<List<ThunderPostReport>> getPostReports({
     int? postId,
     int page = 1,
     int limit = 20,
@@ -115,7 +109,7 @@ abstract class PostRepository {
   });
 
   /// Resolve a post report
-  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved);
+  Future<ThunderPostReport> resolvePostReport(int reportId, bool resolved);
 }
 
 /// Implementation of [PostRepository]
@@ -124,7 +118,7 @@ class PostRepositoryImpl implements PostRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 lemmy;
+  late LemmyApi lemmy;
 
   /// The Piefed API to use for the repository
   late PiefedApi piefed;
@@ -132,7 +126,7 @@ class PostRepositoryImpl implements PostRepository {
   PostRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -146,17 +140,7 @@ class PostRepositoryImpl implements PostRepository {
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(GetPost(id: postId, auth: account.jwt, commentId: commentId));
-
-        final posts = await parsePosts([ThunderPost.fromLemmyPostView(response.postView.toJson())]);
-        final crossPosts = response.crossPosts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList();
-        final moderators = response.moderators.map((cmv) => ThunderUser.fromLemmyUser(cmv.moderator.toJson())).toList();
-
-        return {
-          'post': posts.first,
-          'moderators': moderators,
-          'crossPosts': crossPosts,
-        };
+        return await lemmy.getPost(postId, commentId: commentId);
       case ThreadiversePlatform.piefed:
         return await piefed.getPost(postId, commentId: commentId);
       default:
@@ -179,18 +163,16 @@ class PostRepositoryImpl implements PostRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(GetPosts(
-          auth: account.jwt,
+        return await lemmy.getPosts(
           page: page,
           limit: limit,
-          sort: postSortType?.toLemmyType(),
-          type: feedListType?.toLemmyType(),
+          postSortType: postSortType,
+          feedListType: feedListType,
           communityId: communityId,
           communityName: communityName,
           showHidden: showHidden,
-          savedOnly: showSaved,
-        ));
-        return response.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList();
+          showSaved: showSaved,
+        );
       case ThreadiversePlatform.piefed:
         return await piefed.getPosts(
           page: page,
@@ -224,35 +206,33 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        PostResponse postResponse;
+        ThunderPost? response;
 
         if (postIdBeingEdited != null) {
-          postResponse = await lemmy.run(EditPost(
-            auth: account.jwt!,
-            name: name,
-            body: body,
-            url: url?.isEmpty == true ? null : url,
-            customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
-            altText: altText?.isEmpty == true ? null : altText,
-            nsfw: nsfw,
+          response = await lemmy.editPost(
             postId: postIdBeingEdited,
-            languageId: languageId,
-          ));
-        } else {
-          postResponse = await lemmy.run(CreatePost(
-            auth: account.jwt!,
-            communityId: communityId,
-            name: name,
-            body: body,
+            title: name,
+            contents: body,
             url: url?.isEmpty == true ? null : url,
             customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
             altText: altText?.isEmpty == true ? null : altText,
             nsfw: nsfw,
             languageId: languageId,
-          ));
+          );
+        } else {
+          response = await lemmy.createPost(
+            communityId: communityId,
+            title: name,
+            contents: body,
+            url: url?.isEmpty == true ? null : url,
+            customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+            altText: altText?.isEmpty == true ? null : altText,
+            nsfw: nsfw,
+            languageId: languageId,
+          );
         }
 
-        final posts = await parsePosts([ThunderPost.fromLemmyPostView(postResponse.postView.toJson())]);
+        final posts = await parsePosts([response]);
         return posts.firstOrNull!;
       case ThreadiversePlatform.piefed:
         ThunderPost? response;
@@ -290,8 +270,8 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(CreatePostLike(auth: account.jwt!, postId: post.id, score: score));
-        return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+        final response = await lemmy.votePost(postId: post.id, score: score);
+        return response.copyWith(media: post.media);
       case ThreadiversePlatform.piefed:
         final response = await piefed.votePost(postId: post.id, score: score);
         return response.copyWith(media: post.media);
@@ -307,8 +287,8 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(SavePost(auth: account.jwt!, postId: post.id, save: save));
-        return ThunderPost.fromLemmyPostView(response.postView.toJson(), media: post.media);
+        final response = await lemmy.savePost(postId: post.id, save: save);
+        return response.copyWith(media: post.media);
       case ThreadiversePlatform.piefed:
         final response = await piefed.savePost(postId: post.id, save: save);
         return response.copyWith(media: post.media);
@@ -324,8 +304,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: [postId], read: read));
-        return response.isSuccess();
+        return await lemmy.readPost(postIds: [postId], read: read);
       case ThreadiversePlatform.piefed:
         return await piefed.readPost(postIds: [postId], read: read);
       default:
@@ -342,8 +321,8 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(MarkPostAsRead(auth: account.jwt!, postIds: postIds, read: read));
-        if (!response.isSuccess()) failed = List<int>.generate(postIds.length, (index) => index);
+        final response = await lemmy.readPost(postIds: postIds, read: read);
+        if (!response) failed = List<int>.generate(postIds.length, (index) => index);
         break;
       case ThreadiversePlatform.piefed:
         final success = await piefed.readPost(postIds: postIds, read: read);
@@ -363,8 +342,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(HidePost(auth: account.jwt!, postIds: [postId], hide: hide));
-        return response.success;
+        return await lemmy.hidePost(postId: postId, hide: hide);
       case ThreadiversePlatform.piefed:
         throw Exception('Hiding posts is not supported on Piefed');
       default:
@@ -379,8 +357,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(DeletePost(auth: account.jwt!, postId: postId, deleted: delete));
-        return response.postView.post.deleted == delete;
+        return await lemmy.deletePost(postId: postId, deleted: delete);
       case ThreadiversePlatform.piefed:
         return await piefed.deletePost(postId: postId, deleted: delete);
       default:
@@ -395,8 +372,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(LockPost(auth: account.jwt!, postId: postId, locked: lock));
-        return response.postView.post.locked == lock;
+        return await lemmy.lockPost(postId: postId, locked: lock);
       case ThreadiversePlatform.piefed:
         return await piefed.lockPost(postId: postId, locked: lock);
       default:
@@ -411,8 +387,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(FeaturePost(auth: account.jwt!, postId: postId, featured: pin, featureType: PostFeatureType.community));
-        return response.postView.post.featuredCommunity == pin;
+        return await lemmy.pinPost(postId: postId, pinned: pin);
       case ThreadiversePlatform.piefed:
         return await piefed.pinPost(postId: postId, pinned: pin);
       default:
@@ -427,8 +402,7 @@ class PostRepositoryImpl implements PostRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(RemovePost(auth: account.jwt!, postId: postId, removed: remove, reason: reason));
-        return response.postView.post.removed == remove;
+        return await lemmy.removePost(postId: postId, removed: remove, reason: reason);
       case ThreadiversePlatform.piefed:
         return await piefed.removePost(postId: postId, removed: remove, reason: reason);
       default:
@@ -437,16 +411,29 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<PostReportResponse> report(int postId, String reason) async {
+  Future<void> report(int postId, String reason) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(CreatePostReport(auth: account.jwt!, postId: postId, reason: reason));
-        return response;
+        return await lemmy.reportPost(postId: postId, reason: reason);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
+        return await piefed.reportPost(postId: postId, reason: reason);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
+  }
+
+  @override
+  Future<List<ThunderPostReport>> getPostReports({int? postId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.getPostReports(postId: postId, page: page, limit: limit, unresolved: unresolved, communityId: communityId);
+      case ThreadiversePlatform.piefed:
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -454,38 +441,14 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<ListPostReportsResponse> getPostReports({int? postId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+  Future<ThunderPostReport> resolvePostReport(int reportId, bool resolved) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await lemmy.run(ListPostReports(
-          auth: account.jwt!,
-          postId: postId,
-          page: page,
-          limit: limit,
-          unresolvedOnly: unresolved,
-          communityId: communityId,
-        ));
+        return await lemmy.resolvePostReport(reportId: reportId, resolved: resolved);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
-  }
-
-  @override
-  Future<PostReportResponse> resolvePostReport(int reportId, bool resolved) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        return await lemmy.run(ResolvePostReport(auth: account.jwt!, reportId: reportId, resolved: resolved));
-      case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');

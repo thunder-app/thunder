@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/src/core/enums/meta_search_type.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -63,7 +63,7 @@ class _InstancePageState extends State<InstancePage> {
 
   // Use the existing SearchType enum to represent what we're showing in the instance page
   // with SearchType.all representing the about page
-  SearchType viewType = SearchType.all;
+  MetaSearchType viewType = MetaSearchType.all;
   PostSortType postSortType = PostSortType.topAll;
 
   /// Context for [_onScroll] to use
@@ -163,7 +163,7 @@ class _InstancePageState extends State<InstancePage> {
                               semanticLabel: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
                             ),
                           ),
-                        if (viewType == SearchType.all)
+                        if (viewType == MetaSearchType.all)
                           IconButton(
                             tooltip: l10n.openInBrowser,
                             onPressed: () => handleLink(context, url: widget.site.site.actorId),
@@ -172,7 +172,7 @@ class _InstancePageState extends State<InstancePage> {
                               semanticLabel: l10n.openInBrowser,
                             ),
                           ),
-                        if (viewType != SearchType.all)
+                        if (viewType != MetaSearchType.all)
                           IconButton(
                             icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
                             onPressed: () {
@@ -210,7 +210,7 @@ class _InstancePageState extends State<InstancePage> {
                                 icon: Icons.shield_rounded,
                                 title: l10n.modlog,
                               ),
-                              if (viewType != SearchType.all)
+                              if (viewType != MetaSearchType.all)
                                 ThunderPopupMenuItem(
                                   onTap: () => handleLink(context, url: widget.site.site.actorId),
                                   icon: Icons.open_in_browser_rounded,
@@ -232,46 +232,46 @@ class _InstancePageState extends State<InstancePage> {
                               spacing: 10.0,
                               children: [
                                 ThunderActionChip(
-                                  backgroundColor: viewType == SearchType.all ? chipColor : null,
+                                  backgroundColor: viewType == MetaSearchType.all ? chipColor : null,
                                   icon: Icons.info_rounded,
-                                  onPressed: () => setState(() => viewType = SearchType.all),
+                                  onPressed: () => setState(() => viewType = MetaSearchType.all),
                                   label: l10n.about,
                                 ),
                                 ThunderActionChip(
-                                  backgroundColor: viewType == SearchType.communities ? chipColor : null,
+                                  backgroundColor: viewType == MetaSearchType.communities ? chipColor : null,
                                   icon: Icons.people_rounded,
                                   onPressed: () async {
-                                    viewType = SearchType.communities;
+                                    viewType = MetaSearchType.communities;
                                     await context.read<InstancePageCubit>().loadCommunities(page: 1, postSortType: postSortType);
                                     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                   },
                                   label: l10n.communities,
                                 ),
                                 ThunderActionChip(
-                                  backgroundColor: viewType == SearchType.users ? chipColor : null,
+                                  backgroundColor: viewType == MetaSearchType.users ? chipColor : null,
                                   icon: Icons.person_rounded,
                                   onPressed: () async {
-                                    viewType = SearchType.users;
+                                    viewType = MetaSearchType.users;
                                     await context.read<InstancePageCubit>().loadUsers(page: 1, postSortType: postSortType);
                                     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                   },
                                   label: l10n.users,
                                 ),
                                 ThunderActionChip(
-                                  backgroundColor: viewType == SearchType.posts ? chipColor : null,
+                                  backgroundColor: viewType == MetaSearchType.posts ? chipColor : null,
                                   icon: Icons.article_rounded,
                                   onPressed: () async {
-                                    viewType = SearchType.posts;
+                                    viewType = MetaSearchType.posts;
                                     await context.read<InstancePageCubit>().loadPosts(page: 1, postSortType: postSortType);
                                     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                   },
                                   label: l10n.posts,
                                 ),
                                 ThunderActionChip(
-                                  backgroundColor: viewType == SearchType.comments ? chipColor : null,
+                                  backgroundColor: viewType == MetaSearchType.comments ? chipColor : null,
                                   icon: Icons.comment_rounded,
                                   onPressed: () async {
-                                    viewType = SearchType.comments;
+                                    viewType = MetaSearchType.comments;
                                     await context.read<InstancePageCubit>().loadComments(page: 1, postSortType: postSortType);
                                     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
                                   },
@@ -303,7 +303,7 @@ class _InstancePageState extends State<InstancePage> {
                         ),
                       ),
                     if (state.status == InstancePageStatus.success || state.status == InstancePageStatus.done) ...[
-                      if (viewType == SearchType.all)
+                      if (viewType == MetaSearchType.all)
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.all(20),
@@ -312,7 +312,7 @@ class _InstancePageState extends State<InstancePage> {
                             ),
                           ),
                         ),
-                      if (viewType == SearchType.communities)
+                      if (viewType == MetaSearchType.communities)
                         SliverList.builder(
                           itemCount: state.communities?.length,
                           itemBuilder: (context, index) {
@@ -323,7 +323,7 @@ class _InstancePageState extends State<InstancePage> {
                             );
                           },
                         ),
-                      if (viewType == SearchType.users)
+                      if (viewType == MetaSearchType.users)
                         SliverList.builder(
                           itemCount: state.users?.length,
                           itemBuilder: (context, index) {
@@ -331,13 +331,13 @@ class _InstancePageState extends State<InstancePage> {
                             return Material(child: user != null ? UserListEntry(user: user, resolutionInstance: state.resolutionInstance) : Container());
                           },
                         ),
-                      if (viewType == SearchType.posts)
+                      if (viewType == MetaSearchType.posts)
                         FeedPostCardList(
                           markPostReadOnScroll: false,
                           posts: state.posts ?? [],
                           tabletMode: tabletMode,
                         ),
-                      if (viewType == SearchType.comments)
+                      if (viewType == MetaSearchType.comments)
                         SliverList.builder(
                           itemCount: state.comments?.length,
                           itemBuilder: (context, index) {
@@ -348,7 +348,7 @@ class _InstancePageState extends State<InstancePage> {
                           },
                         ),
                     ],
-                    if (state.status == InstancePageStatus.success && viewType != SearchType.all) ...[
+                    if (state.status == InstancePageStatus.success && viewType != MetaSearchType.all) ...[
                       const SliverToBoxAdapter(
                         child: SizedBox(height: 10),
                       ),
@@ -358,7 +358,7 @@ class _InstancePageState extends State<InstancePage> {
                         ),
                       ),
                     ],
-                    if (viewType != SearchType.all)
+                    if (viewType != MetaSearchType.all)
                       const SliverToBoxAdapter(
                         child: SizedBox(height: 10),
                       ),
@@ -376,16 +376,16 @@ class _InstancePageState extends State<InstancePage> {
     final InstancePageCubit instancePageCubit = context.read<InstancePageCubit>();
 
     switch (viewType) {
-      case SearchType.communities:
+      case MetaSearchType.communities:
         await instancePageCubit.loadCommunities(page: page ?? 1, postSortType: postSortType);
         break;
-      case SearchType.users:
+      case MetaSearchType.users:
         await instancePageCubit.loadUsers(page: page ?? 1, postSortType: postSortType);
         break;
-      case SearchType.posts:
+      case MetaSearchType.posts:
         await instancePageCubit.loadPosts(page: page ?? 1, postSortType: postSortType);
         break;
-      case SearchType.comments:
+      case MetaSearchType.comments:
         await instancePageCubit.loadComments(page: page ?? 1, postSortType: postSortType);
         break;
       default:

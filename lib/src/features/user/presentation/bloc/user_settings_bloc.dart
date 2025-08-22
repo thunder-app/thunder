@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/pictrs.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
@@ -108,7 +107,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     } catch (e) {
       return emit(state.copyWith(
         status: UserSettingsStatus.failure,
-        errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
+        errorMessage: getErrorMessage(GlobalContext.context, e.toString()),
       ));
     }
   }
@@ -171,7 +170,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       return emit(state.copyWith(
         status: UserSettingsStatus.failure,
         siteResponse: originalGetSiteResponse,
-        errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
+        errorMessage: getErrorMessage(GlobalContext.context, e.toString()),
       ));
     }
   }
@@ -195,7 +194,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         instanceBlocks: instanceBlocks,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+      return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: getErrorMessage(GlobalContext.context, e.toString())));
     }
   }
 
@@ -214,9 +213,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
       return add(const GetUserBlocksEvent());
     } catch (e) {
-      return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+      return emit(state.copyWith(status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert, errorMessage: getErrorMessage(GlobalContext.context, e.toString())));
     }
   }
 
@@ -244,9 +241,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         personBeingBlocked: 0,
       ));
     } catch (e) {
-      return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+      return emit(state.copyWith(status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert, errorMessage: getErrorMessage(GlobalContext.context, e.toString())));
     }
   }
 
@@ -270,9 +265,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         communityBeingBlocked: 0,
       ));
     } catch (e) {
-      return emit(state.copyWith(
-          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
-          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+      return emit(state.copyWith(status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert, errorMessage: getErrorMessage(GlobalContext.context, e.toString())));
     }
   }
 
@@ -281,13 +274,16 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       int page = 1;
-      List<LocalImageView> images = [];
-      List<LocalImageView>? lastResponse;
+      final images = <Map<String, dynamic>>[];
 
-      while (lastResponse?.isEmpty != true) {
+      while (true) {
         final response = await accountRepository.media(page: page);
-        images.addAll(lastResponse = response.images);
-        ++page;
+        final imagesList = response['images'] as List<dynamic>?;
+
+        if (imagesList == null || imagesList.isEmpty) break;
+
+        images.addAll(imagesList.whereType<Map<String, dynamic>>());
+        page++;
       }
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: images));
@@ -301,13 +297,13 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       // Optimistically remove the media from the list
-      state.images?.removeWhere((localImageView) => localImageView.localImage.pictrsAlias == event.id);
+      state.images?.removeWhere((localImageView) => localImageView['local_image']['pictrs_alias'] == event.id);
 
       final l10n = AppLocalizations.of(GlobalContext.context)!;
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      await PictrsApi(account.instance).delete(PictrsUploadFile(deleteToken: event.deleteToken, file: event.id), account.jwt);
+      await LemmyApi(account: account).deleteImage(file: event.id, token: event.deleteToken);
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
     } catch (e) {

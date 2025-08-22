@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart' as http;
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
-
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
@@ -21,7 +18,7 @@ abstract class InstanceRepository {
   Future<bool> block(int instanceId, bool block);
 
   /// Get federated instances
-  Future<GetFederatedInstancesResponse> federated();
+  Future<Map<String, dynamic>> federated();
 }
 
 /// Implementation of [InstanceRepository]
@@ -30,7 +27,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApi client;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -38,7 +35,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
   InstanceRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        client = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -52,16 +49,9 @@ class InstanceRepositoryImpl implements InstanceRepository {
   Future<ThunderSiteResponse> getSiteInfo() async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetSite(auth: account.jwt));
-        return ThunderSiteResponse.fromLemmySiteResponse(response.toJson());
+        return await client.site();
       case ThreadiversePlatform.piefed:
-        final uri = Uri.https(account.instance, '/api/alpha/site');
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-
-        final json = jsonDecode(response.body);
-        return ThunderSiteResponse.fromPiefedSiteResponse(json);
+        return await piefed.site();
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -74,8 +64,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(BlockInstance(auth: account.jwt!, instanceId: instanceId, block: block));
-        return response.blocked;
+        return await client.blockInstance(instanceId: instanceId, block: block);
       case ThreadiversePlatform.piefed:
         return await piefed.blockInstance(instanceId: instanceId, block: block);
       default:
@@ -84,11 +73,10 @@ class InstanceRepositoryImpl implements InstanceRepository {
   }
 
   @override
-  Future<GetFederatedInstancesResponse> federated() async {
+  Future<Map<String, dynamic>> federated() async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetFederatedInstances(auth: account.jwt));
-        return response;
+        return await client.federated();
       case ThreadiversePlatform.piefed:
         // TODO: Implement action on Piefed
         throw Exception('This feature is not yet available');

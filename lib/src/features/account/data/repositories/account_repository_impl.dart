@@ -1,18 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart' as http;
-import 'package:lemmy_api_client/v3.dart';
-
 import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 /// Implementation of [AccountRepository]
@@ -21,7 +17,7 @@ class AccountRepositoryImpl implements AccountRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApi lemmy;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -29,7 +25,7 @@ class AccountRepositoryImpl implements AccountRepository {
   AccountRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -43,23 +39,9 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<String?> login({required String username, required String password, String? totp}) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(Login(usernameOrEmail: username, password: password, totp2faToken: totp));
-        return response.jwt;
+        return await lemmy.login(username: username, password: password, totp: totp);
       case ThreadiversePlatform.piefed:
-        Map<String, dynamic> body = {
-          'username': username,
-          'password': password,
-        };
-
-        Map<String, String> headers = {
-          'Content-Type': 'application/json',
-        };
-
-        final uri = Uri.https(account.instance, '/api/alpha/user/login');
-        final response = await http.post(uri, body: jsonEncode(body), headers: headers);
-        final json = jsonDecode(response.body);
-        return json['jwt'];
-
+        return await piefed.login(username: username, password: password);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -72,32 +54,25 @@ class AccountRepositoryImpl implements AccountRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetSite(auth: account.jwt));
-        return response.myUser?.follows.map((cfv) => ThunderCommunity.fromLemmyCommunity(cfv.community.toJson())).toList() ?? [];
+        final response = await lemmy.site();
+        return response.myUser?.follows ?? [];
       case ThreadiversePlatform.piefed:
-        final uri = Uri.https(account.instance, '/api/alpha/site');
-        final headers = {if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
-
-        final response = await http.get(uri, headers: headers);
-
-        final json = jsonDecode(response.body);
-        final site = ThunderSiteResponse.fromPiefedSiteResponse(json);
-        return site.myUser?.follows ?? [];
+        final response = await piefed.site();
+        return response.myUser?.follows ?? [];
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<ListMediaResponse> media({int? page, int? limit}) async {
+  Future<Map<String, dynamic>> media({int? page, int? limit}) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await client.run(ListMedia(auth: account.jwt, page: page, limit: limit));
+        return await lemmy.media(page: page, limit: limit);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -105,7 +80,7 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<SaveUserSettingsResponse> saveSettings({
+  Future<void> saveSettings({
     String? bio,
     String? email,
     String? matrixUserId,
@@ -124,43 +99,40 @@ class AccountRepositoryImpl implements AccountRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await client.run(SaveUserSettings(
-          auth: account.jwt,
+        return await lemmy.saveUserSettings(
           bio: bio,
           email: email,
           matrixUserId: matrixUserId,
           displayName: displayName,
-          defaultListingType: defaultFeedListType?.toLemmyType(),
-          defaultSortType: defaultPostSortType?.toLemmyType(),
+          defaultFeedListType: defaultFeedListType,
+          defaultPostSortType: defaultPostSortType,
           showNsfw: showNsfw,
           showReadPosts: showReadPosts,
           showScores: showScores,
           botAccount: botAccount,
           showBotAccounts: showBotAccounts,
           discussionLanguages: discussionLanguages,
-        ));
+        );
       case ThreadiversePlatform.piefed:
         await piefed.saveUserSettings(
           bio: bio,
           showNsfw: showNsfw,
           showReadPosts: showReadPosts,
         );
-        return SaveUserSettingsResponse(success: true);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<SuccessResponse> importSettings(String settings) async {
+  Future<bool> importSettings(String settings) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await client.run(ImportSettings(auth: account.jwt, data: settings));
+        return await lemmy.importSettings(settings);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -174,9 +146,8 @@ class AccountRepositoryImpl implements AccountRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await client.run(ExportSettings(auth: account.jwt));
+        return await lemmy.exportSettings();
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed once available
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');

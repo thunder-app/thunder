@@ -243,7 +243,7 @@ class ThunderPostReport {
       creatorBannedFromCommunity: postReport['creator_banned_from_community'],
       creatorIsModerator: postReport['creator_is_moderator'],
       creatorIsAdmin: postReport['creator_is_admin'],
-      subscribed: postReport['subscribed'] != null ? SubscriptionStatusMapping.fromLemmyType(postReport['subscribed']) : null,
+      subscribed: postReport['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postReport['subscribed']) : null,
       saved: postReport['saved'],
       read: postReport['read'],
       hidden: postReport['hidden'],

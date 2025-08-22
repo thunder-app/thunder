@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/src/core/models/thunder_comment_report.dart';
 import 'package:thunder/src/core/models/thunder_post_report.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
@@ -103,7 +103,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
       // Extract information from the response
       List<ThunderPostReport> postReportViews = fetchReportsResult['postReportViews'];
-      List<CommentReportView> commentReportViews = fetchReportsResult['commentReportViews'];
+      List<ThunderCommentReport> commentReportViews = fetchReportsResult['commentReportViews'];
       bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
       bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
       int currentPage = fetchReportsResult['currentPage'];
@@ -132,7 +132,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     emit(state.copyWith(status: ReportStatus.fetching));
 
     List<ThunderPostReport> postReportViews = List.from(state.postReports);
-    List<CommentReportView> commentReportViews = List.from(state.commentReports);
+    List<ThunderCommentReport> commentReportViews = List.from(state.commentReports);
 
     Map<String, dynamic> fetchReportsResult = await fetchReports(
       page: state.currentPage,
@@ -145,7 +145,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     // Extract information from the response
     List<ThunderPostReport> newPostReportViews = fetchReportsResult['postReportViews'];
-    List<CommentReportView> newCommentReportViews = fetchReportsResult['commentReportViews'];
+    List<ThunderCommentReport> newCommentReportViews = fetchReportsResult['commentReportViews'];
     bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
     bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
     int currentPage = fetchReportsResult['currentPage'];
@@ -198,14 +198,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         }
       case ReportAction.resolveComment:
         // Optimistically update the report
-        int existingCommentReportViewIndex = state.commentReports.indexWhere((CommentReportView commentReportView) => commentReportView.commentReport.id == event.commentReportView!.commentReport.id);
+        int existingCommentReportViewIndex = state.commentReports.indexWhere((ThunderCommentReport commentReportView) => commentReportView.id == event.commentReportView!.id);
 
-        CommentReportView commentReportView = state.commentReports[existingCommentReportViewIndex];
-        CommentReport originalCommentReport = commentReportView.commentReport;
+        ThunderCommentReport commentReportView = state.commentReports[existingCommentReportViewIndex];
+        ThunderCommentReport originalCommentReport = commentReportView;
 
         try {
-          CommentReport updatedCommentReport = optimisticallyResolveCommentReport(commentReportView.commentReport, event.value);
-          state.commentReports[existingCommentReportViewIndex] = commentReportView.copyWith(commentReport: updatedCommentReport);
+          ThunderCommentReport updatedCommentReport = optimisticallyResolveCommentReport(commentReportView, event.value);
+          state.commentReports[existingCommentReportViewIndex] = updatedCommentReport;
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: ReportStatus.success));

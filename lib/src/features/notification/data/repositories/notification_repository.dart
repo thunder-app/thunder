@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
-
+import 'package:thunder/src/core/models/thunder_private_message.dart';
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
@@ -43,7 +43,7 @@ abstract class NotificationRepository {
   });
 
   /// Fetches any private messages
-  Future<PrivateMessagesResponse> messages({
+  Future<List<ThunderPrivateMessage>> messages({
     bool unread,
     int limit,
     int page,
@@ -68,7 +68,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApi lemmy;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -76,7 +76,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   NotificationRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -98,21 +98,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetReplies(
-          auth: account.jwt!,
-          unreadOnly: unread,
-          limit: limit,
-          sort: sort.toLemmyType(),
-          page: page,
-        ));
+        final response = await lemmy.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
 
-        final replies = response.replies.map((crv) {
-          final comment = ThunderComment.fromLemmyCommentView(crv.toJson());
+        final replies = response['replies'].map<ThunderComment>((crv) {
+          final comment = ThunderComment.fromLemmyCommentView(crv);
 
           return comment.copyWith(
-            recipient: ThunderUser.fromLemmyUser(crv.recipient.toJson()),
-            replyMentionId: crv.commentReply.id,
-            read: crv.commentReply.read,
+            recipient: ThunderUser.fromLemmyUser(crv['recipient']),
+            replyMentionId: crv['comment_reply']['id'],
+            read: crv['comment_reply']['read'],
           );
         }).toList();
         return replies;
@@ -139,7 +133,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkCommentReplyAsRead(auth: account.jwt!, commentReplyId: replyId, read: read));
+        await lemmy.markCommentReplyAsRead(replyId: replyId, read: read);
       case ThreadiversePlatform.piefed:
         await piefed.markCommentReplyAsRead(replyId: replyId, read: read);
       default:
@@ -159,24 +153,20 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetPersonMentions(
-          auth: account.jwt!,
-          unreadOnly: unread,
-          limit: limit,
-          sort: sort.toLemmyType(),
-          page: page,
-        ));
-        return response.mentions.map((mention) {
-          final comment = ThunderComment.fromLemmyCommentView(mention.toJson());
+        final response = await lemmy.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
+
+        return response['mentions'].map<ThunderComment>((mention) {
+          final comment = ThunderComment.fromLemmyCommentView(mention);
 
           return comment.copyWith(
-            recipient: ThunderUser.fromLemmyUser(mention.recipient.toJson()),
-            replyMentionId: mention.personMention.id,
-            read: mention.personMention.read,
+            recipient: ThunderUser.fromLemmyUser(mention['recipient']),
+            replyMentionId: mention['person_mention']['id'],
+            read: mention['person_mention']['read'],
           );
         }).toList();
       case ThreadiversePlatform.piefed:
         final response = await piefed.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
+
         return response['replies'].map<ThunderComment>((mention) {
           final comment = ThunderComment.fromPiefedCommentView(mention);
 
@@ -198,7 +188,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkPersonMentionAsRead(auth: account.jwt!, personMentionId: mentionId, read: read));
+        await lemmy.markCommentMentionAsRead(mentionId: mentionId, read: read);
       case ThreadiversePlatform.piefed:
         await piefed.markCommentReplyAsRead(replyId: mentionId, read: read);
       default:
@@ -207,7 +197,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<PrivateMessagesResponse> messages({
+  Future<List<ThunderPrivateMessage>> messages({
     bool unread = false,
     int limit = 50,
     int page = 1,
@@ -217,15 +207,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetPrivateMessages(
-          auth: account.jwt!,
-          unreadOnly: unread,
-          limit: limit,
-          page: page,
-        ));
-        return response;
+        return await lemmy.getPrivateMessages(page: page, limit: limit, unread: unread);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -239,7 +222,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkPrivateMessageAsRead(auth: account.jwt!, privateMessageId: messageId, read: read));
+        await lemmy.markPrivateMessageAsRead(messageId: messageId, read: read);
       case ThreadiversePlatform.piefed:
         await piefed.markPrivateMessageAsRead(messageId: messageId, read: read);
       default:
@@ -254,11 +237,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetUnreadCount(auth: account.jwt!));
-        return response.toJson();
+        return await lemmy.unreadCount();
       case ThreadiversePlatform.piefed:
-        final response = await piefed.unreadCount();
-        return response;
+        return await piefed.unreadCount();
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -271,7 +252,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        await client.run(MarkAllAsRead(auth: account.jwt!));
+        await lemmy.markAllNotificationsAsRead();
       case ThreadiversePlatform.piefed:
         await piefed.markAllNotificationsAsRead();
       default:

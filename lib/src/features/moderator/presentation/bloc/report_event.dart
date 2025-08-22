@@ -48,7 +48,7 @@ final class ReportFeedItemActionedEvent extends ReportEvent {
   final ThunderPostReport? postReportView;
 
   /// This is the original CommentReportView to perform the action upon. Only one of [postReportView] or [commentReportView] should be set
-  final CommentReportView? commentReportView;
+  final ThunderCommentReport? commentReportView;
 
   /// This indicates the relevant action to perform on the post/comment report
   final ReportAction reportAction;

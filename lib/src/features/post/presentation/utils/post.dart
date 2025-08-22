@@ -96,7 +96,7 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
     for (ThunderPost post in posts) {
       try {
         final response = await SearchRepositoryImpl(account: account).resolve(query: post.apId);
-        resolvedPosts.add(ThunderPost.fromLemmyPostView(response.post!.toJson()));
+        resolvedPosts.add(response['post']);
       } catch (e) {
         // If we can't resolve it, we won't even add it
       }

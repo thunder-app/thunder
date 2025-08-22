@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
-
-import 'package:lemmy_api_client/v3.dart' as lemmy;
-
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -88,39 +85,33 @@ Future<Map<String, dynamic>> _fetchModlogEvents({
 
   // Guarantee that we fetch at least x events (unless we reach the end of the feed)
   do {
-    final client = lemmy.LemmyApiV3(account.instance, debug: kDebugMode);
-
-    final response = await client.run(lemmy.GetModlog(
-      auth: account.jwt,
+    final response = await LemmyApi(account: account).getModlog(
       page: currentPage,
-      type: lemmy.ModlogActionType.values.firstWhere(
-        (type) => type.name.toLowerCase() == modlogActionType?.name.toLowerCase(),
-        orElse: () => lemmy.ModlogActionType.all,
-      ),
+      modlogActionType: modlogActionType,
       communityId: communityId,
-      otherPersonId: userId,
-      modPersonId: moderatorId,
+      userId: userId,
+      moderatorId: moderatorId,
       commentId: commentId,
-    ));
+    );
 
     List<ModlogEventItem> items = [];
 
     // Convert the response to a list of modlog events
-    List<ModlogEventItem> removedPosts = response.removedPosts.map((e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
-    List<ModlogEventItem> lockedPosts = response.lockedPosts.map((e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
-    List<ModlogEventItem> featuredPosts = response.featuredPosts.map((e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
-    List<ModlogEventItem> removedComments = response.removedComments.map((e) => parseModlogEvent(ModlogActionType.modRemoveComment, e)).toList();
-    List<ModlogEventItem> removedCommunities = response.removedCommunities.map((e) => parseModlogEvent(ModlogActionType.modRemoveCommunity, e)).toList();
-    List<ModlogEventItem> bannedFromCommunity = response.bannedFromCommunity.map((e) => parseModlogEvent(ModlogActionType.modBanFromCommunity, e)).toList();
-    List<ModlogEventItem> banned = response.banned.map((e) => parseModlogEvent(ModlogActionType.modBan, e)).toList();
-    List<ModlogEventItem> addedToCommunity = response.addedToCommunity.map((e) => parseModlogEvent(ModlogActionType.modAddCommunity, e)).toList();
-    List<ModlogEventItem> transferredToCommunity = response.transferredToCommunity.map((e) => parseModlogEvent(ModlogActionType.modTransferCommunity, e)).toList();
-    List<ModlogEventItem> added = response.added.map((e) => parseModlogEvent(ModlogActionType.modAdd, e)).toList();
-    List<ModlogEventItem> adminPurgedPersons = response.adminPurgedPersons.map((e) => parseModlogEvent(ModlogActionType.adminPurgePerson, e)).toList();
-    List<ModlogEventItem> adminPurgedCommunities = response.adminPurgedCommunities.map((e) => parseModlogEvent(ModlogActionType.adminPurgeCommunity, e)).toList();
-    List<ModlogEventItem> adminPurgedPosts = response.adminPurgedPosts.map((e) => parseModlogEvent(ModlogActionType.adminPurgePost, e)).toList();
-    List<ModlogEventItem> adminPurgedComments = response.adminPurgedComments.map((e) => parseModlogEvent(ModlogActionType.adminPurgeComment, e)).toList();
-    List<ModlogEventItem> hiddenCommunities = response.hiddenCommunities.map((e) => parseModlogEvent(ModlogActionType.modHideCommunity, e)).toList();
+    List<ModlogEventItem> removedPosts = response['removed_posts'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
+    List<ModlogEventItem> lockedPosts = response['locked_posts'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
+    List<ModlogEventItem> featuredPosts = response['featured_posts'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
+    List<ModlogEventItem> removedComments = response['removed_comments'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemoveComment, e)).toList();
+    List<ModlogEventItem> removedCommunities = response['removed_communities'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemoveCommunity, e)).toList();
+    List<ModlogEventItem> bannedFromCommunity = response['banned_from_community'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modBanFromCommunity, e)).toList();
+    List<ModlogEventItem> banned = response['banned'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modBan, e)).toList();
+    List<ModlogEventItem> addedToCommunity = response['added_to_community'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modAddCommunity, e)).toList();
+    List<ModlogEventItem> transferredToCommunity = response['transferred_to_community'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modTransferCommunity, e)).toList();
+    List<ModlogEventItem> added = response['added'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modAdd, e)).toList();
+    List<ModlogEventItem> adminPurgedPersons = response['admin_purged_persons'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgePerson, e)).toList();
+    List<ModlogEventItem> adminPurgedCommunities = response['admin_purged_communities'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgeCommunity, e)).toList();
+    List<ModlogEventItem> adminPurgedPosts = response['admin_purged_posts'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgePost, e)).toList();
+    List<ModlogEventItem> adminPurgedComments = response['admin_purged_comments'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgeComment, e)).toList();
+    List<ModlogEventItem> hiddenCommunities = response['hidden_communities'].map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modHideCommunity, e)).toList();
 
     items.addAll(removedPosts);
     items.addAll(lockedPosts);
@@ -156,137 +147,137 @@ ModlogEventItem parseModlogEvent(ModlogActionType type, dynamic event) {
     case ModlogActionType.modRemovePost:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modRemovePost.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        reason: event.modRemovePost.reason,
-        post: ThunderPost.fromLemmyPost(event.post.toJson()),
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modRemovePost.removed,
+        dateTime: event['mod_remove_post']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        reason: event['mod_remove_post']['reason'],
+        post: ThunderPost.fromLemmyPost(event['post']),
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_remove_post']['removed'],
       );
     case ModlogActionType.modLockPost:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modLockPost.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        post: ThunderPost.fromLemmyPost(event.post.toJson()),
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modLockPost.locked,
+        dateTime: event['mod_lock_post']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        post: ThunderPost.fromLemmyPost(event['post']),
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_lock_post']['locked'],
       );
     case ModlogActionType.modFeaturePost:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modFeaturePost.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        post: ThunderPost.fromLemmyPost(event.post.toJson()),
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modFeaturePost.featured,
+        dateTime: event['mod_feature_post']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        post: ThunderPost.fromLemmyPost(event['post']),
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_feature_post']['featured'],
       );
     case ModlogActionType.modRemoveComment:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modRemoveComment.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        reason: event.modRemoveComment.reason,
-        user: event.commenter != null ? ThunderUser.fromLemmyUser(event.commenter.toJson()) : null,
-        post: ThunderPost.fromLemmyPost(event.post.toJson()),
-        comment: ThunderComment.fromLemmyComment(event.comment.toJson()),
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modRemoveComment.removed,
+        dateTime: event['mod_remove_comment']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        reason: event['mod_remove_comment']['reason'],
+        user: event['commenter'] != null ? ThunderUser.fromLemmyUser(event['commenter']) : null,
+        post: ThunderPost.fromLemmyPost(event['post']),
+        comment: ThunderComment.fromLemmyComment(event['comment']),
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_remove_comment']['removed'],
       );
     case ModlogActionType.modRemoveCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modRemoveCommunity.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        reason: event.modRemoveCommunity.reason,
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modRemoveCommunity.removed,
+        dateTime: event['mod_remove_community']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        reason: event['mod_remove_community']['reason'],
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_remove_community']['removed'],
       );
     case ModlogActionType.modBanFromCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modBanFromCommunity.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        reason: event.modBanFromCommunity.reason,
-        user: event.bannedPerson != null ? ThunderUser.fromLemmyUser(event.bannedPerson.toJson()) : null,
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modBanFromCommunity.banned,
+        dateTime: event['mod_ban_from_community']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        reason: event['mod_ban_from_community']['reason'],
+        user: event['banned_person'] != null ? ThunderUser.fromLemmyUser(event['banned_person']) : null,
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_ban_from_community']['banned'],
       );
     case ModlogActionType.modBan:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modBan.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        reason: event.modBan.reason,
-        user: event.bannedPerson != null ? ThunderUser.fromLemmyUser(event.bannedPerson.toJson()) : null,
-        actioned: event.modBan.banned,
+        dateTime: event['mod_ban']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        reason: event['mod_ban']['reason'],
+        user: event['banned_person'] != null ? ThunderUser.fromLemmyUser(event['banned_person']) : null,
+        actioned: event['mod_ban']['banned'],
       );
     case ModlogActionType.modAddCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modAddCommunity.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: !event.modAddCommunity.removed,
+        dateTime: event['mod_add_community']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        user: event['modded_person'] != null ? ThunderUser.fromLemmyUser(event['modded_person']) : null,
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: !event['mod_add_community']['removed'],
       );
     case ModlogActionType.modTransferCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modTransferCommunity.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
+        dateTime: event['mod_transfer_community']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        user: event['modded_person'] != null ? ThunderUser.fromLemmyUser(event['modded_person']) : null,
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
         actioned: true,
       );
     case ModlogActionType.modAdd:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modAdd.when,
-        moderator: event.moderator != null ? ThunderUser.fromLemmyUser(event.moderator.toJson()) : null,
-        user: event.moddedPerson != null ? ThunderUser.fromLemmyUser(event.moddedPerson.toJson()) : null,
-        actioned: !event.modAdd.removed,
+        dateTime: event['mod_add']['when_'],
+        moderator: event['moderator'] != null ? ThunderUser.fromLemmyUser(event['moderator']) : null,
+        user: event['modded_person'] != null ? ThunderUser.fromLemmyUser(event['modded_person']) : null,
+        actioned: !event['mod_add']['removed'],
       );
     case ModlogActionType.adminPurgePerson:
       return ModlogEventItem(
         type: type,
-        dateTime: event.adminPurgePerson.when,
-        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
-        reason: event.adminPurgePerson.reason,
+        dateTime: event['admin_purge_person']['when_'],
+        admin: event['admin'] != null ? ThunderUser.fromLemmyUser(event['admin']) : null,
+        reason: event['admin_purge_person']['reason'],
         actioned: true,
       );
     case ModlogActionType.adminPurgeCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.adminPurgeCommunity.when,
-        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
-        reason: event.adminPurgeCommunity.reason,
+        dateTime: event['admin_purge_community']['when_'],
+        admin: event['admin'] != null ? ThunderUser.fromLemmyUser(event['admin']) : null,
+        reason: event['admin_purge_community']['reason'],
         actioned: true,
       );
     case ModlogActionType.adminPurgePost:
       return ModlogEventItem(
         type: type,
-        dateTime: event.adminPurgePost.when,
-        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
-        reason: event.adminPurgePost.reason,
+        dateTime: event['admin_purge_post']['when_'],
+        admin: event['admin'] != null ? ThunderUser.fromLemmyUser(event['admin']) : null,
+        reason: event['admin_purge_post']['reason'],
         actioned: true,
       );
     case ModlogActionType.adminPurgeComment:
       return ModlogEventItem(
         type: type,
-        dateTime: event.adminPurgeComment.when,
-        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
-        reason: event.adminPurgeComment.reason,
+        dateTime: event['admin_purge_comment']['when_'],
+        admin: event['admin'] != null ? ThunderUser.fromLemmyUser(event['admin']) : null,
+        reason: event['admin_purge_comment']['reason'],
         actioned: true,
       );
     case ModlogActionType.modHideCommunity:
       return ModlogEventItem(
         type: type,
-        dateTime: event.modHideCommunity.when,
-        admin: event.admin != null ? ThunderUser.fromLemmyUser(event.admin.toJson()) : null,
-        reason: event.modHideCommunity.reason,
-        community: ThunderCommunity.fromLemmyCommunity(event.community.toJson()),
-        actioned: event.modHideCommunity.hidden,
+        dateTime: event['mod_hide_community']['when'],
+        admin: event['admin'] != null ? ThunderUser.fromLemmyUser(event['admin']) : null,
+        reason: event['mod_hide_community']['reason'],
+        community: ThunderCommunity.fromLemmyCommunity(event['community']),
+        actioned: event['mod_hide_community']['hidden'],
       );
     default:
       throw Exception(l10n.missingErrorMessage);

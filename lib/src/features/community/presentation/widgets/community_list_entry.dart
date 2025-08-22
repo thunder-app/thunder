@@ -150,7 +150,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
               final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
               final response = await SearchRepositoryImpl(account: account).resolve(query: widget.community.actorId);
 
-              communityId = response.community?.community.id;
+              communityId = response['community']?.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about communityId being un-navigable
             }

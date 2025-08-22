@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/src/features/community/community.dart';
@@ -281,19 +280,20 @@ bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
 void showInstanceInputDialog(
   BuildContext context, {
   required String title,
-  required void Function(InstanceWithFederationState) onInstanceSelected,
-  Iterable<InstanceWithFederationState>? emptySuggestions,
+  required void Function(Map<String, dynamic>) onInstanceSelected,
+  Iterable<Map<String, dynamic>>? emptySuggestions,
 }) async {
   Account? account = await fetchActiveProfile();
 
-  final getFederatedInstancesResponse = await InstanceRepositoryImpl(account: account).federated();
+  final federatedInstances = await InstanceRepositoryImpl(account: account).federated();
+  final linkedInstances = federatedInstances['linked'];
 
-  Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
+  Future<String?> onSubmitted({Map<String, dynamic>? payload, String? value}) async {
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final InstanceWithFederationState? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((InstanceWithFederationState instance) => instance.domain == value);
+      final Map<String, dynamic>? instance = linkedInstances.firstWhereOrNull((Map<String, dynamic> instance) => instance['domain'] == value);
 
       if (instance != null) {
         onInstanceSelected(instance);
@@ -307,31 +307,31 @@ void showInstanceInputDialog(
   }
 
   if (context.mounted) {
-    showInputDialog<InstanceWithFederationState>(
+    showInputDialog<Map<String, dynamic>>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance(1),
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getInstanceSuggestions(query, getFederatedInstancesResponse.federatedInstances?.linked),
+      getSuggestions: (query) => getInstanceSuggestions(query, linkedInstances),
       suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<List<InstanceWithFederationState>> getInstanceSuggestions(String query, List<InstanceWithFederationState>? emptySuggestions) async {
+Future<List<Map<String, dynamic>>> getInstanceSuggestions(String query, List<Map<String, dynamic>>? emptySuggestions) async {
   if (query.isEmpty) {
     return [];
   }
 
-  List<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)).toList() ?? [];
+  List<Map<String, dynamic>> filteredInstances = emptySuggestions?.where((Map<String, dynamic> instance) => instance['domain'].contains(query)).toList() ?? [];
   return filteredInstances;
 }
 
-Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelected, BuildContext? context}) {
+Widget buildInstanceSuggestionWidget(Map<String, dynamic> payload, {void Function(Map<String, dynamic>)? onSelected, BuildContext? context}) {
   final theme = Theme.of(context!);
 
   return Tooltip(
-    message: '${payload.domain}',
+    message: '${payload['domain']}',
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -340,7 +340,7 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
           backgroundColor: theme.colorScheme.secondaryContainer,
           maxRadius: 16.0,
           child: Text(
-            payload.domain[0].toUpperCase(),
+            payload['domain'][0].toUpperCase(),
             semanticsLabel: '',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -349,7 +349,7 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
           ),
         ),
         title: Text(
-          payload.domain,
+          payload['domain'],
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

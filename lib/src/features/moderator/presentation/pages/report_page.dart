@@ -4,13 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
@@ -296,21 +293,23 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           if (reportFeedType == ReportFeedType.comment)
                             SliverList.builder(
                               itemBuilder: (context, index) {
-                                CommentView commentView = CommentView(
-                                  comment: state.commentReports[index].comment,
-                                  creator: state.commentReports[index].commentCreator,
-                                  creatorIsModerator: state.commentReports[index].creatorIsModerator,
-                                  creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
+                                final comment = state.commentReports[index].comment?.copyWith(
+                                  creator: state.commentReports[index].creator,
                                   post: state.commentReports[index].post,
                                   community: state.commentReports[index].community,
-                                  counts: state.commentReports[index].counts,
+                                  score: state.commentReports[index].score,
+                                  upvotes: state.commentReports[index].upvotes,
+                                  downvotes: state.commentReports[index].downvotes,
+                                  childCount: state.commentReports[index].childCount,
                                   creatorBannedFromCommunity: state.commentReports[index].creatorBannedFromCommunity,
-                                  subscribed: SubscriptionStatus.notSubscribed.toLemmyType(), // Not available
-                                  saved: false, // Not available
-                                  creatorBlocked: false, // Not available
+                                  bannedFromCommunity: false,
+                                  creatorIsModerator: state.commentReports[index].creatorIsModerator,
+                                  creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
+                                  subscribed: state.commentReports[index].subscribed,
+                                  saved: state.commentReports[index].saved,
+                                  creatorBlocked: state.commentReports[index].creatorBlocked,
+                                  myVote: state.commentReports[index].myVote,
                                 );
-
-                                final comment = ThunderComment.fromLemmyCommentView(commentView.toJson());
 
                                 return Column(
                                   children: [
@@ -318,8 +317,8 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                       spacing: 8.0,
                                       children: [
                                         CommentReference(
-                                          comment: comment,
-                                          isOwnComment: commentView.creator.id == context.read<ProfileBloc>().state.user?.id,
+                                          comment: comment!,
+                                          isOwnComment: comment.creator?.id == context.read<ProfileBloc>().state.user?.id,
                                           disableActions: true,
                                         ),
                                         Padding(
@@ -335,15 +334,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   InkWell(
                                                     borderRadius: BorderRadius.circular(6),
                                                     onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.commentReports[index].creator.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.commentReports[index].creator!.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
                                                         context,
-                                                        state.commentReports[index].creator.name,
-                                                        state.commentReports[index].creator.displayName,
-                                                        fetchInstanceNameFromUrl(state.commentReports[index].creator.actorId),
+                                                        state.commentReports[index].creator?.name,
+                                                        state.commentReports[index].creator?.displayName,
+                                                        fetchInstanceNameFromUrl(state.commentReports[index].creator?.actorId),
                                                       ),
                                                     ),
                                                   ),
@@ -355,7 +354,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.commentReports[index].commentReport.reason),
+                                                    l10n.detailedReason(state.commentReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     fontScale: thunderState.contentFontSizeScale,
@@ -372,10 +371,10 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
                                                             reportAction: ReportAction.resolveComment,
                                                             commentReportView: state.commentReports[index],
-                                                            value: !state.commentReports[index].commentReport.resolved,
+                                                            value: !state.commentReports[index].resolved,
                                                           ));
                                                     },
-                                                    icon: Icon(state.commentReports[index].commentReport.resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(state.commentReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),

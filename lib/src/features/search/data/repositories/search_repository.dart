@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
@@ -31,7 +30,7 @@ abstract class SearchRepository {
   });
 
   /// Resolves a given query
-  Future<ResolveObjectResponse> resolve({required String query});
+  Future<Map<String, dynamic>> resolve({required String query});
 }
 
 /// Implementation of [SearchRepository]
@@ -40,7 +39,7 @@ class SearchRepositoryImpl implements SearchRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 lemmy;
+  late LemmyApi lemmy;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -48,7 +47,7 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -71,24 +70,23 @@ class SearchRepositoryImpl implements SearchRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(Search(
-          auth: account.jwt,
-          q: query,
-          type: type?.toLemmyType(),
-          sort: sort?.toLemmyType(),
-          listingType: listingType?.toLemmyType(),
+        final response = await lemmy.search(
+          query: query,
+          type: type,
+          sort: sort,
+          listingType: listingType,
           limit: limit,
           page: page,
           communityId: communityId,
           creatorId: creatorId,
-        ));
+        );
 
         return {
-          'type': MetaSearchType.values.firstWhere((e) => e.searchType == response.type.value),
-          'comments': response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList(),
-          'posts': response.posts.map((pv) => ThunderPost.fromLemmyPostView(pv.toJson())).toList(),
-          'communities': response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList(),
-          'users': response.users.map((pv) => ThunderUser.fromLemmyUserView(pv.toJson())).toList(),
+          'type': MetaSearchType.values.firstWhere((e) => e.searchType == response['type_']),
+          'comments': response['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList(),
+          'posts': response['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList(),
+          'communities': response['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromLemmyCommunityView(cv)).toList(),
+          'users': response['users'].map<ThunderUser>((pv) => ThunderUser.fromLemmyUserView(pv)).toList(),
         };
       case ThreadiversePlatform.piefed:
         final response = await piefed.search(
@@ -113,13 +111,12 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   @override
-  Future<ResolveObjectResponse> resolve({required String query}) async {
+  Future<Map<String, dynamic>> resolve({required String query}) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await lemmy.run(ResolveObject(q: query));
+        return await lemmy.resolve(query: query);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
+        return await piefed.resolve(query: query);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

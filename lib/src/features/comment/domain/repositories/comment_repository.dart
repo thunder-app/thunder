@@ -1,5 +1,4 @@
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
-
+import 'package:thunder/src/core/models/thunder_comment_report.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 
@@ -44,13 +43,13 @@ abstract class CommentRepository {
   Future<ThunderComment> delete(ThunderComment comment, bool deleted);
 
   /// Reports a comment
-  Future<CommentReportResponse> report(int commentId, String reason);
+  Future<void> report(int commentId, String reason);
 
   /// Get comment reports
-  Future<ListCommentReportsResponse> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId});
+  Future<List<ThunderCommentReport>> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId});
 
   /// Resolve a comment report
-  Future<CommentReportResponse> resolveCommentReport(int reportId, bool resolved);
+  Future<ThunderCommentReport> resolveCommentReport(int reportId, bool resolved);
 
   /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment
   /// with the applied settings on Settings -> Appearance -> Comments page.

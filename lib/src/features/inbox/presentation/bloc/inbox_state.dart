@@ -26,7 +26,7 @@ class InboxState extends Equatable {
   final InboxStatus status;
   final String? errorMessage;
 
-  final List<PrivateMessageView> privateMessages;
+  final List<ThunderPrivateMessage> privateMessages;
   final List<ThunderComment> mentions;
   final List<ThunderComment> replies;
 
@@ -50,7 +50,7 @@ class InboxState extends Equatable {
   InboxState copyWith({
     required InboxStatus status,
     String? errorMessage,
-    List<PrivateMessageView>? privateMessages,
+    List<ThunderPrivateMessage>? privateMessages,
     List<ThunderComment>? mentions,
     List<ThunderComment>? replies,
     bool? showUnreadOnly,

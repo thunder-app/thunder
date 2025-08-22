@@ -263,7 +263,7 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderCommunity?> _resolveCommunity(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response.community != null ? ThunderCommunity.fromLemmyCommunityView(response.community!.toJson()) : null;
+      return response['community'];
     } catch (e) {
       debugPrint('Failed to resolve community: $e');
       return null;
@@ -274,10 +274,9 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderPost?> _resolvePost(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      if (response.post == null) return null;
+      if (response['post'] == null) return null;
 
-      final thunderPost = ThunderPost.fromLemmyPostView(response.post!.toJson());
-      final parsedPosts = await parsePosts([thunderPost]);
+      final parsedPosts = await parsePosts([response['post']]);
       return parsedPosts.isNotEmpty ? parsedPosts.first : null;
     } catch (e) {
       debugPrint('Failed to resolve post: $e');
@@ -289,7 +288,7 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderComment?> _resolveParentComment(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response.comment != null ? ThunderComment.fromLemmyCommentView(response.comment!.toJson()) : null;
+      return response['comment'];
     } catch (e) {
       debugPrint('Failed to resolve parent comment: $e');
       return null;

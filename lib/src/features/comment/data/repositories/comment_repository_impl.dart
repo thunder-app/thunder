@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
-
+import 'package:thunder/src/core/models/thunder_comment_report.dart';
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
@@ -18,7 +18,7 @@ class CommentRepositoryImpl implements CommentRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 lemmy;
+  late LemmyApi lemmy;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -26,7 +26,7 @@ class CommentRepositoryImpl implements CommentRepository {
   CommentRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApiV3(account.instance, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -40,11 +40,9 @@ class CommentRepositoryImpl implements CommentRepository {
   Future<ThunderComment> getComment(int commentId) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(GetComment(id: commentId, auth: account.jwt));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+        return await lemmy.getComment(commentId);
       case ThreadiversePlatform.piefed:
-        final response = await piefed.getComment(commentId);
-        return ThunderComment.fromPiefedCommentView(response['comment']);
+        return await piefed.getComment(commentId);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -62,21 +60,7 @@ class CommentRepositoryImpl implements CommentRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(GetComments(
-          auth: account.jwt,
-          communityId: communityId,
-          postId: postId,
-          parentId: parentId,
-          sort: commentSortType?.toLemmyType(),
-          limit: limit,
-          maxDepth: maxDepth,
-          page: page,
-          type: ListingType.all,
-        ));
-
-        return response.comments.map((cv) => ThunderComment.fromLemmyCommentView(cv.toJson())).toList();
-      case ThreadiversePlatform.piefed:
-        final response = await piefed.getComments(
+        return await lemmy.getComments(
           postId: postId,
           page: page,
           limit: limit,
@@ -85,8 +69,16 @@ class CommentRepositoryImpl implements CommentRepository {
           parentId: parentId,
           commentSortType: commentSortType,
         );
-
-        return response;
+      case ThreadiversePlatform.piefed:
+        return await piefed.getComments(
+          postId: postId,
+          page: page,
+          limit: limit,
+          maxDepth: maxDepth,
+          communityId: communityId,
+          parentId: parentId,
+          commentSortType: commentSortType,
+        );
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -104,22 +96,19 @@ class CommentRepositoryImpl implements CommentRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(CreateComment(
-          postId: postId,
-          content: content,
-          parentId: parentId,
-          languageId: languageId,
-          auth: account.jwt!,
-        ));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
-      case ThreadiversePlatform.piefed:
-        final response = await piefed.createComment(
+        return await lemmy.createComment(
           postId: postId,
           content: content,
           parentId: parentId,
           languageId: languageId,
         );
-        return response;
+      case ThreadiversePlatform.piefed:
+        return await piefed.createComment(
+          postId: postId,
+          content: content,
+          parentId: parentId,
+          languageId: languageId,
+        );
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -136,20 +125,17 @@ class CommentRepositoryImpl implements CommentRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(EditComment(
-          commentId: commentId,
-          content: content,
-          languageId: languageId,
-          auth: account.jwt!,
-        ));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
-      case ThreadiversePlatform.piefed:
-        final response = await piefed.editComment(
+        return await lemmy.editComment(
           commentId: commentId,
           content: content,
           languageId: languageId,
         );
-        return response;
+      case ThreadiversePlatform.piefed:
+        return await piefed.editComment(
+          commentId: commentId,
+          content: content,
+          languageId: languageId,
+        );
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -162,11 +148,9 @@ class CommentRepositoryImpl implements CommentRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(CreateCommentLike(auth: account.jwt!, commentId: comment.id, score: score));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+        return await lemmy.voteComment(commentId: comment.id, score: score);
       case ThreadiversePlatform.piefed:
-        final response = await piefed.voteComment(commentId: comment.id, score: score);
-        return response;
+        return await piefed.voteComment(commentId: comment.id, score: score);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -179,11 +163,9 @@ class CommentRepositoryImpl implements CommentRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(SaveComment(auth: account.jwt!, commentId: comment.id, save: save));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+        return await lemmy.saveComment(commentId: comment.id, save: save);
       case ThreadiversePlatform.piefed:
-        final response = await piefed.saveComment(commentId: comment.id, save: save);
-        return response;
+        return await piefed.saveComment(commentId: comment.id, save: save);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
@@ -196,27 +178,38 @@ class CommentRepositoryImpl implements CommentRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(DeleteComment(auth: account.jwt!, commentId: comment.id, deleted: deleted));
-        return ThunderComment.fromLemmyCommentView(response.commentView.toJson());
+        return await lemmy.deleteComment(commentId: comment.id, deleted: deleted);
       case ThreadiversePlatform.piefed:
-        final response = await piefed.deleteComment(commentId: comment.id, deleted: deleted);
-        return response;
+        return await piefed.deleteComment(commentId: comment.id, deleted: deleted);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }
   }
 
   @override
-  Future<CommentReportResponse> report(int commentId, String reason) async {
+  Future<void> report(int commentId, String reason) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await lemmy.run(CreateCommentReport(commentId: commentId, reason: reason, auth: account.jwt!));
-        return response;
+        return await lemmy.reportComment(commentId: commentId, reason: reason);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
+        return await piefed.reportComment(commentId: commentId, reason: reason);
+      default:
+        throw Exception('Unsupported platform: ${account.platform}');
+    }
+  }
+
+  @override
+  Future<List<ThunderCommentReport>> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    switch (account.platform) {
+      case ThreadiversePlatform.lemmy:
+        return await lemmy.getCommentReports(commentId: commentId, page: page, limit: limit, unresolved: unresolved, communityId: communityId);
+      case ThreadiversePlatform.piefed:
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');
@@ -224,38 +217,14 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<ListCommentReportsResponse> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+  Future<ThunderCommentReport> resolveCommentReport(int reportId, bool resolved) async {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await lemmy.run(ListCommentReports(
-          auth: account.jwt!,
-          commentId: commentId,
-          page: page,
-          limit: limit,
-          unresolvedOnly: unresolved,
-          communityId: communityId,
-        ));
+        return await lemmy.resolveCommentReport(reportId: reportId, resolved: resolved);
       case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
-        throw Exception('This feature is not yet available');
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
-  }
-
-  @override
-  Future<CommentReportResponse> resolveCommentReport(int reportId, bool resolved) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        return await lemmy.run(ResolveCommentReport(auth: account.jwt!, reportId: reportId, resolved: resolved));
-      case ThreadiversePlatform.piefed:
-        // TODO: Implement action on Piefed
         throw Exception('This feature is not yet available');
       default:
         throw Exception('Unsupported platform: ${account.platform}');

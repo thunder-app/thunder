@@ -1,5 +1,4 @@
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/src/core/models/thunder_comment_report.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/models/thunder_post_report.dart';
@@ -22,13 +21,13 @@ Future<Map<String, dynamic>> fetchReports({
   bool hasReachedCommentReportsEnd = false;
 
   List<ThunderPostReport> postReportViews = [];
-  List<CommentReportView> commentReportViews = [];
+  List<ThunderCommentReport> commentReportViews = [];
 
   int currentPage = page;
 
   // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
   do {
-    final listPostReportsResponse = await PostRepositoryImpl(account: account).getPostReports(
+    final postReports = await PostRepositoryImpl(account: account).getPostReports(
       postId: postId,
       page: currentPage,
       limit: limit,
@@ -44,11 +43,11 @@ Future<Map<String, dynamic>> fetchReports({
       communityId: communityId,
     );
 
-    postReportViews.addAll(listPostReportsResponse.postReports.map((postReport) => ThunderPostReport.fromLemmyPostReportView(postReport.toJson())));
-    commentReportViews.addAll(listCommentReportsResponse.commentReports);
+    postReportViews.addAll(postReports);
+    commentReportViews.addAll(listCommentReportsResponse);
 
-    if (listPostReportsResponse.postReports.isEmpty) hasReachedPostReportsEnd = true;
-    if (listCommentReportsResponse.commentReports.isEmpty) hasReachedCommentReportsEnd = true;
+    if (postReports.isEmpty) hasReachedPostReportsEnd = true;
+    if (listCommentReportsResponse.isEmpty) hasReachedCommentReportsEnd = true;
     currentPage++;
   } while (reportFeedType == ReportFeedType.post ? (!hasReachedPostReportsEnd && postReportViews.length < limit) : (!hasReachedCommentReportsEnd && commentReportViews.length < limit));
 
@@ -71,11 +70,11 @@ Future<bool> resolvePostReport(int postReportId, bool resolved) async {
   final account = await fetchActiveProfile();
   final postReportResponse = await PostRepositoryImpl(account: account).resolvePostReport(postReportId, resolved);
 
-  return postReportResponse.postReportView.postReport.resolved == resolved;
+  return postReportResponse.resolved == resolved;
 }
 
 // Optimistically resolves a comment report. This changes the value of the comment report locally, without sending the network request
-CommentReport optimisticallyResolveCommentReport(CommentReport commentReport, bool resolved) {
+ThunderCommentReport optimisticallyResolveCommentReport(ThunderCommentReport commentReport, bool resolved) {
   return commentReport.copyWith(resolved: resolved);
 }
 
@@ -84,5 +83,5 @@ Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
   final account = await fetchActiveProfile();
   final commentReportResponse = await CommentRepositoryImpl(account: account).resolveCommentReport(commentReportId, resolved);
 
-  return commentReportResponse.commentReportView.commentReport.resolved == resolved;
+  return commentReportResponse.resolved == resolved;
 }

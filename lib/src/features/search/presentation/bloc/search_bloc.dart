@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:collection/collection.dart';
 
@@ -101,45 +100,23 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (event.searchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        final getFederatedInstancesResponse = await InstanceRepositoryImpl(account: account).federated();
+        final federatedInstances = await InstanceRepositoryImpl(account: account).federated();
+        final linkedInstances = federatedInstances['federated_instances']['linked'] ?? [];
+
+        final filteredInstances = linkedInstances.where((instance) => instance['software'] == "lemmy" && instance['domain'].contains(event.query)).toList();
 
         // Filter the instances down
-        for (final InstanceWithFederationState instance in getFederatedInstancesResponse.federatedInstances?.linked.where(
-              (instance) =>
-                  // Only include Lemmy instances that have successfully federated in the past week
-                  instance.software == "lemmy" &&
-                  instance.federationState?.lastSuccessfulPublishedTime?.isAfter(DateTime.now().subtract(const Duration(days: 1))) == true &&
-                  // Also only include instances that match the user's query
-                  instance.domain.contains(event.query),
-            ) ??
-            []) {
-          instances.add(ThunderInstanceInfo(success: true, domain: instance.domain, id: instance.id));
+        for (final instance in filteredInstances) {
+          if (instance.containsKey('federation_state') && instance['federation_state'].containsKey('last_successful_published_time')) {
+            final lastSuccessfulPublishedTime = DateTime.parse(instance['federation_state']['last_successful_published_time']);
+
+            if (lastSuccessfulPublishedTime.isAfter(DateTime.now().subtract(const Duration(days: 1))) == true) {
+              instances.add(ThunderInstanceInfo(success: true, domain: instance['domain'], id: instance['id'], version: instance['version']));
+            }
+          }
         }
 
-        // Put the initial, full list in the UI now
         emit(state.copyWith(status: SearchStatus.success, instances: instances, viewingAll: event.query.isEmpty));
-
-        // Now go through and fill the rest of the information about the instances. Periodically update the UI with this info.
-        for (final MapEntry<int, ThunderInstanceInfo> entry in instances.asMap().entries) {
-          // Use a lower timeout so we're not waiting forever.
-          final newInstanceInfo = await getInstanceInfo(
-            entry.value.domain,
-            id: entry.value.id,
-            timeout: const Duration(seconds: 1),
-          );
-
-          if (newInstanceInfo.success) {
-            instances[entry.key] = newInstanceInfo;
-          } else {
-            instances[entry.key] = ThunderInstanceInfo(success: false, domain: entry.value.domain, id: entry.value.id);
-          }
-
-          // To avoid rebuilding too often, we'll invoke a rebuild for every 10 instances we process or when we reach the end.
-          if (entry.key > 0 && entry.key % 10 == 0 || entry.key == instances.length - 1) {
-            emit(state.copyWith(status: SearchStatus.loading));
-            emit(state.copyWith(status: SearchStatus.success, instances: instances));
-          }
-        }
       } else {
         final response = await searchRepository.search(
           query: event.query,

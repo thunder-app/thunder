@@ -32,7 +32,7 @@ final class ReportState extends Equatable {
   final List<ThunderPostReport> postReports;
 
   /// The list of comment reports
-  final List<CommentReportView> commentReports;
+  final List<ThunderCommentReport> commentReports;
 
   /// Determines if we have reached the end of the report post feed
   final bool hasReachedPostReportsEnd;
@@ -52,7 +52,7 @@ final class ReportState extends Equatable {
     bool? showResolved,
     int? communityId,
     List<ThunderPostReport>? postReports,
-    List<CommentReportView>? commentReports,
+    List<ThunderCommentReport>? commentReports,
     bool? hasReachedPostReportsEnd,
     bool? hasReachedCommentReportsEnd,
     int? currentPage,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/models/models.dart';
@@ -83,7 +82,7 @@ class CommunityStatsList extends StatelessWidget {
         ...[
           SidebarStat(
             icon: community.local ? Icons.house_rounded : Icons.language_rounded,
-            value: l10n.visibility(community.local ? CommunityVisibility.localOnly : CommunityVisibility.public),
+            value: l10n.visibility(community.local ? l10n.localOnly : l10n.public),
           ),
           const SizedBox(height: 8.0),
         ],

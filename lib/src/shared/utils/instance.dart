@@ -122,7 +122,7 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
           showLoadingPage(context);
 
           final response = await SearchRepositoryImpl(account: account).resolve(query: text);
-          return response.post?.post.id;
+          return response['post']?.id;
         } catch (e) {
           return null;
         }
@@ -167,7 +167,7 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
         showLoadingPage(context);
 
         final response = await SearchRepositoryImpl(account: account).resolve(query: text);
-        return response.comment?.comment.id;
+        return response['comment']?.id;
       } catch (e) {
         return null;
       }

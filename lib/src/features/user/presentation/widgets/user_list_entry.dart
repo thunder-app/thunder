@@ -57,7 +57,7 @@ class UserListEntry extends StatelessWidget {
               final account = Account(instance: resolutionInstance!, id: '', index: -1);
               final response = await SearchRepositoryImpl(account: account).resolve(query: user.actorId);
 
-              userId = response.person?.person.id;
+              userId = response['user']?.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about personId being un-navigable
             }

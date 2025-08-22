@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
+import 'package:thunder/src/core/models/thunder_site_response.dart';
+import 'package:thunder/src/core/update/check_github_update.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -28,13 +30,25 @@ class PiefedApi {
 
   /// Build headers with optional JWT authorization
   Map<String, String> _buildHeaders() {
-    if (account.jwt == null) return {};
-    return {'Authorization': 'Bearer ${account.jwt}'};
+    final version = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
+    final userAgent = 'Thunder/$version';
+
+    Map<String, String> headers = {
+      'User-Agent': userAgent,
+      'Content-Type': 'application/json',
+    };
+
+    if (account.jwt != null) headers['Authorization'] = 'Bearer ${account.jwt}';
+    return headers;
   }
 
   /// Handle response from the request. Throws an exception if the request fails.
   Map<String, dynamic> _handleResponse(Uri uri, Response response) {
-    if (response.statusCode != 200) throw Exception('Failed to make request to $uri: ${response.statusCode} ${response.body}');
+    if (response.statusCode != 200) {
+      debugPrint('PieFed API: Failed to make request to $uri: ${response.statusCode} ${response.body}');
+      throw Exception(response.body);
+    }
+
     return jsonDecode(response.body);
   }
 
@@ -80,6 +94,40 @@ class PiefedApi {
     }
   }
 
+  /// Login
+  Future<String?> login({required String username, required String password}) async {
+    final body = {
+      'username': username,
+      'password': password,
+    };
+
+    final json = await _request(HttpMethod.post, '/api/alpha/user/login', body);
+    return json['jwt'];
+  }
+
+  /// Get site info
+  Future<ThunderSiteResponse> site() async {
+    final json = await _request(HttpMethod.get, '/api/alpha/site', {});
+
+    final siteResponse = ThunderSiteResponse.fromPiefedSiteResponse(json);
+    return siteResponse;
+  }
+
+  /// Save user settings
+  Future<void> saveUserSettings({
+    String? bio,
+    bool? showNsfw,
+    bool? showReadPosts,
+  }) async {
+    final body = {
+      'bio': bio,
+      'show_nsfw': showNsfw,
+      'show_read_posts': showReadPosts,
+    };
+
+    await _request(HttpMethod.put, '/api/alpha/user/save_user_settings', body);
+  }
+
   /// Fetches a post from the Piefed API
   Future<Map<String, dynamic>> getPost(int postId, {int? commentId}) async {
     final queryParams = {'id': postId, 'comment_id': commentId};
@@ -95,13 +143,6 @@ class PiefedApi {
       'moderators': moderators,
       'crossPosts': crossPosts,
     };
-  }
-
-  /// Fetches a comment from the Piefed API
-  Future<Map<String, dynamic>> getComment(int commentId) async {
-    final queryParams = {'id': commentId};
-    final json = await _request(HttpMethod.get, '/api/alpha/comment', queryParams);
-    return json;
   }
 
   /// Fetches a list of posts from the Piefed API
@@ -132,31 +173,6 @@ class PiefedApi {
     return json['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
   }
 
-  /// Fetches a list of comments from the Piefed API
-  Future<List<ThunderComment>> getComments({
-    required int postId,
-    int? page,
-    int? limit,
-    int? maxDepth,
-    int? communityId,
-    int? parentId,
-    CommentSortType? commentSortType,
-  }) async {
-    Map<String, dynamic> body = {
-      'sort': commentSortType?.value,
-      'max_depth': maxDepth,
-      'page': page,
-      'limit': limit,
-      'community_id': communityId,
-      'post_id': postId,
-      'parent_id': parentId,
-      'depth_first': true,
-    };
-
-    final json = await _request(HttpMethod.get, '/api/alpha/comment/list', body);
-    return json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
-  }
-
   /// Creates a post
   Future<ThunderPost> createPost({
     required String title,
@@ -177,19 +193,6 @@ class PiefedApi {
 
     final json = await _request(HttpMethod.post, '/api/alpha/post', body);
     return ThunderPost.fromPiefedPostView(json['post_view']);
-  }
-
-  /// Creates a comment
-  Future<ThunderComment> createComment({required int postId, required String content, int? parentId, int? languageId}) async {
-    final body = {
-      'post_id': postId,
-      'body': content,
-      'parent_id': parentId,
-      'language_id': languageId,
-    };
-
-    final json = await _request(HttpMethod.post, '/api/alpha/comment', body);
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
   }
 
   /// Edits a post
@@ -214,14 +217,6 @@ class PiefedApi {
     return ThunderPost.fromPiefedPostView(json['post_view']);
   }
 
-  /// Edits a comment
-  Future<ThunderComment> editComment({required int commentId, required String content, int? languageId}) async {
-    final body = {'comment_id': commentId, 'body': content, 'language_id': languageId};
-
-    final json = await _request(HttpMethod.put, '/api/alpha/comment', body);
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
-  }
-
   /// Votes on a post
   Future<ThunderPost> votePost({required int postId, required int score}) async {
     final body = {'post_id': postId, 'score': score};
@@ -230,28 +225,12 @@ class PiefedApi {
     return ThunderPost.fromPiefedPostView(json['post_view']);
   }
 
-  /// Votes on a comment
-  Future<ThunderComment> voteComment({required int commentId, required int score}) async {
-    final body = {'comment_id': commentId, 'score': score};
-
-    final json = await _request(HttpMethod.post, '/api/alpha/comment/like', body);
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
-  }
-
   /// Saves a post
   Future<ThunderPost> savePost({required int postId, required bool save}) async {
     final body = {'post_id': postId, 'save': save};
 
     final json = await _request(HttpMethod.put, '/api/alpha/post/save', body);
     return ThunderPost.fromPiefedPostView(json['post_view']);
-  }
-
-  /// Saves a comment
-  Future<ThunderComment> saveComment({required int commentId, required bool save}) async {
-    final body = {'comment_id': commentId, 'save': save};
-
-    final json = await _request(HttpMethod.put, '/api/alpha/comment/save', body);
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
   }
 
   /// Marks a set of posts as read
@@ -275,14 +254,6 @@ class PiefedApi {
     final json = await _request(HttpMethod.post, '/api/alpha/post/delete', body);
     final post = ThunderPost.fromPiefedPostView(json['post_view']);
     return post.deleted == deleted;
-  }
-
-  /// Deletes a comment
-  Future<ThunderComment> deleteComment({required int commentId, required bool deleted}) async {
-    final body = {'comment_id': commentId, 'deleted': deleted};
-
-    final json = await _request(HttpMethod.post, '/api/alpha/comment/delete', body);
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
   }
 
   /// Locks a post
@@ -312,6 +283,98 @@ class PiefedApi {
     return post.removed == removed;
   }
 
+  /// Reports a post
+  Future<void> reportPost({required int postId, required String reason}) async {
+    final body = {'post_id': postId, 'reason': reason};
+
+    await _request(HttpMethod.post, '/api/alpha/post/report', body);
+  }
+
+  /// Fetches a comment from the Piefed API
+  Future<ThunderComment> getComment(int commentId) async {
+    final queryParams = {'id': commentId};
+
+    final json = await _request(HttpMethod.get, '/api/alpha/comment', queryParams);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Fetches a list of comments from the Piefed API
+  Future<List<ThunderComment>> getComments({
+    required int postId,
+    int? page,
+    int? limit,
+    int? maxDepth,
+    int? communityId,
+    int? parentId,
+    CommentSortType? commentSortType,
+  }) async {
+    Map<String, dynamic> body = {
+      'sort': commentSortType?.value,
+      'max_depth': maxDepth,
+      'page': page,
+      'limit': limit,
+      'community_id': communityId,
+      'post_id': postId,
+      'parent_id': parentId,
+      'depth_first': true,
+    };
+
+    final json = await _request(HttpMethod.get, '/api/alpha/comment/list', body);
+    return json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+  }
+
+  /// Creates a comment
+  Future<ThunderComment> createComment({required int postId, required String content, int? parentId, int? languageId}) async {
+    final body = {
+      'post_id': postId,
+      'body': content,
+      'parent_id': parentId,
+      'language_id': languageId,
+    };
+
+    final json = await _request(HttpMethod.post, '/api/alpha/comment', body);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Edits a comment
+  Future<ThunderComment> editComment({required int commentId, required String content, int? languageId}) async {
+    final body = {'comment_id': commentId, 'body': content, 'language_id': languageId};
+
+    final json = await _request(HttpMethod.put, '/api/alpha/comment', body);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Votes on a comment
+  Future<ThunderComment> voteComment({required int commentId, required int score}) async {
+    final body = {'comment_id': commentId, 'score': score};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/comment/like', body);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Saves a comment
+  Future<ThunderComment> saveComment({required int commentId, required bool save}) async {
+    final body = {'comment_id': commentId, 'save': save};
+
+    final json = await _request(HttpMethod.put, '/api/alpha/comment/save', body);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Deletes a comment
+  Future<ThunderComment> deleteComment({required int commentId, required bool deleted}) async {
+    final body = {'comment_id': commentId, 'deleted': deleted};
+
+    final json = await _request(HttpMethod.post, '/api/alpha/comment/delete', body);
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Reports a comment
+  Future<void> reportComment({required int commentId, required String reason}) async {
+    final body = {'comment_id': commentId, 'reason': reason};
+
+    await _request(HttpMethod.post, '/api/alpha/comment/report', body);
+  }
+
   /// Searches for posts, comments, communities, and users
   Future<Map<String, dynamic>> search({
     required String query,
@@ -332,6 +395,19 @@ class PiefedApi {
 
     final json = await _request(HttpMethod.get, '/api/alpha/search', body);
     return json;
+  }
+
+  /// Resolves a given query
+  Future<Map<String, dynamic>> resolve({required String query}) async {
+    final body = {'q': query};
+    final json = await _request(HttpMethod.get, '/api/alpha/resolve_object', body);
+
+    return {
+      'community': json['community'] != null ? ThunderCommunity.fromPiefedCommunityView(json['community']) : null,
+      'post': json['post'] != null ? ThunderPost.fromPiefedPostView(json['post']) : null,
+      'comment': json['comment'] != null ? ThunderComment.fromPiefedCommentView(json['comment']) : null,
+      'user': json['user'] != null ? ThunderUser.fromPiefedUserView(json['user']) : null,
+    };
   }
 
   /// Fetches the unread count for the current user
@@ -381,21 +457,6 @@ class PiefedApi {
   /// Marks all notifications as read
   Future<void> markAllNotificationsAsRead() async {
     await _request(HttpMethod.post, '/api/alpha/user/mark_all_as_read', {});
-  }
-
-  /// Save user settings
-  Future<void> saveUserSettings({
-    String? bio,
-    bool? showNsfw,
-    bool? showReadPosts,
-  }) async {
-    final body = {
-      'bio': bio,
-      'show_nsfw': showNsfw,
-      'show_read_posts': showReadPosts,
-    };
-
-    await _request(HttpMethod.put, '/api/alpha/user/save_user_settings', body);
   }
 
   /// Get a community

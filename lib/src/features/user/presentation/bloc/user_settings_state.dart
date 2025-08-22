@@ -47,7 +47,7 @@ class UserSettingsState extends Equatable {
   final ThunderSiteResponse? siteResponse;
 
   final String? errorMessage;
-  final List<LocalImageView>? images;
+  final List<Map<String, dynamic>>? images;
   final List<ThunderPost>? imageSearchPosts;
   final List<ThunderComment>? imageSearchComments;
 
@@ -61,7 +61,7 @@ class UserSettingsState extends Equatable {
     int? instanceBeingBlocked,
     ThunderSiteResponse? siteResponse,
     String? errorMessage,
-    List<LocalImageView>? images,
+    List<Map<String, dynamic>>? images,
     List<ThunderPost>? imageSearchPosts,
     List<ThunderComment>? imageSearchComments,
   }) {

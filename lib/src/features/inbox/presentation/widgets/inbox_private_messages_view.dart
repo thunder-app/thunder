@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -15,7 +15,7 @@ import 'package:thunder/src/shared/utils/date_time.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
 class InboxPrivateMessagesView extends StatefulWidget {
-  final List<PrivateMessageView> privateMessages;
+  final List<ThunderPrivateMessage> privateMessages;
 
   const InboxPrivateMessagesView({super.key, this.privateMessages = const []});
 
@@ -64,9 +64,9 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                               children: [
                                 UserFullNameWidget(
                                   context,
-                                  widget.privateMessages[index].creator.name,
-                                  widget.privateMessages[index].creator.displayName,
-                                  fetchInstanceNameFromUrl(widget.privateMessages[index].creator.actorId),
+                                  widget.privateMessages[index].creator?.name,
+                                  widget.privateMessages[index].creator?.displayName,
+                                  fetchInstanceNameFromUrl(widget.privateMessages[index].creator?.actorId),
                                   includeInstance: true,
                                 ),
                                 const Padding(
@@ -75,23 +75,23 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                                 ),
                                 UserFullNameWidget(
                                   context,
-                                  widget.privateMessages[index].recipient.name,
-                                  widget.privateMessages[index].recipient.displayName,
-                                  fetchInstanceNameFromUrl(widget.privateMessages[index].recipient.actorId),
+                                  widget.privateMessages[index].recipient?.name,
+                                  widget.privateMessages[index].recipient?.displayName,
+                                  fetchInstanceNameFromUrl(widget.privateMessages[index].recipient?.actorId),
                                   includeInstance: true,
                                 ),
                               ],
                             ),
                           ),
                           Text(
-                            formatTimeToString(dateTime: widget.privateMessages[index].privateMessage.published.toIso8601String()),
+                            formatTimeToString(dateTime: widget.privateMessages[index].published.toIso8601String()),
                             style: textStyle!.copyWith(fontSize: MediaQuery.textScalerOf(context).scale((textStyle.fontSize!) * (FontScale.base.textScaleFactor))),
                           )
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: CommonMarkdownBody(body: widget.privateMessages[index].privateMessage.content),
+                        child: CommonMarkdownBody(body: widget.privateMessages[index].content),
                       ),
                       ThunderDivider(sliver: false, padding: false),
                       Align(
@@ -101,14 +101,14 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                           onPressed: () => context.read<InboxBloc>().add(
                                 InboxItemActionEvent(
                                   action: CommentAction.read,
-                                  privateMessageId: widget.privateMessages[index].privateMessage.id,
-                                  value: !widget.privateMessages[index].privateMessage.read,
+                                  privateMessageId: widget.privateMessages[index].id,
+                                  value: !widget.privateMessages[index].read,
                                 ),
                               ),
                           icon: Icon(
                             Icons.check,
                             semanticLabel: l10n.markAsRead,
-                            color: widget.privateMessages[index].privateMessage.read ? Colors.green : null,
+                            color: widget.privateMessages[index].read ? Colors.green : null,
                           ),
                         ),
                       ),

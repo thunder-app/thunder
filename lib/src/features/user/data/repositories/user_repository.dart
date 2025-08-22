@@ -2,16 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/thunder_site.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
@@ -37,7 +32,7 @@ class UserRepositoryImpl implements UserRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApi client;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -45,7 +40,7 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        client = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -66,23 +61,7 @@ class UserRepositoryImpl implements UserRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetPersonDetails(
-          auth: account.jwt,
-          personId: userId,
-          username: username,
-          sort: sort?.toLemmyType(),
-          page: page,
-          limit: limit,
-          savedOnly: saved,
-        ));
-
-        return {
-          'user': ThunderUser.fromLemmyUserView(response.personView.toJson()),
-          'site': response.site != null ? ThunderSite.fromLemmySite(response.site!.toJson()) : null,
-          'posts': response.posts.map((post) => ThunderPost.fromLemmyPostView(post.toJson())).toList(),
-          'comments': response.comments.map((comment) => ThunderComment.fromLemmyCommentView(comment.toJson())).toList(),
-          'moderates': response.moderates.map((cmv) => ThunderCommunity.fromLemmyCommunity(cmv.community.toJson())).toList(),
-        };
+        return await client.getUser(userId: userId, username: username, sort: sort, page: page, limit: limit, saved: saved);
       case ThreadiversePlatform.piefed:
         return await piefed.getUser(userId: userId, username: username, sort: sort, page: page, limit: limit, saved: saved);
       default:
@@ -97,8 +76,7 @@ class UserRepositoryImpl implements UserRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(BlockPerson(auth: account.jwt!, personId: personId, block: block));
-        return ThunderUser.fromLemmyUserView(response.personView.toJson());
+        return await client.blockUser(userId: personId, block: block);
       case ThreadiversePlatform.piefed:
         return await piefed.blockUser(userId: personId, block: block);
       default:

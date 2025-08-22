@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lemmy_api_client/v3.dart';
-
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
@@ -44,7 +42,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   Account account;
 
   /// The Lemmy client to use for the repository
-  late LemmyApiV3 client;
+  late LemmyApi client;
 
   /// The Piefed client to use for the repository
   late PiefedApi piefed;
@@ -52,7 +50,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   CommunityRepositoryImpl({required this.account}) {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        client = LemmyApiV3(account.instance, debug: kDebugMode);
+        client = LemmyApi(account: account, debug: kDebugMode);
         break;
       case ThreadiversePlatform.piefed:
         piefed = PiefedApi(account: account, debug: kDebugMode);
@@ -66,13 +64,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   Future<Map<String, dynamic>> getCommunity({int? id, String? name}) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(GetCommunity(auth: account.jwt, id: id, name: name));
-
-        return {
-          'community': ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson()),
-          'instance': response.site != null ? ThunderSite.fromLemmySite(response.site!.toJson()) : null,
-          'moderators': response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList(),
-        };
+        return await client.getCommunity(id: id, name: name);
       case ThreadiversePlatform.piefed:
         return await piefed.getCommunity(id: id, name: name);
       default:
@@ -87,8 +79,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(FollowCommunity(auth: account.jwt!, communityId: communityId, follow: follow));
-        return ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
+        return await client.subscribeToCommunity(communityId: communityId, follow: follow);
       case ThreadiversePlatform.piefed:
         return await piefed.subscribeToCommunity(communityId: communityId, follow: follow);
       default:
@@ -103,8 +94,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(BlockCommunity(auth: account.jwt!, communityId: communityId, block: block));
-        return ThunderCommunity.fromLemmyCommunityView(response.communityView.toJson());
+        return await client.blockCommunity(communityId: communityId, block: block);
       case ThreadiversePlatform.piefed:
         return await piefed.blockCommunity(communityId: communityId, block: block);
       default:
@@ -119,8 +109,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(BanFromCommunity(auth: account.jwt!, communityId: communityId, personId: userId, ban: ban, removeData: removeData, reason: reason, expires: expires));
-        return ThunderUser.fromLemmyUserView(response.personView.toJson());
+        return await client.banUserFromCommunity(userId: userId, communityId: communityId, ban: ban, removeData: removeData, reason: reason, expires: expires);
       case ThreadiversePlatform.piefed:
         return await piefed.banUserFromCommunity(userId: userId, communityId: communityId, ban: ban, reason: reason, expires: expires);
       default:
@@ -135,8 +124,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(AddModToCommunity(auth: account.jwt!, communityId: communityId, personId: userId, added: added));
-        return response.moderators.map((mod) => ThunderUser.fromLemmyUser(mod.moderator.toJson())).toList();
+        return await client.addModerator(userId: userId, communityId: communityId, added: added);
       case ThreadiversePlatform.piefed:
         return await piefed.addModerator(userId: userId, communityId: communityId, added: added);
       default:
@@ -148,15 +136,9 @@ class CommunityRepositoryImpl implements CommunityRepository {
   Future<List<ThunderCommunity>> trending() async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        final response = await client.run(ListCommunities(
-          type: FeedListType.local.toLemmyType(),
-          sort: PostSortType.active.toLemmyType(),
-          limit: 5,
-          auth: account.jwt,
-        ));
-        return response.communities.map((cv) => ThunderCommunity.fromLemmyCommunityView(cv.toJson())).toList();
+        return await client.getCommunities(page: 1, limit: 5, feedListType: FeedListType.local, postSortType: PostSortType.active);
       case ThreadiversePlatform.piefed:
-        return await piefed.getCommunities(page: 0, limit: 5, feedListType: FeedListType.local, postSortType: PostSortType.active);
+        return await piefed.getCommunities(page: 1, limit: 5, feedListType: FeedListType.local, postSortType: PostSortType.new_);
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

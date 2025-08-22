@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' hide CommentSortType;
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -358,8 +357,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId));
       await commentRepository.report(event.commentId, event.message);
       return emit(state.copyWith(status: PostStatus.success, moddingCommentId: -1));
-    } on LemmyApiException catch (e) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e), moddingCommentId: -1));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e), moddingCommentId: -1));
     }

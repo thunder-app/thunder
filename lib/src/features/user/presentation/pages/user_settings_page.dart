@@ -521,9 +521,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 try {
                                   final l10n = AppLocalizations.of(GlobalContext.context)!;
                                   final account = context.read<ProfileBloc>().state.account;
-                                  final response = await AccountRepositoryImpl(account: account).importSettings(importSettings);
+                                  final success = await AccountRepositoryImpl(account: account).importSettings(importSettings);
 
-                                  if (response.success) {
+                                  if (success) {
                                     showSnackbar(l10n.accountSettingsImportedSuccessfully);
 
                                     // Reload the current page we're on to reflect changes to account settings

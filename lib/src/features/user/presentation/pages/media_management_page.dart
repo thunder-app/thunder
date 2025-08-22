@@ -79,7 +79,7 @@ class MediaManagementPage extends StatelessWidget {
                         itemCount: state.images!.length,
                         itemBuilder: (context, index) {
                           final account = context.read<ProfileBloc>().state.account;
-                          String url = 'https://${account.instance}/pictrs/image/${state.images![index].localImage.pictrsAlias}';
+                          String url = 'https://${account.instance}/pictrs/image/${state.images![index]['local_image']['pictrs_alias']}';
 
                           return KeepAlive(
                             keepAlive: true,
@@ -143,12 +143,12 @@ class MediaManagementPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       const SizedBox(width: 12),
-                                      Text(l10n.uploadedDate(thunderBloc.state.dateFormat?.format(DateTime.parse(state.images![index].localImage.published).toLocal()) ?? '')),
+                                      Text(l10n.uploadedDate(thunderBloc.state.dateFormat?.format(DateTime.parse(state.images![index]['local_image']['published']).toLocal()) ?? '')),
                                       const Spacer(),
                                       IconButton(
                                         onPressed: () async {
                                           final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
-                                          userSettingsBloc.add(FindMediaUsagesEvent(id: state.images![index].localImage.pictrsAlias));
+                                          userSettingsBloc.add(FindMediaUsagesEvent(id: state.images![index]['local_image']['pictrs_alias']));
 
                                           showModalBottomSheet(
                                             context: context,
@@ -257,9 +257,8 @@ class MediaManagementPage extends StatelessWidget {
                                           );
 
                                           if (result && context.mounted) {
-                                            context
-                                                .read<UserSettingsBloc>()
-                                                .add(DeleteMediaEvent(deleteToken: state.images![index].localImage.pictrsDeleteToken, id: state.images![index].localImage.pictrsAlias));
+                                            context.read<UserSettingsBloc>().add(
+                                                DeleteMediaEvent(deleteToken: state.images![index]['local_image']['pictrs_delete_token'], id: state.images![index]['local_image']['pictrs_alias']));
                                           }
                                         },
                                         icon: const Icon(Icons.delete_forever),

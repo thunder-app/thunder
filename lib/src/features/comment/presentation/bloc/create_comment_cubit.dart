@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy_api_client/pictrs.dart';
 
+import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
@@ -48,10 +48,8 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
       for (String imageFile in imageFiles) {
         switch (account.platform) {
           case ThreadiversePlatform.lemmy:
-            PictrsApi pictrs = PictrsApi(account.instance);
-
-            PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
-            String url = "https://${account.instance}/pictrs/image/${result.files[0].file}";
+            final result = await LemmyApi(account: account).uploadImage(imageFile);
+            String url = "https://${account.instance}/pictrs/image/${result['files'][0]['file']}";
 
             urls.add(url);
             break;

@@ -1,5 +1,3 @@
-import 'package:lemmy_api_client/v3.dart';
-
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
@@ -13,10 +11,10 @@ abstract class AccountRepository {
   Future<List<ThunderCommunity>> subscriptions();
 
   /// Fetches the user's media.
-  Future<ListMediaResponse> media({int? page, int? limit});
+  Future<Map<String, dynamic>> media({int? page, int? limit});
 
   /// Saves the user's settings.
-  Future<SaveUserSettingsResponse> saveSettings({
+  Future<void> saveSettings({
     String? bio,
     String? email,
     String? matrixUserId,
@@ -32,7 +30,7 @@ abstract class AccountRepository {
   });
 
   /// Imports the settings to the user's profile.
-  Future<SuccessResponse> importSettings(String settings);
+  Future<bool> importSettings(String settings);
 
   /// Exports the user's settings.
   Future<dynamic> exportSettings();
