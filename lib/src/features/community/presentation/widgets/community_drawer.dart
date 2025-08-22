@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -69,7 +68,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
       child: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverPinnedHeader(child: UserDrawerItem(navigateToAccount: widget.navigateToAccount)),
+            PinnedHeaderSliver(child: UserDrawerItem(navigateToAccount: widget.navigateToAccount)),
             SliverList.list(
               children: [
                 const FeedDrawerItems(),
