@@ -100,7 +100,7 @@ class CommentCardHeader extends StatelessWidget {
                 )
               ],
             ),
-            UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.name, comment.creator!.actorId))
+            UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.displayNameOrName, comment.creator!.actorId))
           ],
         ),
       ),
