@@ -40,8 +40,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       bool usePureBlackTheme = UserPreferences.getLocalSetting(LocalSettings.usePureBlackTheme) ?? false;
       if (usePureBlackTheme && (themeType == ThemeType.dark || (themeType == ThemeType.system && brightness == Brightness.dark))) themeType = ThemeType.pureBlack;
 
-      bool useDarkTheme = themeType == ThemeType.dark || themeType == ThemeType.pureBlack || (themeType == ThemeType.system && brightness == Brightness.dark);
-
       CustomThemeType selectedTheme = CustomThemeType.values.byName(UserPreferences.getLocalSetting(LocalSettings.appThemeAccentColor) ?? CustomThemeType.deepBlue.name);
 
       bool useMaterialYouTheme = UserPreferences.getLocalSetting(LocalSettings.useMaterialYouTheme) ?? false;
@@ -55,7 +53,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
           themeType: themeType,
           selectedTheme: selectedTheme,
           useMaterialYouTheme: useMaterialYouTheme,
-          useDarkTheme: useDarkTheme,
           reduceAnimations: reduceAnimations,
         ),
       );

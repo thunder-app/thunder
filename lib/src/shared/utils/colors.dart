@@ -5,8 +5,8 @@ import 'package:thunder/src/shared/utils/constants.dart';
 
 /// Gets a tinted background color that looks good in light and dark mode
 Color getBackgroundColor(BuildContext context) {
-  final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-  return darkTheme ? DARK_THEME_BACKGROUND_COLOR : LIGHT_THEME_BACKGROUND_COLOR;
+  final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+  return useDarkTheme ? DARK_THEME_BACKGROUND_COLOR : LIGHT_THEME_BACKGROUND_COLOR;
 }
 
 /// Retrieves the color based on the depth of the comment in the comment tree
