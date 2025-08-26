@@ -718,12 +718,12 @@ class LemmyApi {
   /// Upload an image using multipart form data
   Future<Map<String, dynamic>> uploadImage(String filePath) async {
     try {
-      final request = MultipartRequest('POST', Uri.https(account.instance, '/api/v3/pictrs/image'));
+      final request = MultipartRequest('POST', Uri.https(account.instance, '/pictrs/image'));
       request.headers.addAll(_buildHeaders());
       request.files.add(await MultipartFile.fromPath('images[]', filePath));
 
       final response = await request.send();
-      if (response.statusCode != 200) throw Exception('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}');
+      if (response.statusCode != 201) throw Exception('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}');
 
       final json = await jsonDecode(await response.stream.bytesToString());
       return json;
@@ -734,7 +734,7 @@ class LemmyApi {
 
   /// Delete an image
   Future<void> deleteImage({required String file, required String token}) async {
-    await _request(HttpMethod.get, '/api/v3/pictrs/image/delete/$token/$file', {});
+    await _request(HttpMethod.get, '/pictrs/image/delete/$token/$file', {});
   }
 
   /// Get modlog
