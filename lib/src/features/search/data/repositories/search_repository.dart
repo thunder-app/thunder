@@ -86,16 +86,18 @@ class SearchRepositoryImpl implements SearchRepository {
         List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList() : [];
         List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList() : [];
 
-        final resolve = await lemmy.resolve(query: query);
+        if (Uri.tryParse(query) != null) {
+          final resolve = await lemmy.resolve(query: query);
 
-        if (resolve['community'] != null) {
-          communities.add(resolve['community']);
-        } else if (resolve['user'] != null) {
-          users.add(resolve['user']);
-        } else if (resolve['post'] != null) {
-          posts.add(resolve['post']);
-        } else if (resolve['comment'] != null) {
-          comments.add(resolve['comment']);
+          if (resolve['community'] != null) {
+            communities.add(resolve['community']);
+          } else if (resolve['user'] != null) {
+            users.add(resolve['user']);
+          } else if (resolve['post'] != null) {
+            posts.add(resolve['post']);
+          } else if (resolve['comment'] != null) {
+            comments.add(resolve['comment']);
+          }
         }
 
         return {
@@ -120,16 +122,18 @@ class SearchRepositoryImpl implements SearchRepository {
         List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList() : [];
         List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList() : [];
 
-        final resolve = await piefed.resolve(query: query);
+        if (Uri.tryParse(query) != null) {
+          final resolve = await piefed.resolve(query: query);
 
-        if (resolve['community'] != null) {
-          communities.add(resolve['community']);
-        } else if (resolve['user'] != null) {
-          users.add(resolve['user']);
-        } else if (resolve['post'] != null) {
-          posts.add(resolve['post']);
-        } else if (resolve['comment'] != null) {
-          comments.add(resolve['comment']);
+          if (resolve['community'] != null) {
+            communities.add(resolve['community']);
+          } else if (resolve['user'] != null) {
+            users.add(resolve['user']);
+          } else if (resolve['post'] != null) {
+            posts.add(resolve['post']);
+          } else if (resolve['comment'] != null) {
+            comments.add(resolve['comment']);
+          }
         }
 
         return {
