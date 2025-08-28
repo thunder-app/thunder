@@ -81,12 +81,29 @@ class SearchRepositoryImpl implements SearchRepository {
           creatorId: creatorId,
         );
 
+        List<ThunderCommunity> communities = response['communities'] != null ? response['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromLemmyCommunityView(cv)).toList() : [];
+        List<ThunderUser> users = response['users'] != null ? response['users'].map<ThunderUser>((pv) => ThunderUser.fromLemmyUserView(pv)).toList() : [];
+        List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList() : [];
+        List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList() : [];
+
+        final resolve = await lemmy.resolve(query: query);
+
+        if (resolve['community'] != null) {
+          communities.add(resolve['community']);
+        } else if (resolve['user'] != null) {
+          users.add(resolve['user']);
+        } else if (resolve['post'] != null) {
+          posts.add(resolve['post']);
+        } else if (resolve['comment'] != null) {
+          comments.add(resolve['comment']);
+        }
+
         return {
           'type': MetaSearchType.values.firstWhere((e) => e.searchType == response['type_']),
-          'comments': response['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList(),
-          'posts': response['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList(),
-          'communities': response['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromLemmyCommunityView(cv)).toList(),
-          'users': response['users'].map<ThunderUser>((pv) => ThunderUser.fromLemmyUserView(pv)).toList(),
+          'comments': comments,
+          'posts': posts,
+          'communities': communities,
+          'users': users,
         };
       case ThreadiversePlatform.piefed:
         final response = await piefed.search(
@@ -98,12 +115,29 @@ class SearchRepositoryImpl implements SearchRepository {
           page: page,
         );
 
+        List<ThunderCommunity> communities = response['communities'] != null ? response['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromPiefedCommunityView(cv)).toList() : [];
+        List<ThunderUser> users = response['users'] != null ? response['users'].map<ThunderUser>((pv) => ThunderUser.fromPiefedUserView(pv)).toList() : [];
+        List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList() : [];
+        List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList() : [];
+
+        final resolve = await piefed.resolve(query: query);
+
+        if (resolve['community'] != null) {
+          communities.add(resolve['community']);
+        } else if (resolve['user'] != null) {
+          users.add(resolve['user']);
+        } else if (resolve['post'] != null) {
+          posts.add(resolve['post']);
+        } else if (resolve['comment'] != null) {
+          comments.add(resolve['comment']);
+        }
+
         return {
           'type': MetaSearchType.values.firstWhere((e) => e.searchType == response['type_']),
-          'posts': response['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList(),
-          'comments': <ThunderComment>[],
-          'communities': response['communities'].map<ThunderCommunity>((cv) => ThunderCommunity.fromPiefedCommunityView(cv)).toList(),
-          'users': response['users'].map<ThunderUser>((pv) => ThunderUser.fromPiefedUserView(pv)).toList(),
+          'posts': posts,
+          'comments': comments,
+          'communities': communities,
+          'users': users,
         };
       default:
         throw Exception('Unsupported platform: ${account.platform}');
