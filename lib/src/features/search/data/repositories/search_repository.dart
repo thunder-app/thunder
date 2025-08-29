@@ -13,6 +13,7 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
+import 'package:thunder/src/shared/utils/links.dart';
 
 /// Interface for a search repository
 abstract class SearchRepository {
@@ -86,7 +87,7 @@ class SearchRepositoryImpl implements SearchRepository {
         List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList() : [];
         List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList() : [];
 
-        if (Uri.tryParse(query) != null) {
+        if (isValidUrl(query)) {
           final resolve = await lemmy.resolve(query: query);
 
           if (resolve['community'] != null) {
@@ -122,7 +123,7 @@ class SearchRepositoryImpl implements SearchRepository {
         List<ThunderPost> posts = response['posts'] != null ? response['posts'].map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList() : [];
         List<ThunderComment> comments = response['comments'] != null ? response['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList() : [];
 
-        if (Uri.tryParse(query) != null) {
+        if (isValidUrl(query)) {
           final resolve = await piefed.resolve(query: query);
 
           if (resolve['community'] != null) {

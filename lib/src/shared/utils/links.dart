@@ -530,3 +530,9 @@ List<({String sourceName, MessageFormat template})> _alternateSources = [
   (sourceName: 'Internet Archive', template: MessageFormat('https://web.archive.org/save/{link}')),
   (sourceName: 'Ground News', template: MessageFormat('https://ground.news/find?url={link}')),
 ];
+
+/// Determines if a given URL is valid. The URL must have the 'http' or 'https' scheme.
+bool isValidUrl(String url) {
+  final uri = Uri.tryParse(url);
+  return uri != null && uri.hasAbsolutePath && uri.scheme.startsWith('http');
+}
