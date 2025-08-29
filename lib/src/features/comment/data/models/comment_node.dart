@@ -75,18 +75,21 @@ class CommentNode {
   ///
   /// Returns a list of flattened nodes.
   static List<CommentNode> flattenCommentTree(CommentNode? root) {
-    List<CommentNode> flattenedCommentNodes = [];
-    if (root == null) return flattenedCommentNodes;
+    if (root == null) return <CommentNode>[];
 
-    void flatten(CommentNode node) {
-      if (node.comment != null) flattenedCommentNodes.add(node);
+    List<CommentNode> result = <CommentNode>[];
+    List<CommentNode> stack = [root];
 
-      for (final child in node.replies) {
-        flatten(child);
+    while (stack.isNotEmpty) {
+      final current = stack.removeLast();
+
+      if (current.comment != null) result.add(current);
+
+      for (int i = current.replies.length - 1; i >= 0; i--) {
+        stack.add(current.replies[i]);
       }
     }
 
-    flatten(root);
-    return flattenedCommentNodes;
+    return result;
   }
 }

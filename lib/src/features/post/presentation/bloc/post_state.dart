@@ -14,6 +14,7 @@ class PostState extends Equatable {
   const PostState({
     this.status = PostStatus.initial,
     this.post,
+    this.comments = const [],
     this.commentNodes,
     this.commentResponseMap = const [],
     this.commentPage = 1,
@@ -44,6 +45,11 @@ class PostState extends Equatable {
   final ThunderPost? post;
 
   // Comment related data
+
+  /// The flattened list of comments.
+  final List<CommentNode> comments;
+
+  /// The comment tree.
   final CommentNode? commentNodes;
   final List<ThunderComment> commentResponseMap;
   final int commentPage;
@@ -74,6 +80,7 @@ class PostState extends Equatable {
   PostState copyWith({
     required PostStatus status,
     ThunderPost? post,
+    List<CommentNode>? comments,
     CommentNode? commentNodes,
     List<ThunderComment>? commentResponseMap,
     int? commentPage,
@@ -96,6 +103,7 @@ class PostState extends Equatable {
     return PostState(
       status: status,
       post: post ?? this.post,
+      comments: comments ?? this.comments,
       commentNodes: commentNodes ?? this.commentNodes,
       commentResponseMap: commentResponseMap ?? this.commentResponseMap,
       commentPage: commentPage ?? this.commentPage,
@@ -120,6 +128,7 @@ class PostState extends Equatable {
   List<Object?> get props => [
         status,
         post,
+        comments,
         commentNodes,
         commentPage,
         commentCount,

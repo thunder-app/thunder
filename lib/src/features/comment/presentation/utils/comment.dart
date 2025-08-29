@@ -60,13 +60,47 @@ ThunderComment optimisticallyDeleteComment(ThunderComment comment, bool deleted)
 /// We need to associate replies to the proper parent comment since we cannot guarantee order in the flattened list from the API.
 CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = false}) {
   CommentNode root = CommentNode(comment: null, replies: []);
+  if (comments.isEmpty) return root;
+
+  Map<String, CommentNode> nodeMap = {'0': root};
+  List<ThunderComment> orphanedComments = [];
 
   for (final comment in comments) {
-    List<String> commentPath = comment.path.split('.');
-    String parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
+    final commentPath = comment.path.split('.');
 
-    CommentNode commentNode = CommentNode(comment: comment, replies: []);
-    CommentNode.insertCommentNode(root, parentId, commentNode);
+    if (commentPath.length == 1 && commentPath.first == '0') {
+      debugPrint('Comment ${comment.id} has an invalid path: ${comment.path}');
+      continue;
+    }
+
+    final commentId = commentPath.last;
+    final parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
+
+    final commentNode = CommentNode(comment: comment, replies: []);
+    nodeMap[commentId] = commentNode;
+
+    final parent = nodeMap[parentId];
+
+    if (parent != null) {
+      parent.addReply(commentNode);
+    } else {
+      orphanedComments.add(comment);
+    }
+  }
+
+  for (final comment in orphanedComments) {
+    final commentPath = comment.path.split('.');
+    final commentId = commentPath.last;
+    final parentId = commentPath.length > 2 ? commentPath[commentPath.length - 2] : commentPath.first;
+
+    final commentNode = nodeMap[commentId];
+    final parent = nodeMap[parentId];
+
+    if (parent != null && commentNode != null) {
+      parent.addReply(commentNode);
+    } else {
+      debugPrint('Comment ${comment.id} has no parent. Path: ${comment.path}');
+    }
   }
 
   return root;

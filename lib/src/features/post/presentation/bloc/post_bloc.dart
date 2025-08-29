@@ -112,6 +112,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: PostStatus.success,
           post: post,
+          comments: CommentNode.flattenCommentTree(commentNode),
           commentNodes: commentNode,
           commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
           commentResponseMap: comments,
@@ -210,6 +211,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         return emit(
           state.copyWith(
             status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
+            comments: CommentNode.flattenCommentTree(commentNode),
             commentNodes: commentNode,
             commentResponseMap: comments,
             commentPage: 1,
@@ -257,6 +259,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
           commentSortType: commentSortType,
+          comments: CommentNode.flattenCommentTree(commentNode),
           commentNodes: commentNode,
           commentResponseMap: comments,
           commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
