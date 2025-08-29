@@ -344,7 +344,6 @@ class _PostPageState extends State<PostPage> {
                               highlightedCommentId: state.highlightedCommentId,
                               onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.vote, value: voteType)),
                               onSaveAction: (int commentId, bool saved) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.save, value: saved)),
-                              onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(CommentActionEvent(commentId: commentId, action: CommentAction.delete, value: deleted)),
                               onReplyEditAction: (ThunderComment comment, bool isEdit) {
                                 context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
                               },

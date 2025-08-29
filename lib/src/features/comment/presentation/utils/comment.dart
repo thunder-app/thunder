@@ -109,8 +109,8 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
 String cleanCommentContent(ThunderComment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
 
 String cleanComment(String commentContent, bool? commentRemoved, bool? commentDeleted) {
-  String deletedByModerator = "deleted by moderator";
-  String deletedByCreator = "deleted by creator";
+  String deletedByModerator = 'deleted by moderator';
+  String deletedByCreator = 'deleted by creator';
 
   try {
     // Try to load these strings from localizations
@@ -122,14 +122,8 @@ String cleanComment(String commentContent, bool? commentRemoved, bool? commentDe
     // Ignore the error and move on with the default strings
   }
 
-  if (commentRemoved == true) {
-    return '_${deletedByModerator}_';
-  }
-
-  if (commentDeleted == true) {
-    return '_${deletedByCreator}_';
-  }
-
+  if (commentRemoved == true) return '_${deletedByModerator}_';
+  if (commentDeleted == true) return '_${deletedByCreator}_';
   return commentContent;
 }
 

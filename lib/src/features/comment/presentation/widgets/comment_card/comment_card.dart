@@ -43,9 +43,6 @@ class CommentCard extends StatefulWidget {
   /// Callback function for when a comment is collapsed
   final Function(int commentId, bool collapsed)? onCollapseCommentChange;
 
-  /// Callback function for when a comment is deleted
-  final Function(int commentId, bool deleted)? onDeleteAction;
-
   /// Callback function for when a comment being replied to or edited
   final Function(ThunderComment comment, bool isEdit)? onReplyEditAction;
 
@@ -60,7 +57,6 @@ class CommentCard extends StatefulWidget {
     this.onVoteAction,
     this.onSaveAction,
     this.onCollapseCommentChange,
-    this.onDeleteAction,
     this.onReplyEditAction,
   });
 
@@ -163,9 +159,7 @@ class _CommentCardState extends State<CommentCard> {
           comment: widget.comment,
           dragged: _dragged,
           isUserLoggedIn: isUserLoggedIn,
-          onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
           onVoteAction: (int commentId, int vote) => widget.onVoteAction?.call(commentId, vote),
-          onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
           onReplyEditAction: (ThunderComment comment, bool isEdit) {
             return navigateToCreateCommentPage(
               context,

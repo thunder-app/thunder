@@ -321,9 +321,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: CommentContent(
                                       comment: widget.parentComment!,
                                       onVoteAction: (_, __) {},
-                                      onSaveAction: (_, __) {},
                                       onReplyEditAction: (_, __) {},
-                                      onDeleteAction: (_, __) {},
                                       isUserLoggedIn: true,
                                       isOwnComment: false,
                                       isHidden: false,

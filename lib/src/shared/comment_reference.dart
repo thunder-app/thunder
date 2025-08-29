@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 
+import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/swipe_action.dart';
@@ -300,9 +300,7 @@ class _CommentReferenceState extends State<CommentReference> {
                       child: CommentContent(
                         comment: widget.comment,
                         isUserLoggedIn: isUserLoggedIn,
-                        onSaveAction: (int commentId, bool save) => widget.onSaveAction?.call(commentId, save),
                         onVoteAction: (int commentId, int voteType) => widget.onVoteAction?.call(commentId, voteType),
-                        onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction?.call(commentId, deleted),
                         onReplyEditAction: (ThunderComment comment, bool isEdit) => widget.onReplyEditAction?.call(comment, widget.isOwnComment),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,

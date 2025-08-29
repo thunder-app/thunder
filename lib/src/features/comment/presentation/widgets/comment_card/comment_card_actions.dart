@@ -19,10 +19,13 @@ class CommentCardActions extends StatelessWidget {
   /// Whether the source is being viewed
   final bool viewSource;
 
+  /// The function to call when a vote is made
   final Function(int, int) onVoteAction;
-  final Function(int, bool) onSaveAction;
-  final Function(int, bool) onDeleteAction;
+
+  /// The function to call when a comment is replied to or edited
   final Function(ThunderComment, bool) onReplyEditAction;
+
+  /// The function to call when the view source is toggled
   final void Function() onViewSourceToggled;
 
   const CommentCardActions({
@@ -31,8 +34,6 @@ class CommentCardActions extends StatelessWidget {
     this.isEdit = false,
     required this.viewSource,
     required this.onVoteAction,
-    required this.onSaveAction,
-    required this.onDeleteAction,
     required this.onReplyEditAction,
     required this.onViewSourceToggled,
   });

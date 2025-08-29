@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
@@ -13,27 +14,51 @@ import 'package:thunder/src/shared/reply_to_preview_actions.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 
+/// A widget that displays the content of a comment
 class CommentContent extends StatefulWidget {
+  /// The comment to display
   final ThunderComment comment;
+
+  /// Whether the user is logged in
   final bool isUserLoggedIn;
+
+  /// Whether the comment is owned by the current user
   final bool isOwnComment;
+
+  /// Whether the comment is hidden
   final bool isHidden;
+
+  /// Whether to exclude semantics
   final bool excludeSemantics;
+
+  /// Whether to disable actions
   final bool disableActions;
+
+  /// The level of the comment
   final int level;
 
+  /// Whether the comment is dragged
   final bool dragged;
 
-  final Function(int, int) onVoteAction;
-  final Function(int, bool) onSaveAction;
-  final Function(int, bool) onDeleteAction;
+  /// The function to call when a vote is made
+  final Function(int commentId, int vote) onVoteAction;
+
+  /// The function to call when a comment is replied to or edited
   final Function(ThunderComment, bool) onReplyEditAction;
 
-  final int? moddingCommentId;
+  /// Whether to view the source of the comment
   final bool viewSource;
+
+  /// The function to call when the view source is toggled
   final void Function() onViewSourceToggled;
+
+  /// Whether the comment is selectable
   final bool selectable;
+
+  /// Whether to show the reply editor buttons
   final bool showReplyEditorButtons;
+
+  /// The function to call when the selection is changed
   final void Function(String? selection)? onSelectionChanged;
 
   const CommentContent({
@@ -41,12 +66,9 @@ class CommentContent extends StatefulWidget {
     required this.comment,
     required this.isUserLoggedIn,
     required this.onVoteAction,
-    required this.onSaveAction,
-    required this.onDeleteAction,
     required this.onReplyEditAction,
     required this.isOwnComment,
     required this.isHidden,
-    this.moddingCommentId,
     this.excludeSemantics = false,
     this.disableActions = false,
     required this.viewSource,
@@ -63,13 +85,12 @@ class CommentContent extends StatefulWidget {
 }
 
 class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
   );
 
-  // Animation for comment collapse
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+  late final _offsetAnimation = Tween<Offset>(
     begin: Offset.zero,
     end: const Offset(1.5, 0.0),
   ).animate(CurvedAnimation(
@@ -77,30 +98,26 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
     curve: Curves.fastOutSlowIn,
   ));
 
-  final FocusNode _selectableRegionFocusNode = FocusNode();
+  final _selectableRegionFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
 
-    final style = state.nestedCommentIndicatorStyle;
-    final scheme = state.nestedCommentIndicatorColor;
+    final content = cleanCommentContent(widget.comment);
+
+    final collapseParentCommentOnGesture = context.select<ThunderBloc, bool>((bloc) => bloc.state.collapseParentCommentOnGesture);
+    final showCommentButtonActions = context.select<ThunderBloc, bool>((bloc) => bloc.state.showCommentButtonActions);
+    final nestedCommentIndicatorStyle = context.select<ThunderBloc, NestedCommentIndicatorStyle>((bloc) => bloc.state.nestedCommentIndicatorStyle);
+    final nestedCommentIndicatorColor = context.select<ThunderBloc, NestedCommentIndicatorColor>((bloc) => bloc.state.nestedCommentIndicatorColor);
+    final contentFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.contentFontSizeScale);
 
     return Container(
-      decoration: widget.dragged
-          ? null
-          : CommentDepthIndicatorDecoration(
-              context,
-              level: widget.level,
-              style: style,
-              scheme: scheme,
-            ),
+      decoration: widget.dragged ? null : CommentDepthIndicatorDecoration(context, level: widget.level, style: nestedCommentIndicatorStyle, scheme: nestedCommentIndicatorColor),
       child: ExcludeSemantics(
         excluding: widget.excludeSemantics,
         child: Container(
-          padding: widget.level > 0 ? EdgeInsets.only(left: (style == NestedCommentIndicatorStyle.thick ? widget.level + 1 : widget.level) * 4.0) : null,
+          padding: widget.level > 0 ? EdgeInsets.only(left: (nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? widget.level + 1 : widget.level) * 4.0) : null,
           child: AnimatedSize(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOutCubicEmphasized,
@@ -109,30 +126,19 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Divider(height: 1),
-                CommentCardHeader(
-                  comment: widget.comment,
-                  hidden: widget.isHidden,
-                ),
+                CommentCardHeader(comment: widget.comment, hidden: widget.isHidden),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 130),
                   switchInCurve: Curves.easeInOut,
                   switchOutCurve: Curves.easeInOut,
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return SizeTransition(
-                      sizeFactor: animation,
-                      child: SlideTransition(
-                        position: _offsetAnimation,
-                        child: child,
-                      ),
-                    );
-                  },
+                  transitionBuilder: (Widget child, Animation<double> animation) => SizeTransition(sizeFactor: animation, child: SlideTransition(position: _offsetAnimation, child: child)),
                   child: (widget.isHidden && collapseParentCommentOnGesture)
                       ? Container()
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
+                              padding: EdgeInsets.only(top: 0.0, right: 8.0, left: 8.0, bottom: (showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions) ? 0.0 : 8.0),
                               child: ConditionalParentWidget(
                                 condition: widget.selectable,
                                 parentBuilder: (child) {
@@ -152,25 +158,20 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                 },
                                 child: widget.viewSource
                                     ? ScalableText(
-                                        cleanCommentContent(widget.comment),
+                                        content,
                                         style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                        fontScale: state.contentFontSizeScale,
+                                        fontScale: contentFontSizeScale,
                                       )
-                                    : CommonMarkdownBody(
-                                        body: cleanCommentContent(widget.comment),
-                                        isComment: true,
-                                      ),
+                                    : CommonMarkdownBody(body: content, isComment: true),
                               ),
                             ),
-                            if (state.showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
+                            if (showCommentButtonActions && widget.isUserLoggedIn && !widget.disableActions)
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                                padding: const EdgeInsets.only(bottom: 4.0, top: 6.0, right: 4.0),
                                 child: CommentCardActions(
                                   comment: widget.comment,
                                   onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                   isEdit: widget.isOwnComment,
-                                  onSaveAction: widget.onSaveAction,
-                                  onDeleteAction: widget.onDeleteAction,
                                   onReplyEditAction: widget.onReplyEditAction,
                                   onViewSourceToggled: widget.onViewSourceToggled,
                                   viewSource: widget.viewSource,
@@ -185,7 +186,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     child: ReplyToPreviewActions(
                       onViewSourceToggled: widget.onViewSourceToggled,
                       viewSource: widget.viewSource,
-                      text: cleanCommentContent(widget.comment),
+                      text: content,
                     ),
                   ),
               ],
