@@ -7,3 +7,4 @@ export 'post_bottom_sheet/post_post_action_bottom_sheet.dart';
 export 'post_status_icon.dart';
 export 'post_body/post_body.dart';
 export 'post_body/post_body_preview.dart';
+export 'post_page_fab.dart';

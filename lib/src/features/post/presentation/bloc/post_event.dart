@@ -48,10 +48,18 @@ class CommentActionEvent extends PostEvent {
   const CommentActionEvent({required this.commentId, required this.action, required this.value});
 }
 
+/// Event for updating an existing comment in the tree.
 final class CommentItemUpdatedEvent extends PostEvent {
   final ThunderComment comment;
 
   const CommentItemUpdatedEvent({required this.comment});
+}
+
+/// Event for inserting a new comment into the tree.
+final class CommentItemInsertedEvent extends PostEvent {
+  final ThunderComment comment;
+
+  const CommentItemInsertedEvent({required this.comment});
 }
 
 enum NavigateCommentDirection { up, down }

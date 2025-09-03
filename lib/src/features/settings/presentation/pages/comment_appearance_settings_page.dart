@@ -292,7 +292,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                         builder: (context, snapshot) {
                           if (snapshot.data == null) return Container();
 
-                          List<CommentNode> flattenedComments = CommentNode.flattenCommentTree(snapshot.data);
+                          List<CommentNode> flattenedComments = snapshot.data?.flatten() ?? [];
                           final account = context.read<ProfileBloc>().state.account;
 
                           return BlocProvider(
@@ -304,6 +304,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: flattenedComments.map((commentNode) {
                                   return CommentCard(
+                                    account: account,
                                     comment: commentNode.comment!,
                                     level: commentNode.depth,
                                   );

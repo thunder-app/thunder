@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -316,11 +315,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                     Wrap(
                                       spacing: 8.0,
                                       children: [
-                                        CommentReference(
-                                          comment: comment!,
-                                          isOwnComment: comment.creator?.id == context.read<ProfileBloc>().state.user?.id,
-                                          disableActions: true,
-                                        ),
+                                        CommentReference(comment: comment!),
                                         Padding(
                                           padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
                                           child: Column(

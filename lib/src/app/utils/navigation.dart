@@ -239,17 +239,23 @@ Future<void> navigateToModlogPage(
   pushOnTopOfLoadingPage(context, route);
 }
 
-Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {
-  ProfileBloc profileBloc = context.read<ProfileBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+Future<ThunderPost> getPostFromComment(ThunderComment comment, Account account) async {
+  if (comment.post != null) return comment.post!;
 
-  final ThunderState state = context.read<ThunderBloc>().state;
-  final bool reduceAnimations = state.reduceAnimations;
+  final response = await PostRepositoryImpl(account: account).getPost(comment.postId, commentId: comment.id);
+  return response!['post'] as ThunderPost;
+}
+
+Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {
+  final profileBloc = context.read<ProfileBloc>();
+  final thunderBloc = context.read<ThunderBloc>();
 
   final account = context.read<ProfileBloc>().state.account;
-  final post = await PostRepositoryImpl(account: account).getPost(comment.post!.id, commentId: comment.id);
 
-  final SwipeablePageRoute route = SwipeablePageRoute(
+  final state = context.read<ThunderBloc>().state;
+  final reduceAnimations = state.reduceAnimations;
+
+  final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
@@ -259,25 +265,36 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
     backGestureDetectionWidth: 45,
     canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
-    builder: (context) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: profileBloc),
-        BlocProvider.value(value: thunderBloc),
-        BlocProvider(create: (context) => PostBloc(account: account)),
-      ],
-      child: PostPage(
-        initialPost: post!['post'],
-        highlightedCommentId: comment.id,
-        commentPath: comment.path,
-        onPostUpdated: (ThunderPost post) {},
-      ),
-    ),
+    builder: (context) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: profileBloc),
+          BlocProvider.value(value: thunderBloc),
+          BlocProvider(create: (context) => PostBloc(account: account)),
+        ],
+        child: FutureBuilder<ThunderPost>(
+          future: getPostFromComment(comment, account),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return PostPage(
+                initialPost: snapshot.data!,
+                highlightedCommentId: comment.id,
+                commentPath: comment.path,
+                onPostUpdated: (ThunderPost post) {},
+              );
+            }
+
+            return LoadingPage();
+          },
+        ),
+      );
+    },
   );
 
   pushOnTopOfLoadingPage(context, route);
 }
 
-Future<void> navigateToCreateCommentPage(
+Future<ThunderComment?> navigateToCreateCommentPage(
   BuildContext context, {
   ThunderPost? post,
   ThunderComment? comment,
@@ -317,7 +334,9 @@ Future<void> navigateToCreateCommentPage(
     ),
   );
 
-  pushOnTopOfLoadingPage(context, route);
+  final result = await pushOnTopOfLoadingPage(context, route);
+  if (result is ThunderComment) return result;
+  return null;
 }
 
 Future<void> navigateToCreatePostPage(

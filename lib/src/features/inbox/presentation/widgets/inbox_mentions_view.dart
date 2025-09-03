@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
@@ -53,27 +51,6 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                 children: [
                   CommentReference(
                     comment: comment,
-                    isOwnComment: comment.creatorId == context.read<ProfileBloc>().state.account.userId,
-                    onVoteAction: (int commentId, int voteType) => context.read<InboxBloc>().add(
-                          InboxItemActionEvent(
-                            action: CommentAction.vote,
-                            personMentionId: comment.id,
-                            value: switch (voteType) {
-                              1 => comment.myVote == 1 ? 0 : 1,
-                              -1 => comment.myVote == -1 ? 0 : -1,
-                              _ => 0,
-                            },
-                          ),
-                        ),
-                    onSaveAction: (int commentId, bool save) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.save, personMentionId: comment.id, value: save)),
-                    onDeleteAction: (int commentId, bool deleted) => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.delete, personMentionId: comment.id, value: deleted)),
-                    onReplyEditAction: (ThunderComment comment, bool isEdit) {
-                      return navigateToCreateCommentPage(
-                        context,
-                        comment: isEdit ? comment : null,
-                        parentComment: isEdit ? null : comment,
-                      );
-                    },
                     child: IconButton(
                       onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: comment.replyMentionId!, value: !comment.read!)),
                       icon: Icon(

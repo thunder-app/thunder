@@ -292,7 +292,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
             post: post,
             onCommentSuccess: (comment, userChanged) {
               if (!userChanged) {
-                context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
+                context.read<PostBloc>().add(CommentItemInsertedEvent(comment: comment));
               }
             },
           ),

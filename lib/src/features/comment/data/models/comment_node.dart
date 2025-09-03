@@ -21,14 +21,13 @@ class CommentNode {
     return depth;
   }
 
-  /// Gets the total number of replies
-  int get totalReplies => replies.length;
+  CommentNode({this.comment, List<CommentNode>? replies}) : replies = replies ?? [];
 
-  CommentNode({this.comment, this.replies = const []});
-
-  /// Adds a reply to this comment node. There is a constraint where the comment [id] must be unique.
+  /// Inserts a reply to this comment node. There is a constraint where the comment [id] must be unique.
   /// If there exists a comment that has the same [id], we will replace it with the new comment.
-  void addReply(CommentNode reply) {
+  void insert(CommentNode reply) {
+    if (reply.comment?.id == comment?.id) return;
+
     // Add the comment only if theres no other comment with the same id
     int existingCommentNodeIndex = replies.indexWhere((node) => node.comment?.id == reply.comment?.id);
 
@@ -41,55 +40,43 @@ class CommentNode {
     replies.add(reply);
   }
 
-  /// A static helper method to insert a comment node into the tree.
-  /// If the parent node is not found, the comment node is added to the root node.
-  static void insertCommentNode(CommentNode root, String parentId, CommentNode commentNode) {
-    CommentNode? parent = findCommentNode(root, parentId);
-
-    if (parent == null && parentId == "0") {
-      return root.addReply(commentNode);
+  /// Searches the tree for a comment node with the given [id].
+  CommentNode? search(int id) {
+    // Return the current node if we are searching for the root node. The root node is defined by having a null [comment].
+    if (id == 0 && comment == null) {
+      return this;
     }
 
-    parent?.addReply(commentNode);
-  }
-
-  /// A static helper method to find a comment node in the tree given its [id]. The [id] comes from [comment.path]
-  /// Returns null if the node is not found.
-  static CommentNode? findCommentNode(CommentNode node, String id) {
-    String? nodeId = node.comment?.path.split('.').last;
-
-    // Return the current node if it's the target
-    if (nodeId == id) return node;
+    // Return the current node if it matches the [id].
+    if (id == comment?.id) {
+      return this;
+    }
 
     // Recursively search for the target node
-    for (final child in node.replies) {
-      CommentNode? found = findCommentNode(child, id);
-      if (found != null) return found;
+    for (final child in replies) {
+      final node = child.search(id);
+      if (node != null) return node;
     }
 
     return null;
   }
 
-  /// A static helper method to flatten a [CommentNode] tree. This flattens the tree using DFS.
-  /// DFS allows us to preserve the order of the comments in the tree.
-  ///
-  /// Returns a list of flattened nodes.
-  static List<CommentNode> flattenCommentTree(CommentNode? root) {
-    if (root == null) return <CommentNode>[];
+  /// Flattens the tree into a list of nodes using DFS.
+  /// Using DFS allows us to preserve the order of the comments in the tree.
+  List<CommentNode> flatten() {
+    final result = <CommentNode>[];
 
-    List<CommentNode> result = <CommentNode>[];
-    List<CommentNode> stack = [root];
+    void dfs(CommentNode node) {
+      if (node.comment != null) result.add(node); // visit the node
 
-    while (stack.isNotEmpty) {
-      final current = stack.removeLast();
-
-      if (current.comment != null) result.add(current);
-
-      for (int i = current.replies.length - 1; i >= 0; i--) {
-        stack.add(current.replies[i]);
+      if (node.replies.isNotEmpty) {
+        for (final child in node.replies) {
+          dfs(child); // recurse on children
+        }
       }
     }
 
+    dfs(this);
     return result;
   }
 }

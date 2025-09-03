@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/swipe_action.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
 
@@ -82,7 +77,7 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
     final parent = nodeMap[parentId];
 
     if (parent != null) {
-      parent.addReply(commentNode);
+      parent.insert(commentNode);
     } else {
       orphanedComments.add(comment);
     }
@@ -97,7 +92,7 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
     final parent = nodeMap[parentId];
 
     if (parent != null && commentNode != null) {
-      parent.addReply(commentNode);
+      parent.insert(commentNode);
     } else {
       debugPrint('Comment ${comment.id} has no parent. Path: ${comment.path}');
     }
@@ -127,52 +122,36 @@ String cleanComment(String commentContent, bool? commentRemoved, bool? commentDe
   return commentContent;
 }
 
-void triggerCommentAction({
-  required BuildContext context,
-  SwipeAction? swipeAction,
-  required Function(int, int) onVoteAction,
-  required Function(int, bool) onSaveAction,
-  Function(ThunderComment comment, bool isEdit)? onReplyEditAction,
-  required int voteType,
-  bool? saved,
-  required ThunderComment comment,
-  int? highlightedCommentId,
-}) async {
-  switch (swipeAction) {
-    case SwipeAction.upvote:
-      onVoteAction(comment.id, voteType == 1 ? 0 : 1);
-      return;
-    case SwipeAction.downvote:
-      bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
+Future<ThunderComment?> onCommentAction(BuildContext context, Account account, CommentAction action, ThunderComment comment, Map<String, dynamic>? data) async {
+  final repository = CommentRepositoryImpl(account: account);
 
-      if (downvotesEnabled == false) {
-        showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
-        return;
-      }
-      onVoteAction(comment.id, voteType == -1 ? 0 : -1);
-      return;
-    case SwipeAction.reply:
-      navigateToCreateCommentPage(context, parentComment: comment, onCommentSuccess: (comment, userChanged) {
-        if (!userChanged) {
-          onReplyEditAction?.call(comment, false);
-        }
-      });
+  ThunderComment? updatedComment;
+
+  switch (action) {
+    case CommentAction.vote:
+      updatedComment = await repository.vote(comment, comment.myVote == data?['voteType'] ? 0 : data?['voteType']);
+    case CommentAction.save:
+      updatedComment = await repository.save(comment, comment.saved != null && !comment.saved!);
+    case CommentAction.delete:
+      updatedComment = await repository.delete(comment, true);
+    case CommentAction.report:
+      await repository.report(comment.id, data?['reason']);
       break;
-    case SwipeAction.edit:
-      navigateToCreateCommentPage(
-        context,
-        comment: comment,
-        onCommentSuccess: (comment, userChanged) {
-          if (!userChanged) {
-            return onReplyEditAction?.call(comment, true);
-          }
-        },
-      );
+    case CommentAction.reply:
+      updatedComment = await navigateToCreateCommentPage(context, parentComment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
       break;
-    case SwipeAction.save:
-      onSaveAction(comment.id, !(saved ?? false));
+    case CommentAction.edit:
+      updatedComment = await navigateToCreateCommentPage(context, comment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
+      break;
+    case CommentAction.remove:
+      // TODO: Handle this case.
+      break;
+    case CommentAction.purge:
+      // TODO: Handle this case.
       break;
     default:
       break;
   }
+
+  return updatedComment;
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/core/enums/swipe_action.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
@@ -13,29 +12,21 @@ class CommentCardActions extends StatelessWidget {
   /// The comment to perform actions on
   final ThunderComment comment;
 
-  /// Whether the comment has been edited
-  final bool isEdit;
+  /// Whether the comment is owned by the current user
+  final bool isOwnComment;
 
-  /// Whether the source is being viewed
-  final bool viewSource;
+  /// The function to call when an action is performed. Simulate a swipe action on the comment card
+  final void Function(SwipeAction action) onAction;
 
-  /// The function to call when a vote is made
-  final Function(int, int) onVoteAction;
-
-  /// The function to call when a comment is replied to or edited
-  final Function(ThunderComment, bool) onReplyEditAction;
-
-  /// The function to call when the view source is toggled
-  final void Function() onViewSourceToggled;
+  /// The function to call when opening the bottom sheet
+  final void Function() onBottomSheetOpen;
 
   const CommentCardActions({
     super.key,
     required this.comment,
-    this.isEdit = false,
-    required this.viewSource,
-    required this.onVoteAction,
-    required this.onReplyEditAction,
-    required this.onViewSourceToggled,
+    required this.isOwnComment,
+    required this.onAction,
+    required this.onBottomSheetOpen,
   });
 
   @override
@@ -57,72 +48,33 @@ class CommentCardActions extends StatelessWidget {
           height: 28,
           width: 44,
           child: IconButton(
-            icon: Icon(Icons.more_horiz_rounded, semanticLabel: l10n.actions, size: 20),
+            icon: Icon(Icons.more_horiz_rounded, semanticLabel: l10n.actions, size: 20.0),
             visualDensity: VisualDensity.compact,
-            onPressed: () {
-              showCommentActionBottomModalSheet(
-                context,
-                comment,
-                isShowingSource: viewSource,
-                onAction: ({commentAction, communityAction, userAction, comment}) {
-                  if (comment != null) context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
-
-                  switch (commentAction) {
-                    case CommentAction.reply:
-                      onReplyEditAction(comment!, false);
-                      break;
-                    case CommentAction.edit:
-                      onReplyEditAction(comment!, true);
-                      break;
-                    case CommentAction.viewSource:
-                      onViewSourceToggled();
-                      break;
-                    default:
-                      break;
-                  }
-
-                  switch (communityAction) {
-                    default:
-                      break;
-                  }
-
-                  switch (userAction) {
-                    default:
-                      break;
-                  }
-                },
-              );
-              HapticFeedback.mediumImpact();
-            },
+            onPressed: onBottomSheetOpen,
           ),
         ),
         SizedBox(
           height: 28,
           width: 44,
           child: IconButton(
-            icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: isEdit ? l10n.edit : l10n.reply(1), size: iconSize),
+            icon: Icon(isOwnComment ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: isOwnComment ? l10n.edit : l10n.reply(1), size: iconSize),
             visualDensity: VisualDensity.compact,
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              onReplyEditAction(comment, isEdit);
-            },
+            onPressed: () => onAction(SwipeAction.reply),
           ),
         ),
         SizedBox(
           height: 28,
           width: 44,
           child: IconButton(
-              icon: Icon(
-                Icons.arrow_upward,
-                semanticLabel: voteType == 1 ? l10n.upvoted : l10n.upvote,
-                size: iconSize,
-              ),
-              color: voteType == 1 ? upvoteColor : null,
-              visualDensity: VisualDensity.compact,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                onVoteAction(comment.id, voteType == 1 ? 0 : 1);
-              }),
+            icon: Icon(
+              Icons.arrow_upward,
+              semanticLabel: voteType == 1 ? l10n.upvoted : l10n.upvote,
+              size: iconSize,
+            ),
+            color: voteType == 1 ? upvoteColor : null,
+            visualDensity: VisualDensity.compact,
+            onPressed: () => onAction(SwipeAction.upvote),
+          ),
         ),
         if (downvotesEnabled)
           SizedBox(
@@ -132,10 +84,7 @@ class CommentCardActions extends StatelessWidget {
               icon: Icon(Icons.arrow_downward, semanticLabel: voteType == -1 ? l10n.downvoted : l10n.downvote, size: iconSize),
               color: voteType == -1 ? downvoteColor : null,
               visualDensity: VisualDensity.compact,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                onVoteAction(comment.id, voteType == -1 ? 0 : -1);
-              },
+              onPressed: () => onAction(SwipeAction.downvote),
             ),
           ),
       ],

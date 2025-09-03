@@ -52,7 +52,7 @@ void showLoadingPage(BuildContext context) {
 
   isLoadingPageShown = true;
 
-  // Immediately push the  loading page.
+  // Immediately push the loading page.
   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
   final bool reduceAnimations = thunderBloc.state.reduceAnimations;
   Navigator.of(context).push(
@@ -88,11 +88,11 @@ Future<void> hideLoadingPage(BuildContext context, {bool delay = false}) async {
   }
 }
 
-Future<void> pushOnTopOfLoadingPage(BuildContext context, Route route) async {
+Future<dynamic> pushOnTopOfLoadingPage(BuildContext context, Route route) async {
   if (isLoadingPageShown) {
     isLoadingPageShown = false;
-    await Navigator.of(context).pushReplacement(route);
+    return await Navigator.of(context).pushReplacement(route);
   } else {
-    await Navigator.of(context).push(route);
+    return await Navigator.of(context).push(route);
   }
 }
