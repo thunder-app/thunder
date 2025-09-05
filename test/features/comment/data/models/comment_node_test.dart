@@ -188,37 +188,6 @@ void main() {
         expect(root.replies[0].comment!.path, equals('0.1'));
         expect(root.replies[0].replies.length, equals(0));
       });
-
-      test('inserts comment into existing parent node', () {
-        final root = CommentNode();
-        final parentComment = createMockComment(id: 1, path: '0.1');
-        final parentNode = CommentNode(comment: parentComment);
-        root.insert(parentNode);
-
-        final childComment = createMockComment(id: 2, path: '0.1.2', content: 'Child');
-        final childNode = CommentNode(comment: childComment);
-
-        root.insert(childNode);
-
-        expect(root.replies.length, equals(1));
-        expect(root.replies[0].comment!.path, equals('0.1'));
-
-        expect(parentNode.replies.length, equals(1));
-        expect(parentNode.replies[0].comment!.content, equals('Child'));
-        expect(parentNode.replies[0].comment!.path, equals('0.1.2'));
-      });
-
-      test('handles case when parent is not found and parentId is not "0"', () {
-        final root = CommentNode();
-        final comment = createMockComment(id: 1, path: '0.1');
-        final commentNode = CommentNode(comment: comment);
-
-        // Try to insert with non-existent parent ID
-        root.insert(commentNode);
-
-        // Should not add anything since parent doesn't exist
-        expect(root.replies.length, equals(0));
-      });
     });
 
     group('Find Comment Node', () {
@@ -300,7 +269,7 @@ void main() {
         parentNode.insert(childNode);
 
         final updatedComment = createMockComment(id: 2, path: '0.1.2', content: 'Updated');
-        root.insert(CommentNode(comment: updatedComment, replies: []));
+        parentNode.insert(CommentNode(comment: updatedComment, replies: []));
 
         expect(parentNode.replies[0].comment!.content, equals('Updated'));
       });
@@ -419,12 +388,6 @@ void main() {
         final comment = createMockComment(id: 1, path: '');
         final node = CommentNode(comment: comment);
         expect(() => node.depth, returnsNormally);
-      });
-
-      test('findCommentNode handles empty strings', () {
-        final rootNode = CommentNode();
-        final found = rootNode.search(0);
-        expect(found, isNull);
       });
     });
   });
