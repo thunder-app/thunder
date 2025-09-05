@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/core/enums/font_scale.dart';
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
@@ -16,6 +17,9 @@ import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 
 /// A widget that displays the content of a comment.
 class CommentContent extends StatefulWidget {
+  /// The account
+  final Account account;
+
   /// The comment to display
   final ThunderComment comment;
 
@@ -45,6 +49,7 @@ class CommentContent extends StatefulWidget {
 
   const CommentContent({
     super.key,
+    required this.account,
     required this.comment,
     required this.hidden,
     this.excludeSemantics = false,
@@ -98,7 +103,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Divider(height: 1),
-              CommentCardHeader(comment: widget.comment, hidden: widget.hidden),
+              CommentCardHeader(account: widget.account, comment: widget.comment, hidden: widget.hidden),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 130),
                 switchInCurve: Curves.easeInOut,

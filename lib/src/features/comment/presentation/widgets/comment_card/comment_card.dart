@@ -6,20 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/swipe_action.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
 import 'package:thunder/src/shared/utils/swipe.dart';
 
-/// A widget displaying a given comment.
+/// A widget that displays a given comment.
 ///
-/// All comment-related actions within this widget should be performed by the given [account] as the [PostPage] has the ability to switch to a different account other than the current one present in [ProfileBloc].
-/// This widget should be bloc-agnostic and should not depend on any bloc. The parent widget should handle the bloc-related logic (e.g. updating the comment list).
-///
-/// When the comment is updated due to an action, the [onCommentUpdated] function will be called with the updated comment.
+/// All comment-related actions within this widget should be performed by the given [account].
+/// This widget is bloc-agnostic and should not depend on any bloc. The parent widget should handle the bloc-related logic (e.g. updating the comment list).
 class CommentCard extends StatefulWidget {
   /// The [Account] to use for comment-related actions.
   final Account account;
@@ -75,7 +71,7 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
-  /// The internal comment
+  /// The internal comment. This is updated whenever the comment is updated.
   late ThunderComment comment;
 
   /// Whether the comment is owned by the current user
@@ -96,6 +92,8 @@ class _CommentCardState extends State<CommentCard> {
   }
 
   /// Maps a [SwipeAction] to a [CommentAction] and performs the action
+  ///
+  /// If [resolve] is true, the [SwipeAction.reply] will be resolved to [SwipeAction.edit] if the comment is owned by the current user.
   Future<void> _onAction(SwipeAction action, {bool resolve = true}) async {
     final resolvedSwipeAction = (action == SwipeAction.reply && isOwnComment && resolve) ? SwipeAction.edit : action;
 
@@ -199,6 +197,7 @@ class _CommentCardState extends State<CommentCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommentContent(
+                account: widget.account,
                 level: widget.level,
                 comment: comment,
                 hidden: widget.collapsed,
@@ -208,7 +207,7 @@ class _CommentCardState extends State<CommentCard> {
               if (showCommentButtonActions && !widget.account.anonymous && !widget.collapsed)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0, top: 6.0, right: 4.0),
-                  child: CommentCardActions(
+                  child: CommentCardButtonActions(
                     comment: comment,
                     isOwnComment: isOwnComment,
                     onAction: (action) => _onAction(action),
@@ -234,7 +233,7 @@ class _CommentCardState extends State<CommentCard> {
           if (dragged != _dragged) setState(() => _dragged = dragged);
         },
         onAction: (action) => _onAction(action),
-        backgroundBuilder: (context, dismissDirection, progress, action) => CommentCardActionBackground(
+        backgroundBuilder: (context, dismissDirection, progress, action) => CommentCardBackground(
           swipeAction: action == SwipeAction.reply && isOwnComment ? SwipeAction.edit : action,
           dismissThreshold: progress,
           firstActionThreshold: actionThresholds.first,
@@ -268,124 +267,6 @@ class _CommentCardState extends State<CommentCard> {
       ),
       crossFadeState: widget.hidden ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: Duration(milliseconds: 350 - (widget.replies * 20)),
-    );
-  }
-}
-
-class AdditionalCommentCard extends StatefulWidget {
-  /// The function to call when tapped
-  final Function()? onTap;
-
-  /// The depth of the comment in the comment tree
-  final int depth;
-
-  /// The number of replies for the comment
-  final int replies;
-
-  const AdditionalCommentCard({
-    super.key,
-    this.onTap,
-    this.depth = 0,
-    this.replies = 0,
-  });
-
-  @override
-  State<AdditionalCommentCard> createState() => _AdditionalCommentCardState();
-}
-
-class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = GlobalContext.l10n;
-    final theme = Theme.of(context);
-
-    final style = context.select((ThunderBloc bloc) => bloc.state.nestedCommentIndicatorStyle);
-    final scheme = context.select((ThunderBloc bloc) => bloc.state.nestedCommentIndicatorColor);
-    final fontScale = context.select((ThunderBloc bloc) => bloc.state.commentFontSizeScale);
-
-    return Container(
-      decoration: CommentDepthIndicatorDecoration(context, level: widget.depth + 1, style: style, scheme: scheme),
-      child: Container(
-        margin: EdgeInsets.only(left: (style == NestedCommentIndicatorStyle.thick ? widget.depth + 1 : widget.depth) * 4.0),
-        child: InkWell(
-          onTap: () {
-            setState(() => isLoading = true);
-            widget.onTap?.call();
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Divider(height: 1),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 12.0).copyWith(top: 12.0, bottom: 12.0),
-                    child: ScalableText(
-                      widget.replies == 1 ? l10n.loadMoreSingular(widget.replies) : l10n.loadMorePlural(widget.replies),
-                      fontScale: fontScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                      ),
-                    ),
-                  ),
-                  if (isLoading)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                    )
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Determines the appropriate color and icon for the comment background swipe action
-class CommentCardActionBackground extends StatelessWidget {
-  const CommentCardActionBackground({
-    super.key,
-    this.swipeAction,
-    required this.firstActionThreshold,
-    required this.dismissThreshold,
-    required this.dismissDirection,
-  });
-
-  /// The [SwipeAction] to be performed
-  final SwipeAction? swipeAction;
-
-  /// The threshold at which the first action should be triggered
-  final double firstActionThreshold;
-
-  /// The current threshold of the swipe action
-  final double dismissThreshold;
-
-  /// The direction of the swipe action
-  final DismissDirection dismissDirection;
-
-  @override
-  Widget build(BuildContext context) {
-    final leftPrimaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.leftPrimaryCommentGesture);
-    final rightPrimaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.rightPrimaryCommentGesture);
-
-    final alignment = dismissDirection == DismissDirection.startToEnd ? Alignment.centerLeft : Alignment.centerRight;
-    final defaultColor = dismissDirection == DismissDirection.startToEnd ? leftPrimaryCommentGesture.getColor(context) : rightPrimaryCommentGesture.getColor(context);
-
-    final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
-
-    return AnimatedContainer(
-      alignment: alignment,
-      duration: const Duration(milliseconds: 200),
-      color: backgroundColor,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * dismissThreshold,
-        child: swipeAction != null ? Icon(swipeAction!.getIcon()) : const SizedBox.shrink(),
-      ),
     );
   }
 }

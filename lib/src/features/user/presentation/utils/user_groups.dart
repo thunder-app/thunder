@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 
+import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/enums/user_type.dart';
 import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/comment/comment.dart';
+
+/// Fetches the user groups for a givencomment.
+List<UserType> getCommentUserGroups(ThunderComment comment, Account account) {
+  final groups = <UserType>[];
+
+  if (comment.creator?.botAccount == true) groups.add(UserType.bot);
+  if (comment.creatorIsModerator == true) groups.add(UserType.moderator);
+  if (comment.creatorIsAdmin == true) groups.add(UserType.admin);
+  if (comment.post?.creatorId == comment.creatorId) groups.add(UserType.op);
+  if (comment.creatorId == account.userId) groups.add(UserType.self);
+
+  final now = DateTime.now();
+  final published = comment.creator?.published;
+
+  final isUserBirthday = published != null && published.month == now.month && published.day == now.day;
+  if (isUserBirthday) groups.add(UserType.birthday);
+
+  return groups;
+}
 
 /// Fetches the user group color based on the given [userGroups].
 ///

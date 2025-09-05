@@ -319,6 +319,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                     ),
                                     child: CommentContent(
+                                      account: account!,
                                       comment: widget.parentComment!,
                                       hidden: false,
                                       viewSource: viewSource,
