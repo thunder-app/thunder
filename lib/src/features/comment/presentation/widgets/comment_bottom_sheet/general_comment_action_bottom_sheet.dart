@@ -261,7 +261,6 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
     // Determine the available sub-menus to display
     List<GeneralCommentAction> submenus = GeneralCommentAction.values.where((page) => page != GeneralCommentAction.general).toList();
-    if (widget.account.anonymous) submenus = submenus.where((action) => action != GeneralCommentAction.comment).toList();
 
     return Column(
       children: [
