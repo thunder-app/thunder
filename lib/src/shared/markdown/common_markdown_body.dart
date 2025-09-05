@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -95,23 +96,30 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
     final state = context.watch<ThunderBloc>().state;
     final styleSheet = widget.hidden ? _spoilerMarkdownStyleSheet! : _normalMarkdownStyleSheet!;
 
-    return RepaintBoundary(
-      child: ExtendedMarkdownBody(
-        data: widget.body,
-        extensionSet: _customExtensionSet,
-        inlineSyntaxes: _inlineSyntaxes,
-        builders: _builders,
-        sizedImageBuilder: (config) => widget.hidden
-            ? const SizedBox.shrink()
-            : MarkdownImageWidget(
-                uri: config.uri,
-                alt: config.alt,
-                isComment: widget.isComment,
-                imageMaxWidth: widget.imageMaxWidth,
-              ),
-        onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-        onLongPressLink: (text, url, title) => handleLinkLongPress(context, text, url),
-        styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor(state)),
+    // Disable semantics if the accessibility feature is disabled. This allows the widget to be more performant as it doesn't need to compute the semantics tree.
+    // This is useful especially for complex markdown content.
+    final accessibilityOn = SemanticsBinding.instance.accessibilityFeatures.accessibleNavigation;
+
+    return ExcludeSemantics(
+      excluding: !accessibilityOn,
+      child: RepaintBoundary(
+        child: ExtendedMarkdownBody(
+          data: widget.body,
+          extensionSet: _customExtensionSet,
+          inlineSyntaxes: _inlineSyntaxes,
+          builders: _builders,
+          sizedImageBuilder: (config) => widget.hidden
+              ? const SizedBox.shrink()
+              : MarkdownImageWidget(
+                  uri: config.uri,
+                  alt: config.alt,
+                  isComment: widget.isComment,
+                  imageMaxWidth: widget.imageMaxWidth,
+                ),
+          onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
+          onLongPressLink: (text, url, title) => handleLinkLongPress(context, text, url),
+          styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor(state)),
+        ),
       ),
     );
   }
