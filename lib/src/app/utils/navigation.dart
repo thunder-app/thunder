@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'package:thunder/src/app/routing/swipeable_page_route.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/core/models/thunder_site_response.dart';

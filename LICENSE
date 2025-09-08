@@ -664,3 +664,4 @@ Portions of this software are copyright of their respective authors and released
 under the MIT license:
 - marquee_widget.dart, Copyright (c) 2018 Marcel Garus
 - conditional_parent_widget.dart, Copyright (c) 2023 ltOgt
+- swipeable_page_route.dart, Copyright (c) 2020 Jonas Wanke

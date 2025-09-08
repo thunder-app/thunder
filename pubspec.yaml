@@ -77,7 +77,6 @@ dependencies:
   smooth_highlight: ^0.1.1
   stream_transform: ^2.1.0
   super_sliver_list: ^0.4.1
-  swipeable_page_route: ^0.4.0
   unifiedpush: ^6.0.2
   url_launcher: ^6.1.11
   # There is an intentional space between the packge name and colon below. Do not remove!

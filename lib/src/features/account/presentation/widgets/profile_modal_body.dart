@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import 'package:thunder/src/app/routing/swipeable_page_route.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/core/models/models.dart';

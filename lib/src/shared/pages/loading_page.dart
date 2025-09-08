@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
+
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/routing/swipeable_page_route.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 
 bool isLoadingPageShown = false;
