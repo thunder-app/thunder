@@ -3606,5 +3606,45 @@
     "combineCommentScoresLabel": "Combinar Pontuações dos Comentários",
     "@combineCommentScoresLabel": {
         "description": "Label for setting to combine comment scores"
+    },
+    "deselectUndeterminedWarning": "Se você desmarcar Indeterminado, não verá a maior parte do conteúdo.",
+    "@deselectUndeterminedWarning": {},
+    "hideNsfwPostsFromFeed": "Ocultar Postagens NSFW do Feed",
+    "@hideNsfwPostsFromFeed": {
+        "description": "Toggle to hide NSFW posts from the feed."
+    },
+    "hideNsfwPreviews": "Desfocar Pré-visualizações NSFW",
+    "@hideNsfwPreviews": {
+        "description": "Toggle to blur NSFW previews."
+    },
+    "nsfw": "NSFW",
+    "@nsfw": {
+        "description": "Short description for NSFW label"
+    },
+    "nsfwWarning": "NSFW - Toque para revelar",
+    "@nsfwWarning": {
+        "description": "Warning for NSFW posts"
+    },
+    "postNSFW": "Marcar como NSFW",
+    "@postNSFW": {},
+    "showNsfwContent": "Mostrar Conteúdo NSFW",
+    "@showNsfwContent": {
+        "description": "Toggle to show NSFW content."
+    },
+    "showTextPostIndicator": "Mostrar Indicador de Postagem de Texto",
+    "@showTextPostIndicator": {
+        "description": "Toggle to show text post indicator."
+    },
+    "unifiedPushDistributorApp": "Aplicativo Distribuidor UnifiedPush: {app} ({count} disponíveis)",
+    "@unifiedPushDistributorApp": {
+        "description": "A status indicator telling the current state of the UnifiedPush distributor app",
+        "placeholders": {
+            "app": {
+                "description": "The name of the UnifiedPush distributor app"
+            },
+            "count": {
+                "description": "The number of available UnifiedPush distributor apps"
+            }
+        }
     }
 }
