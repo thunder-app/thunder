@@ -59,7 +59,7 @@ class PickerItem<T> extends StatelessWidget {
                         overflow: TextOverflow.fade,
                       )
                     : null),
-            leading: icon != null ? Icon(icon) : this.leading,
+            leading: icon != null ? Icon(icon) : leading,
             trailing: trailingIcon != null ? Icon(trailingIcon) : null,
           ),
         ),
