@@ -117,7 +117,7 @@
     },
     "all": "Todos",
     "@all": {},
-    "allPosts": "Todos os Posts",
+    "allPosts": "Todas as Postagens",
     "@allPosts": {},
     "cannotReportOwnComment": "Você não pode denunciar seu próprio comentário.",
     "@cannotReportOwnComment": {},
@@ -151,7 +151,7 @@
     },
     "blockUser": "Bloquear Usuário",
     "@blockUser": {},
-    "bot": "Bot",
+    "bot": "Robô",
     "@bot": {
         "description": "Label for a bot user."
     },
@@ -159,7 +159,7 @@
     "@actionColorsRedirect": {
         "description": "Redirect hint to action colors"
     },
-    "accountBirthday": "Aniversário da Cona {additionalInfo}",
+    "accountBirthday": "Aniversário da Conta {additionalInfo}",
     "@accountBirthday": {
         "description": "User descriptor for accounts created on today's date"
     },
@@ -1002,7 +1002,7 @@
     "@settingsPageAccount": {
         "description": "Account settings page"
     },
-    "settingsPageAccountBlocks": "Lista de Bloqueios",
+    "settingsPageAccountBlocks": "Listas de Bloqueios",
     "@settingsPageAccountBlocks": {
         "description": "Account blocklist (user/community/instance) page"
     },
@@ -2063,15 +2063,15 @@
     },
     "localPosts": "Postagens Locais",
     "@localPosts": {},
-    "lockPost": "Bloquear Postagem",
+    "lockPost": "Trancar Postagem",
     "@lockPost": {
         "description": "Action for locking a post (moderator action)"
     },
-    "locked": "Bloqueado",
+    "locked": "Trancado",
     "@locked": {
         "description": "Status to indicate that an item has been locked"
     },
-    "lockedPost": "Postagem Bloqueada",
+    "lockedPost": "Postagem Trancada",
     "@lockedPost": {
         "description": "Short decription for moderator action to lock a post"
     },
@@ -2174,7 +2174,7 @@
     "@modFeaturePost": {
         "description": "Description for modlog filter for actions that feature posts"
     },
-    "modLockPost": "Bloquear/Desbloquear Postagens",
+    "modLockPost": "Trancar/Destrancar Postagens",
     "@modLockPost": {
         "description": "Description for modlog filter for actions that lock posts"
     },
@@ -2431,7 +2431,7 @@
     "@postCreatedSuccessfully": {
         "description": "Notifying the user that their post was created successfully"
     },
-    "postLocked": "Postagem bloqueada. Não são permitidas respostas.",
+    "postLocked": "Postagem trancada. Não são permitidas respostas.",
     "@postLocked": {},
     "postMetadataInstructions": "Você pode personalizar as informações de metadados arrastando e soltando as informações desejadas",
     "@postMetadataInstructions": {
@@ -3071,11 +3071,11 @@
     "@unifiedpush": {
         "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
     },
-    "unlockPost": "Desbloquear Postagem",
+    "unlockPost": "Destrancar Postagem",
     "@unlockPost": {
         "description": "Action for unlocking a post (moderator action)"
     },
-    "unlockedPost": "Postagem Desbloqueada",
+    "unlockedPost": "Postagem Destrancada",
     "@unlockedPost": {
         "description": "Short decription for moderator action to unlock a post"
     },
@@ -3396,7 +3396,7 @@
             }
         }
     },
-    "hot": "",
+    "hot": "Em Destaque",
     "@hot": {},
     "imageDimensionTimeout": "Tempo Limite de Dimensão da Imagem",
     "@imageDimensionTimeout": {
@@ -3646,5 +3646,77 @@
                 "description": "The number of available UnifiedPush distributor apps"
             }
         }
-    }
+    },
+    "comment": "Comentário",
+    "@comment": {},
+    "dismissRead": "Descartar Lidas",
+    "@dismissRead": {},
+    "enableCommentNavigation": "Ativar Navegação nos Comentários",
+    "@enableCommentNavigation": {
+        "description": "Setting for enable comment navigation"
+    },
+    "originalPoster": "Postador Original",
+    "@originalPoster": {
+        "description": "Label for the original poster."
+    },
+    "endSearch": "Encerrar Pesquisa",
+    "@endSearch": {},
+    "fullscreenSwipeGestures": "Gestos de Deslizar em Tela Cheia",
+    "@fullscreenSwipeGestures": {
+        "description": "Setting for fullscreen swipe gestures"
+    },
+    "rightLongSwipe": "Deslize Longo para a Direita",
+    "@rightLongSwipe": {
+        "description": "Setting for right long swipe"
+    },
+    "rightShortSwipe": "Deslize Curto para a Direita",
+    "@rightShortSwipe": {
+        "description": "Setting for right short swipe"
+    },
+    "hostInstance": "Instância de Hospedagem",
+    "@hostInstance": {
+        "description": "The instance hosting a community"
+    },
+    "scrapeMissingLinkPreviews": "Obter Pré-visualizações de Links Ausentes",
+    "@scrapeMissingLinkPreviews": {
+        "description": "Toggle to scrape missing external link previews."
+    },
+    "selectAccountToCommentAs": "Selecione a conta com a qual deseja comentar",
+    "@selectAccountToCommentAs": {
+        "description": "Profile modal heading for commenting as other user"
+    },
+    "selectAccountToPostAs": "Selecione a conta com a qual deseja fazer a postagem",
+    "@selectAccountToPostAs": {
+        "description": "Heading for account selector when posting"
+    },
+    "sendBackgroundTestUnifiedPushNotification": "Enviar teste em segundo plano de notificação UnifiedPush",
+    "@sendBackgroundTestUnifiedPushNotification": {
+        "description": "The option to send a background UnifiedPUsh notification for testing"
+    },
+    "sendTestUnifiedPushNotification": "Enviar teste de notificação UnifiedPush",
+    "@sendTestUnifiedPushNotification": {
+        "description": "The option to send a UnifiedPush notification for testing"
+    },
+    "showEdgeToEdgeImages": "Mostrar Imagens de Borda a Borda",
+    "@showEdgeToEdgeImages": {
+        "description": "Toggle to view edge to edge images."
+    },
+    "showNavigationLabelsDescription": "Definir se os rótulos devem ser exibidos abaixo dos botões de navegação inferiores",
+    "@showNavigationLabelsDescription": {
+        "description": "Description for setting for showing navigation labels"
+    },
+    "sidebarBottomNavSwipeDescription": "Deslize a barra de navegação inferior para abrir a barra lateral",
+    "@sidebarBottomNavSwipeDescription": {},
+    "tapToExit": "Pressione voltar novamente para sair",
+    "@tapToExit": {},
+    "tappableAuthorCommunity": "Autores & Comunidades Tocáveis",
+    "@tappableAuthorCommunity": {
+        "description": "Toggle to make authors and communities tappable."
+    },
+    "viewingAll": "Exibindo todos",
+    "@viewingAll": {
+        "description": "Chip for viewing all possible search results"
+    },
+    "scaled": "Escalonado",
+    "@scaled": {}
 }
