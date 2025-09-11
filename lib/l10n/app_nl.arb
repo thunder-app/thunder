@@ -1367,7 +1367,7 @@
     "@accountSettingOverrideWarning": {
         "description": "Warning for account settings override"
     },
-    "accountSwitchParentCommentNotFound": "De geselecteerde opmerking is niet gevonden op ‘{instance}’. Terug­schakelen naar het vorige account.",
+    "accountSwitchParentCommentNotFound": "De geselecteerde opmerking is niet gevonden op ‘{instance}’",
     "@accountSwitchParentCommentNotFound": {
         "description": "Error message for when we couldn't resolve comment to reply to"
     },
@@ -1680,5 +1680,20 @@
         "description": "Floating Action Button settings category."
     },
     "tapToExit": "Ga nogmaals terug om af te sluiten",
-    "@tapToExit": {}
+    "@tapToExit": {},
+    "accountSwitchPostNotFound": "Het geselecteerde bericht is niet gevonden op ‘{instance}’",
+    "@accountSwitchPostNotFound": {
+        "description": "Error message for when we couldn't resolve post to reply to",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "actionColorsRedirect": "Wilt u kleuren aanpassen?",
+    "@actionColorsRedirect": {
+        "description": "Redirect hint to action colors"
+    },
+    "addAccountToSeeProfile": "Log in om uw account te bekĳken.",
+    "@addAccountToSeeProfile": {}
 }
