@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gif_view/gif_view.dart';
 
 import 'package:thunder/src/core/enums/image_caching_mode.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
@@ -150,35 +151,48 @@ class _ImageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context).ceil();
 
-    Widget image = ExtendedImage.network(
-      url,
-      height: height,
-      width: width,
-      fit: fit,
-      color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-      colorBlendMode: viewed == true ? BlendMode.modulate : null,
-      cache: true,
-      clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
-      cacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
-      cacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
-      loadStateChanged: (ExtendedImageState state) {
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-            controller.reset();
-            return const SizedBox.shrink();
-          case LoadState.completed:
-            if (state.wasSynchronouslyLoaded) return state.completedWidget;
+    Widget image = SizedBox.shrink();
 
-            controller.forward();
-            return _FadeInImage(controller: controller, child: state.completedWidget);
-          case LoadState.failed:
-            controller.reset();
-            state.imageProvider.evict();
+    if (url.endsWith('.gif')) {
+      image = RepaintBoundary(
+        child: GifView.network(
+          url,
+          height: height,
+          width: width,
+          fit: fit,
+        ),
+      );
+    } else {
+      image = ExtendedImage.network(
+        url,
+        height: height,
+        width: width,
+        fit: fit,
+        color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+        colorBlendMode: viewed == true ? BlendMode.modulate : null,
+        cache: true,
+        clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
+        cacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
+        cacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
+        loadStateChanged: (ExtendedImageState state) {
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              controller.reset();
+              return const SizedBox.shrink();
+            case LoadState.completed:
+              if (state.wasSynchronouslyLoaded) return state.completedWidget;
 
-            return ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true);
-        }
-      },
-    );
+              controller.forward();
+              return _FadeInImage(controller: controller, child: state.completedWidget);
+            case LoadState.failed:
+              controller.reset();
+              state.imageProvider.evict();
+
+              return ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true);
+          }
+        },
+      );
+    }
 
     if (blur == true) return _BlurredImage(child: image);
     return image;

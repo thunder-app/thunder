@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gif_view/gif_view.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/models/media.dart';
@@ -86,6 +87,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _overlayAnimationController = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
+
+    // Pre-fetch GIF if it exists
+    if (widget.media.thumbnailUrl?.endsWith('.gif') ?? widget.media.imageUrl?.endsWith('.gif') ?? widget.media.originalUrl!.endsWith('.gif')) {
+      GifView.preFetchImage(NetworkImage(widget.media.thumbnailUrl ?? widget.media.imageUrl ?? widget.media.originalUrl!));
+    }
   }
 
   @override
