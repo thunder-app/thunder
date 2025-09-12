@@ -635,7 +635,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   color: getBackgroundColor(context),
                                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                 ),
-                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: hideNsfwPreviews),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: isNSFW && hideNsfwPreviews),
                               ),
                               secondChild: MarkdownTextInputField(
                                 controller: _bodyTextController,

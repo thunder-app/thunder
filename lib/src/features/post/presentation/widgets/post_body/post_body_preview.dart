@@ -59,7 +59,7 @@ class PostBodyPreview extends StatelessWidget {
             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
             fontScale: contentFontSizeScale,
           )
-        : CommonMarkdownBody(body: post.body ?? '', nsfw: hideNsfwPreviews);
+        : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews);
 
     return LimitedBox(
       maxHeight: maxHeight,
