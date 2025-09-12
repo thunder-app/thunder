@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 
+import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/models/media.dart';
 import 'package:thunder/src/shared/images/image_preview.dart';
 import 'package:thunder/src/shared/link_information.dart';
@@ -125,7 +125,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   }
 
   double getMinHeight() {
-    if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
+    if (!widget.showFullHeightImages && widget.viewMode != ViewMode.comment) return ViewMode.comfortable.height;
 
     if (widget.media.height != null) {
       if (MediaQuery.of(context).size.height < widget.media.height!) return MediaQuery.of(context).size.height;
@@ -136,8 +136,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   }
 
   double getMaxHeight() {
-    if (widget.allowUnconstrainedImageHeight) return MediaQuery.of(context).size.height;
-    if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
+    if (widget.viewMode != ViewMode.comment) {
+      if (widget.allowUnconstrainedImageHeight) return MediaQuery.of(context).size.height;
+      if (!widget.showFullHeightImages) return ViewMode.comfortable.height;
+    }
 
     if (widget.media.height != null) {
       if (MediaQuery.of(context).size.height < widget.media.height!) return MediaQuery.of(context).size.height;
@@ -195,6 +197,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     double? height;
 
     switch (widget.viewMode) {
+      case ViewMode.comment:
+        width = widget.media.width;
+        height = widget.media.height ?? ViewMode.comment.height; // If the height is not set, use the default height
+        break;
       case ViewMode.compact:
         width = null; // Setting this to null will use the image's width. This will allow the image to not be stretched or squished.
         height = ViewMode.compact.height;
@@ -310,18 +316,22 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           ),
           constraints: BoxConstraints(
               maxHeight: switch (widget.viewMode) {
+                ViewMode.comment => getMaxHeight(),
                 ViewMode.compact => ViewMode.compact.height,
                 ViewMode.comfortable => getMaxHeight(),
               },
               minHeight: switch (widget.viewMode) {
+                ViewMode.comment => getMinHeight(),
                 ViewMode.compact => ViewMode.compact.height,
                 ViewMode.comfortable => getMinHeight(),
               },
               maxWidth: switch (widget.viewMode) {
+                ViewMode.comment => MediaQuery.of(context).size.width / 2,
                 ViewMode.compact => ViewMode.compact.height,
                 ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
               },
               minWidth: switch (widget.viewMode) {
+                ViewMode.comment => 0,
                 ViewMode.compact => ViewMode.compact.height,
                 ViewMode.comfortable => widget.edgeToEdgeImages ? double.infinity : MediaQuery.of(context).size.width,
               }),
@@ -341,13 +351,14 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
               ),
               if (blurNSFWPreviews)
                 Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     widget.media.mediaType == MediaType.image
                         ? Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30)
                         : Icon(widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                    if (widget.viewMode != ViewMode.compact) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
+                    if (widget.viewMode == ViewMode.comfortable) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
                   ],
                 ),
               if (child != null)

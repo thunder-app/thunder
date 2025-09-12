@@ -164,6 +164,7 @@ class _PostPageState extends State<PostPage> {
     return BlocConsumer<PostBloc, PostState>(
       listenWhen: listenWhen,
       listener: listener,
+      buildWhen: (previous, current) => !current.didScrollPositionChange,
       builder: (context, state) {
         if (state.status == PostStatus.initial) {
           // This is required because listener does not get called on initial build

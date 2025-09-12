@@ -6,16 +6,21 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import 'package:thunder/src/core/enums/media_type.dart';
+import 'package:thunder/src/core/enums/view_mode.dart';
+import 'package:thunder/src/core/models/media.dart';
+import 'package:thunder/src/shared/link_information.dart';
 import 'package:thunder/src/shared/markdown/markdown_lemmy_link.dart';
 import 'package:thunder/src/shared/markdown/markdown_spoiler.dart';
 import 'package:thunder/src/shared/markdown/markdown_subsuperscript.dart';
 import 'package:thunder/src/shared/markdown/markdown_utils.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/src/shared/image_preview.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/markdown/extended_markdown.dart';
+import 'package:thunder/src/shared/utils/media/video.dart';
+import 'package:thunder/src/shared/widgets/media/media_view.dart';
 
 /// A widget that displays markdown content.
 class CommonMarkdownBody extends StatefulWidget {
@@ -24,6 +29,9 @@ class CommonMarkdownBody extends StatefulWidget {
 
   /// Whether to hide the markdown content. This is mainly used for spoiler markdown
   final bool hidden;
+
+  /// Whether the markdown content is NSFW. This blurs any images within the markdown content.
+  final bool nsfw;
 
   /// Indicates if the given markdown is a comment. Depending on the markdown content, different text scaling may be applied
   final bool? isComment;
@@ -35,6 +43,7 @@ class CommonMarkdownBody extends StatefulWidget {
     super.key,
     required this.body,
     this.hidden = false,
+    this.nsfw = false,
     this.isComment,
     this.imageMaxWidth,
   });
@@ -113,6 +122,7 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
               : MarkdownImageWidget(
                   uri: config.uri,
                   alt: config.alt,
+                  nsfw: widget.nsfw,
                   isComment: widget.isComment,
                   imageMaxWidth: widget.imageMaxWidth,
                 ),
@@ -126,12 +136,15 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
 }
 
 /// Given a markdown image, builds the image widget
-class MarkdownImageWidget extends StatelessWidget {
+class MarkdownImageWidget extends StatefulWidget {
   /// The URI of the image
   final Uri uri;
 
   /// The alt text of the image
   final String? alt;
+
+  /// Whether the image is NSFW
+  final bool nsfw;
 
   /// Whether the image is a comment
   final bool? isComment;
@@ -143,47 +156,98 @@ class MarkdownImageWidget extends StatelessWidget {
     super.key,
     required this.uri,
     required this.alt,
+    required this.nsfw,
     this.isComment,
     this.imageMaxWidth,
   });
 
-  Future<bool> _getCachedSvgResult(Uri uri) async {
-    final key = uri.toString();
-    if (_svgCache.containsKey(key)) return _svgCache[key]!;
+  /// Holds a cache of previously retrieved SVG results
+  static final Map<String, bool> _svgCache = {};
 
-    final result = await isImageUriSvg(uri);
-    _svgCache[key] = result;
-    return result;
+  /// Holds a cache of previously retrieved image dimensions
+  static final Map<String, Size> _imageDimensionsCache = {};
+
+  @override
+  State<MarkdownImageWidget> createState() => _MarkdownImageWidgetState();
+}
+
+class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
+  /// The decoded URI of the image
+  String? uri;
+
+  /// The media type of the URL
+  MediaType? mediaType;
+
+  @override
+  void initState() {
+    super.initState();
+
+    uri = Uri.decodeFull(widget.uri.toString());
+
+    if (isImageUrl(uri!)) {
+      mediaType = MediaType.image;
+      _getImageDimensions();
+    } else if (isVideoUrl(uri!)) {
+      mediaType = MediaType.video;
+    } else {
+      _checkSVG();
+    }
   }
 
-  static final Map<String, bool> _svgCache = {};
+  Future<void> _getImageDimensions() async {
+    try {
+      if (MarkdownImageWidget._imageDimensionsCache.containsKey(uri)) return;
+
+      Size dimensions = await retrieveImageDimensions(imageUrl: uri);
+      dimensions = getScaledMediaSize(width: dimensions.width, height: dimensions.height, offset: 0, tabletMode: true)!;
+
+      MarkdownImageWidget._imageDimensionsCache[uri!] = dimensions;
+      setState(() {});
+    } catch (e) {
+      debugPrint('Error getting image dimensions: $uri - $e');
+    }
+  }
+
+  Future<void> _checkSVG() async {
+    try {
+      if (MarkdownImageWidget._svgCache.containsKey(uri)) return;
+      final result = await isImageUriSvg(widget.uri);
+
+      MarkdownImageWidget._svgCache[uri!] = result;
+      setState(() {});
+    } catch (e) {
+      debugPrint('Error checking SVG: $uri - $e');
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final decodedUri = Uri.decodeFull(uri.toString());
+    if (mediaType == MediaType.video) {
+      debugPrint('Video link: $uri');
+      return LinkInformation(viewMode: ViewMode.comfortable, mediaType: mediaType, url: uri, showEdgeToEdgeImages: false);
+    }
+
+    final isSvg = MarkdownImageWidget._svgCache.containsKey(uri);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FutureBuilder<bool>(
-            future: _getCachedSvgResult(uri),
-            builder: (context, snapshot) {
-              if (snapshot.data == true) {
-                return _MarkdownSvgWidget(uri: uri, isComment: isComment, imageMaxWidth: imageMaxWidth);
-              } else {
-                return ImagePreview(
-                  url: decodedUri,
-                  isExpandable: true,
-                  isComment: isComment,
-                  showFullHeightImages: true,
-                  maxWidth: imageMaxWidth,
-                  altText: alt,
-                );
-              }
-            },
-          ),
+          isSvg
+              ? _MarkdownSvgWidget(uri: widget.uri, isComment: widget.isComment, imageMaxWidth: widget.imageMaxWidth)
+              : MediaView(
+                  viewMode: ViewMode.comment,
+                  hideNsfwPreviews: widget.nsfw,
+                  media: Media(
+                    mediaType: MediaType.image,
+                    mediaUrl: uri,
+                    nsfw: widget.nsfw,
+                    width: MarkdownImageWidget._imageDimensionsCache[uri]?.width,
+                    height: MarkdownImageWidget._imageDimensionsCache[uri]?.height,
+                  ),
+                ),
         ],
       ),
     );

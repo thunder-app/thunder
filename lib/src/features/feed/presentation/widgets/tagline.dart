@@ -33,7 +33,13 @@ class _TagLineState extends State<TagLine> {
     super.initState();
 
     final taglines = context.read<ProfileBloc>().state.siteResponse?.taglines;
-    tagline = taglines?.isNotEmpty == true ? taglines![Random().nextInt(taglines.length - 1)].content : null;
+    if (taglines == null || taglines.isEmpty) return;
+
+    if (taglines.length == 1) {
+      tagline = taglines[0].content;
+    } else {
+      tagline = taglines[Random().nextInt(taglines.length - 1)].content;
+    }
 
     // Check if the tagline is long enough to be truncated after the first frame is rendered.
     // This is necessary because the size of the text is not available until after the first frame.

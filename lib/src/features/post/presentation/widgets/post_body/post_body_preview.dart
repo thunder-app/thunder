@@ -41,6 +41,7 @@ class PostBodyPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final contentFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.contentFontSizeScale);
+    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
 
     final color = gradientBackgroundColor ?? theme.scaffoldBackgroundColor;
 
@@ -58,7 +59,7 @@ class PostBodyPreview extends StatelessWidget {
             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
             fontScale: contentFontSizeScale,
           )
-        : CommonMarkdownBody(body: post.body ?? '');
+        : CommonMarkdownBody(body: post.body ?? '', nsfw: hideNsfwPreviews);
 
     return LimitedBox(
       maxHeight: maxHeight,

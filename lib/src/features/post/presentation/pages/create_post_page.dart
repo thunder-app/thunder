@@ -13,6 +13,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
+import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
@@ -391,6 +392,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
+    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
+
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: BlocConsumer<CreatePostCubit, CreatePostState>(
@@ -632,7 +635,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   color: getBackgroundColor(context),
                                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                 ),
-                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: hideNsfwPreviews),
                               ),
                               secondChild: MarkdownTextInputField(
                                 controller: _bodyTextController,

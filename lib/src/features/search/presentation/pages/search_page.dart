@@ -156,9 +156,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
 
-    final isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
-    final currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
-
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     List<ListPickerItem> searchOptions = [
@@ -236,7 +233,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           },
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                            hintText: l10n.searchInstance(widget.communityToSearch?.name ?? (isUserLoggedIn ? account.instance : currentAnonymousInstance) ?? ''),
+                            hintText: l10n.searchInstance(widget.communityToSearch?.name ?? account.instance),
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50),
@@ -461,7 +458,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 60),
-                    child: _getSearchBody(context, state, isUserLoggedIn, account.instance, currentAnonymousInstance),
+                    child: _getSearchBody(context, state, account.instance),
                   ),
                 ],
               ),
@@ -472,7 +469,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String? currentAnonymousInstance) {
+  Widget _getSearchBody(BuildContext context, SearchState state, String accountInstance) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
@@ -495,11 +492,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
                     switch (_currentSearchType) {
-                      MetaSearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      MetaSearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      MetaSearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      MetaSearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                      MetaSearchType.instances => l10n.searchInstancesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                      MetaSearchType.communities => l10n.searchCommunitiesFederatedWith(accountInstance),
+                      MetaSearchType.users => l10n.searchUsersFederatedWith(accountInstance),
+                      MetaSearchType.comments => l10n.searchCommentsFederatedWith(accountInstance),
+                      MetaSearchType.posts => l10n.searchPostsFederatedWith(accountInstance),
+                      MetaSearchType.instances => l10n.searchInstancesFederatedWith(accountInstance),
                       _ => '',
                     },
                     textAlign: TextAlign.center,
@@ -568,7 +565,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           ThunderActionChip(
                             trailingIcon: Icons.chevron_right_rounded,
                             label: l10n.exploreInstance,
-                            onPressed: () => navigateToInstancePage(context, instanceHost: (isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? '', instanceId: null),
+                            onPressed: () => navigateToInstancePage(context, instanceHost: accountInstance, instanceId: null),
                           ),
                         ],
                       ),

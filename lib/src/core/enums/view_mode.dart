@@ -1,4 +1,5 @@
 enum ViewMode {
+  comment(150.0),
   compact(75.0),
   comfortable(150.0);
 

@@ -201,7 +201,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
                       style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                       fontScale: contentFontSizeScale,
                     )
-                  : CommonMarkdownBody(body: post.body ?? ''),
+                  : CommonMarkdownBody(body: post.body ?? '', nsfw: hideNsfwPreviews),
             ),
           ),
         ),
