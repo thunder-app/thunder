@@ -1,16 +1,18 @@
-import 'dart:typed_data';
-import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
+import 'package:thunder/src/core/cache/image_dimension_cache.dart';
 import 'package:thunder/src/shared/images/image_viewer.dart';
 
-/// Givent a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
+/// Given a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
 ///
 /// This is useful for handling thumbnail URLs that are proxied via /image_proxy.
 String fetchProxyImageUrl(String url) {
@@ -31,11 +33,7 @@ String fetchProxyImageUrl(String url) {
   return url;
 }
 
-String generateRandomHeroString({int? len}) {
-  Random r = Random();
-  return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
-}
-
+/// Determines if the given URL is an image URL
 bool isImageUrl(String url) {
   // '@jpeg' is added to support Bluesky's image URLs
   // e.g., https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:wf7nfy2us3h5gpa7zfettmzl/bafkreib6k2uwcy52wi654fdfmfqakzqu54m4eq7vi6cwrolwud6yhehihy@jpeg?.jpg
@@ -60,6 +58,7 @@ bool isImageUrl(String url) {
   return false;
 }
 
+/// Determines if the given URL is an SVG
 Future<bool> isImageUrlSvg(String imageUrl) async {
   return isImageUriSvg(Uri.tryParse(imageUrl));
 }
@@ -82,30 +81,45 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
   }
 }
 
+/// Retrieves the size of the given image. Must provide either [url] or [bytes].
+/// This function should be ran on an isolate to avoid blocking the main thread. See [retrieveImageDimensions] for more information
+Future<Size> processImage(Map<String, dynamic> params) async {
+  final url = params['url'];
+  final bytes = params['bytes'];
+  final token = params['token'];
+
+  BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+
+  Uint8List? data = bytes;
+
+  if (data == null) {
+    // The image provider should throw an error if a valid image is not found
+    // This is to catch cases where the URL may return a valid image, but the URL path does not conform to the expected format
+    final imageProvider = ExtendedNetworkImageProvider(url ?? '', cache: true, cacheRawData: true);
+
+    data = await imageProvider.getNetworkImageData();
+    if (data == null) throw Exception('Failed to retrieve image data from $url');
+  }
+
+  final image = img.decodeImage(data);
+  if (image == null) throw Exception('Failed to retrieve image data from $url');
+  return Size(image.width.toDouble(), image.height.toDouble());
+}
+
 /// Retrieves the size of the given image. Must provide either [imageUrl] or [imageBytes].
 Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) async {
   assert(imageUrl != null || imageBytes != null);
 
   try {
-    if (imageBytes != null) {
-      final codec = await instantiateImageCodec(imageBytes);
-      final frame = await codec.getNextFrame();
-      final uiImage = frame.image;
+    Size? size = await ImageDimensionCache().get(imageUrl!);
+    if (size != null) return size;
 
-      return Size(uiImage.width.toDouble(), uiImage.height.toDouble());
-    }
+    final token = RootIsolateToken.instance;
+    size = await compute(processImage, {'url': imageUrl, 'bytes': imageBytes, 'token': token});
+    if (size == null) throw Exception('Failed to retrieve image dimensions from $imageUrl');
 
-    // The image provider should throw an error if a valid image is not found
-    // This is to catch cases where the URL may return a valid image, but the URL path does not conform to the expected format
-    final imageProvider = ExtendedNetworkImageProvider(imageUrl ?? '', cache: true, cacheRawData: true);
-    final imageData = await imageProvider.getNetworkImageData();
-    if (imageData == null) throw Exception('Failed to retrieve image data from $imageUrl');
-
-    final codec = await instantiateImageCodec(imageData);
-    final frame = await codec.getNextFrame();
-    final uiImage = frame.image;
-
-    return Size(uiImage.width.toDouble(), uiImage.height.toDouble());
+    ImageDimensionCache().set(imageUrl, size);
+    return size;
   } catch (e) {
     throw Exception('Failed to retrieve image dimensions from $imageUrl: $e');
   }
@@ -115,7 +129,7 @@ Size? getScaledMediaSize({double? width, double? height, double offset = 24.0, b
   if (width == null || height == null) return null;
   double mediaRatio = width / height;
 
-  FlutterView device = PlatformDispatcher.instance.views.first;
+  final device = PlatformDispatcher.instance.views.first;
 
   double screenWidth = (device.physicalSize.width / device.devicePixelRatio) - device.viewPadding.left - device.viewPadding.right - offset;
   double usableScreenWidth = tabletMode ? screenWidth / 2 - (offset + 8.0) : screenWidth;

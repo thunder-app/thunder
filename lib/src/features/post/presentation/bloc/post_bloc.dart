@@ -367,7 +367,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.success,
-      highlightedCommentId: event.comment.id,
+      highlightedCommentId: null,
       comments: state.commentNodes!.flatten(),
       moddingCommentId: -1,
     ));

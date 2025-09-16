@@ -170,7 +170,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
     media.thumbnailUrl = thumbnailUrl;
   } else if (isImage) {
-    // Finally, ff there is no thumbnail image, but the url is an image, we'll use that for the thumbnailUrl
+    // Finally, if there is no thumbnail image, but the url is an image, we'll use that for the thumbnailUrl
     media.thumbnailUrl = url;
   }
 

@@ -43,13 +43,13 @@ class PiefedApi {
   }
 
   /// Handle response from the request. Throws an exception if the request fails.
-  Map<String, dynamic> _handleResponse(Uri uri, Response response) {
+  Future _handleResponse(Uri uri, Response response) {
     if (response.statusCode != 200) {
       debugPrint('PieFed API: Failed to make request to $uri: ${response.statusCode} ${response.body}');
       throw Exception(response.body);
     }
 
-    return jsonDecode(response.body);
+    return compute(jsonDecode, response.body);
   }
 
   /// Makes an HTTP request with the specified method
@@ -87,7 +87,7 @@ class PiefedApi {
         }
       }
 
-      return _handleResponse(uri, response);
+      return await _handleResponse(uri, response);
     } catch (e) {
       if (debug) debugPrint('PieFed API: Error: $e');
       rethrow;
@@ -592,7 +592,7 @@ class PiefedApi {
       final response = await request.send();
       if (response.statusCode != 200) throw Exception('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}');
 
-      final json = await jsonDecode(await response.stream.bytesToString());
+      final json = await compute(jsonDecode, await response.stream.bytesToString());
       return json['url'];
     } catch (e) {
       throw Exception('Failed to upload image: $e');

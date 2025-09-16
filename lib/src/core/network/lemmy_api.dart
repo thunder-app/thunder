@@ -57,13 +57,13 @@ class LemmyApi {
   }
 
   /// Handle response from the request. Throws an exception if the request fails.
-  Map<String, dynamic> _handleResponse(Uri uri, Response response) {
+  Future _handleResponse(Uri uri, Response response) {
     if (response.statusCode != 200) {
       debugPrint('Lemmy API: Failed to make request to $uri: ${response.statusCode} ${response.body}');
       throw LemmyApiException(response.body, response.statusCode.toString());
     }
 
-    return jsonDecode(response.body);
+    return compute(jsonDecode, response.body);
   }
 
   /// Makes an HTTP request with the specified method
@@ -101,7 +101,7 @@ class LemmyApi {
         }
       }
 
-      return _handleResponse(uri, response);
+      return await _handleResponse(uri, response);
     } catch (e) {
       if (debug) debugPrint('Lemmy API: Error: $e');
       rethrow;
@@ -725,7 +725,7 @@ class LemmyApi {
       final response = await request.send();
       if (response.statusCode != 201) throw Exception('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}');
 
-      final json = await jsonDecode(await response.stream.bytesToString());
+      final json = await compute(jsonDecode, await response.stream.bytesToString());
       return json;
     } catch (e) {
       throw Exception('Failed to upload image: $e');

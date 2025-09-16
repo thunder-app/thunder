@@ -164,9 +164,6 @@ class MarkdownImageWidget extends StatefulWidget {
   /// Holds a cache of previously retrieved SVG results
   static final Map<String, bool> _svgCache = {};
 
-  /// Holds a cache of previously retrieved image dimensions
-  static final Map<String, Size> _imageDimensionsCache = {};
-
   @override
   State<MarkdownImageWidget> createState() => _MarkdownImageWidgetState();
 }
@@ -177,6 +174,9 @@ class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
 
   /// The media type of the URL
   MediaType? mediaType;
+
+  /// The dimensions of the image
+  Size? dimensions;
 
   @override
   void initState() {
@@ -196,13 +196,11 @@ class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
 
   Future<void> _getImageDimensions() async {
     try {
-      if (MarkdownImageWidget._imageDimensionsCache.containsKey(uri)) return;
+      dimensions = await retrieveImageDimensions(imageUrl: uri!);
+      if (dimensions == null) return;
 
-      Size dimensions = await retrieveImageDimensions(imageUrl: uri);
-      dimensions = getScaledMediaSize(width: dimensions.width, height: dimensions.height, offset: 0, tabletMode: true)!;
-
-      MarkdownImageWidget._imageDimensionsCache[uri!] = dimensions;
-      setState(() {});
+      dimensions = getScaledMediaSize(width: dimensions!.width, height: dimensions!.height, offset: 0, tabletMode: true)!;
+      if (mounted) setState(() {});
     } catch (e) {
       debugPrint('Error getting image dimensions: $uri - $e');
     }
@@ -244,8 +242,8 @@ class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
                     mediaType: MediaType.image,
                     mediaUrl: uri,
                     nsfw: widget.nsfw,
-                    width: MarkdownImageWidget._imageDimensionsCache[uri]?.width,
-                    height: MarkdownImageWidget._imageDimensionsCache[uri]?.height,
+                    width: dimensions?.width,
+                    height: dimensions?.height,
                   ),
                 ),
         ],

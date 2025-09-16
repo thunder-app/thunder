@@ -63,12 +63,6 @@ class _PostPageState extends State<PostPage> {
   /// Whether the post source should be displayed.
   bool viewSource = false;
 
-  /// The active account that was selected when the page was opened
-  Account? originalUser;
-
-  /// Whether the user changed during the course of viewing the post
-  bool userChanged = false;
-
   /// Whether we have set the initial scroll offset.
   /// This needs to be done after building so the controller is attached
   bool hasSetInitialScroll = false;
@@ -142,7 +136,7 @@ class _PostPageState extends State<PostPage> {
     if (state.didScrollPositionChange) return;
 
     if (state.status == PostStatus.success && state.post != null) {
-      if (!userChanged) widget.onPostUpdated?.call(state.post!);
+      widget.onPostUpdated?.call(state.post!);
       setState(() {});
     }
 
@@ -158,8 +152,6 @@ class _PostPageState extends State<PostPage> {
     final thunderState = context.read<ThunderBloc>().state;
 
     final account = context.read<PostBloc>().account;
-
-    originalUser ??= context.read<ProfileBloc>().state.account;
 
     return BlocConsumer<PostBloc, PostState>(
       listenWhen: listenWhen,
@@ -243,7 +235,6 @@ class _PostPageState extends State<PostPage> {
                             text: state.post?.body ?? '',
                           );
                         },
-                        onUserChanged: () => userChanged = true,
                         onPostChanged: (post) => context.read<PostBloc>().add(GetPostEvent(post: post)),
                         highlightedCommentId: this.highlightedCommentId,
                         commentPath: widget.commentPath,
