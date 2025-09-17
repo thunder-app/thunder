@@ -185,8 +185,8 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
 
   try {
-    final platform = await detectPlatformFromNodeInfo(url!);
-    if (platform == null) return const ThunderInstanceInfo(success: false);
+    final platformInfo = await detectPlatformFromNodeInfo(url!);
+    final platform = platformInfo?['platform'];
 
     // Create a temporary Account for the request
     final account = Account(instance: url, id: '', index: -1, platform: platform);
@@ -218,7 +218,7 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
 /// to determine the underlying software platform (lemmy, piefed, etc.).
 ///
 /// Returns the detected ThreadiversePlatform or null if detection fails.
-Future<ThreadiversePlatform?> detectPlatformFromNodeInfo(String url, {Duration? timeout}) async {
+Future<Map<String, dynamic>?> detectPlatformFromNodeInfo(String url, {Duration? timeout}) async {
   if (url.isEmpty) return null;
 
   try {
@@ -272,15 +272,16 @@ Future<ThreadiversePlatform?> detectPlatformFromNodeInfo(String url, {Duration? 
 
     final Map<String, dynamic> nodeInfoData = json.decode(nodeInfoResponse.body);
     final String? softwareName = nodeInfoData['software']?['name']?.toString().toLowerCase();
+    final String? softwareVersion = nodeInfoData['software']?['version']?.toString();
 
     if (softwareName == null) return null;
 
     // Map software names to ThreadiversePlatform
     switch (softwareName) {
       case 'lemmy':
-        return ThreadiversePlatform.lemmy;
+        return {'platform': ThreadiversePlatform.lemmy, 'version': softwareVersion};
       case 'piefed':
-        return ThreadiversePlatform.piefed;
+        return {'platform': ThreadiversePlatform.piefed, 'version': softwareVersion};
       default:
         return null;
     }

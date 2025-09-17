@@ -274,7 +274,6 @@ class _ThunderState extends State<Thunder> {
                   builder: (context, state) {
                     switch (state.status) {
                       case ProfileStatus.initial:
-                        context.read<ProfileBloc>().add(InitializeAuth());
                         return Scaffold(
                           appBar: AppBar(toolbarHeight: APP_BAR_HEIGHT),
                           body: Center(

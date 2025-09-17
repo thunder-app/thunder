@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/src/core/cache/platform_version_cache.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
@@ -71,8 +72,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> _initializeAuth(InitializeAuth event, Emitter<ProfileState> emit) async {
-    // Check to see what the current active profile is.
-    final account = await fetchActiveProfile();
+    final platformInfo = await detectPlatformFromNodeInfo(account.instance);
+    if (platformInfo == null) return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => GlobalContext.l10n.unableToLoadInstance(account.instance)));
+
+    PlatformVersionCache().set(account.instance, platformInfo['version'] ?? '');
 
     // Initialize the repositories with the current account
     instanceRepository = InstanceRepositoryImpl(account: account);
@@ -118,7 +121,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final instanceUrl = event.instance.replaceAll('https://', '');
 
       // Detect the platform before attempting to log in
-      final platform = await detectPlatformFromNodeInfo(instanceUrl);
+      final platformInfo = await detectPlatformFromNodeInfo(instanceUrl);
+      final platform = platformInfo?['platform'];
 
       // Create a temporary Account to attempt to log in
       Account tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);

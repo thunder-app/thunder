@@ -65,7 +65,8 @@ Future<void> navigateToInstancePage(
   ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
 
-  final platform = await detectPlatformFromNodeInfo(instanceHost);
+  final platformInfo = await detectPlatformFromNodeInfo(instanceHost);
+  final platform = platformInfo?['platform'];
 
   try {
     // Get the site information by connecting to the given instance
