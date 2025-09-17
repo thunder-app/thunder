@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart';
+import 'package:version/version.dart';
 
 import 'package:thunder/src/core/models/thunder_site_response.dart';
 import 'package:thunder/src/core/update/check_github_update.dart';
@@ -25,8 +27,11 @@ class PiefedApi {
   /// Whether to show debug information
   final bool debug;
 
+  /// The version of the platform
+  final Version? version;
+
   /// The Piefed API client
-  PiefedApi({required this.account, this.debug = false});
+  PiefedApi({required this.account, this.debug = false, required this.version});
 
   /// Build headers with optional JWT authorization
   Map<String, String> _buildHeaders() {

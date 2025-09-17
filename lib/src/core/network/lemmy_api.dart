@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart';
+import 'package:version/version.dart';
 
 import 'package:thunder/src/core/models/thunder_comment_report.dart';
 import 'package:thunder/src/core/models/thunder_post_report.dart';
@@ -39,8 +41,11 @@ class LemmyApi {
   /// Whether to show debug information
   final bool debug;
 
+  /// The version of the platform
+  final Version? version;
+
   /// The Lemmy API client
-  LemmyApi({required this.account, this.debug = false});
+  LemmyApi({required this.account, this.debug = false, required this.version});
 
   /// Build headers with optional JWT authorization
   Map<String, String> _buildHeaders() {

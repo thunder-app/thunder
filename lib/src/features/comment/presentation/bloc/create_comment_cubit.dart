@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import 'package:thunder/src/core/cache/platform_version_cache.dart';
 import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -46,15 +47,17 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
 
     try {
       for (String imageFile in imageFiles) {
+        final version = PlatformVersionCache().get(account.instance);
+
         switch (account.platform) {
           case ThreadiversePlatform.lemmy:
-            final result = await LemmyApi(account: account).uploadImage(imageFile);
+            final result = await LemmyApi(account: account, debug: kDebugMode, version: version).uploadImage(imageFile);
             String url = "https://${account.instance}/pictrs/image/${result['files'][0]['file']}";
 
             urls.add(url);
             break;
           case ThreadiversePlatform.piefed:
-            final url = await PiefedApi(account: account, debug: kDebugMode).uploadImage(imageFile);
+            final url = await PiefedApi(account: account, debug: kDebugMode, version: version).uploadImage(imageFile);
             urls.add(url);
             break;
           default:

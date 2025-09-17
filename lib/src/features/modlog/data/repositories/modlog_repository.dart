@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:thunder/src/core/cache/platform_version_cache.dart';
 import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -76,6 +79,7 @@ Future<Map<String, dynamic>> _fetchModlogEvents({
   int? commentId,
 }) async {
   final account = await fetchActiveProfile();
+  final version = PlatformVersionCache().get(account.instance);
 
   bool hasReachedEnd = false;
 
@@ -85,7 +89,7 @@ Future<Map<String, dynamic>> _fetchModlogEvents({
 
   // Guarantee that we fetch at least x events (unless we reach the end of the feed)
   do {
-    final response = await LemmyApi(account: account).getModlog(
+    final response = await LemmyApi(account: account, debug: kDebugMode, version: version).getModlog(
       page: currentPage,
       modlogActionType: modlogActionType,
       communityId: communityId,

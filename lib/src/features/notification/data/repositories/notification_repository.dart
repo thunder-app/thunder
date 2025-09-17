@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:thunder/src/core/cache/platform_version_cache.dart';
 import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -74,12 +75,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
   late PiefedApi piefed;
 
   NotificationRepositoryImpl({required this.account}) {
+    final version = PlatformVersionCache().get(account.instance);
+
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApi(account: account, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode, version: version);
         break;
       case ThreadiversePlatform.piefed:
-        piefed = PiefedApi(account: account, debug: kDebugMode);
+        piefed = PiefedApi(account: account, debug: kDebugMode, version: version);
         break;
       default:
         throw Exception('Unsupported platform: ${account.platform}');

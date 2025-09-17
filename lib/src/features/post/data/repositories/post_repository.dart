@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/cache/platform_version_cache.dart';
 import 'package:thunder/src/core/models/thunder_post_report.dart';
 import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
@@ -124,12 +125,14 @@ class PostRepositoryImpl implements PostRepository {
   late PiefedApi piefed;
 
   PostRepositoryImpl({required this.account}) {
+    final version = PlatformVersionCache().get(account.instance);
+
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApi(account: account, debug: kDebugMode);
+        lemmy = LemmyApi(account: account, debug: kDebugMode, version: version);
         break;
       case ThreadiversePlatform.piefed:
-        piefed = PiefedApi(account: account, debug: kDebugMode);
+        piefed = PiefedApi(account: account, debug: kDebugMode, version: version);
         break;
       default:
         throw Exception('Unsupported platform: ${account.platform}');
