@@ -40,12 +40,6 @@ class ThunderPost {
   /// Whether the post is NSFW
   final bool nsfw;
 
-  /// The post's embed title
-  final String? embedTitle;
-
-  /// The post's embed description
-  final String? embedDescription;
-
   /// The post's thumbnail URL
   final String? thumbnailUrl;
 
@@ -67,9 +61,6 @@ class ThunderPost {
   /// Whether the post is featured on the instance
   final bool featuredLocal;
 
-  /// The post's URL content type
-  final String? urlContentType;
-
   /// The post's alternate text
   final String? altText;
 
@@ -84,9 +75,6 @@ class ThunderPost {
 
   /// Whether the post's creator is banned from the community
   final bool? creatorBannedFromCommunity;
-
-  /// Whether the post is banned from the community
-  final bool? bannedFromCommunity;
 
   /// Whether the post's creator is a moderator of the community
   final bool? creatorIsModerator;
@@ -146,8 +134,6 @@ class ThunderPost {
     this.updated,
     required this.deleted,
     required this.nsfw,
-    this.embedTitle,
-    this.embedDescription,
     this.thumbnailUrl,
     required this.apId,
     required this.local,
@@ -155,13 +141,11 @@ class ThunderPost {
     required this.languageId,
     required this.featuredCommunity,
     required this.featuredLocal,
-    this.urlContentType,
     this.altText,
     this.creator,
     this.community,
     this.imageDetails,
     this.creatorBannedFromCommunity,
-    this.bannedFromCommunity,
     this.creatorIsModerator,
     this.creatorIsAdmin,
     this.comments,
@@ -192,8 +176,6 @@ class ThunderPost {
     DateTime? updated,
     bool? deleted,
     bool? nsfw,
-    String? embedTitle,
-    String? embedDescription,
     String? thumbnailUrl,
     String? apId,
     bool? local,
@@ -201,13 +183,11 @@ class ThunderPost {
     int? languageId,
     bool? featuredCommunity,
     bool? featuredLocal,
-    String? urlContentType,
     String? altText,
     ThunderUser? creator,
     ThunderCommunity? community,
     Map<String, dynamic>? imageDetails,
     bool? creatorBannedFromCommunity,
-    bool? bannedFromCommunity,
     bool? creatorIsModerator,
     bool? creatorIsAdmin,
     int? comments,
@@ -237,8 +217,6 @@ class ThunderPost {
       updated: updated ?? this.updated,
       deleted: deleted ?? this.deleted,
       nsfw: nsfw ?? this.nsfw,
-      embedTitle: embedTitle ?? this.embedTitle,
-      embedDescription: embedDescription ?? this.embedDescription,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       apId: apId ?? this.apId,
       local: local ?? this.local,
@@ -246,13 +224,11 @@ class ThunderPost {
       languageId: languageId ?? this.languageId,
       featuredCommunity: featuredCommunity ?? this.featuredCommunity,
       featuredLocal: featuredLocal ?? this.featuredLocal,
-      urlContentType: urlContentType ?? this.urlContentType,
       altText: altText ?? this.altText,
       creator: creator ?? this.creator,
       community: community ?? this.community,
       imageDetails: imageDetails ?? this.imageDetails,
       creatorBannedFromCommunity: creatorBannedFromCommunity ?? this.creatorBannedFromCommunity,
-      bannedFromCommunity: bannedFromCommunity ?? this.bannedFromCommunity,
       creatorIsModerator: creatorIsModerator ?? this.creatorIsModerator,
       creatorIsAdmin: creatorIsAdmin ?? this.creatorIsAdmin,
       comments: comments ?? this.comments,
@@ -285,15 +261,12 @@ class ThunderPost {
       updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
       deleted: post['deleted'],
       nsfw: post['nsfw'],
-      embedTitle: post['embed_title'],
-      embedDescription: post['embed_description'],
       thumbnailUrl: post['thumbnail_url'],
       apId: post['ap_id'],
       local: post['local'],
       languageId: post['language_id'],
       featuredCommunity: post['featured_community'],
       featuredLocal: post['featured_local'],
-      urlContentType: post['url_content_type'],
       altText: post['alt_text'],
       media: media,
     );
@@ -321,21 +294,17 @@ class ThunderPost {
       updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
       deleted: post['deleted'],
       nsfw: post['nsfw'],
-      embedTitle: post['embed_title'],
-      embedDescription: post['embed_description'],
       thumbnailUrl: post['thumbnail_url'],
       apId: post['ap_id'],
       local: post['local'],
       languageId: post['language_id'],
       featuredCommunity: post['featured_community'],
       featuredLocal: post['featured_local'],
-      urlContentType: post['url_content_type'],
       altText: post['alt_text'],
       creator: creator != null ? ThunderUser.fromLemmyUser(creator) : null,
       community: community != null ? ThunderCommunity.fromLemmyCommunity(community, subscribed: subscribed) : null,
       imageDetails: imageDetails,
       creatorBannedFromCommunity: postView['creator_banned_from_community'],
-      bannedFromCommunity: postView['banned_from_community'],
       creatorIsModerator: postView['creator_is_moderator'],
       creatorIsAdmin: postView['creator_is_admin'],
       comments: counts['comments'],
@@ -375,8 +344,6 @@ class ThunderPost {
       updated: post['edited_at'] != null ? DateTime.parse(post['edited_at']) : null,
       deleted: post['deleted'],
       nsfw: post['nsfw'],
-      // embedTitle // Not available in PieFed
-      // embedDescription // Not available in PieFed
       // embedVideoUrl // Not available in PieFed
       thumbnailUrl: post['thumbnail_url'],
       apId: post['ap_id'],
@@ -384,13 +351,11 @@ class ThunderPost {
       languageId: post['language_id'],
       featuredCommunity: post['sticky'],
       featuredLocal: false, // Not available in PieFed
-      // urlContentType // Not available in PieFed
       altText: post['alt_text'],
       creator: ThunderUser.fromPiefedUser(creator),
       community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
       // imageDetails // Not available in PieFed
       creatorBannedFromCommunity: postView['creator_banned_from_community'],
-      bannedFromCommunity: postView['banned_from_community'],
       creatorIsModerator: postView['creator_is_moderator'],
       creatorIsAdmin: postView['creator_is_admin'],
       comments: counts['comments'],
@@ -423,15 +388,12 @@ class ThunderPost {
       updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
       deleted: post['deleted'],
       nsfw: post['nsfw'],
-      // embedTitle // Not available in PieFed
-      // embedDescription // Not available in PieFed
       thumbnailUrl: post['thumbnail_url'],
       apId: post['ap_id'],
       local: post['local'],
       languageId: post['language_id'],
       featuredCommunity: post['sticky'],
       featuredLocal: false, // Not available in PieFed
-      // urlContentType // Not available in PieFed
       altText: post['alt_text'],
       media: media,
     );

@@ -6,42 +6,28 @@ class ThunderLocalUserView {
   /// The local user data.
   final ThunderLocalUser localUser;
 
-  /// The local user vote display mode.
-  final ThunderLocalUserVoteDisplayMode? localUserVoteDisplayMode;
-
   /// The person associated with this local user.
   final ThunderUser person;
 
-  /// The person's aggregated counts.
-  final Map<String, dynamic>? counts;
-
   ThunderLocalUserView({
     required this.localUser,
-    this.localUserVoteDisplayMode,
     required this.person,
-    this.counts,
   });
 
   ThunderLocalUserView copyWith({
     ThunderLocalUser? localUser,
-    ThunderLocalUserVoteDisplayMode? localUserVoteDisplayMode,
     ThunderUser? person,
-    Map<String, dynamic>? counts,
   }) {
     return ThunderLocalUserView(
       localUser: localUser ?? this.localUser,
-      localUserVoteDisplayMode: localUserVoteDisplayMode ?? this.localUserVoteDisplayMode,
       person: person ?? this.person,
-      counts: counts ?? this.counts,
     );
   }
 
   factory ThunderLocalUserView.fromLemmyLocalUserView(Map<String, dynamic> localUserView) {
     return ThunderLocalUserView(
       localUser: ThunderLocalUser.fromLemmyLocalUser(localUserView['local_user']),
-      localUserVoteDisplayMode: ThunderLocalUserVoteDisplayMode.fromLemmyVoteDisplayMode(localUserView['local_user_vote_display_mode']),
       person: ThunderUser.fromLemmyUser(localUserView['person']),
-      counts: localUserView['counts'],
     );
   }
 
@@ -50,42 +36,26 @@ class ThunderLocalUserView {
 
     return ThunderLocalUserView(
       localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user'], user),
-      // localUserVoteDisplayMode // Not available in PieFed
       person: user,
-      counts: localUserView['counts'],
     );
   }
 }
 
 class ThunderInstanceBlock {
-  /// The person doing the blocking.
-  final ThunderUser person;
-
   /// The instance being blocked.
   final Map<String, dynamic> instance;
 
-  /// The site associated with the instance.
-  final Map<String, dynamic>? site;
-
-  ThunderInstanceBlock({
-    required this.person,
-    required this.instance,
-    this.site,
-  });
+  ThunderInstanceBlock({required this.instance});
 
   factory ThunderInstanceBlock.fromLemmyBlock(Map<String, dynamic> block) {
     return ThunderInstanceBlock(
-      person: ThunderUser.fromLemmyUser(block['person']),
       instance: block['instance'],
-      site: block['site'],
     );
   }
 
   factory ThunderInstanceBlock.fromPiefedBlock(Map<String, dynamic> block) {
     return ThunderInstanceBlock(
-      person: ThunderUser.fromPiefedUser(block['person']),
       instance: block['instance'],
-      site: block['site'],
     );
   }
 }
