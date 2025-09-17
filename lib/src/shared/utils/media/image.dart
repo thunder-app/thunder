@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -93,12 +93,8 @@ Future<Size> processImage(Map<String, dynamic> params) async {
   Uint8List? data = bytes;
 
   if (data == null) {
-    // The image provider should throw an error if a valid image is not found
-    // This is to catch cases where the URL may return a valid image, but the URL path does not conform to the expected format
-    final imageProvider = ExtendedNetworkImageProvider(url ?? '', cache: true, cacheRawData: true);
-
-    data = await imageProvider.getNetworkImageData();
-    if (data == null) throw Exception('Failed to retrieve image data from $url');
+    final file = await DefaultCacheManager().getSingleFile(url);
+    data = await file.readAsBytes();
   }
 
   final image = img.decodeImage(data);
@@ -111,7 +107,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
   assert(imageUrl != null || imageBytes != null);
 
   try {
-    Size? size = await ImageDimensionCache().get(imageUrl!);
+    Size? size = ImageDimensionCache().get(imageUrl!);
     if (size != null) return size;
 
     final token = RootIsolateToken.instance;

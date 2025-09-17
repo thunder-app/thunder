@@ -174,11 +174,10 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
     media.thumbnailUrl = url;
   }
 
-  if (fetchImageDimensions && media.thumbnailUrl != null) {
+  if (size == null && fetchImageDimensions && media.thumbnailUrl != null) {
     // If the instance does not contain image metadata, we'll do some additional checks
     try {
       int imageDimensionTimeout = UserPreferences.getLocalSetting(LocalSettings.imageDimensionTimeout) ?? 2;
-
       size = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
       debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');

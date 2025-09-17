@@ -14,7 +14,7 @@ class ImageDimensionCache {
   final _cache = HashMap<String, Size>();
 
   /// Fetches the image dimensions using cache if valid
-  Future<Size?> get(String url) async {
+  Size? get(String url) {
     final entry = _cache[url];
 
     if (entry != null) {

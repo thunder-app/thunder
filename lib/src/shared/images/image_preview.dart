@@ -2,17 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gif_view/gif_view.dart';
 
-import 'package:thunder/src/core/enums/image_caching_mode.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 
 /// Displays a preview of an image.
-class ImagePreview extends StatefulWidget {
+class ImagePreview extends StatelessWidget {
   /// The URL of the image to display.
   final String url;
 
@@ -53,55 +50,26 @@ class ImagePreview extends StatefulWidget {
   });
 
   @override
-  State<ImagePreview> createState() => _ImagePreviewState();
-}
-
-class _ImagePreviewState extends State<ImagePreview> with SingleTickerProviderStateMixin {
-  /// The controller for the image fade animation.
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 130),
-      lowerBound: 0.0,
-      upperBound: 1.0,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // TODO: Move the logic for determining if the image is valid into data layer so that we don't need to re-evaluate this on every build.
-    final isValidImageUrl = widget.contentType != null || isImageUrl(widget.url);
-    final imageCachingMode = context.select((ThunderBloc bloc) => bloc.state.imageCachingMode);
+    final isValidImageUrl = contentType != null || isImageUrl(url);
 
     if (!isValidImageUrl) {
       return ImagePreviewError(
-        mediaType: widget.mediaType,
-        blur: widget.blur == true,
-        viewed: widget.viewed == true,
+        mediaType: mediaType,
+        blur: blur == true,
+        viewed: viewed == true,
       );
     }
 
     return _ImageContent(
-      url: widget.url,
-      width: widget.width,
-      height: widget.height,
-      fit: widget.fit,
-      viewed: widget.viewed,
-      blur: widget.blur,
-      mediaType: widget.mediaType,
-      imageCachingMode: imageCachingMode,
-      controller: _controller,
+      url: url,
+      width: width,
+      height: height,
+      fit: fit,
+      viewed: viewed,
+      blur: blur,
+      mediaType: mediaType,
     );
   }
 }
@@ -129,12 +97,6 @@ class _ImageContent extends StatelessWidget {
   /// The media type that the underlying image represents.
   final MediaType? mediaType;
 
-  /// The image caching mode.
-  final ImageCachingMode imageCachingMode;
-
-  /// The controller for the image fade animation.
-  final AnimationController controller;
-
   const _ImageContent({
     required this.url,
     required this.width,
@@ -143,8 +105,6 @@ class _ImageContent extends StatelessWidget {
     required this.viewed,
     required this.blur,
     required this.mediaType,
-    required this.imageCachingMode,
-    required this.controller,
   });
 
   @override
@@ -163,58 +123,23 @@ class _ImageContent extends StatelessWidget {
         ),
       );
     } else {
-      image = ExtendedImage.network(
-        url,
+      image = CachedNetworkImage(
+        imageUrl: url,
         height: height,
         width: width,
         fit: fit,
         color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
         colorBlendMode: viewed == true ? BlendMode.modulate : null,
-        cache: true,
-        clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
-        cacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
-        cacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
-        loadStateChanged: (ExtendedImageState state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              controller.reset();
-              return const SizedBox.shrink();
-            case LoadState.completed:
-              if (state.wasSynchronouslyLoaded) return state.completedWidget;
-
-              controller.forward();
-              return _FadeInImage(controller: controller, child: state.completedWidget);
-            case LoadState.failed:
-              controller.reset();
-              state.imageProvider.evict();
-
-              return ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true);
-          }
-        },
+        fadeInDuration: const Duration(milliseconds: 130),
+        memCacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
+        memCacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
+        placeholder: (context, url) => const SizedBox.shrink(),
+        errorWidget: (context, url, error) => ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true),
       );
     }
 
     if (blur == true) return _BlurredImage(child: image);
     return image;
-  }
-}
-
-/// A widget that fades in the child widget.
-class _FadeInImage extends StatelessWidget {
-  /// The controller for the fade animation.
-  final AnimationController controller;
-
-  /// The child widget to display.
-  final Widget child;
-
-  const _FadeInImage({required this.controller, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: controller,
-      child: child,
-    );
   }
 }
 
