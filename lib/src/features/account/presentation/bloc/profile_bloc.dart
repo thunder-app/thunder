@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/src/core/cache/platform_version_cache.dart';
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
@@ -121,8 +122,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final instanceUrl = event.instance.replaceAll('https://', '');
 
       // Detect the platform before attempting to log in
-      final platformInfo = await detectPlatformFromNodeInfo(instanceUrl);
-      final platform = platformInfo?['platform'];
+      final platformInfo = await detectPlatformFromNodeInfo(instanceUrl) ?? {'platform': ThreadiversePlatform.lemmy};
+      final platform = platformInfo['platform'];
 
       // Create a temporary Account to attempt to log in
       Account tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
@@ -154,6 +155,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (account == null) return emit(state.copyWith(status: ProfileStatus.failure));
 
       // Set this account as the active account
+      this.account = account;
       final prefs = UserPreferences.instance.preferences;
       prefs.setString('active_profile_id', account.id);
 
@@ -187,6 +189,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return emit(state.copyWith(status: ProfileStatus.failure, error: () => AppLocalizations.of(GlobalContext.context)!.unexpectedError));
     }
 
+    this.account = account;
     add(InitializeAuth());
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:version/version.dart';
 
+import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/core/models/thunder_site_response.dart';
 import 'package:thunder/src/core/update/check_github_update.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -304,9 +305,9 @@ class PiefedApi {
   }
 
   /// Fetches a list of comments from the Piefed API
-  Future<List<ThunderComment>> getComments({
+  Future<Map<String, dynamic>> getComments({
     required int postId,
-    int? page,
+    String? cursor,
     int? limit,
     int? maxDepth,
     int? communityId,
@@ -316,16 +317,46 @@ class PiefedApi {
     Map<String, dynamic> body = {
       'sort': commentSortType?.value,
       'max_depth': maxDepth,
-      'page': page,
+      'page': cursor,
       'limit': limit,
-      'community_id': communityId,
       'post_id': postId,
       'parent_id': parentId,
-      'depth_first': true,
     };
 
-    final json = await _request(HttpMethod.get, '/api/alpha/comment/list', body);
-    return json['comments'].map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+    final json = await _request(HttpMethod.get, '/api/alpha/post/replies', body);
+
+    ThunderPost? post;
+    ThunderCommunity? community;
+
+    List<Map<String, dynamic>> flattenedComments = [];
+
+    // Flatten the json response. Each comment has a "replies" key that contains the replies to the comment and so forth.
+    // We should fetch all the comments an their associated replies.
+    void flattenComments(List<dynamic> comments) {
+      // Fill in the post/community as they're not included in the comment's replies
+      for (final comment in comments) {
+        if (post == null && comment['post'] != null) post = ThunderPost.fromPiefedPost(comment['post']);
+
+        if (community == null && comment['community'] != null) {
+          final subscribed = comment['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == comment['subscribed']) : null;
+          community = ThunderCommunity.fromPiefedCommunity(comment['community'], subscribed: subscribed);
+        }
+
+        flattenedComments.add(comment);
+
+        if (comment['replies'] != null && comment['replies'].isNotEmpty) {
+          flattenComments(comment['replies']);
+        }
+      }
+    }
+
+    flattenComments(json['comments']);
+    final comments = flattenedComments.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv, post: post)).toList();
+
+    return {
+      'comments': comments,
+      'next_page': json['next_page'],
+    };
   }
 
   /// Creates a comment

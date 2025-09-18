@@ -193,9 +193,9 @@ class PostAppBarActions extends StatelessWidget {
             if (context.mounted) {
               if (highlightedCommentId != null) {
                 // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
-                context.read<PostBloc>().add(GetPostEvent(post: state.post, selectedCommentPath: commentPath, highlightedCommentId: highlightedCommentId));
+                context.read<PostBloc>().add(GetPostEvent(postId: state.post?.id, selectedCommentPath: commentPath, highlightedCommentId: highlightedCommentId));
               } else {
-                context.read<PostBloc>().add(GetPostEvent(post: state.post));
+                context.read<PostBloc>().add(GetPostEvent(postId: state.post?.id));
               }
             }
           },

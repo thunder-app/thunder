@@ -257,11 +257,9 @@ class ThunderComment {
     );
   }
 
-  factory ThunderComment.fromPiefedCommentView(Map<String, dynamic> commentView) {
+  factory ThunderComment.fromPiefedCommentView(Map<String, dynamic> commentView, {ThunderPost? post, ThunderCommunity? community}) {
     final comment = commentView['comment'];
     final creator = commentView['creator'];
-    final post = commentView['post'];
-    final community = commentView['community'];
     final counts = commentView['counts'];
 
     final subscribed = commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null;
@@ -281,8 +279,8 @@ class ThunderComment {
       distinguished: comment['distinguished'] ?? false,
       languageId: comment['language_id'],
       creator: ThunderUser.fromPiefedUser(creator),
-      post: ThunderPost.fromPiefedPost(post),
-      community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
+      post: post,
+      community: community,
       score: counts['score'],
       upvotes: counts['upvotes'],
       downvotes: counts['downvotes'],

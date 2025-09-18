@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 
 /// A simple cache that holds a given image's dimensions
 class ImageDimensionCache {
+  /// Whether to print debug logs
+  final bool debug = false;
+
   static final ImageDimensionCache _instance = ImageDimensionCache._internal();
-
   factory ImageDimensionCache() => _instance;
-
   ImageDimensionCache._internal();
 
   /// Cache entry per image key
@@ -18,7 +19,7 @@ class ImageDimensionCache {
     final entry = _cache[url];
 
     if (entry != null) {
-      debugPrint('ImageDimensionCache: Returning cached image dimensions for $url');
+      if (debug) debugPrint('ImageDimensionCache: Returning cached image dimensions for $url');
       return entry;
     }
 
@@ -28,6 +29,6 @@ class ImageDimensionCache {
   /// Sets the image dimensions for the given [url].
   void set(String url, Size size) {
     _cache[url] = size;
-    debugPrint('ImageDimensionCache: Cached image dimensions for $url');
+    if (debug) debugPrint('ImageDimensionCache: Cached image dimensions for $url');
   }
 }

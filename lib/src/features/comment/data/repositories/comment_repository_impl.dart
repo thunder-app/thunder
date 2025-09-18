@@ -52,15 +52,17 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<List<ThunderComment>> getComments({
+  Future<Map<String, dynamic>> getComments({
     required int postId,
     int? parentId,
     int? page,
+    String? cursor,
     CommentSortType? commentSortType,
     int? maxDepth,
     int? limit,
     int? communityId,
   }) async {
+    /// Lemmy uses page while Piefed uses cursor for pagination
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         return await lemmy.getComments(
@@ -75,7 +77,7 @@ class CommentRepositoryImpl implements CommentRepository {
       case ThreadiversePlatform.piefed:
         return await piefed.getComments(
           postId: postId,
-          page: page,
+          cursor: cursor,
           limit: limit,
           maxDepth: maxDepth,
           communityId: communityId,

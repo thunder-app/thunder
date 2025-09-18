@@ -240,7 +240,6 @@ class _PostPageFABState extends State<PostPageFAB> {
                                 // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
                                 PostFabAction.refresh.execute(
                                   context: context,
-                                  post: widget.post,
                                   postId: widget.post.id,
                                   highlightedCommentId: highlightedCommentId,
                                   selectedCommentPath: selectedCommentPath,
@@ -248,7 +247,6 @@ class _PostPageFABState extends State<PostPageFAB> {
                               } else {
                                 PostFabAction.refresh.execute(
                                   context: context,
-                                  post: widget.post,
                                   postId: widget.post.id,
                                 );
                               }

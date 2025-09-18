@@ -8,10 +8,11 @@ import 'package:version/version.dart';
 ///
 /// This is used to determine the appropriate API to use for the given platform
 class PlatformVersionCache {
+  /// Whether to print debug logs
+  final bool debug = false;
+
   static final PlatformVersionCache _instance = PlatformVersionCache._internal();
-
   factory PlatformVersionCache() => _instance;
-
   PlatformVersionCache._internal();
 
   /// Cache entry per platform key
@@ -22,7 +23,7 @@ class PlatformVersionCache {
     final entry = _cache[url];
 
     if (entry != null) {
-      debugPrint('PlatformVersionCache: Returning cached platform version for $url: $entry');
+      if (debug) debugPrint('PlatformVersionCache: Returning cached platform version for $url: $entry');
       return entry;
     }
 
@@ -32,6 +33,6 @@ class PlatformVersionCache {
   /// Sets the platform version for the given [url].
   void set(String url, String version) {
     _cache[url] = Version.parse(version);
-    debugPrint('PlatformVersionCache: Cached platform version for $url: $version');
+    if (debug) debugPrint('PlatformVersionCache: Cached platform version for $url: $version');
   }
 }

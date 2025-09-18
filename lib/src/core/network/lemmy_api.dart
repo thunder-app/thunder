@@ -390,7 +390,7 @@ class LemmyApi {
   }
 
   /// Fetches a list of comments from the Lemmy API
-  Future<List<ThunderComment>> getComments({
+  Future<Map<String, dynamic>> getComments({
     required int postId,
     int? page,
     int? limit,
@@ -412,7 +412,14 @@ class LemmyApi {
     };
 
     final json = await _request(HttpMethod.get, '/api/v3/comment/list', body);
-    return json['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList();
+
+    final comments = json['comments'].map<ThunderComment>((cv) => ThunderComment.fromLemmyCommentView(cv)).toList();
+    final nextPage = comments.length < limit ? null : (page ?? 0) + 1;
+
+    return {
+      'comments': comments,
+      'next_page': nextPage,
+    };
   }
 
   /// Creates a comment

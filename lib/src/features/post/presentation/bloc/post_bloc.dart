@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -51,21 +52,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Fetches the post, along with the initial set of comments
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
-      CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      // defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
-      defaultCommentSortType = defaultCommentSortType;
-
-      emit(state.copyWith(status: PostStatus.loading));
+      event.post != null ? emit(state.copyWith(status: PostStatus.refreshing, post: event.post, communityId: event.post?.community?.id)) : emit(state.copyWith(status: PostStatus.loading));
 
       // Retrieve the full post for moderators and cross-posts
       int? postId = event.postId ?? event.post?.id;
 
-      ThunderPost? post = event.post;
+      ThunderPost? post;
       List<ThunderUser>? moderators;
       List<ThunderPost>? crossPosts;
 
       if (postId != null) {
         final response = await postRepository.getPost(postId);
+
         post = response?['post'];
         moderators = response?['moderators'];
         crossPosts = response?['crossPosts'];
@@ -78,6 +76,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           moderators = response['moderators'];
         } catch (e) {
           // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
+          debugPrint('GetPostEvent: Error getting community: $e');
         }
       }
 
@@ -89,42 +88,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         crossPosts: crossPosts,
       ));
 
-      emit(state.copyWith(status: PostStatus.loading));
-
-      CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
-
-      int? parentId;
-      if (event.selectedCommentPath != null) {
-        parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
-      }
-
-      final comments = await commentRepository.getComments(
-        page: event.highlightedCommentId == null ? 1 : null,
-        communityId: post?.community?.id,
-        maxDepth: COMMENT_MAX_DEPTH,
-        postId: post!.id,
-        commentSortType: commentSortType,
-        limit: COMMENT_LIMIT,
-        parentId: parentId,
-      );
-
-      CommentNode commentNode = buildCommentTree(comments);
-
-      return emit(
-        state.copyWith(
-          status: PostStatus.success,
-          post: post,
-          comments: commentNode.flatten(),
-          commentNodes: commentNode,
-          commentPage: state.commentPage + (event.highlightedCommentId == null ? 1 : 0),
-          commentResponseMap: comments,
-          commentCount: comments.length,
-          hasReachedCommentEnd: comments.isEmpty || comments.length < COMMENT_LIMIT,
-          communityId: post.community?.id,
-          commentSortType: commentSortType,
-          highlightedCommentId: event.highlightedCommentId,
-        ),
-      );
+      add(GetPostCommentsEvent(
+        reset: true,
+        postId: postId,
+        commentParentId: event.selectedCommentPath != null ? int.parse(event.selectedCommentPath!.split('.')[1]) : null,
+        commentSortType: event.commentSortType,
+      ));
     } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e)));
     }
@@ -186,39 +155,51 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
-    bool searchWasInProgress = state.status == PostStatus.searchInProgress;
+    final platform = account.platform ?? ThreadiversePlatform.lemmy;
 
-    CommentSortType defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-    // defaultCommentSortType = LemmyClient.instance.supportsCommentSortType(defaultCommentSortType) ? defaultCommentSortType : DEFAULT_COMMENT_SORT_TYPE;
-    defaultCommentSortType = defaultCommentSortType;
-
-    CommentSortType commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
+    final defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    final commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 
     try {
       if (event.reset) {
-        emit(state.copyWith(status: PostStatus.loading, commentSortType: commentSortType));
+        emit(state.copyWith(
+          status: PostStatus.refreshing,
+          comments: const [],
+          commentNodes: null,
+          commentResponseMap: const [],
+          commentPage: 1,
+          commentCursor: "1",
+          commentCount: 0,
+          hasReachedCommentEnd: false,
+          commentSortType: commentSortType,
+        ));
 
-        final comments = await commentRepository.getComments(
+        final response = await commentRepository.getComments(
           communityId: state.post?.community?.id,
           parentId: event.commentParentId,
           postId: state.post!.id,
           commentSortType: commentSortType,
           limit: COMMENT_LIMIT,
           maxDepth: COMMENT_MAX_DEPTH,
-          page: 1,
+          page: platform == ThreadiversePlatform.lemmy ? 1 : null,
+          cursor: null,
         );
 
-        CommentNode commentNode = buildCommentTree(comments);
+        final comments = response['comments'];
+        final nextPage = response['next_page'];
+
+        final commentNode = buildCommentTree(comments);
 
         return emit(
           state.copyWith(
-            status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
+            status: state.status == PostStatus.searchInProgress ? PostStatus.searchInProgress : PostStatus.success,
             comments: commentNode.flatten(),
             commentNodes: commentNode,
             commentResponseMap: comments,
-            commentPage: 1,
+            commentPage: platform == ThreadiversePlatform.lemmy ? nextPage : null,
+            commentCursor: platform == ThreadiversePlatform.piefed ? nextPage : null,
             commentCount: comments.length,
-            hasReachedCommentEnd: comments.isEmpty || comments.length < COMMENT_LIMIT,
+            hasReachedCommentEnd: nextPage == null,
             commentSortType: commentSortType,
           ),
         );
@@ -233,6 +214,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           return;
         }
       }
+
       emit(state.copyWith(status: PostStatus.refreshing));
 
       final response = await commentRepository.getComments(
@@ -242,31 +224,50 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         commentSortType: commentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
-        page: event.commentParentId == null ? state.commentPage : null,
+        page: platform == ThreadiversePlatform.lemmy
+            ? event.commentParentId == null
+                ? state.commentPage
+                : null
+            : null,
+        cursor: platform == ThreadiversePlatform.piefed
+            ? event.commentParentId == null
+                ? state.commentCursor
+                : null
+            : null,
       );
-      // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
-      // so we should display an error
+
+      final comments = response['comments'] as List<ThunderComment>;
+      final nextPage = response['next_page'];
+
+      // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it, so we should display an error
       if (event.commentParentId != null) {
-        final bool anyDirectChildren = response.any((comment) => comment.path.contains('${event.commentParentId}.${comment.id}'));
-        if (!anyDirectChildren) {
-          throw Exception(GlobalContext.l10n.unableToLoadReplies);
-        }
+        final anyDirectChildren = comments.any((comment) => comment.path.contains('${event.commentParentId}.${comment.id}'));
+        if (!anyDirectChildren) throw Exception(GlobalContext.l10n.unableToLoadReplies);
       }
 
-      List<ThunderComment> comments = [...state.commentResponseMap, ...response];
-      CommentNode commentNode = buildCommentTree(comments);
+      final allComments = [...state.commentResponseMap, ...comments];
+      final commentNode = buildCommentTree(allComments);
 
       // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
       return emit(
         state.copyWith(
-          status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
+          status: state.status == PostStatus.searchInProgress ? PostStatus.searchInProgress : PostStatus.success,
           commentSortType: commentSortType,
           comments: commentNode.flatten(),
           commentNodes: commentNode,
-          commentResponseMap: comments,
-          commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
+          commentResponseMap: allComments,
+          commentPage: platform == ThreadiversePlatform.lemmy
+              ? event.commentParentId != null
+                  ? 1
+                  : nextPage
+              : null,
+          commentCursor: platform == ThreadiversePlatform.piefed
+              ? event.commentParentId != null
+                  ? null
+                  : nextPage
+              : null,
           commentCount: comments.length,
-          hasReachedCommentEnd: event.commentParentId != null || (response.isEmpty || state.commentCount == comments.length),
+          hasReachedCommentEnd: event.commentParentId != null || (comments.isEmpty || state.commentCount == comments.length),
         ),
       );
     } catch (e) {
@@ -344,7 +345,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.success,
-      highlightedCommentId: existingCommentNode.comment?.id,
+      highlightedCommentId: null,
       comments: state.commentNodes!.flatten(),
       moddingCommentId: -1,
     ));
@@ -367,7 +368,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.success,
-      highlightedCommentId: null,
+      highlightedCommentId: event.comment.id,
       comments: state.commentNodes!.flatten(),
       moddingCommentId: -1,
     ));

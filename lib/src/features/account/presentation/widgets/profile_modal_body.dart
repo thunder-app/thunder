@@ -500,13 +500,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
                           color: currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance ? selectedColor : Colors.transparent,
                           borderRadius: BorderRadius.circular(50),
                           child: InkWell(
-                            onTap: (currentAccount.anonymous && currentAnonymousInstance == anonymousInstances![index].anonymousInstance.instance)
-                                ? null
-                                : () async {
-                                    context.read<ProfileBloc>().add(SwitchProfile(accountId: anonymousInstances![index].anonymousInstance.instance));
-                                    context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
-                                    Navigator.of(context, rootNavigator: true).pop();
-                                  },
+                            onTap: () async {
+                              context.read<ProfileBloc>().add(SwitchProfile(accountId: anonymousInstances![index].anonymousInstance.instance));
+                              context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![index].anonymousInstance.instance));
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
                             borderRadius: BorderRadius.circular(50),
                             child: AnimatedSize(
                               duration: const Duration(milliseconds: 250),

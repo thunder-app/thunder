@@ -18,6 +18,7 @@ class PostState extends Equatable {
     this.commentNodes,
     this.commentResponseMap = const [],
     this.commentPage = 1,
+    this.commentCursor,
     this.commentCount = 0,
     this.moderators,
     this.crossPosts,
@@ -53,6 +54,7 @@ class PostState extends Equatable {
   final CommentNode? commentNodes;
   final List<ThunderComment> commentResponseMap;
   final int commentPage;
+  final String? commentCursor;
   final int commentCount;
   final bool hasReachedCommentEnd;
   final int? highlightedCommentId;
@@ -84,6 +86,7 @@ class PostState extends Equatable {
     CommentNode? commentNodes,
     List<ThunderComment>? commentResponseMap,
     int? commentPage,
+    String? commentCursor,
     int? commentCount,
     bool? hasReachedCommentEnd,
     int? communityId,
@@ -107,6 +110,7 @@ class PostState extends Equatable {
       commentNodes: commentNodes ?? this.commentNodes,
       commentResponseMap: commentResponseMap ?? this.commentResponseMap,
       commentPage: commentPage ?? this.commentPage,
+      commentCursor: commentCursor ?? this.commentCursor,
       commentCount: commentCount ?? this.commentCount,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       moderators: moderators ?? this.moderators,
@@ -131,6 +135,7 @@ class PostState extends Equatable {
         comments,
         commentNodes,
         commentPage,
+        commentCursor,
         commentCount,
         moderators,
         crossPosts,

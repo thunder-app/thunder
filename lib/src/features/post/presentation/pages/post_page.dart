@@ -176,7 +176,7 @@ class _PostPageState extends State<PostPage> {
         final highlightedCommentId = state.highlightedCommentId;
         final highlightedCommentIndex = state.comments.indexWhere((element) => element.comment!.id == highlightedCommentId);
 
-        if (listController.isAttached && highlightedCommentIndex != -1) {
+        if (widget.highlightedCommentId != null && listController.isAttached && highlightedCommentIndex != -1) {
           final visibleRange = listController.visibleRange;
 
           if (visibleRange != null && (highlightedCommentIndex < (visibleRange.$1 + 3) || highlightedCommentIndex > (visibleRange.$2 - 3))) {
@@ -196,9 +196,9 @@ class _PostPageState extends State<PostPage> {
 
             if (this.highlightedCommentId != null) {
               // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
-              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+              context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
             } else {
-              context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost));
+              context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id));
             }
           },
           edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
@@ -251,9 +251,9 @@ class _PostPageState extends State<PostPage> {
                             onRetry: () {
                               if (this.highlightedCommentId != null) {
                                 // If we're viewing a specific comment thread, retry with that context unless "View All Comments" is pressed
-                                context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+                                context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
                               } else {
-                                context.read<PostBloc>().add(GetPostEvent(post: widget.initialPost));
+                                context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id));
                               }
                             },
                           ),

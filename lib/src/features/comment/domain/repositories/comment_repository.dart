@@ -8,10 +8,11 @@ abstract class CommentRepository {
   Future<ThunderComment> getComment(int commentId);
 
   /// Fetches comments for a post
-  Future<List<ThunderComment>> getComments({
+  Future<Map<String, dynamic>> getComments({
     required int postId,
     int? parentId,
     int? page,
+    String? cursor,
     CommentSortType? commentSortType,
     int? maxDepth,
     int? limit,
