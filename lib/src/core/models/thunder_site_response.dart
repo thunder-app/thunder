@@ -68,13 +68,14 @@ class ThunderSiteResponse {
   factory ThunderSiteResponse.fromPiefedSiteResponse(Map<String, dynamic> response) {
     final site = response['site'];
     final myUser = response['my_user'];
-    final discussionLanguages = myUser != null ? myUser['discussion_languages'] : null;
+    final allLanguages = site?['all_languages'];
+    final discussionLanguages = myUser?['discussion_languages'];
 
     return ThunderSiteResponse(
       site: ThunderSite.fromPiefedSite(site),
       version: response['version'],
       myUser: myUser != null ? ThunderMyUser.fromPiefedMyUser(myUser) : null,
-      // allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromPiefedLanguage(l)).toList(),
+      allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromPiefedLanguage(l)).toList(),
       discussionLanguages: discussionLanguages?.cast<int>(),
       // taglines: taglines.map<ThunderTagline>((t) => ThunderTagline.fromPiefedTagline(t)).toList(),
     );

@@ -165,7 +165,7 @@ class PiefedApi {
     final queryParams = {
       'type_': feedListType?.value,
       'sort': postSortType?.value,
-      'page_cursor': page.toString(), // Page cursor is the page number in string format
+      'page': page.toString(),
       'limit': limit,
       'community_name': communityName,
       'community_id': communityId,
@@ -520,16 +520,26 @@ class PiefedApi {
     String? reason,
     int? expires,
   }) async {
+    // If the version is before 1.2.0, use the old key
+    final isNewVersion = version != null && Version(version!.major, version!.minor, version!.patch).compareTo(Version(1, 2, 0)) >= 0;
+
     if (ban) {
-      final body = {'user_id': userId, 'community_id': communityId, 'reason': reason, 'expiredAt': expires};
+      Map<String, dynamic> body = {'user_id': userId, 'community_id': communityId, 'reason': reason};
+
+      // TODO: Remove check once most instances have updated to 1.2.0
+      if (isNewVersion) {
+        body['expired_at'] = expires;
+      } else {
+        body['expiredAt'] = expires;
+      }
 
       final json = await _request(HttpMethod.post, '/api/alpha/community/moderate/ban', body);
-      return ThunderUser.fromPiefedUser(json['bannedUser']);
+      return ThunderUser.fromPiefedUser(isNewVersion ? json['banned_user'] : json['bannedUser']);
     } else {
       final body = {'user_id': userId, 'community_id': communityId};
 
       final json = await _request(HttpMethod.put, '/api/alpha/community/moderate/unban', body);
-      return ThunderUser.fromPiefedUser(json['bannedUser']);
+      return ThunderUser.fromPiefedUser(isNewVersion ? json['banned_user'] : json['bannedUser']);
     }
   }
 

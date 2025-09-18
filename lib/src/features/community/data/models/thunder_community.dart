@@ -227,8 +227,8 @@ class ThunderCommunity {
       instanceId: community['instance_id'],
       visibility: "Public", // Not available in PieFed
       subscribed: subscribed,
+      bannedFromCommunity: community['banned'],
       blocked: communityView['blocked'],
-      bannedFromCommunity: communityView['banned'],
       subscribers: counts['total_subscriptions_count'],
       subscribersLocal: counts['subscriptions_count'],
       posts: counts['post_count'],

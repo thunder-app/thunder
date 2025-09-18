@@ -17,4 +17,12 @@ class ThunderLanguage {
       name: language['name'],
     );
   }
+
+  factory ThunderLanguage.fromPiefedLanguage(Map<String, dynamic> language) {
+    return ThunderLanguage(
+      id: language['id'],
+      code: language['code'],
+      name: language['name'],
+    );
+  }
 }

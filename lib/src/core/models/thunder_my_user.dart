@@ -32,11 +32,9 @@ class ThunderLocalUserView {
   }
 
   factory ThunderLocalUserView.fromPiefedLocalUserView(Map<String, dynamic> localUserView) {
-    final user = ThunderUser.fromPiefedUser(localUserView['person']);
-
     return ThunderLocalUserView(
-      localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user'], user),
-      person: user,
+      localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user']),
+      person: ThunderUser.fromPiefedUser(localUserView['person']),
     );
   }
 }

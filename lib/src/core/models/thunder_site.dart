@@ -65,7 +65,7 @@ class ThunderSite {
   factory ThunderSite.fromPiefedSite(Map<String, dynamic> site) {
     return ThunderSite(
       name: site['name'],
-      sidebar: site['sidebar'],
+      sidebar: site['sidebar_md'] ?? site['sidebar'],
       icon: site['icon'],
       description: site['description'],
       actorId: site['actor_id'],

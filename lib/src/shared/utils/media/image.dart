@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -81,24 +82,12 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
   }
 }
 
-/// Retrieves the size of the given image. Must provide either [url] or [bytes].
-/// This function should be ran on an isolate to avoid blocking the main thread. See [retrieveImageDimensions] for more information
-Future<Size> processImage(Map<String, dynamic> params) async {
-  final url = params['url'];
-  final bytes = params['bytes'];
-  final token = params['token'];
+/// Retrieves the size of the given image given its bytes
+Future<Size> processImage(String filename) async {
+  final bytes = await File(filename).readAsBytes();
+  final image = img.decodeImage(bytes);
+  if (image == null) throw Exception('Failed to retrieve image data from bytes');
 
-  BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-
-  Uint8List? data = bytes;
-
-  if (data == null) {
-    final file = await DefaultCacheManager().getSingleFile(url);
-    data = await file.readAsBytes();
-  }
-
-  final image = img.decodeImage(data);
-  if (image == null) throw Exception('Failed to retrieve image data from $url');
   return Size(image.width.toDouble(), image.height.toDouble());
 }
 
@@ -107,17 +96,26 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
   assert(imageUrl != null || imageBytes != null);
 
   try {
-    Size? size = ImageDimensionCache().get(imageUrl!);
-    if (size != null) return size;
+    Size? size;
 
-    final token = RootIsolateToken.instance;
-    size = await compute(processImage, {'url': imageUrl, 'bytes': imageBytes, 'token': token});
-    if (size == null) throw Exception('Failed to retrieve image dimensions from $imageUrl');
+    if (imageUrl != null) {
+      size = ImageDimensionCache().get(imageUrl);
+      if (size != null) return size;
+    }
 
-    ImageDimensionCache().set(imageUrl, size);
+    Uint8List? data = imageBytes;
+
+    if (data == null && imageUrl != null) {
+      final file = await DefaultCacheManager().getSingleFile(imageUrl);
+      size = await compute(processImage, file.path);
+    }
+
+    if (size == null) throw Exception('Failed to retrieve image dimensions');
+
+    if (imageUrl != null) ImageDimensionCache().set(imageUrl, size);
     return size;
   } catch (e) {
-    throw Exception('Failed to retrieve image dimensions from $imageUrl: $e');
+    throw Exception('Failed to retrieve image dimensions: $e');
   }
 }
 

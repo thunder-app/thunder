@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
-import 'package:thunder/src/features/user/user.dart';
 
 class ThunderLocalUser {
   /// The local user's email.
@@ -68,7 +67,7 @@ class ThunderLocalUser {
     );
   }
 
-  factory ThunderLocalUser.fromPiefedLocalUser(Map<String, dynamic> localUser, ThunderUser user) {
+  factory ThunderLocalUser.fromPiefedLocalUser(Map<String, dynamic> localUser) {
     return ThunderLocalUser(
       // email:localUser['email'],
       showNsfw: localUser['show_nsfw'],
