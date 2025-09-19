@@ -166,7 +166,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
   Size? size;
 
   if (useImageMetadata && post.imageDetails != null) {
-    media.thumbnailUrl = post.imageDetails?['link'];
+    media.thumbnailUrl = post.imageDetails?['link'] ?? post.thumbnailUrl;
     media.contentType = post.imageDetails?['contentType'];
     size = Size(post.imageDetails?['width'].toDouble(), post.imageDetails?['height'].toDouble());
   } else if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {

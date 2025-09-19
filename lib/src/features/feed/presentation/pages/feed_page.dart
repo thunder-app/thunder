@@ -291,7 +291,7 @@ class _FeedViewState extends State<FeedView> {
             // Continue to fetch more items as long as the device view is not scrollable.
             // This is to avoid cases where more items cannot be fetched because the conditions are not met
             if (state.status == FeedStatus.success && ((selectedUserOption[0] && state.hasReachedPostsEnd == false) || (selectedUserOption[1] && state.hasReachedCommentsEnd == false))) {
-              Future.delayed(const Duration(milliseconds: 500), () {
+              Future.delayed(const Duration(milliseconds: 1000), () {
                 if (!mounted) return;
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
                 if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());

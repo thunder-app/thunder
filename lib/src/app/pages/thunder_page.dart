@@ -255,9 +255,7 @@ class _ThunderState extends State<Thunder> {
                     if (!state.reload) return;
 
                     // Add a bit of artificial delay to allow preferences to set the proper active profile
-                    Future.delayed(const Duration(milliseconds: 500), () {
-                      if (context.mounted) context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
-                    });
+                    if (context.mounted) context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
 
                     if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
                       context.read<FeedBloc>().add(

@@ -351,7 +351,7 @@ class PiefedApi {
     }
 
     flattenComments(json['comments']);
-    final comments = flattenedComments.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv, post: post)).toList();
+    final comments = flattenedComments.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv, post: post, community: community)).toList();
 
     return {
       'comments': comments,

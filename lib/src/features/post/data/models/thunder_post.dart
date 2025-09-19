@@ -354,7 +354,7 @@ class ThunderPost {
       altText: post['alt_text'],
       creator: ThunderUser.fromPiefedUser(creator),
       community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
-      imageDetails: postView['image_details'],
+      imageDetails: post['image_details'],
       creatorBannedFromCommunity: postView['creator_banned_from_community'],
       creatorIsModerator: postView['creator_is_moderator'],
       creatorIsAdmin: postView['creator_is_admin'],

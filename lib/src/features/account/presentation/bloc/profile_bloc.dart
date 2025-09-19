@@ -239,7 +239,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     } catch (e) {
       debugPrint('Error fetching profile information: ${e.toString()}');
-      emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
@@ -257,7 +257,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return emit(state.copyWith(status: ProfileStatus.success, siteResponse: () => response));
     } catch (e) {
       debugPrint('Error fetching profile settings: ${e.toString()}');
-      emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e), reload: event.reload));
+      emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e), reload: event.reload));
     }
   }
 
@@ -275,7 +275,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       add(FetchProfileFavorites(reload: event.reload));
     } catch (e) {
       debugPrint('Error fetching profile subscriptions: ${e.toString()}');
-      emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 
@@ -293,7 +293,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return emit(state.copyWith(status: ProfileStatus.success, reload: event.reload, favorites: communities));
     } catch (e) {
       debugPrint('Error fetching profile favorites: ${e.toString()}');
-      emit(state.copyWith(status: ProfileStatus.failure, reload: event.reload, error: () => getExceptionErrorMessage(e)));
+      emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, reload: event.reload, error: () => getExceptionErrorMessage(e)));
     }
   }
 }

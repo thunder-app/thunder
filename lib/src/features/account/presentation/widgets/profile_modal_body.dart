@@ -406,12 +406,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                     ),
                                               onPressed: () async {
                                                 context.read<ProfileBloc>().add(RemoveProfile(accountId: accounts![index].account.id));
-
                                                 setState(() => loggingOutId = accounts![index].account.id);
-
-                                                await Future.delayed(const Duration(milliseconds: 1000), () {
-                                                  context.read<ProfileBloc>().add(SwitchProfile(accountId: currentAccount.id));
-                                                });
+                                                context.read<ProfileBloc>().add(SwitchProfile(accountId: currentAccount.id));
 
                                                 setState(() {
                                                   accounts = null;
@@ -750,11 +746,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
         onTimeout: () => const ThunderInstanceInfo(success: false),
       );
 
-      setState(() {
-        account.instanceIcon = instanceInfo.icon;
-        account.version = instanceInfo.version;
-        account.alive = instanceInfo.success;
-      });
+      if (mounted) {
+        setState(() {
+          account.instanceIcon = instanceInfo.icon;
+          account.version = instanceInfo.version;
+          account.alive = instanceInfo.success;
+        });
+      }
     }
   }
 
@@ -802,11 +800,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
         onTimeout: () => const ThunderInstanceInfo(success: false),
       );
 
-      setState(() {
-        anonymousInstanceExtended.instanceIcon = instanceInfo.icon;
-        anonymousInstanceExtended.version = instanceInfo.version;
-        anonymousInstanceExtended.alive = instanceInfo.success;
-      });
+      if (mounted) {
+        setState(() {
+          anonymousInstanceExtended.instanceIcon = instanceInfo.icon;
+          anonymousInstanceExtended.version = instanceInfo.version;
+          anonymousInstanceExtended.alive = instanceInfo.success;
+        });
+      }
     }
   }
 
