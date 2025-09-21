@@ -613,13 +613,13 @@
     "@unresolved": {
         "description": "Description for unresolved status (e.g., unresolved reports)"
     },
-    "collapseInformation": "Informatie samen­vouwen",
+    "collapseInformation": "Informatie inklappen",
     "@collapseInformation": {
         "description": "Describes the action to collapse information - used in FAB settings"
     },
-    "collapsePost": "Bericht samen­vouwen",
+    "collapsePost": "Bericht inklappen",
     "@collapsePost": {},
-    "collapseSpoiler": "Spoiler samen­vouwen",
+    "collapseSpoiler": "Spoiler inklappen",
     "@collapseSpoiler": {
         "description": "Label for collapsing spoiler"
     },
@@ -1695,5 +1695,283 @@
         "description": "Redirect hint to action colors"
     },
     "addAccountToSeeProfile": "Log in om uw account te bekĳken.",
-    "@addAccountToSeeProfile": {}
+    "@addAccountToSeeProfile": {},
+    "addAsCommunityModerator": "Toevoegen als gemeenschaps­moderator",
+    "@addAsCommunityModerator": {
+        "description": "Moderator action to add a user as community moderator"
+    },
+    "addOriginalPostBody": "Originele bericht­tekst toevoegen?",
+    "@addOriginalPostBody": {
+        "description": "Prompt to add the original post body to a cross post"
+    },
+    "addedModToCommunity": "Moderator toegevoegd aan gemeenschap",
+    "@addedModToCommunity": {
+        "description": "Short decription for moderator action to add a mod to a community"
+    },
+    "addedUserAsCommunityModerator": "{username} toegevoegd als gemeenschaps­moderator",
+    "@addedUserAsCommunityModerator": {
+        "description": "Short decription for moderator action to add a user as community moderator",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user"
+            }
+        }
+    },
+    "allowOpenSupportedLinks": "Sta toe dat de app ondersteunde links opent.",
+    "@allowOpenSupportedLinks": {
+        "description": "Option to permit the app to open supported links."
+    },
+    "applePushNotificationService": "Apple-pushmeldings­service",
+    "@applePushNotificationService": {
+        "description": "Describes the notification type for Apple Push Notification Service"
+    },
+    "areNotificationsAllowedBySystem": "Meldingen zijn toegestaan door het systeem: {yesOrNo}",
+    "@areNotificationsAllowedBySystem": {
+        "description": "A status indicator for whether notifications are allowed by OS permissions",
+        "placeholders": {
+            "yesOrNo": {
+                "description": "Whether notifications are allowed by OS permissions"
+            }
+        }
+    },
+    "backgroundCheckWarning": "Houd er rekening mee dat meldings­controles extra accu verbruiken",
+    "@backgroundCheckWarning": {
+        "description": "Warning for enabling notifications"
+    },
+    "ban": "Verbannen",
+    "@ban": {
+        "description": "Short decription for moderator action to ban a user"
+    },
+    "bannedUserFromCommunity": "Gebruiker verbannen van gemeenschap",
+    "@bannedUserFromCommunity": {
+        "description": "Short decription for moderator action to ban a user from a community"
+    },
+    "browsingAnonymously": "U bezoekt {instance} momenteel anoniem.",
+    "@browsingAnonymously": {
+        "description": "Message shown to user when browsing anonymously",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "cannotReportOwnComment": "U kunt uw eigen opmerking niet rapporteren.",
+    "@cannotReportOwnComment": {},
+    "cantBlockAdmin": "U kunt een instantie­beheerder niet blokkeren.",
+    "@cantBlockAdmin": {},
+    "cantBlockYourself": "U kunt zichzelf niet blokkeren.",
+    "@cantBlockYourself": {},
+    "cardViewDescription": "Schakel kaart­weergave in om instellingen aan te passen",
+    "@cardViewDescription": {
+        "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+    },
+    "cardViewSettings": "Kaartweergave-instellingen",
+    "@cardViewSettings": {
+        "description": "Subcategory in Setting -> Appearance -> Posts"
+    },
+    "changeAccountSettingsFor": "Account­instellingen wĳzigen voor",
+    "@changeAccountSettingsFor": {
+        "description": "Heading for the profiler modal when changing account settings"
+    },
+    "changeNotificationSettings": "Meldings­instellingen wĳzigen…",
+    "@changeNotificationSettings": {
+        "description": "A shortcut to navigate to the notification settings"
+    },
+    "changePasswordWarning": "Om uw wacht­woord te wĳzigen, wordt u door­gestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?",
+    "@changePasswordWarning": {
+        "description": "Warning label for changing password"
+    },
+    "clearCache": "Cache wissen ({cacheSize})",
+    "@clearCache": {
+        "description": "Label for action to clear cache in the dialog",
+        "placeholders": {
+            "cacheSize": {
+                "description": "The size of the cache"
+            }
+        }
+    },
+    "clearedCache": "Cache succesvol gewist.",
+    "@clearedCache": {
+        "description": "Message indicating that cache was cleared successfully"
+    },
+    "clearedDatabase": "Lokale database gewist. Start Thunder opnieuw op om de nieuwe wĳzigingen door te voeren.",
+    "@clearedDatabase": {},
+    "clearedUserPreferences": "Alle gebruikers­voorkeuren gewist",
+    "@clearedUserPreferences": {},
+    "collapseParentCommentBodyOnGesture": "Boven­liggende opmerking verbergen wanneer ingeklapt",
+    "@collapseParentCommentBodyOnGesture": {
+        "description": "Toggle to collapse parent comment body on gesture."
+    },
+    "colorizeCommunityName": "Gemeenschaps­naam kleuren",
+    "@colorizeCommunityName": {
+        "description": "Setting for colorizing community name"
+    },
+    "colorizeUserName": "Gebruikers­naam kleuren",
+    "@colorizeUserName": {
+        "description": "Setting for colorizing username"
+    },
+    "commentActions": "Opmerkings­acties",
+    "@commentActions": {
+        "description": "Title for the comment actions bottom sheet"
+    },
+    "commentShowUserAvatar": "Gebruikers­avatar tonen",
+    "@commentShowUserAvatar": {
+        "description": "Settings toggle to display user avatar alongside their display name in comments"
+    },
+    "combineCommentScores": "Opmerking­scores combineren",
+    "@combineCommentScores": {
+        "description": "Toggle to combine comment scores."
+    },
+    "combineCommentScoresLabel": "Opmerking­scores combineren",
+    "@combineCommentScoresLabel": {
+        "description": "Label for setting to combine comment scores"
+    },
+    "combineNavAndFab": "Zwevende actie­knop en navigatie­knoppen combineren",
+    "@combineNavAndFab": {},
+    "combineNavAndFabDescription": "Zwevende actie­knop wordt getoond tussen de navigatie­knoppen.",
+    "@combineNavAndFabDescription": {},
+    "commentFontScale": "Lettertype­schaal van opmerkings­inhoud",
+    "@commentFontScale": {
+        "description": "Setting for comment font scale"
+    },
+    "commentPreview": "Toon een voorbeeld van opmerkingen met de opgegeven instellingen",
+    "@commentPreview": {
+        "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+    },
+    "commentReported": "De opmerking is gemarkeerd voor beoordeling.",
+    "@commentReported": {},
+    "commentSavedAsDraft": "Opmerking opgeslagen als concept",
+    "@commentSavedAsDraft": {},
+    "commentSortType": "Sorteer­type voor opmerkingen",
+    "@commentSortType": {},
+    "commentSwipeActions": "Veeg­acties voor opmerkingen",
+    "@commentSwipeActions": {
+        "description": "Setting for comment swipe actions"
+    },
+    "commentSwipeGesturesHint": "Wilt u liever knoppen gebruiken? Schakel ze in onder opmerkingen van de algemene instellingen.",
+    "@commentSwipeGesturesHint": {},
+    "communityNameColor": "Kleur van gemeenschaps­naam",
+    "@communityNameColor": {
+        "description": "Setting for community name color"
+    },
+    "communityNameThickness": "Dikte van gemeenschaps­naam",
+    "@communityNameThickness": {
+        "description": "Setting for community name thickness"
+    },
+    "modTransferCommunity": "Gemeen­schappen overdragen",
+    "@modTransferCommunity": {
+        "description": "Description for modlog filter for actions that transfer moderators to another community"
+    },
+    "purgedComment": "Opmerking vernietigd",
+    "@purgedComment": {
+        "description": "Short decription for moderator action to purge a comment"
+    },
+    "purgedCommunity": "Gemeenschap vernietigd",
+    "@purgedCommunity": {
+        "description": "Short decription for moderator action to purge a community"
+    },
+    "purgedPerson": "Persoon vernietigd",
+    "@purgedPerson": {
+        "description": "Short decription for moderator action to purge a person"
+    },
+    "purgedPost": "Bericht vernietigd",
+    "@purgedPost": {
+        "description": "Short decription for moderator action to purge a post"
+    },
+    "systemDarkMode": "Puur zwart",
+    "@systemDarkMode": {
+        "description": "Setting which toggles the pure black theme type when the theme is dark"
+    },
+    "unfeaturedPost": "Bericht niet langer uitgelicht",
+    "@unfeaturedPost": {
+        "description": "Short decription for moderator action to unfeature a post"
+    },
+    "unhidCommunity": "Gemeenschap niet langer verborgen",
+    "@unhidCommunity": {
+        "description": "Short decription for moderator action to unhide a community"
+    },
+    "settingsPage": "Instellingen­pagina",
+    "@settingsPage": {
+        "description": "Settings page subtitle for search results"
+    },
+    "settingsPageUserLabels": "Gebruikers­labels",
+    "@settingsPageUserLabels": {
+        "description": "User labels settings page"
+    },
+    "settingsPageAccountLanguages": "Discussie­talen",
+    "@settingsPageAccountLanguages": {
+        "description": "Account discussion languages page"
+    },
+    "settingsPageAccountMedia": "Media beheren",
+    "@settingsPageAccountMedia": {
+        "description": "Account manage media page"
+    },
+    "deletedComment": "Opmerking verwĳderd",
+    "@deletedComment": {
+        "description": "Message shown when a comment is deleted"
+    },
+    "deletedPost": "Bericht verwĳderd",
+    "@deletedPost": {
+        "description": "Message shown when a post is deleted"
+    },
+    "reportedComment": "Opmerking gerapporteerd",
+    "@reportedComment": {
+        "description": "Message shown when a comment is reported"
+    },
+    "reportedPost": "Bericht gerapporteerd",
+    "@reportedPost": {
+        "description": "Message shown when a post is reported"
+    },
+    "connectedToUnifiedPushDistributorApp": "Verbonden met {app}",
+    "@connectedToUnifiedPushDistributorApp": {
+        "description": "Tell the user which UnifiedPush app we're connected to",
+        "placeholders": {
+            "app": {
+                "description": "The name of the UnifiedPush app"
+            }
+        }
+    },
+    "copiedToClipboard": "Gekopieerd naar klembord",
+    "@copiedToClipboard": {},
+    "countLocalSubscribers": "{count} lokale abonnees",
+    "@countLocalSubscribers": {
+        "description": "Number of local subscribers",
+        "placeholders": {
+            "count": {
+                "description": "The number of local subscribers"
+            }
+        }
+    },
+    "compactPostCardMetadataItems": "Meta­gegevens voor compacte weergave",
+    "@compactPostCardMetadataItems": {
+        "description": "Name of setting for compact post card metadata items"
+    },
+    "compactViewDescription": "Schakel compacte weergave in om instellingen aan te passen",
+    "@compactViewDescription": {
+        "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+    },
+    "compactViewSettings": "Instellingen voor compacte weergave",
+    "@compactViewSettings": {
+        "description": "Subcategory in Setting -> Appearance -> Posts"
+    },
+    "confirmLogOutBody": "Weet u zeker dat u wilt uitloggen?",
+    "@confirmLogOutBody": {
+        "description": "The body of the confirm logout dialog"
+    },
+    "confirmMarkAllAsReadBody": "Weet u zeker dat u alle reacties, vermeldingen en berichten als gelezen wilt markeren?",
+    "@confirmMarkAllAsReadBody": {
+        "description": "The body of the confirm mark all as read dialog"
+    },
+    "confirmResetCommentPreferences": "Hiermee worden alle opmerkings­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?",
+    "@confirmResetCommentPreferences": {
+        "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+    },
+    "confirmResetPostPreferences": "Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?",
+    "@confirmResetPostPreferences": {
+        "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+    },
+    "confirmUnsubscription": "Weet u zeker dat u zich wilt deabonneren?",
+    "@confirmUnsubscription": {
+        "description": "Ask the user to confirm that they want to unsubscribe"
+    }
 }
