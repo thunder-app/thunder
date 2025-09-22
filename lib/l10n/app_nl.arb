@@ -1973,5 +1973,151 @@
     "confirmUnsubscription": "Weet u zeker dat u zich wilt deabonneren?",
     "@confirmUnsubscription": {
         "description": "Ask the user to confirm that they want to unsubscribe"
-    }
+    },
+    "countUsersActiveHalfYear": "{count} gebruikers/6 maanden",
+    "@countUsersActiveHalfYear": {
+        "description": "Number of users active in the last half year",
+        "placeholders": {
+            "count": {
+                "description": "The number of users active in the last half year"
+            }
+        }
+    },
+    "crossPostedFrom": "Gekruisplaatst vanuit: {postUrl}",
+    "@crossPostedFrom": {
+        "description": "Initial heading for text-based cross-post",
+        "placeholders": {
+            "postUrl": {
+                "description": "The URL of the post that was cross-posted from"
+            }
+        }
+    },
+    "defaultFeedType": "Standaard­feedtype",
+    "@defaultFeedType": {
+        "description": "Default listing type for the feed."
+    },
+    "deleteLocalDatabase": "Lokale database verwĳderen",
+    "@deleteLocalDatabase": {
+        "description": "Label for action to delete local database"
+    },
+    "deleteLocalPreferences": "Lokale voorkeuren verwĳderen",
+    "@deleteLocalPreferences": {
+        "description": "Label for action to delete local preferences"
+    },
+    "deletedByCreator": "verwĳderd door aanmaker",
+    "@deletedByCreator": {
+        "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+    },
+    "deletedByModerator": "verwĳderd door moderator",
+    "@deletedByModerator": {
+        "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+    },
+    "disablePushNotifications": "Push­meldingen uitschakelen",
+    "@disablePushNotifications": {
+        "description": "Description when disabling push notifications"
+    },
+    "enableCommentNavigation": "Opmerking­navigatie inschakelen",
+    "@enableCommentNavigation": {
+        "description": "Setting for enable comment navigation"
+    },
+    "enableExperimentalFeatures": "Experimentele functies inschakelen",
+    "@enableExperimentalFeatures": {
+        "description": "Setting to enable experimental features"
+    },
+    "collapseCommentPreview": "Voorbeeld van opmerkingen inklappen",
+    "@collapseCommentPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+    },
+    "collapsePostPreview": "Voorbeeld van bericht inklappen",
+    "@collapsePostPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+    },
+    "enableInboxNotifications": "Meldingen inschakelen voor postvak IN",
+    "@enableInboxNotifications": {
+        "description": "Setting name for inbox notifications"
+    },
+    "expandCommentPreview": "Voorbeeld van opmerkingen uiklappen",
+    "@expandCommentPreview": {
+        "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+    },
+    "expandPostPreview": "Voorbeeld van bericht uitklappen",
+    "@expandPostPreview": {
+        "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+    },
+    "filteringBy": "Gefilterd op {entity}",
+    "@filteringBy": {
+        "description": "Filtering by a community or creator in search.",
+        "placeholders": {
+            "entity": {
+                "description": "The entity that is being filtered by"
+            }
+        }
+    },
+    "fullscreenSwipeGestures": "Veeg­gebaren in volledig scherm",
+    "@fullscreenSwipeGestures": {
+        "description": "Setting for fullscreen swipe gestures"
+    },
+    "hideNsfwPreviews": "NSFW-voor­vertoningen vervagen",
+    "@hideNsfwPreviews": {
+        "description": "Toggle to blur NSFW previews."
+    },
+    "imageCachingMode": "Afbeelding­cache­modus",
+    "@imageCachingMode": {
+        "description": "Title for setting related to image caching mode"
+    },
+    "imageDimensionTimeout": "Time-out voor afbeeldings­afmetingen",
+    "@imageDimensionTimeout": {
+        "description": "Setting for how long to wait for the image dimensions to be fetched"
+    },
+    "importExportDatabase": "Thunder-database importeren/exporteren",
+    "@importExportDatabase": {
+        "description": "Overall name of setting for importing or exporting the db (for searching)"
+    },
+    "includeExternalLink": "Externe link opnemen",
+    "@includeExternalLink": {},
+    "includePostLink": "Bericht­link opnemen",
+    "@includePostLink": {},
+    "leftLongSwipe": "Lange veeg naar links",
+    "@leftLongSwipe": {
+        "description": "Setting for left long swipe"
+    },
+    "leftShortSwipe": "Korte veeg naar links",
+    "@leftShortSwipe": {
+        "description": "Setting for left short swipe"
+    },
+    "loginAttemptCanceled": "Aanmeld­poging geannuleerd.",
+    "@loginAttemptCanceled": {
+        "description": "Message shown to user when they cancel a login attempt"
+    },
+    "markAsRead": "Markeren als gelezen",
+    "@markAsRead": {
+        "description": "Label for the action to mark a message as read"
+    },
+    "metadataFontScale": "Lettertype­grootte voor meta­gegevens",
+    "@metadataFontScale": {
+        "description": "Setting for metadata font scale"
+    },
+    "couldNotDetermineCommentDelete": "Fout: Kon het bericht om de opmerking te verwĳderen niet bepalen.",
+    "@couldNotDetermineCommentDelete": {},
+    "couldNotDeterminePostComment": "Fout: Kon het bericht om de opmerking bij te plaatsen niet bepalen.",
+    "@couldNotDeterminePostComment": {},
+    "couldntCreateReport": "Uw opmerkings­rapport kon op dit moment niet worden verzonden. Probeer het later opnieuw",
+    "@couldntCreateReport": {},
+    "couldntFindPost": "Het opgevraagde bericht kan niet worden geladen. Het is mogelĳk verwĳderd.",
+    "@couldntFindPost": {
+        "description": "Error message for when we can't load a post."
+    },
+    "currentLongPress": "Momenteel ingesteld als lang indrukken",
+    "@currentLongPress": {},
+    "currentNotificationsMode": "Huidige meldings­modus: {mode}",
+    "@currentNotificationsMode": {
+        "description": "A status indicator for the current notifications mode",
+        "placeholders": {
+            "mode": {
+                "description": "The current notifications mode"
+            }
+        }
+    },
+    "currentSinglePress": "Momenteel ingesteld als één keer drukken",
+    "@currentSinglePress": {}
 }
