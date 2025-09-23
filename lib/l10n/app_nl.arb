@@ -2119,5 +2119,11 @@
         }
     },
     "currentSinglePress": "Momenteel ingesteld als één keer drukken",
-    "@currentSinglePress": {}
+    "@currentSinglePress": {},
+    "customizeSwipeActions": "Veeg­acties aan­passen (druk om te wĳzigen)",
+    "@customizeSwipeActions": {},
+    "databaseExportWarning": "De data­base kan gevoelige informatie bevatten met betrekking tot uw Lemmy-account. Als u deze exporteert, deel deze dan met niemand. Wilt u doorgaan?",
+    "@databaseExportWarning": {
+        "description": "Message shown to the user when exporting the db"
+    }
 }
