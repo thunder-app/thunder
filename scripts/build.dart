@@ -26,7 +26,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
+  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--split-per-abi', '--release', '--flavor', 'production']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 
@@ -39,7 +39,7 @@ void buildRelease() {
 
   // Build for iOS
   print('\nStarting iOS build...');
-  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
+  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--flavor', 'production']);
   stdout.write(iosResult.stdout);
   stderr.write(iosResult.stderr);
 
@@ -64,18 +64,41 @@ void removeBuildArtifacts() {
 }
 
 void createAPKFile(String version) {
-  print('\nCreating APK release file...');
+  print('\nCreating APK release files...');
 
   // Create the "release" directory
   Directory releaseDir = Directory('release');
   releaseDir.createSync();
 
-  // Copy the APK file to the "release" directory and rename it
-  File apkFile = File('build/app/outputs/flutter-apk/app-production-release.apk');
-  String newApkPath = '${releaseDir.path}/thunder-v$version.apk';
-  apkFile.copySync(newApkPath);
+  // Find all split APK files
+  Directory apkDir = Directory('build/app/outputs/flutter-apk');
+  List<FileSystemEntity> apkFiles = apkDir.listSync().where((file) => file is File && file.path.endsWith('.apk')).toList();
 
-  print('APK file copied and renamed successfully!');
+  if (apkFiles.isEmpty) {
+    print('No APK files found in build/app/outputs/flutter-apk/');
+    return;
+  }
+
+  // Copy each split APK file to the "release" directory with architecture suffix
+  for (FileSystemEntity apkFile in apkFiles) {
+    String fileName = apkFile.path.split('/').last;
+
+    // Extract architecture from filename (e.g., app-arm64-v8a-production-release.apk -> arm64-v8a)
+    String arch = 'universal'; // fallback
+    if (fileName.contains('-arm64-v8a-')) {
+      arch = 'arm64-v8a';
+    } else if (fileName.contains('-armeabi-v7a-')) {
+      arch = 'armeabi-v7a';
+    } else if (fileName.contains('-x86_64-')) {
+      arch = 'x86_64';
+    }
+
+    String newApkPath = '${releaseDir.path}/thunder-v$version-$arch.apk';
+    (apkFile as File).copySync(newApkPath);
+    print('Copied $fileName -> thunder-v$version-$arch.apk');
+  }
+
+  print('All APK files copied and renamed successfully!');
 }
 
 // Creates a IPA file from the flutter build

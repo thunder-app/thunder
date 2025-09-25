@@ -50,14 +50,14 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "Info: version=$VERSION | tag=${TAG} | prerelease=$PRERELEASE"
 
-      - name: Build Android APK (unsigned)
+      - name: Build Android APKs (unsigned)
         run: |
           sed -i 's/signingConfig signingConfigs.release//g' android/app/build.gradle
-          flutter build apk --release --flavor production --no-tree-shake-icons
+          flutter build apk --split-per-abi --release --flavor production
           rm ./build/app/outputs/flutter-apk/*.sha1
           ls -l ./build/app/outputs/flutter-apk/
 
-      - name: Sign Android APKs
+      - name: Sign Android Split APKs
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -70,12 +70,24 @@ jobs:
             echo "${apk} | $(shasum -a 256 ${apk} | cut -d " " -f 1)"
           done
           rm apksign.keystore
-          echo "Finished signing Android APKs"
+          echo "Finished signing Android Split APKs"
         
-      - name: Rename Android APKs
+      - name: Rename Android Split APKs
         run: |
           for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
-          mv "$apk" "./build/app/outputs/flutter-apk/thunder-v${{ steps.generate-version-info.outputs.version }}.apk"
+            # Extract architecture from filename (e.g., app-arm64-v8a-production-release.apk -> arm64-v8a)
+            filename=$(basename "$apk")
+            arch="universal" # fallback
+            
+            if [[ "$filename" == *"-arm64-v8a-"* ]]; then
+              arch="arm64-v8a"
+            elif [[ "$filename" == *"-armeabi-v7a-"* ]]; then
+              arch="armeabi-v7a"
+            elif [[ "$filename" == *"-x86_64-"* ]]; then
+              arch="x86_64"
+            fi
+            
+            mv "$apk" "./build/app/outputs/flutter-apk/thunder-v${{ steps.generate-version-info.outputs.version }}-${arch}.apk"
           done
       
       - uses: actions/upload-artifact@v4
@@ -90,5 +102,5 @@ jobs:
           tag: "${{ steps.generate-version-info.outputs.tag }}"
           prerelease: ${{ steps.generate-version-info.outputs.prerelease }}
           draft: true
-          artifacts: ./build/app/outputs/flutter-apk/thunder-v*.apk
+          artifacts: ./build/app/outputs/flutter-apk/thunder-v${{ steps.generate-version-info.outputs.version }}-*.apk
           generateReleaseNotes: true
