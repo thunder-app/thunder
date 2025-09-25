@@ -27,7 +27,7 @@ dependencies:
     git:
       url: https://github.com/veloce/l10n_esperanto
       ref: 62d45c60f7840a4591318bb477172136c999f946
-  android_intent_plus: ^5.0.1
+  android_intent_plus: ^6.0.0
   app_links: ^6.3.2
   auto_size_text: ^3.0.0
   back_button_interceptor: ^8.0.0
@@ -36,7 +36,7 @@ dependencies:
   bloc_concurrency: ^0.3.0
   cached_network_image: ^3.2.3
   collection: ^1.17.0
-  connectivity_plus: ^6.0.2
+  connectivity_plus: ^7.0.0
   dart_ping: ^9.0.0
   dart_ping_ios: ^4.0.0
   drift: ^2.28.1
@@ -72,7 +72,7 @@ dependencies:
   path_provider: ^2.1.5
   permission_handler: ^12.0.0+1
   screenshot: ^3.0.0
-  share_plus: ^11.0.0
+  share_plus: ^12.0.0
   shared_preferences: ^2.1.2
   smooth_highlight: ^0.1.1
   stream_transform: ^2.1.0

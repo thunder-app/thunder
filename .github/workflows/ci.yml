@@ -17,8 +17,8 @@ jobs:
       - name: Install libsqlite3
         run: sudo apt-get -y install libsqlite3-0 libsqlite3-dev
 
-      - uses: actions/checkout@v3
-        with:  
+      - uses: actions/checkout@v4
+        with:
           submodules: 'recursive'
 
       - uses: subosito/flutter-action@v2
@@ -58,7 +58,7 @@ jobs:
 
       - name: Find all auto-generated files (.g.dart, .steps.dart, .freezed.dart)
         run: |
-          find . -name "*.g.dart" -o -name "*.steps.dart" -o -name "*.freezed.dart" > generated_files.txt
+          find lib -name "*.g.dart" -o -name "*.steps.dart" -o -name "*.freezed.dart" > generated_files.txt
           cat generated_files.txt
         id: find-generated-files
       
