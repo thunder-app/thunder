@@ -1424,27 +1424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  push:
-    dependency: "direct main"
-    description:
-      path: "packages/push/push"
-      relative: true
-    source: path
-    version: "2.3.0"
-  push_ios:
-    dependency: transitive
-    description:
-      path: "packages/push/push_ios"
-      relative: true
-    source: path
-    version: "0.5.1"
-  push_platform_interface:
-    dependency: transitive
-    description:
-      path: "packages/push/push_platform_interface"
-      relative: true
-    source: path
-    version: "0.6.0"
   recase:
     dependency: transitive
     description:
