@@ -459,15 +459,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       return;
     }
 
-    emit(const FeedState(
+    emit(FeedState(
       status: FeedStatus.initial,
       posts: <ThunderPost>[],
       comments: <ThunderComment>[],
       hasReachedPostsEnd: false,
       hasReachedCommentsEnd: false,
       feedType: FeedType.general,
-      feedListType: null,
-      postSortType: null,
+      feedListType: state.feedListType,
+      postSortType: state.postSortType,
       community: null,
       communityInstance: null,
       communityModerators: [],
