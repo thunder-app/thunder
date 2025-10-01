@@ -86,7 +86,7 @@ Future<void> navigateToInstancePage(
             ? const Duration(milliseconds: 100)
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
-    canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => BlocProvider.value(
       value: thunderBloc,
@@ -167,7 +167,7 @@ Future<void> navigateToPost(
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
-    canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
     builder: (_) {
       return MultiBlocProvider(
@@ -219,7 +219,7 @@ Future<void> navigateToModlogPage(
             ? const Duration(milliseconds: 100)
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
-    canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => MultiBlocProvider(
       providers: [
@@ -264,7 +264,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
-    canSwipe: Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
     builder: (context) {
       return MultiBlocProvider(
@@ -319,7 +319,7 @@ Future<ThunderComment?> navigateToCreateCommentPage(
             ? const Duration(milliseconds: 100)
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
-    canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => MultiBlocProvider(
       providers: [
@@ -387,7 +387,7 @@ Future<void> navigateToCreatePostPage(
 
     await Navigator.of(context).push(SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       backGestureDetectionWidth: 45,
       builder: (navigatorContext) {
@@ -500,7 +500,7 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
               : null,
       reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
       backGestureDetectionWidth: 45,
-      canSwipe: Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       builder: (context) => MultiBlocProvider(
         providers: [
@@ -533,7 +533,7 @@ void navigateToReportPage(BuildContext context) {
   Navigator.of(context).push(
     SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       builder: (_) {
         return MultiBlocProvider(
@@ -601,7 +601,7 @@ Future<void> navigateToFeedPage(
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
-    canSwipe: Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
@@ -649,7 +649,7 @@ void navigateToSearchPage(BuildContext context) {
   Navigator.of(context).push(
     SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       builder: (context) => MultiBlocProvider(
         providers: [
@@ -700,7 +700,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
     Navigator.of(context).push(
       SwipeablePageRoute(
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+        canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
@@ -721,7 +721,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
     Navigator.of(context).push(
       SwipeablePageRoute(
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+        canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
@@ -739,7 +739,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
     Navigator.of(context).push(
       SwipeablePageRoute(
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+        canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
@@ -786,7 +786,7 @@ void navigateToWebView(BuildContext context, String url) {
             ? const Duration(milliseconds: 100)
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
-    canSwipe: Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => WebView(url: url),
   );

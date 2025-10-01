@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dart_ping/dart_ping.dart';
@@ -94,7 +95,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         break;
     }
     return SwipeablePageRoute<dynamic>(
-      canSwipe: Platform.isIOS || context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: !context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
       builder: (context) {
         return page;
