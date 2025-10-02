@@ -74,15 +74,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       Version version = await fetchVersion();
 
       add(UserPreferencesChangeEvent());
-      emit(state.copyWith(status: ThunderStatus.success, version: version));
+      emit(state.copyWith(status: ThunderStatus.success, feedCardDividerColor: state.feedCardDividerColor, version: version));
     } catch (e) {
-      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: ThunderStatus.failure, feedCardDividerColor: state.feedCardDividerColor, errorMessage: e.toString()));
     }
   }
 
   Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
     try {
-      emit(state.copyWith(status: ThunderStatus.refreshing));
+      emit(state.copyWith(status: ThunderStatus.refreshing, feedCardDividerColor: state.feedCardDividerColor));
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
@@ -159,7 +159,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       DateFormat dateFormat = DateFormat(UserPreferences.getLocalSetting(LocalSettings.dateFormat) ?? DateFormat.yMMMMd(Intl.systemLocale).add_jm().pattern);
       FeedCardDividerThickness feedCardDividerThickness =
           FeedCardDividerThickness.values.byName(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerThickness) ?? FeedCardDividerThickness.compact.name);
-      Color feedCardDividerColor = Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) ?? Colors.transparent.toARGB32());
+      Color? feedCardDividerColor = UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor) != null ? Color(UserPreferences.getLocalSetting(LocalSettings.feedCardDividerColor)!) : null;
       List<PostCardMetadataItem> compactPostCardMetadataItems =
           UserPreferences.getLocalSetting<List<String>>(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
       List<PostCardMetadataItem> cardPostCardMetadataItems =
@@ -435,16 +435,16 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         currentAnonymousInstance: currentAnonymousInstance,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: ThunderStatus.failure, feedCardDividerColor: state.feedCardDividerColor, errorMessage: e.toString()));
     }
   }
 
   void _onFabToggle(OnFabToggle event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(isFabOpen: !state.isFabOpen));
+    emit(state.copyWith(isFabOpen: !state.isFabOpen, feedCardDividerColor: state.feedCardDividerColor));
   }
 
   void _onFabSummonToggle(OnFabSummonToggle event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
+    emit(state.copyWith(isFabSummoned: !state.isFabSummoned, feedCardDividerColor: state.feedCardDividerColor));
   }
 
   void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
@@ -454,6 +454,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       UserPreferences.removeSetting(LocalSettings.currentAnonymousInstance);
     }
 
-    emit(state.copyWith(currentAnonymousInstance: event.instance));
+    emit(state.copyWith(currentAnonymousInstance: event.instance, feedCardDividerColor: state.feedCardDividerColor));
   }
 }

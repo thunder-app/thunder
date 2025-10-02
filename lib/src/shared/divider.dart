@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:thunder/src/shared/conditional_parent_widget.dart';
 
 class ThunderDivider extends StatelessWidget {

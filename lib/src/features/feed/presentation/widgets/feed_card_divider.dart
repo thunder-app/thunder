@@ -14,11 +14,15 @@ class FeedCardDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final thickness = context.select<ThunderBloc, double>((bloc) => bloc.state.feedCardDividerThickness.value);
-    final dividerColor = context.select<ThunderBloc, Color>((bloc) => bloc.state.feedCardDividerColor);
+    final dividerColor = context.select<ThunderBloc, Color?>((bloc) => bloc.state.feedCardDividerColor);
 
-    final color = dividerColor == Colors.transparent
-        ? ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)
-        : Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), dividerColor).withValues(alpha: 0.2);
+    Color color = ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10);
+
+    if (dividerColor == Colors.transparent) {
+      color = Colors.transparent;
+    } else if (dividerColor != null) {
+      color = Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), dividerColor).withValues(alpha: 0.2);
+    }
 
     return Divider(height: thickness, thickness: thickness, color: color);
   }

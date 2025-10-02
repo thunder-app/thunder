@@ -73,7 +73,7 @@ class ThunderState extends Equatable {
     this.showFullPostDate = false,
     this.dateFormat,
     this.feedCardDividerThickness = FeedCardDividerThickness.compact,
-    this.feedCardDividerColor = Colors.transparent,
+    this.feedCardDividerColor,
     this.compactPostCardMetadataItems = const <PostCardMetadataItem>[],
     this.cardPostCardMetadataItems = const <PostCardMetadataItem>[],
     this.keywordFilters = const [],
@@ -246,7 +246,7 @@ class ThunderState extends Equatable {
   final bool showFullPostDate;
   final DateFormat? dateFormat;
   final FeedCardDividerThickness feedCardDividerThickness;
-  final Color feedCardDividerColor;
+  final Color? feedCardDividerColor;
   final List<PostCardMetadataItem> compactPostCardMetadataItems;
   final List<PostCardMetadataItem> cardPostCardMetadataItems;
   final List<String> keywordFilters;
@@ -598,7 +598,7 @@ class ThunderState extends Equatable {
       showFullPostDate: showFullPostDate ?? this.showFullPostDate,
       dateFormat: dateFormat ?? this.dateFormat,
       feedCardDividerThickness: feedCardDividerThickness ?? this.feedCardDividerThickness,
-      feedCardDividerColor: feedCardDividerColor ?? this.feedCardDividerColor,
+      feedCardDividerColor: feedCardDividerColor,
       compactPostCardMetadataItems: compactPostCardMetadataItems ?? this.compactPostCardMetadataItems,
       cardPostCardMetadataItems: cardPostCardMetadataItems ?? this.cardPostCardMetadataItems,
 

@@ -91,7 +91,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   FeedCardDividerThickness feedCardDividerThickness = FeedCardDividerThickness.compact;
 
   /// The color of the divider between the post cards
-  Color feedCardDividerColor = Colors.transparent;
+  Color? feedCardDividerColor;
 
   /// List of available date formats to select from
   List<DateFormat> dateFormats = [DateFormat.yMMMMd(Intl.systemLocale).add_jm()];
@@ -140,7 +140,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
       selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
       feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
-      feedCardDividerColor = Color(prefs.getInt(LocalSettings.feedCardDividerColor.name) ?? Colors.transparent.toARGB32());
+      feedCardDividerColor = prefs.getInt(LocalSettings.feedCardDividerColor.name) != null ? Color(prefs.getInt(LocalSettings.feedCardDividerColor.name)!) : null;
 
       // Compact View Settings
       compactPostCardMetadataItems =
@@ -209,7 +209,11 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         setState(() => feedCardDividerThickness = value);
         break;
       case LocalSettings.feedCardDividerColor:
-        await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+        if (value == null) {
+          await prefs.remove(LocalSettings.feedCardDividerColor.name);
+        } else {
+          await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+        }
         setState(() => feedCardDividerColor = value);
         break;
 
@@ -722,28 +726,31 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                           customWidget: ListTile(
                             title: Text(l10n.color),
                             contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
-                            trailing: DropdownButton<Color>(
+                            trailing: DropdownButton<Color?>(
                               menuMaxHeight: 500.0,
                               value: feedCardDividerColor,
                               underline: const SizedBox(),
                               items: CustomThemeType.values
-                                  .map((CustomThemeType customThemeType) => DropdownMenuItem<Color>(
+                                  .map((CustomThemeType customThemeType) => DropdownMenuItem<Color?>(
                                         alignment: Alignment.center,
                                         value: Color(customThemeType.primaryColor.toARGB32()),
                                         child: CircleAvatar(
                                           radius: 16.0,
-                                          backgroundColor: Color.alphaBlend(
-                                            theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                            Color(customThemeType.primaryColor.toARGB32()),
-                                          ),
+                                          backgroundColor: customThemeType == CustomThemeType.transparent
+                                              ? null
+                                              : Color.alphaBlend(
+                                                  theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                                  Color(customThemeType.primaryColor.toARGB32()),
+                                                ),
+                                          child: customThemeType == CustomThemeType.transparent ? Text(customThemeType.label[0].toUpperCase()) : null,
                                         ),
                                       ))
                                   .toList()
                                 ..insert(
                                   0,
-                                  const DropdownMenuItem<Color>(
+                                  const DropdownMenuItem<Color?>(
                                     alignment: Alignment.center,
-                                    value: Colors.transparent,
+                                    value: null,
                                     child: CircleAvatar(radius: 16.0, child: Text('D')),
                                   ),
                                 ),
