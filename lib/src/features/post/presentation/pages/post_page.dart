@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -328,7 +327,6 @@ class _PostPageState extends State<PostPage> {
                           child: _PostPageFeedEnd(
                             key: ValueKey(widget.initialPost.apId),
                             appBarKey: appBarKey,
-                            listController: listController,
                           ),
                         ),
                       ],
@@ -362,10 +360,7 @@ class _PostPageFeedEnd extends StatefulWidget {
   /// The key for the app bar
   final GlobalKey appBarKey;
 
-  /// The list controller
-  final ListController listController;
-
-  const _PostPageFeedEnd({super.key, required this.appBarKey, required this.listController});
+  const _PostPageFeedEnd({super.key, required this.appBarKey});
 
   @override
   State<_PostPageFeedEnd> createState() => _PostPageFeedEndState();
@@ -409,11 +404,7 @@ class _PostPageFeedEndState extends State<_PostPageFeedEnd> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
-
-    if (widget.listController.isAttached && widget.listController.visibleRange != null && widget.listController.visibleRange!.$2 <= max(widget.listController.numberOfItems - 10, 0)) {
-      return SizedBox(height: height);
-    }
+    final height = 0.0;
 
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
