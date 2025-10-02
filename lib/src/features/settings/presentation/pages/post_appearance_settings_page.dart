@@ -700,20 +700,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             trailing: DropdownButton<FeedCardDividerThickness>(
                               value: feedCardDividerThickness,
                               underline: const SizedBox(),
-                              items: [
-                                DropdownMenuItem(
-                                  value: FeedCardDividerThickness.compact,
-                                  child: Text(l10n.compact),
-                                ),
-                                DropdownMenuItem(
-                                  value: FeedCardDividerThickness.standard,
-                                  child: Text(l10n.standard),
-                                ),
-                                DropdownMenuItem(
-                                  value: FeedCardDividerThickness.comfortable,
-                                  child: Text(l10n.comfortable),
-                                )
-                              ],
+                              items: FeedCardDividerThickness.values.map((e) => DropdownMenuItem(value: e, child: Text(e.label))).toList(),
                               onChanged: (FeedCardDividerThickness? value) {
                                 setPreferences(LocalSettings.feedCardDividerThickness, value);
                                 setState(() {}); // Trigger rebuild

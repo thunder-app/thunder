@@ -1,7 +1,10 @@
+import 'package:thunder/src/app/utils/global_context.dart';
+
 enum FeedCardDividerThickness {
   compact,
   standard,
-  comfortable;
+  comfortable,
+  large;
 
   double get value {
     switch (this) {
@@ -11,6 +14,23 @@ enum FeedCardDividerThickness {
         return 6.0;
       case FeedCardDividerThickness.comfortable:
         return 10.0;
+      case FeedCardDividerThickness.large:
+        return 16.0;
+    }
+  }
+
+  String get label {
+    final l10n = GlobalContext.l10n;
+
+    switch (this) {
+      case FeedCardDividerThickness.compact:
+        return l10n.compact;
+      case FeedCardDividerThickness.standard:
+        return l10n.standard;
+      case FeedCardDividerThickness.comfortable:
+        return l10n.comfortable;
+      case FeedCardDividerThickness.large:
+        return l10n.large;
     }
   }
 }
