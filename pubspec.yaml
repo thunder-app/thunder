@@ -89,7 +89,6 @@ dependencies:
   freezed_annotation: ^3.1.0
   freezed: ^3.2.2
   sqlite3_flutter_libs: ^0.5.39
-  gif_view: ^1.0.3
   image: ^4.5.4
 
 dev_dependencies:

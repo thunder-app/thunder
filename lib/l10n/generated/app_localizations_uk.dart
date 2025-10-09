@@ -12,7 +12,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get about => 'Про програму';
 
   @override
-  String get accept => 'Accept';
+  String get accept => 'Прийняти';
 
   @override
   String get accessibility => 'Спеціальні можливості';
@@ -47,7 +47,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String accountSettingsExportedSuccessfully(Object savedFilePath) {
-    return 'Lemmy account settings exported successfully to $savedFilePath!';
+    return 'Налаштування облікового запису Lemmy успішно експортовано до $savedFilePath!';
   }
 
   @override

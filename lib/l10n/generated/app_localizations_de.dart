@@ -121,7 +121,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String addedUserAsCommunityModerator(Object username) {
-    return 'Added $username as community moderator';
+    return '$username als Community-Moderator hinzugefügt';
   }
 
   @override
@@ -221,7 +221,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Beachte das Benachrichtigungsprüfungen zusätzlich Strom verbrauchen';
 
   @override
-  String get ban => 'Ban';
+  String get ban => 'Ausschließen';
 
   @override
   String get banFromCommunity => 'Von Community ausgeschlossen';
@@ -426,7 +426,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get comment => 'Kommentieren';
 
   @override
-  String get commentActions => 'Comment Actions';
+  String get commentActions => 'Kommentaraktionen';
 
   @override
   String get commentBehaviourSettings => 'Kommentare';
@@ -651,7 +651,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'Mehrfach veröffentlicht von:  $postUrl';
+    return 'Cross-geposted von: $postUrl';
   }
 
   @override
@@ -779,10 +779,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deletedByModerator => 'vom Moderator gelöscht';
 
   @override
-  String get deletedComment => 'Deleted comment';
+  String get deletedComment => 'Gelöschter Kommentar';
 
   @override
-  String get deletedPost => 'Deleted post';
+  String get deletedPost => 'Gelöschter Post';
 
   @override
   String get deselectUndeterminedWarning =>
@@ -1009,7 +1009,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return 'Kommunikation mit dem Thunder-Benachrichtigungsserver unter \'$serverAddress\' fehlgeschlagen';
+    return 'Kommunikation mit dem Thunder-Benachrichtigungsserver unter $serverAddress fehlgeschlagen.';
   }
 
   @override
@@ -1816,7 +1816,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pinned => 'Angeheftet';
 
   @override
-  String get pinnedPostToCommunity => 'Pinned post to community';
+  String get pinnedPostToCommunity => 'Post an Community angeheftet';
 
   @override
   String get placeholderText =>
@@ -1925,7 +1925,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pureBlack => 'Reines Schwarz';
 
   @override
-  String get purgedComment => 'Gelöschter Kommentar';
+  String get purgedComment => 'Bereinigter Kommentar';
 
   @override
   String get purgedCommunity => 'Gelöschte Community';
@@ -1934,7 +1934,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get purgedPerson => 'Gelöschte Person';
 
   @override
-  String get purgedPost => 'Gelöschter Post';
+  String get purgedPost => 'Bereinigter Post';
 
   @override
   String get purple => 'Lila';
@@ -2021,7 +2021,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removePost => 'Post entfernen';
 
   @override
-  String get removeUserData => 'Remove user data';
+  String get removeUserData => 'Userdaten entfernen';
 
   @override
   String get removed => 'Entfernt';
@@ -2047,7 +2047,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String removedUserAsCommunityModerator(Object username) {
-    return 'Removed $username as community moderator';
+    return '$username als Communitymoderator entfernt';
   }
 
   @override
@@ -2099,10 +2099,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reportPost => 'Post melden';
 
   @override
-  String get reportedComment => 'Reported comment';
+  String get reportedComment => 'Gemeldeter Kommentar';
 
   @override
-  String get reportedPost => 'Reported post';
+  String get reportedPost => 'Gemeldeter Post';
 
   @override
   String get reporter => 'Melder:';
@@ -2897,7 +2897,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return 'Nicht mehr aus der Community ausgeschlossener Benutzer';
+    return '$username nicht mehr aus der Community ausgeschlossen';
   }
 
   @override
@@ -2965,7 +2965,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unpinPostFromCommunity => 'Post aus der Community lösen';
 
   @override
-  String get unpinnedPostFromCommunity => 'Unpinned post from community';
+  String get unpinnedPostFromCommunity => 'Post von Community abgeheftet';
 
   @override
   String get unreachable => 'Unerreichbar';

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:gif_view/gif_view.dart';
 
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
@@ -111,32 +110,19 @@ class _ImageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context).ceil();
 
-    Widget image = SizedBox.shrink();
-
-    if (url.endsWith('.gif')) {
-      image = RepaintBoundary(
-        child: GifView.network(
-          url,
-          height: height,
-          width: width,
-          fit: fit,
-        ),
-      );
-    } else {
-      image = CachedNetworkImage(
-        imageUrl: url,
-        height: height,
-        width: width,
-        fit: fit,
-        color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-        colorBlendMode: viewed == true ? BlendMode.modulate : null,
-        fadeInDuration: const Duration(milliseconds: 130),
-        memCacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
-        memCacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
-        placeholder: (context, url) => const SizedBox.shrink(),
-        errorWidget: (context, url, error) => ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true),
-      );
-    }
+    final image = CachedNetworkImage(
+      imageUrl: url,
+      height: height,
+      width: width,
+      fit: fit,
+      color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+      colorBlendMode: viewed == true ? BlendMode.modulate : null,
+      fadeInDuration: const Duration(milliseconds: 130),
+      memCacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
+      memCacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
+      placeholder: (context, url) => const SizedBox.shrink(),
+      errorWidget: (context, url, error) => ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true),
+    );
 
     if (blur == true) return _BlurredImage(child: image);
     return image;

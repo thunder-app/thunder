@@ -3469,12 +3469,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return 'The selected comment was not found on \'$instance\'. Switching back to previous account.';
+    return 'The selected comment was not found on \'$instance\'';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'The selected post was not found on \'$instance\'. Switching back to previous account.';
+    return 'The selected post was not found on \'$instance\'';
   }
 
   @override
@@ -3530,6 +3530,11 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get addedModToCommunity => 'Added Mod to Community';
+
+  @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community moderator';
+  }
 
   @override
   String get admin => 'Admin';
@@ -3624,6 +3629,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String get backgroundCheckWarning =>
       'Note that notification checks will consume additional battery';
+
+  @override
+  String get ban => 'Ban';
 
   @override
   String get banFromCommunity => 'Ban from Community';
@@ -3822,6 +3830,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get comment => 'Comment';
+
+  @override
+  String get commentActions => 'Comment Actions';
 
   @override
   String get commentBehaviourSettings => 'Comments';
@@ -4044,7 +4055,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'cross-posted from:  $postUrl';
+    return 'cross-posted from: $postUrl';
   }
 
   @override
@@ -4169,6 +4180,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get deletedByModerator => 'deleted by moderator';
+
+  @override
+  String get deletedComment => 'Deleted comment';
+
+  @override
+  String get deletedPost => 'Deleted post';
 
   @override
   String get deselectUndeterminedWarning =>
@@ -4389,7 +4406,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return 'Failed to communicate with Thunder notification server at \'$serverAddress\'';
+    return 'Failed to communicate with Thunder notification server at $serverAddress.';
   }
 
   @override
@@ -5059,7 +5076,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance does not appear to be a valid Lemmy instance';
+    return '$instance does not appear to be a valid instance';
   }
 
   @override
@@ -5179,6 +5196,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get pinned => 'Pinned';
+
+  @override
+  String get pinnedPostToCommunity => 'Pinned post to community';
 
   @override
   String get placeholderText =>
@@ -5382,6 +5402,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get removePost => 'Remove Post';
 
   @override
+  String get removeUserData => 'Remove user data';
+
+  @override
   String get removed => 'Removed';
 
   @override
@@ -5401,6 +5424,11 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get removedPost => 'Removed Post';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return 'Removed $username as community moderator';
+  }
 
   @override
   String get reorder => 'Reorder';
@@ -5451,6 +5479,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get reportPost => 'Report Post';
 
   @override
+  String get reportedComment => 'Reported comment';
+
+  @override
+  String get reportedPost => 'Reported post';
+
+  @override
   String get reporter => 'Reporter:';
 
   @override
@@ -5481,7 +5515,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get restorePost => 'Restore Post';
 
   @override
-  String get restoredComment => 'Restored Comment';
+  String get restoredComment => 'Restored comment';
 
   @override
   String get restoredCommentFromDraft => 'Restored comment from draft';
@@ -6239,7 +6273,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return 'Unbanned User from Community';
+    return 'Unbanned $username from Community';
   }
 
   @override
@@ -6305,6 +6339,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get unpinPostFromCommunity => 'Unpin Post from Community';
+
+  @override
+  String get unpinnedPostFromCommunity => 'Unpinned post from community';
 
   @override
   String get unreachable => 'Unreachable';

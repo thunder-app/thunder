@@ -869,14 +869,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  gif_view:
-    dependency: "direct main"
-    description:
-      name: gif_view
-      sha256: "4c7e17c134719531dabab54af121e4600d63283f56f3aff57c16db54766b67bc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   glob:
     dependency: transitive
     description:

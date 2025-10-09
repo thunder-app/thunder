@@ -415,7 +415,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get combineCommentScoresLabel => 'Combine Comment Scores';
 
   @override
-  String get combineNavAndFab => 'Combine FAB and Navigation Buttons';
+  String get combineNavAndFab => 'Combinar FAB e Botões de Navegação';
 
   @override
   String get combineNavAndFabDescription =>
@@ -3208,6 +3208,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get about => 'Sobre';
 
   @override
+  String get accept => 'Aceitar';
+
+  @override
   String get accessibility => 'Acessibilidade';
 
   @override
@@ -3215,8 +3218,20 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Perfis de acessibilidade permitem aplicar múltiplas configurações de uma vez para acomodar um requisito específico de acessibilidade.';
 
   @override
+  String account(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Contas',
+      one: 'Conta',
+      zero: 'Contas',
+    );
+    return '$_temp0 ';
+  }
+
+  @override
   String accountBirthday(Object additionalInfo) {
-    return 'Aniversário da Cona $additionalInfo';
+    return 'Aniversário da Conta $additionalInfo';
   }
 
   @override
@@ -3227,6 +3242,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get accountSettings => 'Configurações da Conta';
 
   @override
+  String accountSettingsExportedSuccessfully(Object savedFilePath) {
+    return 'As configurações da conta Lemmy foram exportadas com sucesso para $savedFilePath!';
+  }
+
+  @override
+  String get accountSettingsImportedSuccessfully =>
+      'Configurações da conta Lemmy importadas com sucesso!';
+
+  @override
+  String accountSwitchParentCommentNotFound(Object instance) {
+    return 'O comentário selecionado não foi encontrado em \'$instance\'';
+  }
+
+  @override
+  String accountSwitchPostNotFound(Object instance) {
+    return 'A postagem selecionada não foi encontrada em \'$instance\'';
+  }
+
+  @override
+  String get actionColors => 'Cores de Ações';
+
+  @override
   String get actionColorsRedirect => 'Querendo customizar cores?';
 
   @override
@@ -3234,6 +3271,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get active => 'Ativo';
+
+  @override
+  String get activity => 'Atividade';
 
   @override
   String get add => 'Adicionar';
@@ -3248,10 +3288,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get addAnonymousInstance => 'Adicionar Instância Anônima';
 
   @override
+  String get addAsCommunityModerator =>
+      'Adicionar como Moderador de Comunidade';
+
+  @override
   String get addDiscussionLanguage => 'Adicionar Idioma';
 
   @override
   String get addKeywordFilter => 'Adicionar Palavra-chave';
+
+  @override
+  String get addOriginalPostBody => 'Adicionar o corpo da postagem original?';
 
   @override
   String get addToFavorites => 'Adicionar aos favoritos';
@@ -3263,7 +3310,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get addedCommunityToSubscriptions => 'Inscrito na comunidade';
 
   @override
+  String get addedInstanceMod => 'Adicionou Mod de Instância';
+
+  @override
   String get addedModToCommunity => 'Moderador Adicionado à Comunidade';
+
+  @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Adicionou $username como moderador de comunidade';
+  }
 
   @override
   String get admin => 'Admin';
@@ -3272,10 +3327,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get advanced => 'Avançado';
 
   @override
+  String ago(Object time) {
+    return 'há $time';
+  }
+
+  @override
   String get all => 'Todos';
 
   @override
-  String get allPosts => 'Todos os Posts';
+  String get allPosts => 'Todas as Postagens';
 
   @override
   String get allowOpenSupportedLinks =>
@@ -3283,6 +3343,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get alreadyPostedTo => 'Já postado em';
+
+  @override
+  String get altText => 'Texto Alt';
+
+  @override
+  String get alternateSources => 'Fontes Alternativas';
 
   @override
   String get always => 'Sempre';
@@ -3299,16 +3365,43 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get anonymous => 'Anônimo';
 
   @override
+  String get anonymousInstances => 'Instâncias Anônimas';
+
+  @override
   String get appLanguage => 'Idioma do Aplicativo';
 
   @override
   String get appearance => 'Aparência';
 
   @override
+  String get applePushNotificationService =>
+      'Serviço de Notificações Push da Apple';
+
+  @override
   String get applied => 'Aplicado';
 
   @override
   String get apply => 'Aplicar';
+
+  @override
+  String areNotificationsAllowedBySystem(Object yesOrNo) {
+    return 'As notificações são permitidas pelo sistema: $yesOrNo';
+  }
+
+  @override
+  String averageComments(Object x) {
+    return '$x comentários/mês';
+  }
+
+  @override
+  String averageContributions(Object x) {
+    return '$x contribuições/mês';
+  }
+
+  @override
+  String averagePosts(Object x) {
+    return '$x postagens/mês';
+  }
 
   @override
   String get back => 'Voltar';
@@ -3320,16 +3413,48 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get backToTop => 'Voltar Ao Topo';
 
   @override
+  String get backgroundCheckWarning =>
+      'Observe que as verificações de notificações consumirão bateria adicional';
+
+  @override
+  String get ban => 'Banir';
+
+  @override
+  String get banFromCommunity => 'Banir da Comunidade';
+
+  @override
   String get bannedUser => 'Usuário Banido';
+
+  @override
+  String get bannedUserFromCommunity => 'Baniu Usuário da Comunidade';
+
+  @override
+  String get base => 'Base';
+
+  @override
+  String get block => 'Bloquear';
 
   @override
   String get blockCommunity => 'Bloquear Comunidade';
 
   @override
+  String get blockCommunityInstance => 'Bloquear Instância da Comunidade';
+
+  @override
   String get blockInstance => 'Bloquear Instância';
 
   @override
+  String get blockManagement => 'Gerenciamento de Bloqueios';
+
+  @override
+  String get blockSettingLabel =>
+      'Bloqueios de Usuários/Comunidades/Instâncias';
+
+  @override
   String get blockUser => 'Bloquear Usuário';
+
+  @override
+  String get blockUserInstance => 'Bloquear Instância do Usuário';
 
   @override
   String get blockedCommunities => 'Comunidades Bloqueadas';
@@ -3347,7 +3472,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get bold => 'Negrito';
 
   @override
-  String get bot => 'Bot';
+  String get boldCommunityName => 'Nome da Comunidade em Negrito';
+
+  @override
+  String get boldInstanceName => 'Nome da Instância em Negrito';
+
+  @override
+  String get boldUserName => 'Nome do Usuário em Negrito';
+
+  @override
+  String get bot => 'Robô';
+
+  @override
+  String get browserMode => 'Tratamento de links';
 
   @override
   String browsingAnonymously(Object instance) {
@@ -3369,6 +3506,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get cantBlockYourself => 'Você não pode bloquear a si mesmo.';
 
   @override
+  String get cardPostCardMetadataItems => 'Metadados da Visualização em Cartão';
+
+  @override
+  String get cardView => 'Visualização em Cartão';
+
+  @override
+  String get cardViewDescription =>
+      'Ative a visualização em cartão para ajustar as configurações';
+
+  @override
+  String get cardViewSettings => 'Configurações da Visualização em Cartão';
+
+  @override
   String get changeAccountSettingsFor => 'Mudar configurações de conta para';
 
   @override
@@ -3380,12 +3530,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get changePasswordWarning =>
-      'Para mudar sua senha, você será redirecionado(a) ao site da sua instância. \\n\\nTem certeza que deseja continuar?';
+      'Para mudar sua senha, você será redirecionado(a) ao site da sua instância.\n\nTem certeza que deseja continuar?';
+
+  @override
+  String get changeSort => 'Alterar Ordenação';
 
   @override
   String clearCache(Object cacheSize) {
     return 'Limpar Cache ($cacheSize)';
   }
+
+  @override
+  String get clearCacheLabel => 'Limpar Cache';
 
   @override
   String get clearDatabase => 'Limpar Banco de Dados';
@@ -3420,7 +3576,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get collapseInformation => 'Colapsar Informação';
 
   @override
+  String get collapseParentCommentBodyOnGesture =>
+      'Ocultar Comentário Pai quando Recolhido';
+
+  @override
   String get collapsePost => 'Colapsar post';
+
+  @override
+  String get collapsePostPreview => 'Recolher Pré-visualização da Postagem';
+
+  @override
+  String get collapseSpoiler => 'Recolher Spoiler';
 
   @override
   String get color => 'Cor';
@@ -3438,10 +3604,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get colors => 'Cores';
 
   @override
+  String get combineCommentScores => 'Combinar Pontuações dos Comentários';
+
+  @override
+  String get combineCommentScoresLabel => 'Combinar Pontuações dos Comentários';
+
+  @override
+  String get combineNavAndFab => 'Combinar FAB e Botões de Navegação';
+
+  @override
+  String get combineNavAndFabDescription =>
+      'O Botão de Ação Flutuante (FAB) será exibido entre os botões de navegação.';
+
+  @override
   String get comfortable => 'Confortável';
 
   @override
+  String get comment => 'Comentário';
+
+  @override
+  String get commentActions => 'Ações de Comentário';
+
+  @override
   String get commentBehaviourSettings => 'Comentários';
+
+  @override
+  String get commentFontScale => 'Escala da Fonte do Conteúdo do Comentário';
 
   @override
   String get commentPreview =>
@@ -3455,6 +3643,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get commentShowUserAvatar => 'Mostrar Avatar do Usuário';
+
+  @override
+  String get commentShowUserInstance => 'Exibir Instância do Usuário';
+
+  @override
+  String get commentSortType => 'Tipo de Ordenação dos Comentários';
+
+  @override
+  String get commentSwipeActions => 'Ações de Deslizar no Comentário';
+
+  @override
+  String get commentSwipeGesturesHint =>
+      'Quer usar botões? Ative-os na seção de comentários nas configurações gerais.';
 
   @override
   String get comments => 'Comentários';
@@ -3477,8 +3678,2754 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get communityFormat => 'Formato da Comunidade';
 
   @override
+  String get communityNameColor => 'Cor do Nome da Comunidade';
+
+  @override
+  String get communityNameThickness => 'Espessura do Nome da Comunidade';
+
+  @override
   String get communityStyle => 'Estilo da Comunidade';
 
   @override
-  String get compact => 'Compactar';
+  String get compact => 'Compacto';
+
+  @override
+  String get compactPostCardMetadataItems =>
+      'Visualização Compacta dos Metadados';
+
+  @override
+  String get compactView => 'Visualização Compacta';
+
+  @override
+  String get compactViewDescription =>
+      'Ativar a visualização compacta para ajustar as configurações';
+
+  @override
+  String get compactViewSettings => 'Configurações da Visualização Compacta';
+
+  @override
+  String get condensed => 'Condensado';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get confirmLogOutBody => 'Tem certeza de que deseja sair?';
+
+  @override
+  String get confirmLogOutTitle => 'Sair?';
+
+  @override
+  String get confirmMarkAllAsReadBody =>
+      'Tem certeza de que deseja marcar todas as respostas, menções e mensagens como lidas?';
+
+  @override
+  String get confirmMarkAllAsReadTitle => 'Marcar todas como lidas?';
+
+  @override
+  String get confirmResetCommentPreferences =>
+      'Isso redefinirá todas as preferências de comentários. Tem certeza de que deseja continuar?';
+
+  @override
+  String get confirmResetPostPreferences =>
+      'Isso redefinirá todas as preferências de postagem. Tem certeza de que deseja continuar?';
+
+  @override
+  String get confirmUnsubscription =>
+      'Tem certeza de que deseja cancelar a subscrição?';
+
+  @override
+  String connectedToUnifiedPushDistributorApp(Object app) {
+    return 'Conectado a $app';
+  }
+
+  @override
+  String get contentManagement => 'Gerenciamento de Conteúdo';
+
+  @override
+  String get contentWarning => 'Aviso de Conteúdo';
+
+  @override
+  String get controversial => 'Controverso';
+
+  @override
+  String get copiedToClipboard => 'Copiado para a área de transferência';
+
+  @override
+  String get copy => 'Copiar';
+
+  @override
+  String get copyComment => 'Copiar Comentário';
+
+  @override
+  String get copySelected => 'Copiar selecionado';
+
+  @override
+  String get copyText => 'Copiar Texto';
+
+  @override
+  String get couldNotDetermineCommentDelete =>
+      'Erro: Não foi possível determinar a postagem para excluir o comentário.';
+
+  @override
+  String get couldNotDeterminePostComment =>
+      'Erro: Não foi possível determinar a postagem a comentar.';
+
+  @override
+  String get couldntCreateReport =>
+      'Seu relatório de comentário não pôde ser enviado neste momento. Por favor, tente novamente mais tarde';
+
+  @override
+  String get couldntFindPost =>
+      'Não foi possível carregar a postagem solicitada. Ela pode ter sido excluída ou removida.';
+
+  @override
+  String countComments(Object count) {
+    return '$count Comentários';
+  }
+
+  @override
+  String countLocalSubscribers(Object count) {
+    return '$count Assinantes Locais';
+  }
+
+  @override
+  String countPosts(Object count) {
+    return '$count Postagens';
+  }
+
+  @override
+  String countSubscribers(Object count) {
+    return '$count Assinantes';
+  }
+
+  @override
+  String countUsers(Object count) {
+    return '$count usuários';
+  }
+
+  @override
+  String countUsersActiveDay(Object count) {
+    return '$count usuários/dia';
+  }
+
+  @override
+  String countUsersActiveHalfYear(Object count) {
+    return '$count usuários/6 meses';
+  }
+
+  @override
+  String countUsersActiveMonth(Object count) {
+    return '$count usuários/mês';
+  }
+
+  @override
+  String countUsersActiveWeek(Object count) {
+    return '$count usuários/sem';
+  }
+
+  @override
+  String get createAccount => 'Criar Conta';
+
+  @override
+  String get createComment => 'Criar Comentário';
+
+  @override
+  String get createNewCrossPost => 'Criar nova postagem cruzada';
+
+  @override
+  String get createPost => 'Criar Postagem';
+
+  @override
+  String created(Object date) {
+    return 'Criado em $date';
+  }
+
+  @override
+  String get createdToday => 'Criado Hoje';
+
+  @override
+  String get creator => 'Criador';
+
+  @override
+  String crossPostedFrom(Object postUrl) {
+    return 'postagem cruzada de: $postUrl';
+  }
+
+  @override
+  String get crossPostedTo => 'Postagem cruzada criada em';
+
+  @override
+  String get currentLongPress => 'Atualmente definido como toque longo';
+
+  @override
+  String currentNotificationsMode(Object mode) {
+    return 'Modo de notificações atual: $mode';
+  }
+
+  @override
+  String get currentSinglePress => 'Atualmente definido como toque único';
+
+  @override
+  String get customizeSwipeActions =>
+      'Personalizar ações de deslizar (toque para alterar)';
+
+  @override
+  String get dangerZone => 'Zona de Perigo';
+
+  @override
+  String get dark => 'Escuro';
+
+  @override
+  String get databaseExportWarning =>
+      'O banco de dados pode conter informações confidenciais relacionadas à sua conta Lemmy. Se você exportá-lo, não deve compartilhá-lo com ninguém. Deseja continuar?';
+
+  @override
+  String databaseExportedSuccessfully(Object savedFilePath) {
+    return 'O banco de dados foi exportado com sucesso para \'$savedFilePath\'';
+  }
+
+  @override
+  String get databaseImportedSuccessfully =>
+      'O banco de dados foi importado com sucesso!';
+
+  @override
+  String get databaseNotExportedSuccessfully =>
+      'O banco de dados não foi exportado com sucesso ou a operação foi cancelada.';
+
+  @override
+  String get databaseNotImportedSuccessfully =>
+      'O banco de dados não foi importado com sucesso ou a operação foi cancelada.';
+
+  @override
+  String get dateFormat => 'Formato de Data';
+
+  @override
+  String get debug => 'Depuração';
+
+  @override
+  String get debugDescription =>
+      'As seguintes configurações de depuração devem ser utilizadas apenas para fins de resolução de problemas.';
+
+  @override
+  String get debugNotificationsDescription =>
+      'Use as seguintes opções para solucionar problemas relacionados a notificações.';
+
+  @override
+  String get decline => 'Recusar';
+
+  @override
+  String get defaultColor => 'Padrão';
+
+  @override
+  String get defaultCommentSortType =>
+      'Tipo de Ordenação Padrão dos Comentários';
+
+  @override
+  String get defaultFeedSortType => 'Tipo de Ordenação Padrão do Feed';
+
+  @override
+  String get defaultFeedType => 'Tipo Padrão do Feed';
+
+  @override
+  String get delete => 'Excluir';
+
+  @override
+  String get deleteAccount => 'Excluir Conta';
+
+  @override
+  String get deleteAccountDescription =>
+      'Para excluir permanentemente sua conta, você será redirecionado para o site da sua instância.\n\nTem certeza de que deseja continuar?';
+
+  @override
+  String get deleteComment => 'Excluir Comentário';
+
+  @override
+  String get deleteImageConfirmMessage =>
+      'Tem certeza de que deseja excluir esta imagem?';
+
+  @override
+  String get deleteImageConfirmTitle => 'Excluir?';
+
+  @override
+  String get deleteLocalDatabase => 'Excluir Banco de Dados Local';
+
+  @override
+  String get deleteLocalDatabaseDescription =>
+      'Esta ação removerá o banco de dados local e você será desconectado de todas as suas contas.\n\nTem certeza de que deseja continuar?';
+
+  @override
+  String get deleteLocalPreferences => 'Excluir Preferências Locais';
+
+  @override
+  String get deleteLocalPreferencesDescription =>
+      'Isso limpará todas as suas preferências e configurações de usuário no Thunder.\n\nDeseja continuar?';
+
+  @override
+  String get deletePost => 'Excluir Postagem';
+
+  @override
+  String get deleteUserLabelConfirmation =>
+      'Tem certeza de que deseja excluir o rótulo?';
+
+  @override
+  String get deleted => 'Excluído';
+
+  @override
+  String get deletedByCreator => 'excluído pelo criador';
+
+  @override
+  String get deletedByModerator => 'excluído por um moderador';
+
+  @override
+  String get deletedComment => 'Excluiu comentário';
+
+  @override
+  String get deletedPost => 'Excluiu postagem';
+
+  @override
+  String get deselectUndeterminedWarning =>
+      'Se você desmarcar Indeterminado, não verá a maior parte do conteúdo.';
+
+  @override
+  String detailedReason(Object reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get dimReadPosts => 'Escurecer Postagens Lidas';
+
+  @override
+  String get disable => 'Desativar';
+
+  @override
+  String get disablePushNotifications => 'Desativar Notificações Push';
+
+  @override
+  String get disabled => 'Desativado';
+
+  @override
+  String get discussionLanguages => 'Idiomas de Discussão';
+
+  @override
+  String get discussionLanguagesTooltip =>
+      'O conteúdo é filtrado para os idiomas selecionados.';
+
+  @override
+  String get dismissRead => 'Descartar Lidas';
+
+  @override
+  String get displayName => 'Nome de Exibição';
+
+  @override
+  String get displayUserScore => 'Exibir Pontuações dos Usuários (Karma).';
+
+  @override
+  String get dividerAppearance => 'Aparência do Divisor';
+
+  @override
+  String get doNotShowAgain => 'Não Mostrar Novamente';
+
+  @override
+  String get doNotSupportMultipleUnifiedPushApps =>
+      'Encontrados vários aplicativos compatíveis; instale apenas um';
+
+  @override
+  String get downloadingMedia => 'Baixando mídia para compartilhar…';
+
+  @override
+  String get downvote => 'Dar voto negativo';
+
+  @override
+  String get downvoteColor => 'Cor de Votos Negativos';
+
+  @override
+  String get downvoted => 'Voto Negativo';
+
+  @override
+  String get downvotesDisabled =>
+      'Votos negativos estão desativos nesta instância.';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get editComment => 'Editar Comentário';
+
+  @override
+  String get editPost => 'Editar Postagem';
+
+  @override
+  String get email => 'E-mail';
+
+  @override
+  String get empty => 'Vazio';
+
+  @override
+  String get emptyInbox => 'Caixa de Entrada Vazia';
+
+  @override
+  String get emptyUri =>
+      'O link está vazio. Forneça um link dinâmico válido para continuar.';
+
+  @override
+  String get enableCommentNavigation => 'Ativar Navegação nos Comentários';
+
+  @override
+  String get enableExperimentalFeatures => 'Ativar recursos experimentais';
+
+  @override
+  String get enableFeedFab => 'Ativar Botão Flutuante nos Feeds';
+
+  @override
+  String get enableFloatingButtonOnFeeds => 'Ativar Botão Flutuante Nos Feeds';
+
+  @override
+  String get enableFloatingButtonOnPosts =>
+      'Ativar Botão Flutuante Nas Postagens';
+
+  @override
+  String get enableInboxNotifications =>
+      'Ativar Notificações da Caixa de Entrada';
+
+  @override
+  String get enablePostFab => 'Ativar Botão Flutuante nas Postagens';
+
+  @override
+  String get endOfComments => 'Fim dos comentários';
+
+  @override
+  String get endSearch => 'Encerrar Pesquisa';
+
+  @override
+  String errorDeletingImage(Object error) {
+    return 'Ocorreu um erro ao excluir a imagem: $error';
+  }
+
+  @override
+  String errorDownloadingMedia(Object errorMessage) {
+    return 'Não foi possível baixar o arquivo de mídia para compartilhar: $errorMessage';
+  }
+
+  @override
+  String get errorImportingAccountSettings =>
+      'Ocorreu um erro ao importar as configurações. O arquivo pode não estar no formato correto.';
+
+  @override
+  String get errorInitializingClient => 'Erro ao inicializar o cliente';
+
+  @override
+  String get errorLoadingAccountSettings =>
+      'Ocorreu um erro ao carregar o arquivo de configurações ou a operação foi cancelada.';
+
+  @override
+  String get errorMarkingReplyRead =>
+      'Ocorreu um erro ao marcar a resposta como lida.';
+
+  @override
+  String get errorMarkingReplyUnread =>
+      'Ocorreu um erro ao marcar a resposta como não lida.';
+
+  @override
+  String get errorNoActiveInstance => 'Nenhuma instância ativa encontrada';
+
+  @override
+  String get errorParsingJson =>
+      'Ocorreu um erro ao analisar o arquivo selecionado. Pode não ser um JSON válido.';
+
+  @override
+  String get errorSavingAccountSettings =>
+      'Ocorreu um erro ao salvar o arquivo de configurações ou a operação foi cancelada.';
+
+  @override
+  String get exceptionProcessingUri =>
+      'Ocorreu um erro ao processar o link. Ele pode não estar disponível na sua instância.';
+
+  @override
+  String get excessiveApiCallsWarning =>
+      'Seu feed pode estar demorando para carregar devido aos filtros de palavras-chave.';
+
+  @override
+  String get expand => 'Expandir';
+
+  @override
+  String get expandCommentPreview => 'Expandir Pré-visualização do Comentário';
+
+  @override
+  String get expandInformation => 'Expandir Informação';
+
+  @override
+  String get expandOptions => 'Expandir opções';
+
+  @override
+  String get expandPost => 'Expandir postagem';
+
+  @override
+  String get expandPostPreview => 'Expandir Pré-visualização da Postagem';
+
+  @override
+  String get expandSpoiler => 'Expandir Spoiler';
+
+  @override
+  String get expanded => 'Expandido';
+
+  @override
+  String get experimentalFeatures => 'Recursos Experimentais';
+
+  @override
+  String get experimentalFeaturesDescription =>
+      'Estes recursos ainda estão em desenvolvimento e podem ser instáveis. Use-os por sua própria conta e risco. É necessário reiniciar o Thunder para que as alterações tenham efeito.';
+
+  @override
+  String get exploreInstance => 'Explorar instância';
+
+  @override
+  String get exportDatabase => 'Exportar Banco de Dados';
+
+  @override
+  String get exportDatabaseSubtitle =>
+      'O banco de dados contém informações sobre contas, favoritos, assinaturas anônimas e rótulos de usuários.';
+
+  @override
+  String get exportLemmyAccountSettingsDescription =>
+      'Exportar configurações de contas Lemmy';
+
+  @override
+  String get exportSettingsSubtitle =>
+      'As configurações incluem todas as preferências que você configurou no Thunder.';
+
+  @override
+  String get extraLarge => 'Extra Grande';
+
+  @override
+  String failedToBlock(Object errorMessage) {
+    return 'Falha ao bloquear: $errorMessage';
+  }
+
+  @override
+  String failedToCommunicateWithThunderNotificationServer(
+      Object serverAddress) {
+    return 'Falha ao comunicar com o servidor de notificações do Thunder em $serverAddress.';
+  }
+
+  @override
+  String failedToLoadBlocks(Object errorMessage) {
+    return 'Não foi possível carregar bloqueios: $errorMessage';
+  }
+
+  @override
+  String get failedToLoadVideo =>
+      'Falha ao carregar o vídeo. Abrir link no navegador?';
+
+  @override
+  String get failedToPerformAction => 'Falha ao executar a ação';
+
+  @override
+  String failedToUnblock(Object errorMessage) {
+    return 'Não foi possível desbloquear: $errorMessage';
+  }
+
+  @override
+  String get failedToUpdateNotificationSettings =>
+      'Falha ao atualizar as configurações de notificação';
+
+  @override
+  String get favorite => 'Favoritar';
+
+  @override
+  String get favorites => 'Favoritos';
+
+  @override
+  String get featuredPost => 'Postagem em Destaque';
+
+  @override
+  String get feed => 'Feed';
+
+  @override
+  String get feedBehaviourSettings => 'Feed';
+
+  @override
+  String get feedSettings => 'Configurações de Feed';
+
+  @override
+  String get feedTypeAndSorts => 'Tipo e Ordenação Padrão de Feed';
+
+  @override
+  String get fetchAccountError => 'Não foi possível determinar a conta';
+
+  @override
+  String filteringBy(Object entity) {
+    return 'Filtrando por $entity';
+  }
+
+  @override
+  String get filters => 'Filtros';
+
+  @override
+  String get floatingActionButton => 'Botão de Ação Flutuante';
+
+  @override
+  String get floatingActionButtonInformation =>
+      'O Thunder possui uma experiência FAB totalmente personalizável que suporta alguns gestos.\n- Deslize para cima para revelar ações FAB adicionais\n- Deslize para baixo/cima para ocultar ou revelar o FAB\n\nPara personalizar as ações principais e secundárias do FAB, pressione longamente uma das ações abaixo.';
+
+  @override
+  String get floatingActionButtonLongPressDescription =>
+      'denota a ação de pressionar longamente o FAB.';
+
+  @override
+  String get floatingActionButtonSinglePressDescription =>
+      'denota a ação de pressionar uma única vez o FAB.';
+
+  @override
+  String get fonts => 'Fontes';
+
+  @override
+  String get forward => 'Avançar';
+
+  @override
+  String get foundUnifiedPushDistribtorApp =>
+      'Aplicativo compatível encontrado; reinicie o Thunder para conectar';
+
+  @override
+  String get fullScreenNavigationSwipeDescription =>
+      'Deslize em qualquer lugar para voltar quando os gestos da esquerda para a direita estiverem desativados';
+
+  @override
+  String get fullscreenSwipeGestures => 'Gestos de Deslizar em Tela Cheia';
+
+  @override
+  String get general => 'Geral';
+
+  @override
+  String get generalSettings => 'Configurações Gerais';
+
+  @override
+  String get gestures => 'Gestos';
+
+  @override
+  String get gettingStarted => 'Como Começar';
+
+  @override
+  String get green => 'Verde';
+
+  @override
+  String get guestModeFeedSettings => 'Configurações do Feed do Modo Convidado';
+
+  @override
+  String get guestModeFeedSettingsLabel =>
+      'As configurações a seguir são aplicadas apenas a contas de convidados. Para ajustar as configurações de feed da sua conta, acesse Configurações da Conta.';
+
+  @override
+  String get havingIssuesWithNotifications =>
+      'Está tendo problemas com notificações?';
+
+  @override
+  String get hidCommunity => 'Comunidade Oculta';
+
+  @override
+  String get hidden => 'Oculto';
+
+  @override
+  String get hide => 'Ocultar';
+
+  @override
+  String get hideColor => 'Ocultar Cor';
+
+  @override
+  String get hideNsfwPostsFromFeed => 'Ocultar Postagens NSFW do Feed';
+
+  @override
+  String get hideNsfwPreviews => 'Desfocar Pré-visualizações NSFW';
+
+  @override
+  String get hidePassword => 'Ocultar Senha';
+
+  @override
+  String get hideThumbnails => 'Ocultar Miniaturas';
+
+  @override
+  String get hideTopBarOnScroll => 'Ocultar Barra Superior ao Rolar';
+
+  @override
+  String get hostInstance => 'Instância de Hospedagem';
+
+  @override
+  String get hot => 'Em Destaque';
+
+  @override
+  String get image => 'Imagem';
+
+  @override
+  String get imageCachingMode => 'Modo de Cache de Imagens';
+
+  @override
+  String get imageCachingModeAggressive =>
+      'Armazene imagens em cache de forma agressiva (usa mais memória)';
+
+  @override
+  String get imageCachingModeAggressiveShort => 'Agressivo';
+
+  @override
+  String get imageCachingModeRelaxed =>
+      'Deixar os caches de imagens expirarem (usa menos memória, mas faz com que as imagens sejam recarregadas com mais frequência)';
+
+  @override
+  String get imageCachingModeRelaxedShort => 'Relaxado';
+
+  @override
+  String get imageDimensionTimeout => 'Tempo Limite de Dimensão da Imagem';
+
+  @override
+  String get importDatabase => 'Importar Banco de Dados';
+
+  @override
+  String get importExportDatabase =>
+      'Importar/Exportar o Banco de Dados do Thunder';
+
+  @override
+  String get importExportLemmyAccountSettings =>
+      'Importar/Exportar as Configurações das Contas Lemmy';
+
+  @override
+  String get importExportLemmyAccountSettingsSubtitle =>
+      'Inclui comunidades inscritas, listas de bloqueio e preferências da conta';
+
+  @override
+  String get importExportSettings => 'Importar/Exportar Configurações';
+
+  @override
+  String get importExportThunderSettings =>
+      'Importar/Exportar Configurações do Thunder';
+
+  @override
+  String get importLemmyAccountSettingsDescription =>
+      'Importar configurações da conta Lemmy';
+
+  @override
+  String get importSettings => 'Importar Configurações';
+
+  @override
+  String inReplyTo(Object post, Object community) {
+    return 'Em resposta a $post em $community';
+  }
+
+  @override
+  String get in_ => 'em';
+
+  @override
+  String get inbox => 'Caixa de Entrada';
+
+  @override
+  String get includeCommunity => 'Incluir Comunidade';
+
+  @override
+  String get includeExternalLink => 'Incluir Link Externo';
+
+  @override
+  String get includeImage => 'Incluir Imagem';
+
+  @override
+  String get includePostLink => 'Incluir Link da Postagem';
+
+  @override
+  String get includeText => 'Incluir Texto';
+
+  @override
+  String get includeTitle => 'Incluir Título';
+
+  @override
+  String get information => 'Informação';
+
+  @override
+  String instance(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Instâncias',
+      one: 'Instância',
+      zero: 'Instâncias',
+    );
+    return '$_temp0 ';
+  }
+
+  @override
+  String get instanceActions => 'Ações da Instância';
+
+  @override
+  String instanceEntry(Object username) {
+    return 'Instância \'$username\'';
+  }
+
+  @override
+  String instanceHasAlreadyBenAdded(Object instance) {
+    return '$instance já foi adicionado.';
+  }
+
+  @override
+  String get instanceNameColor => 'Cor do Nome da Instância';
+
+  @override
+  String get instanceNameThickness => 'Espessura do Noma da Instância';
+
+  @override
+  String get instances => 'Instâncias';
+
+  @override
+  String get internetOrInstanceIssues =>
+      'Você pode não estar conectado à Internet ou sua instância pode estar indisponível no momento.';
+
+  @override
+  String get invalidUrl => 'Formato de URL inválido';
+
+  @override
+  String joined(Object x) {
+    return 'Se cadastrou em $x';
+  }
+
+  @override
+  String get keywordFilterDescription =>
+      'Filtra postagens que contenham quaisquer palavras-chave no título, corpo ou URL';
+
+  @override
+  String get keywordFilters => 'Filtros de Palavras-chave';
+
+  @override
+  String get label => 'Rótulo';
+
+  @override
+  String get language => 'Idioma';
+
+  @override
+  String get languageFilters => 'Procurando filtros de idioma?';
+
+  @override
+  String get languageNotAllowed =>
+      'A comunidade em que você está postando não permite postagens no idioma que você selecionou. Tente outro idioma.';
+
+  @override
+  String get large => 'Grande';
+
+  @override
+  String get leftLongSwipe => 'Deslize Longo para a Esquerda';
+
+  @override
+  String get leftShortSwipe => 'Deslize Curto para a Esquerda';
+
+  @override
+  String get light => 'Claro';
+
+  @override
+  String link(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Links',
+      one: 'Link',
+      zero: 'Links',
+    );
+    return '$_temp0 ';
+  }
+
+  @override
+  String get linkActions => 'Ações de Link';
+
+  @override
+  String get linkHandlingCustomTabs =>
+      'Abrir no navegador do sistema incorporado no aplicativo';
+
+  @override
+  String get linkHandlingCustomTabsShort => 'incorporado no aplicativo';
+
+  @override
+  String get linkHandlingExternal =>
+      'Abrir no navegador do sistema externamente';
+
+  @override
+  String get linkHandlingExternalShort => 'Externamente';
+
+  @override
+  String get linkHandlingInApp => 'Use o navegador integrado do Thunder';
+
+  @override
+  String get linkHandlingInAppShort => 'No aplicativo';
+
+  @override
+  String get linksBehaviourSettings => 'Links';
+
+  @override
+  String loadMorePlural(Object count) {
+    return 'Carregar mais $count respostas…';
+  }
+
+  @override
+  String loadMoreSingular(Object count) {
+    return 'Carregar mais $count resposta…';
+  }
+
+  @override
+  String get loading => 'Carregando…';
+
+  @override
+  String get local => 'Local';
+
+  @override
+  String get localNotifications => 'Notificações Locais';
+
+  @override
+  String get localOnly => 'Somente Local';
+
+  @override
+  String get localPosts => 'Postagens Locais';
+
+  @override
+  String get lockPost => 'Trancar Postagem';
+
+  @override
+  String get locked => 'Trancado';
+
+  @override
+  String get lockedPost => 'Postagem Trancada';
+
+  @override
+  String get logOut => 'Sair';
+
+  @override
+  String get login => 'Entrar';
+
+  @override
+  String get loginAttemptCanceled => 'Tentativa de login cancelada.';
+
+  @override
+  String loginFailed(Object errorMessage) {
+    return 'Não foi possível fazer login. Tente novamente. (Erro: $errorMessage)';
+  }
+
+  @override
+  String get loginSucceeded => 'Logado.';
+
+  @override
+  String get loginToPerformAction =>
+      'Você precisa estar logado para realizar esta tarefa.';
+
+  @override
+  String get loginToSeeInbox => 'Faça login para ver sua caixa de entrada';
+
+  @override
+  String get lookingForAccountSpecificFeedSettings =>
+      'Procurando configurações de feed específicas para sua conta?';
+
+  @override
+  String get malformedUri =>
+      'O link que você forneceu está em um formato não compatível. Certifique-se de que seja um link válido.';
+
+  @override
+  String get manageAccounts => 'Gerenciar Contas';
+
+  @override
+  String get manageMedia => 'Gerenciar Mídia';
+
+  @override
+  String get markAllAsRead => 'Marcar tudo como lido';
+
+  @override
+  String get markAsRead => 'Marcar como lido';
+
+  @override
+  String get markPostAsReadOnMediaView =>
+      'Marcar Como Lido Após Visualizar Mídia';
+
+  @override
+  String get markPostAsReadOnScroll => 'Marcar Como Lido Ao Rolar';
+
+  @override
+  String get markReadColor => 'Cor da Marcação Lido/Não Lido';
+
+  @override
+  String get matrixUser => 'Usuário Matrix';
+
+  @override
+  String get me => 'Eu';
+
+  @override
+  String get medium => 'Médio';
+
+  @override
+  String mention(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Menções',
+      one: 'Menção',
+      zero: 'Menções',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get menu => 'Menu';
+
+  @override
+  String message(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mensagens',
+      one: 'Mensagem',
+      zero: 'Mensagens',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get metadataFontScale => 'Escala da Fonte de Metadados';
+
+  @override
+  String get missingErrorMessage => 'Nenhuma mensagem de erro disponível';
+
+  @override
+  String get modAdd => 'Adicionar/Remover Moderadores da Instância';
+
+  @override
+  String get modAddCommunity => 'Adicionar/Remover Moderados a/de Comunidades';
+
+  @override
+  String get modBan => 'Banir/Desbanir Usuários da Instância';
+
+  @override
+  String get modBanFromCommunity => 'Banir/Desbanir Usuários das Comunidades';
+
+  @override
+  String get modFeaturePost => 'Marcar Postagens Em Destaque/Não Em Destaque';
+
+  @override
+  String get modLockPost => 'Trancar/Destrancar Postagens';
+
+  @override
+  String get modRemoveComment => 'Remover/Restaurar Comentários';
+
+  @override
+  String get modRemoveCommunity => 'Remover/Restaurar Comunidades';
+
+  @override
+  String get modRemovePost => 'Remover/Restaurar Postagens';
+
+  @override
+  String get modTransferCommunity => 'Transferência de Comunidades';
+
+  @override
+  String get moderatedCommunities => 'Comunidades Moderadas';
+
+  @override
+  String get moderates => 'Moderando';
+
+  @override
+  String moderator(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Moderadores',
+      one: 'Moderador',
+      zero: 'Moderadores',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get moderatorActions => 'Ações de Moderador';
+
+  @override
+  String get modlog => 'Registro do Moderador';
+
+  @override
+  String get mostComments => 'Mais Comentários';
+
+  @override
+  String get mustBeLoggedIn => 'Você precisa estar logado';
+
+  @override
+  String get mustBeLoggedInComment => 'Você precisa estar logado para comentar';
+
+  @override
+  String get mustBeLoggedInPost =>
+      'Você precisa estar logado para criar uma postagem';
+
+  @override
+  String get names => 'Nomes';
+
+  @override
+  String get navbarDoubleTapGestures =>
+      'Gestos de Toque Duplo na Barra de Navegação';
+
+  @override
+  String get navbarSwipeGestures => 'Gestos de Deslizar na Barra de Navegação';
+
+  @override
+  String get navigateDown => 'Próximo comentário';
+
+  @override
+  String get navigateUp => 'Comentário anterior';
+
+  @override
+  String get navigation => 'Navegação';
+
+  @override
+  String get nestedCommentIndicatorColor =>
+      'Cor do Indicador de Comentário Aninhado';
+
+  @override
+  String get nestedCommentIndicatorStyle =>
+      'Estilo do Indicador de Comentário Aninhado';
+
+  @override
+  String get never => 'Nunca';
+
+  @override
+  String get newComments => 'Novos Comentários';
+
+  @override
+  String get newPost => 'Nova Postagem';
+
+  @override
+  String get new_ => 'Novo';
+
+  @override
+  String get no => 'Não';
+
+  @override
+  String get noAccountsAdded => 'Nenhuma conta foi adicionada';
+
+  @override
+  String get noAnonymousInstances => 'Nenhuma instância anônima foi adicionada';
+
+  @override
+  String get noCommentsFound => 'Nenhum comentário encontrado';
+
+  @override
+  String get noCommunitiesFound => 'Nenhuma comunidade encontrada';
+
+  @override
+  String get noCommunityBlocks => 'Nenhuma comunidade bloqueada';
+
+  @override
+  String get noCompatibleAppFound => 'Nenhum aplicativo compatível encontrado';
+
+  @override
+  String get noDiscussionLanguages =>
+      'Nenhum conteúdo é ocultado com base no idioma.';
+
+  @override
+  String get noDisplayNameSet => 'Nenhum nome de exibição definido';
+
+  @override
+  String get noEmailSet => 'Nenhum e-mail definido';
+
+  @override
+  String get noFavoritedCommunities => 'Nenhuma comunidade favoritada';
+
+  @override
+  String get noImages => 'Parece que você não carregou nenhuma imagem.';
+
+  @override
+  String get noInstanceBlocks => 'Nenhuma instância bloqueada.';
+
+  @override
+  String get noItems => 'Sem itens';
+
+  @override
+  String get noKeywordFilters => 'Nenhum filtro de palavra-chave adicionado';
+
+  @override
+  String get noLanguage => 'Nenhum idioma';
+
+  @override
+  String get noMatrixUserSet => 'Nenhum usuário matrix definido';
+
+  @override
+  String get noMentions => 'Nenhuma menção';
+
+  @override
+  String get noMessages => 'Nenhuma mensagem';
+
+  @override
+  String get noPostsFound => 'Nenhuma postagem encontrada.';
+
+  @override
+  String get noProfileBioSet => 'Nenhuma biografia definida no perfil';
+
+  @override
+  String get noReferencesToImage =>
+      'Não foram encontradas postagens ou comentários contendo esta imagem. No entanto, ela pode ser usada em outros locais na internet.';
+
+  @override
+  String get noReplies => 'Nenhuma resposta';
+
+  @override
+  String get noResultsFound => 'Nenhum resultado encontrado.';
+
+  @override
+  String get noSubscriptions => 'Nenhuma Assinatura';
+
+  @override
+  String get noUserBlocks => 'Nenhum usuário bloqueado.';
+
+  @override
+  String get noUserLabels => 'Você ainda não criou nenhum rótulo de usuário';
+
+  @override
+  String get noUsersFound => 'Nenhum usuário encontrado.';
+
+  @override
+  String get noVisibleComments =>
+      'Os comentários podem não estar visíveis porque a comunidade está bloqueada.';
+
+  @override
+  String get none => 'Nenhum';
+
+  @override
+  String get normal => 'Normal';
+
+  @override
+  String notValidLemmyInstance(Object instance) {
+    return '$instance não parece ser uma instância válida';
+  }
+
+  @override
+  String get notValidUrl => 'URL inválido';
+
+  @override
+  String get nothingToShare => 'Nada a compartilhar';
+
+  @override
+  String notifications(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Notificações',
+      one: 'Notificação',
+      zero: 'Notificações',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsBehaviourSettings => 'Notificações';
+
+  @override
+  String get notificationsNotAllowed =>
+      'As notificações não são permitidas para o Thunder nas configurações do sistema';
+
+  @override
+  String get notificationsWarningDialog =>
+      'As notificações são um **recurso experimental** que pode não funcionar corretamente em todos os dispositivos.\n\n- As verificações ocorrerão a cada 15 minutos e consumirão bateria adicional.\n\n- Desative as otimizações da bateria para aumentar a probabilidade de sucesso das notificações.\n\nConsulte a página a seguir para obter mais informações.';
+
+  @override
+  String get nsfw => 'NSFW';
+
+  @override
+  String get nsfwWarning => 'NSFW - Toque para revelar';
+
+  @override
+  String get off => 'desligado';
+
+  @override
+  String get offline => 'off-line';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get old => 'Antigo';
+
+  @override
+  String get on => 'ligado';
+
+  @override
+  String get onWifi => 'No Wifi';
+
+  @override
+  String get onlyModsCanPostInCommunity =>
+      'Apenas moderadores podem publicar nesta comunidade';
+
+  @override
+  String get open => 'Abrir';
+
+  @override
+  String get openAccountSwitcher => 'Abrir alternador de conta';
+
+  @override
+  String get openByDefault => 'Abrir por padrão';
+
+  @override
+  String get openInBrowser => 'Abrir no Navegador';
+
+  @override
+  String get openInstance => 'Abrir Instância';
+
+  @override
+  String get openLinksInExternalBrowser => 'Abrir Links no Navegador Externo';
+
+  @override
+  String get openLinksInReaderMode => 'Abrir Links no Modo Leitor';
+
+  @override
+  String get openSettings => 'Abrir Configurações';
+
+  @override
+  String get orange => 'Laranja';
+
+  @override
+  String get originalPoster => 'Postador Original';
+
+  @override
+  String get overview => 'Visão Geral';
+
+  @override
+  String get password => 'Senha';
+
+  @override
+  String get pending => 'Pendente';
+
+  @override
+  String performedBy(Object user) {
+    return 'Executado por: $user';
+  }
+
+  @override
+  String get permissionDenied =>
+      'O Thunder não recebeu permissão para exibir notificações. Ative essa opção nas configurações do sistema.';
+
+  @override
+  String get permissionDeniedMessage =>
+      'O Thunder requer algumas permissões para salvar esta imagem, que foram negadas.';
+
+  @override
+  String get pinPostToCommunity => 'Fixar Postagem na Comunidade';
+
+  @override
+  String get pinToCommunity => 'Fixar na Comunidade';
+
+  @override
+  String get pinned => 'Fixado';
+
+  @override
+  String get pinnedPostToCommunity => 'Postagem fixada na comunidade';
+
+  @override
+  String get placeholderText =>
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+  @override
+  String get post => 'Postagem';
+
+  @override
+  String get postActions => 'Ações de Postagem';
+
+  @override
+  String get postBehaviourSettings => 'Postagens';
+
+  @override
+  String get postBody => 'Corpo de Postagem';
+
+  @override
+  String get postBodySettings => 'Configurações do Corpo de Postagem';
+
+  @override
+  String get postBodySettingsDescription =>
+      'Estas configurações afetam a exibição do corpo da postagem';
+
+  @override
+  String get postBodyShowCommunityInstance => 'Exibir Instância da Comunidade';
+
+  @override
+  String get postBodyShowUserInstance => 'Mostrar Instância do Usuário';
+
+  @override
+  String get postBodyViewType => 'Tipo da Visualização do Corpo da Postagem';
+
+  @override
+  String get postContentFontScale => 'Escala da Fonte de Conteúdo de Postagens';
+
+  @override
+  String get postCreatedSuccessfully => 'Postagem criada com sucesso!';
+
+  @override
+  String get postLocked => 'Postagem trancada. Não são permitidas respostas.';
+
+  @override
+  String get postMetadataInstructions =>
+      'Você pode personalizar as informações de metadados arrastando e soltando as informações desejadas';
+
+  @override
+  String get postNSFW => 'Marcar como NSFW';
+
+  @override
+  String get postPreview =>
+      'Mostrar uma pré-visualização da postagem com as configurações definidas';
+
+  @override
+  String get postSavedAsDraft => 'Postagem salva como rascunho';
+
+  @override
+  String get postShowUserInstance => 'Mostrar Instância do Usuário';
+
+  @override
+  String get postSwipeActions => 'Ações de Deslizar na Postagem';
+
+  @override
+  String get postSwipeGesturesHint =>
+      'Prefere usar botões? Altere os botões que aparecem nos cartões de postagem nas configurações gerais.';
+
+  @override
+  String get postTitle => 'Título';
+
+  @override
+  String get postTitleFontScale => 'Escala da Fonte de Título de Postagens';
+
+  @override
+  String get postTogglePreview => 'Alternar Pré-visualização';
+
+  @override
+  String get postURL => 'URL';
+
+  @override
+  String get postUploadImageError => 'Não foi possível fazer upload da imagem';
+
+  @override
+  String get postViewType => 'Tipo da Visualização de Postagens';
+
+  @override
+  String get posts => 'Postagens';
+
+  @override
+  String get preview => 'Pré-visualização';
+
+  @override
+  String profileAppliedSuccessfully(Object profile) {
+    return '$profile aplicado com sucesso!';
+  }
+
+  @override
+  String get profileBio => 'Biografia no Perfil';
+
+  @override
+  String get profiles => 'Perfis';
+
+  @override
+  String get public => 'Público';
+
+  @override
+  String get pureBlack => 'Preto Puro';
+
+  @override
+  String get purgedComment => 'Comentário Eliminado';
+
+  @override
+  String get purgedCommunity => 'Comunidade Eliminada';
+
+  @override
+  String get purgedPerson => 'Pessoa Eliminada';
+
+  @override
+  String get purgedPost => 'Postagem Eliminada';
+
+  @override
+  String get purple => 'Roxo';
+
+  @override
+  String get pushNotification => 'Notificações Push';
+
+  @override
+  String get pushNotificationDescription =>
+      'Se ativado, o Thunder enviará seu(s) token(s) JWT ao servidor para verificar se há novas notificações. \n\n **OBSERVAÇÃO:** Isso só entrará em vigor na próxima vez que o aplicativo for iniciado.';
+
+  @override
+  String get pushNotificationServer => 'Servidor de Notificações Push';
+
+  @override
+  String get pushNotificationServerDescription =>
+      'Configure o servidor de notificações push. O servidor deve estar devidamente configurado para enviar notificações push para o seu dispositivo.\n\n **Insira apenas um servidor em que você confia com suas credenciais.**';
+
+  @override
+  String get rateLimitErrorMessage =>
+      'Você atingiu o limite de taxa para esta solicitação. Aguarde e tente novamente mais tarde.';
+
+  @override
+  String get reachedTheBottom => 'Não há mais itens para carregar';
+
+  @override
+  String get read => 'Lido';
+
+  @override
+  String get readAll => 'Ler Tudo';
+
+  @override
+  String get readerMode => 'Modo leitor';
+
+  @override
+  String get reason => 'Motivo';
+
+  @override
+  String get red => 'Vermelho';
+
+  @override
+  String get reduceAnimations => 'Reduzir Animações';
+
+  @override
+  String get reducesAnimations => 'Reduze as animações usadas no Thunder';
+
+  @override
+  String get refresh => 'Atualizar';
+
+  @override
+  String get refreshContent => 'Atualizar Conteúdo';
+
+  @override
+  String get removalReason => 'Motivo da Remoção';
+
+  @override
+  String get remove => 'Remover';
+
+  @override
+  String get removeAccount => 'Remover Conta';
+
+  @override
+  String get removeAsCommunityModerator =>
+      'Remover como Moderador de Comunidade';
+
+  @override
+  String get removeComment => 'Remover Comentário';
+
+  @override
+  String get removeFromFavorites => 'Remover dos favoritos';
+
+  @override
+  String get removeInstance => 'Remover instância';
+
+  @override
+  String removeKeyword(Object keyword) {
+    return 'Remover \"$keyword\"?';
+  }
+
+  @override
+  String get removeKeywordFilter => 'Remover Palavra-chave';
+
+  @override
+  String get removePost => 'Remover Postagem';
+
+  @override
+  String get removeUserData => 'Remover dados do usuário';
+
+  @override
+  String get removed => 'Removido';
+
+  @override
+  String get removedComment => 'Comentário Removido';
+
+  @override
+  String get removedCommunity => 'Comunidade Removida';
+
+  @override
+  String get removedCommunityFromSubscriptions =>
+      'Cancelou a inscrição da comunidade';
+
+  @override
+  String get removedInstanceMod => 'Moderador da Instância Removido';
+
+  @override
+  String get removedModFromCommunity => 'Moderador Removido da Comunidade';
+
+  @override
+  String get removedPost => 'Postagem Removida';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return '$username removido(a) como moderador da comunidade';
+  }
+
+  @override
+  String get reorder => 'Reordenar';
+
+  @override
+  String reply(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Respostas',
+      one: 'Resposta',
+      zero: 'Respostas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get replyColor => 'Cor de Resposta';
+
+  @override
+  String get replyNotSupported =>
+      'Atualmente, ainda não é possível responder a partir desta visualização';
+
+  @override
+  String get replyToPost => 'Responder à Postagem';
+
+  @override
+  String replyingTo(Object author) {
+    return 'Respondendo a $author';
+  }
+
+  @override
+  String report(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Relatórios',
+      one: 'Relatório',
+      zero: 'Relatórios',
+    );
+    return '$_temp0 ';
+  }
+
+  @override
+  String get reportComment => 'Relatar Comentário';
+
+  @override
+  String get reportPost => 'Relatar Postagem';
+
+  @override
+  String get reportedComment => 'Relatar comentário';
+
+  @override
+  String get reportedPost => 'Relatar postagem';
+
+  @override
+  String get reporter => 'Relator:';
+
+  @override
+  String get requiredField => '*obrigatório';
+
+  @override
+  String get reset => 'Redefinir';
+
+  @override
+  String get resetCommentPreferences =>
+      'Reiniciar as preferências de comentários';
+
+  @override
+  String get resetPostPreferences => 'Reiniciar as preferências de postagens';
+
+  @override
+  String get resetPreferences => 'Reiniciar Preferências';
+
+  @override
+  String get resetPreferencesAndData => 'Reiniciar Preferências e Dados';
+
+  @override
+  String get restore => 'Restaurar';
+
+  @override
+  String get restoreComment => 'Restaurar Comentário';
+
+  @override
+  String get restorePost => 'Restaurar Postagem';
+
+  @override
+  String get restoredComment => 'Comentário restaurado';
+
+  @override
+  String get restoredCommentFromDraft => 'Comentário restaurado do rascunho';
+
+  @override
+  String get restoredCommunity => 'Comunidade Restaurada';
+
+  @override
+  String get restoredPost => 'Postagem Restaurada';
+
+  @override
+  String get restoredPostFromDraft => 'Postagem restaurada do rascunho';
+
+  @override
+  String get retry => 'Retentar';
+
+  @override
+  String get rightLongSwipe => 'Deslize Longo para a Direita';
+
+  @override
+  String get rightShortSwipe => 'Deslize Curto para a Direita';
+
+  @override
+  String get save => 'Salvar';
+
+  @override
+  String get saveColor => 'Salvar Cor';
+
+  @override
+  String get saveSettings => 'Salvar Configurações';
+
+  @override
+  String get saved => 'Salvo';
+
+  @override
+  String get scaled => 'Escalonado';
+
+  @override
+  String get scrapeMissingLinkPreviews =>
+      'Obter Pré-visualizações de Links Ausentes';
+
+  @override
+  String get screenReaderProfile => 'Perfil do Leitor de Tela';
+
+  @override
+  String get screenReaderProfileDescription =>
+      'Otimiza o Thunder para leitores de tela, reduzindo os elementos gerais e removendo gestos potencialmente conflitantes.';
+
+  @override
+  String get search => 'Pesquisa';
+
+  @override
+  String get searchByText => 'Pesquisar por texto';
+
+  @override
+  String get searchByUrl => 'Pesquisar por URL';
+
+  @override
+  String get searchComments => 'Pesquisar Comentários';
+
+  @override
+  String searchCommentsFederatedWith(Object instance) {
+    return 'Pesquisar comentários federados com $instance';
+  }
+
+  @override
+  String searchCommunitiesFederatedWith(Object instance) {
+    return 'Pesquisar comunidades federadas com $instance';
+  }
+
+  @override
+  String searchInstance(Object instance) {
+    return 'Pesquisar $instance';
+  }
+
+  @override
+  String searchInstancesFederatedWith(Object instance) {
+    return 'Pesquisar instâncias federadas com $instance';
+  }
+
+  @override
+  String get searchPostSearchType => 'Selecionar Tipo de Pesquisa de Postagens';
+
+  @override
+  String searchPostsFederatedWith(Object instance) {
+    return 'Pesquisar postagens federadas com $instance';
+  }
+
+  @override
+  String get searchTerm => 'Pesquisar termo';
+
+  @override
+  String searchUsersFederatedWith(Object instance) {
+    return 'Pesquisar usuários federados com $instance';
+  }
+
+  @override
+  String get selectAccountToCommentAs =>
+      'Selecione a conta com a qual deseja comentar';
+
+  @override
+  String get selectAccountToPostAs =>
+      'Selecione a conta com a qual deseja fazer a postagem';
+
+  @override
+  String get selectAll => 'Selecionar tudo';
+
+  @override
+  String get selectCommunity => 'Selecione uma comunidade (obrigatório)';
+
+  @override
+  String get selectFeedType => 'Selecionar Tipo de Feed';
+
+  @override
+  String get selectLanguage => 'Selecionar Idioma';
+
+  @override
+  String get selectSearchType => 'Selecionar Tipo de Pesquisa';
+
+  @override
+  String get selectText => 'Selecionar Texto';
+
+  @override
+  String get sendBackgroundTestLocalNotification =>
+      'Enviar notificação local de teste em segundo plano';
+
+  @override
+  String get sendBackgroundTestUnifiedPushNotification =>
+      'Enviar teste em segundo plano de notificação UnifiedPush';
+
+  @override
+  String get sendTestLocalNotification => 'Enviar notificação local de teste';
+
+  @override
+  String get sendTestUnifiedPushNotification =>
+      'Enviar teste de notificação UnifiedPush';
+
+  @override
+  String get sensitiveContentWarning =>
+      'Pode conter conteúdo sensível. Toque para revelar.';
+
+  @override
+  String get sentRequestForTestNotification =>
+      'Enviada solicitação de notificação de teste.';
+
+  @override
+  String serverErrorComments(Object message) {
+    return 'Ocorreu um erro no servidor ao buscar mais comentários: $message';
+  }
+
+  @override
+  String get setAction => 'Definir Ação';
+
+  @override
+  String get setLongPress => 'Definir como ação de toque longo';
+
+  @override
+  String get setShortPress => 'Definir como ação de toque curto';
+
+  @override
+  String get settingOverrideLabel =>
+      'Estas configurações substituem as configurações padrão do Thunder.';
+
+  @override
+  String settingTypeNotSupported(Object settingType) {
+    return 'As configurações do tipo $settingType ainda não são suportadas.';
+  }
+
+  @override
+  String get settings => 'Configurações';
+
+  @override
+  String settingsExportedSuccessfully(Object savedFilePath) {
+    return 'As configurações foram salvas com sucesso em \'$savedFilePath\'';
+  }
+
+  @override
+  String get settingsFeedCards =>
+      'Estas configurações se aplicam aos cartões no feed principal, as ações estão sempre disponíveis ao abrir as postagens.';
+
+  @override
+  String get settingsImportedSuccessfully =>
+      'As configurações foram importadas com sucesso!';
+
+  @override
+  String get settingsNotExportedSuccessfully =>
+      'As configurações não foram salvas com sucesso ou a operação foi cancelada.';
+
+  @override
+  String get settingsNotImportedSuccessfully =>
+      'As configurações não foram importadas com sucesso ou a operação foi cancelada.';
+
+  @override
+  String get settingsPage => 'Página das Configurações';
+
+  @override
+  String get settingsPageAbout => 'Sobre';
+
+  @override
+  String get settingsPageAccessibility => 'Acessibilidade';
+
+  @override
+  String get settingsPageAccount => 'Conta';
+
+  @override
+  String get settingsPageAccountBlocks => 'Listas de Bloqueios';
+
+  @override
+  String get settingsPageAccountLanguages => 'Idiomas de Discussão';
+
+  @override
+  String get settingsPageAccountMedia => 'Gerenciar Mídia';
+
+  @override
+  String get settingsPageAppearance => 'Aparência';
+
+  @override
+  String get settingsPageAppearanceComments => 'Comentários';
+
+  @override
+  String get settingsPageAppearancePosts => 'Postagens';
+
+  @override
+  String get settingsPageAppearanceTheming => 'Temas';
+
+  @override
+  String get settingsPageDebug => 'Depuração';
+
+  @override
+  String get settingsPageFilters => 'Filtros';
+
+  @override
+  String get settingsPageFloatingActionButton => 'Botão de Ação Flutuante';
+
+  @override
+  String get settingsPageGeneral => 'Geral';
+
+  @override
+  String get settingsPageGestures => 'Gestos';
+
+  @override
+  String get settingsPageUserLabels => 'Rótulos de Usuário';
+
+  @override
+  String get settingsPageVideo => 'Vídeo';
+
+  @override
+  String get share => 'Compartilhar';
+
+  @override
+  String get shareComment => 'Compartilhar Link do Comentário';
+
+  @override
+  String get shareCommentLocal =>
+      'Compartilhar Link do Comentário (Minha Instância)';
+
+  @override
+  String get shareCommunity => 'Compartilhar Comunidade';
+
+  @override
+  String get shareCommunityLink => 'Compartilhar Link da Comunidade';
+
+  @override
+  String get shareCommunityLinkLocal =>
+      'Compartilhar Link da Comunidade (Minha Instância)';
+
+  @override
+  String get shareImage => 'Compartilhar Imagem';
+
+  @override
+  String get shareLemmyLink => 'Compartilhar Link do Lemmy';
+
+  @override
+  String get shareLink => 'Compartilhar Link Externo';
+
+  @override
+  String get shareMedia => 'Compartilhar Mídia';
+
+  @override
+  String get shareMediaLink => 'Compartilhar Link da Mídia';
+
+  @override
+  String get shareOriginalLink => 'Compartilhar Link Original';
+
+  @override
+  String get sharePost => 'Compartilhar Link da Postagem';
+
+  @override
+  String get sharePostLocal =>
+      'Compartilhar Link da Postagem (Minha Instância)';
+
+  @override
+  String get shareThumbnail => 'Compartilhar Miniatura';
+
+  @override
+  String get shareThumbnailAsImage => 'Compartilhar Miniatura Como Imagem';
+
+  @override
+  String get shareUser => 'Compartilhar Usuário';
+
+  @override
+  String get shareUserLink => 'Compartilhar Link do Usuário';
+
+  @override
+  String get shareUserLinkLocal =>
+      'Compartilhar Link do Usuário (Minha Instância)';
+
+  @override
+  String get showAll => 'Mostrar tudo';
+
+  @override
+  String get showBotAccounts => 'Mostrar Contas de Robô';
+
+  @override
+  String get showCommentActionButtons =>
+      'Mostrar Botões de Ações de Comentários';
+
+  @override
+  String get showCommunityDisplayNames =>
+      'Mostrar Nomes de Exibição de Comunidades';
+
+  @override
+  String get showCrossPosts => 'Mostrar Postagens Cruzadas';
+
+  @override
+  String get showEdgeToEdgeImages => 'Mostrar Imagens de Borda a Borda';
+
+  @override
+  String get showExpandedTaglines => 'Mostrar linhas de etiquetas expandidas';
+
+  @override
+  String get showFullDate => 'Mostrar Data Completa';
+
+  @override
+  String get showFullDateDescription => 'Mostrar Data Completa nas Postagens';
+
+  @override
+  String get showFullHeightImages => 'Mostrar Imagens em Altura Total';
+
+  @override
+  String get showHiddenPosts => 'Mostrar Postagens Ocultas';
+
+  @override
+  String get showInAppUpdateNotifications =>
+      'Receba notificações sobre novos lançamentos no GitHub';
+
+  @override
+  String get showLess => 'Mostrar menos';
+
+  @override
+  String get showMore => 'Mostrar mais';
+
+  @override
+  String get showNavigationLabels => 'Mostrar Rótulos de Navegação';
+
+  @override
+  String get showNavigationLabelsDescription =>
+      'Definir se os rótulos devem ser exibidos abaixo dos botões de navegação inferiores';
+
+  @override
+  String get showNsfwContent => 'Mostrar Conteúdo NSFW';
+
+  @override
+  String get showOwnContent => 'Mostrar conteúdo próprio';
+
+  @override
+  String get showPassword => 'Mostrar Senha';
+
+  @override
+  String get showPostAuthor => 'Mostrar Autor de Postagem';
+
+  @override
+  String get showPostAuthorSubtitle =>
+      'O autor da postagem é sempre exibido nos feeds da comunidade';
+
+  @override
+  String get showPostCommunityIcons => 'Mostrar Ícones das Comunidades';
+
+  @override
+  String get showPostSaveAction => 'Mostrar Botão Salvar';
+
+  @override
+  String get showPostTextContentPreview => 'Mostrar Pré-visualização de Texto';
+
+  @override
+  String get showPostTitleFirst => 'Mostrar Título Primeiro';
+
+  @override
+  String get showPostVoteActions => 'Mostrar Botões para Votar';
+
+  @override
+  String get showReadPosts => 'Mostrar Postagens Lidas';
+
+  @override
+  String get showSavedContent => 'Mostrar conteúdo salvo';
+
+  @override
+  String get showScoreCounters => 'Exibir Pontuações dos Usuários';
+
+  @override
+  String get showScores => 'Exibir Pontuações das Postagens/dos Comentários';
+
+  @override
+  String get showTextPostIndicator => 'Mostrar Indicador de Postagem de Texto';
+
+  @override
+  String get showThumbnailPreviewOnRight => 'Mostrar Miniaturas à Direita';
+
+  @override
+  String get showUnreadOnly => 'Mostrar somente não lidas';
+
+  @override
+  String get showUpdateChangelogs =>
+      'Mostrar Registros de Alterações para Atualizações';
+
+  @override
+  String get showUpdateChangelogsSubtitle =>
+      'Exibir uma lista de alterações após uma atualização';
+
+  @override
+  String get showUserAvatar => 'Mostrar Avatar de Usuário';
+
+  @override
+  String get showUserDisplayNames => 'Mostrar Nomes de Exibição dos Usuários';
+
+  @override
+  String get showUserInstance => 'Mostrar Instância de Usuário';
+
+  @override
+  String get sidebar => 'Barra Lateral';
+
+  @override
+  String get sidebarBottomNavDoubleTapDescription =>
+      'Toque duas vezes na barra de navegação inferior para abrir a barra lateral';
+
+  @override
+  String get sidebarBottomNavSwipeDescription =>
+      'Deslize a barra de navegação inferior para abrir a barra lateral';
+
+  @override
+  String get small => 'Pequeno';
+
+  @override
+  String get somethingWentWrong => 'Opa, algo deu errado!';
+
+  @override
+  String get sortBy => 'Ordenar Por';
+
+  @override
+  String get sortByTop => 'Ordenar por Melhores';
+
+  @override
+  String get sortOptions => 'Opções de Ordenação';
+
+  @override
+  String get spoiler => 'Spoiler';
+
+  @override
+  String get standard => 'Padrão';
+
+  @override
+  String get stats => 'Estatísticas';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get submit => 'Enviar';
+
+  @override
+  String get subscribe => 'Assinar';
+
+  @override
+  String get subscribeToCommunity => 'Assinar a Comunidade';
+
+  @override
+  String get subscribed => 'Assinado';
+
+  @override
+  String get subscriptionRequestSent => 'Pedido de assinatura enviado';
+
+  @override
+  String get subscriptions => 'Assinaturas';
+
+  @override
+  String successfullyBannedUser(Object username) {
+    return '$username banido';
+  }
+
+  @override
+  String get successfullyBlocked => 'Bloqueado.';
+
+  @override
+  String successfullyBlockedCommunity(Object communityName) {
+    return '$communityName bloqueado';
+  }
+
+  @override
+  String successfullyBlockedUser(Object username) {
+    return '$username bloqueado(a)';
+  }
+
+  @override
+  String successfullyUnbannedUser(Object username) {
+    return '$username desbanido(a)';
+  }
+
+  @override
+  String get successfullyUnblocked => 'Desbloqueado.';
+
+  @override
+  String successfullyUnblockedCommunity(Object communityName) {
+    return '$communityName desbloqueado';
+  }
+
+  @override
+  String successfullyUnblockedUser(Object username) {
+    return '$username desbloqueado(a)';
+  }
+
+  @override
+  String get suchAs => 'como';
+
+  @override
+  String get suggestedTitle => 'Título sugerido';
+
+  @override
+  String switchedAccount(Object username) {
+    return 'Mudou para $username';
+  }
+
+  @override
+  String get system => 'Sistema';
+
+  @override
+  String get systemDarkMode => 'Preto Puro';
+
+  @override
+  String get systemDarkModeDescription =>
+      'Ativar tema preto puro para o modo escuro';
+
+  @override
+  String get tabletMode => 'Modo Tablet (visualização em 2 colunas)';
+
+  @override
+  String get tapToExit => 'Pressione voltar novamente para sair';
+
+  @override
+  String get tappableAuthorCommunity => 'Autores & Comunidades Tocáveis';
+
+  @override
+  String get teal => 'Azul-petróleo';
+
+  @override
+  String get testBackgroundNotificationDescription =>
+      'O Thunder será fechado e tentará gerar uma notificação em segundo plano. (Isso levará pelo menos 15 minutos.)';
+
+  @override
+  String get testBackgroundUnifiedPushNotificationDescription =>
+      'O Thunder solicitará ao servidor de notificações que envie uma notificação atrasada e, em seguida, se fechará. (Isso pode levar alguns minutos.)';
+
+  @override
+  String get text => 'Texto';
+
+  @override
+  String get textActions => 'Ações de Texto';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get themeAccentColor => 'Cores de Destaque';
+
+  @override
+  String get themePrimary => 'Tema Primário';
+
+  @override
+  String get themeSecondary => 'Tema Secundário';
+
+  @override
+  String get themeTertiary => 'Tema Terciário';
+
+  @override
+  String get theming => 'Temas';
+
+  @override
+  String get thickness => 'Espessura';
+
+  @override
+  String get thisAccount => 'Esta Conta';
+
+  @override
+  String get thumbnailUrl => 'URL da Miniatura';
+
+  @override
+  String thunderHasBeenUpdated(Object version) {
+    return 'O Thunder foi atualizado para a versão $version!';
+  }
+
+  @override
+  String thunderNotificationServer(Object server) {
+    return 'Servidor de Notificações do Thunder: $server';
+  }
+
+  @override
+  String get timeoutComments =>
+      'Erro: Tempo limite ao tentar buscar comentários';
+
+  @override
+  String get timeoutErrorMessage =>
+      'Houve um tempo limite aguardando uma resposta.';
+
+  @override
+  String get timeoutSaveComment =>
+      'Erro: Tempo limite ao tentar salvar um comentário';
+
+  @override
+  String get timeoutSavingPost =>
+      'Erro: Tempo limite ao tentar salvar a postagem.';
+
+  @override
+  String get timeoutUpvoteComment =>
+      'Erro: Tempo limite ao tentar votar em um comentário';
+
+  @override
+  String get timeoutVotingPost =>
+      'Erro: Tempo limite ao tentar votar na postagem.';
+
+  @override
+  String get toggelRead => 'Alternar Status de Leitura';
+
+  @override
+  String get top => 'Melhores';
+
+  @override
+  String get topAll => 'Melhores te todos os tempos';
+
+  @override
+  String get topDay => 'Melhores Hoje';
+
+  @override
+  String get topHour => 'Melhores na Última Hora';
+
+  @override
+  String get topMonth => 'Melhores Mês';
+
+  @override
+  String get topNineMonths => 'Melhores nos Últimos 9 Meses';
+
+  @override
+  String get topSixHour => 'Melhores nas Últimas 6 Horas';
+
+  @override
+  String get topSixMonths => 'Melhores nos Últimos 6 Meses';
+
+  @override
+  String get topThreeMonths => 'Melhores nos Últimos 3 Meses';
+
+  @override
+  String get topTwelveHour => 'Melhores nas Últimas 12 Horas';
+
+  @override
+  String get topWeek => 'Melhores Semana';
+
+  @override
+  String get topYear => 'Melhores Ano';
+
+  @override
+  String totalComments(Object x) {
+    return '$x Comentários';
+  }
+
+  @override
+  String totalPosts(Object x) {
+    return '$x Postagens';
+  }
+
+  @override
+  String get totp => 'TOTP (opcional)';
+
+  @override
+  String get transferredModToCommunity => 'Comunidade Transferida';
+
+  @override
+  String get translationsMayNotBeComplete =>
+      'Observe que as traduções podem não estar completas';
+
+  @override
+  String get trendingCommunities => 'Comunidades em Destaque';
+
+  @override
+  String get trySearchingFor => 'Tente pesquisar por…';
+
+  @override
+  String get unableToFindCommunity => 'Não é possível encontrar a comunidade';
+
+  @override
+  String unableToFindCommunityName(Object communityName) {
+    return 'Não é possível encontrar a comunidade \'$communityName\'';
+  }
+
+  @override
+  String get unableToFindCommunityOnInstance =>
+      'Não é possível encontrar a comunidade selecionada na instância do usuário selecionado.';
+
+  @override
+  String get unableToFindInstance => 'Não é possível encontrar a instância';
+
+  @override
+  String get unableToFindLanguage => 'Não é possível encontrar o idioma';
+
+  @override
+  String get unableToFindPost => 'Não é possível encontrar a postagem';
+
+  @override
+  String get unableToFindUser => 'Não é possível encontrar o usuário';
+
+  @override
+  String unableToFindUserName(Object username) {
+    return 'Não é possível encontrar o usuário \'$username\'';
+  }
+
+  @override
+  String get unableToLoadImage => 'Não é possível carregar a imagem';
+
+  @override
+  String unableToLoadImageFrom(Object domain) {
+    return 'Não é possível carregar a imagem de $domain';
+  }
+
+  @override
+  String unableToLoadInstance(Object instance) {
+    return 'Não é possível carregar $instance';
+  }
+
+  @override
+  String get unableToLoadPost => 'Não é possível carregar a postagem';
+
+  @override
+  String unableToLoadPostsFrominstance(Object instance) {
+    return 'Não é possível carregar postagens de $instance';
+  }
+
+  @override
+  String get unableToLoadReplies => 'Não é possível carregar mais respostas.';
+
+  @override
+  String unableToNavigateToInstance(Object instanceHost) {
+    return 'Não é possível navegar a $instanceHost. Pode não ser uma instância Lemmy válida.';
+  }
+
+  @override
+  String get unableToResolveReport => 'Não é possível resolver o relatório';
+
+  @override
+  String unableToRetrieveChangelog(Object version) {
+    return 'Não é possível recuperar o registro de alterações da versão $version.';
+  }
+
+  @override
+  String get unbanFromCommunity => 'Desbanir da Comunidade';
+
+  @override
+  String get unbannedUser => 'Usuário Desbanido';
+
+  @override
+  String unbannedUserFromCommunity(Object username) {
+    return '$username desbanido(a) da Comunidade';
+  }
+
+  @override
+  String get unblock => 'Desbloquear';
+
+  @override
+  String get unblockCommunity => 'Desbloquear Comunidade';
+
+  @override
+  String get unblockCommunityInstance => 'Desbloquear Instância da Comunidade';
+
+  @override
+  String get unblockInstance => 'Desbloquear Instância';
+
+  @override
+  String get unblockUser => 'Desbloquear Usuário';
+
+  @override
+  String get unblockUserInstance => 'Desbloquear Instância do Usuário';
+
+  @override
+  String get understandEnable => 'Eu Entendo, Ative';
+
+  @override
+  String get unexpectedError => 'Erro Inesperado';
+
+  @override
+  String get unfavorite => 'Desfavoritar';
+
+  @override
+  String get unfeaturedPost => 'Postagem Marcada como Não Em Destaque';
+
+  @override
+  String get unhidCommunity => 'Comunidade Desocultada';
+
+  @override
+  String get unhide => 'Desocultar';
+
+  @override
+  String unifiedPushDistributorApp(Object app, Object count) {
+    return 'Aplicativo Distribuidor UnifiedPush: $app ($count disponíveis)';
+  }
+
+  @override
+  String get unifiedPushNotifications => 'Notificações UnifiedPush';
+
+  @override
+  String unifiedPushServer(Object server) {
+    return 'Servidor UnifiedPush: $server';
+  }
+
+  @override
+  String get unifiedpush => 'UnifiedPush';
+
+  @override
+  String get unlockPost => 'Destrancar Postagem';
+
+  @override
+  String get unlockedPost => 'Postagem Destrancada';
+
+  @override
+  String get unpinFromCommunity => 'Desfixar da Comunidade';
+
+  @override
+  String get unpinPostFromCommunity => 'Desfixar Postagem da Comunidade';
+
+  @override
+  String get unpinnedPostFromCommunity => 'Postagem desfixada da comunidade';
+
+  @override
+  String get unreachable => 'Inacessível';
+
+  @override
+  String get unresolved => 'Não resolvido';
+
+  @override
+  String get unsubscribe => 'Cancelar assinatura';
+
+  @override
+  String get unsubscribeFromCommunity => 'Cancelar assinatura da Comunidade';
+
+  @override
+  String get unsubscribePending => 'Cancelar assinatura (assinatura pendente)';
+
+  @override
+  String get unsubscribed => 'Assinatura cancelada';
+
+  @override
+  String updateReleased(Object version) {
+    return 'Atualização lançada: $version';
+  }
+
+  @override
+  String get uploadImage => 'Fazer upload de imagem';
+
+  @override
+  String uploadedDate(Object date) {
+    return 'Upload: $date';
+  }
+
+  @override
+  String get upvote => 'Voto positivo';
+
+  @override
+  String get upvoteColor => 'Cor de voto positivo';
+
+  @override
+  String get upvoted => 'Voto Positivo';
+
+  @override
+  String get uriNotSupported => 'Este tipo de link não é suportado no momento.';
+
+  @override
+  String get url => 'URL';
+
+  @override
+  String get useAdvancedShareSheet =>
+      'Usar o Painel de Compartilhamento Avançado';
+
+  @override
+  String get useApplePushNotifications => 'Usar Notificações APN';
+
+  @override
+  String get useApplePushNotificationsDescription =>
+      'Utiliza o serviço de notificações push da Apple';
+
+  @override
+  String get useCompactView =>
+      'Ative para postagens pequenas, desative para grandes.';
+
+  @override
+  String get useLocalNotifications => 'Usar Notificações Locais (Experimental)';
+
+  @override
+  String get useLocalNotificationsDescription =>
+      'Verifica periodicamente se há notificações em segundo plano';
+
+  @override
+  String get useMaterialYouTheme => 'Usar Tema Material You';
+
+  @override
+  String get useMaterialYouThemeDescription =>
+      'Substitui o tema personalizado selecionado';
+
+  @override
+  String get useProfilePictureForDrawer => 'Usar Foto de Perfil para Gaveta';
+
+  @override
+  String get useProfilePictureForDrawerSubtitle =>
+      'Quando logado, mostra a foto do perfil do usuário no lugar do ícone da gaveta';
+
+  @override
+  String useSuggestedTitle(Object title) {
+    return 'Usar título sugerido: $title';
+  }
+
+  @override
+  String get useUnifiedPushNotifications => 'Usar Notificações UnifiedPush';
+
+  @override
+  String get useUnifiedPushNotificationsDescription =>
+      'Requer um aplicativo compatível';
+
+  @override
+  String get user => 'Usuário';
+
+  @override
+  String get userActions => 'Ações de Usuário';
+
+  @override
+  String userEntry(Object username) {
+    return 'Usuário \'$username\'';
+  }
+
+  @override
+  String get userFormat => 'Formato do Usuário';
+
+  @override
+  String get userLabelHint => 'Este é o meu usuário favorito';
+
+  @override
+  String get userLabels => 'Rótulos de Usuário';
+
+  @override
+  String get userLabelsSettingsPageDescription =>
+      'Você pode adicionar, modificar ou remover rótulos associados aos usuários.';
+
+  @override
+  String get userNameColor => 'Cor do Nome de Usuário';
+
+  @override
+  String get userNameThickness => 'Espessura do Nome de Usuário';
+
+  @override
+  String get userNotLoggedIn => 'Usuário não logado';
+
+  @override
+  String get userProfiles => 'Perfis de Usuário';
+
+  @override
+  String get userSettingDescription =>
+      'Estas configurações são sincronizadas com sua conta Lemmy e são aplicadas apenas por conta.';
+
+  @override
+  String get userStyle => 'Estilo de Usuário';
+
+  @override
+  String get username => 'Nome de usuário';
+
+  @override
+  String get usernameFormattingRedirect =>
+      'Procurando por formatação de nome de usuário?';
+
+  @override
+  String get users => 'Usuários';
+
+  @override
+  String versionNumber(Object version) {
+    return 'Versão $version';
+  }
+
+  @override
+  String get video => 'Vídeo';
+
+  @override
+  String get videoAutoFullscreen => 'Tela Cheia Automática';
+
+  @override
+  String get videoAutoLoop => 'Vídeo em Loop';
+
+  @override
+  String get videoAutoMute => 'Silenciar Vídeos';
+
+  @override
+  String get videoAutoPlay => 'Reprodução Automática de Vídeo';
+
+  @override
+  String get videoDefaultPlaybackSpeed => 'Velocidade de Reprodução Padrão';
+
+  @override
+  String get videoLinkHandlingExternal =>
+      'Reproduzir vídeo com um aplicativo externo';
+
+  @override
+  String get videoPlayerInApp => 'Use o reprodutor integrado do Thunder';
+
+  @override
+  String get videoPlayerMode => 'Modo de Reprodutor';
+
+  @override
+  String get viewAll => 'Ver Tudo';
+
+  @override
+  String get viewAllComments => 'Ver todos os comentários';
+
+  @override
+  String get viewCommentSource => 'Ver Fonte do Comentário';
+
+  @override
+  String get viewModlog => 'Ver Registro do Moderador';
+
+  @override
+  String get viewOriginal => 'Ver original';
+
+  @override
+  String get viewPostAsDifferentAccount => 'Ver postagem como conta diferente';
+
+  @override
+  String get viewPostSource => 'Ver fonte da postagem';
+
+  @override
+  String get viewSource => 'Ver fonte';
+
+  @override
+  String get viewingAll => 'Exibindo todos';
+
+  @override
+  String visibility(Object visibility) {
+    return 'Visibilidade: $visibility';
+  }
+
+  @override
+  String get visitCommunity => 'Visitar Comunidade';
+
+  @override
+  String get visitCommunityInstance => 'Visitar Instância da Comunidade';
+
+  @override
+  String get visitInstance => 'Visitar Instância';
+
+  @override
+  String get visitUserInstance => 'Visitar Instância do Usuário';
+
+  @override
+  String get visitUserProfile => 'Visitar Perfil do Usuário';
+
+  @override
+  String get warning => 'Aviso';
+
+  @override
+  String xDownvotes(Object x) {
+    return '$x votos negativos';
+  }
+
+  @override
+  String xScore(Object x) {
+    return '$x pontuação';
+  }
+
+  @override
+  String xUpvotes(Object x) {
+    return '$x votos positivos';
+  }
+
+  @override
+  String xYearsOld(num count, Object x) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$x anos de idade',
+      one: '$x ano de idade',
+      zero: '$x anos de idade',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yes => 'Sim';
+
+  @override
+  String get youMustSelectAJsonFile => 'Você deve selecionar um arquivo .json.';
 }
