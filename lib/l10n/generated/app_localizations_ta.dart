@@ -3240,4 +3240,7 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get youMustSelectAJsonFile =>
       'நீங்கள் ஒரு .json கோப்பைத் தேர்ந்தெடுக்க வேண்டும்.';
+
+  @override
+  String get fullscreen => 'Fullscreen';
 }

@@ -3201,4 +3201,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'Bir .json dosyası seçmelisiniz.';
+
+  @override
+  String get fullscreen => 'Fullscreen';
 }

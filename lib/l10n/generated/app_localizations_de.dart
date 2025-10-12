@@ -3230,4 +3230,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'Du musst eine JSON-Datei auswählen.';
+
+  @override
+  String get fullscreen => 'Fullscreen';
 }

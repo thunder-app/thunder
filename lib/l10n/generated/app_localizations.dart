@@ -5737,6 +5737,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You must select a .json file.'**
   String get youMustSelectAJsonFile;
+
+  /// No description provided for @fullscreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Fullscreen'**
+  String get fullscreen;
 }
 
 class _AppLocalizationsDelegate

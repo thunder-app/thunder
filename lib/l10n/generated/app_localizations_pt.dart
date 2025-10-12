@@ -3198,6 +3198,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
+
+  @override
+  String get fullscreen => 'Fullscreen';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

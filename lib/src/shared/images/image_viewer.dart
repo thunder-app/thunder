@@ -22,14 +22,22 @@ import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 
 class ImageViewer extends StatefulWidget {
+  /// The URL of the image to display
   final String? url;
+
+  /// The bytes of the image to display
   final Uint8List? bytes;
+
+  /// The ID of the post to navigate to
   final int? postId;
+
+  /// The function to navigate to the post
   final void Function()? navigateToPost;
+
+  /// The alt text of the image
   final String? altText;
 
   /// Whether this image viewer is being shown within the context of a peek.
-  /// This would cause us to hide unnecsesary things like the buttons at the bottom.
   final bool isPeek;
 
   const ImageViewer({
@@ -47,8 +55,9 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
-  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
-  final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
+  final slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
+  final gestureKey = GlobalKey<ExtendedImageGestureState>();
+
   bool downloaded = false;
   double slideTransparency = 0.92;
   double imageTransparency = 1.0;
@@ -67,34 +76,21 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   late double imageHeight = 0;
   late double maxZoomLevel = 3;
 
+  /// Whether to show the alt text at the bottom of the image viewer
+  bool showAltText = false;
+
   void _maybeSlide(BuildContext context) {
-    setState(() {
-      maybeSlideZooming = true;
-    });
-    Timer(const Duration(milliseconds: 500), () {
-      if (context.mounted) {
-        setState(() {
-          maybeSlideZooming = false;
-        });
-      }
-    });
+    setState(() => maybeSlideZooming = true);
+    Timer(const Duration(milliseconds: 500), () => context.mounted ? setState(() => maybeSlideZooming = false) : null);
   }
 
   void enterFullScreen() {
-    setState(() {
-      fullscreen = true;
-    });
-    Timer(const Duration(milliseconds: 400), () {
-      if (fullscreen) {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-      }
-    });
+    setState(() => fullscreen = true);
+    if (fullscreen) SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 
   void exitFullScreen() {
-    setState(() {
-      fullscreen = false;
-    });
+    setState(() => fullscreen = false);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
   }
 
@@ -128,12 +124,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final thunderState = context.read<ThunderBloc>().state;
+    final l10n = AppLocalizations.of(context)!;
 
     AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
+
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
@@ -152,6 +149,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOutCubicEmphasized,
             color: fullscreen ? Colors.black : Colors.black.withValues(alpha: slideTransparency),
           ),
           Positioned.fill(
@@ -560,13 +558,42 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               ),
                             ),
                           ),
+                        if (widget.altText?.isNotEmpty == true)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () => setState(() => showAltText = !showAltText),
+                              icon: Icon(
+                                Icons.text_fields,
+                                semanticLabel: l10n.altText,
+                                color: Colors.white.withValues(alpha: 0.90),
+                              ),
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: IconButton(
+                            onPressed: () {
+                              if (fullscreen) {
+                                exitFullScreen();
+                              } else {
+                                enterFullScreen();
+                              }
+                            },
+                            icon: Icon(
+                              Icons.fullscreen,
+                              semanticLabel: l10n.fullscreen,
+                              color: Colors.white.withValues(alpha: 0.90),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
-          if (widget.altText?.isNotEmpty == true)
+          if (widget.altText?.isNotEmpty == true && showAltText)
             Positioned(
               bottom: kBottomNavigationBarHeight + 25,
               width: MediaQuery.sizeOf(context).width,
