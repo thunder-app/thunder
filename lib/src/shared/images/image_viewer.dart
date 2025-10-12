@@ -461,7 +461,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         }
 
                                         // Share
-                                        await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)]));
+                                        await SharePlus.instance.share(ShareParams(
+                                          files: [XFile(mediaFile!.path)],
+                                          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+                                        ));
                                       } catch (e) {
                                         // Tell the user that the download failed
                                         showSnackbar(l10n.errorDownloadingMedia(e));

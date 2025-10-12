@@ -126,7 +126,10 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
-      await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)]));
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(mediaFile!.path)],
+        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+      ));
     } catch (e) {
       showSnackbar(l10n.errorDownloadingMedia(e));
     }
@@ -138,25 +141,45 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.apId)));
+        SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(comment!.apId),
+          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        ));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(generateCommentUrl(comment!.id))));
+        SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(generateCommentUrl(comment!.id)),
+          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        ));
         break;
       case ShareBottomSheetAction.sharePost:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.apId)));
+        SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(post!.apId),
+          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        ));
         break;
       case ShareBottomSheetAction.sharePostLocal:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(generatePostUrl(post!.id))));
+        SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(generatePostUrl(post!.id)),
+          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        ));
         break;
       case ShareBottomSheetAction.shareImage:
         retrieveMedia(post!.media.first.imageUrl!);
         break;
       case ShareBottomSheetAction.shareMedia:
-        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.media.first.mediaUrl!)));
+        SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(post!.media.first.mediaUrl!),
+          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        ));
         break;
       case ShareBottomSheetAction.shareLink:
-        if (post!.media.first.originalUrl != null) SharePlus.instance.share(ShareParams(uri: Uri.parse(post.media.first.originalUrl!)));
+        if (post!.media.first.originalUrl != null) {
+          SharePlus.instance.share(ShareParams(
+            uri: Uri.parse(post.media.first.originalUrl!),
+            sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+          ));
+        }
         break;
       case ShareBottomSheetAction.shareAdvanced:
         showAdvancedShareSheet(widget.context, post!);

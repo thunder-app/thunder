@@ -54,11 +54,20 @@ Future<void> showUserShareSheet(BuildContext context, ThunderUser person) async 
         onSelect: (selection) async {
           switch (selection.payload) {
             case UserShareOptions.link:
-              SharePlus.instance.share(ShareParams(uri: Uri.parse(person.actorId)));
+              SharePlus.instance.share(ShareParams(
+                uri: Uri.parse(person.actorId),
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
             case UserShareOptions.localLink:
-              SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink)));
+              SharePlus.instance.share(ShareParams(
+                uri: Uri.parse(localLink),
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
             case UserShareOptions.lemmy:
-              SharePlus.instance.share(ShareParams(text: lemmyLink));
+              SharePlus.instance.share(ShareParams(
+                text: lemmyLink,
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
           }
         },
       ),

@@ -338,15 +338,26 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                                         // Do the actual sharing
                                         if (_canShareImage(options, post)) {
                                           if (_isImageCustomized(options, post)) {
-                                            SharePlus.instance.share(ShareParams(files: [XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')], text: text));
+                                            SharePlus.instance.share(ShareParams(
+                                              files: [XFile.fromData(snapshot.data!, mimeType: 'image/jpeg')],
+                                              text: text,
+                                              sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+                                            ));
                                           } else {
                                             setState(() => isDownloading = true);
                                             final File file = await DefaultCacheManager().getSingleFile(post.media.first.thumbnailUrl!);
                                             setState(() => isDownloading = false);
-                                            SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: text));
+                                            SharePlus.instance.share(ShareParams(
+                                              files: [XFile(file.path)],
+                                              text: text,
+                                              sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+                                            ));
                                           }
                                         } else if (text != null) {
-                                          SharePlus.instance.share(ShareParams(text: text));
+                                          SharePlus.instance.share(ShareParams(
+                                            text: text,
+                                            sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+                                          ));
                                         }
 
                                         if (context.mounted) {

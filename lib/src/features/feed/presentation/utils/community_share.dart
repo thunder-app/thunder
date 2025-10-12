@@ -50,11 +50,20 @@ Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity comm
         onSelect: (selection) async {
           switch (selection.payload) {
             case CommunityShareOptions.link:
-              SharePlus.instance.share(ShareParams(uri: Uri.parse(community.actorId)));
+              SharePlus.instance.share(ShareParams(
+                uri: Uri.parse(community.actorId),
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
             case CommunityShareOptions.localLink:
-              SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink)));
+              SharePlus.instance.share(ShareParams(
+                uri: Uri.parse(localLink),
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
             case CommunityShareOptions.lemmy:
-              SharePlus.instance.share(ShareParams(text: lemmyLink));
+              SharePlus.instance.share(ShareParams(
+                text: lemmyLink,
+                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+              ));
           }
         },
       ),
