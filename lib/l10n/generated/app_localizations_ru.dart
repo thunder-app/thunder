@@ -1089,6 +1089,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Проведите пальцем в любом месте, чтобы вернуться назад, когда жесты слева направо отключены';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Fullscreen Swipe Gestures';
 
   @override
@@ -3189,7 +3192,4 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

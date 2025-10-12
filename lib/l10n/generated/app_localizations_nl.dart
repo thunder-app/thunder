@@ -1087,6 +1087,9 @@ class AppLocalizationsNl extends AppLocalizations {
       'Swipe anywhere to go back when left-to-right gestures are disabled';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Veeg­gebaren in volledig scherm';
 
   @override
@@ -3194,7 +3197,4 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

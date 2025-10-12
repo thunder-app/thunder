@@ -1275,6 +1275,10 @@
   },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
+  "fullscreen": "Fullscreen",
+  "@fullscreen": {
+    "description": "Action for entering fullscreen"
+  },
   "fullscreenSwipeGestures": "Fullscreen Swipe Gestures",
   "@fullscreenSwipeGestures": {
     "description": "Setting for fullscreen swipe gestures"
@@ -3752,6 +3756,5 @@
   "youMustSelectAJsonFile": "You must select a .json file.",
   "@youMustSelectAJsonFile": {
     "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
-  },
-  "fullscreen": "Fullscreen"
+  }
 }

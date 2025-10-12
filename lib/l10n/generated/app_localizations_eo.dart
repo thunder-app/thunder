@@ -1075,6 +1075,9 @@ class AppLocalizationsEo extends AppLocalizations {
       'Ŝovumu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Fullscreen Swipe Gestures';
 
   @override
@@ -3171,7 +3174,4 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

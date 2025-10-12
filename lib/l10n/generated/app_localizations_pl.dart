@@ -1088,6 +1088,9 @@ class AppLocalizationsPl extends AppLocalizations {
       'Przesuń gdziekolwiek by wrócić gdy gesty \"od lewej do prawej\" są wyłączone';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures =>
       'Gesty Przesunięć W Trybie Pełnoekranowym';
 
@@ -3190,7 +3193,4 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

@@ -1086,6 +1086,9 @@ class AppLocalizationsCs extends AppLocalizations {
       'Swipněte kdekoliv pro návrat zpět, pokud jsou gesta z leva do prava vypnutá';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Celoobrazovková Swipovací Gesta';
 
   @override
@@ -3186,7 +3189,4 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

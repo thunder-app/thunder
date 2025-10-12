@@ -1085,6 +1085,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'Scorri ovunque per tornare indietro quando le azioni da sinistra-a-destra sono disabilitate';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Gesti Swipe a Schermo Intero';
 
   @override
@@ -3190,7 +3193,4 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'File .json necessario.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

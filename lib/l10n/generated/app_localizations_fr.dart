@@ -1104,6 +1104,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Balayer n\'importe où pour revenir en arrière lorsque les gestes de gauche à droite sont désactivés';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Geste de balayage en plein écran';
 
   @override
@@ -3220,7 +3223,4 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }

@@ -2012,6 +2012,12 @@ abstract class AppLocalizations {
   /// **'Swipe anywhere to go back when left-to-right gestures are disabled'**
   String get fullScreenNavigationSwipeDescription;
 
+  /// Action for entering fullscreen
+  ///
+  /// In en, this message translates to:
+  /// **'Fullscreen'**
+  String get fullscreen;
+
   /// Setting for fullscreen swipe gestures
   ///
   /// In en, this message translates to:
@@ -5737,12 +5743,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You must select a .json file.'**
   String get youMustSelectAJsonFile;
-
-  /// No description provided for @fullscreen.
-  ///
-  /// In en, this message translates to:
-  /// **'Fullscreen'**
-  String get fullscreen;
 }
 
 class _AppLocalizationsDelegate

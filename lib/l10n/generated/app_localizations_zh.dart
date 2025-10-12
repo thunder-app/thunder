@@ -1078,6 +1078,9 @@ class AppLocalizationsZh extends AppLocalizations {
       'Swipe anywhere to go back when left-to-right gestures are disabled';
 
   @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
   String get fullscreenSwipeGestures => 'Fullscreen Swipe Gestures';
 
   @override
@@ -3189,9 +3192,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get youMustSelectAJsonFile => 'You must select a .json file.';
-
-  @override
-  String get fullscreen => 'Fullscreen';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).
