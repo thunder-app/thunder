@@ -3194,5 +3194,9 @@
     "unpinnedPostFromCommunity": "Unpinned post from community",
     "@unpinnedPostFromCommunity": {
         "description": "Message shown when a post is unpinned from a community"
+    },
+    "fullscreen": "Fullscreen",
+    "@fullscreen": {
+        "description": "Action for entering fullscreen"
     }
 }
