@@ -3722,5 +3722,9 @@
     "toggelRead": "Alternar Status de Leitura",
     "@toggelRead": {},
     "readAll": "Ler Tudo",
-    "@readAll": {}
+    "@readAll": {},
+    "fullscreen": "Tela cheia",
+    "@fullscreen": {
+        "description": "Action for entering fullscreen"
+    }
 }
