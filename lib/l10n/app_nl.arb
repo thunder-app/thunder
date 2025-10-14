@@ -2125,5 +2125,13 @@
     "databaseExportWarning": "De data­base kan gevoelige informatie bevatten met betrekking tot uw Lemmy-account. Als u deze exporteert, deel deze dan met niemand. Wilt u doorgaan?",
     "@databaseExportWarning": {
         "description": "Message shown to the user when exporting the db"
+    },
+    "fullscreen": "Volledig scherm",
+    "@fullscreen": {
+        "description": "Action for entering fullscreen"
+    },
+    "markReadColor": "Kleur van markeren als (on)gelezen",
+    "@markReadColor": {
+        "description": "Name of mark read/unread color setting"
     }
 }
