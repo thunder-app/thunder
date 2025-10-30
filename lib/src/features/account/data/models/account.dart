@@ -46,15 +46,16 @@ class Account {
     this.platform,
   });
 
-  Account copyWith({String? id, int? index}) => Account(
+  Account copyWith({String? id, int? index, ThreadiversePlatform? platform}) => Account(
         id: id ?? this.id,
-        username: username,
-        jwt: jwt,
-        instance: instance,
-        anonymous: anonymous,
-        userId: userId,
         index: index ?? this.index,
-        platform: platform,
+        anonymous: anonymous,
+        instance: instance,
+        username: username,
+        displayName: displayName,
+        jwt: jwt,
+        userId: userId,
+        platform: platform ?? this.platform,
       );
 
   String get actorId => 'https://$instance/u/$username';

@@ -79,6 +79,14 @@ class AppDatabase extends _$AppDatabase {
               from6To7: (m, schema) async {
                 try {
                   await customStatement('SELECT platform FROM accounts LIMIT 1');
+
+                  // Check to see if any accounts have a null platform. If so, set it to 'lemmy'.
+                  // This can happen if the database was partially migrated (e.g., The platform  column was added, but the migration was not completed.)
+                  final accounts = await customSelect('SELECT * FROM accounts WHERE platform IS NULL').get();
+                  if (accounts.isNotEmpty) {
+                    debugPrint('Found ${accounts.length} accounts with null platform. Setting to lemmy.');
+                    await customStatement('UPDATE accounts SET platform = \'lemmy\'');
+                  }
                 } catch (e) {
                   // Add the platform column to the Accounts table and pre-fill existing accounts with 'lemmy'
                   await m.addColumn(schema.accounts, schema.accounts.platform);

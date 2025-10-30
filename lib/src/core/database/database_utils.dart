@@ -6,6 +6,9 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/features/account/account.dart';
+
 /// Exports the database to a file.
 Future<String?> exportDatabase() async {
   final directory = await getApplicationDocumentsDirectory();
@@ -49,4 +52,25 @@ Future<bool> importDatabase() async {
   }
 
   return false;
+}
+
+/// Performs integrity checks on the database to ensure it is in a consistent state.
+Future<void> performDatabaseIntegrityChecks() async {
+  // Check to see if any accounts have a null platform. If so, set it to 'lemmy'.
+  final accounts = await Account.accounts();
+
+  for (final account in accounts) {
+    if (account.platform == null) {
+      await Account.updateAccount(account.copyWith(platform: ThreadiversePlatform.lemmy));
+    }
+  }
+
+  // Check to see if any anonymous accounts have a null platform. If so, set it to 'lemmy'.
+  final anonymousAccounts = await Account.anonymousInstances();
+
+  for (final account in anonymousAccounts) {
+    if (account.platform == null) {
+      await Account.updateAccount(account.copyWith(platform: ThreadiversePlatform.lemmy));
+    }
+  }
 }

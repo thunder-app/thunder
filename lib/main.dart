@@ -19,6 +19,7 @@ import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 // Project imports
+import 'package:thunder/src/core/database/database_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/database/database.dart';
@@ -72,6 +73,9 @@ void main() async {
 
   // Perform preference migrations
   await performSharedPreferencesMigration();
+
+  // Perform database integrity checks
+  await performDatabaseIntegrityChecks();
 
   final account = await fetchActiveProfile();
 
