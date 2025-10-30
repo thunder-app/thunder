@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
@@ -200,8 +199,6 @@ class _ThunderState extends State<Thunder> {
               return Container();
             case ThunderStatus.refreshing:
             case ThunderStatus.success:
-              FlutterNativeSplash.remove();
-
               // Update the variable so that it can be used in _handleBackButtonPress
               _isFabOpen = thunderBlocState.isFabOpen;
 
@@ -443,7 +440,6 @@ class _ThunderState extends State<Thunder> {
                 ),
               );
             case ThunderStatus.failure:
-              FlutterNativeSplash.remove();
               return ErrorMessage(
                 message: thunderBlocState.errorMessage,
                 actions: [
