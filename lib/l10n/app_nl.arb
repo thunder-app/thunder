@@ -2133,5 +2133,67 @@
     "markReadColor": "Kleur van markeren als (on)gelezen",
     "@markReadColor": {
         "description": "Name of mark read/unread color setting"
+    },
+    "postBodySettingsDescription": "Deze instellingen hebben invloed op de weergave van de bericht­inhoud",
+    "@postBodySettingsDescription": {
+        "description": "Description of post body settings"
+    },
+    "settingOverrideLabel": "Deze instellingen over­schrĳven de standaard­instellingen van Thunder.",
+    "@settingOverrideLabel": {
+        "description": "Message which indicates that the (instance) settings override the app settings"
+    },
+    "settingsFeedCards": "Deze instellingen gelden voor de kaarten in de hoofd­feed. Acties zijn altĳd beschikbaar wanneer u daad­werkelĳk berichten opent.",
+    "@settingsFeedCards": {
+        "description": "Settings for controlling the display of cards in the main feed."
+    },
+    "userSettingDescription": "Deze instellingen worden gesynchroniseerd met uw Lemmy-account en worden per account toegepast.",
+    "@userSettingDescription": {
+        "description": "Description which explains that the settings are applied globally to the current user."
+    },
+    "defaultFeedSortType": "Standaard­sortering voor feed",
+    "@defaultFeedSortType": {
+        "description": "Default sorting type for the feed."
+    },
+    "showNsfwContent": "NSFW-inhoud tonen",
+    "@showNsfwContent": {
+        "description": "Toggle to show NSFW content."
+    },
+    "showScores": "Scores van berichten en opmerkingen tonen",
+    "@showScores": {
+        "description": "Option to show scores on posts and comments."
+    },
+    "showBotAccounts": "Bot-accounts tonen",
+    "@showBotAccounts": {
+        "description": "Option to show bot accounts."
+    },
+    "noCommunityBlocks": "Geen geblokkeerde gemeen­schappen",
+    "@noCommunityBlocks": {},
+    "noUserBlocks": "Geen geblokkeerde gebruikers.",
+    "@noUserBlocks": {},
+    "exportLemmyAccountSettingsDescription": "Lemmy-account­instellingen exporteren",
+    "@exportLemmyAccountSettingsDescription": {
+        "description": "Description for setting related to Lemmy account settings export"
+    },
+    "importExportLemmyAccountSettings": "Lemmy-account­instellingen importeren/exporteren",
+    "@importExportLemmyAccountSettings": {
+        "description": "This is specifically used in search results to distinguish from Thunder import/export"
+    },
+    "importLemmyAccountSettingsDescription": "Lemmy-account­instellingen importeren",
+    "@importLemmyAccountSettingsDescription": {
+        "description": "Description for setting related to Lemmy account settings import"
+    },
+    "importExportLemmyAccountSettingsSubtitle": "Bevat abonnementen op gemeen­schappen, blokkeer­lĳsten en account­voorkeuren",
+    "@importExportLemmyAccountSettingsSubtitle": {
+        "description": "Subtitle for Lemmy account settings import/export section"
+    },
+    "languageFilters": "Op zoek naar taal­filters?",
+    "@languageFilters": {},
+    "lookingForAccountSpecificFeedSettings": "Op zoek naar account­specifieke feed­instellingen?",
+    "@lookingForAccountSpecificFeedSettings": {
+        "description": "Helper setting which navigates to account page"
+    },
+    "usernameFormattingRedirect": "Op zoek naar gebruikersnaam­opmaak?",
+    "@usernameFormattingRedirect": {
+        "description": "Setting title for sending the user to the new formatting options"
     }
 }
