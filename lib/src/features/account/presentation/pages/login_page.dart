@@ -302,7 +302,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) return [];
-                      return instances.where((instance) => instance.contains(pattern)).toList();
+                      return instances.keys.where((instance) => instance.contains(pattern)).toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
                       return ListTile(title: Text(itemData));

@@ -203,7 +203,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
 
   // Try navigate to modlog
   Uri? uri = Uri.tryParse(url);
-  if (context.mounted && uri != null && instances.contains(uri.host) && url.contains('/modlog')) {
+  if (context.mounted && uri != null && instances.keys.contains(uri.host) && url.contains('/modlog')) {
     try {
       await navigateToModlogPage(
         context,
@@ -276,7 +276,7 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     return true;
   }
 
-  if (instances.contains(instance)) {
+  if (instances.keys.contains(instance)) {
     return true;
   }
 
@@ -305,7 +305,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     return true;
   }
 
-  if (instances.contains(instance)) {
+  if (instances.keys.contains(instance)) {
     return true;
   }
 
