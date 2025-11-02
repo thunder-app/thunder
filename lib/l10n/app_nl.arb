@@ -2195,5 +2195,18 @@
     "usernameFormattingRedirect": "Op zoek naar gebruikersnaam­opmaak?",
     "@usernameFormattingRedirect": {
         "description": "Setting title for sending the user to the new formatting options"
+    },
+    "databaseExportedSuccessfully": "De database is succesvol geëxporteerd naar ‘{savedFilePath}’",
+    "@databaseExportedSuccessfully": {
+        "description": "Message shown to the user when the db was successfully exported",
+        "placeholders": {
+            "savedFilePath": {
+                "description": "The path to the saved file"
+            }
+        }
+    },
+    "databaseImportedSuccessfully": "De database is succesvol geïmporteerd!",
+    "@databaseImportedSuccessfully": {
+        "description": "Message shown to the user when the db was successfully imported"
     }
 }
