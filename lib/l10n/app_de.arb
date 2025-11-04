@@ -3186,5 +3186,9 @@
     "unpinnedPostFromCommunity": "Post von Community abgeheftet",
     "@unpinnedPostFromCommunity": {
         "description": "Message shown when a post is unpinned from a community"
+    },
+    "fullscreen": "Aktion zum Aufrufen des Vollbildmodus",
+    "@fullscreen": {
+        "description": "Action for entering fullscreen"
     }
 }
