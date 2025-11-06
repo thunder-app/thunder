@@ -1,1 +1,12 @@
-{}
+{
+    "about": "Пра праграму",
+    "@about": {
+        "description": "About settings category."
+    },
+    "accept": "Прымяніць",
+    "@accept": {
+        "description": "The ability to accept an option"
+    },
+    "accessibility": "Спецыяльныя магчымасці",
+    "@accessibility": {}
+}
