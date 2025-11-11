@@ -2208,5 +2208,47 @@
     "databaseImportedSuccessfully": "De database is succesvol geïmporteerd!",
     "@databaseImportedSuccessfully": {
         "description": "Message shown to the user when the db was successfully imported"
+    },
+    "modAdd": "Instantie­moderators toevoegen/verwĳderen",
+    "@modAdd": {
+        "description": "Description for modlog filter for actions that add instance moderators"
+    },
+    "modBan": "Instantie­gebruikers verbannen/herstellen",
+    "@modBan": {
+        "description": "Description for modlog filter for actions that ban instance users"
+    },
+    "navbarSwipeGestures": "Veeg­gebaren voor navigatie­balk",
+    "@navbarSwipeGestures": {
+        "description": "Setting for navbar swipe gestures"
+    },
+    "noCommentsFound": "Geen opmerkingen gevonden",
+    "@noCommentsFound": {},
+    "noCommunitiesFound": "Geen gemeenschappen gevonden",
+    "@noCommunitiesFound": {},
+    "noEmailSet": "Geen e-mail ingesteld",
+    "@noEmailSet": {
+        "description": "Message for no email set"
+    },
+    "noFavoritedCommunities": "Geen favoriete gemeenschappen",
+    "@noFavoritedCommunities": {
+        "description": "Message for no favorited communities on the drawer"
+    },
+    "noResultsFound": "Geen resultaten gevonden.",
+    "@noResultsFound": {},
+    "noUsersFound": "Geen gebruikers gevonden.",
+    "@noUsersFound": {},
+    "nothingToShare": "Niets om te delen",
+    "@nothingToShare": {},
+    "openAccountSwitcher": "Account­wisselaar openen",
+    "@openAccountSwitcher": {},
+    "openByDefault": "Standaard openen",
+    "@openByDefault": {
+        "description": "Indicating the default behavior of opening links."
+    },
+    "openInBrowser": "Openen in browser",
+    "@openInBrowser": {},
+    "pinToCommunity": "Vastpinnen in gemeenschap",
+    "@pinToCommunity": {
+        "description": "Setting for pinning a post to a community (moderator action)"
     }
 }
