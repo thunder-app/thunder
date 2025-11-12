@@ -61,6 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: SearchAnchor.bar(
                   searchController: searchController,
                   barHintText: l10n.search,
+                  barElevation: const WidgetStatePropertyAll(0.0),
                   suggestionsBuilder: (BuildContext context, SearchController controller) {
                     final theme = Theme.of(context);
 
