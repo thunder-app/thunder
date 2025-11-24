@@ -49,6 +49,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               assert(reply.read != null, 'Reply should have a read status');
 
               return Column(
+                key: ValueKey<int>(reply.replyMentionId!),
                 children: [
                   CommentReference(
                     comment: reply,

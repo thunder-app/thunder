@@ -50,6 +50,7 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
             itemCount: widget.privateMessages.length,
             itemBuilder: (context, index) {
               return Card(
+                key: ValueKey<int>(widget.privateMessages[index].id),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                   child: Column(

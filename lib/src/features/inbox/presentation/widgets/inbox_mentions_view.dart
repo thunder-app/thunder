@@ -48,6 +48,7 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
               assert(comment.read != null, 'Comment should have a read status');
 
               return Column(
+                key: ValueKey<int>(comment.replyMentionId!),
                 children: [
                   CommentReference(
                     comment: comment,
