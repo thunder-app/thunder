@@ -723,13 +723,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                         value: Color(customThemeType.primaryColor.toARGB32()),
                                         child: CircleAvatar(
                                           radius: 16.0,
-                                          backgroundColor: customThemeType == CustomThemeType.transparent
-                                              ? null
-                                              : Color.alphaBlend(
-                                                  theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                                  Color(customThemeType.primaryColor.toARGB32()),
-                                                ),
-                                          child: customThemeType == CustomThemeType.transparent ? Text(customThemeType.label[0].toUpperCase()) : null,
+                                          backgroundColor: Color.alphaBlend(
+                                            theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                            Color(customThemeType.primaryColor.toARGB32()),
+                                          ),
                                         ),
                                       ))
                                   .toList()
@@ -739,6 +736,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                     alignment: Alignment.center,
                                     value: null,
                                     child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                  ),
+                                )
+                                ..insert(
+                                  1,
+                                  const DropdownMenuItem<Color?>(
+                                    alignment: Alignment.center,
+                                    value: Colors.transparent,
+                                    child: CircleAvatar(radius: 16.0, child: Text('T')),
                                   ),
                                 ),
                               onChanged: (Color? value) {

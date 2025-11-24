@@ -171,6 +171,13 @@ Future<void> performSharedPreferencesMigration() async {
     await prefs.setBool(LocalSettings.usePureBlackTheme.name, true);
   }
 
+  // Reset transparent theme to default (transparent theme was removed as it made the app unusable)
+  String? accentColor = prefs.getString(LocalSettings.appThemeAccentColor.name);
+  if (accentColor == 'transparent') {
+    await prefs.remove(LocalSettings.appThemeAccentColor.name);
+    debugPrint('Reset transparent theme to default');
+  }
+
   // Remove scrapeMissingPreviews setting
   bool? scrapeMissingPreviews = prefs.getBool('setting_general_scrape_missing_previews');
   if (scrapeMissingPreviews != null) {

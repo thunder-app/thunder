@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 enum CustomThemeType {
-  transparent(label: 'Transparent', primaryColor: Colors.transparent, secondaryColor: Colors.transparent, tertiaryColor: Colors.transparent),
   material(label: 'Material', primaryColor: FlexColor.materialLightPrimary, secondaryColor: FlexColor.materialLightPrimaryContainer, tertiaryColor: FlexColor.materialLightSecondaryContainer),
   materialHc(
       label: 'Material High Contrast',
