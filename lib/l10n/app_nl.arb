@@ -1966,7 +1966,7 @@
     "@confirmResetCommentPreferences": {
         "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
     },
-    "confirmResetPostPreferences": "Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?",
+    "confirmResetPostPreferences": "Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?",
     "@confirmResetPostPreferences": {
         "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
     },
@@ -1992,7 +1992,7 @@
             }
         }
     },
-    "defaultFeedType": "Standaard­feedtype",
+    "defaultFeedType": "Standaardfeedtype",
     "@defaultFeedType": {
         "description": "Default listing type for the feed."
     },
@@ -2103,7 +2103,7 @@
     "@couldNotDeterminePostComment": {},
     "couldntCreateReport": "Uw opmerkings­rapport kon op dit moment niet worden verzonden. Probeer het later opnieuw",
     "@couldntCreateReport": {},
-    "couldntFindPost": "Het opgevraagde bericht kan niet worden geladen. Het is mogelĳk verwĳderd.",
+    "couldntFindPost": "Het opgevraagde bericht kan niet worden geladen. Het is mogelĳk verwĳderd.Het opgevraagde bericht kan niet worden geladen. Het is mogelĳk verwĳderd.",
     "@couldntFindPost": {
         "description": "Error message for when we can't load a post."
     },
@@ -2250,5 +2250,638 @@
     "pinToCommunity": "Vastpinnen in gemeenschap",
     "@pinToCommunity": {
         "description": "Setting for pinning a post to a community (moderator action)"
+    },
+    "databaseNotExportedSuccessfully": "De database is niet succesvol geëxporteerd of de bewerking is geannuleerd.",
+    "@databaseNotExportedSuccessfully": {
+        "description": "Message shown to the user when the db was unsuccessfully exported"
+    },
+    "databaseNotImportedSuccessfully": "De database is niet succesvol geïmporteerd of de bewerking is geannuleerd.",
+    "@databaseNotImportedSuccessfully": {
+        "description": "Message shown to the user when the db was unsuccessfully imported"
+    },
+    "debugDescription": "De volgende foutopsporingsinstellingen dienen alleen te worden gebruikt voor het oplossen van problemen.",
+    "@debugDescription": {
+        "description": "Explanation for debug settings page"
+    },
+    "debugNotificationsDescription": "Gebruik de volgende opties om problemen met meldingen op te lossen.",
+    "@debugNotificationsDescription": {
+        "description": "A description for the notification debugging section"
+    },
+    "defaultCommentSortType": "Standaard­sortering voor opmerkingen",
+    "@defaultCommentSortType": {
+        "description": "Setting for default comment sort type"
+    },
+    "deleteAccountDescription": "Om uw account permanent te verwĳderen, wordt u doorgestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?",
+    "@deleteAccountDescription": {
+        "description": "Description for confirmation action to delete account"
+    },
+    "deleteImageConfirmMessage": "Weet u zeker dat u deze afbeelding wilt verwĳderen?",
+    "@deleteImageConfirmMessage": {
+        "description": "Confirmation messages for deleting an image"
+    },
+    "deleteLocalDatabaseDescription": "Deze actie verwĳdert de lokale database en meldt u af bĳ al uw accounts.\n\nWeet u zeker dat u wilt doorgaan?",
+    "@deleteLocalDatabaseDescription": {
+        "description": "Description for confirmation action to delete local database"
+    },
+    "deleteLocalPreferencesDescription": "Dit wist al uw gebruikers­voorkeuren en -instellingen in Thunder.\n\nWilt u doorgaan?",
+    "@deleteLocalPreferencesDescription": {
+        "description": "Description for confirmation action to delete local preferences"
+    },
+    "deleteUserLabelConfirmation": "Weet u zeker dat u het label wilt verwĳderen?",
+    "@deleteUserLabelConfirmation": {
+        "description": "Confirmation message for deleting a label"
+    },
+    "deselectUndeterminedWarning": "Als u ‘Onbepaald’ deselecteert, zult u de meeste inhoud niet zien.",
+    "@deselectUndeterminedWarning": {},
+    "discussionLanguagesTooltip": "Inhoud wordt gefilterd op de geselecteerde talen.",
+    "@discussionLanguagesTooltip": {},
+    "displayUserScore": "Gebruikers­scores (karma) weergeven.",
+    "@displayUserScore": {
+        "description": "Option for displaying user scores or karma."
+    },
+    "doNotSupportMultipleUnifiedPushApps": "Er zĳn meerdere compatibele apps gevonden; installeer er slechts één",
+    "@doNotSupportMultipleUnifiedPushApps": {
+        "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+    },
+    "downloadingMedia": "Bezig met downloaden van media om te delen…",
+    "@downloadingMedia": {},
+    "emptyUri": "De koppeling is leeg. Geef een geldige dynamische koppeling op om door te gaan.",
+    "@emptyUri": {
+        "description": "Error message for empty link."
+    },
+    "enableFeedFab": "Zwevende knop op feeds inschakelen",
+    "@enableFeedFab": {
+        "description": "Enable the Floating Action Button for the feed"
+    },
+    "enableFloatingButtonOnFeeds": "Zwevende knop op feeds inschakelen",
+    "@enableFloatingButtonOnFeeds": {
+        "description": "Setting for enable floating button on feeds"
+    },
+    "errorDeletingImage": "Er is een fout opgetreden bĳ het verwĳderen van de afbeelding: {error}",
+    "@errorDeletingImage": {
+        "description": "Error message for deleting an image",
+        "placeholders": {
+            "error": {
+                "description": "The error message"
+            }
+        }
+    },
+    "errorDownloadingMedia": "Kon het mediabestand niet downloaden om te delen: {errorMessage}",
+    "@errorDownloadingMedia": {
+        "description": "Error message for downloading media",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "errorImportingAccountSettings": "Er is een fout opgetreden bĳ het importeren van de instellingen. Het bestand heeft mogelijk niet de juiste indeling.",
+    "@errorImportingAccountSettings": {
+        "description": "Message shown to user when account there was an error importing the settings"
+    },
+    "errorInitializingClient": "Fout bĳ het initialiseren van de cliënt",
+    "@errorInitializingClient": {
+        "description": "Error message for initializing client"
+    },
+    "errorLoadingAccountSettings": "Er is een fout opgetreden bĳ het laden van het instellingenbestand of de bewerking is geannuleerd.",
+    "@errorLoadingAccountSettings": {
+        "description": "Message shown to user when there was an error loading the settings file"
+    },
+    "errorMarkingReplyRead": "Er is een fout opgetreden bĳ het markeren van het antwoord als gelezen.",
+    "@errorMarkingReplyRead": {
+        "description": "Error message for marking a reply read"
+    },
+    "errorMarkingReplyUnread": "Er is een fout opgetreden bĳ het markeren van het antwoord als ongelezen.",
+    "@errorMarkingReplyUnread": {
+        "description": "Error message for marking a reply unread"
+    },
+    "errorParsingJson": "Er is een fout opgetreden bĳ het parseren van het geselecteerde bestand. Het is mogelijk geen geldige JSON.",
+    "@errorParsingJson": {
+        "description": "Message shown to user when there was an error parsing the selected file"
+    },
+    "errorSavingAccountSettings": "Er is een fout opgetreden bĳ het opslaan van het instellingenbestand of de bewerking is geannuleerd.",
+    "@errorSavingAccountSettings": {
+        "description": "Message shown to user when there was an error saving the settings file"
+    },
+    "exceptionProcessingUri": "Er is een fout opgetreden bĳ het verwerken van de koppeling. Deze is mogelijk niet beschikbaar op uw instantie.",
+    "@exceptionProcessingUri": {
+        "description": "An unspecified error during link processing."
+    },
+    "excessiveApiCallsWarning": "Het kan even duren voordat uw feed is geladen vanwege trefwoord­filters.",
+    "@excessiveApiCallsWarning": {
+        "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+    },
+    "experimentalFeaturesDescription": "Deze functies zĳn nog in ontwikkeling en kunnen instabiel zĳn. Gebruik ze op eigen risico. U dient Thunder opnieuw te starten om de wĳzigingen door te voeren.",
+    "@experimentalFeaturesDescription": {
+        "description": "Description for experimental features setting"
+    },
+    "exportDatabaseSubtitle": "De database bevat informatie over accounts, favorieten, anonieme abonnementen en gebruikers­labels.",
+    "@exportDatabaseSubtitle": {
+        "description": "Subtitle of setting for exporting the db"
+    },
+    "exportSettingsSubtitle": "De instellingen bevatten alle voorkeuren die u hebt geconfigureerd in Thunder.",
+    "@exportSettingsSubtitle": {
+        "description": "Subtitle of setting for exporting settings"
+    },
+    "failedToBlock": "Kon niet blokkeren: {errorMessage}",
+    "@failedToBlock": {
+        "description": "Error message for when we fail to block a user",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToCommunicateWithThunderNotificationServer": "Kon niet communiceren met de Thunder-meldingenserver op {serverAddress}.",
+    "@failedToCommunicateWithThunderNotificationServer": {
+        "description": "Error message for when we fail to communicate with Thunder notification server",
+        "placeholders": {
+            "serverAddress": {
+                "description": "The address of the Thunder notification server"
+            }
+        }
+    },
+    "failedToLoadBlocks": "Kon blokkeringen niet laden: {errorMessage}",
+    "@failedToLoadBlocks": {
+        "description": "Error message for when we fail to load blocks",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToLoadVideo": "Kon video niet laden. Koppeling openen in browser?",
+    "@failedToLoadVideo": {
+        "description": "Error message that displays when we fail to load a video"
+    },
+    "failedToPerformAction": "Kon actie niet uitvoeren",
+    "@failedToPerformAction": {
+        "description": "Error message when we fail to perform an action"
+    },
+    "failedToUnblock": "Kon deblokkering niet ongedaan maken: {errorMessage}",
+    "@failedToUnblock": {
+        "description": "Error message for when we fail to unblock a user",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToUpdateNotificationSettings": "Kon melding­instellingen niet bĳwerken",
+    "@failedToUpdateNotificationSettings": {
+        "description": "Error message when failed to update notification settings."
+    },
+    "feedTypeAndSorts": "Standaardfeedtype en -sortering",
+    "@feedTypeAndSorts": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "fetchAccountError": "Kon account niet bepalen",
+    "@fetchAccountError": {},
+    "floatingActionButtonInformation": "Thunder heeft een volledig aanpasbare zwevende actie­knop die een aantal gebaren ondersteunt.\n- Veeg omhoog om extra acties weer te geven\n- Veeg omlaag/omhoog om de zwevende actie­knop te verbergen of weer te geven\n\nHoud één van onderstaande acties lang ingedrukt om de hoofd- en secundaire acties aan te passen.",
+    "@floatingActionButtonInformation": {
+        "description": "Description of the FAB in the settings page"
+    },
+    "floatingActionButtonLongPressDescription": "geeft de actie aan bĳ lang indrukken van de zwevende actie­knop.",
+    "@floatingActionButtonLongPressDescription": {
+        "description": "Description of the FAB's long-press action"
+    },
+    "floatingActionButtonSinglePressDescription": "geeft de actie aan bĳ eenmalig drukken op de zwevende actie­knop.",
+    "@floatingActionButtonSinglePressDescription": {
+        "description": "Description of the FAB's single-press action"
+    },
+    "foundUnifiedPushDistribtorApp": "Compatibele app gevonden; start Thunder opnieuw op om te verbinden",
+    "@foundUnifiedPushDistribtorApp": {
+        "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+    },
+    "fullScreenNavigationSwipeDescription": "Veeg ergens om terug te gaan als links-naar-rechts-gebaren zĳn uitgeschakeld",
+    "@fullScreenNavigationSwipeDescription": {},
+    "guestModeFeedSettings": "Feed-instellingen voor gastmodus",
+    "@guestModeFeedSettings": {
+        "description": "Feed settings for guest accounts"
+    },
+    "guestModeFeedSettingsLabel": "De volgende instellingen worden alleen toegepast op gast­accounts. Ga naar ‘Account­instellingen’ om feed­instellingen voor uw account aan te passen.",
+    "@guestModeFeedSettingsLabel": {
+        "description": "Description for guest mode feed settings"
+    },
+    "havingIssuesWithNotifications": "Hebt u problemen met meldingen?",
+    "@havingIssuesWithNotifications": {
+        "description": "A shortcut to navigate to the notification debugging section"
+    },
+    "hideTopBarOnScroll": "Bovenbalk verbergen bĳ scrollen",
+    "@hideTopBarOnScroll": {
+        "description": "Settings toggle to hide the top bar on scroll"
+    },
+    "imageCachingModeAggressive": "Afbeeldingen agressief in cache opslaan (gebruikt meer geheugen)",
+    "@imageCachingModeAggressive": {
+        "description": "Long description for aggressive image caching mode"
+    },
+    "imageCachingModeRelaxed": "Cache voor afbeeldingen laten verlopen (gebruikt minder geheugen, maar afbeeldingen worden vaker opnieuw geladen)",
+    "@imageCachingModeRelaxed": {
+        "description": "Long description for relaxed image caching mode"
+    },
+    "importExportThunderSettings": "Thunder-instellingen importeren/exporteren",
+    "@importExportThunderSettings": {
+        "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+    },
+    "inReplyTo": "Als antwoord op {post} in {community}",
+    "@inReplyTo": {
+        "description": "Indicates that a comment/post is in reply to a certain post in a certain community",
+        "placeholders": {
+            "post": {
+                "description": "The post that is being replied to"
+            },
+            "community": {
+                "description": "The community that the post is in"
+            }
+        }
+    },
+    "internetOrInstanceIssues": "U bent mogelijk niet verbonden met het internet of uw instantie is momenteel niet beschikbaar.",
+    "@internetOrInstanceIssues": {},
+    "invalidUrl": "Ongeldige URL-indeling",
+    "@invalidUrl": {
+        "description": "Error message for invalid URL format"
+    },
+    "keywordFilterDescription": "Filtert berichten die trefwoorden bevatten in de titel, inhoud of URL",
+    "@keywordFilterDescription": {
+        "description": "Description of keyword filter settings"
+    },
+    "languageNotAllowed": "De gemeenschap waarin u plaatst, staat geen berichten toe in de taal die u hebt geselecteerd. Probeer een andere taal.",
+    "@languageNotAllowed": {
+        "description": "The error message for the language_not_allowed Lemmy exception"
+    },
+    "link": "{count, plural, one {Koppeling} other {Koppelingen} } ",
+    "@link": {
+        "description": "Describes a link",
+        "placeholders": {
+            "count": {
+                "description": "The number of links"
+            }
+        }
+    },
+    "linkHandlingCustomTabs": "Openen in systeembrowser ingebed in-app",
+    "@linkHandlingCustomTabs": {
+        "description": "Description for custom tabs link handling"
+    },
+    "linkHandlingExternal": "Extern openen in systeembrowser",
+    "@linkHandlingExternal": {
+        "description": "Description for external link handling"
+    },
+    "linkHandlingInApp": "Ingebouwde browser van Thunder gebruiken",
+    "@linkHandlingInApp": {
+        "description": "Description for in-app link handling"
+    },
+    "loadMoreSingular": "Nog {count} reactie laden…",
+    "@loadMoreSingular": {
+        "description": "Load more replies",
+        "placeholders": {
+            "count": {
+                "description": "The number of replies to load"
+            }
+        }
+    },
+    "loginFailed": "Kon niet inloggen. Probeer het opnieuw. (Fout: {errorMessage})",
+    "@loginFailed": {
+        "description": "Message shown to user when their login attempt failed",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "loginToPerformAction": "U dient ingelogd te zĳn om deze taak uit te voeren.",
+    "@loginToPerformAction": {},
+    "loginToSeeInbox": "Log in om uw postvak IN te bekijken",
+    "@loginToSeeInbox": {},
+    "malformedUri": "De opgegeven koppeling heeft een niet-ondersteunde indeling. Zorg ervoor dat het een geldige koppeling is.",
+    "@malformedUri": {
+        "description": "Error related to unsupported link format."
+    },
+    "markPostAsReadOnMediaView": "Markeren als gelezen na bekijken van media",
+    "@markPostAsReadOnMediaView": {
+        "description": "Toggle to mark posts as read after viewing media."
+    },
+    "markPostAsReadOnScroll": "Markeren als gelezen bĳ scrollen",
+    "@markPostAsReadOnScroll": {
+        "description": "Toggle to mark posts as read as you scroll past them in the feed."
+    },
+    "missingErrorMessage": "Geen foutmelding beschikbaar",
+    "@missingErrorMessage": {},
+    "modAddCommunity": "Moderators toevoegen aan/verwĳderen uit gemeen­schappen",
+    "@modAddCommunity": {
+        "description": "Description for modlog filter for actions that add moderators to communities"
+    },
+    "modBanFromCommunity": "Gebruikers verbannen uit/herstellen in gemeen­schappen",
+    "@modBanFromCommunity": {
+        "description": "Description for modlog filter for actions that ban users from communities"
+    },
+    "moderator": "{count, plural, one {Moderator} other {Moderators}}",
+    "@moderator": {
+        "description": "Role name for moderator",
+        "placeholders": {
+            "count": {
+                "description": "The number of moderators"
+            }
+        }
+    },
+    "mustBeLoggedIn": "U dient ingelogd te zĳn",
+    "@mustBeLoggedIn": {},
+    "mustBeLoggedInComment": "U dient ingelogd te zĳn om een opmerking te plaatsen",
+    "@mustBeLoggedInComment": {},
+    "mustBeLoggedInPost": "U dient ingelogd te zĳn om een bericht te plaatsen",
+    "@mustBeLoggedInPost": {},
+    "navbarDoubleTapGestures": "Dubbel-tik-gebaren voor navigatie­balk",
+    "@navbarDoubleTapGestures": {
+        "description": "Setting for navbar double tap gestures"
+    },
+    "nestedCommentIndicatorColor": "Kleur van indicator voor geneste opmerkingen",
+    "@nestedCommentIndicatorColor": {
+        "description": "Setting for nested comment indicator color"
+    },
+    "nestedCommentIndicatorStyle": "Stijl van indicator voor geneste opmerkingen",
+    "@nestedCommentIndicatorStyle": {
+        "description": "Setting for nested comment indicator style"
+    },
+    "noAccountsAdded": "Er zĳn geen accounts toegevoegd",
+    "@noAccountsAdded": {
+        "description": "Placeholder text when no accounts have been added"
+    },
+    "noCompatibleAppFound": "Geen compatibele app gevonden",
+    "@noCompatibleAppFound": {
+        "description": "Tell the user we didn't find a compatible UnifiedPush app"
+    },
+    "noDiscussionLanguages": "Er wordt geen inhoud verborgen op basis van taal.",
+    "@noDiscussionLanguages": {
+        "description": "Message for no discussion languages added"
+    },
+    "noDisplayNameSet": "Geen weergave­naam ingesteld",
+    "@noDisplayNameSet": {
+        "description": "Message for no display name set"
+    },
+    "noImages": "Het lĳkt erop dat u nog geen afbeeldingen hebt geüpload.",
+    "@noImages": {
+        "description": "Message for no uploaded images"
+    },
+    "noKeywordFilters": "Geen trefwoord­filters toegevoegd",
+    "@noKeywordFilters": {
+        "description": "Message for no keyword filters added"
+    },
+    "noMatrixUserSet": "Geen Matrix-gebruiker ingesteld",
+    "@noMatrixUserSet": {
+        "description": "Message for no matrix user set"
+    },
+    "noReferencesToImage": "Er zĳn geen berichten of opmerkingen gevonden die deze afbeelding bevatten. Deze kan echter elders op het internet worden gebruikt.",
+    "@noReferencesToImage": {
+        "description": "Message indicating media was not found on Lemmy"
+    },
+    "noUserLabels": "U hebt nog geen gebruikers­labels aangemaakt",
+    "@noUserLabels": {
+        "description": "Placeholder message for empty list of labels"
+    },
+    "noVisibleComments": "Opmerkingen zĳn mogelijk niet zichtbaar omdat de gemeenschap is geblokkeerd.Opmerkingen zĳn mogelijk niet zichtbaar omdat de gemeenschap is geblokkeerd.",
+    "@noVisibleComments": {
+        "description": "A message that shows up when a user navigates to a post but the associated community is blocked."
+    },
+    "notValidLemmyInstance": "{instance} lĳkt geen geldige instantie te zĳn",
+    "@notValidLemmyInstance": {
+        "description": "Message for when an instance is not a valid Lemmy/PieFed instance",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that is not a valid Lemmy/PieFed instance"
+            }
+        }
+    },
+    "notValidUrl": "Geen geldige URL",
+    "@notValidUrl": {},
+    "notifications": "{count, plural, one {Melding} other {Meldingen}}",
+    "@notifications": {
+        "description": "Message formatting for notifications count.",
+        "placeholders": {
+            "count": {
+                "description": "The number of notifications"
+            }
+        }
+    },
+    "notificationsNotAllowed": "Meldingen zĳn niet toegestaan voor Thunder in de systeeminstellingen",
+    "@notificationsNotAllowed": {
+        "description": "Description for when notifications are now allowed for app"
+    },
+    "notificationsWarningDialog": "Meldingen zĳn een **experimentele functie** die mogelijk niet correct werkt op alle apparaten.\n\n - Controles vinden elke ~15 minuten plaats en verbruiken extra accu.\n\n - Schakel accu-optimalisaties uit voor een grotere kans op succesvolle meldingen.\n\n Raadpleeg de volgende pagina voor meer informatie.",
+    "@notificationsWarningDialog": {
+        "description": "The content of the warning dialog for the notifications feature"
+    },
+    "nsfwWarning": "NSFW - Druk om weer te geven",
+    "@nsfwWarning": {
+        "description": "Warning for NSFW posts"
+    },
+    "onlyModsCanPostInCommunity": "Alleen moderators mogen berichten plaatsen in deze gemeenschap",
+    "@onlyModsCanPostInCommunity": {},
+    "openLinksInExternalBrowser": "Koppelingen openen in externe browser",
+    "@openLinksInExternalBrowser": {
+        "description": "Toggle to open links in an external browser."
+    },
+    "openLinksInReaderMode": "Koppelingen openen in lees­modus",
+    "@openLinksInReaderMode": {
+        "description": "Toggle to open links in reader mode when available."
+    },
+    "performedBy": "Uitgevoerd door: {user}",
+    "@performedBy": {
+        "description": "Describes the user who performed an action (e.g., moderator)",
+        "placeholders": {
+            "user": {
+                "description": "The user who performed the action"
+            }
+        }
+    },
+    "permissionDenied": "Thunder heeft geen toestemming gekregen om meldingen weer te geven. Schakel dit in via de systeeminstellingen.",
+    "@permissionDenied": {
+        "description": "Title for error when user denies OS permissions"
+    },
+    "permissionDeniedMessage": "Thunder heeft enkele machtigingen nodig om deze afbeelding op te slaan die zĳn geweigerd.",
+    "@permissionDeniedMessage": {
+        "description": "Explanation for error when user denies OS permissions"
+    },
+    "pinPostToCommunity": "Bericht vastpinnen in gemeenschap",
+    "@pinPostToCommunity": {
+        "description": "Action for pinning a post to a community (moderator action)"
+    },
+    "pinnedPostToCommunity": "Bericht vastgepind in gemeenschap",
+    "@pinnedPostToCommunity": {
+        "description": "Message shown when a post is pinned to a community"
+    },
+    "postBodySettings": "Instellingen voor bericht­inhoud",
+    "@postBodySettings": {
+        "description": "Settings heading for post body settings"
+    },
+    "postBodyShowCommunityInstance": "Gemeenschaps­instantie weergeven",
+    "@postBodyShowCommunityInstance": {
+        "description": "Whether to show the community instance for post bodies"
+    },
+    "postBodyShowUserInstance": "Gebruikers­instantie weergeven",
+    "@postBodyShowUserInstance": {
+        "description": "Whether to show the user instance for post bodies"
+    },
+    "postBodyViewType": "Weergavetype voor bericht­inhoud",
+    "@postBodyViewType": {
+        "description": "Setting name for the post body view type setting"
+    },
+    "postContentFontScale": "Letter­grootte van bericht­inhoud",
+    "@postContentFontScale": {
+        "description": "Setting for post content font scale"
+    },
+    "postCreatedSuccessfully": "Bericht succesvol aangemaakt!",
+    "@postCreatedSuccessfully": {
+        "description": "Notifying the user that their post was created successfully"
+    },
+    "postLocked": "Bericht vergrendeld. Geen reacties toegestaan.",
+    "@postLocked": {},
+    "postMetadataInstructions": "U kunt de metadata-informatie aanpassen door de gewenste informatie te slepen en neer te zetten",
+    "@postMetadataInstructions": {
+        "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+    },
+    "postNSFW": "Markeren als NSFW",
+    "@postNSFW": {},
+    "postPreview": "Toon een voorbeeld van het bericht met de opgegeven instellingen",
+    "@postPreview": {
+        "description": "Description for the post preview in Setting -> Appearance -> Posts"
+    },
+    "postSwipeGesturesHint": "Wilt u liever knoppen gebruiken? Wĳzig welke knoppen worden weergegeven op berichtkaarten in de algemene instellingen.",
+    "@postSwipeGesturesHint": {},
+    "postTitleFontScale": "Letter­grootte van bericht­titel",
+    "@postTitleFontScale": {
+        "description": "Setting for post title font scale"
+    },
+    "postUploadImageError": "Kon afbeelding niet uploaden",
+    "@postUploadImageError": {},
+    "postViewType": "Weergavetype voor berichten",
+    "@postViewType": {
+        "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+    },
+    "profileAppliedSuccessfully": "{profile} succesvol toegepast!",
+    "@profileAppliedSuccessfully": {
+        "description": "Message shown to user when a profile is applied successfully",
+        "placeholders": {
+            "profile": {
+                "description": "The profile that was applied"
+            }
+        }
+    },
+    "pushNotificationDescription": "Indien ingeschakeld, stuurt Thunder uw JWT-token(s) naar de server om te pollen voor nieuwe meldingen.\n\n **OPMERKING:** Dit wordt pas van kracht als de app opnieuw wordt gestart.",
+    "@pushNotificationDescription": {
+        "description": "Description of push notification setting"
+    },
+    "pushNotificationServerDescription": "Configureer de pushmeldingenserver. De server moet correct geconfigureerd zĳn om pushmeldingen naar uw apparaat te verzenden.\n\n **Voer alleen een server in die u vertrouwt met uw inloggegevens.**",
+    "@pushNotificationServerDescription": {
+        "description": "Description of choosing push notification server setting"
+    },
+    "rateLimitErrorMessage": "U hebt de snelheidslimiet voor dit verzoek bereikt. Wacht even en probeer het later opnieuw.",
+    "@rateLimitErrorMessage": {
+        "description": "Error message for the rate-limit Lemmy exception"
+    },
+    "removeAsCommunityModerator": "Verwĳderen als gemeen­schaps­moderator",
+    "@removeAsCommunityModerator": {
+        "description": "Moderator action to remove user as community moderator"
+    },
+    "removeFromFavorites": "Verwĳderen uit favorieten",
+    "@removeFromFavorites": {
+        "description": "Action to remove a community in drawer from favorites"
+    },
+    "removeUserData": "Gebruikersgegevens verwĳderen",
+    "@removeUserData": {
+        "description": "Description for removing user data when banning user"
+    },
+    "removedCommunityFromSubscriptions": "Deabonneren van gemeenschap",
+    "@removedCommunityFromSubscriptions": {},
+    "removedInstanceMod": "Instantie­moderator verwĳderd",
+    "@removedInstanceMod": {
+        "description": "Short decription for moderator action to remove a mod from an instance"
+    },
+    "removedModFromCommunity": "Moderator verwĳderd uit gemeenschap",
+    "@removedModFromCommunity": {
+        "description": "Short decription for moderator action to remove a mod from a community"
+    },
+    "removedUserAsCommunityModerator": "{username} verwĳderd als gemeen­schaps­moderator",
+    "@removedUserAsCommunityModerator": {
+        "description": "Short decription for moderator action to remove a user as community moderator",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was removed as community moderator"
+            }
+        }
+    },
+    "replyNotSupported": "Reageren vanuit deze weergave wordt momenteel nog niet ondersteund",
+    "@replyNotSupported": {},
+    "replyToPost": "Reageren op bericht",
+    "@replyToPost": {},
+    "replyingTo": "Reageren op {author}",
+    "@replyingTo": {
+        "description": "Describes the author of the post that is being replied to",
+        "placeholders": {
+            "author": {
+                "description": "The author of the post that is being replied to"
+            }
+        }
+    },
+    "report": "{count, plural, one {Rapportage} other {Rapportages} } ",
+    "@report": {
+        "description": "Message formatting for report count.",
+        "placeholders": {
+            "count": {
+                "description": "The number of reports"
+            }
+        }
+    },
+    "resetCommentPreferences": "Opmerkings­voorkeuren resetten",
+    "@resetCommentPreferences": {
+        "description": "Semantic label for button in comment appearance settings."
+    },
+    "resetPostPreferences": "Bericht­voorkeuren resetten",
+    "@resetPostPreferences": {
+        "description": "Semantic label for button in post appearance settings."
+    },
+    "resetPreferencesAndData": "Voorkeuren en gegevens resetten",
+    "@resetPreferencesAndData": {
+        "description": "Debug setting header for resetting all user preferences and data."
+    },
+    "restoredCommentFromDraft": "Opmerking hersteld uit concept",
+    "@restoredCommentFromDraft": {},
+    "restoredPostFromDraft": "Bericht hersteld uit concept",
+    "@restoredPostFromDraft": {},
+    "rightLongSwipe": "Lange veeg naar rechts",
+    "@rightLongSwipe": {
+        "description": "Setting for right long swipe"
+    },
+    "rightShortSwipe": "Korte veeg naar rechts",
+    "@rightShortSwipe": {
+        "description": "Setting for right short swipe"
+    },
+    "scrapeMissingLinkPreviews": "Ontbrekende koppelingsvoorvertoningen ophalen",
+    "@scrapeMissingLinkPreviews": {
+        "description": "Toggle to scrape missing external link previews."
+    },
+    "screenReaderProfile": "Schermlezerprofiel",
+    "@screenReaderProfile": {},
+    "screenReaderProfileDescription": "Optimaliseert Thunder voor schermlezers door het aantal elementen te verminderen en mogelijk conflicterende gebaren te verwĳderen.",
+    "@screenReaderProfileDescription": {},
+    "searchByText": "Zoeken op tekst",
+    "@searchByText": {},
+    "searchByUrl": "Zoeken op URL",
+    "@searchByUrl": {},
+    "searchCommentsFederatedWith": "Zoeken naar opmerkingen gefedereerd met {instance}",
+    "@searchCommentsFederatedWith": {
+        "description": "Placeholder text for searching for comments",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the comments are federated with"
+            }
+        }
+    },
+    "searchCommunitiesFederatedWith": "Zoeken naar gemeenschappen gefedereerd met {instance}",
+    "@searchCommunitiesFederatedWith": {
+        "description": "Placeholder text for searching for communities",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the communities are federated with"
+            }
+        }
     }
 }
