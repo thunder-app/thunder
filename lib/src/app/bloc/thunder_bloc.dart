@@ -63,6 +63,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     on<OnSetCurrentAnonymousInstance>(
       _onSetCurrentAnonymousInstance,
     );
+    on<OnBottomNavBarVisibilityChange>(
+      _onBottomNavBarVisibilityChange,
+    );
   }
 
   /// This event should be triggered at the start of the app.
@@ -130,6 +133,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(UserPreferences.getLocalSetting(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
       bool showNavigationLabels = UserPreferences.getLocalSetting(LocalSettings.showNavigationLabels) ?? true;
       bool hideTopBarOnScroll = UserPreferences.getLocalSetting(LocalSettings.hideTopBarOnScroll) ?? false;
+      bool hideBottomBarOnScroll = UserPreferences.getLocalSetting(LocalSettings.hideBottomBarOnScroll) ?? false;
       bool showHiddenPosts = UserPreferences.getLocalSetting(LocalSettings.showHiddenPosts) ?? false;
       bool showExpandedTaglines = UserPreferences.getLocalSetting(LocalSettings.showExpandedTaglines) ?? false;
 
@@ -306,6 +310,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         imageCachingMode: imageCachingMode,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
+        hideBottomBarOnScroll: hideBottomBarOnScroll,
         showHiddenPosts: showHiddenPosts,
         showExpandedTaglines: showExpandedTaglines,
 
@@ -455,5 +460,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     }
 
     emit(state.copyWith(currentAnonymousInstance: event.instance, feedCardDividerColor: state.feedCardDividerColor));
+  }
+
+  void _onBottomNavBarVisibilityChange(OnBottomNavBarVisibilityChange event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(isBottomNavBarVisible: event.isVisible, feedCardDividerColor: state.feedCardDividerColor));
   }
 }

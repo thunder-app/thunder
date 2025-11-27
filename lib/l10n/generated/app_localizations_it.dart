@@ -1143,6 +1143,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get hideTopBarOnScroll => 'Nascondi Barra Superiore se Scorri';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Istanza';
 
   @override

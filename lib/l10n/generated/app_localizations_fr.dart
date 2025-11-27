@@ -1164,6 +1164,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Masquer la barre du haut pendant le défilement';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override

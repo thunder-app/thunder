@@ -48,6 +48,7 @@ class ThunderState extends Equatable {
     this.imageCachingMode = ImageCachingMode.relaxed,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
+    this.hideBottomBarOnScroll = false,
     this.showHiddenPosts = false,
     this.showExpandedTaglines = false,
 
@@ -175,6 +176,8 @@ class ThunderState extends Equatable {
     this.isFabOpen = false,
     // Summon/Unsummon FAB event
     this.isFabSummoned = true,
+    // Bottom navigation bar visibility (for scroll-based hiding)
+    this.isBottomNavBarVisible = true,
   });
 
   final ThunderStatus status;
@@ -220,6 +223,7 @@ class ThunderState extends Equatable {
   final ImageCachingMode imageCachingMode;
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
+  final bool hideBottomBarOnScroll;
   final bool showHiddenPosts;
   final bool showExpandedTaglines;
 
@@ -357,6 +361,9 @@ class ThunderState extends Equatable {
   // Expand/Close FAB event
   final bool isFabSummoned;
 
+  // Bottom navigation bar visibility (for scroll-based hiding)
+  final bool isBottomNavBarVisible;
+
   ThunderState copyWith({
     ThunderStatus? status,
     Version? version,
@@ -399,6 +406,7 @@ class ThunderState extends Equatable {
     ImageCachingMode? imageCachingMode,
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
+    bool? hideBottomBarOnScroll,
     bool? showHiddenPosts,
     bool? showExpandedTaglines,
 
@@ -528,6 +536,8 @@ class ThunderState extends Equatable {
     bool? isFabOpen,
     // Summon/Unsummon FAB event
     bool? isFabSummoned,
+    // Bottom navigation bar visibility (for scroll-based hiding)
+    bool? isBottomNavBarVisible,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -573,6 +583,7 @@ class ThunderState extends Equatable {
       imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
+      hideBottomBarOnScroll: hideBottomBarOnScroll ?? this.hideBottomBarOnScroll,
       showHiddenPosts: showHiddenPosts ?? this.showHiddenPosts,
       showExpandedTaglines: showExpandedTaglines ?? this.showExpandedTaglines,
 
@@ -707,6 +718,8 @@ class ThunderState extends Equatable {
       isFabOpen: isFabOpen ?? this.isFabOpen,
       // Summon/Unsummon FAB event
       isFabSummoned: isFabSummoned ?? this.isFabSummoned,
+      // Bottom navigation bar visibility (for scroll-based hiding)
+      isBottomNavBarVisible: isBottomNavBarVisible ?? this.isBottomNavBarVisible,
     );
   }
 
@@ -751,6 +764,8 @@ class ThunderState extends Equatable {
         communityFullNameInstanceNameColor,
         imageCachingMode,
         showNavigationLabels,
+        hideTopBarOnScroll,
+        hideBottomBarOnScroll,
         showExpandedTaglines,
 
         /// -------------------------- Feed Post Related Settings --------------------------
@@ -883,5 +898,7 @@ class ThunderState extends Equatable {
         isFabOpen,
         // Expand/Close FAB event
         isFabSummoned,
+        // Bottom navigation bar visibility
+        isBottomNavBarVisible,
       ];
 }

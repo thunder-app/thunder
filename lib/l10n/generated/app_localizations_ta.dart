@@ -121,7 +121,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String addedUserAsCommunityModerator(Object username) {
-    return 'Added $username as community moderator';
+    return 'சமூக மதிப்பீட்டாளராக $username சேர்க்கப்பட்டார்';
   }
 
   @override
@@ -220,7 +220,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'அறிவிப்பு காசோலைகள் கூடுதல் பேட்டரியை நுகரும் என்பதை நினைவில் கொள்க';
 
   @override
-  String get ban => 'Ban';
+  String get ban => 'தடை வெற்றி';
 
   @override
   String get banFromCommunity => 'சமூகத்திலிருந்து தடை';
@@ -425,7 +425,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get comment => 'கருத்து';
 
   @override
-  String get commentActions => 'Comment Actions';
+  String get commentActions => 'கருத்து நடவடிக்கைகள்';
 
   @override
   String get commentBehaviourSettings => 'கருத்துகள்';
@@ -781,10 +781,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get deletedByModerator => 'மதிப்பீட்டாளரால் நீக்கப்பட்டது';
 
   @override
-  String get deletedComment => 'Deleted comment';
+  String get deletedComment => 'நீக்கப்பட்ட கருத்து';
 
   @override
-  String get deletedPost => 'Deleted post';
+  String get deletedPost => 'நீக்கப்பட்ட இடுகை';
 
   @override
   String get deselectUndeterminedWarning =>
@@ -1007,7 +1007,7 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return '\'$serverAddress\' இல் தண்டர் அறிவிப்பு சேவையகத்துடன் தொடர்புகொள்வதில் தோல்வி';
+    return '$serverAddress இல் Thunder அறிவிப்பு சேவையகத்துடன் தொடர்பு கொள்ள முடியவில்லை.';
   }
 
   @override
@@ -1093,7 +1093,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'இடமிருந்து வலமாக சைகைகள் முடக்கப்பட்டிருக்கும் போது திரும்பிச் செல்ல எங்கும் ச்வைப் செய்யவும்';
 
   @override
-  String get fullscreen => 'Fullscreen';
+  String get fullscreen => 'முழு திரை';
 
   @override
   String get fullscreenSwipeGestures => 'முழுத்திரை ச்வைப் சைகைகள்';
@@ -1151,6 +1151,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hideTopBarOnScroll => 'சுருளில் மேல் பட்டியை மறைக்கவும்';
+
+  @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
 
   @override
   String get hostInstance => 'புரவலன் நிகழ்வு';
@@ -1822,7 +1825,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get pinned => 'குத்திவைக்கப்பட்டது';
 
   @override
-  String get pinnedPostToCommunity => 'Pinned post to community';
+  String get pinnedPostToCommunity => 'சமூகத்தில் பின் செய்யப்பட்ட இடுகை';
 
   @override
   String get placeholderText =>
@@ -2028,7 +2031,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get removePost => 'இடுகையை அகற்று';
 
   @override
-  String get removeUserData => 'Remove user data';
+  String get removeUserData => 'பயனர் தரவை அகற்று';
 
   @override
   String get removed => 'அகற்றப்பட்டது';
@@ -2054,7 +2057,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String removedUserAsCommunityModerator(Object username) {
-    return 'Removed $username as community moderator';
+    return 'சமூக மதிப்பீட்டாளராக $username அகற்றப்பட்டார்';
   }
 
   @override
@@ -2106,10 +2109,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get reportPost => 'அறிக்கை இடுகை';
 
   @override
-  String get reportedComment => 'Reported comment';
+  String get reportedComment => 'கருத்து தெரிவிக்கப்பட்டது';
 
   @override
-  String get reportedPost => 'Reported post';
+  String get reportedPost => 'அறிக்கையிடப்பட்ட இடுகை';
 
   @override
   String get reporter => 'நிருபர்:';
@@ -2143,7 +2146,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get restorePost => 'இடுகையை மீட்டெடுங்கள்';
 
   @override
-  String get restoredComment => 'மீட்டெடுக்கப்பட்ட கருத்து';
+  String get restoredComment => 'கருத்து மீட்டெடுக்கப்பட்டது';
 
   @override
   String get restoredCommentFromDraft => 'வரைவில் இருந்து மீட்டெடுக்கப்பட்டது';
@@ -2907,7 +2910,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return 'சமூகத்திலிருந்து தடைசெய்யப்படாத பயனர்';
+    return 'சமூகத்திலிருந்து $username தடைநீக்கப்பட்டது';
   }
 
   @override
@@ -2976,7 +2979,8 @@ class AppLocalizationsTa extends AppLocalizations {
       'சமூகத்திலிருந்து இடுக்கையை அவிழ்த்து விடுங்கள்';
 
   @override
-  String get unpinnedPostFromCommunity => 'Unpinned post from community';
+  String get unpinnedPostFromCommunity =>
+      'சமூகத்திலிருந்து பின் நீக்கப்பட்ட இடுகை';
 
   @override
   String get unreachable => 'அணுக முடியாதது';

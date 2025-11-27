@@ -1137,6 +1137,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hideTopBarOnScroll => 'Hide Top Bar on Scroll';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override
@@ -4492,6 +4495,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String get fullScreenNavigationSwipeDescription =>
       'Swipe anywhere to go back when left-to-right gestures are disabled';
+
+  @override
+  String get fullscreen => 'Fullscreen';
 
   @override
   String get fullscreenSwipeGestures => 'Fullscreen Swipe Gestures';

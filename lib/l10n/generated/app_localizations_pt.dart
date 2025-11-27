@@ -1146,6 +1146,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get hideTopBarOnScroll => 'Hide Top Bar on Scroll';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override
@@ -4294,6 +4297,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Deslize em qualquer lugar para voltar quando os gestos da esquerda para a direita estiverem desativados';
 
   @override
+  String get fullscreen => 'Tela cheia';
+
+  @override
   String get fullscreenSwipeGestures => 'Gestos de Deslizar em Tela Cheia';
 
   @override
@@ -4416,7 +4422,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get in_ => 'em';
 
   @override
-  String get inbox => 'Caixa de Entrada';
+  String get inbox => 'Entrada';
 
   @override
   String get includeCommunity => 'Incluir Comunidade';

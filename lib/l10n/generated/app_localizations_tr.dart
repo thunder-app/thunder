@@ -1145,6 +1145,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hideTopBarOnScroll => 'Kaydırırken Üst Çubuğu Gizle';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Barındıran Sunucu';
 
   @override

@@ -1095,7 +1095,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wische irgendwohin, um zurückzugehen, wenn die Links-nach-Rechts-Gesten deaktiviert sind';
 
   @override
-  String get fullscreen => 'Fullscreen';
+  String get fullscreen => 'Aktion zum Aufrufen des Vollbildmodus';
 
   @override
   String get fullscreenSwipeGestures => 'Wischgesten im Vollbildmodus';
@@ -1152,6 +1152,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hideTopBarOnScroll => 'Obere Leiste beim Scrollen verbergen';
+
+  @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
 
   @override
   String get hostInstance => 'Host Instanz';

@@ -32,3 +32,10 @@ class OnSetCurrentAnonymousInstance extends ThunderEvent {
   final String? instance;
   const OnSetCurrentAnonymousInstance(this.instance);
 }
+
+class OnBottomNavBarVisibilityChange extends ThunderEvent {
+  /// Whether the bottom navigation bar is visible
+  final bool isVisible;
+
+  const OnBottomNavBarVisibilityChange(this.isVisible);
+}

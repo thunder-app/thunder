@@ -1148,6 +1148,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get hideTopBarOnScroll => 'Ukryj Górny Pasek Po Przesunięciu Ekranu';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override

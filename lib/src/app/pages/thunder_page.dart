@@ -221,14 +221,32 @@ class _ThunderState extends State<Thunder> {
                       )
                     : null,
                 floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-                bottomNavigationBar: CustomBottomNavigationBar(
-                  selectedPageIndex: selectedPageIndex,
-                  onPageChange: (int index) {
-                    setState(() {
-                      selectedPageIndex = index;
-                      widget.pageController.jumpToPage(index);
-                    });
-                  },
+                bottomNavigationBar: AnimatedSize(
+                  duration: Duration(milliseconds: thunderBlocState.reduceAnimations ? 0 : 200),
+                  curve: Curves.easeInOut,
+                  clipBehavior: Clip.hardEdge,
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    height: (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) ? 0 : null,
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: thunderBlocState.reduceAnimations ? 0 : 150),
+                      curve: Curves.easeOut,
+                      opacity: (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) ? 0.0 : 1.0,
+                      child: CustomBottomNavigationBar(
+                        selectedPageIndex: selectedPageIndex,
+                        onPageChange: (int index) {
+                          // Reset bottom nav bar visibility when switching pages
+                          if (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) {
+                            context.read<ThunderBloc>().add(const OnBottomNavBarVisibilityChange(true));
+                          }
+                          setState(() {
+                            selectedPageIndex = index;
+                            widget.pageController.jumpToPage(index);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                 ),
                 body: BlocConsumer<ProfileBloc, ProfileState>(
                   listenWhen: (ProfileState previous, ProfileState current) {

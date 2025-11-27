@@ -680,12 +680,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
-    return 'The database was successfully exported to \'$savedFilePath\'';
+    return 'De database is succesvol geëxporteerd naar ‘$savedFilePath’';
   }
 
   @override
   String get databaseImportedSuccessfully =>
-      'The database was imported successfully!';
+      'De database is succesvol geïmporteerd!';
 
   @override
   String get databaseNotExportedSuccessfully =>
@@ -719,7 +719,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get defaultCommentSortType => 'Default Comment Sort Type';
 
   @override
-  String get defaultFeedSortType => 'Default Feed Sort Type';
+  String get defaultFeedSortType => 'Standaard­sortering voor feed';
 
   @override
   String get defaultFeedType => 'Standaard­feedtype';
@@ -985,7 +985,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get exportLemmyAccountSettingsDescription =>
-      'Export Lemmy account settings';
+      'Lemmy-account­instellingen exporteren';
 
   @override
   String get exportSettingsSubtitle =>
@@ -1087,7 +1087,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Swipe anywhere to go back when left-to-right gestures are disabled';
 
   @override
-  String get fullscreen => 'Fullscreen';
+  String get fullscreen => 'Volledig scherm';
 
   @override
   String get fullscreenSwipeGestures => 'Veeg­gebaren in volledig scherm';
@@ -1146,6 +1146,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hideTopBarOnScroll => 'Hide Top Bar on Scroll';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host-instantie';
 
   @override
@@ -1182,11 +1185,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get importExportLemmyAccountSettings =>
-      'Import/Export Lemmy Account Settings';
+      'Lemmy-account­instellingen importeren/exporteren';
 
   @override
   String get importExportLemmyAccountSettingsSubtitle =>
-      'Includes subscribed communities, blocklists, and account preferences';
+      'Bevat abonnementen op gemeen­schappen, blokkeer­lĳsten en account­voorkeuren';
 
   @override
   String get importExportSettings => 'Instellingen importeren/exporteren';
@@ -1196,7 +1199,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get importLemmyAccountSettingsDescription =>
-      'Import Lemmy account settings';
+      'Lemmy-account­instellingen importeren';
 
   @override
   String get importSettings => 'Instellingen importeren';
@@ -1292,7 +1295,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get language => 'Taal';
 
   @override
-  String get languageFilters => 'Looking for language filters?';
+  String get languageFilters => 'Op zoek naar taal­filters?';
 
   @override
   String get languageNotAllowed =>
@@ -1406,7 +1409,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get lookingForAccountSpecificFeedSettings =>
-      'Looking for account-specific feed settings?';
+      'Op zoek naar account­specifieke feed­instellingen?';
 
   @override
   String get malformedUri =>
@@ -1431,7 +1434,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get markPostAsReadOnScroll => 'Mark Read On Scroll';
 
   @override
-  String get markReadColor => 'Mark Read/Unread Color';
+  String get markReadColor => 'Kleur van markeren als (on)gelezen';
 
   @override
   String get matrixUser => 'Matrix­gebruiker';
@@ -1474,13 +1477,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get missingErrorMessage => 'No error message available';
 
   @override
-  String get modAdd => 'Add/Remove Instance Moderators';
+  String get modAdd => 'Instantie­moderators toevoegen/verwĳderen';
 
   @override
   String get modAddCommunity => 'Add/Remove Moderators to Communities';
 
   @override
-  String get modBan => 'Ban/Unban Instance Users';
+  String get modBan => 'Instantie­gebruikers verbannen/herstellen';
 
   @override
   String get modBanFromCommunity => 'Ban/Unban Users from Communities';
@@ -1546,7 +1549,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get navbarDoubleTapGestures => 'Navbar Double Tap Gestures';
 
   @override
-  String get navbarSwipeGestures => 'Navbar Swipe Gestures';
+  String get navbarSwipeGestures => 'Veeg­gebaren voor navigatie­balk';
 
   @override
   String get navigateDown => 'Volgende opmerking';
@@ -1586,13 +1589,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Er zĳn geen anonieme instanties toegevoegd';
 
   @override
-  String get noCommentsFound => 'No comments found';
+  String get noCommentsFound => 'Geen opmerkingen gevonden';
 
   @override
-  String get noCommunitiesFound => 'No communities found';
+  String get noCommunitiesFound => 'Geen gemeenschappen gevonden';
 
   @override
-  String get noCommunityBlocks => 'No blocked communities';
+  String get noCommunityBlocks => 'Geen geblokkeerde gemeen­schappen';
 
   @override
   String get noCompatibleAppFound => 'No compatible app found';
@@ -1604,10 +1607,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noDisplayNameSet => 'No display name set';
 
   @override
-  String get noEmailSet => 'No email set';
+  String get noEmailSet => 'Geen e-mail ingesteld';
 
   @override
-  String get noFavoritedCommunities => 'No favorited communities';
+  String get noFavoritedCommunities => 'Geen favoriete gemeenschappen';
 
   @override
   String get noImages => 'It looks like you have not uploaded any images.';
@@ -1647,19 +1650,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noReplies => 'Geen reacties';
 
   @override
-  String get noResultsFound => 'No results found.';
+  String get noResultsFound => 'Geen resultaten gevonden.';
 
   @override
   String get noSubscriptions => 'Geen abonnementen';
 
   @override
-  String get noUserBlocks => 'No blocked users.';
+  String get noUserBlocks => 'Geen geblokkeerde gebruikers.';
 
   @override
   String get noUserLabels => 'You have not created any user labels yet';
 
   @override
-  String get noUsersFound => 'No users found.';
+  String get noUsersFound => 'Geen gebruikers gevonden.';
 
   @override
   String get noVisibleComments =>
@@ -1680,7 +1683,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notValidUrl => 'Not a valid URL';
 
   @override
-  String get nothingToShare => 'Nothing to share';
+  String get nothingToShare => 'Niets om te delen';
 
   @override
   String notifications(num count) {
@@ -1737,13 +1740,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get open => 'Openen';
 
   @override
-  String get openAccountSwitcher => 'Open account switcher';
+  String get openAccountSwitcher => 'Account­wisselaar openen';
 
   @override
-  String get openByDefault => 'Open by default';
+  String get openByDefault => 'Standaard openen';
 
   @override
-  String get openInBrowser => 'Open in Browser';
+  String get openInBrowser => 'Openen in browser';
 
   @override
   String get openInstance => 'Instantie openen';
@@ -1789,7 +1792,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pinPostToCommunity => 'Pin Post to Community';
 
   @override
-  String get pinToCommunity => 'Pin to Community';
+  String get pinToCommunity => 'Vastpinnen in gemeenschap';
 
   @override
   String get pinned => 'Vastgepind';
@@ -1818,7 +1821,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get postBodySettingsDescription =>
-      'These settings affect the display of the post body';
+      'Deze instellingen hebben invloed op de weergave van de bericht­inhoud';
 
   @override
   String get postBodyShowCommunityInstance => 'Show Community Instance';
@@ -2271,7 +2274,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingOverrideLabel =>
-      'These settings override Thunder\'s default settings.';
+      'Deze instellingen over­schrĳven de standaard­instellingen van Thunder.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
@@ -2288,7 +2291,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsFeedCards =>
-      'These settings apply to the cards in the main feed, actions are always available when actually opening posts.';
+      'Deze instellingen gelden voor de kaarten in de hoofd­feed. Acties zijn altĳd beschikbaar wanneer u daad­werkelĳk berichten opent.';
 
   @override
   String get settingsImportedSuccessfully =>
@@ -2417,7 +2420,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showAll => 'Alles tonen';
 
   @override
-  String get showBotAccounts => 'Show Bot Accounts';
+  String get showBotAccounts => 'Bot-accounts tonen';
 
   @override
   String get showCommentActionButtons => 'Show Comment Action Buttons';
@@ -2464,7 +2467,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Whether to display labels beneath the bottom navigation buttons';
 
   @override
-  String get showNsfwContent => 'Show NSFW Content';
+  String get showNsfwContent => 'NSFW-inhoud tonen';
 
   @override
   String get showOwnContent => 'Show own content';
@@ -2504,7 +2507,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showScoreCounters => 'Display User Scores';
 
   @override
-  String get showScores => 'Show Post/Comment Scores';
+  String get showScores => 'Scores van berichten en opmerkingen tonen';
 
   @override
   String get showTextPostIndicator => 'Show Text Post Indicator';
@@ -3071,7 +3074,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get userSettingDescription =>
-      'These settings sync with your Lemmy account and are only applied on a per-account basis.';
+      'Deze instellingen worden gesynchroniseerd met uw Lemmy-account en worden per account toegepast.';
 
   @override
   String get userStyle => 'Gebruikers­stĳl';
@@ -3080,7 +3083,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get username => 'Gebruikers­naam';
 
   @override
-  String get usernameFormattingRedirect => 'Looking for username formatting?';
+  String get usernameFormattingRedirect =>
+      'Op zoek naar gebruikersnaam­opmaak?';
 
   @override
   String get users => 'Gebruikers';

@@ -1148,6 +1148,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hideTopBarOnScroll => 'Hide Top Bar on Scroll';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override

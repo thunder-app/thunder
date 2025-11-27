@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
+import 'app_localizations_be.dart';
 import 'app_localizations_cs.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
@@ -114,6 +115,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
+    Locale('be'),
     Locale('cs'),
     Locale('de'),
     Locale('en'),
@@ -2125,6 +2127,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide Top Bar on Scroll'**
   String get hideTopBarOnScroll;
+
+  /// Settings toggle to hide the bottom navigation bar on scroll
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Bottom Bar on Scroll'**
+  String get hideBottomBarOnScroll;
 
   /// The instance hosting a community
   ///
@@ -5757,6 +5765,7 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) => <String>[
         'ar',
+        'be',
         'cs',
         'de',
         'en',
@@ -5822,6 +5831,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'ar':
       return AppLocalizationsAr();
+    case 'be':
+      return AppLocalizationsBe();
     case 'cs':
       return AppLocalizationsCs();
     case 'de':

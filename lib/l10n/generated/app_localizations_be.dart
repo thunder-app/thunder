@@ -4,26 +4,33 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for Esperanto (`eo`).
-class AppLocalizationsEo extends AppLocalizations {
-  AppLocalizationsEo([String locale = 'eo']) : super(locale);
+/// The translations for Belarusian (`be`).
+class AppLocalizationsBe extends AppLocalizations {
+  AppLocalizationsBe([String locale = 'be']) : super(locale);
 
   @override
-  String get about => 'Pri';
+  String get about => 'Пра праграму';
 
   @override
-  String get accept => 'Accept';
+  String get accept => 'Прымяніць';
 
   @override
-  String get accessibility => 'Alirebleco';
+  String get accessibility => 'Спецыяльныя магчымасці';
 
   @override
   String get accessibilityProfilesDescription =>
-      'Alireblecaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.';
+      'Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.';
 
   @override
   String account(num count) {
-    return 'Konto';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Accounts',
+      one: 'Account',
+      zero: 'Account',
+    );
+    return '$_temp0 ';
   }
 
   @override
@@ -36,7 +43,7 @@ class AppLocalizationsEo extends AppLocalizations {
       'Your account settings override the following settings';
 
   @override
-  String get accountSettings => 'Kontagordoj';
+  String get accountSettings => 'Account Settings';
 
   @override
   String accountSettingsExportedSuccessfully(Object savedFilePath) {
@@ -64,25 +71,25 @@ class AppLocalizationsEo extends AppLocalizations {
   String get actionColorsRedirect => 'Looking to customize colors?';
 
   @override
-  String get actions => 'Agoj';
+  String get actions => 'Actions';
 
   @override
-  String get active => 'Aktiva';
+  String get active => 'Active';
 
   @override
   String get activity => 'Activity';
 
   @override
-  String get add => 'Aldoni';
+  String get add => 'Add';
 
   @override
-  String get addAccount => 'Aldoni Konton';
+  String get addAccount => 'Add Account';
 
   @override
-  String get addAccountToSeeProfile => 'Ensalutu por vidi vian konton.';
+  String get addAccountToSeeProfile => 'Log in to see your account.';
 
   @override
-  String get addAnonymousInstance => 'Aldoni Anonima Instancon';
+  String get addAnonymousInstance => 'Add Anonymous Instance';
 
   @override
   String get addAsCommunityModerator => 'Add as Community Moderator';
@@ -91,19 +98,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get addDiscussionLanguage => 'Add Language';
 
   @override
-  String get addKeywordFilter => 'Aldoni Ŝlosilvorton';
+  String get addKeywordFilter => 'Add Keyword';
 
   @override
   String get addOriginalPostBody => 'Add original post body?';
 
   @override
-  String get addToFavorites => 'Aldoni al plej ŝatataĵoj';
+  String get addToFavorites => 'Add to favorites';
 
   @override
   String get addUserLabel => 'Add User Label';
 
   @override
-  String get addedCommunityToSubscriptions => 'Abonis al komunumo';
+  String get addedCommunityToSubscriptions => 'Subscribed to community';
 
   @override
   String get addedInstanceMod => 'Added Instance Mod';
@@ -120,7 +127,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get admin => 'Admin';
 
   @override
-  String get advanced => 'Altnivela';
+  String get advanced => 'Advanced';
 
   @override
   String ago(Object time) {
@@ -128,17 +135,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get all => 'Ĉiuj';
+  String get all => 'All';
 
   @override
-  String get allPosts => 'Ĉiuj Afiŝoj';
+  String get allPosts => 'All Posts';
 
   @override
-  String get allowOpenSupportedLinks =>
-      'Permesi al aplikaĵo malfermi subtenatajn ligilojn.';
+  String get allowOpenSupportedLinks => 'Allow app to open supported links.';
 
   @override
-  String get alreadyPostedTo => 'Jam afiŝiĝis al';
+  String get alreadyPostedTo => 'Already posted to';
 
   @override
   String get altText => 'Alt Text';
@@ -151,32 +157,32 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String andXMore(Object count) {
-    return 'kaj $count pli';
+    return 'and $count more';
   }
 
   @override
-  String get animations => 'Animacioj';
+  String get animations => 'Animations';
 
   @override
-  String get anonymous => 'Anonima';
+  String get anonymous => 'Anonymous';
 
   @override
   String get anonymousInstances => 'Anonymous Instances';
 
   @override
-  String get appLanguage => 'Aplikaĵa Lingvo';
+  String get appLanguage => 'App Language';
 
   @override
-  String get appearance => 'Aspekto';
+  String get appearance => 'Appearance';
 
   @override
   String get applePushNotificationService => 'Apple Push Notification Service';
 
   @override
-  String get applied => 'Aplikita';
+  String get applied => 'Applied';
 
   @override
-  String get apply => 'Apliki';
+  String get apply => 'Apply';
 
   @override
   String areNotificationsAllowedBySystem(Object yesOrNo) {
@@ -199,17 +205,17 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get back => 'Reiri';
+  String get back => 'Back';
 
   @override
-  String get backButton => 'Reiri butono';
+  String get backButton => 'Back button';
 
   @override
-  String get backToTop => 'Reiri al Supro';
+  String get backToTop => 'Back To Top';
 
   @override
   String get backgroundCheckWarning =>
-      'Atentu, ke sciigaj kontroloj konsumos plian baterion';
+      'Note that notification checks will consume additional battery';
 
   @override
   String get ban => 'Ban';
@@ -224,19 +230,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get bannedUserFromCommunity => 'Banned User from Community';
 
   @override
-  String get base => 'Baza';
+  String get base => 'Base';
 
   @override
   String get block => 'Block';
 
   @override
-  String get blockCommunity => 'Bari Komunumon';
+  String get blockCommunity => 'Block Community';
 
   @override
   String get blockCommunityInstance => 'Block Community Instance';
 
   @override
-  String get blockInstance => 'Bari Instancon';
+  String get blockInstance => 'Block Instance';
 
   @override
   String get blockManagement => 'Block Management';
@@ -245,19 +251,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get blockSettingLabel => 'User/Community/Instance Blocks';
 
   @override
-  String get blockUser => 'Bari Uzanton';
+  String get blockUser => 'Block User';
 
   @override
   String get blockUserInstance => 'Block User Instance';
 
   @override
-  String get blockedCommunities => 'Baritaj Komunumoj';
+  String get blockedCommunities => 'Blocked Communities';
 
   @override
-  String get blockedInstances => 'Baritaj Instancoj';
+  String get blockedInstances => 'Blocked Instances';
 
   @override
-  String get blockedUsers => 'Baritaj Uzantoj';
+  String get blockedUsers => 'Blocked Users';
 
   @override
   String get blue => 'Blue';
@@ -282,33 +288,33 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String browsingAnonymously(Object instance) {
-    return 'Vi nun foliumas $instance anonime.';
+    return 'You are currently browsing $instance anonymously.';
   }
 
   @override
-  String get cancel => 'Nuligi';
+  String get cancel => 'Cancel';
 
   @override
   String get cannotReportOwnComment =>
-      'Vi ne rajtas sendi raporton por via propra komento.';
+      'You may not submit a report for your own comment.';
 
   @override
-  String get cantBlockAdmin => 'Vi ne rajtas bari instancan administranton.';
+  String get cantBlockAdmin => 'You may not block an instance administrator.';
 
   @override
-  String get cantBlockYourself => 'Vi ne rajtas bari vin mem.';
+  String get cantBlockYourself => 'You may not block yourself.';
 
   @override
   String get cardPostCardMetadataItems => 'Card View Metadata';
 
   @override
-  String get cardView => 'Karta Vido';
+  String get cardView => 'Card View';
 
   @override
-  String get cardViewDescription => 'Ebligu kartan vidon por ĝustigi agordojn';
+  String get cardViewDescription => 'Enable card view to adjust settings';
 
   @override
-  String get cardViewSettings => 'Agordoj de Karta Vido';
+  String get cardViewSettings => 'Card View Settings';
 
   @override
   String get changeAccountSettingsFor => 'Change account settings for';
@@ -324,59 +330,59 @@ class AppLocalizationsEo extends AppLocalizations {
       'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
 
   @override
-  String get changeSort => 'Ŝanĝi Ordigon';
+  String get changeSort => 'Change Sort';
 
   @override
   String clearCache(Object cacheSize) {
-    return 'Viŝi kaŝmemoron ($cacheSize)';
+    return 'Clear Cache ($cacheSize)';
   }
 
   @override
   String get clearCacheLabel => 'Clear Cache';
 
   @override
-  String get clearDatabase => 'Viŝi datumbazon';
+  String get clearDatabase => 'Clear Database';
 
   @override
-  String get clearPreferences => 'Viŝi Preferojn';
+  String get clearPreferences => 'Clear Preferences';
 
   @override
-  String get clearSearch => 'Viŝi Serĉon';
+  String get clearSearch => 'Clear Search';
 
   @override
-  String get clearedCache => 'Viŝiĝis kaŝmemoro sukcese.';
+  String get clearedCache => 'Cleared cache successfully.';
 
   @override
   String get clearedDatabase =>
-      'Loka datumbazo viŝiĝis. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.';
+      'Local database cleared. Restart Thunder for new changes to take effect.';
 
   @override
-  String get clearedUserPreferences => 'Viŝiĝis ĉiuj uzantpreferoj';
+  String get clearedUserPreferences => 'Cleared all user preferences';
 
   @override
-  String get close => 'Fermi';
+  String get close => 'Close';
 
   @override
   String get collapse => 'Collapse';
 
   @override
-  String get collapseCommentPreview => 'Maletendi Komentan Antaŭrigardon';
+  String get collapseCommentPreview => 'Collapse Comment Preview';
 
   @override
-  String get collapseInformation => 'Maletendi Informojn';
+  String get collapseInformation => 'Collapse Information';
 
   @override
   String get collapseParentCommentBodyOnGesture =>
-      'Kaŝi Gepatran Komenton kiam ĝi estas maletenda';
+      'Hide Parent Comment when Collapsed';
 
   @override
-  String get collapsePost => 'Maletendi Afiŝon';
+  String get collapsePost => 'Collapse post';
 
   @override
-  String get collapsePostPreview => 'Maletendi Afiŝan Antaŭrigardon';
+  String get collapsePostPreview => 'Collapse Post Preview';
 
   @override
-  String get collapseSpoiler => 'Maletendi Intrigmalkaŝon';
+  String get collapseSpoiler => 'Collapse Spoiler';
 
   @override
   String get color => 'Color';
@@ -394,68 +400,67 @@ class AppLocalizationsEo extends AppLocalizations {
   String get colors => 'Colors';
 
   @override
-  String get combineCommentScores => 'Kombini Komentajn Poentojn';
+  String get combineCommentScores => 'Combine Comment Scores';
 
   @override
-  String get combineCommentScoresLabel => 'Kombini Komentajn Poentojn';
+  String get combineCommentScoresLabel => 'Combine Comment Scores';
 
   @override
-  String get combineNavAndFab =>
-      'Flosanta Ago-Butono estos montrita inter navigaj butonoj.';
+  String get combineNavAndFab => 'Combine FAB and Navigation Buttons';
 
   @override
   String get combineNavAndFabDescription =>
-      'Flosanta Ago-Butono estos montrita inter navigadaj butonoj.';
+      'Floating Action Button will be shown between navigation buttons.';
 
   @override
   String get comfortable => 'Comfortable';
 
   @override
-  String get comment => 'Komento';
+  String get comment => 'Comment';
 
   @override
   String get commentActions => 'Comment Actions';
 
   @override
-  String get commentBehaviourSettings => 'Komentoj';
+  String get commentBehaviourSettings => 'Comments';
 
   @override
-  String get commentFontScale => 'Komento-Enhava Tipara Grandeco';
+  String get commentFontScale => 'Comment Content Font Scale';
 
   @override
   String get commentPreview =>
-      'Montri antaŭrigardon de la komentoj kun la donitaj agordoj';
+      'Show a preview of the comments with the given settings';
 
   @override
-  String get commentReported => 'La komento estis markita por revizio.';
+  String get commentReported => 'The comment has been marked for review.';
 
   @override
-  String get commentSavedAsDraft => 'Komento konservita kiel malneto';
+  String get commentSavedAsDraft => 'Comment saved as draft';
 
   @override
   String get commentShowUserAvatar => 'Show User Avatar';
 
   @override
-  String get commentShowUserInstance => 'Montri uzantan instancon';
+  String get commentShowUserInstance => 'Show User Instance';
 
   @override
-  String get commentSortType => 'Komenta Ordigi Tipon';
+  String get commentSortType => 'Comment Sort Type';
 
   @override
-  String get commentSwipeActions => 'Komentaj Ŝovumaj Agoj';
+  String get commentSwipeActions => 'Comment Swipe Actions';
 
   @override
   String get commentSwipeGesturesHint =>
-      'Ĉu vi volas uzi butonojn anstataŭe? Ebligu ilin en la sekcio de komentoj en ĝeneralaj agordoj.';
+      'Looking to use buttons instead? Enable them in the comments section in general settings.';
 
   @override
-  String get comments => 'Komentoj';
+  String get comments => 'Comments';
 
   @override
-  String get communities => 'Komunumoj';
+  String get communities => 'Communities';
 
   @override
-  String get community => 'Komunumo';
+  String get community => 'Community';
 
   @override
   String get communityActions => 'Community Actions';
@@ -466,7 +471,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get communityFormat => 'Komunuma Formato';
+  String get communityFormat => 'Community Format';
 
   @override
   String get communityNameColor => 'Community Name Color';
@@ -484,41 +489,40 @@ class AppLocalizationsEo extends AppLocalizations {
   String get compactPostCardMetadataItems => 'Compact View Metadata';
 
   @override
-  String get compactView => 'Kompakta Vido';
+  String get compactView => 'Compact View';
 
   @override
-  String get compactViewDescription =>
-      'Ebligu kompaktan vidon por ĝustigi agordojn';
+  String get compactViewDescription => 'Enable compact view to adjust settings';
 
   @override
-  String get compactViewSettings => 'Agordoj de Kompakta Vido';
+  String get compactViewSettings => 'Compact View Settings';
 
   @override
-  String get condensed => 'Kondensita';
+  String get condensed => 'Condensed';
 
   @override
-  String get confirm => 'Konfirmi';
+  String get confirm => 'Confirm';
 
   @override
-  String get confirmLogOutBody => 'Ĉu vi certas, ke vi volas elsaluti?';
+  String get confirmLogOutBody => 'Are you sure you want to log out?';
 
   @override
-  String get confirmLogOutTitle => 'Ĉu elsaluti?';
+  String get confirmLogOutTitle => 'Log Out?';
 
   @override
   String get confirmMarkAllAsReadBody =>
-      'Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?';
+      'Are you sure you want to mark all replies, mentions, and messages as read?';
 
   @override
-  String get confirmMarkAllAsReadTitle => 'Ĉu marki ĉiun kiel legita?';
+  String get confirmMarkAllAsReadTitle => 'Mark all as read?';
 
   @override
   String get confirmResetCommentPreferences =>
-      'Ĉi tio restarigos ĉiujn defaŭltajn komentajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
+      'This will reset all comment preferences. Are you sure you want to proceed?';
 
   @override
   String get confirmResetPostPreferences =>
-      'Ĉi tio restarigos ĉiujn defaŭltajn afiŝajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
+      'This will reset all post preferences. Are you sure you want to proceed?';
 
   @override
   String get confirmUnsubscription => 'Are you sure you want to unsubscribe?';
@@ -535,13 +539,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get contentWarning => 'Content Warning';
 
   @override
-  String get controversial => 'Polemika';
+  String get controversial => 'Controversial';
 
   @override
-  String get copiedToClipboard => 'Kopiiĝis al tondujo';
+  String get copiedToClipboard => 'Copied to clipboard';
 
   @override
-  String get copy => 'Kopii';
+  String get copy => 'Copy';
 
   @override
   String get copyComment => 'Copy Comment';
@@ -550,19 +554,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get copySelected => 'Copy selected';
 
   @override
-  String get copyText => 'Kopii Tekston';
+  String get copyText => 'Copy Text';
 
   @override
   String get couldNotDetermineCommentDelete =>
-      'Eraro: Ne eblis determini afiŝon por forviŝi la komenton.';
+      'Error: Could not determine post to delete the comment.';
 
   @override
   String get couldNotDeterminePostComment =>
-      'Eraro: Ne eblis determini afiŝon al komenti.';
+      'Error: Could not determine post to comment to.';
 
   @override
   String get couldntCreateReport =>
-      'Via komenta raporto ne povus esti sendita nuntempe. Bonvolu reprovi poste';
+      'Your comment report could not be submitted at this time. Please try again later';
 
   @override
   String get couldntFindPost =>
@@ -585,12 +589,12 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String countSubscribers(Object count) {
-    return '$count abonantoj';
+    return '$count Subscribers';
   }
 
   @override
   String countUsers(Object count) {
-    return '$count uzantoj';
+    return '$count users';
   }
 
   @override
@@ -614,16 +618,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Krei konton';
+  String get createAccount => 'Create Account';
 
   @override
-  String get createComment => 'Krei Komenton';
+  String get createComment => 'Create Comment';
 
   @override
-  String get createNewCrossPost => 'Krei novan transafiŝon';
+  String get createNewCrossPost => 'Create new cross-post';
 
   @override
-  String get createPost => 'Krei Afiŝon';
+  String get createPost => 'Create Post';
 
   @override
   String created(Object date) {
@@ -634,18 +638,18 @@ class AppLocalizationsEo extends AppLocalizations {
   String get createdToday => 'Created Today';
 
   @override
-  String get creator => 'Kreinto';
+  String get creator => 'Creator';
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'transafiŝiĝis de:  $postUrl';
+    return 'cross-posted from: $postUrl';
   }
 
   @override
-  String get crossPostedTo => 'Transafiŝiĝis al';
+  String get crossPostedTo => 'Cross-posted to';
 
   @override
-  String get currentLongPress => 'Nuntempe agordiĝas kiel longa premo';
+  String get currentLongPress => 'Currently set as long press';
 
   @override
   String currentNotificationsMode(Object mode) {
@@ -653,16 +657,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get currentSinglePress => 'Nuntempe agordiĝas kiel ununura premo';
+  String get currentSinglePress => 'Currently set as single press';
 
   @override
-  String get customizeSwipeActions => 'Agordi glitajn agojn (Premu por ŝanĝi)';
+  String get customizeSwipeActions => 'Customize swipe actions (tap to change)';
 
   @override
-  String get dangerZone => 'Danĝera Zono';
+  String get dangerZone => 'Danger Zone';
 
   @override
-  String get dark => 'Malhela';
+  String get dark => 'Dark';
 
   @override
   String get databaseExportWarning =>
@@ -689,11 +693,11 @@ class AppLocalizationsEo extends AppLocalizations {
   String get dateFormat => 'Date Format';
 
   @override
-  String get debug => 'Sencimigi';
+  String get debug => 'Debug';
 
   @override
   String get debugDescription =>
-      'La sekvaj sencimigaj agordoj devas esti uzataj nur por problemsolvi.';
+      'The following debug settings should only be used for troubleshooting purposes.';
 
   @override
   String get debugNotificationsDescription =>
@@ -706,23 +710,23 @@ class AppLocalizationsEo extends AppLocalizations {
   String get defaultColor => 'Default';
 
   @override
-  String get defaultCommentSortType => 'Defaŭlta Komenta Ordiga Tipo';
+  String get defaultCommentSortType => 'Default Comment Sort Type';
 
   @override
-  String get defaultFeedSortType => 'Defaŭlta Flua Ordiga Tipo';
+  String get defaultFeedSortType => 'Default Feed Sort Type';
 
   @override
-  String get defaultFeedType => 'Defaŭlta Flua Tipo';
+  String get defaultFeedType => 'Default Feed Type';
 
   @override
-  String get delete => 'Forviŝi';
+  String get delete => 'Delete';
 
   @override
-  String get deleteAccount => 'Forviŝi Konton';
+  String get deleteAccount => 'Delete Account';
 
   @override
   String get deleteAccountDescription =>
-      'Por permanente forviŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?';
+      'To permanently delete your account, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
 
   @override
   String get deleteComment => 'Delete Comment';
@@ -735,18 +739,18 @@ class AppLocalizationsEo extends AppLocalizations {
   String get deleteImageConfirmTitle => 'Delete?';
 
   @override
-  String get deleteLocalDatabase => 'Forviŝi Lokan Datenbazon';
+  String get deleteLocalDatabase => 'Delete Local Database';
 
   @override
   String get deleteLocalDatabaseDescription =>
-      'Ĉi tiu ago forviŝos la lokan datumbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?';
+      'This action will remove the local database and will log you out of all your accounts.\n\nAre you sure you want to continue?';
 
   @override
-  String get deleteLocalPreferences => 'Forviŝi Lokajn Preferojn';
+  String get deleteLocalPreferences => 'Delete Local Preferences';
 
   @override
   String get deleteLocalPreferencesDescription =>
-      'Ĉi tio viŝos ĉiujn viajn uzantpreferojn kaj agordojn en Thunder.\n\nĈu vi volas daŭrigi?';
+      'This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?';
 
   @override
   String get deletePost => 'Delete Post';
@@ -780,10 +784,10 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get dimReadPosts => 'Legitaj afiŝoj estos grizitaj';
+  String get dimReadPosts => 'Dim Read Posts';
 
   @override
-  String get disable => 'Malebligi';
+  String get disable => 'Disable';
 
   @override
   String get disablePushNotifications => 'Disable Push Notifications';
@@ -799,13 +803,13 @@ class AppLocalizationsEo extends AppLocalizations {
       'Content is filtered to the selected languages.';
 
   @override
-  String get dismissRead => 'Forĵeti Legita';
+  String get dismissRead => 'Dismiss Read';
 
   @override
   String get displayName => 'Display Name';
 
   @override
-  String get displayUserScore => 'Montri Uzantajn Poentojn (Karma).';
+  String get displayUserScore => 'Display User Scores (Karma).';
 
   @override
   String get dividerAppearance => 'Divider Appearance';
@@ -818,10 +822,10 @@ class AppLocalizationsEo extends AppLocalizations {
       'Found multiple compatible apps; please install only one';
 
   @override
-  String get downloadingMedia => 'Elŝutiĝas amaskomunikilaro por kunhavigi…';
+  String get downloadingMedia => 'Downloading media to share…';
 
   @override
-  String get downvote => 'Subenvoĉdoni';
+  String get downvote => 'Downvote';
 
   @override
   String get downvoteColor => 'Downvote Color';
@@ -830,30 +834,29 @@ class AppLocalizationsEo extends AppLocalizations {
   String get downvoted => 'Downvoted';
 
   @override
-  String get downvotesDisabled =>
-      'Subenvoĉdonoj estas malŝaltitaj en ĉi tiu instanco.';
+  String get downvotesDisabled => 'Downvotes are turned off on this instance.';
 
   @override
-  String get edit => 'Redakti';
+  String get edit => 'Edit';
 
   @override
-  String get editComment => 'Redakti Komenton';
+  String get editComment => 'Edit Comment';
 
   @override
-  String get editPost => 'Redakti Afiŝon';
+  String get editPost => 'Edit Post';
 
   @override
   String get email => 'Email';
 
   @override
-  String get empty => 'Malplena';
+  String get empty => 'Empty';
 
   @override
-  String get emptyInbox => 'Malplena Ricevujo';
+  String get emptyInbox => 'Empty Inbox';
 
   @override
   String get emptyUri =>
-      'La ligilo estas malplena. Bonvolu provizi validan dinamikan ligilon por daŭrigi.';
+      'The link is empty. Please provide a valid dynamic link to proceed.';
 
   @override
   String get enableCommentNavigation => 'Enable Comment Navigation';
@@ -862,7 +865,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get enableExperimentalFeatures => 'Enable experimental features';
 
   @override
-  String get enableFeedFab => 'Ebligi Flosantan Butonon sur Fluoj';
+  String get enableFeedFab => 'Enable Floating Button on Feeds';
 
   @override
   String get enableFloatingButtonOnFeeds => 'Enable Floating Button On Feeds';
@@ -874,13 +877,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get enableInboxNotifications => 'Enable Inbox Notifications';
 
   @override
-  String get enablePostFab => 'Ebligi Flosantan Butonon sur Afiŝoj';
+  String get enablePostFab => 'Enable Floating Button on Posts';
 
   @override
   String get endOfComments => 'End of comments';
 
   @override
-  String get endSearch => 'Fini Serĉon';
+  String get endSearch => 'End Search';
 
   @override
   String errorDeletingImage(Object error) {
@@ -889,7 +892,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String errorDownloadingMedia(Object errorMessage) {
-    return 'Ne eblis elŝuti la amaskomunikilaron por kunhavigi: $errorMessage';
+    return 'Could not download the media file to share: $errorMessage';
   }
 
   @override
@@ -924,7 +927,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get exceptionProcessingUri =>
-      'Okazis eraro dum prilaborado de la ligilo. Ĝi eble ne estas disponebla en via instanco.';
+      'An error occurred while processing the link. It may not be available on your instance.';
 
   @override
   String get excessiveApiCallsWarning =>
@@ -934,19 +937,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get expand => 'Expand';
 
   @override
-  String get expandCommentPreview => 'Etendi Komentan Antaŭrigardon';
+  String get expandCommentPreview => 'Expand Comment Preview';
 
   @override
-  String get expandInformation => 'Etendi Informojn';
+  String get expandInformation => 'Expand Information';
 
   @override
-  String get expandOptions => 'Etendi opciojn';
+  String get expandOptions => 'Expand options';
 
   @override
-  String get expandPost => 'Etendi afiŝon';
+  String get expandPost => 'Expand post';
 
   @override
-  String get expandPostPreview => 'Etendi Afiŝan Antaŭrigardon';
+  String get expandPostPreview => 'Expand Post Preview';
 
   @override
   String get expandSpoiler => 'Expand Spoiler';
@@ -984,7 +987,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String failedToBlock(Object errorMessage) {
-    return 'Malsukcesis bari: $errorMessage';
+    return 'Failed to block: $errorMessage';
   }
 
   @override
@@ -995,7 +998,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String failedToLoadBlocks(Object errorMessage) {
-    return 'Ne eblis ŝargi barojn: $errorMessage';
+    return 'Could not load blocks: $errorMessage';
   }
 
   @override
@@ -1006,7 +1009,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String failedToUnblock(Object errorMessage) {
-    return 'Ne eblis malbari: $errorMessage';
+    return 'Could not unblock: $errorMessage';
   }
 
   @override
@@ -1017,48 +1020,48 @@ class AppLocalizationsEo extends AppLocalizations {
   String get favorite => 'Favorite';
 
   @override
-  String get favorites => 'Plej ŝatataĵoj';
+  String get favorites => 'Favorites';
 
   @override
   String get featuredPost => 'Featured Post';
 
   @override
-  String get feed => 'Flua';
+  String get feed => 'Feed';
 
   @override
-  String get feedBehaviourSettings => 'Fluo';
+  String get feedBehaviourSettings => 'Feed';
 
   @override
   String get feedSettings => 'Feed Settings';
 
   @override
-  String get feedTypeAndSorts => 'Defaŭlta Flua Tipo kaj Ordigo';
+  String get feedTypeAndSorts => 'Default Feed Type and Sorting';
 
   @override
-  String get fetchAccountError => 'Ne eblis determini konton';
+  String get fetchAccountError => 'Could not determine account';
 
   @override
   String filteringBy(Object entity) {
-    return 'Filtri laŭ $entity';
+    return 'Filtering by $entity';
   }
 
   @override
-  String get filters => 'Filtriloj';
+  String get filters => 'Filters';
 
   @override
-  String get floatingActionButton => 'Flosanta Ago-Butono';
+  String get floatingActionButton => 'Floating Action Button';
 
   @override
   String get floatingActionButtonInformation =>
-      'Thunder havas plene agordeblan FAB-sperton, kiu subtenas kelkajn gestojn.\n- Ŝovumu supren por malkaŝi pliajn agojn de FAB\n- Ŝovumu malsupren/supren por kaŝi aŭ malkaŝi la FAB\n\nPor personecigi la ĉefajn kaj duarangajn agojn por la FAB, longe premu unu el la subaj agoj.';
+      'Thunder has a fully customizable FAB experience that supports a few gestures.\n- Swipe up to reveal additional FAB actions\n- Swipe down/up to hide or reveal the FAB\n\nTo customize the main and secondary actions for the FAB, long press on one of the actions below.';
 
   @override
   String get floatingActionButtonLongPressDescription =>
-      'indikas la longa-preman agon de la FAB.';
+      'denotes the FAB\'s long-press action.';
 
   @override
   String get floatingActionButtonSinglePressDescription =>
-      'indikas la unu-preman agon de la FAB.';
+      'denotes the FAB\'s single-press action.';
 
   @override
   String get fonts => 'Fonts';
@@ -1072,7 +1075,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get fullScreenNavigationSwipeDescription =>
-      'Ŝovumu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj';
+      'Swipe anywhere to go back when left-to-right gestures are disabled';
 
   @override
   String get fullscreen => 'Fullscreen';
@@ -1081,16 +1084,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get fullscreenSwipeGestures => 'Fullscreen Swipe Gestures';
 
   @override
-  String get general => 'Ĝenerala';
+  String get general => 'General';
 
   @override
-  String get generalSettings => 'Ĝeneralaj Agordoj';
+  String get generalSettings => 'General Settings';
 
   @override
-  String get gestures => 'Gestoj';
+  String get gestures => 'Gestures';
 
   @override
-  String get gettingStarted => 'Por komenci';
+  String get gettingStarted => 'Getting Started';
 
   @override
   String get green => 'Green';
@@ -1122,10 +1125,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get hideNsfwPostsFromFeed => 'Hide NSFW Posts from Feed';
 
   @override
-  String get hideNsfwPreviews => 'Malklarigi Poradoltenhavajn Antaŭrigardojn';
+  String get hideNsfwPreviews => 'Blur NSFW Previews';
 
   @override
-  String get hidePassword => 'Kaŝi Pasvorton';
+  String get hidePassword => 'Hide Password';
 
   @override
   String get hideThumbnails => 'Hide Thumbnails';
@@ -1140,10 +1143,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get hostInstance => 'Host Instance';
 
   @override
-  String get hot => 'Populara';
+  String get hot => 'Hot';
 
   @override
-  String get image => 'Bildo';
+  String get image => 'Image';
 
   @override
   String get imageCachingMode => 'Image Caching Mode';
@@ -1180,7 +1183,7 @@ class AppLocalizationsEo extends AppLocalizations {
       'Includes subscribed communities, blocklists, and account preferences';
 
   @override
-  String get importExportSettings => 'Importi/Eksporti Agordojn';
+  String get importExportSettings => 'Import/Export Settings';
 
   @override
   String get importExportThunderSettings => 'Import/Export Thunder Settings';
@@ -1190,43 +1193,50 @@ class AppLocalizationsEo extends AppLocalizations {
       'Import Lemmy account settings';
 
   @override
-  String get importSettings => 'Importi Agordojn';
+  String get importSettings => 'Import Settings';
 
   @override
   String inReplyTo(Object post, Object community) {
-    return 'Responde al $post en $community';
+    return 'In reply to $post in $community';
   }
 
   @override
   String get in_ => 'in';
 
   @override
-  String get inbox => 'Ricevujo';
+  String get inbox => 'Inbox';
 
   @override
-  String get includeCommunity => 'Inkluzivi Komunumon';
+  String get includeCommunity => 'Include Community';
 
   @override
-  String get includeExternalLink => 'Inkluzivi Eksteran Ligilon';
+  String get includeExternalLink => 'Include External Link';
 
   @override
-  String get includeImage => 'Inkluzivi Bildon';
+  String get includeImage => 'Include Image';
 
   @override
-  String get includePostLink => 'Inkluzivi Afiŝan Ligilon';
+  String get includePostLink => 'Include Post Link';
 
   @override
-  String get includeText => 'Inkluzivi Tekston';
+  String get includeText => 'Include Text';
 
   @override
-  String get includeTitle => 'Inkluzivi Titolon';
+  String get includeTitle => 'Include Title';
 
   @override
-  String get information => 'Informoj';
+  String get information => 'Information';
 
   @override
   String instance(num count) {
-    return 'Instanco';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Instances',
+      one: 'Instance',
+      zero: 'Instance',
+    );
+    return '$_temp0 ';
   }
 
   @override
@@ -1239,7 +1249,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String instanceHasAlreadyBenAdded(Object instance) {
-    return '$instance jam estis aldonita.';
+    return '$instance has already been added.';
   }
 
   @override
@@ -1253,7 +1263,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get internetOrInstanceIssues =>
-      'Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.';
+      'You may not be connected to the Internet, or your instance may be currently unavailable.';
 
   @override
   String get invalidUrl => 'Invalid URL format';
@@ -1265,23 +1275,23 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get keywordFilterDescription =>
-      'Tiu ĉi filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo';
+      'Filters posts containing any keywords in the title, body, or URL';
 
   @override
-  String get keywordFilters => 'Ŝlosilvortaj Filtriloj';
+  String get keywordFilters => 'Keyword Filters';
 
   @override
   String get label => 'Label';
 
   @override
-  String get language => 'Lingvo';
+  String get language => 'Language';
 
   @override
   String get languageFilters => 'Looking for language filters?';
 
   @override
   String get languageNotAllowed =>
-      'La komunumo al kiu vi afiŝas al ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.';
+      'The community you are posting to does not allow posts in the language that you have selected. Try another language.';
 
   @override
   String get large => 'Large';
@@ -1300,15 +1310,15 @@ class AppLocalizationsEo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Ligiloj',
-      one: 'Ligilo',
-      zero: 'Ligilo',
+      other: 'Links',
+      one: 'Link',
+      zero: 'Link',
     );
     return '$_temp0 ';
   }
 
   @override
-  String get linkActions => 'Ligilaj Agoj';
+  String get linkActions => 'Link Actions';
 
   @override
   String get linkHandlingCustomTabs => 'Open in system browser embedded in-app';
@@ -1329,23 +1339,23 @@ class AppLocalizationsEo extends AppLocalizations {
   String get linkHandlingInAppShort => 'In-app';
 
   @override
-  String get linksBehaviourSettings => 'Ligiloj';
+  String get linksBehaviourSettings => 'Links';
 
   @override
   String loadMorePlural(Object count) {
-    return 'Ŝarĝi $count pliajn respondojn…';
+    return 'Load $count more replies…';
   }
 
   @override
   String loadMoreSingular(Object count) {
-    return 'Ŝarĝi $count plian respondon…';
+    return 'Load $count more reply…';
   }
 
   @override
   String get loading => 'Loading...';
 
   @override
-  String get local => 'Loka';
+  String get local => 'Local';
 
   @override
   String get localNotifications => 'Local Notifications';
@@ -1354,7 +1364,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get localOnly => 'Local Only';
 
   @override
-  String get localPosts => 'Lokaj Afiŝoj';
+  String get localPosts => 'Local Posts';
 
   @override
   String get lockPost => 'Lock Post';
@@ -1366,28 +1376,28 @@ class AppLocalizationsEo extends AppLocalizations {
   String get lockedPost => 'Locked Post';
 
   @override
-  String get logOut => 'Elsaluti';
+  String get logOut => 'Log out';
 
   @override
-  String get login => 'Ensaluti';
+  String get login => 'Log in';
 
   @override
   String get loginAttemptCanceled => 'Login attempt canceled.';
 
   @override
   String loginFailed(Object errorMessage) {
-    return 'Ne eblis ensaluti. Bonvolu provi denove:($errorMessage)';
+    return 'Could not log in. Please try again. (Error: $errorMessage)';
   }
 
   @override
-  String get loginSucceeded => 'Ensalutiĝis.';
+  String get loginSucceeded => 'Logged in.';
 
   @override
   String get loginToPerformAction =>
-      'Vi devas esti ensalutinta por plenumi ĉi tiun taskon.';
+      'You need to be logged in to carry out this task.';
 
   @override
-  String get loginToSeeInbox => 'Ensalutu por vidi vian ricevujon';
+  String get loginToSeeInbox => 'Log in to see your inbox';
 
   @override
   String get lookingForAccountSpecificFeedSettings =>
@@ -1395,16 +1405,16 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get malformedUri =>
-      'La ligilo, kiun vi provizis, estas en nesubtenata formato. Bonvolu certigi, ke ĝi estas valida ligilo.';
+      'The link you provided is in an unsupported format. Please make sure it\'s a valid link.';
 
   @override
-  String get manageAccounts => 'Manipuli Kontojn';
+  String get manageAccounts => 'Manage Accounts';
 
   @override
   String get manageMedia => 'Manage Media';
 
   @override
-  String get markAllAsRead => 'Marki Ĉiun Kiel Legita';
+  String get markAllAsRead => 'Mark all as read';
 
   @override
   String get markAsRead => 'Mark as read';
@@ -1432,9 +1442,9 @@ class AppLocalizationsEo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mencioj',
-      one: 'Mencio',
-      zero: 'Mencio',
+      other: 'Mentions',
+      one: 'Mention',
+      zero: 'Mention',
     );
     return '$_temp0';
   }
@@ -1447,9 +1457,9 @@ class AppLocalizationsEo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mesaĝoj',
-      one: 'Mesaĝo',
-      zero: 'Mesaĝo',
+      other: 'Messages',
+      one: 'Message',
+      zero: 'Message',
     );
     return '$_temp0';
   }
@@ -1458,13 +1468,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get metadataFontScale => 'Metadata Font Scale';
 
   @override
-  String get missingErrorMessage => 'Neniu erarmesaĝo disponeblas';
+  String get missingErrorMessage => 'No error message available';
 
   @override
-  String get modAdd => 'Aldoni/Forpreni Instancajn Kontrolantojn';
+  String get modAdd => 'Add/Remove Instance Moderators';
 
   @override
-  String get modAddCommunity => 'Aldoni/Forpreni Kontrolantojn al Komunumoj';
+  String get modAddCommunity => 'Add/Remove Moderators to Communities';
 
   @override
   String get modBan => 'Ban/Unban Instance Users';
@@ -1479,13 +1489,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get modLockPost => 'Lock/Unlock Posts';
 
   @override
-  String get modRemoveComment => 'Forviŝi/Restarigi Komentojn';
+  String get modRemoveComment => 'Remove/Restore Comments';
 
   @override
-  String get modRemoveCommunity => 'Forviŝi/Restarigi Komunumojn';
+  String get modRemoveCommunity => 'Remove/Restore Communities';
 
   @override
-  String get modRemovePost => 'Forviŝi/Restarigi Afiŝojn';
+  String get modRemovePost => 'Remove/Restore Posts';
 
   @override
   String get modTransferCommunity => 'Transferring Communities';
@@ -1515,16 +1525,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get modlog => 'Modlog';
 
   @override
-  String get mostComments => 'Plej multaj Komentoj';
+  String get mostComments => 'Most Comments';
 
   @override
   String get mustBeLoggedIn => 'You need to be logged in';
 
   @override
-  String get mustBeLoggedInComment => 'Vi devas esti ensalutinta por komenti';
+  String get mustBeLoggedInComment => 'You need to be logged in to comment';
 
   @override
-  String get mustBeLoggedInPost => 'Vi devas esti ensalutinta por krei afiŝon';
+  String get mustBeLoggedInPost => 'You need to be logged in to create a post';
 
   @override
   String get names => 'Names';
@@ -1536,13 +1546,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get navbarSwipeGestures => 'Navbar Swipe Gestures';
 
   @override
-  String get navigateDown => 'Sekva komento';
+  String get navigateDown => 'Next comment';
 
   @override
-  String get navigateUp => 'Antaŭa komento';
+  String get navigateUp => 'Previous comment';
 
   @override
-  String get navigation => 'Navigado';
+  String get navigation => 'Navigation';
 
   @override
   String get nestedCommentIndicatorColor => 'Nested Comment Indicator Color';
@@ -1554,13 +1564,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get never => 'Never';
 
   @override
-  String get newComments => 'Novaj Komentoj';
+  String get newComments => 'New Comments';
 
   @override
   String get newPost => 'New Post';
 
   @override
-  String get new_ => 'Nova';
+  String get new_ => 'New';
 
   @override
   String get no => 'No';
@@ -1572,13 +1582,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noAnonymousInstances => 'No anonymous instances have been added';
 
   @override
-  String get noCommentsFound => 'Neniuj komentoj trovitaj';
+  String get noCommentsFound => 'No comments found';
 
   @override
-  String get noCommunitiesFound => 'Neniuj komunumoj trovitaj';
+  String get noCommunitiesFound => 'No communities found';
 
   @override
-  String get noCommunityBlocks => 'Neniuj baritaj komunumoj.';
+  String get noCommunityBlocks => 'No blocked communities';
 
   @override
   String get noCompatibleAppFound => 'No compatible app found';
@@ -1593,22 +1603,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noEmailSet => 'No email set';
 
   @override
-  String get noFavoritedCommunities => 'Neniuj favoratigitaj komunumoj';
+  String get noFavoritedCommunities => 'No favorited communities';
 
   @override
   String get noImages => 'It looks like you have not uploaded any images.';
 
   @override
-  String get noInstanceBlocks => 'Neniuj baritaj instancoj.';
+  String get noInstanceBlocks => 'No blocked instances.';
 
   @override
   String get noItems => 'No items';
 
   @override
-  String get noKeywordFilters => 'Neniujn ŝlosilvortajn filtrilojn aldonis';
+  String get noKeywordFilters => 'No keyword filters added';
 
   @override
-  String get noLanguage => 'Neniu lingvo';
+  String get noLanguage => 'No language';
 
   @override
   String get noMatrixUserSet => 'No matrix user set';
@@ -1620,7 +1630,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noMessages => 'No messages';
 
   @override
-  String get noPostsFound => 'Neniuj afiŝoj trovitaj';
+  String get noPostsFound => 'No posts found.';
 
   @override
   String get noProfileBioSet => 'No profile bio set';
@@ -1633,19 +1643,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noReplies => 'No replies';
 
   @override
-  String get noResultsFound => 'Neniuj rezultoj trovitaj.';
+  String get noResultsFound => 'No results found.';
 
   @override
-  String get noSubscriptions => 'Neniuj Abonoj';
+  String get noSubscriptions => 'No Subscriptions';
 
   @override
-  String get noUserBlocks => 'Neniuj baritaj uzantoj.';
+  String get noUserBlocks => 'No blocked users.';
 
   @override
   String get noUserLabels => 'You have not created any user labels yet';
 
   @override
-  String get noUsersFound => 'Neniuj uzantoj trovitaj';
+  String get noUsersFound => 'No users found.';
 
   @override
   String get noVisibleComments =>
@@ -1659,29 +1669,29 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance ne ŝajnas esti valida Lemmy-instanco';
+    return '$instance does not appear to be a valid instance';
   }
 
   @override
-  String get notValidUrl => 'Ne valida URL';
+  String get notValidUrl => 'Not a valid URL';
 
   @override
-  String get nothingToShare => 'Nenio por kunhavigi';
+  String get nothingToShare => 'Nothing to share';
 
   @override
   String notifications(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Sciigoj',
-      one: 'Sciigo',
-      zero: 'Sciigo',
+      other: 'Notifications',
+      one: 'Notifications',
+      zero: 'Notification',
     );
     return '$_temp0';
   }
 
   @override
-  String get notificationsBehaviourSettings => 'Sciigoj';
+  String get notificationsBehaviourSettings => 'Notifications';
 
   @override
   String get notificationsNotAllowed =>
@@ -1698,41 +1708,41 @@ class AppLocalizationsEo extends AppLocalizations {
   String get nsfwWarning => 'NSFW - Tap to reveal';
 
   @override
-  String get off => 'malŝaltita';
+  String get off => 'off';
 
   @override
   String get offline => 'offline';
 
   @override
-  String get ok => 'Okej';
+  String get ok => 'OK';
 
   @override
-  String get old => 'Malnova';
+  String get old => 'Old';
 
   @override
-  String get on => 'ŝaltita';
+  String get on => 'on';
 
   @override
   String get onWifi => 'On Wifi';
 
   @override
   String get onlyModsCanPostInCommunity =>
-      'Nur kontrolantoj povas afiŝi en ĉi tiu komunumo';
+      'Only moderators may post in this community';
 
   @override
-  String get open => 'Malfermi';
+  String get open => 'Open';
 
   @override
-  String get openAccountSwitcher => 'Malfermi kontan ŝanĝilon';
+  String get openAccountSwitcher => 'Open account switcher';
 
   @override
-  String get openByDefault => 'Malfermi defaŭlte';
+  String get openByDefault => 'Open by default';
 
   @override
-  String get openInBrowser => 'Malfermi en TTT-legilo';
+  String get openInBrowser => 'Open in Browser';
 
   @override
-  String get openInstance => 'Malfermi Instancon';
+  String get openInstance => 'Open Instance';
 
   @override
   String get openLinksInExternalBrowser => 'Open Links in External Browser';
@@ -1741,7 +1751,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get openLinksInReaderMode => 'Open Links in Reader Mode';
 
   @override
-  String get openSettings => 'Malfermi Agordojn';
+  String get openSettings => 'Open Settings';
 
   @override
   String get orange => 'Orange';
@@ -1750,13 +1760,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get originalPoster => 'Original Poster';
 
   @override
-  String get overview => 'Superrigardo';
+  String get overview => 'Overview';
 
   @override
-  String get password => 'Pasvorto';
+  String get password => 'Password';
 
   @override
-  String get pending => 'Pritraktota';
+  String get pending => 'Pending';
 
   @override
   String performedBy(Object user) {
@@ -1764,11 +1774,12 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get permissionDenied => 'Permeso Rifuzita';
+  String get permissionDenied =>
+      'Thunder has not been granted permission to display notifications. Please enable in system settings.';
 
   @override
   String get permissionDeniedMessage =>
-      'Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.';
+      'Thunder requires some permissions in order to save this image which have been denied.';
 
   @override
   String get pinPostToCommunity => 'Pin Post to Community';
@@ -1793,10 +1804,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get postActions => 'Post Actions';
 
   @override
-  String get postBehaviourSettings => 'Afiŝoj';
+  String get postBehaviourSettings => 'Posts';
 
   @override
-  String get postBody => 'Afiŝan Korpo';
+  String get postBody => 'Post Body';
 
   @override
   String get postBodySettings => 'Post Body Settings';
@@ -1821,21 +1832,21 @@ class AppLocalizationsEo extends AppLocalizations {
   String get postCreatedSuccessfully => 'Post created successfully!';
 
   @override
-  String get postLocked => 'Afiŝo ŝlosita. Neniuj respondoj permesitaj.';
+  String get postLocked => 'Post locked. No replies allowed.';
 
   @override
   String get postMetadataInstructions =>
       'You can customize the metadata information by dragging and dropping the desired information';
 
   @override
-  String get postNSFW => 'Marki kiel NSFW';
+  String get postNSFW => 'Mark as NSFW';
 
   @override
   String get postPreview =>
-      'Montri antaŭrigardon de la afiŝo kun la donitaj agordoj';
+      'Show a preview of the post with the given settings';
 
   @override
-  String get postSavedAsDraft => 'Afiŝo konservita kiel malneto';
+  String get postSavedAsDraft => 'Post saved as draft';
 
   @override
   String get postShowUserInstance => 'Show User Instance';
@@ -1845,42 +1856,42 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get postSwipeGesturesHint =>
-      'Ĉu vi volas uzi butonojn anstataŭe? Ŝanĝu kiajn butonojn aperas sur afiŝkartoj en ĝeneralaj agordoj.';
+      'Looking to use buttons instead? Change what buttons appear on post cards in general settings.';
 
   @override
-  String get postTitle => 'Titolo';
+  String get postTitle => 'Title';
 
   @override
   String get postTitleFontScale => 'Post Title Font Scale';
 
   @override
-  String get postTogglePreview => 'Baskuligi Antaŭrigardon';
+  String get postTogglePreview => 'Toggle Preview';
 
   @override
   String get postURL => 'URL';
 
   @override
-  String get postUploadImageError => 'Ne eblis alŝuti bildon';
+  String get postUploadImageError => 'Could not upload image';
 
   @override
-  String get postViewType => 'Tipo de Afiŝa Vido';
+  String get postViewType => 'Post View Type';
 
   @override
-  String get posts => 'Afiŝoj';
+  String get posts => 'Posts';
 
   @override
-  String get preview => 'Antaŭrigardo';
+  String get preview => 'Preview';
 
   @override
   String profileAppliedSuccessfully(Object profile) {
-    return '$profile sukcese aplikita!';
+    return '$profile applied successfully!';
   }
 
   @override
   String get profileBio => 'Profile Bio';
 
   @override
-  String get profiles => 'Profiloj';
+  String get profiles => 'Profiles';
 
   @override
   String get public => 'Public';
@@ -1922,13 +1933,13 @@ class AppLocalizationsEo extends AppLocalizations {
       'You have hit the rate limit for this request. Please wait and try again later.';
 
   @override
-  String get reachedTheBottom => 'Hmmm. Ŝajnas, ke vi atingis la fundon.';
+  String get reachedTheBottom => 'No more items to load';
 
   @override
   String get read => 'Read';
 
   @override
-  String get readAll => 'Legi Ĉion';
+  String get readAll => 'Read All';
 
   @override
   String get readerMode => 'Reader mode';
@@ -1943,22 +1954,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get reduceAnimations => 'Reduce Animations';
 
   @override
-  String get reducesAnimations => 'Reduktas la animaciojn uzatajn en Thunder';
+  String get reducesAnimations => 'Reduces the animations used within Thunder';
 
   @override
-  String get refresh => 'Refreŝigi';
+  String get refresh => 'Refresh';
 
   @override
-  String get refreshContent => 'Refreŝigi Enhavon';
+  String get refreshContent => 'Refresh Content';
 
   @override
   String get removalReason => 'Removal Reason';
 
   @override
-  String get remove => 'Forviŝi';
+  String get remove => 'Remove';
 
   @override
-  String get removeAccount => 'Forpreni Konton';
+  String get removeAccount => 'Remove Account';
 
   @override
   String get removeAsCommunityModerator => 'Remove as Community Moderator';
@@ -1967,21 +1978,21 @@ class AppLocalizationsEo extends AppLocalizations {
   String get removeComment => 'Remove Comment';
 
   @override
-  String get removeFromFavorites => 'Forpreni el plej ŝatataĵoj';
+  String get removeFromFavorites => 'Remove from favorites';
 
   @override
-  String get removeInstance => 'Forpreni Instancon';
+  String get removeInstance => 'Remove instance';
 
   @override
   String removeKeyword(Object keyword) {
-    return 'Ĉu forviŝi \"$keyword\"?';
+    return 'Remove \"$keyword\"?';
   }
 
   @override
-  String get removeKeywordFilter => 'Forviŝi Ŝlosilvorton';
+  String get removeKeywordFilter => 'Remove Keyword';
 
   @override
-  String get removePost => 'Forviŝi Afiŝon';
+  String get removePost => 'Remove Post';
 
   @override
   String get removeUserData => 'Remove user data';
@@ -1990,22 +2001,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get removed => 'Removed';
 
   @override
-  String get removedComment => 'Forviŝiĝis Komento';
+  String get removedComment => 'Removed Comment';
 
   @override
-  String get removedCommunity => 'Forviŝiĝis Komunumo';
+  String get removedCommunity => 'Removed Community';
 
   @override
-  String get removedCommunityFromSubscriptions => 'Malaboniĝis de komunumo';
+  String get removedCommunityFromSubscriptions => 'Unsubscribed from community';
 
   @override
-  String get removedInstanceMod => 'Forpreniĝis Instanca Kontrolanto';
+  String get removedInstanceMod => 'Removed Instance Mod';
 
   @override
-  String get removedModFromCommunity => 'Forpreniĝis Kontrolanto el Komunumo';
+  String get removedModFromCommunity => 'Removed Mod from Community';
 
   @override
-  String get removedPost => 'Forviŝigis Afiŝo';
+  String get removedPost => 'Removed Post';
 
   @override
   String removedUserAsCommunityModerator(Object username) {
@@ -2020,9 +2031,9 @@ class AppLocalizationsEo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Respondoj',
-      one: 'Respondo',
-      zero: 'Respondo',
+      other: 'Replies',
+      one: 'Reply',
+      zero: 'Reply',
     );
     return '$_temp0';
   }
@@ -2032,23 +2043,30 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get replyNotSupported =>
-      'Respondi el ĉi tiu vido estas nuntempe ankoraŭ ne subtenata';
+      'Replying from this view is currently not supported yet';
 
   @override
-  String get replyToPost => 'Respondi al Afiŝo';
+  String get replyToPost => 'Reply to Post';
 
   @override
   String replyingTo(Object author) {
-    return 'Respondante al $author';
+    return 'Replying to $author';
   }
 
   @override
   String report(num count) {
-    return 'Raporti';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Reports',
+      one: 'Report',
+      zero: 'Report',
+    );
+    return '$_temp0 ';
   }
 
   @override
-  String get reportComment => 'Raporti Komenton';
+  String get reportComment => 'Report Comment';
 
   @override
   String get reportPost => 'Report Post';
@@ -2066,22 +2084,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get requiredField => '*required';
 
   @override
-  String get reset => 'Restarigi';
+  String get reset => 'Reset';
 
   @override
-  String get resetCommentPreferences => 'Restarigi komentajn preferojn';
+  String get resetCommentPreferences => 'Reset comment preferences';
 
   @override
-  String get resetPostPreferences => 'Restarigi afiŝajn preferojn';
+  String get resetPostPreferences => 'Reset post preferences';
 
   @override
-  String get resetPreferences => 'Restarigi Preferojn';
+  String get resetPreferences => 'Reset Preferences';
 
   @override
-  String get resetPreferencesAndData => 'Restarigi Preferojn kaj Datenojn';
+  String get resetPreferencesAndData => 'Reset Preferences and Data';
 
   @override
-  String get restore => 'Restarigi';
+  String get restore => 'Restore';
 
   @override
   String get restoreComment => 'Restore Comment';
@@ -2093,7 +2111,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get restoredComment => 'Restored comment';
 
   @override
-  String get restoredCommentFromDraft => 'Restartigita komento el malneto';
+  String get restoredCommentFromDraft => 'Restored comment from draft';
 
   @override
   String get restoredCommunity => 'Restored Community';
@@ -2102,10 +2120,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get restoredPost => 'Restored Post';
 
   @override
-  String get restoredPostFromDraft => 'Restarigita afiŝo de malneto';
+  String get restoredPostFromDraft => 'Restored post from draft';
 
   @override
-  String get retry => 'Reprovi';
+  String get retry => 'Retry';
 
   @override
   String get rightLongSwipe => 'Right Long Swipe';
@@ -2114,55 +2132,55 @@ class AppLocalizationsEo extends AppLocalizations {
   String get rightShortSwipe => 'Right Short Swipe';
 
   @override
-  String get save => 'Konservi';
+  String get save => 'Save';
 
   @override
   String get saveColor => 'Save Color';
 
   @override
-  String get saveSettings => 'Konservi Agordojn';
+  String get saveSettings => 'Save Settings';
 
   @override
-  String get saved => 'Konservita';
+  String get saved => 'Saved';
 
   @override
-  String get scaled => 'Skalita';
+  String get scaled => 'Scaled';
 
   @override
   String get scrapeMissingLinkPreviews => 'Scrape Missing Link Previews';
 
   @override
-  String get screenReaderProfile => 'Ekrano-Leganta Profilo';
+  String get screenReaderProfile => 'Screen Reader Profile';
 
   @override
   String get screenReaderProfileDescription =>
-      'Optimumigas Thunder por ekranlegiloj reduktante ĝeneralajn elementojn kaj forigante eble konfliktajn gestojn.';
+      'Optimizes Thunder for screen readers by reducing overall elements and removing potentially conflicting gestures.';
 
   @override
-  String get search => 'Serĉi';
+  String get search => 'Search';
 
   @override
-  String get searchByText => 'Serĉi per teksto';
+  String get searchByText => 'Search by text';
 
   @override
-  String get searchByUrl => 'Serĉi per URL';
+  String get searchByUrl => 'Search by URL';
 
   @override
-  String get searchComments => 'Serĉi Komentojn';
+  String get searchComments => 'Search Comments';
 
   @override
   String searchCommentsFederatedWith(Object instance) {
-    return 'Serĉi komentojn federaciitajn kun $instance';
+    return 'Search for comments federated with $instance';
   }
 
   @override
   String searchCommunitiesFederatedWith(Object instance) {
-    return 'Serĉi komunumojn federaciitajn kun $instance';
+    return 'Search for communities federated with $instance';
   }
 
   @override
   String searchInstance(Object instance) {
-    return 'Serĉi $instance';
+    return 'Search $instance';
   }
 
   @override
@@ -2171,19 +2189,19 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get searchPostSearchType => 'Elekti Afiŝan Serĉan Tipon';
+  String get searchPostSearchType => 'Select Post Search Type';
 
   @override
   String searchPostsFederatedWith(Object instance) {
-    return 'Serĉi afiŝojn federaciitajn kun $instance';
+    return 'Search for posts federated with $instance';
   }
 
   @override
-  String get searchTerm => 'Serĉa termino';
+  String get searchTerm => 'Search term';
 
   @override
   String searchUsersFederatedWith(Object instance) {
-    return 'Serĉi uzantojn federaciitajn kun $instance';
+    return 'Search for users federated with $instance';
   }
 
   @override
@@ -2196,16 +2214,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get selectAll => 'Select all';
 
   @override
-  String get selectCommunity => 'Elekti komunumon';
+  String get selectCommunity => 'Select a community (required)';
 
   @override
-  String get selectFeedType => 'Elekti Abonfluan Tipon';
+  String get selectFeedType => 'Select Feed Type';
 
   @override
-  String get selectLanguage => 'Elekti lingvon';
+  String get selectLanguage => 'Select Language';
 
   @override
-  String get selectSearchType => 'Elekti Serĉan Tipon';
+  String get selectSearchType => 'Select Search Type';
 
   @override
   String get selectText => 'Select Text';
@@ -2235,17 +2253,17 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String serverErrorComments(Object message) {
-    return 'Servila eraro estis renkontita kiam oni alportis pliajn komentojn: $message';
+    return 'A server error was encountered when fetching more comments: $message';
   }
 
   @override
-  String get setAction => 'Agordi Agon';
+  String get setAction => 'Set Action';
 
   @override
-  String get setLongPress => 'Agordi kiel longprema ago';
+  String get setLongPress => 'Set as long-press action';
 
   @override
-  String get setShortPress => 'Agordi kiel mallongprema ago';
+  String get setShortPress => 'Set as short-press action';
 
   @override
   String get settingOverrideLabel =>
@@ -2253,11 +2271,11 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String settingTypeNotSupported(Object settingType) {
-    return 'Agordoj de tipo $settingType ankoraŭ ne estas subtenataj.';
+    return 'Settings of type $settingType are not yet supported.';
   }
 
   @override
-  String get settings => 'Agordoj';
+  String get settings => 'Settings';
 
   @override
   String settingsExportedSuccessfully(Object savedFilePath) {
@@ -2266,7 +2284,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get settingsFeedCards =>
-      'Ĉi tiuj agordoj aplikas por la kartoj en la ĉefa fluo, agoj ĉiam estas disponebla kiam efektive malfermas afiŝojn.';
+      'These settings apply to the cards in the main feed, actions are always available when actually opening posts.';
 
   @override
   String get settingsImportedSuccessfully =>
@@ -2335,7 +2353,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get settingsPageVideo => 'Video';
 
   @override
-  String get share => 'Kunhavigi';
+  String get share => 'Share';
 
   @override
   String get shareComment => 'Share Comment Link';
@@ -2359,10 +2377,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get shareLemmyLink => 'Share Lemmy Link';
 
   @override
-  String get shareLink => 'Kunhavigi Ligilon';
+  String get shareLink => 'Share External Link';
 
   @override
-  String get shareMedia => 'Kunhavigi Amaskomunikilon';
+  String get shareMedia => 'Share Media';
 
   @override
   String get shareMediaLink => 'Share Media Link';
@@ -2371,7 +2389,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get shareOriginalLink => 'Share Original Link';
 
   @override
-  String get sharePost => 'Kunhavigi Afiŝon';
+  String get sharePost => 'Share Post Link';
 
   @override
   String get sharePostLocal => 'Share Post Link (My Instance)';
@@ -2392,10 +2410,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get shareUserLinkLocal => 'Share User Link (My Instance)';
 
   @override
-  String get showAll => 'Montri Ĉion';
+  String get showAll => 'Show all';
 
   @override
-  String get showBotAccounts => 'Montri Robotajn kontojn';
+  String get showBotAccounts => 'Show Bot Accounts';
 
   @override
   String get showCommentActionButtons => 'Show Comment Action Buttons';
@@ -2429,10 +2447,10 @@ class AppLocalizationsEo extends AppLocalizations {
       'Get Notified of new GitHub Releases';
 
   @override
-  String get showLess => 'Montri malpli';
+  String get showLess => 'Show less';
 
   @override
-  String get showMore => 'Montri pli';
+  String get showMore => 'Show more';
 
   @override
   String get showNavigationLabels => 'Show Navigation Labels';
@@ -2448,7 +2466,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showOwnContent => 'Show own content';
 
   @override
-  String get showPassword => 'Montri Pasvorton';
+  String get showPassword => 'Show Password';
 
   @override
   String get showPostAuthor => 'Show Post Author';
@@ -2473,7 +2491,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showPostVoteActions => 'Show Vote Buttons';
 
   @override
-  String get showReadPosts => 'Montri Legitajn Afiŝojn';
+  String get showReadPosts => 'Show Read Posts';
 
   @override
   String get showSavedContent => 'Show saved content';
@@ -2482,7 +2500,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showScoreCounters => 'Display User Scores';
 
   @override
-  String get showScores => 'Montri Afiŝajn/Komentajn Poentojn';
+  String get showScores => 'Show Post/Comment Scores';
 
   @override
   String get showTextPostIndicator => 'Show Text Post Indicator';
@@ -2510,30 +2528,30 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showUserInstance => 'Show User Instance';
 
   @override
-  String get sidebar => 'Flankbreto';
+  String get sidebar => 'Sidebar';
 
   @override
   String get sidebarBottomNavDoubleTapDescription =>
-      'Duoble premu la malsupran navigilon por malfermi la flankbreton';
+      'Double-tap bottom nav to open sidebar';
 
   @override
   String get sidebarBottomNavSwipeDescription =>
-      'Glitu malsupran navigilon por malfermi la flankbreton';
+      'Swipe bottom nav to open sidebar';
 
   @override
   String get small => 'Small';
 
   @override
-  String get somethingWentWrong => 'Ups, io misfunkciis!';
+  String get somethingWentWrong => 'Oops, something went wrong!';
 
   @override
-  String get sortBy => 'Ordigi laŭ';
+  String get sortBy => 'Sort By';
 
   @override
-  String get sortByTop => 'Ordigi laŭ Supre';
+  String get sortByTop => 'Sort by Top';
 
   @override
-  String get sortOptions => 'Ordigaj Opcioj';
+  String get sortOptions => 'Sort Options';
 
   @override
   String get spoiler => 'Spoiler';
@@ -2548,22 +2566,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get status => 'Status';
 
   @override
-  String get submit => 'Sendi';
+  String get submit => 'Submit';
 
   @override
-  String get subscribe => 'Aboni';
+  String get subscribe => 'Subscribe';
 
   @override
   String get subscribeToCommunity => 'Subscribe to Community';
 
   @override
-  String get subscribed => 'Abonita';
+  String get subscribed => 'Subscribed';
 
   @override
   String get subscriptionRequestSent => 'Subscription request sent';
 
   @override
-  String get subscriptions => 'Abonoj';
+  String get subscriptions => 'Subscriptions';
 
   @override
   String successfullyBannedUser(Object username) {
@@ -2571,16 +2589,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get successfullyBlocked => 'Bariĝis.';
+  String get successfullyBlocked => 'Blocked.';
 
   @override
   String successfullyBlockedCommunity(Object communityName) {
-    return 'Bariĝis $communityName';
+    return 'Blocked $communityName';
   }
 
   @override
   String successfullyBlockedUser(Object username) {
-    return 'Bariĝis $username';
+    return 'Blocked $username';
   }
 
   @override
@@ -2589,23 +2607,23 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get successfullyUnblocked => 'Malbariĝis.';
+  String get successfullyUnblocked => 'Unblocked.';
 
   @override
   String successfullyUnblockedCommunity(Object communityName) {
-    return 'Malbariĝis $communityName';
+    return 'Unblocked $communityName';
   }
 
   @override
   String successfullyUnblockedUser(Object username) {
-    return 'Malbariĝis $username';
+    return 'Unblocked $username';
   }
 
   @override
   String get suchAs => 'such as';
 
   @override
-  String get suggestedTitle => 'Sugestita titolo';
+  String get suggestedTitle => 'Suggested title';
 
   @override
   String switchedAccount(Object username) {
@@ -2626,7 +2644,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get tabletMode => 'Tablet Mode (2-column view)';
 
   @override
-  String get tapToExit => 'Reiru dufoje por eliri';
+  String get tapToExit => 'Press back again to exit';
 
   @override
   String get tappableAuthorCommunity => 'Tappable Authors & Communities';
@@ -2643,7 +2661,7 @@ class AppLocalizationsEo extends AppLocalizations {
       'Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)';
 
   @override
-  String get text => 'Teksto';
+  String get text => 'Text';
 
   @override
   String get textActions => 'Text Actions';
@@ -2664,7 +2682,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get themeTertiary => 'Theme Tertiary';
 
   @override
-  String get theming => 'Haŭtado';
+  String get theming => 'Theming';
 
   @override
   String get thickness => 'Thickness';
@@ -2687,65 +2705,66 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get timeoutComments =>
-      'Eraro: Eltempiĝo kiam oni provas alporti komentojn';
+      'Error: Timeout when attempting to fetch comments';
 
   @override
-  String get timeoutErrorMessage => 'Estis eltempiĝo atendante respondon.';
+  String get timeoutErrorMessage =>
+      'There was a timeout waiting for a response.';
 
   @override
   String get timeoutSaveComment =>
-      'Eraro: Eltempiĝo kiam oni provas konservi komenton';
+      'Error: Timeout when attempting to save a comment';
 
   @override
   String get timeoutSavingPost =>
-      'Eraro: Eltempiĝo kiam vi provas konservi afiŝon.';
+      'Error: Timeout when attempting to save post.';
 
   @override
   String get timeoutUpvoteComment =>
-      'Eraro: Eltempiĝo kiam oni provas voĉdoni sur komento';
+      'Error: Timeout when attempting to vote on comment';
 
   @override
   String get timeoutVotingPost =>
-      'Eraro: Eltempiĝo kiam oni provas voĉdoni afiŝon.';
+      'Error: Timeout when attempting to vote post.';
 
   @override
-  String get toggelRead => 'Baskuligi Legita';
+  String get toggelRead => 'Toggle Read';
 
   @override
-  String get top => 'Supre';
+  String get top => 'Top';
 
   @override
-  String get topAll => 'Supro de ĉiuj tempoj';
+  String get topAll => 'Top of all time';
 
   @override
-  String get topDay => 'Hodiaŭa Supro';
+  String get topDay => 'Top Today';
 
   @override
-  String get topHour => 'Supro en Pasinta Horo';
+  String get topHour => 'Top in Past Hour';
 
   @override
-  String get topMonth => 'Monata Supro';
+  String get topMonth => 'Top Month';
 
   @override
-  String get topNineMonths => 'Supro en la Pasintaj 9 Monatoj';
+  String get topNineMonths => 'Top in Past 9 Months';
 
   @override
-  String get topSixHour => 'Supro en Pasintaj 6 Horoj';
+  String get topSixHour => 'Top in Past 6 Hours';
 
   @override
-  String get topSixMonths => 'Supro en la Pasintaj 6 Monatoj';
+  String get topSixMonths => 'Top in Past 6 Months';
 
   @override
-  String get topThreeMonths => 'Supro en la Pasintaj 3 Monatoj';
+  String get topThreeMonths => 'Top in Past 3 Months';
 
   @override
-  String get topTwelveHour => 'Supro en Pasintaj 12 Horoj';
+  String get topTwelveHour => 'Top in Past 12 Hours';
 
   @override
-  String get topWeek => 'Semajna Supro';
+  String get topWeek => 'Top Week';
 
   @override
-  String get topYear => 'Jara Supro';
+  String get topYear => 'Top Year';
 
   @override
   String totalComments(Object x) {
@@ -2758,23 +2777,23 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get totp => 'TOTP (nedeviga)';
+  String get totp => 'TOTP (optional)';
 
   @override
   String get transferredModToCommunity => 'Transferred Community';
 
   @override
   String get translationsMayNotBeComplete =>
-      'Bonvolu noti, ke la tradukoj eble ne estas kompletaj';
+      'Please note that the translations may not be complete';
 
   @override
-  String get trendingCommunities => 'Tendencaj Komunumoj';
+  String get trendingCommunities => 'Trending Communities';
 
   @override
   String get trySearchingFor => 'Try searching for...';
 
   @override
-  String get unableToFindCommunity => 'Ne eblas trovi komunumon';
+  String get unableToFindCommunity => 'Unable to find community';
 
   @override
   String unableToFindCommunityName(Object communityName) {
@@ -2786,16 +2805,16 @@ class AppLocalizationsEo extends AppLocalizations {
       'Unable to find the selected community on the selected user\'s instance.';
 
   @override
-  String get unableToFindInstance => 'Ne eblas trovi instancon';
+  String get unableToFindInstance => 'Unable to find instance';
 
   @override
-  String get unableToFindLanguage => 'Ne eblas trovi lingvon';
+  String get unableToFindLanguage => 'Unable to find language';
 
   @override
   String get unableToFindPost => 'Unable to find post';
 
   @override
-  String get unableToFindUser => 'Ne eblas trovi uzanton';
+  String get unableToFindUser => 'Unable to find user';
 
   @override
   String unableToFindUserName(Object username) {
@@ -2803,16 +2822,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get unableToLoadImage => 'Ne eblas ŝargi bildon';
+  String get unableToLoadImage => 'Unable to load image';
 
   @override
   String unableToLoadImageFrom(Object domain) {
-    return 'Ne eblas ŝargi bildon de $domain';
+    return 'Unable to load image from $domain';
   }
 
   @override
   String unableToLoadInstance(Object instance) {
-    return 'Ne eblas ŝargi $instance';
+    return 'Unable to load $instance';
   }
 
   @override
@@ -2820,11 +2839,11 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String unableToLoadPostsFrominstance(Object instance) {
-    return 'Ne eblas ŝargi afiŝojn el $instance';
+    return 'Unable to load posts from $instance';
   }
 
   @override
-  String get unableToLoadReplies => 'Ne eblas ŝargi pliajn respondojn.';
+  String get unableToLoadReplies => 'Unable to load more replies.';
 
   @override
   String unableToNavigateToInstance(Object instanceHost) {
@@ -2860,7 +2879,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get unblockCommunityInstance => 'Unblock Community Instance';
 
   @override
-  String get unblockInstance => 'Malbari Instancon';
+  String get unblockInstance => 'Unblock Instance';
 
   @override
   String get unblockUser => 'Unblock User';
@@ -2872,7 +2891,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get understandEnable => 'I Understand, Enable';
 
   @override
-  String get unexpectedError => 'Neatendita Eraro';
+  String get unexpectedError => 'Unexpected Error';
 
   @override
   String get unfavorite => 'Unfavorite';
@@ -2924,24 +2943,24 @@ class AppLocalizationsEo extends AppLocalizations {
   String get unresolved => 'Unresolved';
 
   @override
-  String get unsubscribe => 'Malaboni';
+  String get unsubscribe => 'Unsubscribe';
 
   @override
   String get unsubscribeFromCommunity => 'Unsubscribe from Community';
 
   @override
-  String get unsubscribePending => 'Malaboni (abono atendas)';
+  String get unsubscribePending => 'Unsubscribe (subscription pending)';
 
   @override
-  String get unsubscribed => 'Malabonita';
+  String get unsubscribed => 'Unsubscribed';
 
   @override
   String updateReleased(Object version) {
-    return 'Ĝisdatigo publikigita: $version';
+    return 'Update released: $version';
   }
 
   @override
-  String get uploadImage => 'Alŝuti bildon';
+  String get uploadImage => 'Upload image';
 
   @override
   String uploadedDate(Object date) {
@@ -2949,7 +2968,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get upvote => 'Suprenvoĉdoni';
+  String get upvote => 'Upvote';
 
   @override
   String get upvoteColor => 'Upvote Color';
@@ -2959,7 +2978,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get uriNotSupported =>
-      'Ĉi tiu tipo de ligilo ne estas subtenata nuntempe.';
+      'This type of link is not supported at the moment.';
 
   @override
   String get url => 'URL';
@@ -2975,8 +2994,7 @@ class AppLocalizationsEo extends AppLocalizations {
       'Uses Apple\'s Push Notification service';
 
   @override
-  String get useCompactView =>
-      'Ŝalti por malgrandaj afiŝoj, malŝalti por grandaj.';
+  String get useCompactView => 'Enable for small posts, disable for big.';
 
   @override
   String get useLocalNotifications => 'Use Local Notifications (Experimental)';
@@ -3001,7 +3019,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String useSuggestedTitle(Object title) {
-    return 'Uzi proponitan titolon: $title';
+    return 'Use suggested title: $title';
   }
 
   @override
@@ -3023,7 +3041,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get userFormat => 'Uzanta Formato';
+  String get userFormat => 'User Format';
 
   @override
   String get userLabelHint => 'This is my favorite user';
@@ -3042,26 +3060,26 @@ class AppLocalizationsEo extends AppLocalizations {
   String get userNameThickness => 'User Name Thickness';
 
   @override
-  String get userNotLoggedIn => 'Uzanto ne ensalutinta';
+  String get userNotLoggedIn => 'User not logged in';
 
   @override
-  String get userProfiles => 'Uzantprofiloj';
+  String get userProfiles => 'User Profiles';
 
   @override
   String get userSettingDescription =>
-      'Ĉi tiuj agordoj sinkronigas kun via Lemmy-konto kaj estas aplikataj nur po-konta.';
+      'These settings sync with your Lemmy account and are only applied on a per-account basis.';
 
   @override
   String get userStyle => 'User Style';
 
   @override
-  String get username => 'Uzantnomo';
+  String get username => 'Username';
 
   @override
   String get usernameFormattingRedirect => 'Looking for username formatting?';
 
   @override
-  String get users => 'Uzantoj';
+  String get users => 'Users';
 
   @override
   String versionNumber(Object version) {
@@ -3099,7 +3117,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get viewAll => 'View all';
 
   @override
-  String get viewAllComments => 'Rigardi ĉiujn komentojn';
+  String get viewAllComments => 'View all comments';
 
   @override
   String get viewCommentSource => 'View Comment Source';
@@ -3128,36 +3146,36 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get visitCommunity => 'Viziti Komunumon';
+  String get visitCommunity => 'Visit Community';
 
   @override
   String get visitCommunityInstance => 'Visit Community Instance';
 
   @override
-  String get visitInstance => 'Viziti Instancon';
+  String get visitInstance => 'Visit Instance';
 
   @override
   String get visitUserInstance => 'Visit User Instance';
 
   @override
-  String get visitUserProfile => 'Viziti Uzantan Profilon';
+  String get visitUserProfile => 'Visit User Profile';
 
   @override
   String get warning => 'Warning';
 
   @override
   String xDownvotes(Object x) {
-    return '$x subenvoĉdonoj';
+    return '$x downvotes';
   }
 
   @override
   String xScore(Object x) {
-    return '$x poentaro';
+    return '$x score';
   }
 
   @override
   String xUpvotes(Object x) {
-    return '$x suprenvoĉdonoj';
+    return '$x upvotes';
   }
 
   @override

@@ -172,6 +172,12 @@ class _FeedViewState extends State<FeedView> {
 
   String? tagline;
 
+  /// Previous scroll position used to detect scroll direction
+  double _previousScrollPosition = 0.0;
+
+  /// Minimum scroll delta before we consider it a direction change
+  static const double _scrollThreshold = 50.0;
+
   @override
   void initState() {
     super.initState();
@@ -180,6 +186,28 @@ class _FeedViewState extends State<FeedView> {
       // Fetches new posts when the user has scrolled past 70% list
       if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
         context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
+      }
+
+      // Detect scroll direction for bottom nav bar visibility
+      final currentScrollPosition = _scrollController.position.pixels;
+      final delta = currentScrollPosition - _previousScrollPosition;
+
+      if (delta.abs() > _scrollThreshold) {
+        final bloc = context.read<ThunderBloc>();
+
+        if (bloc.state.hideBottomBarOnScroll) {
+          final isScrollingDown = delta > 0;
+          final isBottomNavBarVisible = bloc.state.isBottomNavBarVisible;
+
+          // Only dispatch if the visibility state needs to change
+          // Show nav bar when scrolling up, hide when scrolling down
+          if (isScrollingDown && isBottomNavBarVisible) {
+            bloc.add(const OnBottomNavBarVisibilityChange(false));
+          } else if (!isScrollingDown && !isBottomNavBarVisible) {
+            bloc.add(const OnBottomNavBarVisibilityChange(true));
+          }
+        }
+        _previousScrollPosition = currentScrollPosition;
       }
     });
 

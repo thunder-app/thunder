@@ -203,6 +203,7 @@ enum LocalSettings {
   dimReadPosts(name: 'setting_dim_read_posts', key: 'dimReadPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   keywordFilters(name: 'setting_general_keyword_filters', key: 'keywordFilters', category: LocalSettingsCategories.filters, subCategory: LocalSettingsSubCategories.filters),
   hideTopBarOnScroll(name: 'setting_general_hide_topbar_on_scroll', key: 'hideTopBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+  hideBottomBarOnScroll(name: 'setting_general_hide_bottombar_on_scroll', key: 'hideBottomBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showHiddenPosts(name: 'setting_general_show_hidden_posts', key: 'showHiddenPosts', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   compactPostCardMetadataItems(
       name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
@@ -538,6 +539,7 @@ extension LocalizationExt on AppLocalizations {
       'postBodyShowCommunityAvatar': showPostCommunityIcons,
       'keywordFilters': keywordFilters,
       'hideTopBarOnScroll': hideTopBarOnScroll,
+      'hideBottomBarOnScroll': hideBottomBarOnScroll,
       'showHiddenPosts': showHiddenPosts,
       'compactPostCardMetadataItems': compactPostCardMetadataItems,
       'cardPostCardMetadataItems': cardPostCardMetadataItems,

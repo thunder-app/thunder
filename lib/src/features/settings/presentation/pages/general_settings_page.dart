@@ -83,6 +83,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the top bar will be hidden on scroll
   bool hideTopBarOnScroll = false;
 
+  /// When enabled, the bottom bar will be hidden on scroll
+  bool hideBottomBarOnScroll = false;
+
   /// When enabled, hidden posts will still be displayed in the feed
   bool showHiddenPosts = false;
 
@@ -194,6 +197,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
         setState(() => hideTopBarOnScroll = value);
         break;
+      case LocalSettings.hideBottomBarOnScroll:
+        await prefs.setBool(LocalSettings.hideBottomBarOnScroll.name, value);
+        setState(() => hideBottomBarOnScroll = value);
+        break;
       case LocalSettings.showHiddenPosts:
         await prefs.setBool(LocalSettings.showHiddenPosts.name, value);
         setState(() => showHiddenPosts = value);
@@ -293,6 +300,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
+      hideBottomBarOnScroll = prefs.getBool(LocalSettings.hideBottomBarOnScroll.name) ?? false;
       showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
       showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
 
@@ -521,11 +529,21 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ToggleOption(
                 description: l10n.hideTopBarOnScroll,
                 value: hideTopBarOnScroll,
-                iconEnabled: Icons.app_settings_alt_outlined,
-                iconDisabled: Icons.app_settings_alt_rounded,
+                iconEnabled: Icons.vertical_align_top_rounded,
+                iconDisabled: Icons.vertical_align_top_outlined,
                 onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.hideTopBarOnScroll,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.hideBottomBarOnScroll,
+                value: hideBottomBarOnScroll,
+                iconEnabled: Icons.vertical_align_bottom_rounded,
+                iconDisabled: Icons.vertical_align_bottom_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.hideBottomBarOnScroll, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.hideBottomBarOnScroll,
                 highlightedSetting: settingToHighlight,
               ),
               ToggleOption(

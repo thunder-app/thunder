@@ -1345,6 +1345,10 @@
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
   },
+  "hideBottomBarOnScroll": "Hide Bottom Bar on Scroll",
+  "@hideBottomBarOnScroll": {
+    "description": "Settings toggle to hide the bottom navigation bar on scroll"
+  },
   "hostInstance": "Host Instance",
   "@hostInstance": {
     "description": "The instance hosting a community"

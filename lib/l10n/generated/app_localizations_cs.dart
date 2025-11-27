@@ -1145,6 +1145,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hideTopBarOnScroll => 'Při Posunu Schovat Horní Lištu';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hostInstance => 'Host Instance';
 
   @override
