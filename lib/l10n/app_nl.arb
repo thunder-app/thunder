@@ -2883,5 +2883,168 @@
                 "description": "The instance that the communities are federated with"
             }
         }
+    },
+    "selectFeedType": "Feed­type selecteren",
+    "@selectFeedType": {},
+    "shareComment": "Opmerkings­koppeling delen",
+    "@shareComment": {
+        "description": "Menu item for sharing a comment"
+    },
+    "shareCommunityLink": "Gemeenschaps­koppeling delen",
+    "@shareCommunityLink": {
+        "description": "Menu item for sharing a community"
+    },
+    "shareLemmyLink": "Lemmy-koppeling delen",
+    "@shareLemmyLink": {
+        "description": "Menu item for sharing a Lemmy link"
+    },
+    "shareLink": "Externe koppeling delen",
+    "@shareLink": {},
+    "shareMediaLink": "Media­koppeling delen",
+    "@shareMediaLink": {
+        "description": "Action for sharing the link to the media associated with a post"
+    },
+    "shareOriginalLink": "Originele koppeling delen",
+    "@shareOriginalLink": {
+        "description": "Action for sharing the original link associated with a post"
+    },
+    "sharePost": "Bericht­koppeling delen",
+    "@sharePost": {},
+    "shareUserLink": "Gebruikers­koppeling delen",
+    "@shareUserLink": {
+        "description": "Menu item for sharing a user"
+    },
+    "searchInstancesFederatedWith": "Zoeken naar instanties die gefedereerd zĳn met {instance}",
+    "@searchInstancesFederatedWith": {
+        "description": "Placeholder text for searching for instances",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the instances are federated with"
+            }
+        }
+    },
+    "searchPostsFederatedWith": "Zoeken naar berichten die gefedereerd zĳn met {instance}",
+    "@searchPostsFederatedWith": {
+        "description": "Placeholder text for searching for posts",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the posts are federated with"
+            }
+        }
+    },
+    "searchUsersFederatedWith": "Zoeken naar gebruikers die gefedereerd zĳn met {instance}",
+    "@searchUsersFederatedWith": {
+        "description": "Placeholder text for searching for users",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the users are federated with"
+            }
+        }
+    },
+    "selectAccountToCommentAs": "Selecteer account om opmerking mee te plaatsen",
+    "@selectAccountToCommentAs": {
+        "description": "Profile modal heading for commenting as other user"
+    },
+    "selectAccountToPostAs": "Selecteer account om bericht mee te plaatsen",
+    "@selectAccountToPostAs": {
+        "description": "Heading for account selector when posting"
+    },
+    "selectCommunity": "Selecteer een gemeen­schap (vereist)",
+    "@selectCommunity": {},
+    "showExpandedTaglines": "Uitgebreide tag­regels weergeven",
+    "@showExpandedTaglines": {
+        "description": "Toggle that shows the full expanded tagline in the feed page"
+    },
+    "showFullDate": "Volledige datum tonen",
+    "@showFullDate": {
+        "description": "Toggle to show full date on posts"
+    },
+    "showNavigationLabels": "Navigatie­labels tonen",
+    "@showNavigationLabels": {
+        "description": "Setting for showing navigation labels"
+    },
+    "showOwnContent": "Eigen inhoud tonen",
+    "@showOwnContent": {
+        "description": "Toggle to show your own posts/comments."
+    },
+    "showPostAuthor": "Bericht­auteur tonen",
+    "@showPostAuthor": {
+        "description": "Toggle to show post author."
+    },
+    "showPostCommunityIcons": "Gemeenschaps­pictogrammen tonen",
+    "@showPostCommunityIcons": {
+        "description": "Toggle to show community icons."
+    },
+    "showPostTextContentPreview": "Tekst­voorvertoning tonen",
+    "@showPostTextContentPreview": {
+        "description": "Toggle to show text previews."
+    },
+    "showPostTitleFirst": "Titel bovenaan tonen",
+    "@showPostTitleFirst": {
+        "description": "Toggle to show post title first."
+    },
+    "showPostVoteActions": "Stem­knoppen tonen",
+    "@showPostVoteActions": {
+        "description": "Toggle to show vote buttons."
+    },
+    "showSavedContent": "Opgeslagen inhoud tonen",
+    "@showSavedContent": {
+        "description": "Toggle to show saved posts/comments."
+    },
+    "showScoreCounters": "Gebruikers­scores tonen",
+    "@showScoreCounters": {
+        "description": "Toggle to display user scores."
+    },
+    "showUnreadOnly": "Enkel ongelezen items tonen",
+    "@showUnreadOnly": {
+        "description": "Show unread replies/mentions/messages only"
+    },
+    "showUpdateChangelogs": "Wĳzigings­logboek tonen bij updates",
+    "@showUpdateChangelogs": {
+        "description": "Setting for showing changelogs after updates"
+    },
+    "showUserAvatar": "Gebruikers­avatar tonen",
+    "@showUserAvatar": {
+        "description": "Toggle to show user avatar."
+    },
+    "showUserInstance": "Gebruikers­instantie tonen",
+    "@showUserInstance": {
+        "description": "Toggle to show user instance."
+    },
+    "sortByTop": "Sorteren op beste",
+    "@sortByTop": {},
+    "subscribeToCommunity": "Abonneren op gemeen­schap",
+    "@subscribeToCommunity": {
+        "description": "Action for subscribing to a community"
+    },
+    "subscriptionRequestSent": "Abonnements­aanvraag verzonden",
+    "@subscriptionRequestSent": {
+        "description": "Message for subscription request sent"
+    },
+    "trySearchingFor": "Probeer te zoeken op…",
+    "@trySearchingFor": {
+        "description": "Suggestion for the user to try searching for a different type"
+    },
+    "youMustSelectAJsonFile": "U moet een .json-bestand selecteren.",
+    "@youMustSelectAJsonFile": {
+        "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+    },
+    "videoPlayerInApp": "Ingebouwde speler van Thunder gebruiken",
+    "@videoPlayerInApp": {
+        "description": "Description for using in-app video player"
+    },
+    "videoLinkHandlingExternal": "Video's afspelen met een externe app",
+    "@videoLinkHandlingExternal": {
+        "description": "Description to Open video with an external application"
+    },
+    "userNotLoggedIn": "Gebruiker is niet ingelogd",
+    "@userNotLoggedIn": {},
+    "userNameThickness": "Dikte van gebruikers­naam",
+    "@userNameThickness": {
+        "description": "Setting for user name thickness"
+    },
+    "userNameColor": "Kleur van gebruikers­naam",
+    "@userNameColor": {
+        "description": "Setting for username color"
     }
 }
