@@ -1136,6 +1136,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hide => 'Verbergen';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hideColor => 'Farbe verbergen';
 
   @override
@@ -1152,9 +1155,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hideTopBarOnScroll => 'Obere Leiste beim Scrollen verbergen';
-
-  @override
-  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
 
   @override
   String get hostInstance => 'Host Instanz';

@@ -1134,6 +1134,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get hide => 'மறை';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hideColor => 'நிறத்தை மறைக்கவும்';
 
   @override
@@ -1151,9 +1154,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hideTopBarOnScroll => 'சுருளில் மேல் பட்டியை மறைக்கவும்';
-
-  @override
-  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
 
   @override
   String get hostInstance => 'புரவலன் நிகழ்வு';

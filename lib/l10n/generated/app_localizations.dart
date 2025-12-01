@@ -2092,6 +2092,12 @@ abstract class AppLocalizations {
   /// **'Hide'**
   String get hide;
 
+  /// Settings toggle to hide the bottom navigation bar on scroll
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Bottom Bar on Scroll'**
+  String get hideBottomBarOnScroll;
+
   /// Name of the hide color setting
   ///
   /// In en, this message translates to:
@@ -2127,12 +2133,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide Top Bar on Scroll'**
   String get hideTopBarOnScroll;
-
-  /// Settings toggle to hide the bottom navigation bar on scroll
-  ///
-  /// In en, this message translates to:
-  /// **'Hide Bottom Bar on Scroll'**
-  String get hideBottomBarOnScroll;
 
   /// The instance hosting a community
   ///

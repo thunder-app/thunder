@@ -1323,6 +1323,10 @@
   "@hide": {
     "description": "The action to hide a post"
   },
+  "hideBottomBarOnScroll": "Hide Bottom Bar on Scroll",
+  "@hideBottomBarOnScroll": {
+    "description": "Settings toggle to hide the bottom navigation bar on scroll"
+  },
   "hideColor": "Hide Color",
   "@hideColor": {
     "description": "Name of the hide color setting"
@@ -1344,10 +1348,6 @@
   "hideTopBarOnScroll": "Hide Top Bar on Scroll",
   "@hideTopBarOnScroll": {
     "description": "Settings toggle to hide the top bar on scroll"
-  },
-  "hideBottomBarOnScroll": "Hide Bottom Bar on Scroll",
-  "@hideBottomBarOnScroll": {
-    "description": "Settings toggle to hide the bottom navigation bar on scroll"
   },
   "hostInstance": "Host Instance",
   "@hostInstance": {

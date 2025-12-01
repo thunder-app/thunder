@@ -1127,6 +1127,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hide => 'Hide';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hideColor => 'Hide Color';
 
   @override
@@ -1143,9 +1146,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get hideTopBarOnScroll => 'Při Posunu Schovat Horní Lištu';
-
-  @override
-  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
 
   @override
   String get hostInstance => 'Host Instance';
