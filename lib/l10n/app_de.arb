@@ -141,7 +141,7 @@
     "@combineCommentScoresLabel": {
         "description": "Label for setting to combine comment scores"
     },
-    "combineNavAndFab": "FAB und Navigationsknöpfe kombinieren",
+    "combineNavAndFab": "SAB und Navigationsknöpfe kombinieren",
     "@combineNavAndFab": {},
     "comment": "Kommentieren",
     "@comment": {},
@@ -171,7 +171,7 @@
     "@communities": {},
     "community": "Community",
     "@community": {},
-    "communityFormat": "Formatierung Communityname",
+    "communityFormat": "Commmunity Format",
     "@communityFormat": {
         "description": "Setting for community full name format"
     },
@@ -991,7 +991,7 @@
     "@compact": {
         "description": "Describes a compact visual density"
     },
-    "compactPostCardMetadataItems": "Kompakte Ansicht Metadaten",
+    "compactPostCardMetadataItems": "Kompaktansicht Metadaten",
     "@compactPostCardMetadataItems": {
         "description": "Name of setting for compact post card metadata items"
     },
@@ -1023,7 +1023,7 @@
     "@communityEntry": {
         "description": "Entry in list for a community to perform further actions"
     },
-    "communityNameColor": "Namensfarbe Community",
+    "communityNameColor": "Community Namensfarbe",
     "@communityNameColor": {
         "description": "Setting for community name color"
     },
@@ -3190,5 +3190,9 @@
     "fullscreen": "Aktion zum Aufrufen des Vollbildmodus",
     "@fullscreen": {
         "description": "Action for entering fullscreen"
+    },
+    "hideBottomBarOnScroll": "Untere Leiste beim Scrollen ausblenden",
+    "@hideBottomBarOnScroll": {
+        "description": "Settings toggle to hide the bottom navigation bar on scroll"
     }
 }
