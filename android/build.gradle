@@ -7,9 +7,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "${project(':background_fetch').projectDir}/libs" // Required by background_fetch
-        }
     }
 }
 

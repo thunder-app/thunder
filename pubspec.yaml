@@ -18,15 +18,9 @@ dependencies:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
       ref: 34db147d5964b2e84f5a7e8edff4a5ce6b649ec8
-  xayn_readability:
-    git:
-      url: https://github.com/xaynetwork/xayn_readability
-  l10n_esperanto:
-    git:
-      url: https://github.com/veloce/l10n_esperanto
-      ref: 62d45c60f7840a4591318bb477172136c999f946
+  l10n_esperanto: ^2.0.14
   android_intent_plus: ^6.0.0
-  app_links: ^6.3.2
+  app_links: ^7.0.0
   auto_size_text: ^3.0.0
   back_button_interceptor: ^8.0.0
   background_fetch: ^1.2.1
@@ -48,13 +42,13 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_cache_manager: ^3.3.0
   flutter_custom_tabs: ^2.0.0-beta.1
-  flutter_displaymode: ^0.6.0
+  flutter_displaymode: ^0.7.0
   flutter_file_dialog: ^3.0.2
   flutter_keyboard_visibility: ^6.0.0
   flutter_local_notifications: ^19.2.1
   flutter_markdown: ^0.7.3+1
-  flutter_native_splash: ^2.3.1
-  flutter_sharing_intent: ^1.1.1
+  flutter_native_splash: ^2.4.7
+  flutter_sharing_intent: ^2.0.4
   flutter_staggered_grid_view: ^0.7.0
   flutter_typeahead: ^5.2.0
   gal: ^2.2.0
@@ -88,8 +82,8 @@ dependencies:
   youtube_player_iframe: ^5.2.0
   freezed_annotation: ^3.1.0
   freezed: ^3.2.2
-  sqlite3_flutter_libs: ^0.5.39
   image: ^4.5.4
+  sqlite3: ^2.9.4
 
 dev_dependencies:
   flutter_test:
@@ -115,6 +109,8 @@ flutter:
     - family: Thunder
       fonts:
         - asset: fonts/Thunder.ttf
+  config:
+    enable-swift-package-manager: true
 
 flutter_native_splash:
   image: assets/logo.png

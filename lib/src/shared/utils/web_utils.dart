@@ -1,5 +1,4 @@
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:xayn_readability/xayn_readability.dart';
 
 /// Defines an interface which can perform web controlling operations
 abstract interface class IWebController {
@@ -41,38 +40,4 @@ class CustomWebViewController implements IWebController {
 
   @override
   Future<void> loadRequest(Uri uri) => controller.loadRequest(uri);
-}
-
-class CustomReaderModeController implements IWebController {
-  final ReaderModeController controller;
-
-  CustomReaderModeController.fromReaderModeController(this.controller);
-
-  @override
-  Future<bool> canGoBack() => Future.value(controller.canGoBack);
-
-  @override
-  Future<bool> canGoForward() => Future.value(controller.canGoForward);
-
-  @override
-  Future<void> goBack() async => controller.back();
-
-  @override
-  Future<void> goForward() async => controller.forward();
-
-  @override
-  Future<void> reload() {
-    return Future.value(() {
-      if (controller.uri != null) controller.loadUri(controller.uri!);
-    }());
-  }
-
-  @override
-  Future<String?> getTitle() => Future.value(controller.uri?.host.replaceFirst('www.', ''));
-
-  @override
-  Future<String?> currentUrl() => Future.value(controller.uri?.toString());
-
-  @override
-  Future<void> loadRequest(Uri uri) async => controller.loadUri(uri);
 }
