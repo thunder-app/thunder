@@ -3726,5 +3726,9 @@
     "fullscreen": "Tela cheia",
     "@fullscreen": {
         "description": "Action for entering fullscreen"
+    },
+    "hideBottomBarOnScroll": "Ocultar Barra Inferior ao Rolar",
+    "@hideBottomBarOnScroll": {
+        "description": "Settings toggle to hide the bottom navigation bar on scroll"
     }
 }
