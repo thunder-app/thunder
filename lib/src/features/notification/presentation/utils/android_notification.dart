@@ -1,21 +1,23 @@
-// Package imports
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-// Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 
-const String _repliesChannelId = 'inbox_replies';
-const String _repliesChannelName = 'Inbox Replies';
-const String _mentionsChannelId = 'inbox_mentions';
-const String _mentionsChannelName = 'Inbox Mentions';
-const String _messagesChannelId = 'inbox_messages';
-const String _messagesChannelName = 'Inbox Messages';
+const String _repliesChannelId = 'replies';
+const String _repliesChannelName = 'Replies';
+
+const String _mentionsChannelId = 'mentions';
+const String _mentionsChannelName = 'Mentions';
+
+const String _messagesChannelId = 'private_messages';
+const String _messagesChannelName = 'Private Messages';
+
 const String _testChannelId = 'troubleshooting';
 const String _testChannelName = 'Troubleshooting';
 
@@ -24,14 +26,14 @@ const String _testChannelName = 'Troubleshooting';
 /// This displays an empty notification which will be used in conjunction with the [showAndroidNotification]
 /// to help display a group of notifications on Android.
 void showNotificationGroups({required NotificationType type, required List<Account> accounts, required List<NotificationInboxType> inboxTypes}) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
-  final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+  final useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
 
-  for (Account account in accounts) {
-    for (NotificationInboxType inboxType in inboxTypes) {
+  for (final account in accounts) {
+    for (final inboxType in inboxTypes) {
       // Create a summary notification for the group.
-      final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation(
+      final inboxStyleInformationSummary = InboxStyleInformation(
         [],
         contentTitle: '',
         summaryText: generateUserFullName(
@@ -44,7 +46,7 @@ void showNotificationGroups({required NotificationType type, required List<Accou
         ),
       );
 
-      final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
+      final androidNotificationDetailsSummary = AndroidNotificationDetails(
         switch (inboxType) {
           NotificationInboxType.reply => _repliesChannelId,
           NotificationInboxType.mention => _mentionsChannelId,
@@ -60,7 +62,7 @@ void showNotificationGroups({required NotificationType type, required List<Accou
         setAsGroupSummary: true,
       );
 
-      final NotificationDetails notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
+      final notificationDetailsSummary = NotificationDetails(android: androidNotificationDetailsSummary);
 
       // Send the summary message!
       await flutterLocalNotificationsPlugin.show(
@@ -90,10 +92,10 @@ void showAndroidNotification({
   required String payload,
   required NotificationInboxType inboxType,
 }) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // Configure Android-specific settings
-  final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+  final androidNotificationDetails = AndroidNotificationDetails(
     switch (inboxType) {
       NotificationInboxType.reply => _repliesChannelId,
       NotificationInboxType.mention => _mentionsChannelId,
@@ -108,17 +110,18 @@ void showAndroidNotification({
     groupKey: NotificationGroupKey(accountId: account.id, inboxType: inboxType).toString(),
   );
 
-  final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+  final notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
   // Show the notification!
   await flutterLocalNotificationsPlugin.show(id, title, content, notificationDetails, payload: payload);
 }
 
+/// Displays a test notification on Android.
 Future<void> showTestAndroidNotification() async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // Configure Android-specific settings
-  const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+  const androidNotificationDetails = AndroidNotificationDetails(
     _testChannelId,
     _testChannelName,
     styleInformation: BigTextStyleInformation(
@@ -130,8 +133,50 @@ Future<void> showTestAndroidNotification() async {
     groupKey: 'test',
   );
 
-  const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+  const notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
   // Show the notification!
   await flutterLocalNotificationsPlugin.show(-1, 'Test', 'Test', notificationDetails);
+}
+
+/// The notification ID used for the background check notification.
+const int _backgroundCheckNotificationId = -2;
+
+/// Displays a notification to confirm that the background check is running.
+Future<void> showBackgroundCheckNotification() async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  final timestamp = DateTime.now().toLocal().toString();
+
+  final androidNotificationDetails = AndroidNotificationDetails(
+    _testChannelId,
+    _testChannelName,
+    styleInformation: BigTextStyleInformation(
+      'Notification check running at $timestamp',
+      contentTitle: 'Notification Check',
+      summaryText: 'Thunder',
+      htmlFormatBigText: false,
+    ),
+    importance: Importance.min,
+    silent: true,
+    autoCancel: true,
+  );
+
+  final notificationDetails = NotificationDetails(android: androidNotificationDetails);
+
+  // Show the notification!
+  await flutterLocalNotificationsPlugin.show(_backgroundCheckNotificationId, 'Notification Check', 'Notification Check', notificationDetails);
+}
+
+/// Dismisses the background check notification.
+Future<void> dismissBackgroundCheckNotification() async {
+  debugPrint('Thunder - Dismissing background check notification');
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // Initialize the plugin in headless mode to ensure cancel works
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('icon');
+  const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  await flutterLocalNotificationsPlugin.cancel(_backgroundCheckNotificationId);
 }

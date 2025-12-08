@@ -17,6 +17,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
+import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/main.dart';
 import 'package:thunder/src/features/notification/notification.dart';
@@ -36,11 +37,12 @@ void initLocalNotifications({required StreamController<NotificationResponse> con
   initHeadlessBackgroundFetch();
 }
 
-/// This method polls for new inbox messages and, if found, displays them as notificatons.  It is intended to be invoked from a background fetch task.
-/// It will track when the last poll ran and ignore any inbox messages from before that time.
+/// This method polls for new inbox notifications (replies, mentions, messages) and displays them.
+/// It is intended to be invoked from a background fetch task.
+/// It will track when the last poll ran and ignore any notifications from before that time.
 ///
 /// If the user has not configured inbox notifications, it will do nothing. If no user is logged in, it will do nothing.
-Future<void> pollRepliesAndShowNotifications() async {
+Future<void> pollNotificationsAndShow() async {
   // This print statement is here for the sake of verifying that background checks only happen when they're supposed to.
   // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
@@ -58,97 +60,225 @@ Future<void> pollRepliesAndShowNotifications() async {
   List<Account> accounts = await Account.accounts();
   DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
 
-  Map<Account, List<ThunderComment>> notifications = {};
+  // Track notifications by type for each account
+  Map<Account, List<ThunderComment>> replyNotifications = {};
+  Map<Account, List<ThunderComment>> mentionNotifications = {};
+  Map<Account, List<ThunderPrivateMessage>> messageNotifications = {};
 
   for (final Account account in accounts) {
-    // Iterate through inbox replies
-    final repliesResponse = await NotificationRepositoryImpl(account: account).replies(
-      unread: true,
-      limit: 50,
-      sort: CommentSortType.old,
-      page: 1,
-    );
+    // Skip anonymous accounts since they can't have notifications
+    if (account.anonymous) continue;
 
-    // Only handle messages that have arrived since the last time we polled
-    final Iterable<ThunderComment> newReplies = repliesResponse.where((comment) => comment.published.isAfter(lastPollTime));
+    final repository = NotificationRepositoryImpl(account: account);
 
-    if (newReplies.isNotEmpty) notifications.putIfAbsent(account, () => newReplies.toList());
+    // Poll replies
+    try {
+      final repliesResponse = await repository.replies(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
+      final newReplies = repliesResponse.where((comment) => comment.published.isAfter(lastPollTime)).toList();
+      if (newReplies.isNotEmpty) replyNotifications[account] = newReplies;
+    } catch (e) {
+      debugPrint('Thunder - Background fetch - Error polling replies for account ${account.username}: $e');
+    }
+
+    // Poll mentions
+    try {
+      final mentionsResponse = await repository.mentions(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
+      final newMentions = mentionsResponse.where((comment) => comment.published.isAfter(lastPollTime)).toList();
+      if (newMentions.isNotEmpty) mentionNotifications[account] = newMentions;
+    } catch (e) {
+      debugPrint('Thunder - Background fetch - Error polling mentions for account ${account.username}: $e');
+    }
+
+    // Poll messages
+    try {
+      final messagesResponse = await repository.messages(unread: true, limit: 50, page: 1);
+      final newMessages = messagesResponse.where((message) => message.published.isAfter(lastPollTime)).toList();
+      if (newMessages.isNotEmpty) messageNotifications[account] = newMessages;
+    } catch (e) {
+      debugPrint('Thunder - Background fetch - Error polling messages for account ${account.username}: $e');
+    }
   }
 
-  if (notifications.isEmpty) {
-    // Save our poll time
+  // If no notifications, save poll time and return
+  if (replyNotifications.isEmpty && mentionNotifications.isEmpty && messageNotifications.isEmpty) {
     prefs.setString(_lastPollTimeId, DateTime.now().toString());
     return;
   }
 
-  // Create a notification group for each account that has replies
-  showNotificationGroups(accounts: notifications.keys.toList(), inboxTypes: [NotificationInboxType.reply], type: NotificationType.local);
+  // Collect all accounts and their inbox types for notification groups
+  Set<Account> allAccounts = {...replyNotifications.keys, ...mentionNotifications.keys, ...messageNotifications.keys};
+  for (final account in allAccounts) {
+    List<NotificationInboxType> inboxTypes = [];
+    if (replyNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.reply);
+    if (mentionNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.mention);
+    if (messageNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.message);
 
-  // Show the notifications
-  for (final entry in notifications.entries) {
-    Account account = entry.key;
-    List<ThunderComment> replies = entry.value;
+    showNotificationGroups(accounts: [account], inboxTypes: inboxTypes, type: NotificationType.local);
+  }
 
-    for (final comment in replies) {
-      final String commentContent = cleanCommentContent(comment);
-      final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
-      final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
+  // Show reply notifications
+  for (final entry in replyNotifications.entries) {
+    _showCommentNotifications(
+      account: entry.key,
+      comments: entry.value,
+      inboxType: NotificationInboxType.reply,
+      userSeparator: userSeparator,
+      communitySeparator: communitySeparator,
+      useDisplayNamesForUsers: useDisplayNamesForUsers,
+      useDisplayNamesForCommunities: useDisplayNamesForCommunities,
+    );
+  }
 
-      final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-        '${comment.post?.name} · ${generateCommunityFullName(
-          null,
-          comment.community?.name,
-          comment.community?.title,
-          fetchInstanceNameFromUrl(comment.community?.actorId),
-          communitySeparator: communitySeparator,
-          useDisplayName: useDisplayNamesForCommunities,
-        )}\n$htmlComment',
-        contentTitle: generateUserFullName(
-          null,
-          comment.creator?.name,
-          comment.creator?.displayName,
-          fetchInstanceNameFromUrl(comment.creator?.actorId),
-          userSeparator: userSeparator,
-          useDisplayName: useDisplayNamesForUsers,
-        ),
-        summaryText: generateUserFullName(
-          null,
-          comment.recipient?.name,
-          comment.recipient?.displayName,
-          fetchInstanceNameFromUrl(comment.recipient?.actorId),
-          userSeparator: userSeparator,
-          useDisplayName: useDisplayNamesForUsers,
-        ),
-        htmlFormatBigText: true,
-      );
+  // Show mention notifications
+  for (final entry in mentionNotifications.entries) {
+    _showCommentNotifications(
+      account: entry.key,
+      comments: entry.value,
+      inboxType: NotificationInboxType.mention,
+      userSeparator: userSeparator,
+      communitySeparator: communitySeparator,
+      useDisplayNamesForUsers: useDisplayNamesForUsers,
+      useDisplayNamesForCommunities: useDisplayNamesForCommunities,
+    );
+  }
 
-      showAndroidNotification(
-        id: comment.id,
-        account: account,
-        bigTextStyleInformation: bigTextStyleInformation,
-        title: generateUserFullName(
-          null,
-          comment.creator?.name,
-          comment.creator?.displayName,
-          fetchInstanceNameFromUrl(comment.creator?.actorId),
-          userSeparator: userSeparator,
-          useDisplayName: useDisplayNamesForUsers,
-        ),
-        content: plaintextComment,
-        payload: jsonEncode(NotificationPayload(
-          type: NotificationType.local,
-          accountId: account.id,
-          inboxType: NotificationInboxType.reply,
-          group: false,
-          id: comment.id,
-        ).toJson()),
-        inboxType: NotificationInboxType.reply,
-      );
-    }
+  // Show message notifications
+  for (final entry in messageNotifications.entries) {
+    _showMessageNotifications(
+      account: entry.key,
+      messages: entry.value,
+      userSeparator: userSeparator,
+      useDisplayNamesForUsers: useDisplayNamesForUsers,
+    );
   }
 
   // Save our poll time
   prefs.setString(_lastPollTimeId, DateTime.now().toString());
+}
+
+/// Helper function to show notifications for comments (replies and mentions)
+void _showCommentNotifications({
+  required Account account,
+  required List<ThunderComment> comments,
+  required NotificationInboxType inboxType,
+  required FullNameSeparator userSeparator,
+  required FullNameSeparator communitySeparator,
+  required bool useDisplayNamesForUsers,
+  required bool useDisplayNamesForCommunities,
+}) {
+  for (final comment in comments) {
+    final String commentContent = cleanCommentContent(comment);
+    final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
+    final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
+
+    final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+      '${comment.post?.name} · ${generateCommunityFullName(
+        null,
+        comment.community?.name,
+        comment.community?.title,
+        fetchInstanceNameFromUrl(comment.community?.actorId),
+        communitySeparator: communitySeparator,
+        useDisplayName: useDisplayNamesForCommunities,
+      )}\n$htmlComment',
+      contentTitle: generateUserFullName(
+        null,
+        comment.creator?.name,
+        comment.creator?.displayName,
+        fetchInstanceNameFromUrl(comment.creator?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      summaryText: generateUserFullName(
+        null,
+        comment.recipient?.name,
+        comment.recipient?.displayName,
+        fetchInstanceNameFromUrl(comment.recipient?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      htmlFormatBigText: true,
+    );
+
+    showAndroidNotification(
+      id: comment.id,
+      account: account,
+      bigTextStyleInformation: bigTextStyleInformation,
+      title: generateUserFullName(
+        null,
+        comment.creator?.name,
+        comment.creator?.displayName,
+        fetchInstanceNameFromUrl(comment.creator?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      content: plaintextComment,
+      payload: jsonEncode(NotificationPayload(
+        type: NotificationType.local,
+        accountId: account.id,
+        inboxType: inboxType,
+        group: false,
+        id: comment.id,
+      ).toJson()),
+      inboxType: inboxType,
+    );
+  }
+}
+
+/// Helper function to show notifications for private messages
+void _showMessageNotifications({
+  required Account account,
+  required List<ThunderPrivateMessage> messages,
+  required FullNameSeparator userSeparator,
+  required bool useDisplayNamesForUsers,
+}) {
+  for (final message in messages) {
+    final String htmlContent = cleanImagesFromHtml(markdownToHtml(message.content));
+    final String plaintextContent = parse(parse(htmlContent).body?.text).documentElement?.text ?? message.content;
+
+    final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+      htmlContent,
+      contentTitle: generateUserFullName(
+        null,
+        message.creator?.name,
+        message.creator?.displayName,
+        fetchInstanceNameFromUrl(message.creator?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      summaryText: generateUserFullName(
+        null,
+        message.recipient?.name,
+        message.recipient?.displayName,
+        fetchInstanceNameFromUrl(message.recipient?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      htmlFormatBigText: true,
+    );
+
+    showAndroidNotification(
+      id: message.id,
+      account: account,
+      bigTextStyleInformation: bigTextStyleInformation,
+      title: generateUserFullName(
+        null,
+        message.creator?.name,
+        message.creator?.displayName,
+        fetchInstanceNameFromUrl(message.creator?.actorId),
+        userSeparator: userSeparator,
+        useDisplayName: useDisplayNamesForUsers,
+      ),
+      content: plaintextContent,
+      payload: jsonEncode(NotificationPayload(
+        type: NotificationType.local,
+        accountId: account.id,
+        inboxType: NotificationInboxType.message,
+        group: false,
+        id: message.id,
+      ).toJson()),
+      inboxType: NotificationInboxType.message,
+    );
+  }
 }
 
 // ---------------- START BACKGROUND FETCH ---------------- //
@@ -158,7 +288,22 @@ Future<void> pollRepliesAndShowNotifications() async {
 void backgroundFetchHeadlessTask(HeadlessTask task) async {
   if (task.timeout) return BackgroundFetch.finish(task.taskId);
 
-  await pollRepliesAndShowNotifications();
+  // Ensure Flutter bindings are initialized for background isolate
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize preferences in the headless isolate
+  await UserPreferences.instance.initialize();
+
+  // Send a confirmation notification that background check is running
+  await showBackgroundCheckNotification();
+
+  try {
+    await pollNotificationsAndShow();
+  } finally {
+    // Dismiss the background check notification now that the check is complete
+    await dismissBackgroundCheckNotification();
+  }
+
   BackgroundFetch.finish(task.taskId);
 }
 
@@ -189,7 +334,7 @@ Future<void> initBackgroundFetch() async {
     ),
     // This is the callback that handles background fetching while the app is running.
     (String taskId) async {
-      await pollRepliesAndShowNotifications();
+      await pollNotificationsAndShow();
       BackgroundFetch.finish(taskId);
     },
     // This is the timeout callback.

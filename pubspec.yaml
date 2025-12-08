@@ -23,7 +23,7 @@ dependencies:
   app_links: ^7.0.0
   auto_size_text: ^3.0.0
   back_button_interceptor: ^8.0.0
-  background_fetch: ^1.2.1
+  background_fetch: ^1.5.0
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
   cached_network_image: ^3.2.3

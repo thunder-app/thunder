@@ -96,8 +96,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
@@ -151,8 +150,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
@@ -205,8 +203,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int limit = 50,
     int page = 1,
   }) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
 
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:

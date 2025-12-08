@@ -58,6 +58,6 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
     bool startupDueToGroupNotification =
         notificationAppLaunchDetails?.notificationResponse?.payload?.isNotEmpty == true && NotificationPayload.fromJson(jsonDecode(notificationAppLaunchDetails!.notificationResponse!.payload!)).group;
     // Do a notifications check on startup, if the user isn't clicking on a group notification
-    if (!startupDueToGroupNotification && notificationType == NotificationType.local) pollRepliesAndShowNotifications();
+    if (!startupDueToGroupNotification && notificationType == NotificationType.local) pollNotificationsAndShow();
   }
 }
