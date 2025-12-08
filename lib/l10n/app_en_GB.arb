@@ -3198,5 +3198,9 @@
     "fullscreen": "Fullscreen",
     "@fullscreen": {
         "description": "Action for entering fullscreen"
+    },
+    "hideBottomBarOnScroll": "Hide Bottom Bar on Scroll",
+    "@hideBottomBarOnScroll": {
+        "description": "Settings toggle to hide the bottom navigation bar on scroll"
     }
 }
