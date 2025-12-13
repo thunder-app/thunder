@@ -2,59 +2,111 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 
-/// A page for displaying the result of reply notifications
-class NotificationsReplyPage extends StatelessWidget {
-  final List<ThunderComment> replies;
+/// A page for displaying notifications (replies, mentions, or messages)
+class NotificationsPage extends StatelessWidget {
+  /// The type of inbox notification to display
+  final InboxType inboxType;
 
-  const NotificationsReplyPage({super.key, required this.replies});
+  /// The list of comments (used for replies and mentions)
+  final List<ThunderComment> comments;
+
+  /// The list of private messages (used for messages)
+  final List<ThunderPrivateMessage> messages;
+
+  const NotificationsPage({
+    super.key,
+    required this.inboxType,
+    this.comments = const [],
+    this.messages = const [],
+  });
+
+  factory NotificationsPage.replies({Key? key, required List<ThunderComment> replies}) {
+    return NotificationsPage(key: key, inboxType: InboxType.replies, comments: replies);
+  }
+
+  factory NotificationsPage.mentions({Key? key, required List<ThunderComment> mentions}) {
+    return NotificationsPage(key: key, inboxType: InboxType.mentions, comments: mentions);
+  }
+
+  factory NotificationsPage.messages({Key? key, required List<ThunderPrivateMessage> messages}) {
+    return NotificationsPage(key: key, inboxType: InboxType.messages, messages: messages);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: InboxBloc.initWith(replies: replies, showUnreadOnly: true, account: account)),
+        BlocProvider.value(
+          value: inboxType == InboxType.messages
+              ? (InboxBloc(account: account)..add(const GetInboxEvent(reset: true, inboxType: InboxType.messages)))
+              : InboxBloc.initWith(replies: comments, showUnreadOnly: true, account: account),
+        ),
         BlocProvider.value(value: PostBloc(account: account)),
       ],
       child: BlocConsumer<InboxBloc, InboxState>(
         listener: (BuildContext context, InboxState state) {
-          if (state.replies.isEmpty && (ModalRoute.of(context)?.isCurrent ?? false)) {
+          final shouldPop = switch (inboxType) {
+            InboxType.replies => state.replies.isEmpty,
+            InboxType.mentions => state.replies.isEmpty,
+            InboxType.messages => state.privateMessages.isEmpty && state.status == InboxStatus.success,
+            InboxType.all => false,
+          };
+
+          if (shouldPop && (ModalRoute.of(context)?.isCurrent ?? false)) {
             Navigator.of(context).pop();
           }
         },
-        builder: (context, state) => Material(
-          child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    pinned: true,
-                    centerTitle: false,
-                    toolbarHeight: APP_BAR_HEIGHT,
-                    forceElevated: innerBoxIsScrolled,
-                    title: ListTile(
-                      title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
-                      subtitle: Text(l10n.reply(replies.length)),
+        builder: (context, state) {
+          final subtitle = switch (inboxType) {
+            InboxType.replies => l10n.reply(comments.length),
+            InboxType.mentions => l10n.mention(comments.length),
+            InboxType.messages => l10n.message(messages.length),
+            InboxType.all => '',
+          };
+
+          final body = switch (inboxType) {
+            InboxType.replies => InboxRepliesView(replies: state.replies),
+            InboxType.mentions => InboxMentionsView(mentions: state.replies),
+            InboxType.messages => InboxPrivateMessagesView(privateMessages: state.privateMessages.isEmpty ? messages : state.privateMessages),
+            InboxType.all => const SizedBox.shrink(),
+          };
+
+          return Material(
+            child: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    sliver: SliverAppBar(
+                      pinned: true,
+                      centerTitle: false,
+                      toolbarHeight: APP_BAR_HEIGHT,
+                      forceElevated: innerBoxIsScrolled,
+                      title: ListTile(
+                        title: Text(l10n.inbox, style: theme.textTheme.titleLarge),
+                        subtitle: Text(subtitle),
+                      ),
                     ),
                   ),
-                ),
-              ];
-            },
-            body: InboxRepliesView(replies: state.replies),
-          ),
-        ),
+                ];
+              },
+              body: body,
+            ),
+          );
+        },
       ),
     );
   }

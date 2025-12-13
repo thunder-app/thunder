@@ -1,17 +1,13 @@
-// Dart imports
 import 'dart:async';
 import 'dart:convert';
 
-// Flutter imports
 import 'package:flutter/material.dart';
 
-// Package imports
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart';
 
-// Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
@@ -38,7 +34,6 @@ void initLocalNotifications({required StreamController<NotificationResponse> con
 }
 
 /// This method polls for new inbox notifications (replies, mentions, messages) and displays them.
-/// It is intended to be invoked from a background fetch task.
 /// It will track when the last poll ran and ignore any notifications from before that time.
 ///
 /// If the user has not configured inbox notifications, it will do nothing. If no user is logged in, it will do nothing.
@@ -47,25 +42,28 @@ Future<void> pollNotificationsAndShow() async {
   // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
 
-  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
-  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
-  final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
-  final bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+  final userFormat = UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name;
+  final communityFormat = UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name;
+  final useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+  final useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+
+  final userSeparator = FullNameSeparator.values.byName(userFormat);
+  final communitySeparator = FullNameSeparator.values.byName(communityFormat);
 
   final prefs = UserPreferences.instance.preferences;
 
   // Ensure that the db is initialized before attempting to access below.
   initializeDatabase();
 
-  List<Account> accounts = await Account.accounts();
-  DateTime lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
+  final accounts = await Account.accounts();
+  final lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
 
   // Track notifications by type for each account
-  Map<Account, List<ThunderComment>> replyNotifications = {};
-  Map<Account, List<ThunderComment>> mentionNotifications = {};
-  Map<Account, List<ThunderPrivateMessage>> messageNotifications = {};
+  final replyNotifications = <Account, List<ThunderComment>>{};
+  final mentionNotifications = <Account, List<ThunderComment>>{};
+  final messageNotifications = <Account, List<ThunderPrivateMessage>>{};
 
-  for (final Account account in accounts) {
+  for (final account in accounts) {
     // Skip anonymous accounts since they can't have notifications
     if (account.anonymous) continue;
 
@@ -73,8 +71,8 @@ Future<void> pollNotificationsAndShow() async {
 
     // Poll replies
     try {
-      final repliesResponse = await repository.replies(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
-      final newReplies = repliesResponse.where((comment) => comment.published.isAfter(lastPollTime)).toList();
+      final replies = await repository.replies(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
+      final newReplies = replies.where((comment) => comment.published.isAfter(lastPollTime)).toList();
       if (newReplies.isNotEmpty) replyNotifications[account] = newReplies;
     } catch (e) {
       debugPrint('Thunder - Background fetch - Error polling replies for account ${account.username}: $e');
@@ -82,8 +80,8 @@ Future<void> pollNotificationsAndShow() async {
 
     // Poll mentions
     try {
-      final mentionsResponse = await repository.mentions(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
-      final newMentions = mentionsResponse.where((comment) => comment.published.isAfter(lastPollTime)).toList();
+      final mentions = await repository.mentions(unread: true, limit: 50, sort: CommentSortType.old, page: 1);
+      final newMentions = mentions.where((comment) => comment.published.isAfter(lastPollTime)).toList();
       if (newMentions.isNotEmpty) mentionNotifications[account] = newMentions;
     } catch (e) {
       debugPrint('Thunder - Background fetch - Error polling mentions for account ${account.username}: $e');
@@ -91,8 +89,8 @@ Future<void> pollNotificationsAndShow() async {
 
     // Poll messages
     try {
-      final messagesResponse = await repository.messages(unread: true, limit: 50, page: 1);
-      final newMessages = messagesResponse.where((message) => message.published.isAfter(lastPollTime)).toList();
+      final messages = await repository.messages(unread: true, limit: 50, page: 1);
+      final newMessages = messages.where((message) => message.published.isAfter(lastPollTime)).toList();
       if (newMessages.isNotEmpty) messageNotifications[account] = newMessages;
     } catch (e) {
       debugPrint('Thunder - Background fetch - Error polling messages for account ${account.username}: $e');
@@ -106,19 +104,21 @@ Future<void> pollNotificationsAndShow() async {
   }
 
   // Collect all accounts and their inbox types for notification groups
-  Set<Account> allAccounts = {...replyNotifications.keys, ...mentionNotifications.keys, ...messageNotifications.keys};
-  for (final account in allAccounts) {
-    List<NotificationInboxType> inboxTypes = [];
+  final notificationAccounts = {...replyNotifications.keys, ...mentionNotifications.keys, ...messageNotifications.keys};
+
+  for (final account in notificationAccounts) {
+    final inboxTypes = <NotificationInboxType>[];
+
     if (replyNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.reply);
     if (mentionNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.mention);
     if (messageNotifications.containsKey(account)) inboxTypes.add(NotificationInboxType.message);
 
-    showNotificationGroups(accounts: [account], inboxTypes: inboxTypes, type: NotificationType.local);
+    await showNotificationGroups(accounts: [account], inboxTypes: inboxTypes, type: NotificationType.local);
   }
 
   // Show reply notifications
   for (final entry in replyNotifications.entries) {
-    _showCommentNotifications(
+    await _showCommentNotifications(
       account: entry.key,
       comments: entry.value,
       inboxType: NotificationInboxType.reply,
@@ -131,7 +131,7 @@ Future<void> pollNotificationsAndShow() async {
 
   // Show mention notifications
   for (final entry in mentionNotifications.entries) {
-    _showCommentNotifications(
+    await _showCommentNotifications(
       account: entry.key,
       comments: entry.value,
       inboxType: NotificationInboxType.mention,
@@ -144,7 +144,7 @@ Future<void> pollNotificationsAndShow() async {
 
   // Show message notifications
   for (final entry in messageNotifications.entries) {
-    _showMessageNotifications(
+    await _showMessageNotifications(
       account: entry.key,
       messages: entry.value,
       userSeparator: userSeparator,
@@ -157,7 +157,7 @@ Future<void> pollNotificationsAndShow() async {
 }
 
 /// Helper function to show notifications for comments (replies and mentions)
-void _showCommentNotifications({
+Future<void> _showCommentNotifications({
   required Account account,
   required List<ThunderComment> comments,
   required NotificationInboxType inboxType,
@@ -165,13 +165,13 @@ void _showCommentNotifications({
   required FullNameSeparator communitySeparator,
   required bool useDisplayNamesForUsers,
   required bool useDisplayNamesForCommunities,
-}) {
+}) async {
   for (final comment in comments) {
-    final String commentContent = cleanCommentContent(comment);
-    final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
-    final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
+    final commentContent = cleanCommentContent(comment);
+    final htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
+    final plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
-    final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+    final bigTextStyleInformation = BigTextStyleInformation(
       '${comment.post?.name} · ${generateCommunityFullName(
         null,
         comment.community?.name,
@@ -199,7 +199,7 @@ void _showCommentNotifications({
       htmlFormatBigText: true,
     );
 
-    showAndroidNotification(
+    await showAndroidNotification(
       id: comment.id,
       account: account,
       bigTextStyleInformation: bigTextStyleInformation,
@@ -225,17 +225,17 @@ void _showCommentNotifications({
 }
 
 /// Helper function to show notifications for private messages
-void _showMessageNotifications({
+Future<void> _showMessageNotifications({
   required Account account,
   required List<ThunderPrivateMessage> messages,
   required FullNameSeparator userSeparator,
   required bool useDisplayNamesForUsers,
-}) {
+}) async {
   for (final message in messages) {
-    final String htmlContent = cleanImagesFromHtml(markdownToHtml(message.content));
-    final String plaintextContent = parse(parse(htmlContent).body?.text).documentElement?.text ?? message.content;
+    final htmlContent = cleanImagesFromHtml(markdownToHtml(message.content));
+    final plaintextContent = parse(parse(htmlContent).body?.text).documentElement?.text ?? message.content;
 
-    final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+    final bigTextStyleInformation = BigTextStyleInformation(
       htmlContent,
       contentTitle: generateUserFullName(
         null,
@@ -256,7 +256,7 @@ void _showMessageNotifications({
       htmlFormatBigText: true,
     );
 
-    showAndroidNotification(
+    await showAndroidNotification(
       id: message.id,
       account: account,
       bigTextStyleInformation: bigTextStyleInformation,

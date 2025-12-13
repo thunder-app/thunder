@@ -94,6 +94,9 @@ class _ThunderState extends State<Thunder> {
         BlocProvider.of<DeepLinksCubit>(context).initialize();
         BlocProvider.of<NotificationsCubit>(context).handleNotifications();
       }
+
+      // Check for pending notification navigation after account switch
+      _checkPendingNotification();
     });
 
     BackButtonInterceptor.add(_handleBackButtonPress);
@@ -112,6 +115,37 @@ class _ThunderState extends State<Thunder> {
       duration: const Duration(milliseconds: 3500),
       closable: false,
     );
+  }
+
+  void _navigateToNotification(BuildContext context, NotificationsState state) {
+    switch (state.status) {
+      case NotificationsStatus.reply:
+        navigateToNotificationPage(context, inboxType: InboxType.replies, notificationId: state.notificationId, accountId: state.accountId);
+        break;
+      case NotificationsStatus.mention:
+        navigateToNotificationPage(context, inboxType: InboxType.mentions, notificationId: state.notificationId, accountId: state.accountId);
+        break;
+      case NotificationsStatus.message:
+        navigateToNotificationPage(context, inboxType: InboxType.messages, notificationId: state.notificationId, accountId: state.accountId);
+        break;
+      case NotificationsStatus.none:
+        break;
+    }
+  }
+
+  /// Checks for pending notification navigation after account switch.
+  void _checkPendingNotification() {
+    final cubit = context.read<NotificationsCubit>();
+    final state = cubit.state;
+
+    if (state.pending && state.status != NotificationsStatus.none) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) {
+          _navigateToNotification(context, state);
+          cubit.clearNotification();
+        }
+      });
+    }
   }
 
   FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
@@ -158,10 +192,25 @@ class _ThunderState extends State<Thunder> {
     return MultiBlocListener(
       listeners: [
         BlocListener<NotificationsCubit, NotificationsState>(
+          listenWhen: (previous, current) {
+            final shouldListen = current.status != NotificationsStatus.none && !current.pending;
+            return shouldListen;
+          },
           listener: (context, state) {
-            if (state.status == NotificationsStatus.reply) {
-              navigateToNotificationReplyPage(context, replyId: state.replyId, accountId: state.accountId);
+            final currentAccountId = context.read<ProfileBloc>().state.account.id;
+            final notificationAccountId = state.accountId;
+
+            // Check if we need to switch accounts first
+            if (notificationAccountId != null && notificationAccountId != currentAccountId) {
+              // Mark as pending navigation and switch accounts
+              context.read<NotificationsCubit>().setPending();
+              context.read<ProfileBloc>().add(SwitchProfile(accountId: notificationAccountId, reload: true));
+              return;
             }
+
+            // Navigate directly and clear notification state
+            _navigateToNotification(context, state);
+            context.read<NotificationsCubit>().clearNotification();
           },
         ),
         BlocListener<DeepLinksCubit, DeepLinksState>(

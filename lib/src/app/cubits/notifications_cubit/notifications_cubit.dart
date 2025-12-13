@@ -12,22 +12,38 @@ part 'notifications_state.dart';
 /// A cubit for handling notifications
 class NotificationsCubit extends Cubit<NotificationsState> {
   final Stream<NotificationResponse> notificationsStream;
+
   StreamSubscription<NotificationResponse>? _notificationsStreamSubscription;
 
   NotificationsCubit({required this.notificationsStream}) : super(const NotificationsState());
 
   void handleNotifications() {
+    if (_notificationsStreamSubscription != null) return; // Only set up the listener once - the stream is single-subscription
+
     _notificationsStreamSubscription = notificationsStream.listen((notificationResponse) async {
-      NotificationPayload? payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
+      final payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
 
-      // Check if this is a reply notification
-      if (payload?.inboxType == NotificationInboxType.reply) {
-        emit(state.copyWith(status: NotificationsStatus.reply, replyId: payload!.id, accountId: payload.accountId));
-      }
+      if (payload == null) return;
 
-      // Reset the state
-      emit(state.copyWith(status: NotificationsStatus.none, replyId: null, accountId: payload?.accountId));
+      // Map notification inbox type to status
+      final status = switch (payload.inboxType) {
+        NotificationInboxType.reply => NotificationsStatus.reply,
+        NotificationInboxType.mention => NotificationsStatus.mention,
+        NotificationInboxType.message => NotificationsStatus.message,
+      };
+
+      emit(state.copyWith(status: status, notificationId: payload.id, accountId: payload.accountId, pending: false));
     });
+  }
+
+  /// Marks the notification as pending. This is used when we need to switch accounts before navigating to the notification.
+  void setPending() {
+    emit(state.copyWith(pending: true));
+  }
+
+  /// Clears the notification state after navigation is complete
+  void clearNotification() {
+    emit(state.clear());
   }
 
   void dispose() {

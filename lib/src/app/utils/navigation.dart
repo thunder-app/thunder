@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/routing/swipeable_page_route.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
+import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/core/models/thunder_site_response.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -444,55 +444,86 @@ Future<void> navigateToCreatePostPage(
   }
 }
 
-void navigateToNotificationReplyPage(BuildContext context, {required int? replyId, required String? accountId}) async {
+/// Navigates to a notifications page for the given [inboxType].
+///
+/// The [notificationId] is used to find and display a specific notification.
+/// If [notificationId] is null, all unread notifications of the given type will be shown.
+void navigateToNotificationPage(
+  BuildContext context, {
+  required InboxType inboxType,
+  required int? notificationId,
+  required String? accountId,
+}) async {
+  assert(inboxType == InboxType.replies || inboxType == InboxType.mentions || inboxType == InboxType.messages);
+
   // It can take a little while to set up notifications, so show a loading page
   showLoadingPage(context);
 
-  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  final bool reduceAnimations = thunderBloc.state.reduceAnimations;
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
-  Account? account = await fetchActiveProfile();
+  final thunderBloc = context.read<ThunderBloc>();
+  final reduceAnimations = thunderBloc.state.reduceAnimations;
 
-  if (account.id != accountId && accountId != null && context.mounted) {
-    // Switch to the notification's account without reloading the app
-    context.read<ProfileBloc>().add(SwitchProfile(accountId: accountId, reload: false));
-
-    // Set the account locally here so we don't have to wait for the event to complete
-    account = await Account.fetchAccount(accountId);
-
-    // Show the user a message indicating that we switched
-    showSnackbar(l10n.switchedAccount(generateUserFullName(context, account?.username, account?.displayName, account?.instance)));
+  if (accountId == null) {
+    hideLoadingPage(context);
+    return; // No account ID provided, so we can't do anything.
   }
 
-  // If account is still null, we can't do anything.
-  if (account == null || account.anonymous) return;
+  final account = await Account.fetchAccount(accountId);
+  if (account == null) {
+    if (context.mounted) hideLoadingPage(context);
+    return; // No account found, so we can't do anything.
+  }
 
-  List<ThunderComment> allReplies = [];
-  ThunderComment? specificReply;
+  final notificationRepository = NotificationRepositoryImpl(account: account);
 
-  bool doneFetching = false;
-  int currentPage = 1;
+  late final NotificationsPage notificationsPage;
 
-  // Load the notifications
-  while (!doneFetching) {
-    final getRepliesResponse = await NotificationRepositoryImpl(account: account).replies(
-      unread: replyId == null,
-      limit: 50,
-      sort: CommentSortType.new_,
-      page: currentPage,
-    );
+  if (inboxType == InboxType.messages) {
+    final messages = <ThunderPrivateMessage>[];
+    ThunderPrivateMessage? message;
 
-    allReplies.addAll(getRepliesResponse);
-    specificReply ??= getRepliesResponse.firstWhereOrNull((crv) => crv.id == replyId);
+    bool doneFetching = false;
+    int currentPage = 1;
 
-    doneFetching = specificReply != null || getRepliesResponse.isEmpty;
-    ++currentPage;
+    while (!doneFetching) {
+      final response = await notificationRepository.messages(
+        unread: notificationId == null,
+        limit: 50,
+        page: currentPage,
+      );
+
+      messages.addAll(response);
+      message ??= response.firstWhereOrNull((m) => m.id == notificationId);
+
+      doneFetching = message != null || response.isEmpty;
+      ++currentPage;
+    }
+
+    notificationsPage = NotificationsPage.messages(messages: message == null ? messages : [message]);
+  } else {
+    final comments = <ThunderComment>[];
+    ThunderComment? comment;
+
+    bool doneFetching = false;
+    int currentPage = 1;
+
+    while (!doneFetching) {
+      final response = inboxType == InboxType.replies
+          ? await notificationRepository.replies(unread: notificationId == null, limit: 50, sort: CommentSortType.new_, page: currentPage)
+          : await notificationRepository.mentions(unread: notificationId == null, limit: 50, sort: CommentSortType.new_, page: currentPage);
+
+      comments.addAll(response);
+      comment ??= response.firstWhereOrNull((c) => c.id == notificationId);
+
+      doneFetching = comment != null || response.isEmpty;
+      ++currentPage;
+    }
+
+    notificationsPage =
+        inboxType == InboxType.replies ? NotificationsPage.replies(replies: comment == null ? comments : [comment]) : NotificationsPage.mentions(mentions: comment == null ? comments : [comment]);
   }
 
   if (context.mounted) {
-    final NotificationsReplyPage notificationsReplyPage = NotificationsReplyPage(replies: specificReply == null ? allReplies : [specificReply]);
-
-    final SwipeablePageRoute route = SwipeablePageRoute(
+    final route = SwipeablePageRoute(
       transitionDuration: isLoadingPageShown
           ? Duration.zero
           : reduceAnimations
@@ -503,10 +534,8 @@ void navigateToNotificationReplyPage(BuildContext context, {required int? replyI
       canSwipe: !kIsWeb && Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: notificationsReplyPage,
+        providers: [BlocProvider.value(value: thunderBloc)],
+        child: notificationsPage,
       ),
     );
 

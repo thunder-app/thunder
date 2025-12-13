@@ -9,14 +9,14 @@ import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 
-const String _repliesChannelId = 'replies';
-const String _repliesChannelName = 'Replies';
+const String _repliesChannelId = 'inbox_replies';
+const String _repliesChannelName = 'Inbox Replies';
 
-const String _mentionsChannelId = 'mentions';
-const String _mentionsChannelName = 'Mentions';
+const String _mentionsChannelId = 'inbox_mentions';
+const String _mentionsChannelName = 'Inbox Mentions';
 
-const String _messagesChannelId = 'private_messages';
-const String _messagesChannelName = 'Private Messages';
+const String _messagesChannelId = 'inbox_messages';
+const String _messagesChannelName = 'Inbox Messages';
 
 const String _testChannelId = 'troubleshooting';
 const String _testChannelName = 'Troubleshooting';
@@ -25,7 +25,7 @@ const String _testChannelName = 'Troubleshooting';
 ///
 /// This displays an empty notification which will be used in conjunction with the [showAndroidNotification]
 /// to help display a group of notifications on Android.
-void showNotificationGroups({required NotificationType type, required List<Account> accounts, required List<NotificationInboxType> inboxTypes}) async {
+Future<void> showNotificationGroups({required NotificationType type, required List<Account> accounts, required List<NotificationInboxType> inboxTypes}) async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
   final useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
@@ -83,7 +83,7 @@ void showNotificationGroups({required NotificationType type, required List<Accou
 
 /// Displays a single push notification on Android. When a notification is displayed, it will be grouped by the account id.
 /// This allows us to group notifications for a single account on Android.
-void showAndroidNotification({
+Future<void> showAndroidNotification({
   required int id,
   required BigTextStyleInformation bigTextStyleInformation,
   required Account account,
