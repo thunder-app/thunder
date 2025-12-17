@@ -339,7 +339,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             controller: _passwordTextEditingController,
                             obscureText: !showPassword,
                             enableSuggestions: false,
-                            maxLength: 60, // This is what lemmy retricts password length to
+                            maxLength: instanceInfo?.platform?.maxPasswordLength ?? ThreadiversePlatform.piefed.maxPasswordLength,
                             autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),

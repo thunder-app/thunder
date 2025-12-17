@@ -2,6 +2,12 @@ enum ThreadiversePlatform {
   lemmy,
   piefed;
 
+  /// The maximum password length for the current platform. Lemmy restricts passwords to 60 characters, PieFed to 128 characters.
+  int get maxPasswordLength => switch (this) {
+        ThreadiversePlatform.lemmy => 60,
+        ThreadiversePlatform.piefed => 128,
+      };
+
   /// Converts a string value to ThreadiversePlatform enum
   static ThreadiversePlatform? fromString(String? value) {
     if (value == null) return null;
