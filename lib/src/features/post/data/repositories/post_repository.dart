@@ -22,8 +22,8 @@ abstract class PostRepository {
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});
 
   /// Fetches posts from the API
-  Future<List<ThunderPost>> getPosts({
-    int page = 1,
+  Future<Map<String, dynamic>> getPosts({
+    String? cursor,
     int? limit,
     FeedListType? feedListType,
     PostSortType? postSortType,
@@ -152,8 +152,8 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<List<ThunderPost>> getPosts({
-    int page = 1,
+  Future<Map<String, dynamic>> getPosts({
+    String? cursor,
     int? limit,
     int? personId,
     FeedListType? feedListType,
@@ -167,7 +167,7 @@ class PostRepositoryImpl implements PostRepository {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         return await lemmy.getPosts(
-          page: page,
+          cursor: cursor,
           limit: limit,
           postSortType: postSortType,
           feedListType: feedListType,
@@ -177,7 +177,10 @@ class PostRepositoryImpl implements PostRepository {
           showSaved: showSaved,
         );
       case ThreadiversePlatform.piefed:
-        return await piefed.getPosts(
+        // PieFed uses integer page-based pagination. The cursor in this case is the page number.
+        final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
+
+        final posts = await piefed.getPosts(
           page: page,
           limit: limit,
           feedListType: feedListType,
@@ -187,6 +190,13 @@ class PostRepositoryImpl implements PostRepository {
           showSaved: showSaved,
           likedOnly: likedOnly,
         );
+
+        // Return next page as string cursor for PieFed
+        final nextPage = posts.isNotEmpty ? (page + 1).toString() : null;
+        return {
+          'posts': posts,
+          'next_page': nextPage,
+        };
       default:
         throw Exception('Unsupported platform: ${account.platform}');
     }

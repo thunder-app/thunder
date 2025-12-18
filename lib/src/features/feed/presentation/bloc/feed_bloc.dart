@@ -449,7 +449,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         comments: const <ThunderComment>[],
         hasReachedPostsEnd: false,
         hasReachedCommentsEnd: false,
-        currentPage: 1,
+        cursor: null,
         userId: state.userId,
         username: state.username,
         user: state.user,
@@ -477,7 +477,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       communityName: null,
       userId: null,
       username: null,
-      currentPage: 1,
+      cursor: null,
     ));
   }
 
@@ -556,7 +556,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         }
 
         Map<String, dynamic> feedItemResult = await fetchFeedItems(
-          page: 1,
+          cursor: null,
           feedListType: event.feedListType,
           postSortType: event.postSortType,
           communityId: event.communityId,
@@ -574,7 +574,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         List<ThunderComment> comments = feedItemResult['comments'];
         bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
         bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
-        int currentPage = feedItemResult['currentPage'];
+        String? cursor = feedItemResult['cursor'];
 
         return emit(state.copyWith(
           status: FeedStatus.success,
@@ -594,7 +594,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           communityName: event.communityName,
           userId: event.userId ?? user?.id,
           username: event.username,
-          currentPage: currentPage,
+          cursor: cursor,
           showHidden: event.showHidden,
           showSaved: event.showSaved,
         ));
@@ -610,7 +610,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       List<ThunderComment> comments = List.from(state.comments);
 
       Map<String, dynamic> feedItemResult = await fetchFeedItems(
-        page: state.currentPage,
+        cursor: state.cursor,
         feedListType: state.feedListType,
         postSortType: state.postSortType,
         communityId: state.communityId,
@@ -627,7 +627,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       List<ThunderComment> newComments = feedItemResult['comments'];
       bool hasReachedPostsEnd = feedItemResult['hasReachedPostsEnd'];
       bool hasReachedCommentsEnd = feedItemResult['hasReachedCommentsEnd'];
-      int currentPage = feedItemResult['currentPage'];
+      String? cursor = feedItemResult['cursor'];
 
       Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
       List<ThunderPost> filteredPosts = [];
@@ -651,7 +651,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         comments: comments,
         hasReachedPostsEnd: hasReachedPostsEnd,
         hasReachedCommentsEnd: hasReachedCommentsEnd,
-        currentPage: currentPage,
+        cursor: cursor,
       ));
     } catch (e) {
       debugPrint('Error fetching feed: $e');

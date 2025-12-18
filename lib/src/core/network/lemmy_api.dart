@@ -204,8 +204,8 @@ class LemmyApi {
   }
 
   /// Fetches a list of posts from the Lemmy API
-  Future<List<ThunderPost>> getPosts({
-    int page = 1,
+  Future<Map<String, dynamic>> getPosts({
+    String? cursor,
     int? limit,
     FeedListType? feedListType,
     PostSortType? postSortType,
@@ -217,7 +217,7 @@ class LemmyApi {
     final queryParams = {
       'type_': feedListType?.value,
       'sort': postSortType?.value,
-      'page': page,
+      'page_cursor': cursor,
       'limit': limit,
       'community_name': communityName,
       'community_id': communityId,
@@ -226,7 +226,10 @@ class LemmyApi {
     };
 
     final json = await _request(HttpMethod.get, '/api/v3/post/list', queryParams);
-    return json['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList();
+    return {
+      'posts': json['posts'].map<ThunderPost>((pv) => ThunderPost.fromLemmyPostView(pv)).toList(),
+      'next_page': json['next_page'],
+    };
   }
 
   /// Creates a post

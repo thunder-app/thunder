@@ -21,7 +21,7 @@ final class FeedState extends Equatable {
     this.communityName,
     this.userId,
     this.username,
-    this.currentPage = 1,
+    this.cursor,
     this.message,
     this.scrollId = 0,
     this.dismissReadId = 0,
@@ -85,8 +85,8 @@ final class FeedState extends Equatable {
   /// The username of the user to display posts for.
   final String? username;
 
-  /// The current page of the feed
-  final int currentPage;
+  /// The cursor for fetching the next page of the feed
+  final String? cursor;
 
   /// The message to display on failure
   final String? message;
@@ -136,7 +136,7 @@ final class FeedState extends Equatable {
     String? communityName,
     int? userId,
     String? username,
-    int? currentPage,
+    String? cursor,
     String? message,
     int? scrollId,
     int? dismissReadId,
@@ -166,7 +166,7 @@ final class FeedState extends Equatable {
       communityName: communityName ?? this.communityName,
       userId: userId ?? this.userId,
       username: username ?? this.username,
-      currentPage: currentPage ?? this.currentPage,
+      cursor: cursor ?? this.cursor,
       message: message,
       scrollId: scrollId ?? this.scrollId,
       dismissReadId: dismissReadId ?? this.dismissReadId,
@@ -204,7 +204,7 @@ final class FeedState extends Equatable {
         communityName,
         userId,
         username,
-        currentPage,
+        cursor,
         message,
         scrollId,
         dismissReadId,

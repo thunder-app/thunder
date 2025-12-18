@@ -13,7 +13,7 @@ import 'package:thunder/src/features/user/user.dart';
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
 Future<Map<String, dynamic>> fetchFeedItems({
-  int page = 1,
+  String? cursor,
   FeedListType? feedListType,
   PostSortType? postSortType,
   int? communityId,
@@ -36,13 +36,14 @@ Future<Map<String, dynamic>> fetchFeedItems({
   List<ThunderPost> posts = [];
   List<ThunderComment> comments = [];
 
-  int startingPage = page, currentPage = page;
+  String? currentCursor = cursor;
+  int apiCallCount = 0;
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
     do {
-      List<ThunderPost> response = await PostRepositoryImpl(account: account).getPosts(
-        page: currentPage,
+      Map<String, dynamic> response = await PostRepositoryImpl(account: account).getPosts(
+        cursor: currentCursor,
         postSortType: postSortType,
         feedListType: feedListType,
         communityId: communityId,
@@ -51,14 +52,17 @@ Future<Map<String, dynamic>> fetchFeedItems({
         showSaved: showSaved,
       );
 
+      List<ThunderPost> responsePosts = response['posts'];
+      currentCursor = response['next_page'];
+
       // Keep the length of the original response to see if there are any additional posts to fetch
-      int postResponseLength = response.length;
+      int postResponseLength = responsePosts.length;
 
       // Remove deleted posts
-      response = response.where((post) => post.deleted == false).toList();
+      responsePosts = responsePosts.where((post) => post.deleted == false).toList();
 
       // Remove posts that contain any of the keywords in the title, body, or url
-      response = response.where((post) {
+      responsePosts = responsePosts.where((post) {
         final title = post.name.toLowerCase();
         final body = post.body?.toLowerCase() ?? '';
         final url = post.url?.toLowerCase() ?? '';
@@ -67,22 +71,22 @@ Future<Map<String, dynamic>> fetchFeedItems({
       }).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(response);
+      List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
       posts.addAll(formattedPosts);
 
       if (keywordFilters.isNotEmpty) {
         // Add some debugging logging so we can see what's going on when we're loading a feed with filters.
-        debugPrint('posts.length is ${posts.length} and postResponseLength is $postResponseLength and currentPage is $currentPage');
+        debugPrint('posts.length is ${posts.length} and postResponseLength is $postResponseLength and apiCallCount is $apiCallCount');
       }
 
-      if (postResponseLength == 0) hasReachedPostsEnd = true;
-      currentPage++;
+      if (postResponseLength == 0 || currentCursor == null) hasReachedPostsEnd = true;
+      apiCallCount++;
 
       // If we've been searching for enough posts to satisfy the desired number
       // and we've already made 20 API requests,
       // and the user has some filters defined,
       // then tell the user the feed is loading slowly due to their filters
-      if (keywordFilters.isNotEmpty && currentPage - startingPage > 20) {
+      if (keywordFilters.isNotEmpty && apiCallCount > 20) {
         notifyExcessiveApiCalls?.call();
         notifyExcessiveApiCalls = null;
       }
@@ -90,7 +94,11 @@ Future<Map<String, dynamic>> fetchFeedItems({
   }
 
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
+  // Note: User feed still uses page-based pagination via userRepository.getUser
   if (userId != null || username != null) {
+    // For user feeds, derive page from cursor or start at 1
+    int currentPage = currentCursor != null ? int.tryParse(currentCursor) ?? 1 : 1;
+
     do {
       final userRepository = UserRepositoryImpl(account: account);
 
@@ -118,7 +126,10 @@ Future<Map<String, dynamic>> fetchFeedItems({
       if (responseComments.isEmpty) hasReachedCommentsEnd = true;
       currentPage++;
     } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
+
+    // Update cursor to reflect the current page for user feeds
+    currentCursor = currentPage.toString();
   }
 
-  return {'posts': posts, 'comments': comments, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'currentPage': currentPage};
+  return {'posts': posts, 'comments': comments, 'hasReachedPostsEnd': hasReachedPostsEnd, 'hasReachedCommentsEnd': hasReachedCommentsEnd, 'cursor': currentCursor};
 }
