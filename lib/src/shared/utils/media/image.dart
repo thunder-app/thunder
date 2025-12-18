@@ -38,7 +38,7 @@ String fetchProxyImageUrl(String url) {
 bool isImageUrl(String url) {
   // '@jpeg' is added to support Bluesky's image URLs
   // e.g., https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:wf7nfy2us3h5gpa7zfettmzl/bafkreib6k2uwcy52wi654fdfmfqakzqu54m4eq7vi6cwrolwud6yhehihy@jpeg?.jpg
-  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '@jpeg'];
+  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.avif', '@jpeg'];
 
   // If image proxying is enabled, we need to determine the original URL to see if that's an image
   url = fetchProxyImageUrl(url);
