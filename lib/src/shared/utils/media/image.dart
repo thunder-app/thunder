@@ -82,13 +82,32 @@ Future<bool> isImageUriSvg(Uri? imageUri) async {
   }
 }
 
-/// Retrieves the size of the given image given its bytes
+/// Checks if the given path or URL points to an AVIF image
+bool _isAvifImage(String path) {
+  return path.toLowerCase().endsWith('.avif');
+}
+
+/// Retrieves the size of the given image given its bytes.
+/// Uses the `image` package which does not support AVIF format. For AVIF images, use [processImageWithFlutter] instead.
 Future<Size> processImage(String filename) async {
   final bytes = await File(filename).readAsBytes();
   final image = img.decodeImage(bytes);
   if (image == null) throw Exception('Failed to retrieve image data from bytes');
 
   return Size(image.width.toDouble(), image.height.toDouble());
+}
+
+/// Retrieves the size of the given image using Flutter's native image codec.
+/// This supports AVIF format (on iOS 16+ and Android 10+) but must run on the main isolate.
+Future<Size> processImageWithFlutter(String filename) async {
+  final bytes = await File(filename).readAsBytes();
+  final buffer = await ImmutableBuffer.fromUint8List(bytes);
+  final descriptor = await ImageDescriptor.encoded(buffer);
+
+  final size = Size(descriptor.width.toDouble(), descriptor.height.toDouble());
+  descriptor.dispose();
+
+  return size;
 }
 
 /// Retrieves the size of the given image. Must provide either [imageUrl] or [imageBytes].
@@ -107,7 +126,14 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
 
     if (data == null && imageUrl != null) {
       final file = await DefaultCacheManager().getSingleFile(imageUrl);
-      size = await compute(processImage, file.path);
+
+      // AVIF images require Flutter's native codec which must run on the main isolate.
+      // Other formats can be processed in a background isolate using the `image` package.
+      if (_isAvifImage(imageUrl) || _isAvifImage(file.path)) {
+        size = await processImageWithFlutter(file.path);
+      } else {
+        size = await compute(processImage, file.path);
+      }
     }
 
     if (size == null) throw Exception('Failed to retrieve image dimensions');
