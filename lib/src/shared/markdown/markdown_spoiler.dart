@@ -158,7 +158,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final theme = Theme.of(context);
     final state = context.read<ThunderBloc>().state;
 
-    return Ink(
+    return Container(
       decoration: BoxDecoration(
         color: getBackgroundColor(context),
         borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
@@ -174,32 +174,35 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
   }
 
   Widget _buildSpoilerHeader(AppLocalizations l10n, ThemeData theme, ThunderState state) {
-    return InkWell(
-      borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-      onTap: () {
-        expandableController.toggle();
-        setState(() {});
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
-              semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-              size: 20,
-            ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: ScalableText(
-                widget.title ?? l10n.spoiler,
-                fontScale: state.contentFontSizeScale,
-                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+        onTap: () {
+          expandableController.toggle();
+          setState(() {});
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                expandableController.expanded ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
+                semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                size: 20,
               ),
-            ),
-          ],
+              const SizedBox(width: 5),
+              Expanded(
+                child: ScalableText(
+                  widget.title ?? l10n.spoiler,
+                  fontScale: state.contentFontSizeScale,
+                  style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
