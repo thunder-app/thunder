@@ -353,7 +353,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
             ],
           ),
           Container(
-            height: 5.0,
+            height: 8.0,
             margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
             clipBehavior: Clip.hardEdge,
