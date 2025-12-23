@@ -3,12 +3,25 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
 
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 
+/// The loading state of an image preview.
+enum ImagePreviewState {
+  /// The image is currently loading.
+  loading,
+
+  /// The image has loaded successfully.
+  success,
+
+  /// The image failed to load.
+  error,
+}
+
 /// Displays a preview of an image.
-class ImagePreview extends StatelessWidget {
+class ImagePreview extends StatefulWidget {
   /// The URL of the image to display.
   final String url;
 
@@ -36,6 +49,13 @@ class ImagePreview extends StatelessWidget {
   /// Whether the image should be blurred.
   final bool? blur;
 
+  /// Whether to allow retrying with the original URL when a proxy URL fails.
+  /// When false, the error state will show an error icon without retry option.
+  final bool allowRetry;
+
+  /// Callback invoked when the image loading state changes.
+  final void Function(ImagePreviewState state)? onStateChanged;
+
   const ImagePreview({
     super.key,
     required this.url,
@@ -46,29 +66,82 @@ class ImagePreview extends StatelessWidget {
     this.mediaType,
     this.viewed,
     this.blur,
+    this.allowRetry = false,
+    this.onStateChanged,
   });
+
+  @override
+  State<ImagePreview> createState() => _ImagePreviewState();
+}
+
+class _ImagePreviewState extends State<ImagePreview> {
+  /// Whether we're using the fallback (original) URL instead of the proxy URL.
+  bool _useFallbackUrl = false;
+
+  /// The current loading state of the image.
+  ImagePreviewState _state = ImagePreviewState.loading;
+
+  /// The current URL being used to load the image.
+  String get _currentUrl {
+    if (_useFallbackUrl) return fetchProxyImageUrl(widget.url);
+    return widget.url;
+  }
+
+  /// Whether the current URL is a proxy URL that can be retried with the original URL.
+  bool get _canRetryWithOriginalUrl {
+    if (!widget.allowRetry) return false;
+    final originalUrl = fetchProxyImageUrl(widget.url);
+    return originalUrl != widget.url && !_useFallbackUrl;
+  }
+
+  void _retryWithOriginalUrl() {
+    setState(() {
+      _useFallbackUrl = true;
+      _state = ImagePreviewState.loading;
+    });
+    widget.onStateChanged?.call(ImagePreviewState.loading);
+  }
+
+  void _onImageLoaded() {
+    if (_state != ImagePreviewState.success) {
+      setState(() => _state = ImagePreviewState.success);
+      widget.onStateChanged?.call(ImagePreviewState.success);
+    }
+  }
+
+  void _onImageError() {
+    if (_state != ImagePreviewState.error) {
+      setState(() => _state = ImagePreviewState.error);
+      widget.onStateChanged?.call(ImagePreviewState.error);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // TODO: Move the logic for determining if the image is valid into data layer so that we don't need to re-evaluate this on every build.
-    final isValidImageUrl = contentType != null || isImageUrl(url);
+    final isValidImageUrl = widget.contentType != null || isImageUrl(widget.url);
 
     if (!isValidImageUrl) {
       return ImagePreviewError(
-        mediaType: mediaType,
-        blur: blur == true,
-        viewed: viewed == true,
+        mediaType: widget.mediaType,
+        blur: widget.blur == true,
+        viewed: widget.viewed == true,
       );
     }
 
     return _ImageContent(
-      url: url,
-      width: width,
-      height: height,
-      fit: fit,
-      viewed: viewed,
-      blur: blur,
-      mediaType: mediaType,
+      key: ValueKey(_currentUrl),
+      url: _currentUrl,
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      viewed: widget.viewed,
+      blur: widget.blur,
+      mediaType: widget.mediaType,
+      canRetry: _canRetryWithOriginalUrl,
+      onRetry: _retryWithOriginalUrl,
+      onLoaded: _onImageLoaded,
+      onError: _onImageError,
     );
   }
 }
@@ -96,7 +169,20 @@ class _ImageContent extends StatelessWidget {
   /// The media type that the underlying image represents.
   final MediaType? mediaType;
 
+  /// Whether the image can be retried with the original URL.
+  final bool canRetry;
+
+  /// Callback to retry loading the image with the original URL.
+  final VoidCallback? onRetry;
+
+  /// Callback when the image loads successfully.
+  final VoidCallback? onLoaded;
+
+  /// Callback when the image fails to load.
+  final VoidCallback? onError;
+
   const _ImageContent({
+    super.key,
     required this.url,
     required this.width,
     required this.height,
@@ -104,6 +190,10 @@ class _ImageContent extends StatelessWidget {
     required this.viewed,
     required this.blur,
     required this.mediaType,
+    this.canRetry = false,
+    this.onRetry,
+    this.onLoaded,
+    this.onError,
   });
 
   @override
@@ -121,7 +211,31 @@ class _ImageContent extends StatelessWidget {
       memCacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
       memCacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
       placeholder: (context, url) => const SizedBox.shrink(),
-      errorWidget: (context, url, error) => ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true),
+      imageBuilder: (context, imageProvider) {
+        // Notify that the image loaded successfully
+        WidgetsBinding.instance.addPostFrameCallback((_) => onLoaded?.call());
+
+        return Image(
+          image: imageProvider,
+          height: height,
+          width: width,
+          fit: fit,
+          color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+          colorBlendMode: viewed == true ? BlendMode.modulate : null,
+        );
+      },
+      errorWidget: (context, url, error) {
+        // Notify that the image failed to load
+        WidgetsBinding.instance.addPostFrameCallback((_) => onError?.call());
+
+        return ImagePreviewError(
+          mediaType: mediaType,
+          blur: blur == true,
+          viewed: viewed == true,
+          canRetry: canRetry,
+          onRetry: onRetry,
+        );
+      },
     );
 
     if (blur == true) return _BlurredImage(child: image);
@@ -157,7 +271,20 @@ class ImagePreviewError extends StatelessWidget {
   /// Whether the image has been viewed. This will affect the opacity of the image.
   final bool viewed;
 
-  const ImagePreviewError({super.key, this.mediaType, this.blur = false, this.viewed = false});
+  /// Whether the image can be retried with the original URL.
+  final bool canRetry;
+
+  /// Callback to retry loading the image with the original URL.
+  final VoidCallback? onRetry;
+
+  const ImagePreviewError({
+    super.key,
+    this.mediaType,
+    this.blur = false,
+    this.viewed = false,
+    this.canRetry = false,
+    this.onRetry,
+  });
 
   /// Returns the icon to display when the image fails to load.
   static IconData _getErrorIcon(MediaType? mediaType) {
@@ -178,16 +305,31 @@ class ImagePreviewError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
 
     // Don't display the associated icon if blur is enabled, otherwise there will be two icons displayed at once.
     if (blur) return const SizedBox.shrink();
 
+    final iconColor = theme.colorScheme.onSecondaryContainer.withValues(alpha: viewed ? 0.55 : 1.0);
+
+    // If we can retry with the original URL, make the entire area tappable
+    if (canRetry && onRetry != null) {
+      return GestureDetector(
+        onTap: onRetry,
+        behavior: HitTestBehavior.opaque,
+        child: Center(
+          child: Tooltip(
+            message: l10n.retry,
+            child: Icon(Icons.refresh_rounded, color: iconColor),
+          ),
+        ),
+      );
+    }
+
     return Center(
       child: Icon(
         _getErrorIcon(mediaType),
-        color: theme.colorScheme.onSecondaryContainer.withValues(
-          alpha: viewed ? 0.55 : 1.0,
-        ),
+        color: iconColor,
       ),
     );
   }

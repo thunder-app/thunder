@@ -13,25 +13,49 @@ import 'package:image_picker/image_picker.dart';
 import 'package:thunder/src/core/cache/image_dimension_cache.dart';
 import 'package:thunder/src/shared/images/image_viewer.dart';
 
-/// Given a URL, returns the proxied URL if it is a proxy URL. Otherwise, returns the original URL.
+/// Given a URL, returns the original URL if it is a proxy URL. Otherwise, returns the original URL unchanged.
 ///
-/// This is useful for handling thumbnail URLs that are proxied via /image_proxy.
+/// This is useful for handling thumbnail URLs that are proxied via Lemmy's /image_proxy endpoint.
+/// When image proxying is enabled on an instance, thumbnail URLs may be in the format: `https://instance.com/api/v3/image_proxy?url=<encoded_original_url>`
+///
+/// This function extracts and returns the original URL so that images can be loaded directly, which helps when the proxy endpoint fails.
+/// It handles nested proxy URLs by recursively unwrapping until the original non-proxy URL is found.
 String fetchProxyImageUrl(String url) {
-  Uri uri;
+  String currentUrl = url;
 
+  // Keep unwrapping proxy URLs until we reach the original
+  while (true) {
+    Uri uri;
+
+    try {
+      uri = Uri.parse(currentUrl);
+    } catch (e) {
+      return currentUrl; // Return the current URL if parsing fails
+    }
+
+    // Handle image proxy URLs
+    if (isImageProxyUrl(currentUrl)) {
+      Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
+
+      if (parsedUri != null) {
+        currentUrl = parsedUri.toString();
+        continue; // Check if this URL is also a proxy
+      }
+    }
+
+    // No more proxy found, return the current URL
+    return currentUrl;
+  }
+}
+
+/// Checks if the given URL is an image proxy URL (contains /image_proxy endpoint)
+bool isImageProxyUrl(String url) {
   try {
-    uri = Uri.parse(url);
+    final uri = Uri.parse(url);
+    return uri.path.contains('/image_proxy') && uri.queryParameters.containsKey('url');
   } catch (e) {
-    return url; // Return the original URL if parsing fails
+    return false;
   }
-
-  // Handle thumbnail urls that are proxied via /image_proxy
-  if (uri.path == '/api/v3/image_proxy') {
-    Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
-    if (parsedUri != null) return parsedUri.toString();
-  }
-
-  return url;
 }
 
 /// Determines if the given URL is an image URL
@@ -40,10 +64,11 @@ bool isImageUrl(String url) {
   // e.g., https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:wf7nfy2us3h5gpa7zfettmzl/bafkreib6k2uwcy52wi654fdfmfqakzqu54m4eq7vi6cwrolwud6yhehihy@jpeg?.jpg
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.avif', '@jpeg'];
 
-  // If image proxying is enabled, we need to determine the original URL to see if that's an image
-  url = fetchProxyImageUrl(url);
+  // If it's an image proxy URL, it's an image URL. Otherwise, check the file extension of the URL.
+  if (isImageProxyUrl(url)) return true;
 
   Uri uri;
+
   try {
     uri = Uri.parse(url);
   } catch (e) {

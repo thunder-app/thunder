@@ -82,6 +82,9 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   // An animation controller to animate the image overlay
   late final AnimationController _overlayAnimationController;
 
+  // The current state of the image preview
+  ImagePreviewState _imagePreviewState = ImagePreviewState.loading;
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +95,10 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   void dispose() {
     _overlayAnimationController.dispose();
     super.dispose();
+  }
+
+  void _onImagePreviewStateChanged(ImagePreviewState state) {
+    if (mounted) setState(() => _imagePreviewState = state);
   }
 
   /// Overlays the image as an ImageViewer
@@ -239,8 +246,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       );
     }
 
-    // For images, add hold to peek gesture
-    if (widget.media.mediaType == MediaType.image) {
+    // For images, add hold to peek gesture (only when image is loaded successfully)
+    if (widget.media.mediaType == MediaType.image && _imagePreviewState == ImagePreviewState.success) {
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
@@ -348,6 +355,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 mediaType: widget.media.mediaType,
                 viewed: widget.read,
                 blur: blurNSFWPreviews,
+                allowRetry: widget.media.mediaType == MediaType.image,
+                onStateChanged: _onImagePreviewStateChanged,
               ),
               if (blurNSFWPreviews)
                 Column(
