@@ -413,7 +413,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get combineCommentScoresLabel => 'Kommentarbewertungen kombinieren';
 
   @override
-  String get combineNavAndFab => 'FAB und Navigationsknöpfe kombinieren';
+  String get combineNavAndFab => 'SAB und Navigationsknöpfe kombinieren';
 
   @override
   String get combineNavAndFabDescription =>
@@ -478,10 +478,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get communityFormat => 'Formatierung Communityname';
+  String get communityFormat => 'Commmunity Format';
 
   @override
-  String get communityNameColor => 'Namensfarbe Community';
+  String get communityNameColor => 'Community Namensfarbe';
 
   @override
   String get communityNameThickness => 'Community Namensschriftstärke';
@@ -493,7 +493,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get compact => 'Kompakt';
 
   @override
-  String get compactPostCardMetadataItems => 'Kompakte Ansicht Metadaten';
+  String get compactPostCardMetadataItems => 'Kompaktansicht Metadaten';
 
   @override
   String get compactView => 'Kompaktansicht';
@@ -1136,7 +1136,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hide => 'Verbergen';
 
   @override
-  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+  String get hideBottomBarOnScroll => 'Untere Leiste beim Scrollen ausblenden';
 
   @override
   String get hideColor => 'Farbe verbergen';

@@ -4538,6 +4538,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get hide => 'Hide';
 
   @override
+  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+
+  @override
   String get hideColor => 'Hide Colour';
 
   @override

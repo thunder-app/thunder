@@ -4338,6 +4338,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get hide => 'Ocultar';
 
   @override
+  String get hideBottomBarOnScroll => 'Ocultar Barra Inferior ao Rolar';
+
+  @override
   String get hideColor => 'Ocultar Cor';
 
   @override

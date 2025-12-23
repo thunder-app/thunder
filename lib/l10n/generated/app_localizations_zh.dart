@@ -3247,12 +3247,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return '选择的评论并没有在 \'$instance\' 上找到。正在切换回前一个账号';
+    return '选择的评论并没有在 \'$instance\' 上找到';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return '选择的帖子并没有在 \'$instance\' 上找到。正在切换回前一个账号。';
+    return '选择的帖子并没有在 \'$instance\' 上找到';
   }
 
   @override
@@ -3266,6 +3266,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get active => '活跃';
+
+  @override
+  String get activity => '活动';
 
   @override
   String get add => '新增';
@@ -3289,6 +3292,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get addKeywordFilter => '添加关键字';
 
   @override
+  String get addOriginalPostBody => '添加原帖正文？';
+
+  @override
   String get addToFavorites => '增加到收藏';
 
   @override
@@ -3302,6 +3308,11 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get addedModToCommunity => '增加社区管理';
+
+  @override
+  String addedUserAsCommunityModerator(Object username) {
+    return '已将 $username 添加为社区版主';
+  }
 
   @override
   String get admin => '管理员';
@@ -3370,6 +3381,21 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   }
 
   @override
+  String averageComments(Object x) {
+    return '$x 条评论/月';
+  }
+
+  @override
+  String averageContributions(Object x) {
+    return '$x 条贡献/月';
+  }
+
+  @override
+  String averagePosts(Object x) {
+    return '$x 篇帖文/月';
+  }
+
+  @override
   String get back => '后退';
 
   @override
@@ -3382,6 +3408,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get backgroundCheckWarning => '请注意，通知检查会消耗更多电量';
 
   @override
+  String get ban => '封禁';
+
+  @override
   String get banFromCommunity => '从社区中禁用';
 
   @override
@@ -3392,6 +3421,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get base => '基本大小';
+
+  @override
+  String get block => '屏蔽';
 
   @override
   String get blockCommunity => '屏蔽该社区';
@@ -3572,6 +3604,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get comment => '评论';
 
   @override
+  String get commentActions => '评论操作';
+
+  @override
   String get commentBehaviourSettings => '评论';
 
   @override
@@ -3658,7 +3693,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get confirmLogOutTitle => '登出？';
 
   @override
-  String get confirmMarkAllAsReadBody => '你确认要标记所有消息为已读吗？';
+  String get confirmMarkAllAsReadBody => '你确认要将所有回复、提及与消息标记为已读吗？';
 
   @override
   String get confirmMarkAllAsReadTitle => '标记所有消息已读？';
@@ -3894,10 +3929,19 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get deleteUserLabelConfirmation => '您确定要删除标签吗？';
 
   @override
+  String get deleted => '已删除';
+
+  @override
   String get deletedByCreator => '被发帖者删除';
 
   @override
   String get deletedByModerator => '被管理删除';
+
+  @override
+  String get deletedComment => '评论已删除';
+
+  @override
+  String get deletedPost => '帖文已删除';
 
   @override
   String get deselectUndeterminedWarning => '如果你取消选择「未确定」，您不会看见大多数内容。';
@@ -4020,6 +4064,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get errorImportingAccountSettings => '导入设置时出错。文件可能格式不正确。';
 
   @override
+  String get errorInitializingClient => '初始化客户端时出错';
+
+  @override
   String get errorLoadingAccountSettings => '加载设置文件时出错或操作已被取消。';
 
   @override
@@ -4027,6 +4074,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get errorMarkingReplyUnread => '标记回复为未读时出错。';
+
+  @override
+  String get errorNoActiveInstance => '未找到活动实例';
 
   @override
   String get errorParsingJson => '解析所选文件时出错。它可能不是有效的 JSON。';
@@ -4097,7 +4147,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return '无法与位于 \'$serverAddress\' 的 Thunder 通知服务器通信';
+    return '无法与位于 $serverAddress 的 Thunder 通知服务器通信。';
   }
 
   @override
@@ -4118,6 +4168,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get failedToUpdateNotificationSettings => '更新通知设置失败';
+
+  @override
+  String get favorite => '收藏';
 
   @override
   String get favorites => '收藏';
@@ -4174,6 +4227,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get fullScreenNavigationSwipeDescription => '在禁用左右滑动手势时，随处滑动以返回';
 
   @override
+  String get fullscreen => '全屏';
+
+  @override
   String get fullscreenSwipeGestures => '全屏滑动手势';
 
   @override
@@ -4208,6 +4264,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get hide => '隐藏';
+
+  @override
+  String get hideBottomBarOnScroll => '滚动时隐藏底部栏';
 
   @override
   String get hideColor => '隐藏颜色';
@@ -4341,6 +4400,14 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get internetOrInstanceIssues => '您可能未连接到互联网，或者您的实例当前可能不可用。';
 
   @override
+  String get invalidUrl => 'URL 格式无效';
+
+  @override
+  String joined(Object x) {
+    return '于 $x 加入';
+  }
+
+  @override
   String get keywordFilterDescription => '过滤标题、正文或 URL 中包含的任何关键字的帖子';
 
   @override
@@ -4428,6 +4495,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get lockPost => '锁定帖子';
 
   @override
+  String get locked => '已锁定';
+
+  @override
   String get lockedPost => '已锁定帖子';
 
   @override
@@ -4495,6 +4565,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   }
 
   @override
+  String get menu => '菜单';
+
+  @override
   String message(num count) {
     return '消息';
   }
@@ -4537,6 +4610,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get moderatedCommunities => '管理的社区';
+
+  @override
+  String get moderates => '管理的社区';
 
   @override
   String moderator(num count) {
@@ -4682,6 +4758,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get noUsersFound => '未找到用户。';
 
   @override
+  String get noVisibleComments => '评论可能不可见，因为该社区已被屏蔽。';
+
+  @override
   String get none => '无';
 
   @override
@@ -4689,7 +4768,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance 似乎不是有效的 Lemmy 实例';
+    return '$instance 似乎不是有效的实例';
   }
 
   @override
@@ -4780,6 +4859,11 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get pending => '待处理';
 
   @override
+  String performedBy(Object user) {
+    return '执行者：$user';
+  }
+
+  @override
   String get permissionDenied => 'Thunder 未获得显示通知的权限。请在系统设置中启用。';
 
   @override
@@ -4790,6 +4874,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get pinToCommunity => '固定到社区';
+
+  @override
+  String get pinned => '已置顶';
+
+  @override
+  String get pinnedPostToCommunity => '已将帖文置顶至社区';
 
   @override
   String get placeholderText =>
@@ -4988,6 +5078,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get removePost => '删除帖子';
 
   @override
+  String get removeUserData => '移除用户数据';
+
+  @override
+  String get removed => '已移除';
+
+  @override
   String get removedComment => '已删除评论';
 
   @override
@@ -5004,6 +5100,11 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get removedPost => '已删除帖子';
+
+  @override
+  String removedUserAsCommunityModerator(Object username) {
+    return '已将 $username 移除社区版主身份';
+  }
 
   @override
   String get reorder => '重新排序';
@@ -5037,6 +5138,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get reportPost => '举报帖子';
+
+  @override
+  String get reportedComment => '评论已举报';
+
+  @override
+  String get reportedPost => '帖文已举报';
 
   @override
   String get reporter => '举报人：';
@@ -5249,6 +5356,60 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get settingsNotImportedSuccessfully => '设置未成功导入或操作已被取消。';
+
+  @override
+  String get settingsPage => '设置页面';
+
+  @override
+  String get settingsPageAbout => '关于';
+
+  @override
+  String get settingsPageAccessibility => '无障碍';
+
+  @override
+  String get settingsPageAccount => '账号';
+
+  @override
+  String get settingsPageAccountBlocks => '屏蔽列表';
+
+  @override
+  String get settingsPageAccountLanguages => '讨论语言';
+
+  @override
+  String get settingsPageAccountMedia => '管理媒体';
+
+  @override
+  String get settingsPageAppearance => '外观';
+
+  @override
+  String get settingsPageAppearanceComments => '评论';
+
+  @override
+  String get settingsPageAppearancePosts => '帖文';
+
+  @override
+  String get settingsPageAppearanceTheming => '主题';
+
+  @override
+  String get settingsPageDebug => '调试';
+
+  @override
+  String get settingsPageFilters => '过滤器';
+
+  @override
+  String get settingsPageFloatingActionButton => '悬浮操作按钮';
+
+  @override
+  String get settingsPageGeneral => '通用';
+
+  @override
+  String get settingsPageGestures => '手势';
+
+  @override
+  String get settingsPageUserLabels => '用户标签';
+
+  @override
+  String get settingsPageVideo => '视频';
 
   @override
   String get share => '分享';
@@ -5518,13 +5679,18 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get suggestedTitle => '建议标题';
 
   @override
+  String switchedAccount(Object username) {
+    return '已切换到 $username';
+  }
+
+  @override
   String get system => '系统';
 
   @override
-  String get systemDarkMode => '系统暗黑模式';
+  String get systemDarkMode => '纯黑模式';
 
   @override
-  String get systemDarkModeDescription => '在系统暗黑模式下启用纯黑主题';
+  String get systemDarkModeDescription => '在暗黑模式下启用纯黑主题';
 
   @override
   String get tabletMode => '平板模式（2 列视图）';
@@ -5647,6 +5813,16 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get topYear => '本年最佳';
 
   @override
+  String totalComments(Object x) {
+    return '$x 条评论';
+  }
+
+  @override
+  String totalPosts(Object x) {
+    return '$x 篇帖文';
+  }
+
+  @override
   String get totp => 'TOTP（可选）';
 
   @override
@@ -5703,6 +5879,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   }
 
   @override
+  String get unableToLoadPost => '无法加载帖文';
+
+  @override
   String unableToLoadPostsFrominstance(Object instance) {
     return '无法从 $instance 加载帖子';
   }
@@ -5731,8 +5910,11 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return '已解除用户在社区中的禁令';
+    return '已解除 $username 在社区中的禁令';
   }
+
+  @override
+  String get unblock => '取消屏蔽';
 
   @override
   String get unblockCommunity => '解除社区禁令';
@@ -5754,6 +5936,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get unexpectedError => '意外错误';
+
+  @override
+  String get unfavorite => '取消收藏';
 
   @override
   String get unfeaturedPost => '已取消特色帖子';
@@ -5791,6 +5976,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get unpinPostFromCommunity => '从社区取消固定帖子';
+
+  @override
+  String get unpinnedPostFromCommunity => '已将帖文从社区取消置顶';
 
   @override
   String get unreachable => '无法访问';
