@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/src/core/network/lemmy_api.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -655,7 +656,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ));
     } catch (e) {
       debugPrint('Error fetching feed: $e');
-      return emit(state.copyWith(status: FeedStatus.failure, message: e.toString()));
+      return emit(state.copyWith(status: FeedStatus.failure, message: e is LemmyApiException ? e.message : e.toString()));
     }
   }
 

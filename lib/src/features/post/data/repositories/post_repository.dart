@@ -166,8 +166,13 @@ class PostRepositoryImpl implements PostRepository {
   }) async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
-        return await lemmy.getPosts(
-          cursor: cursor,
+        // Use page-based pagination for Lemmy for 0.19.x instances as there are some performance issues with cursor-based pagination.
+        // See https://github.com/LemmyNet/lemmy/issues/6171, https://lemmy.world/post/40266465/21176898
+        // TODO: Once 1.x.x is released, we can switch back to cursor-based pagination.
+        final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
+
+        final response = await lemmy.getPosts(
+          page: page,
           limit: limit,
           postSortType: postSortType,
           feedListType: feedListType,
@@ -176,6 +181,13 @@ class PostRepositoryImpl implements PostRepository {
           showHidden: showHidden,
           showSaved: showSaved,
         );
+
+        // Return next page as string cursor for Lemmy
+        final nextPage = response['posts'].isNotEmpty ? (page + 1).toString() : null;
+        return {
+          'posts': response['posts'],
+          'next_page': nextPage,
+        };
       case ThreadiversePlatform.piefed:
         // PieFed uses integer page-based pagination. The cursor in this case is the page number.
         final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;

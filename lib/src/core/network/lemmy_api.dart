@@ -205,6 +205,7 @@ class LemmyApi {
 
   /// Fetches a list of posts from the Lemmy API
   Future<Map<String, dynamic>> getPosts({
+    int? page,
     String? cursor,
     int? limit,
     FeedListType? feedListType,
@@ -214,16 +215,18 @@ class LemmyApi {
     bool? showHidden,
     bool? showSaved,
   }) async {
-    final queryParams = {
+    Map<String, dynamic> queryParams = {
       'type_': feedListType?.value,
       'sort': postSortType?.value,
       'page_cursor': cursor,
+      'page': page,
       'limit': limit,
       'community_name': communityName,
       'community_id': communityId,
-      'saved_only': showSaved,
-      'show_hidden': showHidden,
     };
+
+    if (showSaved == true) queryParams['saved_only'] = showSaved;
+    if (showHidden == true) queryParams['show_hidden'] = showHidden;
 
     final json = await _request(HttpMethod.get, '/api/v3/post/list', queryParams);
     return {
