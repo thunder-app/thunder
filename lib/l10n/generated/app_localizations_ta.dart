@@ -1185,6 +1185,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get imageDimensionTimeout => 'பட பரிமாண நேரம் முடிந்தது';
 
   @override
+  String get imagePeekDuration => 'Image Peek Duration';
+
+  @override
+  String get imagePeekDurationDescription =>
+      'Duration of long press before image peek is triggered';
+
+  @override
   String get importDatabase => 'தரவுத்தளத்தை இறக்குமதி செய்யுங்கள்';
 
   @override
@@ -1454,6 +1461,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get me => 'நான்';
+
+  @override
+  String get media => 'Media';
 
   @override
   String get medium => 'சராசரி';

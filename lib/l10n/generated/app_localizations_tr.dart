@@ -1177,6 +1177,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get imageDimensionTimeout => 'Resim Boyutu Zaman Aşımı';
 
   @override
+  String get imagePeekDuration => 'Image Peek Duration';
+
+  @override
+  String get imagePeekDurationDescription =>
+      'Duration of long press before image peek is triggered';
+
+  @override
   String get importDatabase => 'Veritabanını İçe Aktar';
 
   @override
@@ -1441,6 +1448,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get me => 'Ben';
+
+  @override
+  String get media => 'Media';
 
   @override
   String get medium => 'Orta';

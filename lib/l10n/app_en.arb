@@ -1381,6 +1381,14 @@
   "@imageDimensionTimeout": {
     "description": "Setting for how long to wait for the image dimensions to be fetched"
   },
+  "imagePeekDuration": "Image Peek Duration",
+  "@imagePeekDuration": {
+    "description": "Setting for image peek duration"
+  },
+  "imagePeekDurationDescription": "Duration of long press before image peek is triggered",
+  "@imagePeekDurationDescription": {
+    "description": "Description for image peek duration setting"
+  },
   "importDatabase": "Import Database",
   "@importDatabase": {
     "description": "Name of setting for importing the db"
@@ -1692,6 +1700,10 @@
   "me": "Me",
   "@me": {
     "description": "Label for the current user."
+  },
+  "media": "Media",
+  "@media": {
+    "description": "Describes a piece of media content (e.g., image, video)"
   },
   "medium": "Medium",
   "@medium": {

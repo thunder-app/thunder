@@ -45,6 +45,9 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
 
   bool enableFullScreenSwipeNavigationGesture = true;
 
+  // Image Peek Settings
+  int imagePeekDuration = 500;
+
   /// Loading
   bool isLoading = true;
 
@@ -131,6 +134,10 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
         await prefs.setBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name, value);
         setState(() => enableFullScreenSwipeNavigationGesture = value);
         break;
+      case LocalSettings.imagePeekDuration:
+        await prefs.setInt(LocalSettings.imagePeekDuration.name, value);
+        setState(() => imagePeekDuration = value);
+        break;
       default:
         break;
     }
@@ -164,6 +171,9 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
       rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
       enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+
+      // Image Peek Settings
+      imagePeekDuration = prefs.getInt(LocalSettings.imagePeekDuration.name) ?? 500;
 
       isLoading = false;
     });
@@ -233,7 +243,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(
                         l10n.navigation,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleMedium,
                       ),
                     ),
                     ToggleOption(
@@ -260,7 +270,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(
                         l10n.sidebar,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleMedium,
                       ),
                     ),
                     ToggleOption(
@@ -297,8 +307,41 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(
+                        l10n.media,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ),
+                    ListOption(
+                      description: l10n.imagePeekDuration,
+                      subtitle: l10n.imagePeekDurationDescription,
+                      value: ListPickerItem(label: '${imagePeekDuration}ms', icon: Icons.touch_app_rounded, payload: imagePeekDuration),
+                      options: [
+                        ListPickerItem(icon: Icons.touch_app_rounded, label: '100ms', payload: 100),
+                        ListPickerItem(icon: Icons.touch_app_rounded, label: '200ms', payload: 200),
+                        ListPickerItem(icon: Icons.touch_app_rounded, label: '300ms', payload: 300),
+                        ListPickerItem(icon: Icons.touch_app_rounded, label: '400ms', payload: 400),
+                        ListPickerItem(icon: Icons.touch_app_rounded, label: '500ms', payload: 500),
+                      ],
+                      icon: Icons.touch_app_rounded,
+                      onChanged: (value) async => setPreferences(LocalSettings.imagePeekDuration, value.payload),
+                      highlightKey: settingToHighlightKey,
+                      setting: LocalSettings.imagePeekDuration,
+                      highlightedSetting: settingToHighlight,
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                      child: Text(
                         l10n.posts,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleMedium,
                       ),
                     ),
                     Padding(
@@ -405,7 +448,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(
                         l10n.comments,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleMedium,
                       ),
                     ),
                     Padding(

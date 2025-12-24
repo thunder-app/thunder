@@ -2188,6 +2188,18 @@ abstract class AppLocalizations {
   /// **'Image Dimension Timeout'**
   String get imageDimensionTimeout;
 
+  /// Setting for image peek duration
+  ///
+  /// In en, this message translates to:
+  /// **'Image Peek Duration'**
+  String get imagePeekDuration;
+
+  /// Description for image peek duration setting
+  ///
+  /// In en, this message translates to:
+  /// **'Duration of long press before image peek is triggered'**
+  String get imagePeekDurationDescription;
+
   /// Name of setting for importing the db
   ///
   /// In en, this message translates to:
@@ -2637,6 +2649,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Me'**
   String get me;
+
+  /// Describes a piece of media content (e.g., image, video)
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get media;
 
   /// Description for medium font scale
   ///

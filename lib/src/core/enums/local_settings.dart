@@ -357,6 +357,9 @@ enum LocalSettings {
   enableFullScreenSwipeNavigationGesture(
       name: 'setting_gesture_enable_fullscreen_navigation_gesture', key: 'fullscreenSwipeGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.navigation),
 
+  // Image Peek Settings
+  imagePeekDuration(name: 'setting_gesture_image_peek_duration', key: 'imagePeekDuration', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.posts),
+
   /// -------------------------- FAB Related Settings --------------------------
   enableFeedsFab(name: 'setting_enable_feed_fab', key: 'enableFloatingButtonOnFeeds', category: LocalSettingsCategories.floatingActionButton, subCategory: LocalSettingsSubCategories.feed),
   enablePostsFab(name: 'setting_enable_post_fab', key: 'enableFloatingButtonOnPosts', category: LocalSettingsCategories.floatingActionButton, subCategory: LocalSettingsSubCategories.feed),
@@ -577,6 +580,7 @@ extension LocalizationExt on AppLocalizations {
       'rightLongSwipe': rightLongSwipe,
       'commentSwipeActions': commentSwipeActions,
       'fullscreenSwipeGestures': fullscreenSwipeGestures,
+      'imagePeekDuration': imagePeekDuration,
       'enableFloatingButtonOnFeeds': enableFloatingButtonOnFeeds,
       'enableFloatingButtonOnPosts': enableFloatingButtonOnPosts,
       'backToTop': backToTop,

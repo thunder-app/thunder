@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -198,6 +199,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<ThunderBloc>().state;
 
+    final imagePeekDurationMs = context.select((ThunderBloc bloc) => bloc.state.imagePeekDuration);
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.media.nsfw;
 
     double? width;
@@ -248,6 +250,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
     // For images, add hold to peek gesture (only when image is loaded successfully)
     if (widget.media.mediaType == MediaType.image && _imagePreviewState == ImagePreviewState.success) {
+      final imagePeekDuration = Duration(milliseconds: imagePeekDurationMs);
+
       child = InkWell(
         splashColor: theme.colorScheme.primary.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
@@ -255,28 +259,36 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           handleTap();
           showImage();
         },
-        child: GestureDetector(
-          onLongPressStart: (_) {
-            _overlayEntry = OverlayEntry(
-              builder: (context) {
-                return FadeTransition(
-                  opacity: _overlayAnimationController,
-                  child: ImageViewer(
-                    url: widget.media.thumbnailUrl ?? widget.media.mediaUrl,
-                    postId: widget.postId,
-                    navigateToPost: widget.navigateToPost,
-                    isPeek: true,
-                  ),
-                );
+        child: RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            LongPressGestureRecognizer: GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+              () => LongPressGestureRecognizer(duration: imagePeekDuration),
+              (LongPressGestureRecognizer instance) {
+                instance
+                  ..onLongPressStart = (_) {
+                    _overlayEntry = OverlayEntry(
+                      builder: (context) {
+                        return FadeTransition(
+                          opacity: _overlayAnimationController,
+                          child: ImageViewer(
+                            url: widget.media.thumbnailUrl ?? widget.media.mediaUrl,
+                            postId: widget.postId,
+                            navigateToPost: widget.navigateToPost,
+                            isPeek: true,
+                          ),
+                        );
+                      },
+                    );
+                    Overlay.of(context).insert(_overlayEntry!);
+                    _overlayAnimationController.forward();
+                  }
+                  ..onLongPressEnd = (_) async {
+                    await _overlayAnimationController.reverse();
+                    _overlayEntry?.remove();
+                    _overlayEntry = null;
+                  };
               },
-            );
-            Overlay.of(context).insert(_overlayEntry!);
-            _overlayAnimationController.forward();
-          },
-          onLongPressEnd: (_) async {
-            await _overlayAnimationController.reverse();
-            _overlayEntry?.remove();
-            _overlayEntry = null;
+            ),
           },
         ),
       );

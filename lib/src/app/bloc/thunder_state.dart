@@ -119,6 +119,9 @@ class ThunderState extends Equatable {
     this.rightSecondaryCommentGesture = SwipeAction.save,
     this.enableFullScreenSwipeNavigationGesture = true,
 
+    // Image Peek Settings
+    this.imagePeekDuration = 500,
+
     // Theme Settings
     this.themeType = ThemeType.system,
     this.selectedTheme = CustomThemeType.deepBlue,
@@ -316,6 +319,10 @@ class ThunderState extends Equatable {
 
   final bool enableFullScreenSwipeNavigationGesture;
 
+  // Image Peek Settings
+  /// Duration in milliseconds before image peek is triggered (default: 500ms)
+  final int imagePeekDuration;
+
   /// -------------------------- FAB Related Settings --------------------------
   final bool enableFeedsFab;
   final bool enablePostsFab;
@@ -498,6 +505,9 @@ class ThunderState extends Equatable {
     SwipeAction? rightSecondaryCommentGesture,
     bool? enableFullScreenSwipeNavigationGesture,
 
+    // Image Peek Settings
+    int? imagePeekDuration,
+
     /// -------------------------- FAB Related Settings --------------------------
     bool? enableFeedsFab,
     bool? enablePostsFab,
@@ -668,6 +678,9 @@ class ThunderState extends Equatable {
       rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
 
       enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture ?? this.enableFullScreenSwipeNavigationGesture,
+
+      // Image Peek Settings
+      imagePeekDuration: imagePeekDuration ?? this.imagePeekDuration,
 
       // Comment Gestures
       enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
@@ -858,6 +871,9 @@ class ThunderState extends Equatable {
         rightSecondaryCommentGesture,
 
         enableFullScreenSwipeNavigationGesture,
+
+        // Image Peek Settings
+        imagePeekDuration,
 
         /// -------------------------- FAB Related Settings --------------------------
         enableFeedsFab,

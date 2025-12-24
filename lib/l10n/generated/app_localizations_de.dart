@@ -1186,6 +1186,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imageDimensionTimeout => 'Zeitüberschreitung Bild Abmessungen';
 
   @override
+  String get imagePeekDuration => 'Image Peek Duration';
+
+  @override
+  String get imagePeekDurationDescription =>
+      'Duration of long press before image peek is triggered';
+
+  @override
   String get importDatabase => 'Datenbank importieren';
 
   @override
@@ -1454,6 +1461,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get me => 'Ich';
+
+  @override
+  String get media => 'Media';
 
   @override
   String get medium => 'Mittel';
