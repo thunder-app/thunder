@@ -3194,5 +3194,17 @@
     "hideBottomBarOnScroll": "Untere Leiste beim Scrollen ausblenden",
     "@hideBottomBarOnScroll": {
         "description": "Settings toggle to hide the bottom navigation bar on scroll"
+    },
+    "media": "Medien",
+    "@media": {
+        "description": "Describes a piece of media content (e.g., image, video)"
+    },
+    "imagePeekDuration": "Bildvorschau-Dauer",
+    "@imagePeekDuration": {
+        "description": "Setting for image peek duration"
+    },
+    "imagePeekDurationDescription": "Dauer des langen Drückens, bevor die Bildvorschau ausgelöst wird",
+    "@imagePeekDurationDescription": {
+        "description": "Description for image peek duration setting"
     }
 }
