@@ -233,7 +233,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableFullScreenSwipeNavigationGesture = UserPreferences.getLocalSetting(LocalSettings.enableFullScreenSwipeNavigationGesture) ?? true;
 
       // Image Peek Settings
-      int imagePeekDuration = UserPreferences.getLocalSetting(LocalSettings.imagePeekDuration) ?? 500;
+      int imagePeekDuration = UserPreferences.getLocalSetting(LocalSettings.imagePeekDuration) ?? 300;
 
       /// -------------------------- FAB Related Settings --------------------------
       bool enableFeedsFab = UserPreferences.getLocalSetting(LocalSettings.enableFeedsFab) ?? true;

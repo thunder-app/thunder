@@ -120,7 +120,7 @@ class ThunderState extends Equatable {
     this.enableFullScreenSwipeNavigationGesture = true,
 
     // Image Peek Settings
-    this.imagePeekDuration = 500,
+    this.imagePeekDuration = 300,
 
     // Theme Settings
     this.themeType = ThemeType.system,
@@ -320,7 +320,7 @@ class ThunderState extends Equatable {
   final bool enableFullScreenSwipeNavigationGesture;
 
   // Image Peek Settings
-  /// Duration in milliseconds before image peek is triggered (default: 500ms)
+  /// Duration in milliseconds before image peek is triggered (default: 300ms)
   final int imagePeekDuration;
 
   /// -------------------------- FAB Related Settings --------------------------

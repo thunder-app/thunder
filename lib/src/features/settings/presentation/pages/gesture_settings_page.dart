@@ -46,7 +46,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   bool enableFullScreenSwipeNavigationGesture = true;
 
   // Image Peek Settings
-  int imagePeekDuration = 500;
+  int imagePeekDuration = 300;
 
   /// Loading
   bool isLoading = true;
@@ -173,7 +173,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
       enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
 
       // Image Peek Settings
-      imagePeekDuration = prefs.getInt(LocalSettings.imagePeekDuration.name) ?? 500;
+      imagePeekDuration = prefs.getInt(LocalSettings.imagePeekDuration.name) ?? 300;
 
       isLoading = false;
     });
