@@ -114,9 +114,6 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
 ///
 /// This includes unescaping the title and parsing any associated media.
 Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
-  /// Whether to print debug logs
-  final bool debug = false;
-
   final html = HtmlUnescape();
   final title = html.convert(post.name);
 
@@ -167,7 +164,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
 
   if (useImageMetadata && post.imageDetails != null) {
     media.thumbnailUrl = post.imageDetails?['link'] ?? post.thumbnailUrl;
-    media.contentType = post.imageDetails?['contentType'];
+    media.contentType = post.imageDetails?['content_type'];
     size = Size(post.imageDetails?['width'].toDouble(), post.imageDetails?['height'].toDouble());
   } else if (thumbnailUrl != null && thumbnailUrl.isNotEmpty) {
     // Now check to see if there is a thumbnail image. If there is, we'll use that for the image
@@ -183,7 +180,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
       int imageDimensionTimeout = UserPreferences.getLocalSetting(LocalSettings.imageDimensionTimeout) ?? 2;
       size = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
-      if (debug) debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
+      debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');
     }
   }
 

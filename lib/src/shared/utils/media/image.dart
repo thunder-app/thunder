@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -5,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
@@ -113,7 +115,7 @@ bool _isAvifImage(String path) {
 }
 
 /// Retrieves the size of the given image given its bytes.
-/// Uses the `image` package which does not support AVIF format. For AVIF images, use [processImageWithFlutter] instead.
+/// Uses the `image` package which does not support AVIF format. For AVIF images, use [processAvifImage] instead.
 Future<Size> processImage(String filename) async {
   final bytes = await File(filename).readAsBytes();
   final image = img.decodeImage(bytes);
@@ -122,20 +124,27 @@ Future<Size> processImage(String filename) async {
   return Size(image.width.toDouble(), image.height.toDouble());
 }
 
-/// Retrieves the size of the given image using Flutter's native image codec.
-/// This supports AVIF format (on iOS 16+ and Android 10+) but must run on the main isolate.
-Future<Size> processImageWithFlutter(String filename) async {
+/// Retrieves the size of an AVIF image using flutter_avif
+Future<Size> processAvifImage(String filename) async {
   final bytes = await File(filename).readAsBytes();
-  final buffer = await ImmutableBuffer.fromUint8List(bytes);
-  final descriptor = await ImageDescriptor.encoded(buffer);
+  final frames = await decodeAvif(bytes);
 
-  final size = Size(descriptor.width.toDouble(), descriptor.height.toDouble());
-  descriptor.dispose();
+  if (frames.isEmpty) throw Exception('Failed to decode AVIF image');
+
+  final firstFrame = frames.first;
+  final size = Size(firstFrame.image.width.toDouble(), firstFrame.image.height.toDouble());
+
+  // Dispose the decoded images to free memory
+  for (final frame in frames) {
+    frame.image.dispose();
+  }
 
   return size;
 }
 
 /// Retrieves the size of the given image. Must provide either [imageUrl] or [imageBytes].
+///
+/// For AVIF images, uses flutter_avif to determine dimensions.
 Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) async {
   assert(imageUrl != null || imageBytes != null);
 
@@ -152,11 +161,10 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     if (data == null && imageUrl != null) {
       final file = await DefaultCacheManager().getSingleFile(imageUrl);
 
-      // AVIF images require Flutter's native codec which must run on the main isolate.
-      // Other formats can be processed in a background isolate using the `image` package.
       if (_isAvifImage(imageUrl) || _isAvifImage(file.path)) {
-        size = await processImageWithFlutter(file.path);
+        size = await processAvifImage(file.path);
       } else {
+        // Other formats can be processed in a background isolate using the `image` package.
         size = await compute(processImage, file.path);
       }
     }

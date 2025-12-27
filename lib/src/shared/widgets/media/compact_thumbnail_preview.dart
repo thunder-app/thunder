@@ -40,29 +40,31 @@ class CompactThumbnailPreview extends StatelessWidget {
 
     final isUserLoggedIn = context.select((ProfileBloc bloc) => bloc.state.isLoggedIn);
 
-    return ExcludeSemantics(
-      child: Stack(
-        alignment: AlignmentDirectional.bottomEnd,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-            child: MediaView(
-              media: media,
-              postId: postId,
-              showFullHeightImages: false,
-              hideNsfwPreviews: hideNsfwPreviews,
-              markPostReadOnMediaView: markPostReadOnMediaView,
-              viewMode: ViewMode.compact,
-              isUserLoggedIn: isUserLoggedIn,
-              navigateToPost: navigateToPost,
-              read: dim,
+    return RepaintBoundary(
+      child: ExcludeSemantics(
+        child: Stack(
+          alignment: AlignmentDirectional.bottomEnd,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              child: MediaView(
+                media: media,
+                postId: postId,
+                showFullHeightImages: false,
+                hideNsfwPreviews: hideNsfwPreviews,
+                markPostReadOnMediaView: markPostReadOnMediaView,
+                viewMode: ViewMode.compact,
+                isUserLoggedIn: isUserLoggedIn,
+                navigateToPost: navigateToPost,
+                read: dim,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 6.0),
-            child: MediaTypeBadge(mediaType: media.mediaType, dim: dim),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: MediaTypeBadge(mediaType: media.mediaType, dim: dim),
+            ),
+          ],
+        ),
       ),
     );
   }

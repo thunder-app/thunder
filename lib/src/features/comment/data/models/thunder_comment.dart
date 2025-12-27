@@ -1,9 +1,11 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 
-class ThunderComment {
+class ThunderComment extends Equatable {
   /// The comment's ID
   final int id;
 
@@ -97,7 +99,7 @@ class ThunderComment {
   /// Whether the comment is read (comment reply/mention)
   final bool? read;
 
-  ThunderComment({
+  const ThunderComment({
     required this.id,
     required this.creatorId,
     this.replyMentionId,
@@ -130,6 +132,41 @@ class ThunderComment {
     this.myVote,
     this.read,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        creatorId,
+        replyMentionId,
+        postId,
+        content,
+        removed,
+        published,
+        updated,
+        deleted,
+        apId,
+        local,
+        path,
+        distinguished,
+        languageId,
+        recipient,
+        creator,
+        post,
+        community,
+        score,
+        upvotes,
+        downvotes,
+        childCount,
+        creatorBannedFromCommunity,
+        bannedFromCommunity,
+        creatorIsModerator,
+        creatorIsAdmin,
+        subscribed,
+        saved,
+        creatorBlocked,
+        myVote,
+        read,
+      ];
 
   ThunderComment copyWith({
     int? id,

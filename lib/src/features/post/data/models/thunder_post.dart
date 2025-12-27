@@ -1,9 +1,11 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/core/models/media.dart';
 import 'package:thunder/src/features/user/user.dart';
 
-class ThunderPost {
+class ThunderPost extends Equatable {
   /// The post's ID
   final int id;
 
@@ -121,7 +123,7 @@ class ThunderPost {
   /// The media associated with the post
   final List<Media> media;
 
-  ThunderPost({
+  const ThunderPost({
     required this.id,
     required this.name,
     this.url,
@@ -162,6 +164,49 @@ class ThunderPost {
     this.unreadComments,
     this.media = const [],
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        url,
+        body,
+        creatorId,
+        communityId,
+        removed,
+        locked,
+        published,
+        updated,
+        deleted,
+        nsfw,
+        thumbnailUrl,
+        apId,
+        local,
+        embedVideoUrl,
+        languageId,
+        featuredCommunity,
+        featuredLocal,
+        altText,
+        creator,
+        community,
+        imageDetails,
+        creatorBannedFromCommunity,
+        creatorIsModerator,
+        creatorIsAdmin,
+        comments,
+        score,
+        upvotes,
+        downvotes,
+        newestCommentTime,
+        subscribed,
+        saved,
+        read,
+        hidden,
+        creatorBlocked,
+        myVote,
+        unreadComments,
+        media,
+      ];
 
   ThunderPost copyWith({
     int? id,

@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:thunder/src/core/enums/subscription_status.dart';
 
-class ThunderCommunity {
+class ThunderCommunity extends Equatable {
   /// The community's ID
   final int id;
 
@@ -88,7 +90,7 @@ class ThunderCommunity {
   /// The number of users active in the last half year
   final int? usersActiveHalfYear;
 
-  ThunderCommunity({
+  const ThunderCommunity({
     required this.id,
     required this.name,
     required this.title,
@@ -118,6 +120,38 @@ class ThunderCommunity {
     this.usersActiveMonth,
     this.usersActiveHalfYear,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        title,
+        description,
+        removed,
+        published,
+        updated,
+        deleted,
+        nsfw,
+        actorId,
+        local,
+        icon,
+        banner,
+        hidden,
+        postingRestrictedToMods,
+        instanceId,
+        visibility,
+        subscribed,
+        blocked,
+        bannedFromCommunity,
+        subscribers,
+        subscribersLocal,
+        posts,
+        comments,
+        usersActiveDay,
+        usersActiveWeek,
+        usersActiveMonth,
+        usersActiveHalfYear,
+      ];
 
   factory ThunderCommunity.fromLemmyCommunity(Map<String, dynamic> community, {SubscriptionStatus? subscribed}) {
     return ThunderCommunity(

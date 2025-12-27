@@ -1,4 +1,6 @@
-class ThunderUser {
+import 'package:equatable/equatable.dart';
+
+class ThunderUser extends Equatable {
   /// The user's ID
   final int id;
 
@@ -59,7 +61,7 @@ class ThunderUser {
   /// Whether the user is an admin.
   final bool? isAdmin;
 
-  ThunderUser({
+  const ThunderUser({
     required this.id,
     required this.name,
     this.displayName,
@@ -80,6 +82,29 @@ class ThunderUser {
     this.comments,
     this.isAdmin,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        displayName,
+        avatar,
+        banned,
+        published,
+        updated,
+        actorId,
+        bio,
+        local,
+        banner,
+        deleted,
+        matrixUserId,
+        botAccount,
+        banExpires,
+        instanceId,
+        posts,
+        comments,
+        isAdmin,
+      ];
 
   ThunderUser copyWith({
     int? id,

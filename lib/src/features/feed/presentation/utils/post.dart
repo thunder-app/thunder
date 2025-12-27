@@ -41,8 +41,10 @@ Future<Map<String, dynamic>> fetchFeedItems({
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
+    final postRepository = PostRepositoryImpl(account: account);
+
     do {
-      Map<String, dynamic> response = await PostRepositoryImpl(account: account).getPosts(
+      Map<String, dynamic> response = await postRepository.getPosts(
         cursor: currentCursor,
         postSortType: postSortType,
         feedListType: feedListType,

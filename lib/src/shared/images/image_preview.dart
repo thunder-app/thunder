@@ -3,8 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 
+import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 
@@ -132,6 +133,7 @@ class _ImagePreviewState extends State<ImagePreview> {
     return _ImageContent(
       key: ValueKey(_currentUrl),
       url: _currentUrl,
+      contentType: widget.contentType,
       width: widget.width,
       height: widget.height,
       fit: widget.fit,
@@ -150,6 +152,9 @@ class _ImagePreviewState extends State<ImagePreview> {
 class _ImageContent extends StatelessWidget {
   /// The URL of the image to display.
   final String url;
+
+  /// The content type of the image (e.g., 'image/avif', 'image/jpeg').
+  final String? contentType;
 
   /// The width of the image.
   final double? width;
@@ -184,6 +189,7 @@ class _ImageContent extends StatelessWidget {
   const _ImageContent({
     super.key,
     required this.url,
+    this.contentType,
     required this.width,
     required this.height,
     required this.fit,
@@ -200,46 +206,104 @@ class _ImageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context).ceil();
 
-    final image = CachedNetworkImage(
-      imageUrl: url,
-      height: height,
-      width: width,
-      fit: fit,
-      color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-      colorBlendMode: viewed == true ? BlendMode.modulate : null,
-      fadeInDuration: const Duration(milliseconds: 130),
-      memCacheWidth: width != null ? (width! * devicePixelRatio).toInt() : null,
-      memCacheHeight: height != null ? (height! * devicePixelRatio).toInt() : null,
-      placeholder: (context, url) => const SizedBox.shrink(),
-      imageBuilder: (context, imageProvider) {
-        // Notify that the image loaded successfully
-        WidgetsBinding.instance.addPostFrameCallback((_) => onLoaded?.call());
+    // Calculate cache dimensions based on device pixel ratio
+    final int? cacheWidth = width != null ? (width! * devicePixelRatio).toInt() : null;
+    final int? cacheHeight = height != null ? (height! * devicePixelRatio).toInt() : null;
 
-        return Image(
-          image: imageProvider,
-          height: height,
-          width: width,
-          fit: fit,
-          color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-          colorBlendMode: viewed == true ? BlendMode.modulate : null,
-        );
-      },
-      errorWidget: (context, url, error) {
-        // Notify that the image failed to load
-        WidgetsBinding.instance.addPostFrameCallback((_) => onError?.call());
+    final int? diskCacheWidth = cacheWidth != null ? (cacheWidth * 1.5).toInt() : null;
+    final int? diskCacheHeight = cacheHeight != null ? (cacheHeight * 1.5).toInt() : null;
 
-        return ImagePreviewError(
-          mediaType: mediaType,
-          blur: blur == true,
-          viewed: viewed == true,
-          canRetry: canRetry,
-          onRetry: onRetry,
-        );
-      },
-    );
+    final filterQuality = (cacheWidth != null && cacheWidth < 200) ? FilterQuality.low : FilterQuality.medium;
+
+    // Check if the URL is an AVIF image and use appropriate image loader
+    //
+    // Note: we need to check both URL and content type because:
+    // - Some servers (like lemmy.zip's image_proxy) serve AVIF images through URLs ending in .jpeg/.jpg/.png
+    // - The API provides content_type: 'image/avif' in imageDetails even when URL doesn't indicate AVIF
+    final isAvifByUrl = url.toLowerCase().endsWith('.avif');
+    final isAvifByContentType = contentType?.toLowerCase() == 'image/avif';
+    final isAvif = isAvifByUrl || isAvifByContentType;
+
+    Widget image;
+
+    if (isAvif) {
+      image = CachedNetworkAvifImage(
+        url,
+        height: height,
+        width: width,
+        fit: fit ?? BoxFit.cover,
+        color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+        colorBlendMode: viewed == true ? BlendMode.modulate : null,
+        filterQuality: filterQuality,
+        isAntiAlias: false,
+        gaplessPlayback: false,
+        errorBuilder: (context, error, stackTrace) {
+          Future.microtask(() => onError?.call());
+          return ImagePreviewError(
+            mediaType: mediaType,
+            blur: blur == true,
+            viewed: viewed == true,
+            canRetry: canRetry,
+            onRetry: onRetry,
+          );
+        },
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (frame != null) {
+            // Image has loaded - notify callback
+            Future.microtask(() => onLoaded?.call());
+          }
+          return child;
+        },
+      );
+    } else {
+      image = CachedNetworkImage(
+        imageUrl: url,
+        height: height,
+        width: width,
+        fit: fit,
+        color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+        colorBlendMode: viewed == true ? BlendMode.modulate : null,
+        fadeInDuration: const Duration(milliseconds: 100),
+        fadeOutDuration: Duration.zero,
+        memCacheWidth: cacheWidth,
+        memCacheHeight: cacheHeight,
+        maxWidthDiskCache: diskCacheWidth,
+        maxHeightDiskCache: diskCacheHeight,
+        filterQuality: filterQuality,
+        useOldImageOnUrlChange: true,
+        placeholder: (context, url) => const SizedBox.shrink(),
+        imageBuilder: (context, imageProvider) {
+          Future.microtask(() => onLoaded?.call());
+
+          return Image(
+            image: imageProvider,
+            height: height,
+            width: width,
+            fit: fit,
+            color: viewed == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+            colorBlendMode: viewed == true ? BlendMode.modulate : null,
+            filterQuality: filterQuality,
+            gaplessPlayback: false,
+            isAntiAlias: false,
+          );
+        },
+        errorWidget: (context, url, error) {
+          Future.microtask(() => onError?.call());
+
+          return ImagePreviewError(
+            mediaType: mediaType,
+            blur: blur == true,
+            viewed: viewed == true,
+            canRetry: canRetry,
+            onRetry: onRetry,
+          );
+        },
+      );
+    }
 
     if (blur == true) return _BlurredImage(child: image);
-    return image;
+
+    return RepaintBoundary(child: image);
   }
 }
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/models/models.dart';
+import 'package:thunder/src/shared/images/image_preview.dart';
 import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/icon_text.dart';
@@ -217,13 +216,9 @@ class _BannerImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: CachedNetworkImageProvider(url),
-            fit: BoxFit.cover,
-          ),
-        ),
+      child: ImagePreview(
+        url: url,
+        fit: BoxFit.cover,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/models/media.dart';
 import 'package:thunder/src/shared/images/image_preview.dart';
 import 'package:thunder/src/shared/link_information.dart';
@@ -196,11 +197,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
     // At this point, all other media types should contain images, so we display the image as well as any additional information
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final state = context.read<ThunderBloc>().state;
 
     final imagePeekDurationMs = context.select((ThunderBloc bloc) => bloc.state.imagePeekDuration);
+    final tabletMode = widget.viewMode == ViewMode.comfortable ? context.select((ThunderBloc bloc) => bloc.state.tabletMode) : false;
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.media.nsfw;
+    late final l10n = GlobalContext.l10n;
 
     double? width;
     double? height;
@@ -215,7 +216,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         height = ViewMode.compact.height;
         break;
       case ViewMode.comfortable:
-        width = (state.tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
+        width = (tabletMode ? (MediaQuery.of(context).size.width / 2) - 24.0 : MediaQuery.of(context).size.width) - (widget.edgeToEdgeImages ? 0 : 24);
         height = (widget.showFullHeightImages && !widget.allowUnconstrainedImageHeight) ? widget.media.height : null;
     }
 

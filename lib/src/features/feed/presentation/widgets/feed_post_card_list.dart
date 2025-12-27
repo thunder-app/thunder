@@ -156,28 +156,35 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
       );
     }
 
-    return AnimatedSwitcher(
-      switchOutCurve: Curves.ease,
-      duration: Duration.zero,
-      reverseDuration: const Duration(milliseconds: 400),
-      transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-          ),
-          child: SlideTransition(
-            position: Tween<Offset>(begin: const Offset(1.2, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
-            child: SizeTransition(
-              sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.25)),
-              ),
-              child: child,
+    // Only apply dismissal animation when the post is queued for removal
+    final isQueuedForRemoval = widget.queuedForRemoval?.contains(post.id) == true;
+
+    if (isQueuedForRemoval) {
+      return AnimatedSwitcher(
+        switchOutCurve: Curves.ease,
+        duration: Duration.zero,
+        reverseDuration: const Duration(milliseconds: 400),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
             ),
-          ),
-        );
-      },
-      child: widget.queuedForRemoval?.contains(post.id) != true ? child : null,
-    );
+            child: SlideTransition(
+              position: Tween<Offset>(begin: const Offset(1.2, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
+              child: SizeTransition(
+                sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.25)),
+                ),
+                child: child,
+              ),
+            ),
+          );
+        },
+        child: null, // Post is being removed, animate out
+      );
+    }
+
+    return child;
   }
 
   @override

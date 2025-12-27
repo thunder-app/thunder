@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -176,46 +177,52 @@ class _FeedViewState extends State<FeedView> {
   double _previousScrollPosition = 0.0;
 
   /// Minimum scroll delta before we consider it a direction change
-  static const double _scrollThreshold = 50.0;
+  static const double _scrollThreshold = 100.0;
+
+  /// Cache the hideBottomBarOnScroll setting to avoid repeated bloc reads
+  bool? _cachedHideBottomBarOnScroll;
 
   @override
   void initState() {
     super.initState();
 
-    _scrollController.addListener(() {
-      // Fetches new posts when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
-      }
-
-      // Detect scroll direction for bottom nav bar visibility
-      final currentScrollPosition = _scrollController.position.pixels;
-      final delta = currentScrollPosition - _previousScrollPosition;
-
-      if (delta.abs() > _scrollThreshold) {
-        final bloc = context.read<ThunderBloc>();
-
-        if (bloc.state.hideBottomBarOnScroll) {
-          final isScrollingDown = delta > 0;
-          final isBottomNavBarVisible = bloc.state.isBottomNavBarVisible;
-
-          // Only dispatch if the visibility state needs to change
-          // Show nav bar when scrolling up, hide when scrolling down
-          if (isScrollingDown && isBottomNavBarVisible) {
-            bloc.add(const OnBottomNavBarVisibilityChange(false));
-          } else if (!isScrollingDown && !isBottomNavBarVisible) {
-            bloc.add(const OnBottomNavBarVisibilityChange(true));
-          }
-        }
-        _previousScrollPosition = currentScrollPosition;
-      }
-    });
-
+    _scrollController.addListener(_onScroll);
     BackButtonInterceptor.add(_handleBack);
+  }
+
+  void _onScroll() {
+    // Fetches new posts when the user has scrolled past 70% list
+    if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
+      context.read<FeedBloc>().add(FeedFetchedEvent(feedTypeSubview: selectedUserOption[0] ? FeedTypeSubview.post : FeedTypeSubview.comment));
+    }
+
+    // Detect scroll direction for bottom nav bar visibility
+    final currentScrollPosition = _scrollController.position.pixels;
+    final delta = currentScrollPosition - _previousScrollPosition;
+
+    if (delta.abs() > _scrollThreshold) {
+      _cachedHideBottomBarOnScroll ??= context.read<ThunderBloc>().state.hideBottomBarOnScroll;
+
+      if (_cachedHideBottomBarOnScroll == true) {
+        final bloc = context.read<ThunderBloc>();
+        final isScrollingDown = delta > 0;
+        final isBottomNavBarVisible = bloc.state.isBottomNavBarVisible;
+
+        // Only dispatch if the visibility state needs to change
+        // Show nav bar when scrolling up, hide when scrolling down
+        if (isScrollingDown && isBottomNavBarVisible) {
+          bloc.add(const OnBottomNavBarVisibilityChange(false));
+        } else if (!isScrollingDown && !isBottomNavBarVisible) {
+          bloc.add(const OnBottomNavBarVisibilityChange(true));
+        }
+      }
+      _previousScrollPosition = currentScrollPosition;
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     BackButtonInterceptor.remove(_handleBack);
     super.dispose();
@@ -290,12 +297,14 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = GlobalContext.l10n;
 
-    bool tabletMode = thunderBloc.state.tabletMode;
-    bool markPostReadOnScroll = thunderBloc.state.markPostReadOnScroll;
-    bool hideTopBarOnScroll = thunderBloc.state.hideTopBarOnScroll;
+    final tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
+    final markPostReadOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.markPostReadOnScroll);
+    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
+    final isFabOpen = context.select<ThunderBloc, bool>((bloc) => bloc.state.isFabOpen);
+    final enableFeedsFab = context.select<ThunderBloc, bool>((bloc) => bloc.state.enableFeedsFab);
+    final showHiddenPosts = context.select<ThunderBloc, bool>((bloc) => bloc.state.showHiddenPosts);
 
     return Scaffold(
       body: SafeArea(
@@ -305,7 +314,7 @@ class _FeedViewState extends State<FeedView> {
             if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
             if (previous.dismissReadId != current.dismissReadId) dismissRead();
             if (current.dismissBlockedUserId != null || current.dismissBlockedCommunityId != null) dismissBlockedUsersAndCommunities(current.dismissBlockedUserId, current.dismissBlockedCommunityId);
-            if (current.dismissHiddenPostId != null && !thunderBloc.state.showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
+            if (current.dismissHiddenPostId != null && !showHiddenPosts) dismissHiddenPost(current.dismissHiddenPostId!);
             if (current.excessiveApiCalls) {
               showSnackbar(
                 l10n.excessiveApiCallsWarning,
@@ -424,7 +433,7 @@ class _FeedViewState extends State<FeedView> {
                   ),
                   // Widget to host the feed FAB when navigating to new page
                   AnimatedOpacity(
-                    opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                    opacity: isFabOpen ? 1.0 : 0.0,
                     curve: Curves.easeInOut,
                     duration: const Duration(milliseconds: 250),
                     child: Stack(
@@ -433,7 +442,7 @@ class _FeedViewState extends State<FeedView> {
                             child: Container(
                           color: theme.colorScheme.surface.withValues(alpha: 0.95),
                         )),
-                        if (thunderBloc.state.isFabOpen)
+                        if (isFabOpen)
                           ModalBarrier(
                             color: null,
                             dismissible: true,
@@ -444,10 +453,10 @@ class _FeedViewState extends State<FeedView> {
                   ),
                   if (Navigator.of(context).canPop() &&
                       (state.communityId != null || state.communityName != null || state.userId != null || state.username != null) &&
-                      thunderBloc.state.enableFeedsFab &&
+                      enableFeedsFab &&
                       state.feedType != FeedType.account)
                     AnimatedOpacity(
-                      opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                      opacity: enableFeedsFab ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 150),
                       curve: Curves.easeIn,
                       child: Container(
@@ -521,30 +530,42 @@ class FeedHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final FeedBloc feedBloc = context.watch<FeedBloc>();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          getAppBarTitle(feedBloc.state),
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 4.0),
-        Row(
+    return BlocSelector<FeedBloc, FeedState, ({FeedListType? feedListType, PostSortType? postSortType, FeedType? feedType, ThunderCommunity? community, ThunderUser? user})>(
+      selector: (state) => (
+        feedListType: state.feedListType,
+        postSortType: state.postSortType,
+        feedType: state.feedType,
+        community: state.community,
+        user: state.user,
+      ),
+      builder: (context, _) {
+        final state = context.read<FeedBloc>().state;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(getSortIcon(feedBloc.state), size: 17),
-            const SizedBox(width: 4),
             Text(
-              getSortName(feedBloc.state),
-              style: theme.textTheme.titleMedium,
+              getAppBarTitle(state),
+              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              children: [
+                Icon(getSortIcon(state), size: 17),
+                const SizedBox(width: 4),
+                Text(
+                  getSortName(state),
+                  style: theme.textTheme.titleMedium,
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

@@ -171,20 +171,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyVotePost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           updatedPost = await postRepository.vote(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
-          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.save:
         // Optimistically save the post
@@ -193,20 +195,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallySavePost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           updatedPost = await postRepository.save(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
-          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.read:
         // Optimistically read the post
@@ -220,22 +224,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyReadPost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.read(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.multiRead:
         List<int> eventPostIds = event.postIds ?? [];
@@ -257,30 +263,32 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           }
 
           try {
+            List<ThunderPost> updatedPosts = List.from(state.posts);
             for (int i = 0; i < existingPostIndexes.length; i++) {
               ThunderPost updatedPost = optimisticallyReadPost(posts[i], event.value);
-              state.posts[existingPostIndexes[i]] = updatedPost;
+              updatedPosts[existingPostIndexes[i]] = updatedPost;
             }
 
             // Emit the state to update UI immediately
-            emit(state.copyWith(status: FeedStatus.success));
-            emit(state.copyWith(status: FeedStatus.fetching));
+            emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
             List<int> failed = await postRepository.readMultiple(postIds, event.value);
             if (failed.isEmpty) return emit(state.copyWith(status: FeedStatus.success));
 
             // Restore the original post contents if not successful
+            List<ThunderPost> restoredPosts = List.from(state.posts);
             for (int i = 0; i < failed.length; i++) {
-              state.posts[existingPostIndexes[failed[i]]] = originalPosts[failed[i]];
+              restoredPosts[existingPostIndexes[failed[i]]] = originalPosts[failed[i]];
             }
-            return emit(state.copyWith(status: FeedStatus.failure));
+            return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
           } catch (e) {
             // Restore the original post contents
             // They will all be restored, but this is an unlikely scenario
+            List<ThunderPost> restoredPosts = List.from(state.posts);
             for (int i = 0; i < existingPostIndexes.length; i++) {
-              state.posts[existingPostIndexes[i]] = originalPosts[i];
+              restoredPosts[existingPostIndexes[i]] = originalPosts[i];
             }
-            return emit(state.copyWith(status: FeedStatus.failure));
+            return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
           }
         }
       case PostAction.hide:
@@ -290,22 +298,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyHidePost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.hide(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.delete:
         // Optimistically delete the post
@@ -314,22 +324,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyDeletePost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.delete(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.report:
         int existingPostIndex = state.posts.indexWhere((ThunderPost post) => post.id == event.postId);
@@ -348,22 +360,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyLockPost(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.lock(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.pinCommunity:
         // Optimistically pin the post to the community
@@ -372,22 +386,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyPinPostToCommunity(post, event.value);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.pinCommunity(post.id, event.value);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.remove:
         // Optimistically remove the post from the community
@@ -396,22 +412,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           ThunderPost updatedPost = optimisticallyRemovePost(post, event.value['remove']);
-          state.posts[existingPostIndex] = updatedPost;
+          List<ThunderPost> updatedPosts = List.from(state.posts);
+          updatedPosts[existingPostIndex] = updatedPost;
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: FeedStatus.success));
-          emit(state.copyWith(status: FeedStatus.fetching));
+          emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.remove(post.id, event.value['remove'], event.value['reason']);
           if (success) return emit(state.copyWith(status: FeedStatus.success));
 
           // Restore the original post contents if not successful
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         } catch (e) {
           // Restore the original post contents
-          state.posts[existingPostIndex] = post;
-          return emit(state.copyWith(status: FeedStatus.failure));
+          List<ThunderPost> restoredPosts = List.from(state.posts);
+          restoredPosts[existingPostIndex] = post;
+          return emit(state.copyWith(status: FeedStatus.failure, posts: restoredPosts));
         }
       case PostAction.pinInstance:
       case PostAction.purge:
@@ -421,16 +439,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles updating a given item within the feed
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.fetching));
-
     // TODO: Add support for updating comments (for user profile)
+    List<ThunderPost> updatedPosts = List.from(state.posts);
     for (final (index, post) in state.posts.indexed) {
       if (post.id == event.post.id) {
-        state.posts[index] = event.post;
+        updatedPosts[index] = event.post;
       }
     }
 
-    emit(state.copyWith(status: FeedStatus.success, posts: state.posts));
+    emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
   }
 
   /// Handles updating information about a community
