@@ -3730,5 +3730,17 @@
     "hideBottomBarOnScroll": "Ocultar Barra Inferior ao Rolar",
     "@hideBottomBarOnScroll": {
         "description": "Settings toggle to hide the bottom navigation bar on scroll"
+    },
+    "imagePeekDuration": "Duração da Pré-visualização da Imagem",
+    "@imagePeekDuration": {
+        "description": "Setting for image peek duration"
+    },
+    "imagePeekDurationDescription": "Duração do toque longo antes que a pré-visualização da imagem seja acionada",
+    "@imagePeekDurationDescription": {
+        "description": "Description for image peek duration setting"
+    },
+    "media": "Mídia",
+    "@media": {
+        "description": "Describes a piece of media content (e.g., image, video)"
     }
 }
