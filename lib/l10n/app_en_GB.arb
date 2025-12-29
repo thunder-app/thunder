@@ -3202,5 +3202,17 @@
     "hideBottomBarOnScroll": "Hide Bottom Bar on Scroll",
     "@hideBottomBarOnScroll": {
         "description": "Settings toggle to hide the bottom navigation bar on scroll"
+    },
+    "media": "Media",
+    "@media": {
+        "description": "Describes a piece of media content (e.g., image, video)"
+    },
+    "imagePeekDurationDescription": "Duration of long press before image peek is triggered",
+    "@imagePeekDurationDescription": {
+        "description": "Description for image peek duration setting"
+    },
+    "imagePeekDuration": "Image Peek Duration",
+    "@imagePeekDuration": {
+        "description": "Setting for image peek duration"
     }
 }
