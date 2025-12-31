@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/enums/image_caching_mode.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/dialogs.dart';
@@ -13,6 +15,8 @@ import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
@@ -22,9 +26,12 @@ class MediaManagementPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    final dateFormat = context.select<FeedPreferencesCubit, DateFormat?>((cubit) => cubit.state.dateFormat);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final imageCachingMode = context.select<ThunderBloc, ImageCachingMode>((cubit) => cubit.state.imageCachingMode);
 
     return BlocBuilder<UserSettingsBloc, UserSettingsState>(
       builder: (context, state) {
@@ -95,7 +102,7 @@ class MediaManagementPage extends StatelessWidget {
                                         ExtendedImage.network(
                                           url,
                                           cache: true,
-                                          clearMemoryCacheWhenDispose: thunderBloc.state.imageCachingMode == ImageCachingMode.relaxed,
+                                          clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
                                           loadStateChanged: (state) {
                                             if (state.extendedImageLoadState == LoadState.loading) {
                                               return SizedBox(
@@ -143,7 +150,7 @@ class MediaManagementPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       const SizedBox(width: 12),
-                                      Text(l10n.uploadedDate(thunderBloc.state.dateFormat?.format(DateTime.parse(state.images![index]['local_image']['published']).toLocal()) ?? '')),
+                                      Text(l10n.uploadedDate(dateFormat?.format(DateTime.parse(state.images![index]['local_image']['published']).toLocal()) ?? '')),
                                       const Spacer(),
                                       IconButton(
                                         onPressed: () async {
@@ -217,7 +224,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                       l10n.noReferencesToImage,
                                                                       textAlign: TextAlign.center,
                                                                       style: theme.textTheme.titleSmall,
-                                                                      fontScale: thunderBloc.state.metadataFontSizeScale,
+                                                                      fontScale: metadataFontSizeScale,
                                                                     ),
                                                                   ),
                                                                 ),
@@ -280,7 +287,7 @@ class MediaManagementPage extends StatelessWidget {
                             l10n.noImages,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,
-                            fontScale: thunderBloc.state.metadataFontSizeScale,
+                            fontScale: metadataFontSizeScale,
                           ),
                         ),
                       ),

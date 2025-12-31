@@ -25,13 +25,8 @@ class PostState extends Equatable {
     this.hasReachedCommentEnd = false,
     this.errorMessage,
     this.commentSortType,
-    this.highlightedCommentId,
     this.selectedCommentPath,
     this.moddingCommentId = -1,
-    this.navigateCommentIndex = 0,
-    this.commentSearchResults,
-    this.scrollPosition,
-    this.didScrollPositionChange = false,
     this.collapsedComments = const [],
   });
 
@@ -57,7 +52,6 @@ class PostState extends Equatable {
   final String? commentCursor;
   final int commentCount;
   final bool hasReachedCommentEnd;
-  final int? highlightedCommentId;
   final String? selectedCommentPath;
 
   // This is to track what comment is being restored or deleted so we can
@@ -65,16 +59,6 @@ class PostState extends Equatable {
   final int moddingCommentId;
 
   final String? errorMessage;
-
-  final int navigateCommentIndex;
-  final Map<int, int>? commentSearchResults;
-
-  /// Saves the position of the user's scrolling while viewing a post
-  final double? scrollPosition;
-
-  /// Whether the scroll position changed. If it did not, we don't want to rebuild.
-  /// This flag just makes it easier to check without having to access both the old and new [scrollPosition].
-  final bool didScrollPositionChange;
 
   /// Keeps track of which comments should be collapsed. When a comment is collapsed, its child comments are hidden.
   final List<int> collapsedComments;
@@ -94,13 +78,8 @@ class PostState extends Equatable {
     List<ThunderPost>? crossPosts,
     String? errorMessage,
     CommentSortType? commentSortType,
-    int? highlightedCommentId,
     String? selectedCommentPath,
     int? moddingCommentId,
-    int? navigateCommentIndex,
-    Map<int, int>? commentSearchResults,
-    double? scrollPosition,
-    bool? didScrollPositionChange,
     List<int>? collapsedComments,
   }) {
     return PostState(
@@ -117,13 +96,8 @@ class PostState extends Equatable {
       crossPosts: crossPosts ?? this.crossPosts,
       errorMessage: errorMessage ?? this.errorMessage,
       commentSortType: commentSortType ?? this.commentSortType,
-      highlightedCommentId: highlightedCommentId,
       selectedCommentPath: selectedCommentPath,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
-      navigateCommentIndex: navigateCommentIndex ?? 0,
-      commentSearchResults: commentSearchResults ?? this.commentSearchResults,
-      scrollPosition: scrollPosition ?? this.scrollPosition,
-      didScrollPositionChange: didScrollPositionChange ?? false,
       collapsedComments: collapsedComments ?? this.collapsedComments,
     );
   }
@@ -142,13 +116,8 @@ class PostState extends Equatable {
         errorMessage,
         hasReachedCommentEnd,
         commentSortType,
-        highlightedCommentId,
         selectedCommentPath,
         moddingCommentId,
-        navigateCommentIndex,
-        commentSearchResults,
-        scrollPosition,
-        didScrollPositionChange,
         collapsedComments,
       ];
 }

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 
@@ -22,7 +23,8 @@ class CommentCardHeaderReplyCount extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final collapseParentCommentOnGesture = context.select((ThunderBloc bloc) => bloc.state.collapseParentCommentOnGesture);
+    final collapseParentCommentOnGesture = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.collapseParentCommentOnGesture);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     return AnimatedOpacity(
       opacity: (hidden && (collapseParentCommentOnGesture || replies > 0)) ? 1.0 : 0.0,
@@ -33,12 +35,7 @@ class CommentCardHeaderReplyCount extends StatelessWidget {
           color: theme.colorScheme.primaryContainer,
           borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0)),
         ),
-        child: BlocSelector<ThunderBloc, ThunderState, FontScale>(
-          selector: (state) => state.metadataFontSizeScale,
-          builder: (context, metadataFontSizeScale) {
-            return ScalableText('+$replies', fontScale: metadataFontSizeScale);
-          },
-        ),
+        child: ScalableText('+$replies', fontScale: metadataFontSizeScale),
       ),
     );
   }

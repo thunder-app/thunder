@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 
 /// A user-customizable divider used between items (posts/comments) in the feed page.
 ///
@@ -13,8 +13,8 @@ class FeedCardDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final thickness = context.select<ThunderBloc, double>((bloc) => bloc.state.feedCardDividerThickness.value);
-    final dividerColor = context.select<ThunderBloc, Color?>((bloc) => bloc.state.feedCardDividerColor);
+    final thickness = context.select<FeedPreferencesCubit, double>((cubit) => cubit.state.feedCardDividerThickness.value);
+    final dividerColor = context.select<FeedPreferencesCubit, Color?>((cubit) => cubit.state.feedCardDividerColor);
 
     Color color = ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10);
 

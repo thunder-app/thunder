@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 enum FeedFabAction {
@@ -114,9 +114,9 @@ enum PostFabAction {
 
     switch (this) {
       case PostFabAction.openFab:
-        context?.read<ThunderBloc>().add(const OnFabToggle(true));
+        context?.read<FabStateCubit>().setPostFabOpen(true);
       case PostFabAction.refresh:
-        context?.read<PostBloc>().add(GetPostEvent(post: post, postId: postId, highlightedCommentId: highlightedCommentId, selectedCommentPath: selectedCommentPath));
+        context?.read<PostBloc>().add(GetPostEvent(post: post, postId: postId, selectedCommentPath: selectedCommentPath));
       default:
         break;
     }

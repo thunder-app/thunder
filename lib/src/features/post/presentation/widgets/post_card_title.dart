@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/app/thunder.dart';
 
 /// Creates the title of a post card. This includes the post title and any status icons.
 class PostCardTitle extends StatelessWidget {
@@ -65,7 +65,7 @@ class PostCardTitle extends StatelessWidget {
     final theme = Theme.of(context);
     final textStyle = theme.textTheme.bodyMedium;
 
-    final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
+    final textScaleFactor = context.select<ThemePreferencesCubit, double>((cubit) => cubit.state.titleFontSizeScale.textScaleFactor);
     final fontSize = _calculateFontSize(context, textStyle, textScaleFactor);
 
     final statuses = PostStatusIcon(hidden: hidden, locked: locked, saved: saved, pinned: pinned, deleted: deleted, removed: removed, dim: dim);

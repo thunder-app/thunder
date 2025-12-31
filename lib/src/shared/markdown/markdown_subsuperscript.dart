@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 
 enum CustomMarkdownType { superscript, subscript }
@@ -91,7 +91,7 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
+    final contentFontSizeScale = context.read<ThemePreferencesCubit>().state.contentFontSizeScale;
 
     return RichText(
       text: TextSpan(
@@ -101,7 +101,7 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
               offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
               child: ScalableText(
                 text,
-                fontScale: state.contentFontSizeScale,
+                fontScale: contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(fontSize: 11),
               ),
             ),

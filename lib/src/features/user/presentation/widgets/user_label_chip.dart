@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/utils/colors.dart';
 
 /// A widget that displays a user's label in a chip format.
@@ -22,7 +23,7 @@ class UserLabelChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final metadataFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
     final color = getBackgroundColor(context);
 
     return FutureBuilder<UserLabel?>(

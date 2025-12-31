@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,11 +38,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<CommentActionEvent>(_commentActionEvent);
     on<CommentItemUpdatedEvent>(_commentItemUpdatedEvent);
     on<CommentItemInsertedEvent>(_commentItemInsertedEvent);
-    on<NavigateCommentEvent>(_navigateCommentEvent);
-    on<StartCommentSearchEvent>(_startCommentSearchEvent);
-    on<ContinueCommentSearchEvent>(_continueCommentSearchEvent);
-    on<EndCommentSearchEvent>(_endCommentSearchEvent);
-    on<UpdateScrollPosition>(_onUpdateScrollPosition);
     on<UpdateCollapsedComment>(_onUpdateCollapsedComment);
     on<PostUpdatedEvent>(_onPostUpdated);
   }
@@ -192,7 +185,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
         return emit(
           state.copyWith(
-            status: state.status == PostStatus.searchInProgress ? PostStatus.searchInProgress : PostStatus.success,
+            status: PostStatus.success,
             comments: commentNode.flatten(),
             commentNodes: commentNode,
             commentResponseMap: comments,
@@ -251,7 +244,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
       return emit(
         state.copyWith(
-          status: state.status == PostStatus.searchInProgress ? PostStatus.searchInProgress : PostStatus.success,
+          status: PostStatus.success,
           commentSortType: commentSortType,
           comments: commentNode.flatten(),
           commentNodes: commentNode,
@@ -345,7 +338,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.success,
-      highlightedCommentId: null,
       comments: state.commentNodes!.flatten(),
       moddingCommentId: -1,
     ));
@@ -368,7 +360,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     return emit(state.copyWith(
       status: PostStatus.success,
-      highlightedCommentId: event.comment.id,
       comments: state.commentNodes!.flatten(),
       moddingCommentId: -1,
     ));
@@ -382,65 +373,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: getExceptionErrorMessage(e), moddingCommentId: -1));
     }
-  }
-
-  Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
-    if (event.direction == NavigateCommentDirection.up) {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex)));
-    } else {
-      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex));
-    }
-  }
-
-  /// Comment search
-
-  Future<void> _startCommentSearchEvent(StartCommentSearchEvent event, Emitter<PostState> emit) async {
-    if (event.commentSearchResults.isEmpty) return;
-
-    int firstMatchIndex = event.commentSearchResults.keys.first;
-    int firstMatchCommentId = event.commentSearchResults[firstMatchIndex]!;
-
-    return emit(state.copyWith(
-      status: PostStatus.searchInProgress,
-      commentSearchResults: event.commentSearchResults,
-      highlightedCommentId: firstMatchCommentId,
-      navigateCommentIndex: firstMatchIndex,
-    ));
-  }
-
-  Future<void> _continueCommentSearchEvent(ContinueCommentSearchEvent event, Emitter<PostState> emit) async {
-    if (state.commentSearchResults?.isEmpty ?? true) return;
-
-    final commentSearchResults = state.commentSearchResults!;
-    final commentSearchResultIndexes = commentSearchResults.keys.toList();
-
-    // Find the current match position in our sorted list
-    int currentMatchPosition = -1;
-    int currentCommentId = state.highlightedCommentId ?? commentSearchResults.values.first;
-
-    for (int i = 0; i < commentSearchResultIndexes.length; i++) {
-      if (commentSearchResults[commentSearchResultIndexes[i]] == currentCommentId) {
-        currentMatchPosition = i;
-        break;
-      }
-    }
-
-    // Move to the next match, wrapping around to the beginning if at the end
-    int nextMatchPosition = (currentMatchPosition + 1) % commentSearchResultIndexes.length;
-    int nextFlattenedIndex = commentSearchResultIndexes[nextMatchPosition];
-    int nextCommentId = commentSearchResults[nextFlattenedIndex]!;
-
-    return emit(state.copyWith(status: PostStatus.searchInProgress, highlightedCommentId: nextCommentId, navigateCommentIndex: nextFlattenedIndex));
-  }
-
-  Future<void> _endCommentSearchEvent(EndCommentSearchEvent event, Emitter<PostState> emit) async {
-    return emit(state.copyWith(status: PostStatus.success, highlightedCommentId: null, commentSearchResults: null));
-  }
-
-  /// Scroll position
-
-  void _onUpdateScrollPosition(UpdateScrollPosition event, Emitter<PostState> emit) {
-    return emit(state.copyWith(status: state.status, scrollPosition: event.scrollPosition, didScrollPositionChange: true));
   }
 
   void _onUpdateCollapsedComment(UpdateCollapsedComment event, Emitter<PostState> emit) {

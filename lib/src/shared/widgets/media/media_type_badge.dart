@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 /// Base representation of a media type badge. Holds the icon and color.
 class MediaTypeBadgeItem {
@@ -90,7 +90,7 @@ class MediaTypeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final darkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
+    final darkTheme = context.select<ThemePreferencesCubit, bool>((cubit) => cubit.state.useDarkTheme);
 
     final mediaTypeItem = mediaTypeBadgeItems[mediaType]!;
 

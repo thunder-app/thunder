@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 
 /// Gets a tinted background color that looks good in light and dark mode
 Color getBackgroundColor(BuildContext context) {
-  final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+  final useDarkTheme = context.read<ThemePreferencesCubit>().state.useDarkTheme;
   return useDarkTheme ? DARK_THEME_BACKGROUND_COLOR : LIGHT_THEME_BACKGROUND_COLOR;
 }
 

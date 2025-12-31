@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/utils/date_time.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
@@ -31,15 +31,11 @@ class CommentCardHeaderDate extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final formattedDate = BlocSelector<ThunderBloc, ThunderState, FontScale>(
-      selector: (state) => state.metadataFontSizeScale,
-      builder: (context, metadataFontSizeScale) {
-        return ScalableText(
-          date,
-          fontScale: metadataFontSizeScale,
-          style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
-        );
-      },
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final formattedDate = ScalableText(
+      date,
+      fontScale: metadataFontSizeScale,
+      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
     );
 
     if (!recent) return formattedDate;

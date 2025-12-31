@@ -28,6 +28,10 @@ import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/shared/pages/loading_page.dart';
 import 'package:thunder/src/shared/snackbar.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/shared/utils/swipe.dart';
 import 'package:thunder/src/shared/widgets/webview.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/app/pages/notifications_pages.dart';
@@ -35,7 +39,6 @@ import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/src/shared/utils/swipe.dart';
 import 'package:thunder/src/features/post/presentation/bloc/post_bloc.dart' as post_bloc;
 
 ({String postApId, post_bloc.PostBloc postBloc})? _cachedPostBloc;
@@ -57,10 +60,11 @@ Future<void> navigateToInstancePage(
 
   final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
-  final state = thunderBloc.state;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
 
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   ThunderSiteResponse? getSiteResponse;
   bool? isBlocked;
@@ -146,9 +150,10 @@ Future<void> navigateToPost(
     feedBloc?.add(FeedItemActionedEvent(postId: pvm!.id, postAction: PostAction.read, value: true));
   }
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   final post_bloc.PostBloc postBloc = _cachedPostBloc?.postApId == pvm!.apId
       ? _cachedPostBloc!.postBloc
@@ -168,17 +173,24 @@ Future<void> navigateToPost(
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: gestureCubit.state, isPostPage: true) || !enableFullScreenSwipeNavigationGesture,
     builder: (_) {
+      final postNavigationCubit = PostNavigationCubit();
+      if (highlightedCommentId != null) {
+        postNavigationCubit.setHighlightedCommentId(highlightedCommentId);
+      }
+
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: profileBloc),
           BlocProvider.value(value: thunderBloc),
           BlocProvider.value(value: postBloc),
+          BlocProvider.value(value: postNavigationCubit),
           BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: PostPage(
           initialPost: postBloc.state.post ?? pvm!,
+          highlightedCommentId: highlightedCommentId,
           onPostUpdated: (ThunderPost post) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
             feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(read: true)));
@@ -208,9 +220,10 @@ Future<void> navigateToModlogPage(
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
   final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : FeedBloc(account: account);
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -250,11 +263,12 @@ Future<ThunderPost> getPostFromComment(ThunderComment comment, Account account) 
 Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {
   final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
+  final gestureCubit = context.read<GesturePreferencesCubit>();
 
   final account = context.read<ProfileBloc>().state.account;
 
-  final state = context.read<ThunderBloc>().state;
-  final reduceAnimations = state.reduceAnimations;
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
 
   final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -264,8 +278,8 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
-    canSwipe: !kIsWeb && Platform.isIOS || state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: gestureCubit.state, isPostPage: true) || !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
     builder: (context) {
       return MultiBlocProvider(
         providers: [
@@ -308,9 +322,10 @@ Future<ThunderComment?> navigateToCreateCommentPage(
   final profileBloc = context.read<ProfileBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   final SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
@@ -363,9 +378,10 @@ Future<void> navigateToCreatePostPage(
     ProfileBloc profileBloc = context.read<ProfileBloc>();
     CreatePostCubit createPostCubit = CreatePostCubit(account: account);
 
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = thunderState.reduceAnimations;
-    final bool enableFullScreenSwipeNavigationGesture = thunderState.enableFullScreenSwipeNavigationGesture;
+    final themeCubit = context.read<ThemePreferencesCubit>();
+    final bool reduceAnimations = themeCubit.state.reduceAnimations;
+    final gestureCubit = context.read<GesturePreferencesCubit>();
+    final bool enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
     try {
       feedBloc = context.read<FeedBloc>();
@@ -460,7 +476,9 @@ void navigateToNotificationPage(
   showLoadingPage(context);
 
   final thunderBloc = context.read<ThunderBloc>();
-  final reduceAnimations = thunderBloc.state.reduceAnimations;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
 
   if (accountId == null) {
     hideLoadingPage(context);
@@ -531,8 +549,8 @@ void navigateToNotificationPage(
               : null,
       reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
       backGestureDetectionWidth: 45,
-      canSwipe: !kIsWeb && Platform.isIOS || thunderBloc.state.enableFullScreenSwipeNavigationGesture,
-      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge: !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
       builder: (context) => MultiBlocProvider(
         providers: [BlocProvider.value(value: thunderBloc)],
         child: notificationsPage,
@@ -555,9 +573,10 @@ void navigateToReportPage(BuildContext context) {
   final feedBloc = context.read<FeedBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   Navigator.of(context).push(
     SwipeablePageRoute(
@@ -598,10 +617,12 @@ Future<void> navigateToFeedPage(
   // Push navigation
   ProfileBloc profileBloc = context.read<ProfileBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final feedCubit = context.read<FeedPreferencesCubit>();
   AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
-  ThunderState thunderState = thunderBloc.state;
-  final bool reduceAnimations = thunderState.reduceAnimations;
+  final bool reduceAnimations = themeCubit.state.reduceAnimations;
 
   if (feedType == FeedType.general) {
     return context.read<FeedBloc>().add(
@@ -611,13 +632,13 @@ Future<void> navigateToFeedPage(
             postSortType: postSortType ??
                 (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
                     ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
-                    : thunderBloc.state.postSortTypeForInstance),
+                    : feedCubit.state.defaultPostSortType),
             communityId: communityId,
             communityName: communityName,
             userId: userId,
             username: username,
             reset: true,
-            showHidden: thunderBloc.state.showHiddenPosts,
+            showHidden: feedCubit.state.showHiddenPosts,
           ),
         );
   }
@@ -630,8 +651,8 @@ Future<void> navigateToFeedPage(
             : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
-    canSwipe: !kIsWeb && Platform.isIOS || thunderState.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
+    canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: gestureCubit.state, isFeedPage: true) || !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: profileBloc),
@@ -644,13 +665,13 @@ Future<void> navigateToFeedPage(
           postSortType: postSortType ??
               (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
                   ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
-                  : thunderBloc.state.postSortTypeForInstance),
+                  : feedCubit.state.defaultPostSortType),
           communityName: communityName,
           communityId: communityId,
           userId: userId,
           username: username,
           feedListType: feedListType,
-          showHidden: thunderBloc.state.showHiddenPosts,
+          showHidden: feedCubit.state.showHiddenPosts,
         ),
       ),
     ),
@@ -669,9 +690,10 @@ void navigateToSearchPage(BuildContext context) {
   final feedBloc = context.read<FeedBloc>();
   final thunderBloc = context.read<ThunderBloc>();
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   final account = context.read<ProfileBloc>().state.account;
 
@@ -698,9 +720,10 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
   final thunderBloc = context.read<ThunderBloc>();
   final profileBloc = context.read<ProfileBloc>();
 
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   final account = context.read<ProfileBloc>().state.account;
 
@@ -802,11 +825,10 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
 
 /// Navigates to the given [url] in a webview.
 void navigateToWebView(BuildContext context, String url) {
-  final thunderBloc = context.read<ThunderBloc>();
-
-  final state = thunderBloc.state;
-  final reduceAnimations = state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = state.enableFullScreenSwipeNavigationGesture;
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown

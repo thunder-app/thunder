@@ -9,7 +9,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/date_time.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
@@ -96,7 +96,7 @@ class _CommentReferenceHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
-    final contentFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.contentFontSizeScale);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),

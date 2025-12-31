@@ -9,6 +9,8 @@ import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/src/core/enums/swipe_action.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
 import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
 import 'package:thunder/src/shared/utils/swipe.dart';
 
@@ -170,15 +172,15 @@ class _CommentCardState extends State<CommentCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final nestedCommentIndicatorStyle = context.select<ThunderBloc, NestedCommentIndicatorStyle>((bloc) => bloc.state.nestedCommentIndicatorStyle);
-    final nestedCommentIndicatorColor = context.select<ThunderBloc, NestedCommentIndicatorColor>((bloc) => bloc.state.nestedCommentIndicatorColor);
+    final nestedCommentIndicatorStyle = context.select<CommentPreferencesCubit, NestedCommentIndicatorStyle>((cubit) => cubit.state.nestedCommentIndicatorStyle);
+    final nestedCommentIndicatorColor = context.select<CommentPreferencesCubit, NestedCommentIndicatorColor>((cubit) => cubit.state.nestedCommentIndicatorColor);
 
-    final showCommentButtonActions = context.select<ThunderBloc, bool>((bloc) => bloc.state.showCommentButtonActions);
-    final enableCommentGestures = context.select<ThunderBloc, bool>((bloc) => bloc.state.enableCommentGestures);
-    final leftPrimaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.leftPrimaryCommentGesture);
-    final leftSecondaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.leftSecondaryCommentGesture);
-    final rightPrimaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.rightPrimaryCommentGesture);
-    final rightSecondaryCommentGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.rightSecondaryCommentGesture);
+    final showCommentButtonActions = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.showCommentButtonActions);
+    final enableCommentGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.enableCommentGestures);
+    final leftPrimaryCommentGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryCommentGesture);
+    final leftSecondaryCommentGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftSecondaryCommentGesture);
+    final rightPrimaryCommentGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryCommentGesture);
+    final rightSecondaryCommentGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightSecondaryCommentGesture);
 
     final actionThresholds = [0.15, 0.35];
     final leftActions = [leftPrimaryCommentGesture, leftSecondaryCommentGesture].where((action) => action != SwipeAction.none).toList();

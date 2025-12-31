@@ -207,11 +207,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             },
           ),
         ],
-        child: BlocBuilder<SearchBloc, SearchState>(
-          builder: (context, state) {
-            if (state.focusSearchId > _previousFocusSearchId) {
+        child: BlocSelector<SearchBloc, SearchState, int>(
+          selector: (state) => state.focusSearchId,
+          builder: (context, focusSearchId) {
+            if (focusSearchId > _previousFocusSearchId) {
               searchTextFieldFocus.requestFocus();
-              _previousFocusSearchId = state.focusSearchId;
+              _previousFocusSearchId = focusSearchId;
             }
 
             return Scaffold(
@@ -281,7 +282,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         controller: _searchFiltersScrollController,
                         child: Row(
                           children: [
-                            if (state.viewingAll) ...[
+                            if (context.read<SearchBloc>().state.viewingAll) ...[
                               ThunderActionChip(
                                 backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
                                 trailingIcon: Icons.close_rounded,
@@ -458,7 +459,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 60),
-                    child: _getSearchBody(context, state, account.instance),
+                    child: _getSearchBody(context, context.read<SearchBloc>().state, account.instance),
                   ),
                 ],
               ),
@@ -472,8 +473,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   Widget _getSearchBody(BuildContext context, SearchState state, String accountInstance) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-    final bool tabletMode = thunderBloc.state.tabletMode;
+    final bool tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
 
     switch (state.status) {
       case SearchStatus.initial:

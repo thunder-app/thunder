@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/core/enums/swipe_action.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 /// Displays a row of actions that can be performed on a comment.
@@ -40,8 +40,8 @@ class CommentCardButtonActions extends StatelessWidget {
     final downvotesEnabled = context.select<ProfileBloc, bool>((bloc) => bloc.state.downvotesEnabled);
 
     final voteType = comment.myVote ?? 0;
-    final upvoteColor = context.select<ThunderBloc, Color>((bloc) => bloc.state.upvoteColor.color);
-    final downvoteColor = context.select<ThunderBloc, Color>((bloc) => bloc.state.downvoteColor.color);
+    final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
+    final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
     final widgets = [
       _CommentCardButtonAction(

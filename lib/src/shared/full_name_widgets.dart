@@ -5,7 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 /// A customizable [Text] widget which displays the given name and instance based on the user preferences.
 ///
@@ -50,14 +50,16 @@ class UserFullNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String prefix = generateUserFullNamePrefix(outerContext, name, displayName, userSeparator: userSeparator, useDisplayName: useDisplayName);
-    String suffix = generateUserFullNameSuffix(outerContext, instance, userSeparator: userSeparator);
-    NameThickness userNameThickness = this.userNameThickness ?? outerContext!.read<ThunderBloc>().state.userFullNameUserNameThickness;
-    NameColor userNameColor = this.userNameColor ?? outerContext!.read<ThunderBloc>().state.userFullNameUserNameColor;
-    NameThickness instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThunderBloc>().state.userFullNameInstanceNameThickness;
-    NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.userFullNameInstanceNameColor;
-    TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
-    Color? Function(Color?) transformColor = this.transformColor ?? (color) => color;
+    final prefix = generateUserFullNamePrefix(outerContext, name, displayName, userSeparator: userSeparator, useDisplayName: useDisplayName);
+    final suffix = generateUserFullNameSuffix(outerContext, instance, userSeparator: userSeparator);
+
+    final userNameThickness = this.userNameThickness ?? outerContext!.select<ThemePreferencesCubit, NameThickness>((cubit) => cubit.state.userFullNameUserNameThickness);
+    final userNameColor = this.userNameColor ?? outerContext!.select<ThemePreferencesCubit, NameColor>((cubit) => cubit.state.userFullNameUserNameColor);
+    final instanceNameThickness = this.instanceNameThickness ?? outerContext!.select<ThemePreferencesCubit, NameThickness>((cubit) => cubit.state.userFullNameInstanceNameThickness);
+    final instanceNameColor = this.instanceNameColor ?? outerContext!.select<ThemePreferencesCubit, NameColor>((cubit) => cubit.state.userFullNameInstanceNameColor);
+
+    final textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
+    final transformColor = this.transformColor ?? (color) => color;
 
     TextSpan textSpan = TextSpan(
       children: [
@@ -146,10 +148,10 @@ class CommunityFullNameWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String prefix = generateCommunityFullNamePrefix(outerContext, name, displayName, communitySeparator: communitySeparator, useDisplayName: useDisplayName);
     String suffix = generateCommunityFullNameSuffix(outerContext, instance, communitySeparator: communitySeparator);
-    NameThickness communityNameThickness = this.communityNameThickness ?? outerContext!.read<ThunderBloc>().state.communityFullNameCommunityNameThickness;
-    NameColor communityNameColor = this.communityNameColor ?? outerContext!.read<ThunderBloc>().state.communityFullNameCommunityNameColor;
-    NameThickness instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThunderBloc>().state.communityFullNameInstanceNameThickness;
-    NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThunderBloc>().state.communityFullNameInstanceNameColor;
+    NameThickness communityNameThickness = this.communityNameThickness ?? outerContext!.read<ThemePreferencesCubit>().state.communityFullNameCommunityNameThickness;
+    NameColor communityNameColor = this.communityNameColor ?? outerContext!.read<ThemePreferencesCubit>().state.communityFullNameCommunityNameColor;
+    NameThickness instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThemePreferencesCubit>().state.communityFullNameInstanceNameThickness;
+    NameColor instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThemePreferencesCubit>().state.communityFullNameInstanceNameColor;
     TextStyle? textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
     Color? Function(Color?) transformColor = this.transformColor ?? (color) => color;
 

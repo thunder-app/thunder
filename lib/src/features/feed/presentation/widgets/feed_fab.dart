@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/fab_action.dart';
@@ -14,7 +15,8 @@ import 'package:thunder/src/app/utils/navigation.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag});
@@ -24,7 +26,9 @@ class FeedFAB extends StatelessWidget {
   @override
   build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.watch<ThunderBloc>().state;
+    final feedFabSinglePressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabSinglePressAction);
+    final feedFabLongPressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabLongPressAction);
+    final isFabSummoned = context.select<FabStateCubit, bool>((cubit) => cubit.state.isFeedFabSummoned);
     final FeedState feedState = context.watch<FeedBloc>().state;
     final ProfileState profileState = context.read<ProfileBloc>().state;
 
@@ -43,8 +47,8 @@ class FeedFAB extends StatelessWidget {
       FeedFabAction.dismissRead,
     ];
 
-    FeedFabAction singlePressAction = state.feedFabSinglePressAction;
-    FeedFabAction longPressAction = state.feedFabLongPressAction;
+    FeedFabAction singlePressAction = feedFabSinglePressAction;
+    FeedFabAction longPressAction = feedFabLongPressAction;
 
     // Check to see if we are in the general feeds
     bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
@@ -100,7 +104,7 @@ class FeedFAB extends StatelessWidget {
           child: child,
         );
       },
-      child: state.isFabSummoned
+      child: isFabSummoned
           ? GestureFab(
               heroTag: heroTag,
               distance: 60,
@@ -164,6 +168,7 @@ class FeedFAB extends StatelessWidget {
                     break;
                 }
               },
+              fabType: FabType.feed,
               children: getEnabledActions(context, isPostingLocked: isPostLocked, disabledActions: disabledActions),
             )
           : Stack(
@@ -176,7 +181,7 @@ class FeedFAB extends StatelessWidget {
                   child: GestureDetector(
                     onVerticalDragEnd: (DragEndDetails details) {
                       if (details.primaryVelocity! < 0) {
-                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        context.read<FabStateCubit>().setFeedFabSummoned(true);
                       }
                     },
                   ),
@@ -188,14 +193,12 @@ class FeedFAB extends StatelessWidget {
 
   List<ActionButton> getEnabledActions(BuildContext context, {bool isPostingLocked = false, List<FeedFabAction> disabledActions = const []}) {
     final theme = Theme.of(context);
-    final ThunderState state = context.watch<ThunderBloc>().state;
-
-    bool enableBackToTop = state.enableBackToTop && !disabledActions.contains(FeedFabAction.backToTop);
-    bool enableSubscriptions = state.enableSubscriptions && !disabledActions.contains(FeedFabAction.subscriptions);
-    bool enableChangeSort = state.enableChangeSort && !disabledActions.contains(FeedFabAction.changeSort);
-    bool enableRefresh = state.enableRefresh && !disabledActions.contains(FeedFabAction.refresh);
-    bool enableDismissRead = state.enableDismissRead && !disabledActions.contains(FeedFabAction.dismissRead);
-    bool enableNewPost = state.enableNewPost && !disabledActions.contains(FeedFabAction.newPost);
+    final enableBackToTop = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableBackToTop) && !disabledActions.contains(FeedFabAction.backToTop);
+    final enableSubscriptions = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableSubscriptions) && !disabledActions.contains(FeedFabAction.subscriptions);
+    final enableChangeSort = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableChangeSort) && !disabledActions.contains(FeedFabAction.changeSort);
+    final enableRefresh = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableRefresh) && !disabledActions.contains(FeedFabAction.refresh);
+    final enableDismissRead = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableDismissRead) && !disabledActions.contains(FeedFabAction.dismissRead);
+    final enableNewPost = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableNewPost) && !disabledActions.contains(FeedFabAction.newPost);
 
     List<ActionButton> actions = [
       if (enableDismissRead)
@@ -259,11 +262,11 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerOpenFab(BuildContext context) async {
-    context.read<ThunderBloc>().add(const OnFabToggle(true));
+    context.read<FabStateCubit>().setFeedFabOpen(true);
   }
 
   Future<void> triggerDismissRead(BuildContext context) async {
-    context.read<FeedBloc>().add(FeedDismissReadEvent());
+    context.read<FeedUiCubit>().dismissRead();
   }
 
   Future<void> triggerChangeSort(BuildContext context) async {
@@ -288,7 +291,7 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerScrollToTop(BuildContext context) async {
-    context.read<FeedBloc>().add(ScrollToTopEvent());
+    context.read<FeedUiCubit>().scrollToTop();
   }
 
   Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {

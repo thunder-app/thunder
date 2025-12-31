@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/action_color.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/shared/utils/numbers.dart';
 
@@ -60,14 +61,16 @@ class PostBodyActionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final upvoteColor = context.select<ThemePreferencesCubit, ActionColor>((cubit) => cubit.state.upvoteColor);
+    final downvoteColor = context.select<ThemePreferencesCubit, ActionColor>((cubit) => cubit.state.downvoteColor);
+    final saveColor = context.select<ThemePreferencesCubit, ActionColor>((cubit) => cubit.state.saveColor);
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (previous, current) => previous.isLoggedIn != current.isLoggedIn,
-      builder: (context, state) {
-        bool isUserLoggedIn = state.isLoggedIn;
-        bool downvotesEnabled = state.downvotesEnabled;
+    return BlocSelector<ProfileBloc, ProfileState, bool>(
+      selector: (state) => state.isLoggedIn,
+      builder: (context, isUserLoggedIn) {
+        final downvotesEnabled = context.select<ProfileBloc, bool>((bloc) => bloc.state.downvotesEnabled);
         final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
         return Padding(
@@ -80,7 +83,7 @@ class PostBodyActionsBar extends StatelessWidget {
                   onPressed: isUserLoggedIn ? () => onVote?.call(vote == 1 ? 0 : 1) : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: vote == 1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.upvoteColor.color,
+                    foregroundColor: vote == 1 ? theme.textTheme.bodyMedium?.color : context.read<ThemePreferencesCubit>().state.upvoteColor.color,
                     padding: EdgeInsets.zero,
                   ),
                   child: Wrap(
@@ -90,14 +93,14 @@ class PostBodyActionsBar extends StatelessWidget {
                       Icon(
                         Icons.arrow_upward_rounded,
                         semanticLabel: vote == 1 ? l10n.upvoted : l10n.upvote,
-                        color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                        color: isUserLoggedIn ? (vote == 1 ? upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                         size: 24.0,
                       ),
                       if (showScores)
                         Text(
                           formatNumberToK(upvotes ?? 0),
                           style: TextStyle(
-                            color: isUserLoggedIn ? (vote == 1 ? context.read<ThunderBloc>().state.upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                            color: isUserLoggedIn ? (vote == 1 ? upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                           ),
                         ),
                     ],
@@ -110,7 +113,7 @@ class PostBodyActionsBar extends StatelessWidget {
                     onPressed: isUserLoggedIn ? () => onVote?.call(vote == -1 ? 0 : -1) : null,
                     style: TextButton.styleFrom(
                       fixedSize: const Size.fromHeight(40),
-                      foregroundColor: vote == -1 ? theme.textTheme.bodyMedium?.color : context.read<ThunderBloc>().state.downvoteColor.color,
+                      foregroundColor: vote == -1 ? theme.textTheme.bodyMedium?.color : downvoteColor.color,
                       padding: EdgeInsets.zero,
                     ),
                     child: Wrap(
@@ -120,14 +123,14 @@ class PostBodyActionsBar extends StatelessWidget {
                         Icon(
                           Icons.arrow_downward_rounded,
                           semanticLabel: vote == -1 ? l10n.downvoted : l10n.downvote,
-                          color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                          color: isUserLoggedIn ? (vote == -1 ? downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                           size: 24.0,
                         ),
                         if (showScores)
                           Text(
                             formatNumberToK(downvotes ?? 0),
                             style: TextStyle(
-                              color: isUserLoggedIn ? (vote == -1 ? context.read<ThunderBloc>().state.downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
+                              color: isUserLoggedIn ? (vote == -1 ? downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
                             ),
                           ),
                       ],
@@ -137,11 +140,11 @@ class PostBodyActionsBar extends StatelessWidget {
               Expanded(
                 child: IconButton(
                   onPressed: isUserLoggedIn ? () => onSave?.call(!saved) : null,
-                  style: IconButton.styleFrom(foregroundColor: saved ? null : context.read<ThunderBloc>().state.saveColor.color),
+                  style: IconButton.styleFrom(foregroundColor: saved ? null : saveColor.color),
                   icon: Icon(
                     saved ? Icons.star_rounded : Icons.star_border_rounded,
                     semanticLabel: saved ? l10n.saved : l10n.save,
-                    color: isUserLoggedIn ? (saved ? context.read<ThunderBloc>().state.saveColor.color : theme.textTheme.bodyMedium?.color) : null,
+                    color: isUserLoggedIn ? (saved ? saveColor.color : theme.textTheme.bodyMedium?.color) : null,
                   ),
                 ),
               ),

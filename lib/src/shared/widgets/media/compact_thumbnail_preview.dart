@@ -7,7 +7,7 @@ import 'package:thunder/src/shared/widgets/media/media_type_badge.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/core/models/media.dart';
 import 'package:thunder/src/shared/widgets/media/media_view.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 
 /// Displays a compact thumbnail preview for a post card.
 class CompactThumbnailPreview extends StatelessWidget {
@@ -34,9 +34,8 @@ class CompactThumbnailPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((ThunderBloc bloc) => (bloc.state.hideNsfwPreviews, bloc.state.markPostReadOnMediaView));
-    final hideNsfwPreviews = state.$1;
-    final markPostReadOnMediaView = state.$2;
+    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
+    final markPostReadOnMediaView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.markPostReadOnMediaView);
 
     final isUserLoggedIn = context.select((ProfileBloc bloc) => bloc.state.isLoggedIn);
 

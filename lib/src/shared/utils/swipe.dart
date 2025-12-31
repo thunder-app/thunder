@@ -1,36 +1,40 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:thunder/src/core/enums/swipe_action.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
 
-DismissDirection determinePostSwipeDirection(bool isUserLoggedIn, ThunderState state, {bool disableSwiping = false}) {
+DismissDirection determinePostSwipeDirection({
+  required bool isUserLoggedIn,
+  required bool enablePostGestures,
+  required SwipeAction leftPrimaryPostGesture,
+  required SwipeAction leftSecondaryPostGesture,
+  required SwipeAction rightPrimaryPostGesture,
+  required SwipeAction rightSecondaryPostGesture,
+  bool disableSwiping = false,
+}) {
   if (!isUserLoggedIn) return DismissDirection.none;
 
-  if (state.enablePostGestures == false) return DismissDirection.none;
+  if (enablePostGestures == false) return DismissDirection.none;
 
   if (disableSwiping) return DismissDirection.none;
 
   // If all of the actions are none, then disable swiping
-  if (state.leftPrimaryPostGesture == SwipeAction.none &&
-      state.leftSecondaryPostGesture == SwipeAction.none &&
-      state.rightPrimaryPostGesture == SwipeAction.none &&
-      state.rightSecondaryPostGesture == SwipeAction.none) {
+  if (leftPrimaryPostGesture == SwipeAction.none && leftSecondaryPostGesture == SwipeAction.none && rightPrimaryPostGesture == SwipeAction.none && rightSecondaryPostGesture == SwipeAction.none) {
     return DismissDirection.none;
   }
 
   // If there is at least 1 action on either side, then allow swiping from both sides
-  if ((state.leftPrimaryPostGesture != SwipeAction.none || state.leftSecondaryPostGesture != SwipeAction.none) &&
-      (state.rightPrimaryPostGesture != SwipeAction.none || state.rightSecondaryPostGesture != SwipeAction.none)) {
+  if ((leftPrimaryPostGesture != SwipeAction.none || leftSecondaryPostGesture != SwipeAction.none) && (rightPrimaryPostGesture != SwipeAction.none || rightSecondaryPostGesture != SwipeAction.none)) {
     return DismissDirection.horizontal;
   }
 
   // If there is no action on left side, disable left side swiping
-  if (state.leftPrimaryPostGesture == SwipeAction.none && state.leftSecondaryPostGesture == SwipeAction.none) {
+  if (leftPrimaryPostGesture == SwipeAction.none && leftSecondaryPostGesture == SwipeAction.none) {
     return DismissDirection.endToStart;
   }
 
   // If there is no action on the right side, disable right side swiping
-  if (state.rightPrimaryPostGesture == SwipeAction.none && state.rightSecondaryPostGesture == SwipeAction.none) {
+  if (rightPrimaryPostGesture == SwipeAction.none && rightSecondaryPostGesture == SwipeAction.none) {
     return DismissDirection.startToEnd;
   }
 
@@ -56,7 +60,7 @@ DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, bool enable
   return DismissDirection.none;
 }
 
-bool disableFullPageSwipe({bool isUserLoggedIn = false, required ThunderState state, bool isPostPage = false, isFeedPage = false}) {
+bool disableFullPageSwipe({bool isUserLoggedIn = false, required GesturePreferencesState state, bool isPostPage = false, isFeedPage = false}) {
   if (isPostPage == false && isFeedPage == false) {
     return false;
   }
@@ -74,7 +78,14 @@ bool disableFullPageSwipe({bool isUserLoggedIn = false, required ThunderState st
 
   if (isFeedPage) {
     // If the page we are pushing is a feed type page (community/user page), then we check for swipe actions on posts
-    direction = determinePostSwipeDirection(isUserLoggedIn, state);
+    direction = determinePostSwipeDirection(
+      isUserLoggedIn: isUserLoggedIn,
+      enablePostGestures: state.enablePostGestures,
+      leftPrimaryPostGesture: state.leftPrimaryPostGesture,
+      leftSecondaryPostGesture: state.leftSecondaryPostGesture,
+      rightPrimaryPostGesture: state.rightPrimaryPostGesture,
+      rightSecondaryPostGesture: state.rightSecondaryPostGesture,
+    );
   }
 
   if (direction == DismissDirection.none || direction == DismissDirection.endToStart) {

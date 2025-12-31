@@ -18,24 +18,7 @@ class OnDismissEvent extends ThunderEvent {
   const OnDismissEvent(this.isBeingDismissed);
 }
 
-class OnFabToggle extends ThunderEvent {
-  final bool isFabOpen;
-  const OnFabToggle(this.isFabOpen);
-}
-
-class OnFabSummonToggle extends ThunderEvent {
-  final bool isFabSummoned;
-  const OnFabSummonToggle(this.isFabSummoned);
-}
-
 class OnSetCurrentAnonymousInstance extends ThunderEvent {
   final String? instance;
   const OnSetCurrentAnonymousInstance(this.instance);
-}
-
-class OnBottomNavBarVisibilityChange extends ThunderEvent {
-  /// Whether the bottom navigation bar is visible
-  final bool isVisible;
-
-  const OnBottomNavBarVisibilityChange(this.isVisible);
 }

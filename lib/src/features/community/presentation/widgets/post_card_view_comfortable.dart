@@ -4,16 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/widgets/media/media_view.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
@@ -104,7 +106,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
         switch (postAction) {
           case PostAction.hide:
-            context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
+            context.read<FeedUiCubit>().dismissHiddenPost(post!.id);
             break;
           default:
             break;
@@ -112,7 +114,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
         switch (userAction) {
           case UserAction.block:
-            context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
+            context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
             break;
           default:
             break;
@@ -120,7 +122,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
         switch (communityAction) {
           case CommunityAction.block:
-            context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
+            context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
             break;
           default:
             break;
@@ -134,11 +136,10 @@ class PostCardViewComfortable extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.dimReadPosts, bloc.state.contentFontSizeScale));
-    final dimReadPosts = state.$1;
-    final contentFontSizeScale = state.$2;
+    final dimReadPosts = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
-    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
+    final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
     final media = post.media.firstOrNull;
     final indicateRead = this.indicateRead ?? dimReadPosts;

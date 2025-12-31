@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -8,6 +9,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/enums.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/enums/subscription_status.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -16,7 +18,8 @@ import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/icon_text.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/date_time.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
@@ -83,7 +86,8 @@ class PostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final postCardMetadataItems = context.select((ThunderBloc bloc) => postCardViewType == ViewMode.compact ? bloc.state.compactPostCardMetadataItems : bloc.state.cardPostCardMetadataItems);
+    final postCardMetadataItems = context
+        .select<FeedPreferencesCubit, List<PostCardMetadataItem>>((cubit) => postCardViewType == ViewMode.compact ? cubit.state.compactPostCardMetadataItems : cubit.state.cardPostCardMetadataItems);
     final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
     final dim = this.dim ?? false;
@@ -169,10 +173,9 @@ class ScorePostCardMetaData extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.metadataFontSizeScale, bloc.state.upvoteColor.color, bloc.state.downvoteColor.color));
-    final metadataFontScale = state.$1;
-    final upvoteColor = state.$2;
-    final downvoteColor = state.$3;
+    final metadataFontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
+    final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
     final baseTextColor = theme.textTheme.bodyMedium?.color;
     final dimColor = baseTextColor?.withValues(alpha: 0.45);
@@ -253,9 +256,8 @@ class UpvotePostCardMetaData extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.metadataFontSizeScale, bloc.state.upvoteColor.color));
-    final metadataFontScale = state.$1;
-    final upvoteColor = state.$2;
+    final metadataFontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
 
     final baseTextColor = theme.textTheme.bodyMedium?.color;
     final dimColor = baseTextColor?.withValues(alpha: 0.45);
@@ -306,9 +308,8 @@ class DownvotePostCardMetaData extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.metadataFontSizeScale, bloc.state.downvoteColor.color));
-    final metadataFontScale = state.$1;
-    final downvoteColor = state.$2;
+    final metadataFontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
     final baseTextColor = theme.textTheme.bodyMedium?.color;
     final dimColor = baseTextColor?.withValues(alpha: 0.45);
@@ -352,7 +353,7 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     final baseTextColor = theme.textTheme.bodyMedium?.color;
     final primaryColor = theme.primaryColor;
@@ -394,10 +395,9 @@ class DateTimePostCardMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.showFullPostDate, bloc.state.dateFormat, bloc.state.metadataFontSizeScale));
-    final showFullPostDate = state.$1;
-    final dateFormat = state.$2;
-    final fontScale = state.$3;
+    final showFullPostDate = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showFullPostDate);
+    final dateFormat = context.select<FeedPreferencesCubit, DateFormat?>((cubit) => cubit.state.dateFormat);
+    final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     String formattedDate;
 
@@ -441,7 +441,7 @@ class UrlPostCardMetaData extends StatelessWidget {
     if (url?.isEmpty ?? true) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     String? host;
 
@@ -504,7 +504,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
     if (languageName == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final fontScale = context.select((ThunderBloc bloc) => bloc.state.metadataFontSizeScale);
+    final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
     final color = hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color;
@@ -561,9 +561,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((ThunderBloc bloc) => (bloc.state.showPostAuthor, bloc.state.showCommunityIcons));
-    final showPostAuthor = state.$1;
-    final showCommunityIcons = state.$2;
+    final showPostAuthor = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showPostAuthor);
+    final showCommunityIcons = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showCommunityIcons);
 
     final feedType = context.select((FeedBloc bloc) => bloc.state.feedType);
     final showUsername = (showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
@@ -649,7 +648,7 @@ class CommunityPostCardMetadata extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final fontScale = context.select((ThunderBloc bloc) => (bloc.state.metadataFontSizeScale));
+    final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
     final feedListType = context.select((FeedBloc bloc) => bloc.state.feedListType);
 
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
@@ -701,9 +700,8 @@ class UserPostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((ThunderBloc bloc) => (bloc.state.postShowUserInstance, bloc.state.metadataFontSizeScale));
-    final postShowUserInstance = state.$1;
-    final metadataFontSizeScale = state.$2;
+    final postShowUserInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postShowUserInstance);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 

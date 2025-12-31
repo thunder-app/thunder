@@ -30,6 +30,7 @@ import 'package:thunder/src/shared/divider.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
@@ -267,6 +268,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
     if (context.mounted) {
       context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<FeedPreferencesCubit>().reload();
     }
   }
 
@@ -1033,6 +1035,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     if (context.mounted) {
                       _initPreferences();
                       context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                      context.read<FeedPreferencesCubit>().reload();
                     } else {
                       showSnackbar(l10n.settingsNotImportedSuccessfully);
                     }

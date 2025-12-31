@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/routing/swipeable_page_route.dart';
+import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 
 bool isLoadingPageShown = false;
@@ -54,18 +55,19 @@ void showLoadingPage(BuildContext context) {
 
   isLoadingPageShown = true;
 
+  final enableFullScreenSwipeNavigationGesture = context.read<GesturePreferencesCubit>().state.enableFullScreenSwipeNavigationGesture;
+  final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
+
   // Immediately push the loading page.
-  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  final bool reduceAnimations = thunderBloc.state.reduceAnimations;
   Navigator.of(context).push(
     SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge: !enableFullScreenSwipeNavigationGesture,
       canSwipe: false,
       builder: (context) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: thunderBloc),
+          BlocProvider.value(value: context.read<ThunderBloc>()),
         ],
         child: PopScope(
           onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop,

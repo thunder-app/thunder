@@ -15,6 +15,8 @@ import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
 import 'package:thunder/src/shared/widgets/media/compact_thumbnail_preview.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 /// Displays the title and related information for a given post.
@@ -51,7 +53,7 @@ class PostBodyTitle extends StatelessWidget {
 
   /// Builds the title section for condensed view
   Widget _buildCondensedTitle(BuildContext context) {
-    final showThumbnailPreviewOnRight = context.select<ThunderBloc, bool>((bloc) => bloc.state.showThumbnailPreviewOnRight);
+    final showThumbnailPreviewOnRight = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showThumbnailPreviewOnRight);
 
     final media = post.media.first;
 
@@ -110,7 +112,7 @@ class PostBodyTitle extends StatelessWidget {
   /// Builds the title text widget
   Widget _buildTitleText(BuildContext context) {
     final theme = Theme.of(context);
-    final titleFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.titleFontSizeScale);
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
 
     return ScalableText(
       post.name,
@@ -187,8 +189,8 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
     final creator = widget.post.creator;
     final community = widget.post.community;
 
-    final postBodyShowUserInstance = context.select<ThunderBloc, bool>((bloc) => bloc.state.postBodyShowUserInstance);
-    final postBodyShowCommunityInstance = context.select<ThunderBloc, bool>((bloc) => bloc.state.postBodyShowCommunityInstance);
+    final postBodyShowUserInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowUserInstance);
+    final postBodyShowCommunityInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowCommunityInstance);
 
     return Wrap(
       spacing: 6.0,

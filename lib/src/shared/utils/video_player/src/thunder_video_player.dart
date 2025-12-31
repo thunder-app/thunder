@@ -13,7 +13,7 @@ import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/internet_connection_type.dart';
 import 'package:thunder/src/core/enums/video_auto_play.dart';
 import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
 import 'package:thunder/src/app/cubits/network_checker_cubit/network_checker_cubit.dart';
 import 'package:thunder/src/shared/utils/links.dart';
 
@@ -62,12 +62,12 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _initializePlayer();
   }
 
-  bool autoPlayVideo(ThunderState thunderBloc) {
+  bool autoPlayVideo(VideoPreferencesState videoState) {
     final networkCubit = context.read<NetworkCheckerCubit>().state;
 
-    if (thunderBloc.videoAutoPlay == VideoAutoPlay.always) {
+    if (videoState.videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (thunderBloc.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (videoState.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 
@@ -75,16 +75,16 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   }
 
   Future<void> _initializePlayer() async {
-    final state = context.read<ThunderBloc>().state;
+    final videoState = context.read<VideoPreferencesCubit>().state;
 
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(widget.videoUrl),
       videoPlayerOptions: VideoPlayerOptions(),
     );
 
-    _videoPlayerController.setVolume(state.videoAutoMute ? 0 : 1);
-    _videoPlayerController.setPlaybackSpeed(state.videoDefaultPlaybackSpeed.value);
-    _videoPlayerController.setLooping(state.videoAutoLoop);
+    _videoPlayerController.setVolume(videoState.videoAutoMute ? 0 : 1);
+    _videoPlayerController.setPlaybackSpeed(videoState.videoDefaultPlaybackSpeed.value);
+    _videoPlayerController.setLooping(videoState.videoAutoLoop);
 
     _videoPlayerController.addListener(() {
       if (_videoPlayerController.value.isPlaying && isVideoControlsVisible && timer?.isActive != true) {
@@ -113,13 +113,13 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
     _videoPlayerController.initialize().then(
       (value) {
         setState(() {
-          isFullScreen = state.videoAutoFullscreen;
+          isFullScreen = videoState.videoAutoFullscreen;
           if (isFullScreen) {
             SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
           }
         });
 
-        if (autoPlayVideo(state)) {
+        if (autoPlayVideo(videoState)) {
           _videoPlayerController.play();
         }
       },

@@ -12,9 +12,8 @@ class GetPostEvent extends PostEvent {
   final ThunderPost? post;
   final CommentSortType? commentSortType;
   final String? selectedCommentPath;
-  final int? highlightedCommentId;
 
-  const GetPostEvent({this.commentSortType, this.post, this.postId, this.selectedCommentPath, this.highlightedCommentId});
+  const GetPostEvent({this.commentSortType, this.post, this.postId, this.selectedCommentPath});
 }
 
 class GetPostCommentsEvent extends PostEvent {
@@ -62,29 +61,6 @@ final class CommentItemInsertedEvent extends PostEvent {
   const CommentItemInsertedEvent({required this.comment});
 }
 
-enum NavigateCommentDirection { up, down }
-
-class NavigateCommentEvent extends PostEvent {
-  final NavigateCommentDirection direction;
-  final int targetIndex;
-
-  const NavigateCommentEvent({required this.targetIndex, required this.direction});
-}
-
-class StartCommentSearchEvent extends PostEvent {
-  final Map<int, int> commentSearchResults;
-
-  const StartCommentSearchEvent({required this.commentSearchResults});
-}
-
-class ContinueCommentSearchEvent extends PostEvent {
-  const ContinueCommentSearchEvent();
-}
-
-class EndCommentSearchEvent extends PostEvent {
-  const EndCommentSearchEvent();
-}
-
 class ReportCommentEvent extends PostEvent {
   final int commentId;
   final String message;
@@ -93,12 +69,6 @@ class ReportCommentEvent extends PostEvent {
     required this.commentId,
     required this.message,
   });
-}
-
-class UpdateScrollPosition extends PostEvent {
-  final double scrollPosition;
-
-  const UpdateScrollPosition({required this.scrollPosition});
 }
 
 class UpdateCollapsedComment extends PostEvent {

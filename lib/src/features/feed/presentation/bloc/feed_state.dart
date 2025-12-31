@@ -23,11 +23,6 @@ final class FeedState extends Equatable {
     this.username,
     this.cursor,
     this.message,
-    this.scrollId = 0,
-    this.dismissReadId = 0,
-    this.dismissBlockedUserId,
-    this.dismissBlockedCommunityId,
-    this.dismissHiddenPostId,
     this.insertedPostIds = const [],
     this.showHidden = false,
     this.showSaved = false,
@@ -91,21 +86,6 @@ final class FeedState extends Equatable {
   /// The message to display on failure
   final String? message;
 
-  /// This id is used for scrolling back to the top
-  final int scrollId;
-
-  /// This id is used for dismissing already read posts in the feed
-  final int dismissReadId;
-
-  /// This id is used for dismissing posts from blocked users
-  final int? dismissBlockedUserId;
-
-  /// This id is used for dismissing posts from blocked communities
-  final int? dismissBlockedCommunityId;
-
-  /// This id is used for dismissing posts that have been hidden by the user
-  final int? dismissHiddenPostId;
-
   /// The inserted post ids. This is used to prevent duplicate posts
   final List<int> insertedPostIds;
 
@@ -138,11 +118,6 @@ final class FeedState extends Equatable {
     String? username,
     String? cursor,
     String? message,
-    int? scrollId,
-    int? dismissReadId,
-    int? dismissBlockedUserId,
-    int? dismissBlockedCommunityId,
-    int? dismissHiddenPostId,
     List<int>? insertedPostIds,
     bool? showHidden,
     bool? showSaved,
@@ -168,11 +143,6 @@ final class FeedState extends Equatable {
       username: username ?? this.username,
       cursor: cursor ?? this.cursor,
       message: message,
-      scrollId: scrollId ?? this.scrollId,
-      dismissReadId: dismissReadId ?? this.dismissReadId,
-      dismissBlockedUserId: dismissBlockedUserId,
-      dismissBlockedCommunityId: dismissBlockedCommunityId,
-      dismissHiddenPostId: dismissHiddenPostId,
       insertedPostIds: insertedPostIds ?? this.insertedPostIds,
       showHidden: showHidden ?? this.showHidden,
       showSaved: showSaved ?? this.showSaved,
@@ -206,11 +176,6 @@ final class FeedState extends Equatable {
         username,
         cursor,
         message,
-        scrollId,
-        dismissReadId,
-        dismissBlockedUserId,
-        dismissBlockedCommunityId,
-        dismissHiddenPostId,
         insertedPostIds,
         showHidden,
         showSaved,

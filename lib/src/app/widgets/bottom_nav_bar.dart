@@ -3,14 +3,14 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
 
 /// A custom bottom navigation bar that enables tap/swipe gestures
 class CustomBottomNavigationBar extends StatefulWidget {
@@ -45,7 +45,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDragEnd(DragEndDetails details, BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    bool bottomNavBarSwipeGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarSwipeGesture) ?? true;
+    bool bottomNavBarSwipeGestures = context.read<GesturePreferencesCubit>().state.bottomNavBarSwipeGestures;
     if (bottomNavBarSwipeGestures == false) return;
 
     double delta = _dragEndX - _dragStartX;
@@ -64,7 +64,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   void _handleDoubleTap(BuildContext context) async {
     if (widget.selectedPageIndex != 0) return;
 
-    bool bottomNavBarDoubleTapGestures = UserPreferences.getLocalSetting(LocalSettings.sidebarBottomNavBarDoubleTapGesture) ?? false;
+    bool bottomNavBarDoubleTapGestures = context.read<GesturePreferencesCubit>().state.bottomNavBarDoubleTapGestures;
     if (bottomNavBarDoubleTapGestures == false) return;
 
     bool isDrawerOpen = context.mounted ? Scaffold.of(context).isDrawerOpen : false;
@@ -80,17 +80,18 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final state = context.watch<ThunderBloc>().state;
+    final showNavigationLabels = context.select<ThunderBloc, bool>((bloc) => bloc.state.showNavigationLabels);
+    final bottomNavBarDoubleTapGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.bottomNavBarDoubleTapGestures);
     final inboxState = context.watch<InboxBloc>().state;
 
     return GestureDetector(
       onHorizontalDragStart: _handleDragStart,
       onHorizontalDragUpdate: _handleDragUpdate,
       onHorizontalDragEnd: (DragEndDetails dragEndDetails) => _handleDragEnd(dragEndDetails, context),
-      onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
+      onDoubleTap: bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
       child: NavigationBar(
         selectedIndex: widget.selectedPageIndex,
-        labelBehavior: state.showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
+        labelBehavior: showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),
@@ -134,12 +135,12 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           ),
         ],
         onDestinationSelected: (index) {
-          if (state.isFabOpen) {
-            context.read<ThunderBloc>().add(const OnFabToggle(false));
+          if (context.read<FabStateCubit>().state.isFeedFabOpen) {
+            context.read<FabStateCubit>().setFeedFabOpen(false);
           }
 
           if (widget.selectedPageIndex == 0 && index == 0) {
-            context.read<FeedBloc>().add(ScrollToTopEvent());
+            context.read<FeedUiCubit>().scrollToTop();
           }
 
           if (widget.selectedPageIndex == 1 && index != 1) {

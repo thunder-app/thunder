@@ -5,7 +5,9 @@ import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
 
@@ -43,8 +45,9 @@ class CommunityChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<ThunderBloc>().state;
-    final showCommunityAvatar = state.postBodyShowCommunityAvatar;
+    final showCommunityAvatar = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowCommunityAvatar);
+    final postBodyShowCommunityInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowCommunityInstance);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     return InkWell(
       borderRadius: BorderRadius.circular(5),
@@ -69,8 +72,8 @@ class CommunityChip extends StatelessWidget {
               communityName,
               communityTitle,
               fetchInstanceNameFromUrl(communityUrl),
-              includeInstance: includeInstance ?? state.postBodyShowCommunityInstance,
-              fontScale: state.metadataFontSizeScale,
+              includeInstance: includeInstance ?? postBodyShowCommunityInstance,
+              fontScale: metadataFontSizeScale,
               transformColor: (color) => color?.withValues(alpha: 0.75),
             ),
           ],

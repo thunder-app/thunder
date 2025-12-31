@@ -13,7 +13,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
@@ -392,7 +392,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
-    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
+    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},

@@ -81,30 +81,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
-    /// Handles scrolling to top of the feed
-    on<ScrollToTopEvent>(
-      _onFeedScrollToTop,
-      transformer: throttleDroppable(Duration.zero),
-    );
-
-    /// Handles dismissing read posts from the feed
-    on<FeedDismissReadEvent>(
-      _onFeedDismissRead,
-      transformer: throttleDroppable(Duration.zero),
-    );
-
-    /// Handles dismissing posts from blocked users/communities
-    on<FeedDismissBlockedEvent>(
-      _onFeedDismissBlocked,
-      transformer: throttleDroppable(Duration.zero),
-    );
-
-    /// Handles dismissing posts that have been hidden by the user
-    on<FeedDismissHiddenPostEvent>(
-      _onFeedDismissHiddenPost,
-      transformer: throttleDroppable(Duration.zero),
-    );
-
     /// Handles hiding posts from the feed
     on<FeedHidePostsFromViewEvent>(
       _onFeedHidePostsFromView,
@@ -131,26 +107,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     posts.removeWhere((ThunderPost post) => event.postIds.contains(post.id));
 
     emit(state.copyWith(status: FeedStatus.success, posts: posts));
-  }
-
-  /// Handles dismissing read posts from the feed
-  Future<void> _onFeedDismissRead(FeedDismissReadEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.success, dismissReadId: state.dismissReadId + 1));
-  }
-
-  /// Handles dismissing read posts from the feed
-  Future<void> _onFeedDismissBlocked(FeedDismissBlockedEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.success, dismissBlockedUserId: event.userId, dismissBlockedCommunityId: event.communityId));
-  }
-
-  /// Handles dismissing read posts from the feed
-  Future<void> _onFeedDismissHiddenPost(FeedDismissHiddenPostEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.success, dismissHiddenPostId: event.postId));
-  }
-
-  /// Handles scrolling to top of the feed
-  Future<void> _onFeedScrollToTop(ScrollToTopEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.success, scrollId: state.scrollId + 1));
   }
 
   /// Handles clearing any messages from the state

@@ -16,7 +16,7 @@ class AccountPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final instance = context.watch<ThunderBloc>().state.currentAnonymousInstance ?? '';
+    final instance = context.select<ThunderBloc, String?>((bloc) => bloc.state.currentAnonymousInstance) ?? '';
 
     return Center(
       child: Padding(

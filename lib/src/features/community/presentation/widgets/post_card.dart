@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -14,6 +15,8 @@ import 'package:thunder/src/app/utils/navigation.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
 import 'package:thunder/src/shared/utils/swipe.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 
 class PostCard extends StatefulWidget {
   /// The associated post information to display in the card.
@@ -146,19 +149,43 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<ThunderBloc>().state;
-    final currentSwipeDirection = determinePostSwipeDirection(isUserLoggedIn, state, disableSwiping: widget.disableSwiping);
-    final feedType = context.read<FeedBloc>().state.feedType;
+    // Select only the specific properties we need from GesturePreferencesCubit
+    final enablePostGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.enablePostGestures);
+    final leftPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryPostGesture);
+    final leftSecondaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftSecondaryPostGesture);
+    final rightPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryPostGesture);
+    final rightSecondaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightSecondaryPostGesture);
+
+    // Select only the specific properties we need from FeedPreferencesCubit
+    final useCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.useCompactView);
+    final hideThumbnails = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideThumbnails);
+    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
+    final markPostReadOnMediaView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.markPostReadOnMediaView);
+    final showFullHeightImages = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showFullHeightImages);
+    final showEdgeToEdgeImages = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showEdgeToEdgeImages);
+    final showTitleFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTitleFirst);
+    final showTextContent = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextContent);
+
+    final currentSwipeDirection = determinePostSwipeDirection(
+      isUserLoggedIn: isUserLoggedIn,
+      enablePostGestures: enablePostGestures,
+      leftPrimaryPostGesture: leftPrimaryPostGesture,
+      leftSecondaryPostGesture: leftSecondaryPostGesture,
+      rightPrimaryPostGesture: rightPrimaryPostGesture,
+      rightSecondaryPostGesture: rightSecondaryPostGesture,
+      disableSwiping: widget.disableSwiping,
+    );
+    final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
 
     // Determine which post card view to use based on the settings
-    Widget child = state.useCompactView || widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity)
+    Widget child = useCompactView || widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity)
         ? PostCardViewCompact(
             post: widget.post,
             creator: widget.post.creator!,
             community: widget.post.community!,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
-            showMedia: !state.hideThumbnails,
+            showMedia: !hideThumbnails,
             navigateToPost: ({ThunderPost? post}) async {
               widget.onTap();
               await navigateToPost(context, post: widget.post);
@@ -166,13 +193,13 @@ class _PostCardState extends State<PostCard> {
           )
         : PostCardViewComfortable(
             post: widget.post,
-            hideThumbnails: state.hideThumbnails,
-            hideNsfwPreviews: state.hideNsfwPreviews,
-            markPostReadOnMediaView: state.markPostReadOnMediaView,
-            showFullHeightImages: state.showFullHeightImages,
-            edgeToEdgeImages: state.showEdgeToEdgeImages,
-            showTitleFirst: state.showTitleFirst,
-            showTextContent: state.showTextContent,
+            hideThumbnails: hideThumbnails,
+            hideNsfwPreviews: hideNsfwPreviews,
+            markPostReadOnMediaView: markPostReadOnMediaView,
+            showFullHeightImages: showFullHeightImages,
+            edgeToEdgeImages: showEdgeToEdgeImages,
+            showTitleFirst: showTitleFirst,
+            showTextContent: showTextContent,
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
@@ -203,11 +230,11 @@ class _PostCardState extends State<PostCard> {
             }
 
             if (userAction == UserAction.block) {
-              context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
+              context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
             }
 
             if (communityAction == CommunityAction.block) {
-              context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
+              context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
             }
           },
         ),
@@ -220,8 +247,8 @@ class _PostCardState extends State<PostCard> {
       final hidden = widget.post.hidden ?? false;
 
       final actionThresholds = [0.15, 0.35];
-      final leftActions = [state.leftPrimaryPostGesture, state.leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
-      final rightActions = [state.rightPrimaryPostGesture, state.rightSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
+      final leftActions = [leftPrimaryPostGesture, leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
+      final rightActions = [rightPrimaryPostGesture, rightSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
 
       child = MultiActionDismissible(
         key: ObjectKey(widget.post.id),
@@ -295,8 +322,8 @@ class PostCardActionBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
-    final leftPrimaryPostGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.leftPrimaryPostGesture);
-    final rightPrimaryPostGesture = context.select<ThunderBloc, SwipeAction>((bloc) => bloc.state.rightPrimaryPostGesture);
+    final leftPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryPostGesture);
+    final rightPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryPostGesture);
 
     final alignment = dismissDirection == DismissDirection.startToEnd ? Alignment.centerLeft : Alignment.centerRight;
     final defaultColor = dismissDirection == DismissDirection.startToEnd ? leftPrimaryPostGesture.getColor(context) : rightPrimaryPostGesture.getColor(context);

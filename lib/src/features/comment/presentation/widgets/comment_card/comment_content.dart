@@ -13,7 +13,8 @@ import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/conditional_parent_widget.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 /// A widget that displays the content of a comment.
 class CommentContent extends StatefulWidget {
@@ -87,9 +88,9 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
 
     final content = cleanCommentContent(widget.comment);
 
-    final collapseParentCommentOnGesture = context.select<ThunderBloc, bool>((bloc) => bloc.state.collapseParentCommentOnGesture);
-    final nestedCommentIndicatorStyle = context.select<ThunderBloc, NestedCommentIndicatorStyle>((bloc) => bloc.state.nestedCommentIndicatorStyle);
-    final contentFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.contentFontSizeScale);
+    final collapseParentCommentOnGesture = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.collapseParentCommentOnGesture);
+    final nestedCommentIndicatorStyle = context.select<CommentPreferencesCubit, NestedCommentIndicatorStyle>((cubit) => cubit.state.nestedCommentIndicatorStyle);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
     return ExcludeSemantics(
       excluding: widget.excludeSemantics,

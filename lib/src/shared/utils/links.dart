@@ -29,6 +29,7 @@ import 'package:thunder/src/shared/picker_item.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 import 'package:thunder/src/shared/utils/media/video.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/src/features/user/user.dart';
@@ -72,20 +73,24 @@ Future<LinkInfo> getLinkInfo(String url) async {
 }
 
 void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
-  ThunderState state = context.read<ThunderBloc>().state;
+  final thunderPreferences = context.read<ThunderBloc>().state;
+  final browserMode = thunderPreferences.browserMode;
+  final openInReaderMode = thunderPreferences.openInReaderMode;
+
+  final videoPlayerMode = context.read<VideoPreferencesCubit>().state.videoPlayerMode;
 
   bool launchInExternalApp = false;
   bool launchInCustomTab = false;
 
-  if (isVideo && state.videoPlayerMode == VideoPlayerMode.externalPlayer) {
+  if (isVideo && videoPlayerMode == VideoPlayerMode.externalPlayer) {
     launchInExternalApp = true;
-  } else if (!isVideo && state.browserMode == BrowserMode.external) {
+  } else if (!isVideo && browserMode == BrowserMode.external) {
     launchInExternalApp = true;
   }
 
-  if (isVideo && state.videoPlayerMode == VideoPlayerMode.customTabs) {
+  if (isVideo && videoPlayerMode == VideoPlayerMode.customTabs) {
     launchInCustomTab = true;
-  } else if (!isVideo && state.browserMode == BrowserMode.customTabs) {
+  } else if (!isVideo && browserMode == BrowserMode.customTabs) {
     launchInCustomTab = true;
   }
 
@@ -116,10 +121,10 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
         preferredBarTintColor: Theme.of(context).canvasColor,
         preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
         barCollapsingEnabled: true,
-        entersReaderIfAvailable: state.openInReaderMode,
+        entersReaderIfAvailable: openInReaderMode,
       ),
     );
-  } else if (state.browserMode == BrowserMode.inApp) {
+  } else if (browserMode == BrowserMode.inApp) {
     // Launches the link within the in-app browser if possible
     // Check if the scheme is not https, in which case the in-app browser can't handle it
     Uri? uri = Uri.tryParse(url);
@@ -368,7 +373,6 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     bool isValidUrl = widget.url?.startsWith('http') ?? false;
 
@@ -451,7 +455,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 PickerItem(
                   label: l10n.open,
                   icon: Icons.language,
-                  onSelected: () => handleLinkTap(context, thunderState, widget.text, widget.url),
+                  onSelected: () => handleLinkTap(context, widget.text, widget.url),
                 ),
                 PickerItem(
                   label: l10n.copy,
@@ -500,7 +504,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
   }
 }
 
-Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
+Future<void> handleLinkTap(BuildContext context, String text, String? url) async {
   Uri? parsedUri = Uri.tryParse(url ?? '') ?? Uri.tryParse(text);
 
   String parsedUrl = text;

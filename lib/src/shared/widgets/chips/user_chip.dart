@@ -8,7 +8,8 @@ import 'package:thunder/src/core/enums/user_type.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/widgets/thunder_icons.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
@@ -54,8 +55,8 @@ class UserChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
-    final showUserAvatar = state.commentShowUserAvatar;
+    final showUserAvatar = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.commentShowUserAvatar);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     return IgnorePointer(
       ignoring: ignorePointerEvents,
@@ -91,7 +92,7 @@ class UserChip extends StatelessWidget {
                       user.displayName,
                       fetchInstanceNameFromUrl(user.actorId),
                       includeInstance: includeInstance,
-                      fontScale: state.metadataFontSizeScale,
+                      fontScale: metadataFontSizeScale,
                       transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
                     ),
                   ),
@@ -101,7 +102,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.microphone_variant,
-                        size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 15.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
@@ -110,7 +111,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Icons.person,
-                        size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 15.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
@@ -119,7 +120,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.shield_crown,
-                        size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 14.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
@@ -128,7 +129,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1),
                       child: Icon(
                         Thunder.shield,
-                        size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 14.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
@@ -137,7 +138,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1, right: 2),
                       child: Icon(
                         Thunder.robot,
-                        size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 13.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
@@ -146,7 +147,7 @@ class UserChip extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 1, right: 2),
                       child: Icon(
                         Icons.cake_rounded,
-                        size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                        size: 13.0 * metadataFontSizeScale.textScaleFactor,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),

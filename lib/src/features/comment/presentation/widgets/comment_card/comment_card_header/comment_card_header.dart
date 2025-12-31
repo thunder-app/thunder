@@ -10,7 +10,9 @@ import 'package:thunder/src/features/comment/presentation/widgets/comment_card/c
 import 'package:thunder/src/core/enums/user_type.dart';
 import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/action_color.dart';
 import 'package:thunder/src/features/user/user.dart';
 
 /// A widget that displays the header of a comment, including user information, score, and metadata
@@ -37,13 +39,9 @@ class CommentCardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final state = context.select(
-      (ThunderBloc bloc) => (
-        collapseParentCommentOnGesture: bloc.state.collapseParentCommentOnGesture,
-        commentShowUserInstance: bloc.state.commentShowUserInstance,
-        saveColor: bloc.state.saveColor,
-      ),
-    );
+    final collapseParentCommentOnGesture = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.collapseParentCommentOnGesture);
+    final commentShowUserInstance = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.commentShowUserInstance);
+    final saveColor = context.select<ThemePreferencesCubit, ActionColor>((cubit) => cubit.state.saveColor);
 
     return LayoutBuilder(
       builder: (context, constraints) => Padding(
@@ -62,8 +60,8 @@ class CommentCardHeader extends StatelessWidget {
                       user: comment.creator!,
                       personAvatar: UserAvatar(user: comment.creator!, radius: 10, thumbnailSize: 20, format: 'png'),
                       userGroups: userGroups,
-                      includeInstance: state.commentShowUserInstance,
-                      ignorePointerEvents: hidden && state.collapseParentCommentOnGesture,
+                      includeInstance: commentShowUserInstance,
+                      ignorePointerEvents: hidden && collapseParentCommentOnGesture,
                       opacity: 1.0,
                       constraints: constraints,
                     ),
@@ -75,7 +73,7 @@ class CommentCardHeader extends StatelessWidget {
                   children: hidden && (comment.childCount ?? 0) > 0
                       ? [CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden)]
                       : [
-                          if (comment.saved == true) Icon(Icons.star_rounded, color: state.saveColor.color, size: 19.0),
+                          if (comment.saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
                           if (comment.updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
                           CommentCardHeaderDate(created: comment.published, updated: comment.updated),
                         ],

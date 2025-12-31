@@ -28,6 +28,14 @@ import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/app/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/src/app/cubits/notifications_cubit/notifications_cubit.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
+import 'package:thunder/src/app/cubits/nav_bar_state_cubit/nav_bar_state_cubit.dart';
 import 'package:thunder/src/app/widgets/bottom_nav_bar.dart';
 import 'package:thunder/src/shared/utils/links.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
@@ -235,10 +243,23 @@ class _ThunderState extends State<Thunder> {
             }
           },
         ),
+        BlocListener<ThunderBloc, ThunderState>(
+          listenWhen: (previous, current) => previous.status != current.status && current.status == ThunderStatus.success,
+          listener: (context, state) {
+            // Reload preference cubits when preferences change
+            context.read<GesturePreferencesCubit>().reload();
+            context.read<FeedPreferencesCubit>().reload();
+            context.read<CommentPreferencesCubit>().reload();
+            context.read<ThemePreferencesCubit>().reload();
+            context.read<VideoPreferencesCubit>().reload();
+            context.read<FabPreferencesCubit>().reload();
+          },
+        ),
       ],
       child: BlocBuilder<ThunderBloc, ThunderState>(
+        buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, thunderBlocState) {
-          reduceAnimations = thunderBlocState.reduceAnimations;
+          reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
 
           switch (thunderBlocState.status) {
             case ThunderStatus.initial:
@@ -249,7 +270,7 @@ class _ThunderState extends State<Thunder> {
             case ThunderStatus.refreshing:
             case ThunderStatus.success:
               // Update the variable so that it can be used in _handleBackButtonPress
-              _isFabOpen = thunderBlocState.isFabOpen;
+              _isFabOpen = context.read<FabStateCubit>().state.isFeedFabOpen;
 
               return Scaffold(
                 key: scaffoldStateKey,
@@ -261,7 +282,7 @@ class _ThunderState extends State<Thunder> {
                         },
                       )
                     : null,
-                floatingActionButton: thunderBlocState.enableFeedsFab
+                floatingActionButton: context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableFeedsFab)
                     ? AnimatedOpacity(
                         opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 150),
@@ -270,32 +291,38 @@ class _ThunderState extends State<Thunder> {
                       )
                     : null,
                 floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-                bottomNavigationBar: AnimatedSize(
-                  duration: Duration(milliseconds: thunderBlocState.reduceAnimations ? 0 : 200),
-                  curve: Curves.easeInOut,
-                  clipBehavior: Clip.hardEdge,
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    height: (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) ? 0 : null,
-                    child: AnimatedOpacity(
-                      duration: Duration(milliseconds: thunderBlocState.reduceAnimations ? 0 : 150),
-                      curve: Curves.easeOut,
-                      opacity: (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) ? 0.0 : 1.0,
-                      child: CustomBottomNavigationBar(
-                        selectedPageIndex: selectedPageIndex,
-                        onPageChange: (int index) {
-                          // Reset bottom nav bar visibility when switching pages
-                          if (thunderBlocState.hideBottomBarOnScroll && !thunderBlocState.isBottomNavBarVisible) {
-                            context.read<ThunderBloc>().add(const OnBottomNavBarVisibilityChange(true));
-                          }
-                          setState(() {
-                            selectedPageIndex = index;
-                            widget.pageController.jumpToPage(index);
-                          });
-                        },
+                bottomNavigationBar: Builder(
+                  builder: (context) {
+                    final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
+                    final hideBottomBarOnScroll = context.read<ThunderBloc>().state.hideBottomBarOnScroll;
+                    return AnimatedSize(
+                      duration: Duration(milliseconds: reduceAnimations ? 0 : 200),
+                      curve: Curves.easeInOut,
+                      clipBehavior: Clip.hardEdge,
+                      alignment: Alignment.topCenter,
+                      child: SizedBox(
+                        height: (hideBottomBarOnScroll && !context.select<NavBarStateCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0 : null,
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: reduceAnimations ? 0 : 150),
+                          curve: Curves.easeOut,
+                          opacity: (hideBottomBarOnScroll && !context.select<NavBarStateCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0.0 : 1.0,
+                          child: CustomBottomNavigationBar(
+                            selectedPageIndex: selectedPageIndex,
+                            onPageChange: (int index) {
+                              // Reset bottom nav bar visibility when switching pages
+                              if (hideBottomBarOnScroll && !context.read<NavBarStateCubit>().state.isBottomNavBarVisible) {
+                                context.read<NavBarStateCubit>().setBottomNavBarVisible(true);
+                              }
+                              setState(() {
+                                selectedPageIndex = index;
+                                widget.pageController.jumpToPage(index);
+                              });
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 body: BlocConsumer<ProfileBloc, ProfileState>(
                   listenWhen: (ProfileState previous, ProfileState current) {
@@ -322,13 +349,14 @@ class _ThunderState extends State<Thunder> {
                     if (context.mounted) context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
 
                     if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                      final feedCubit = context.read<FeedPreferencesCubit>();
                       context.read<FeedBloc>().add(
                             FeedFetchedEvent(
                               feedType: FeedType.general,
-                              feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultFeedListType,
-                              postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.postSortTypeForInstance,
+                              feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? feedCubit.state.defaultFeedListType,
+                              postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType,
                               reset: true,
-                              showHidden: thunderBlocState.showHiddenPosts,
+                              showHidden: feedCubit.state.showHiddenPosts,
                             ),
                           );
                     }
@@ -380,70 +408,60 @@ class _ThunderState extends State<Thunder> {
                                 showDragHandle: true,
                                 isScrollControlled: true,
                                 builder: (context) {
-                                  bool isChangelogExpanded = false;
-
-                                  return StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return AnimatedSize(
-                                        alignment: Alignment.bottomCenter,
-                                        duration: const Duration(milliseconds: 100),
-                                        child: FractionallySizedBox(
-                                          heightFactor: isChangelogExpanded ? 0.9 : 0.6,
-                                          child: Container(
-                                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text(
-                                                    l10n.thunderHasBeenUpdated(currentVersion),
-                                                    style: theme.textTheme.titleLarge,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 24.0),
-                                                Expanded(
-                                                  child: FadingEdgeScrollView.fromSingleChildScrollView(
-                                                    gradientFractionOnStart: 0.1,
-                                                    gradientFractionOnEnd: 0.1,
-                                                    child: SingleChildScrollView(
-                                                      controller: _changelogScrollController,
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        mainAxisSize: MainAxisSize.max,
-                                                        children: [
-                                                          CommonMarkdownBody(body: changelog),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 16.0),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop();
-                                                        prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
-                                                      },
-                                                      child: Text(l10n.doNotShowAgain),
-                                                    ),
-                                                    const SizedBox(width: 6.0),
-                                                    FilledButton(
-                                                      onPressed: () => Navigator.of(context).pop(),
-                                                      child: Text(l10n.close),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 24.0),
-                                              ],
+                                  return FractionallySizedBox(
+                                    heightFactor: 0.8,
+                                    child: Container(
+                                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              l10n.thunderHasBeenUpdated(currentVersion),
+                                              style: theme.textTheme.titleLarge,
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                          const SizedBox(height: 24.0),
+                                          Expanded(
+                                            child: FadingEdgeScrollView.fromSingleChildScrollView(
+                                              gradientFractionOnStart: 0.1,
+                                              gradientFractionOnEnd: 0.1,
+                                              child: SingleChildScrollView(
+                                                controller: _changelogScrollController,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  children: [
+                                                    CommonMarkdownBody(body: changelog),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  prefs.setBool(LocalSettings.showUpdateChangelogs.name, false);
+                                                },
+                                                child: Text(l10n.doNotShowAgain),
+                                              ),
+                                              const SizedBox(width: 6.0),
+                                              FilledButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text(l10n.close),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 24.0),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
                               );
@@ -458,13 +476,18 @@ class _ThunderState extends State<Thunder> {
                           onPageChanged: (index) => setState(() => selectedPageIndex = index),
                           physics: const NeverScrollableScrollPhysics(),
                           children: <Widget>[
-                            FeedPage(
-                              useGlobalFeedBloc: true,
-                              feedType: FeedType.general,
-                              feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? thunderBlocState.defaultFeedListType,
-                              postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderBlocState.postSortTypeForInstance,
-                              scaffoldStateKey: scaffoldStateKey,
-                              showHidden: thunderBlocState.showHiddenPosts,
+                            Builder(
+                              builder: (context) {
+                                final feedCubit = context.read<FeedPreferencesCubit>();
+                                return FeedPage(
+                                  useGlobalFeedBloc: true,
+                                  feedType: FeedType.general,
+                                  feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? feedCubit.state.defaultFeedListType,
+                                  postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType,
+                                  scaffoldStateKey: scaffoldStateKey,
+                                  showHidden: feedCubit.state.showHiddenPosts,
+                                );
+                              },
                             ),
                             const SearchPage(),
                             const AccountPage(),

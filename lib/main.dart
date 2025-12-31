@@ -26,12 +26,18 @@ import 'package:thunder/src/core/database/database.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/enums/theme_type.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/app/cubits/notifications_cubit/notifications_cubit.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
+import 'package:thunder/src/app/cubits/nav_bar_state_cubit/nav_bar_state_cubit.dart';
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/shared/utils/cache.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
@@ -140,20 +146,24 @@ class _ThunderAppState extends State<ThunderApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ThemeBloc()),
         BlocProvider(create: (context) => DeepLinksCubit()),
         BlocProvider(create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream)),
         BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(create: (context) => GesturePreferencesCubit()),
+        BlocProvider(create: (context) => FeedPreferencesCubit()),
+        BlocProvider(create: (context) => CommentPreferencesCubit()),
+        BlocProvider(create: (context) => ThemePreferencesCubit()),
+        BlocProvider(create: (context) => VideoPreferencesCubit()),
+        BlocProvider(create: (context) => FabPreferencesCubit()),
+        BlocProvider(create: (context) => FabStateCubit()),
+        BlocProvider(create: (context) => NavBarStateCubit()),
+        BlocProvider(create: (context) => FeedUiCubit()),
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => NetworkCheckerCubit()..getConnectionType())
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
+      child: BlocBuilder<ThemePreferencesCubit, ThemePreferencesState>(
         builder: (context, state) {
-          final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
-
-          if (state.status == ThemeStatus.initial) {
-            context.read<ThemeBloc>().add(ThemeChangeEvent());
-          }
+          final appLanguageCode = context.select<ThunderBloc, String?>((bloc) => bloc.state.appLanguageCode);
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
@@ -206,7 +216,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 ),
               );
 
-              Locale? locale = LanguageLocal.parseLanguageTag(thunderBloc.state.appLanguageCode);
+              Locale? locale = LanguageLocal.parseLanguageTag(appLanguageCode ?? 'en');
 
               return OverlaySupport.global(
                 child: AnnotatedRegion<SystemUiOverlayStyle>(

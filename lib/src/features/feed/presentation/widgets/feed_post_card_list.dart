@@ -12,6 +12,7 @@ import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 
 /// Widget representing the list of posts on the feed.
 class FeedPostCardList extends StatefulWidget {
@@ -160,27 +161,24 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     final isQueuedForRemoval = widget.queuedForRemoval?.contains(post.id) == true;
 
     if (isQueuedForRemoval) {
-      return AnimatedSwitcher(
-        switchOutCurve: Curves.ease,
-        duration: Duration.zero,
-        reverseDuration: const Duration(milliseconds: 400),
-        transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-            ),
-            child: SlideTransition(
-              position: Tween<Offset>(begin: const Offset(1.2, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
-              child: SizeTransition(
-                sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                  CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.25)),
+      return TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 300),
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        builder: (context, value, animatedChild) {
+          return ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: value,
+              child: Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset((1 - value) * 100, 0),
+                  child: child,
                 ),
-                child: child,
               ),
             ),
           );
         },
-        child: null, // Post is being removed, animate out
       );
     }
 
@@ -189,10 +187,11 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<FeedBloc>().state;
-    final isUserLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
+    final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
+    final feedListType = context.select<FeedBloc, FeedListType?>((bloc) => bloc.state.feedListType);
+    final isUserLoggedIn = context.select<ProfileBloc, bool>((bloc) => bloc.state.isLoggedIn);
 
-    bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.read<ThunderBloc>().state.dimReadPosts);
+    bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts));
 
     if (widget.tabletMode) {
       return SliverMasonryGrid.count(
@@ -204,8 +203,8 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
             post: widget.posts[index],
             index: index,
             dim: widget.indicateRead ?? dimReadPosts,
-            feedType: state.feedType,
-            feedListType: state.feedListType,
+            feedType: feedType,
+            feedListType: feedListType,
             isUserLoggedIn: isUserLoggedIn,
           );
         },
@@ -219,8 +218,8 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
           post: widget.posts[index],
           index: index,
           dim: widget.indicateRead ?? dimReadPosts,
-          feedType: state.feedType,
-          feedListType: state.feedListType,
+          feedType: feedType,
+          feedListType: feedListType,
           isUserLoggedIn: isUserLoggedIn,
         );
       },

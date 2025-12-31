@@ -13,6 +13,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
@@ -44,7 +45,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
 
-    ThunderState thunderState = context.read<ThunderBloc>().state;
+    final feedCubit = context.read<FeedPreferencesCubit>();
 
     AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
@@ -94,7 +95,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                           onPressed: () async {
                             Navigator.of(context).pop();
 
-                            final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
+                            final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
                             context.read<FeedBloc>().add(
                                   FeedFetchedEvent(
@@ -103,7 +104,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                     communityId: isLoggedIn ? community.id : null,
                                     communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
                                     reset: true,
-                                    showHidden: thunderState.showHiddenPosts,
+                                    showHidden: feedCubit.state.showHiddenPosts,
                                   ),
                                 );
                           },
@@ -142,7 +143,7 @@ class UserDrawerItem extends StatelessWidget {
     ProfileState profileState = context.watch<ProfileBloc>().state;
 
     bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
-    String? anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? anonymousInstance = context.select<ThunderBloc, String?>((bloc) => bloc.state.currentAnonymousInstance);
 
     return Container(
       color: theme.colorScheme.surfaceContainerLow,
@@ -266,7 +267,7 @@ class FavoriteCommunities extends StatelessWidget {
 
     ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
-    ThunderState thunderState = context.read<ThunderBloc>().state;
+    final feedCubit = context.read<FeedPreferencesCubit>();
 
     bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
@@ -298,7 +299,7 @@ class FavoriteCommunities extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
 
-                  final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
+                  final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
                   context.read<FeedBloc>().add(
                         FeedFetchedEvent(
@@ -306,7 +307,7 @@ class FavoriteCommunities extends StatelessWidget {
                           postSortType: postSortType,
                           communityId: community.id,
                           reset: true,
-                          showHidden: thunderState.showHiddenPosts,
+                          showHidden: feedCubit.state.showHiddenPosts,
                         ),
                       );
                 },
@@ -330,7 +331,7 @@ class ModeratedCommunities extends StatelessWidget {
 
     ProfileState profileState = context.watch<ProfileBloc>().state;
     FeedState feedState = context.watch<FeedBloc>().state;
-    ThunderState thunderState = context.read<ThunderBloc>().state;
+    final feedCubit = context.read<FeedPreferencesCubit>();
 
     List<ThunderCommunity> moderatedCommunities = profileState.moderates;
 
@@ -361,7 +362,7 @@ class ModeratedCommunities extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
 
-                    final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? thunderState.postSortTypeForInstance;
+                    final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
                     context.read<FeedBloc>().add(
                           FeedFetchedEvent(
@@ -369,7 +370,7 @@ class ModeratedCommunities extends StatelessWidget {
                             postSortType: postSortType,
                             communityId: community.id,
                             reset: true,
-                            showHidden: thunderState.showHiddenPosts,
+                            showHidden: feedCubit.state.showHiddenPosts,
                           ),
                         );
                   },

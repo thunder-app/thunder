@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/enums/user_type.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -34,7 +34,7 @@ List<UserType> getCommentUserGroups(ThunderComment comment, Account account) {
 /// The order is: OP > Self > Admin > Moderator > Bot
 Color? fetchUserGroupColor(BuildContext context, List<UserType> userGroups) {
   final theme = Theme.of(context);
-  final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+  final bool darkTheme = context.read<ThemePreferencesCubit>().state.useDarkTheme;
 
   Color? color;
 

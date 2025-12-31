@@ -20,6 +20,8 @@ import 'package:thunder/src/shared/cross_posts.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
 import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 /// A page that displays the post details and comments associated with a post.
 class PostPage extends StatefulWidget {
@@ -93,7 +95,7 @@ class _PostPageState extends State<PostPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!hasSetInitialScroll) {
         hasSetInitialScroll = true;
-        scrollController.jumpTo(context.read<PostBloc>().state.scrollPosition ?? 0.0);
+        scrollController.jumpTo(context.read<PostNavigationCubit>().state.scrollPosition ?? 0.0);
       }
     });
   }
@@ -106,12 +108,12 @@ class _PostPageState extends State<PostPage> {
     super.dispose();
   }
 
-  /// Updates the scroll position in the bloc after scrolling has stopped
+  /// Updates the scroll position in the cubit after scrolling has stopped
   void _updateScrollPosition() {
     _updateScrollPositionTimer?.cancel();
 
     _updateScrollPositionTimer = Timer(const Duration(milliseconds: 150), () {
-      context.read<PostBloc>().add(UpdateScrollPosition(scrollPosition: scrollController.position.pixels));
+      context.read<PostNavigationCubit>().updateScrollPosition(scrollController.position.pixels);
     });
   }
 
@@ -131,8 +133,12 @@ class _PostPageState extends State<PostPage> {
 
   void listener(BuildContext context, PostState state) {
     final l10n = GlobalContext.l10n;
+    final navigationState = context.read<PostNavigationCubit>().state;
 
-    if (state.didScrollPositionChange) return;
+    if (navigationState.didScrollPositionChange) {
+      context.read<PostNavigationCubit>().clearScrollPositionChange();
+      return;
+    }
 
     if (state.status == PostStatus.success && state.post != null) {
       widget.onPostUpdated?.call(state.post!);
@@ -155,7 +161,19 @@ class _PostPageState extends State<PostPage> {
     return BlocConsumer<PostBloc, PostState>(
       listenWhen: listenWhen,
       listener: listener,
-      buildWhen: (previous, current) => !current.didScrollPositionChange,
+      buildWhen: (previous, current) {
+        final navigationState = context.read<PostNavigationCubit>().state;
+        // Don't rebuild if only scroll position changed
+        if (navigationState.didScrollPositionChange) {
+          return false;
+        }
+        // Rebuild if relevant state properties changed
+        return previous.status != current.status ||
+            previous.post != current.post ||
+            previous.comments != current.comments ||
+            previous.crossPosts != current.crossPosts ||
+            previous.errorMessage != current.errorMessage;
+      },
       builder: (context, state) {
         if (state.status == PostStatus.initial) {
           // This is required because listener does not get called on initial build
@@ -163,7 +181,6 @@ class _PostPageState extends State<PostPage> {
                 GetPostEvent(
                   post: widget.initialPost,
                   selectedCommentPath: widget.commentPath,
-                  highlightedCommentId: widget.highlightedCommentId,
                 ),
               );
         }
@@ -172,7 +189,8 @@ class _PostPageState extends State<PostPage> {
 
         // Check to see if there is a highlighted comment. If there is, check to see if it is visible.
         // If it is not visible, scroll to it.
-        final highlightedCommentId = state.highlightedCommentId;
+        final navigationState = context.read<PostNavigationCubit>().state;
+        final highlightedCommentId = navigationState.highlightedCommentId;
         final highlightedCommentIndex = state.comments.indexWhere((element) => element.comment!.id == highlightedCommentId);
 
         if (widget.highlightedCommentId != null && listController.isAttached && highlightedCommentIndex != -1) {
@@ -193,9 +211,10 @@ class _PostPageState extends State<PostPage> {
           onRefresh: () async {
             HapticFeedback.mediumImpact();
 
-            if (this.highlightedCommentId != null) {
+            final navigationState = context.read<PostNavigationCubit>().state;
+            if (navigationState.highlightedCommentId != null) {
               // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
-              context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+              context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath));
             } else {
               context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id));
             }
@@ -248,9 +267,10 @@ class _PostPageState extends State<PostPage> {
                           hasScrollBody: false,
                           child: _PostPageError(
                             onRetry: () {
-                              if (this.highlightedCommentId != null) {
+                              final navigationState = context.read<PostNavigationCubit>().state;
+                              if (navigationState.highlightedCommentId != null) {
                                 // If we're viewing a specific comment thread, retry with that context unless "View All Comments" is pressed
-                                context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath, highlightedCommentId: widget.highlightedCommentId));
+                                context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id, selectedCommentPath: widget.commentPath));
                               } else {
                                 context.read<PostBloc>().add(GetPostEvent(postId: widget.initialPost.id));
                               }
@@ -266,7 +286,7 @@ class _PostPageState extends State<PostPage> {
                               viewSource: viewSource,
                               showCompactPostBody: widget.highlightedCommentId != null,
                             ),
-                            if (state.status != PostStatus.loading && this.highlightedCommentId != null)
+                            if (state.status != PostStatus.loading && navigationState.highlightedCommentId != null)
                               InkWell(
                                 child: Container(
                                   height: 60.0,
@@ -282,7 +302,7 @@ class _PostPageState extends State<PostPage> {
                                 ),
                                 onTap: () {
                                   context.read<PostBloc>().add(const GetPostCommentsEvent(reset: true, commentParentId: null));
-                                  setState(() => this.highlightedCommentId = null);
+                                  context.read<PostNavigationCubit>().setHighlightedCommentId(null);
                                 },
                               ),
                           ],
@@ -309,13 +329,19 @@ class _PostPageState extends State<PostPage> {
                               key: ValueKey(comment.id),
                               account: account,
                               comment: comment,
-                              onCommentUpdated: (comment) => context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment)),
-                              onCommentInserted: (comment) => context.read<PostBloc>().add(CommentItemInsertedEvent(comment: comment)),
+                              onCommentUpdated: (comment) {
+                                context.read<PostBloc>().add(CommentItemUpdatedEvent(comment: comment));
+                                context.read<PostNavigationCubit>().setHighlightedCommentId(null);
+                              },
+                              onCommentInserted: (comment) {
+                                context.read<PostBloc>().add(CommentItemInsertedEvent(comment: comment));
+                                context.read<PostNavigationCubit>().setHighlightedCommentId(comment.id);
+                              },
                               level: commentNode.depth,
                               replies: commentNode.replies.length,
                               collapsed: isCollapsed,
                               hidden: isHidden,
-                              highlight: comment.id == state.highlightedCommentId,
+                              highlight: comment.id == navigationState.highlightedCommentId,
                               onCollapse: (int commentId, bool collapsed) {
                                 context.read<PostBloc>().add(UpdateCollapsedComment(commentId: commentId, collapsed: collapsed));
                                 setState(() {});
@@ -335,9 +361,9 @@ class _PostPageState extends State<PostPage> {
                   if (thunderState.hideTopBarOnScroll) Positioned(child: Container(height: MediaQuery.of(context).padding.top, color: theme.colorScheme.surface)),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
-                    child: thunderState.isFabOpen
+                    child: context.select<FabStateCubit, bool>((cubit) => cubit.state.isPostFabOpen)
                         ? Listener(
-                            onPointerUp: (details) => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                            onPointerUp: (details) => context.read<FabStateCubit>().setPostFabOpen(false),
                             child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95)),
                           )
                         : null,
@@ -411,7 +437,7 @@ class _PostPageFeedEndState extends State<_PostPageFeedEnd> {
 
     final comments = context.select<PostBloc, List<CommentNode>>((bloc) => bloc.state.comments);
     final hasReachedCommentEnd = context.select<PostBloc, bool>((bloc) => bloc.state.hasReachedCommentEnd);
-    final metadataFontSizeScale = context.select<ThunderBloc, FontScale>((bloc) => bloc.state.metadataFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     if (bottomSpacerHeight == null) {
       if (_calculateBottomSpacerTimer != null) _calculateBottomSpacerTimer!.cancel();

@@ -15,7 +15,8 @@ import 'package:thunder/src/shared/comment_reference.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
@@ -77,7 +78,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
 
   @override
   Widget build(BuildContext context) {
-    final thunderState = context.watch<ThunderBloc>().state;
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -249,7 +250,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     l10n.detailedReason(state.postReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
-                                                    fontScale: thunderState.contentFontSizeScale,
+                                                    fontScale: contentFontSizeScale,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
                                                       color: theme.colorScheme.error,
                                                       fontWeight: FontWeight.w600,
@@ -352,7 +353,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     l10n.detailedReason(state.commentReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
-                                                    fontScale: thunderState.contentFontSizeScale,
+                                                    fontScale: contentFontSizeScale,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
                                                       color: theme.colorScheme.error,
                                                       fontWeight: FontWeight.w600,

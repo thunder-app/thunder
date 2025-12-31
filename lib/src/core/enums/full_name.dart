@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 enum FullNameSeparator {
@@ -161,8 +161,8 @@ Widget generateSampleCommunityFullNameWidget(
 
 String generateUserFullNamePrefix(BuildContext? context, String? name, String? displayName, {FullNameSeparator? userSeparator, bool? useDisplayName}) {
   assert(context != null || (userSeparator != null && useDisplayName != null));
-  userSeparator ??= context!.read<ThunderBloc>().state.userSeparator;
-  useDisplayName ??= context!.read<ThunderBloc>().state.useDisplayNamesForUsers;
+  userSeparator ??= context!.read<ThemePreferencesCubit>().state.userSeparator;
+  useDisplayName ??= context!.read<ThemePreferencesCubit>().state.useDisplayNamesForUsers;
   return switch (userSeparator) {
     FullNameSeparator.dot => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
     FullNameSeparator.at => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
@@ -172,7 +172,7 @@ String generateUserFullNamePrefix(BuildContext? context, String? name, String? d
 
 String generateUserFullNameSuffix(BuildContext? context, String? instance, {FullNameSeparator? userSeparator}) {
   assert(context != null || userSeparator != null);
-  userSeparator ??= context!.read<ThunderBloc>().state.userSeparator;
+  userSeparator ??= context!.read<ThemePreferencesCubit>().state.userSeparator;
   return switch (userSeparator) {
     FullNameSeparator.dot => ' · $instance',
     FullNameSeparator.at => '@$instance',
@@ -190,8 +190,8 @@ String generateUserFullName(BuildContext? context, String? name, String? display
 
 String generateCommunityFullNamePrefix(BuildContext? context, String? name, String? displayName, {FullNameSeparator? communitySeparator, bool? useDisplayName}) {
   assert(context != null || (communitySeparator != null && useDisplayName != null));
-  communitySeparator ??= context!.read<ThunderBloc>().state.communitySeparator;
-  useDisplayName ??= context!.read<ThunderBloc>().state.useDisplayNamesForCommunities;
+  communitySeparator ??= context!.read<ThemePreferencesCubit>().state.communitySeparator;
+  useDisplayName ??= context!.read<ThemePreferencesCubit>().state.useDisplayNamesForCommunities;
   return switch (communitySeparator) {
     FullNameSeparator.dot => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
     FullNameSeparator.at => (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '',
@@ -201,7 +201,7 @@ String generateCommunityFullNamePrefix(BuildContext? context, String? name, Stri
 
 String generateCommunityFullNameSuffix(BuildContext? context, String? instance, {FullNameSeparator? communitySeparator}) {
   assert(context != null || communitySeparator != null);
-  communitySeparator ??= context!.read<ThunderBloc>().state.communitySeparator;
+  communitySeparator ??= context!.read<ThemePreferencesCubit>().state.communitySeparator;
   return switch (communitySeparator) {
     FullNameSeparator.dot => ' · $instance',
     FullNameSeparator.at => '@$instance',

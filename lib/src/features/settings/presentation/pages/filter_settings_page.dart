@@ -12,6 +12,7 @@ import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/shared/dialogs.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
@@ -46,6 +47,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
 
     if (context.mounted) {
       context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<FeedPreferencesCubit>().reload();
     }
   }
 

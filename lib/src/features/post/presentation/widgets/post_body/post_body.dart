@@ -16,6 +16,8 @@ import 'package:thunder/src/shared/utils/colors.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/core/enums/post_body_view_type.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
@@ -25,7 +27,8 @@ import 'package:thunder/src/shared/cross_posts.dart';
 import 'package:thunder/src/shared/widgets/media/media_view.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
 
 /// A widget that displays the body of a post. This includes the title, body, media, and metadata.
@@ -123,10 +126,10 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final hideNsfwPreviews = context.select((ThunderBloc bloc) => bloc.state.hideNsfwPreviews);
-    final showCrossPosts = context.select((ThunderBloc bloc) => bloc.state.showCrossPosts);
-    final postBodyViewType = context.select((ThunderBloc bloc) => bloc.state.postBodyViewType);
-    final contentFontSizeScale = context.select((ThunderBloc bloc) => bloc.state.contentFontSizeScale);
+    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
+    final showCrossPosts = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showCrossPosts);
+    final postBodyViewType = context.select<FeedPreferencesCubit, PostBodyViewType>((cubit) => cubit.state.postBodyViewType);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
     final post = widget.post;
     final media = post.media.first;
@@ -252,7 +255,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (postAction) {
                   case PostAction.hide:
-                    context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
+                    context.read<FeedUiCubit>().dismissHiddenPost(post!.id);
                     break;
                   default:
                     break;
@@ -260,7 +263,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (userAction) {
                   case UserAction.block:
-                    context.read<FeedBloc>().add(FeedDismissBlockedEvent(userId: post!.creator!.id));
+                    context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
                     break;
                   default:
                     break;
@@ -268,7 +271,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (communityAction) {
                   case CommunityAction.block:
-                    context.read<FeedBloc>().add(FeedDismissBlockedEvent(communityId: post!.community!.id));
+                    context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
                     break;
                   default:
                     break;

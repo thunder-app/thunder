@@ -8,7 +8,7 @@ import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/bottom_sheet_action.dart';
 import 'package:thunder/src/shared/multi_picker_item.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
@@ -214,33 +214,33 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
   }
 
   Color? getBackgroundColor(GeneralQuickCommentAction action) {
-    final state = context.read<ThunderBloc>().state;
+    final themeState = context.read<ThemePreferencesCubit>().state;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return state.upvoteColor.color;
+        return themeState.upvoteColor.color;
       case GeneralQuickCommentAction.downvote:
-        return state.downvoteColor.color;
+        return themeState.downvoteColor.color;
       case GeneralQuickCommentAction.save:
-        return state.saveColor.color;
+        return themeState.saveColor.color;
       case GeneralQuickCommentAction.reply:
-        return state.replyColor.color;
+        return themeState.replyColor.color;
       case GeneralQuickCommentAction.edit:
-        return state.replyColor.color;
+        return themeState.replyColor.color;
     }
   }
 
   Color? getForegroundColor(GeneralQuickCommentAction action) {
-    final state = context.read<ThunderBloc>().state;
+    final themeState = context.read<ThemePreferencesCubit>().state;
     final comment = widget.comment;
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return comment.myVote == 1 ? state.upvoteColor.color : null;
+        return comment.myVote == 1 ? themeState.upvoteColor.color : null;
       case GeneralQuickCommentAction.downvote:
-        return comment.myVote == -1 ? state.downvoteColor.color : null;
+        return comment.myVote == -1 ? themeState.downvoteColor.color : null;
       case GeneralQuickCommentAction.save:
-        return comment.saved == true ? state.saveColor.color : null;
+        return comment.saved == true ? themeState.saveColor.color : null;
       default:
         return null;
     }

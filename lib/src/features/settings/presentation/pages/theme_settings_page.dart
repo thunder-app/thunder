@@ -14,9 +14,9 @@ import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/enums/theme_type.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
@@ -111,23 +111,31 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       case LocalSettings.appTheme:
         await prefs.setInt(LocalSettings.appTheme.name, value);
         setState(() => themeType = ThemeType.values[value]);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         Future.delayed(const Duration(milliseconds: 300), () => _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
         break;
       case LocalSettings.usePureBlackTheme:
         await prefs.setBool(LocalSettings.usePureBlackTheme.name, value);
         setState(() => usePureBlackTheme = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
       case LocalSettings.appThemeAccentColor:
         await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
         setState(() => selectedTheme = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
       case LocalSettings.useMaterialYouTheme:
         await prefs.setBool(LocalSettings.useMaterialYouTheme.name, value);
         setState(() => useMaterialYouTheme = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
 
       // Color settings
@@ -160,22 +168,30 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       case LocalSettings.titleFontSizeScale:
         await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
       case LocalSettings.contentFontSizeScale:
         await prefs.setString(LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
       case LocalSettings.commentFontSizeScale:
         await prefs.setString(LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
         setState(() => commentFontSizeScale = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
       case LocalSettings.metadataFontSizeScale:
         await prefs.setString(LocalSettings.metadataFontSizeScale.name, (value as FontScale).name);
         setState(() => metadataFontSizeScale = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
         break;
 
       // Name Settings
@@ -233,6 +249,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
     if (context.mounted) {
       context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThemePreferencesCubit>().reload();
     }
   }
 

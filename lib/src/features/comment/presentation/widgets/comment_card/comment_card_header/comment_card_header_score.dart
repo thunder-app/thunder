@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -41,17 +42,15 @@ class CommentCardHeaderScore extends StatelessWidget {
 
     final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
-    final state = context.select((ThunderBloc bloc) => (
-          metadataFontSizeScale: bloc.state.metadataFontSizeScale,
-          combineCommentScores: bloc.state.combineCommentScores,
-          upvoteColor: bloc.state.upvoteColor.color,
-          downvoteColor: bloc.state.downvoteColor.color,
-        ));
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final combineCommentScores = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.combineCommentScores);
+    final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
+    final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
     // Show only vote indicator if scores are hidden
     if (!showScores) {
-      if (voteType == 1) return VoteIcon(type: voteType!, voteType: voteType, color: state.upvoteColor, fontScale: state.metadataFontSizeScale);
-      if (voteType == -1) return VoteIcon(type: voteType!, voteType: voteType, color: state.downvoteColor, fontScale: state.metadataFontSizeScale);
+      if (voteType == 1) return VoteIcon(type: voteType!, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale);
+      if (voteType == -1) return VoteIcon(type: voteType!, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale);
       return SizedBox.shrink();
     }
 
@@ -60,24 +59,24 @@ class CommentCardHeaderScore extends StatelessWidget {
     final downvotesLabel = formatNumberToK(downvotes);
 
     // Show the combined score
-    if (state.combineCommentScores) {
+    if (combineCommentScores) {
       return Row(
         spacing: 2.0,
         children: [
-          VoteIcon(type: 1, voteType: voteType, color: state.upvoteColor, fontScale: state.metadataFontSizeScale),
+          VoteIcon(type: 1, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
           ScalableText(
             scoreLabel,
             semanticsLabel: l10n.xScore(scoreLabel),
-            fontScale: state.metadataFontSizeScale,
+            fontScale: metadataFontSizeScale,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: (voteType != null && voteType != 0)
                   ? voteType == 1
-                      ? state.upvoteColor
-                      : state.downvoteColor
+                      ? upvoteColor
+                      : downvoteColor
                   : theme.colorScheme.onSurface,
             ),
           ),
-          VoteIcon(type: -1, voteType: voteType, color: state.downvoteColor, fontScale: state.metadataFontSizeScale),
+          VoteIcon(type: -1, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
         ],
       );
     }
@@ -86,26 +85,26 @@ class CommentCardHeaderScore extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        VoteIcon(type: 1, voteType: voteType, color: state.upvoteColor, fontScale: state.metadataFontSizeScale),
+        VoteIcon(type: 1, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
         const SizedBox(width: 2.0),
         ScalableText(
           upvotesLabel,
           semanticsLabel: l10n.xUpvotes(upvotesLabel),
-          fontScale: state.metadataFontSizeScale,
+          fontScale: metadataFontSizeScale,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: (voteType == 1) ? state.upvoteColor : theme.colorScheme.onSurface,
+            color: (voteType == 1) ? upvoteColor : theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(width: 10.0),
         if (downvotes != 0) ...[
-          VoteIcon(type: -1, voteType: voteType, color: state.downvoteColor, fontScale: state.metadataFontSizeScale),
+          VoteIcon(type: -1, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
           const SizedBox(width: 2.0),
           ScalableText(
             downvotesLabel,
             semanticsLabel: l10n.xDownvotes(downvotesLabel),
-            fontScale: state.metadataFontSizeScale,
+            fontScale: metadataFontSizeScale,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: (voteType == -1) ? state.downvoteColor : theme.colorScheme.onSurface,
+              color: (voteType == -1) ? downvoteColor : theme.colorScheme.onSurface,
             ),
           ),
         ],

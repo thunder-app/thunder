@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/thunder.dart';
+import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
@@ -37,19 +39,15 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
     final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
-    final state = context.select(
-      (ThunderBloc bloc) => (
-        style: bloc.state.nestedCommentIndicatorStyle,
-        scheme: bloc.state.nestedCommentIndicatorColor,
-        commentFontSizeScale: bloc.state.commentFontSizeScale,
-      ),
-    );
+    final nestedCommentIndicatorStyle = context.select<CommentPreferencesCubit, NestedCommentIndicatorStyle>((cubit) => cubit.state.nestedCommentIndicatorStyle);
+    final nestedCommentIndicatorColor = context.select<CommentPreferencesCubit, NestedCommentIndicatorColor>((cubit) => cubit.state.nestedCommentIndicatorColor);
+    final commentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.commentFontSizeScale);
 
-    final padding = (state.style == NestedCommentIndicatorStyle.thick ? widget.depth + 1 : widget.depth) * 4.0;
+    final padding = (nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? widget.depth + 1 : widget.depth) * 4.0;
     final reply = widget.replies == 1 ? l10n.loadMoreSingular(widget.replies) : l10n.loadMorePlural(widget.replies);
 
     return Container(
-      decoration: CommentDepthIndicatorDecoration(context, level: widget.depth + 1, style: state.style, scheme: state.scheme),
+      decoration: CommentDepthIndicatorDecoration(context, level: widget.depth + 1, style: nestedCommentIndicatorStyle, scheme: nestedCommentIndicatorColor),
       child: Padding(
         padding: EdgeInsets.only(left: padding),
         child: InkWell(
@@ -68,7 +66,7 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
                     padding: const EdgeInsets.fromLTRB(12.0, 12.0, 0.0, 12.0),
                     child: ScalableText(
                       reply,
-                      fontScale: state.commentFontSizeScale,
+                      fontScale: commentFontSizeScale,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       ),

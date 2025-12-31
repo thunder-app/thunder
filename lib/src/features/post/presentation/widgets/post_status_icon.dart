@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 
 /// Given a list of statuses, returns a list of icons representing the statuses.
 class PostStatusIcon extends StatelessWidget {
@@ -70,7 +70,7 @@ class PostStatusIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context.select((ThunderBloc bloc) => bloc.state.titleFontSizeScale.textScaleFactor);
+    final textScaleFactor = context.select<ThemePreferencesCubit, double>((cubit) => cubit.state.titleFontSizeScale.textScaleFactor);
     final statuses = _buildStatusIcons(context, textScaleFactor);
 
     if (statuses.isEmpty) return SizedBox.shrink();

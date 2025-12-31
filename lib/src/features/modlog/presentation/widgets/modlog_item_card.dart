@@ -7,7 +7,7 @@ import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/shared/divider.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 /// Widget to display a single modlog event item
@@ -46,9 +46,9 @@ class ModlogItemCard extends StatelessWidget {
     final l10n = GlobalContext.l10n;
 
     final modName = getModeratorName(event);
-    final metadataFontSizeScale = context.select<ThunderBloc, FontScale>((state) => state.state.metadataFontSizeScale);
-    final titleFontSizeScale = context.select<ThunderBloc, FontScale>((state) => state.state.titleFontSizeScale);
-    final contentFontSizeScale = context.select<ThunderBloc, FontScale>((state) => state.state.contentFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
     return Column(
       children: [

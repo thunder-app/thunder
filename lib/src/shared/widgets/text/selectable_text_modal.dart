@@ -1,26 +1,30 @@
 import 'dart:io';
 
-import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 void showSelectableTextModal(BuildContext context, {String? title, required String text}) {
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
-  final ThemeData theme = Theme.of(context);
-  final ThunderState thunderState = context.read<ThunderBloc>().state;
+  final l10n = GlobalContext.l10n;
+  final theme = Theme.of(context);
 
-  final ScrollController textScrollController = ScrollController();
-  final ScrollController actionsScrollController = ScrollController();
-  final FocusNode focusNode = FocusNode();
-  final GlobalKey selectableRegionKey = GlobalKey();
+  final themePreferences = context.read<ThemePreferencesCubit>().state;
+  final contentFontSizeScale = themePreferences.contentFontSizeScale;
+  final titleFontSizeScale = themePreferences.titleFontSizeScale;
+
+  final textScrollController = ScrollController();
+  final actionsScrollController = ScrollController();
+  final focusNode = FocusNode();
+  final selectableRegionKey = GlobalKey();
 
   bool isAnythingSelected = false;
 
@@ -117,7 +121,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                         title!,
                                         style: theme.textTheme.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * thunderState.titleFontSizeScale.textScaleFactor),
+                                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * titleFontSizeScale.textScaleFactor),
                                         ),
                                       ),
                                     ),
@@ -129,7 +133,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                         ? ScalableText(
                                             text,
                                             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                            fontScale: thunderState.contentFontSizeScale,
+                                            fontScale: contentFontSizeScale,
                                           )
                                         : CommonMarkdownBody(
                                             body: text,

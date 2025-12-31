@@ -2,11 +2,15 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
 
-import '../app/bloc/thunder_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+
+/// Enum to distinguish between feed and post FABs
+enum FabType { feed, post }
 
 class GestureFab extends StatefulWidget {
   const GestureFab({
@@ -23,6 +27,7 @@ class GestureFab extends StatefulWidget {
     this.centered = false,
     this.heroTag,
     this.fabBackgroundColor,
+    this.fabType = FabType.feed,
   });
 
   final bool? initialOpen;
@@ -37,6 +42,9 @@ class GestureFab extends StatefulWidget {
   final bool centered;
   final String? heroTag;
   final Color? fabBackgroundColor;
+
+  /// The type of FAB (feed or post) - determines which state to use
+  final FabType fabType;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -73,19 +81,45 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  /// Gets the current isFabOpen state based on the fabType
+  bool _getIsFabOpen(FabStateState state) {
+    return widget.fabType == FabType.feed ? state.isFeedFabOpen : state.isPostFabOpen;
+  }
+
+  /// Sets the FAB open state based on the fabType
+  void _setFabOpen(BuildContext context, bool isOpen) {
+    final cubit = context.read<FabStateCubit>();
+    if (widget.fabType == FabType.feed) {
+      cubit.setFeedFabOpen(isOpen);
+    } else {
+      cubit.setPostFabOpen(isOpen);
+    }
+  }
+
+  /// Sets the FAB summoned state based on the fabType
+  void _setFabSummoned(BuildContext context, bool isSummoned) {
+    final cubit = context.read<FabStateCubit>();
+    if (widget.fabType == FabType.feed) {
+      cubit.setFeedFabSummoned(isSummoned);
+    } else {
+      cubit.setPostFabSummoned(isSummoned);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ThunderBloc, ThunderState>(
-      listenWhen: (previous, current) => previous.isFabOpen != current.isFabOpen,
+    return BlocConsumer<FabStateCubit, FabStateState>(
+      listenWhen: (previous, current) => _getIsFabOpen(previous) != _getIsFabOpen(current),
       listener: (context, state) {
-        if (state.isFabOpen) {
+        final isOpen = _getIsFabOpen(state);
+        if (isOpen) {
           _controller.forward();
         } else {
           _controller.reverse();
         }
 
-        if (isFabOpen != state.isFabOpen) {
-          setState(() => isFabOpen = state.isFabOpen);
+        if (isFabOpen != isOpen) {
+          setState(() => isFabOpen = isOpen);
         }
       },
       builder: (context, state) {
@@ -122,7 +156,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () {
-                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  _setFabOpen(context, false);
                 },
                 child: Padding(
                   padding: EdgeInsets.all(widget.centered ? 12 : 8),
@@ -179,11 +213,11 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           child: GestureDetector(
             onVerticalDragUpdate: (details) {
               if (details.delta.dy < -5) {
-                context.read<ThunderBloc>().add(const OnFabToggle(true));
+                _setFabOpen(context, true);
               }
               if (details.delta.dy > 5) {
                 // Only allow hiding fab when on the main feed, and not when opening a community on a new page
-                if (Navigator.of(context).canPop() == false) context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+                if (Navigator.of(context).canPop() == false) _setFabSummoned(context, false);
               }
             },
             onHorizontalDragStart: null,
@@ -237,6 +271,7 @@ class ActionButton extends StatelessWidget {
     required this.icon,
     this.centered = false,
     this.backgroundColor,
+    this.fabType = FabType.feed,
   });
 
   final VoidCallback? onPressed;
@@ -244,14 +279,25 @@ class ActionButton extends StatelessWidget {
   final String? title;
   final bool centered;
   final Color? backgroundColor;
+  final FabType fabType;
 
   bool? first;
   bool? last;
 
+  /// Sets the FAB open state based on the fabType
+  void _setFabOpen(BuildContext context, bool isOpen) {
+    final cubit = context.read<FabStateCubit>();
+    if (fabType == FabType.feed) {
+      cubit.setFeedFabOpen(isOpen);
+    } else {
+      cubit.setPostFabOpen(isOpen);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final bool darkTheme = context.read<ThemePreferencesCubit>().state.useDarkTheme;
 
     return centered
         ? SizedBox(
@@ -287,7 +333,7 @@ class ActionButton extends StatelessWidget {
                               bottomRight: Radius.circular(last == true ? 20 : 0),
                             ),
                             onTap: () {
-                              context.read<ThunderBloc>().add(const OnFabToggle(true));
+                              _setFabOpen(context, false);
                               onPressed?.call();
                             },
                           ),
@@ -344,7 +390,7 @@ class ActionButton extends StatelessWidget {
                   elevation: 4,
                   child: InkWell(
                     onTap: () {
-                      context.read<ThunderBloc>().add(const OnFabToggle(true));
+                      _setFabOpen(context, false);
                       onPressed?.call();
                     },
                     child: icon,

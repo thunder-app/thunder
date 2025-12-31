@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
@@ -35,7 +35,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
       case LocalSettings.reduceAnimations:
         await prefs.setBool(LocalSettings.reduceAnimations.name, value);
         setState(() => reduceAnimations = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        if (context.mounted) context.read<ThemePreferencesCubit>().reload();
         break;
       default:
         break;

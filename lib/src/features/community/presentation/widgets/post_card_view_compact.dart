@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/widgets/media/compact_thumbnail_preview.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
 
 /// Displays a compact view of a post card. This view is used in the feed related pages.
@@ -62,12 +62,11 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final state = context.select((ThunderBloc bloc) => (bloc.state.showThumbnailPreviewOnRight, bloc.state.showTextPostIndicator, bloc.state.dimReadPosts));
-    final showThumbnailPreviewOnRight = state.$1;
-    final showTextPostIndicator = state.$2;
-    final dimReadPostsSetting = state.$3;
+    final showThumbnailPreviewOnRight = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showThumbnailPreviewOnRight);
+    final showTextPostIndicator = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextPostIndicator);
+    final dimReadPostsSetting = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts);
 
-    final useDarkTheme = context.select((ThemeBloc bloc) => bloc.state.useDarkTheme);
+    final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
     final indicateRead = this.indicateRead ?? dimReadPostsSetting;
     final dim = indicateRead && post.read == true;

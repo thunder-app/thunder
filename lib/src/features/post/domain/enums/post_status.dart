@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 
 enum PostStatusType {
@@ -22,13 +22,14 @@ enum PostStatusType {
   double getScaledSize(double textScaleFactor) => size * textScaleFactor;
 
   Color getColor(BuildContext context) {
+    final themeState = context.read<ThemePreferencesCubit>().state;
     switch (this) {
       case PostStatusType.hidden:
-        return context.read<ThunderBloc>().state.hideColor.color;
+        return themeState.hideColor.color;
       case PostStatusType.locked:
-        return context.read<ThunderBloc>().state.upvoteColor.color;
+        return themeState.upvoteColor.color;
       case PostStatusType.saved:
-        return context.read<ThunderBloc>().state.saveColor.color;
+        return themeState.saveColor.color;
       case PostStatusType.pinned:
         return color!;
       case PostStatusType.deleted:

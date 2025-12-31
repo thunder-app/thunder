@@ -11,9 +11,10 @@ import 'package:thunder/src/app/routing/swipeable_page_route.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/core/models/models.dart';
-import 'package:thunder/src/app/theme/bloc/theme_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
@@ -94,9 +95,10 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         page = LoginPage(popRegister: popRegister, popModal: popModal, anonymous: (settings.arguments as Map<String, bool>)['anonymous']!);
         break;
     }
+    final gestureCubit = context.read<GesturePreferencesCubit>();
     return SwipeablePageRoute<dynamic>(
-      canSwipe: !kIsWeb && Platform.isIOS || context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
-      canOnlySwipeFromEdge: !context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
+      canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
+      canOnlySwipeFromEdge: !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
       builder: (context) {
         return page;
       },
@@ -153,13 +155,13 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final bool darkTheme = context.read<ThemePreferencesCubit>().state.useDarkTheme;
     Color selectedColor = theme.colorScheme.primaryContainer;
     if (!darkTheme) {
       selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor();
     }
     Account currentAccount = context.watch<ProfileBloc>().state.account;
-    String? currentAnonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
+    String? currentAnonymousInstance = context.select<ThunderBloc, String?>((bloc) => bloc.state.currentAnonymousInstance);
 
     if (accounts == null) {
       fetchAccounts();

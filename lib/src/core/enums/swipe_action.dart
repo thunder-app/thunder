@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 enum SwipeAction {
   upvote(label: 'Upvote'),
@@ -50,19 +50,19 @@ enum SwipeAction {
   Color getColor(BuildContext context) {
     switch (this) {
       case SwipeAction.upvote:
-        return context.read<ThunderBloc>().state.upvoteColor.color;
+        return context.read<ThemePreferencesCubit>().state.upvoteColor.color;
       case SwipeAction.downvote:
-        return context.read<ThunderBloc>().state.downvoteColor.color;
+        return context.read<ThemePreferencesCubit>().state.downvoteColor.color;
       case SwipeAction.reply:
-        return context.read<ThunderBloc>().state.replyColor.color;
+        return context.read<ThemePreferencesCubit>().state.replyColor.color;
       case SwipeAction.edit:
-        return context.read<ThunderBloc>().state.replyColor.color;
+        return context.read<ThemePreferencesCubit>().state.replyColor.color;
       case SwipeAction.save:
-        return context.read<ThunderBloc>().state.saveColor.color;
+        return context.read<ThemePreferencesCubit>().state.saveColor.color;
       case SwipeAction.toggleRead:
-        return context.read<ThunderBloc>().state.markReadColor.color;
+        return context.read<ThemePreferencesCubit>().state.markReadColor.color;
       case SwipeAction.hide:
-        return context.read<ThunderBloc>().state.hideColor.color;
+        return context.read<ThemePreferencesCubit>().state.hideColor.color;
       default:
         return Colors.transparent;
     }

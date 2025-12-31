@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/models/media.dart';
 import 'package:thunder/src/shared/images/image_preview.dart';
@@ -16,6 +15,7 @@ import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/links.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 import 'package:thunder/src/shared/utils/media/video.dart';
@@ -198,7 +198,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     // At this point, all other media types should contain images, so we display the image as well as any additional information
     final theme = Theme.of(context);
 
-    final imagePeekDurationMs = context.select((ThunderBloc bloc) => bloc.state.imagePeekDuration);
+    final imagePeekDurationMs = context.select<GesturePreferencesCubit, int>((cubit) => cubit.state.imagePeekDuration);
     final tabletMode = widget.viewMode == ViewMode.comfortable ? context.select((ThunderBloc bloc) => bloc.state.tabletMode) : false;
     final blurNSFWPreviews = widget.hideNsfwPreviews && widget.media.nsfw;
     late final l10n = GlobalContext.l10n;

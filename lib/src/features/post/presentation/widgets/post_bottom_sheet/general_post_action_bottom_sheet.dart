@@ -8,7 +8,7 @@ import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/bottom_sheet_action.dart';
 import 'package:thunder/src/shared/multi_picker_item.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
@@ -222,37 +222,37 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   }
 
   Color? getBackgroundColor(GeneralQuickPostAction action) {
-    final state = context.read<ThunderBloc>().state;
+    final themeState = context.read<ThemePreferencesCubit>().state;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return state.upvoteColor.color;
+        return themeState.upvoteColor.color;
       case GeneralQuickPostAction.downvote:
-        return state.downvoteColor.color;
+        return themeState.downvoteColor.color;
       case GeneralQuickPostAction.save:
-        return state.saveColor.color;
+        return themeState.saveColor.color;
       case GeneralQuickPostAction.read:
-        return state.markReadColor.color;
+        return themeState.markReadColor.color;
       case GeneralQuickPostAction.hide:
-        return state.hideColor.color;
+        return themeState.hideColor.color;
     }
   }
 
   Color? getForegroundColor(GeneralQuickPostAction action) {
-    final state = context.read<ThunderBloc>().state;
+    final themeState = context.read<ThemePreferencesCubit>().state;
     final post = widget.post;
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.myVote == 1 ? state.upvoteColor.color : null;
+        return post.myVote == 1 ? themeState.upvoteColor.color : null;
       case GeneralQuickPostAction.downvote:
-        return post.myVote == -1 ? state.downvoteColor.color : null;
+        return post.myVote == -1 ? themeState.downvoteColor.color : null;
       case GeneralQuickPostAction.save:
-        return post.saved == true ? state.saveColor.color : null;
+        return post.saved == true ? themeState.saveColor.color : null;
       case GeneralQuickPostAction.read:
-        return post.read == true ? state.markReadColor.color : null;
+        return post.read == true ? themeState.markReadColor.color : null;
       case GeneralQuickPostAction.hide:
-        return post.hidden == true ? state.hideColor.color : null;
+        return post.hidden == true ? themeState.hideColor.color : null;
     }
   }
 

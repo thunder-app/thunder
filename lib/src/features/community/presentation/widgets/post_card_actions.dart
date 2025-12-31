@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 
 /// Represents the actions that can be performed on a post when using the card view.
 class PostCardActions extends StatelessWidget {
@@ -33,18 +34,11 @@ class PostCardActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final state = context.select((ThunderBloc bloc) => (
-          bloc.state.upvoteColor.color,
-          bloc.state.downvoteColor.color,
-          bloc.state.saveColor.color,
-          bloc.state.showVoteActions,
-          bloc.state.showSaveAction,
-        ));
-    final upvoteColor = state.$1;
-    final downvoteColor = state.$2;
-    final saveColor = state.$3;
-    final showVoteActions = state.$4;
-    final showSaveAction = state.$5;
+    final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
+    final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
+    final saveColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.saveColor.color);
+    final showVoteActions = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showVoteActions);
+    final showSaveAction = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showSaveAction);
 
     final downvotesEnabled = context.select((ProfileBloc bloc) => bloc.state.downvotesEnabled);
 

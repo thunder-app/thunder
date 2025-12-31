@@ -18,13 +18,15 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
 
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        if (state.isLoggedIn != true) return const AccountPlaceholder();
+    return BlocSelector<ProfileBloc, ProfileState, bool>(
+      selector: (state) => state.isLoggedIn,
+      builder: (context, isLoggedIn) {
+        if (isLoggedIn != true) return const AccountPlaceholder();
 
+        final userId = context.select<ProfileBloc, int?>((bloc) => bloc.state.account.userId);
         return FeedPage(
           feedType: FeedType.account,
-          userId: state.account.userId,
+          userId: userId,
           postSortType: PostSortType.new_,
         );
       },

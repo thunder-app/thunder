@@ -7,6 +7,8 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
+import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
 import 'package:thunder/src/core/enums/fab_action.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -88,10 +90,11 @@ class _PostPageFABState extends State<PostPageFAB> {
     PostFabAction.search.execute(
       override: () {
         final l10n = GlobalContext.l10n;
-        final status = context.read<PostBloc>().state.status;
+        final navigationCubit = context.read<PostNavigationCubit>();
+        final isSearchInProgress = navigationCubit.state.commentSearchResults != null;
 
-        if (status == PostStatus.searchInProgress) {
-          context.read<PostBloc>().add(const EndCommentSearchEvent());
+        if (isSearchInProgress) {
+          navigationCubit.endCommentSearch();
           return;
         }
 
@@ -119,7 +122,7 @@ class _PostPageFABState extends State<PostPageFAB> {
             if (commentSearchResults.isEmpty) {
               showSnackbar(l10n.noResultsFound);
             } else {
-              context.read<PostBloc>().add(StartCommentSearchEvent(commentSearchResults: commentSearchResults));
+              context.read<PostNavigationCubit>().startCommentSearch(commentSearchResults);
             }
 
             return Future.value(null);
@@ -135,22 +138,29 @@ class _PostPageFABState extends State<PostPageFAB> {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    final thunderState = context.read<ThunderBloc>().state;
-    final combineNavAndFab = thunderState.combineNavAndFab;
-    final isFabSummoned = thunderState.isFabSummoned;
-    final singlePressAction = thunderState.postFabSinglePressAction;
-    final longPressAction = thunderState.postFabLongPressAction;
+    final combineNavAndFab = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.combineNavAndFab);
+    final isFabSummoned = context.select<FabStateCubit, bool>((cubit) => cubit.state.isPostFabSummoned);
+    final singlePressAction = context.select<FabPreferencesCubit, PostFabAction>((cubit) => cubit.state.postFabSinglePressAction);
+    final longPressAction = context.select<FabPreferencesCubit, PostFabAction>((cubit) => cubit.state.postFabLongPressAction);
+    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
+    final enableCommentNavigation = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableCommentNavigation);
+    final enablePostsFab = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enablePostsFab);
+    final postFabEnableRefresh = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableRefresh);
+    final postFabEnableReplyToPost = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableReplyToPost);
+    final postFabEnableChangeSort = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableChangeSort);
+    final postFabEnableBackToTop = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableBackToTop);
+    final postFabEnableSearch = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableSearch);
 
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    final status = context.select<PostBloc, PostStatus>((bloc) => bloc.state.status);
-    final highlightedCommentId = context.select<PostBloc, int?>((bloc) => bloc.state.highlightedCommentId);
+    final highlightedCommentId = context.select<PostNavigationCubit, int?>((cubit) => cubit.state.highlightedCommentId);
     final selectedCommentPath = context.select<PostBloc, String?>((bloc) => bloc.state.selectedCommentPath);
+    final isSearchInProgress = context.select<PostNavigationCubit, bool>((cubit) => cubit.state.commentSearchResults != null);
 
     return Stack(
       alignment: Alignment.center,
       children: [
-        if (thunderState.enableCommentNavigation)
+        if (enableCommentNavigation)
           Positioned.fill(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 5),
@@ -162,12 +172,12 @@ class _PostPageFABState extends State<PostPageFAB> {
                   scrollController: widget.scrollController,
                   listController: widget.listController,
                   comments: widget.comments,
-                  statusBarHeight: thunderState.hideTopBarOnScroll ? statusBarHeight : 0,
+                  statusBarHeight: hideTopBarOnScroll ? statusBarHeight : 0,
                 ),
               ),
             ),
           ),
-        if (thunderState.enablePostsFab)
+        if (enablePostsFab)
           Padding(
             padding: EdgeInsets.only(right: combineNavAndFab ? 0 : 16, bottom: combineNavAndFab ? 5 : 0),
             child: AnimatedSwitcher(
@@ -177,13 +187,13 @@ class _PostPageFABState extends State<PostPageFAB> {
                       centered: combineNavAndFab,
                       distance: combineNavAndFab ? 45 : 60,
                       icon: Icon(
-                        status == PostStatus.searchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: widget.post.locked),
-                        semanticLabel: status == PostStatus.searchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: widget.post.locked),
+                        isSearchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: widget.post.locked),
+                        semanticLabel: isSearchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: widget.post.locked),
                         size: 35,
                       ),
-                      onPressed: status == PostStatus.searchInProgress
+                      onPressed: isSearchInProgress
                           ? () {
-                              context.read<PostBloc>().add(const ContinueCommentSearchEvent());
+                              context.read<PostNavigationCubit>().continueCommentSearch();
                             }
                           : () => singlePressAction.execute(
                               context: context,
@@ -212,7 +222,6 @@ class _PostPageFABState extends State<PostPageFAB> {
                           context: context,
                           post: widget.post,
                           postId: widget.post.id,
-                          highlightedCommentId: highlightedCommentId,
                           selectedCommentPath: selectedCommentPath,
                           override: longPressAction == PostFabAction.backToTop
                               ? () => {
@@ -229,19 +238,21 @@ class _PostPageFABState extends State<PostPageFAB> {
                                   : longPressAction == PostFabAction.replyToPost
                                       ? () => replyToPost(context, widget.post, postLocked: widget.post.locked)
                                       : null),
+                      fabType: FabType.post,
                       children: [
-                        if (thunderState.postFabEnableRefresh)
+                        if (postFabEnableRefresh)
                           ActionButton(
+                            fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
                               HapticFeedback.mediumImpact();
 
-                              if (highlightedCommentId != null) {
+                              final navigationState = context.read<PostNavigationCubit>().state;
+                              if (navigationState.highlightedCommentId != null) {
                                 // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
                                 PostFabAction.refresh.execute(
                                   context: context,
                                   postId: widget.post.id,
-                                  highlightedCommentId: highlightedCommentId,
                                   selectedCommentPath: selectedCommentPath,
                                 );
                               } else {
@@ -254,8 +265,9 @@ class _PostPageFABState extends State<PostPageFAB> {
                             title: PostFabAction.refresh.getTitle(context),
                             icon: Icon(PostFabAction.refresh.getIcon()),
                           ),
-                        if (thunderState.postFabEnableReplyToPost)
+                        if (postFabEnableReplyToPost)
                           ActionButton(
+                            fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
                               HapticFeedback.mediumImpact();
@@ -266,8 +278,9 @@ class _PostPageFABState extends State<PostPageFAB> {
                             title: PostFabAction.replyToPost.getTitle(context),
                             icon: Icon(widget.post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
                           ),
-                        if (thunderState.enableChangeSort)
+                        if (postFabEnableChangeSort)
                           ActionButton(
+                            fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
                               HapticFeedback.mediumImpact();
@@ -276,8 +289,9 @@ class _PostPageFABState extends State<PostPageFAB> {
                             title: PostFabAction.changeSort.getTitle(context),
                             icon: Icon(PostFabAction.changeSort.getIcon()),
                           ),
-                        if (thunderState.enableBackToTop)
+                        if (postFabEnableBackToTop)
                           ActionButton(
+                            fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
                               PostFabAction.backToTop
@@ -286,12 +300,13 @@ class _PostPageFABState extends State<PostPageFAB> {
                             title: PostFabAction.backToTop.getTitle(context),
                             icon: Icon(PostFabAction.backToTop.getIcon()),
                           ),
-                        if (thunderState.postFabEnableSearch)
+                        if (postFabEnableSearch)
                           ActionButton(
+                            fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () => startCommentSearch(context),
-                            title: status == PostStatus.searchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
-                            icon: Icon(status == PostStatus.searchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon()),
+                            title: isSearchInProgress ? l10n.endSearch : PostFabAction.search.getTitle(context),
+                            icon: Icon(isSearchInProgress ? Icons.search_off_rounded : PostFabAction.search.getIcon()),
                           ),
                       ],
                     )

@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/colors.dart';
 
 /// Displays a random tagline from the site whenever the feed is refreshed.
@@ -53,7 +53,7 @@ class _TagLineState extends State<TagLine> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    final showExpandedTaglines = context.select<ThunderBloc, bool>((bloc) => bloc.state.showExpandedTaglines);
+    final showExpandedTaglines = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showExpandedTaglines);
 
     if (tagline == null || tagline?.isEmpty == true) return const SizedBox.shrink();
 

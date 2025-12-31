@@ -17,7 +17,7 @@ import 'package:thunder/src/shared/markdown/markdown_utils.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 import 'package:thunder/src/shared/utils/links.dart';
 import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/markdown/extended_markdown.dart';
 import 'package:thunder/src/shared/utils/media/video.dart';
 import 'package:thunder/src/shared/widgets/media/media_view.dart';
@@ -92,9 +92,9 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
     };
   }
 
-  double _getTextScaleFactor(ThunderState state) {
+  double _getTextScaleFactor(FontScale commentFontSizeScale, FontScale contentFontSizeScale) {
     final baseScale = MediaQuery.of(context).textScaleFactor;
-    final fontScale = widget.isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor;
+    final fontScale = widget.isComment == true ? commentFontSizeScale.textScaleFactor : contentFontSizeScale.textScaleFactor;
     return baseScale * fontScale;
   }
 
@@ -102,7 +102,8 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
   Widget build(BuildContext context) {
     if (_spoilerMarkdownStyleSheet == null || _normalMarkdownStyleSheet == null) _initializeStyleSheets();
 
-    final state = context.watch<ThunderBloc>().state;
+    final commentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.commentFontSizeScale);
+    final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
     final styleSheet = widget.hidden ? _spoilerMarkdownStyleSheet! : _normalMarkdownStyleSheet!;
 
     // Disable semantics if the accessibility feature is disabled. This allows the widget to be more performant as it doesn't need to compute the semantics tree.
@@ -126,9 +127,9 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
                   isComment: widget.isComment,
                   imageMaxWidth: widget.imageMaxWidth,
                 ),
-          onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
+          onTapLink: (text, url, title) => handleLinkTap(context, text, url),
           onLongPressLink: (text, url, title) => handleLinkLongPress(context, text, url),
-          styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor(state)),
+          styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor(commentFontSizeScale, contentFontSizeScale)),
         ),
       ),
     );

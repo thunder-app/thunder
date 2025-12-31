@@ -1,5 +1,6 @@
 export 'presentation/bloc/post_bloc.dart';
 export 'presentation/cubit/create_post_cubit.dart';
+export 'presentation/cubits/post_navigation_cubit/post_navigation_cubit.dart';
 export 'domain/enums/enums.dart';
 export 'presentation/pages/pages.dart';
 export 'presentation/utils/utils.dart';

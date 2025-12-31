@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import 'package:thunder/src/app/cubits/network_checker_cubit/network_checker_cubit.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/internet_connection_type.dart';
 import 'package:thunder/src/core/enums/video_auto_play.dart';
@@ -34,7 +36,11 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
   void initState() {
     super.initState();
 
-    final state = context.read<ThunderBloc>().state;
+    final videoPreferences = context.read<VideoPreferencesCubit>().state;
+    final videoAutoLoop = videoPreferences.videoAutoLoop;
+    final videoAutoMute = videoPreferences.videoAutoMute;
+    final videoAutoFullscreen = videoPreferences.videoAutoFullscreen;
+    final videoDefaultPlaybackSpeed = videoPreferences.videoDefaultPlaybackSpeed.value;
 
     if (Platform.isAndroid || Platform.isIOS) {
       _ypfController = ypf.YoutubePlayerController(
@@ -44,26 +50,26 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
           autoPlay: autoPlayVideo(),
           enableCaption: false,
           hideControls: false,
-          loop: state.videoAutoLoop,
-          mute: state.videoAutoMute,
+          loop: videoAutoLoop,
+          mute: videoAutoMute,
         ),
-      )..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
-      if (state.videoAutoFullscreen) _ypfController.toggleFullScreenMode();
+      )..setPlaybackRate(videoDefaultPlaybackSpeed);
+      if (videoAutoFullscreen) _ypfController.toggleFullScreenMode();
     } else {
       _controller = YoutubePlayerController(
         params: YoutubePlayerParams(
           showControls: true,
-          mute: state.videoAutoMute,
+          mute: videoAutoMute,
           showFullscreenButton: true,
-          loop: state.videoAutoLoop,
+          loop: videoAutoLoop,
         ),
       );
       _controller
         ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
-        ..setPlaybackRate(state.videoDefaultPlaybackSpeed.value);
+        ..setPlaybackRate(videoDefaultPlaybackSpeed);
     }
 
-    setState(() => muted = state.videoAutoMute);
+    setState(() => muted = videoAutoMute);
   }
 
   @override
@@ -77,12 +83,12 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with Single
   }
 
   bool autoPlayVideo() {
-    final state = context.read<ThunderBloc>().state;
-    final networkCubit = context.read<NetworkCheckerCubit>().state;
+    final videoAutoPlay = context.read<VideoPreferencesCubit>().state.videoAutoPlay;
+    final internetConnectionType = context.read<NetworkCheckerCubit>().state.internetConnectionType;
 
-    if (state.videoAutoPlay == VideoAutoPlay.always) {
+    if (videoAutoPlay == VideoAutoPlay.always) {
       return true;
-    } else if (state.videoAutoPlay == VideoAutoPlay.onWifi && networkCubit.internetConnectionType == InternetConnectionType.wifi) {
+    } else if (videoAutoPlay == VideoAutoPlay.onWifi && internetConnectionType == InternetConnectionType.wifi) {
       return true;
     }
 

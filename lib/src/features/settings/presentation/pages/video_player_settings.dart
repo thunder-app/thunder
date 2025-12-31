@@ -10,7 +10,7 @@ import 'package:thunder/src/core/enums/video_playback_speed.dart';
 import 'package:thunder/src/core/enums/video_player_mode.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
@@ -111,7 +111,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<VideoPreferencesCubit>().reload();
     }
   }
 

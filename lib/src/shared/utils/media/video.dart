@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/core/enums/video_player_mode.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/links.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import 'package:thunder/src/core/enums/video_player_mode.dart';
+import 'package:thunder/src/app/cubits/video_preferences_cubit/video_preferences_cubit.dart';
+import 'package:thunder/src/shared/utils/links.dart';
 import 'package:thunder/src/shared/utils/video_player/video_player.dart';
 
 bool isVideoUrl(String url) {
@@ -42,9 +42,9 @@ void showVideoPlayer(BuildContext context, {String? url, int? postId}) {
 
   String? videoId = YoutubePlayer.convertUrlToId(url);
 
-  final thunderState = context.read<ThunderBloc>().state;
+  final videoPlayerMode = context.read<VideoPreferencesCubit>().state.videoPlayerMode;
 
-  switch (thunderState.videoPlayerMode) {
+  switch (videoPlayerMode) {
     case VideoPlayerMode.inApp:
       Navigator.of(context).push(
         PageRouteBuilder(

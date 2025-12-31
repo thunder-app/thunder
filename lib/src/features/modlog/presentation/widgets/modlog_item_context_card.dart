@@ -18,7 +18,7 @@ import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/full_name_widgets.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
 /// Provides some additional context for a [ModlogEventItem]
@@ -95,7 +95,8 @@ class ModlogPostItemContextCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<ThunderBloc>().state;
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     return InkWell(
       onTap: () {
@@ -117,7 +118,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                   ScalableText(
                     HtmlUnescape().convert(post.name),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                    fontScale: state.titleFontSizeScale,
+                    fontScale: titleFontSizeScale,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 6.0, top: 6.0),
@@ -129,7 +130,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                         community?.name,
                         community?.title,
                         fetchInstanceNameFromUrl(community?.actorId),
-                        fontScale: state.metadataFontSizeScale,
+                        fontScale: metadataFontSizeScale,
                         transformColor: (color) => color?.withValues(alpha: 0.75),
                       ),
                     ),
@@ -181,7 +182,8 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<ThunderBloc>().state;
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     Color? textStyleCommunityAndAuthor(Color? color) => color?.withValues(alpha: 0.75);
 
@@ -213,7 +215,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             padding: const EdgeInsets.only(right: 4.0),
                             child: Icon(
                               Icons.article_rounded,
-                              size: MediaQuery.textScalerOf(context).scale(18 * state.titleFontSizeScale.textScaleFactor),
+                              size: MediaQuery.textScalerOf(context).scale(18 * titleFontSizeScale.textScaleFactor),
                             ),
                           ),
                         ),
@@ -223,7 +225,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * titleFontSizeScale.textScaleFactor),
                       ),
                     ),
                     textScaler: TextScaler.noScaling,
@@ -243,7 +245,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               child: ScalableText(
                                 l10n.sensitiveContentWarning,
                                 style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.secondary),
-                                fontScale: state.metadataFontSizeScale,
+                                fontScale: metadataFontSizeScale,
                               ),
                             ),
                           ),
@@ -263,13 +265,13 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
                               child: ScalableText(
                                 '${widget.user?.displayName ?? widget.user?.displayNameOrName}',
-                                fontScale: state.metadataFontSizeScale,
+                                fontScale: metadataFontSizeScale,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
                             ),
                             ScalableText(
                               ' in ',
-                              fontScale: state.metadataFontSizeScale,
+                              fontScale: metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
@@ -285,7 +287,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             widget.community?.name,
                             widget.community?.title,
                             fetchInstanceNameFromUrl(widget.community?.actorId),
-                            fontScale: state.metadataFontSizeScale,
+                            fontScale: metadataFontSizeScale,
                             transformColor: textStyleCommunityAndAuthor,
                           ),
                         ),
@@ -313,7 +315,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<ThunderBloc>().state;
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
 
     return InkWell(
       onTap: () {
@@ -339,7 +341,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                     ScalableText(
                       HtmlUnescape().convert(user?.displayName ?? user?.displayNameOrName ?? l10n.user),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                      fontScale: state.titleFontSizeScale,
+                      fontScale: titleFontSizeScale,
                     ),
                     UserFullNameWidget(
                       context,
@@ -370,7 +372,8 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<ThunderBloc>().state;
+    final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
+    final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     return InkWell(
       onTap: () {
@@ -396,14 +399,14 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                     ScalableText(
                       HtmlUnescape().convert(community?.title ?? community?.name ?? l10n.community),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                      fontScale: state.titleFontSizeScale,
+                      fontScale: titleFontSizeScale,
                     ),
                     CommunityFullNameWidget(
                       context,
                       community?.name,
                       community?.title,
                       fetchInstanceNameFromUrl(community?.actorId),
-                      fontScale: state.metadataFontSizeScale,
+                      fontScale: metadataFontSizeScale,
                       transformColor: (color) => color?.withValues(alpha: 0.75),
                     ),
                   ],

@@ -6,7 +6,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/utils/colors.dart';
 import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
@@ -156,7 +157,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final state = context.read<ThunderBloc>().state;
+    final contentFontSizeScale = context.read<ThemePreferencesCubit>().state.contentFontSizeScale;
 
     return Container(
       decoration: BoxDecoration(
@@ -166,14 +167,14 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSpoilerHeader(l10n, theme, state),
-          _buildSpoilerContent(state),
+          _buildSpoilerHeader(l10n, theme, contentFontSizeScale),
+          _buildSpoilerContent(contentFontSizeScale),
         ],
       ),
     );
   }
 
-  Widget _buildSpoilerHeader(AppLocalizations l10n, ThemeData theme, ThunderState state) {
+  Widget _buildSpoilerHeader(AppLocalizations l10n, ThemeData theme, FontScale contentFontSizeScale) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -197,7 +198,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
               Expanded(
                 child: ScalableText(
                   widget.title ?? l10n.spoiler,
-                  fontScale: state.contentFontSizeScale,
+                  fontScale: contentFontSizeScale,
                   style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -208,7 +209,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     );
   }
 
-  Widget _buildSpoilerContent(ThunderState state) {
+  Widget _buildSpoilerContent(FontScale contentFontSizeScale) {
     return Expandable(
       controller: expandableController,
       collapsed: const SizedBox.shrink(),
