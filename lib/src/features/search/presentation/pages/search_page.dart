@@ -207,12 +207,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             },
           ),
         ],
-        child: BlocSelector<SearchBloc, SearchState, int>(
-          selector: (state) => state.focusSearchId,
-          builder: (context, focusSearchId) {
-            if (focusSearchId > _previousFocusSearchId) {
+        child: BlocBuilder<SearchBloc, SearchState>(
+          builder: (context, searchState) {
+            if (searchState.focusSearchId > _previousFocusSearchId) {
               searchTextFieldFocus.requestFocus();
-              _previousFocusSearchId = focusSearchId;
+              _previousFocusSearchId = searchState.focusSearchId;
             }
 
             return Scaffold(
@@ -282,7 +281,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         controller: _searchFiltersScrollController,
                         child: Row(
                           children: [
-                            if (context.read<SearchBloc>().state.viewingAll) ...[
+                            if (searchState.viewingAll) ...[
                               ThunderActionChip(
                                 backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
                                 trailingIcon: Icons.close_rounded,
@@ -459,7 +458,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 60),
-                    child: _getSearchBody(context, context.read<SearchBloc>().state, account.instance),
+                    child: _getSearchBody(context, searchState, account.instance),
                   ),
                 ],
               ),
