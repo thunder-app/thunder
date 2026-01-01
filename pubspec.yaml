@@ -69,7 +69,7 @@ dependencies:
   smooth_highlight: ^0.1.1
   stream_transform: ^2.1.0
   super_sliver_list: ^0.4.1
-  unifiedpush: ^6.0.2
+  unifiedpush: 6.1.0
   url_launcher: ^6.1.11
   # There is an intentional space between the packge name and colon below. Do not remove!
   version : ^3.0.2
