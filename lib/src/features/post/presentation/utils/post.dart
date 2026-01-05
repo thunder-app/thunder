@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:html_unescape/html_unescape_small.dart';
+import 'package:html/parser.dart';
+import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
@@ -11,6 +13,8 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/utils/media/image.dart';
 import 'package:thunder/src/shared/utils/media/video.dart';
+
+final _htmlUnescape = HtmlUnescape();
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyVotePost(ThunderPost post, int voteType) {
@@ -114,8 +118,13 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
 ///
 /// This includes unescaping the title and parsing any associated media.
 Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
-  final html = HtmlUnescape();
-  final title = html.convert(post.name);
+  final title = _htmlUnescape.convert(post.name);
+
+  // Compute text preview
+  String? textPreview;
+  if (post.body != null && post.body!.isNotEmpty) {
+    textPreview = parse(markdownToHtml(post.body!)).documentElement?.text.trim() ?? post.body;
+  }
 
   List<Media> mediaList = [];
 
@@ -191,5 +200,5 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
   media.height = scaledSize?.height;
   mediaList.add(media);
 
-  return post.copyWith(media: mediaList, name: title);
+  return post.copyWith(media: mediaList, name: title, textPreview: textPreview);
 }

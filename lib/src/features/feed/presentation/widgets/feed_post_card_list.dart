@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -56,6 +56,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   /// The index of the last tapped post.
   /// This is used to calculate the read status of posts in the range [0, lastTappedIndex]
   int lastTappedIndex = -1;
+
+  /// The index of the last processed post for read status.
+  int lastProcessedIndex = -1;
 
   /// Whether the user is scrolling down or not. The logic for determining read posts will
   /// only be applied when the user is scrolling down
@@ -134,7 +137,10 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
             debounceTimer = Timer(const Duration(milliseconds: 500), () {
               // TODO: Improve logic here so that we don't have to iterate through all posts if possible.
-              for (int i = index; i >= 0; i--) {
+              int startIndex = index;
+              int endIndex = lastProcessedIndex > 0 ? lastProcessedIndex : 0;
+
+              for (int i = startIndex; i >= endIndex; i--) {
                 final post = widget.posts[i];
 
                 // If we already checked this post's read status, or we already marked it as read, skip it
@@ -144,6 +150,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
                 if (post.read == false) markReadPostIds.add(post.id);
                 readPostIds.add(post.id);
               }
+
+              // Update the last processed index
+              if (index > lastProcessedIndex) lastProcessedIndex = index;
 
               if (markReadPostIds.isNotEmpty) {
                 context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));

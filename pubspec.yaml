@@ -18,6 +18,10 @@ dependencies:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
       ref: 34db147d5964b2e84f5a7e8edff4a5ce6b649ec8
+  image_dimension_parser:
+    git:
+      url: https://github.com/thunder-app/image-dimension-parser.git
+      ref: d9bfec9dfe6a53b2d032129ce56311ec02796a29
   l10n_esperanto: ^2.0.14
   android_intent_plus: ^6.0.0
   app_links: ^7.0.0

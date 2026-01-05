@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html/parser.dart';
-import 'package:markdown/markdown.dart' hide Text;
-import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
+import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
@@ -204,7 +202,7 @@ class PostCardViewComfortable extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: ScalableText(
-                parse(markdownToHtml(textContent)).documentElement?.text.trim() ?? textContent,
+                post.textPreview ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 fontScale: contentFontSizeScale,

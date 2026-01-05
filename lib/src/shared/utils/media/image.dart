@@ -4,13 +4,14 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
+
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_dimension_parser/image_dimension_parser.dart';
 
 import 'package:thunder/src/core/cache/image_dimension_cache.dart';
 import 'package:thunder/src/shared/images/image_viewer.dart';
@@ -114,6 +115,25 @@ bool _isAvifImage(String path) {
   return path.toLowerCase().endsWith('.avif');
 }
 
+/// Fetches the image dimensions from the given URL using partial content fetch
+Future<List<int>> processImageDimensions(String imageUrl) async {
+  try {
+    final response = await http.get(
+      Uri.parse(imageUrl),
+      headers: {'Range': 'bytes=0-10240'}, // 10KB
+    );
+
+    if (response.statusCode == 206 || response.statusCode == 200) {
+      final sizeResult = ImageDimensionParser().parse(response.bodyBytes);
+      return [sizeResult.width, sizeResult.height];
+    }
+  } catch (e) {
+    debugPrint('Failed to fetch dimensions in isolate: $e');
+  }
+
+  return [];
+}
+
 /// Retrieves the size of the given image given its bytes.
 /// Uses the `image` package which does not support AVIF format. For AVIF images, use [processAvifImage] instead.
 Future<Size> processImage(String filename) async {
@@ -159,13 +179,27 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
     Uint8List? data = imageBytes;
 
     if (data == null && imageUrl != null) {
-      final file = await DefaultCacheManager().getSingleFile(imageUrl);
+      // Try to get size using partial content fetch
+      try {
+        final dimensions = await compute(processImageDimensions, imageUrl);
 
-      if (_isAvifImage(imageUrl) || _isAvifImage(file.path)) {
-        size = await processAvifImage(file.path);
-      } else {
-        // Other formats can be processed in a background isolate using the `image` package.
-        size = await compute(processImage, file.path);
+        if (dimensions.isNotEmpty) {
+          size = Size(dimensions[0].toDouble(), dimensions[1].toDouble());
+          debugPrint('Retrieved image dimensions using partial content fetch: ${dimensions[0]}x${dimensions[1]}');
+        }
+      } catch (e) {
+        // Fallback to full download if partial fetch fails
+        debugPrint('Failed to retrieve image dimensions using partial content fetch: $e');
+      }
+
+      if (size == null) {
+        final file = await DefaultCacheManager().getSingleFile(imageUrl);
+
+        if (_isAvifImage(imageUrl)) {
+          size = await processAvifImage(file.path);
+        } else {
+          size = await compute(processImage, file.path);
+        }
       }
     }
 

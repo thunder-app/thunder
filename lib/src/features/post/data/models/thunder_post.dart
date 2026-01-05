@@ -66,6 +66,11 @@ class ThunderPost extends Equatable {
   /// The post's alternate text
   final String? altText;
 
+  /// The post's text preview.
+  ///
+  /// This field is not returned by the API, but is computed locally during post parsing.
+  final String? textPreview;
+
   /// The post's creator
   final ThunderUser? creator;
 
@@ -163,6 +168,7 @@ class ThunderPost extends Equatable {
     this.myVote,
     this.unreadComments,
     this.media = const [],
+    this.textPreview,
   });
 
   @override
@@ -206,6 +212,7 @@ class ThunderPost extends Equatable {
         myVote,
         unreadComments,
         media,
+        textPreview,
       ];
 
   ThunderPost copyWith({
@@ -248,6 +255,7 @@ class ThunderPost extends Equatable {
     int? myVote,
     int? unreadComments,
     List<Media>? media,
+    String? textPreview,
   }) {
     return ThunderPost(
       id: id ?? this.id,
@@ -289,6 +297,7 @@ class ThunderPost extends Equatable {
       myVote: myVote ?? this.myVote,
       unreadComments: unreadComments ?? this.unreadComments,
       media: media ?? this.media,
+      textPreview: textPreview ?? this.textPreview,
     );
   }
 
