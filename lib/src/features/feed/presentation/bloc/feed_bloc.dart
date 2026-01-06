@@ -575,7 +575,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       }
 
       // If the feed is already being fetched but it is not a reset, then just wait
-      if (state.status == FeedStatus.fetching) return;
+      // If the cursor is null, then we are at the end of the feed so we don't need to fetch any more
+      if (state.status == FeedStatus.fetching || state.cursor == null) return;
 
       // Handle fetching the next page of the feed
       emit(state.copyWith(status: FeedStatus.fetching));
