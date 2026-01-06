@@ -1,1 +1,414 @@
-{}
+{
+    "about": "په اړه",
+    "@about": {
+        "description": "About settings category."
+    },
+    "accept": "منل",
+    "@accept": {
+        "description": "The ability to accept an option"
+    },
+    "accessibility": "لاسرسی",
+    "@accessibility": {},
+    "accessibilityProfilesDescription": "د لاسرسي وړ پېژنيالونه تاسو ته اجازه درکوي چې په يو ځل څو اوڼنې پلې کړئ؛ ترڅو د لاسرسي ځانگړې اړتيا پوره کړي.",
+    "@accessibilityProfilesDescription": {},
+    "account": "{count, plural, zero {گڼون} one {Account} other {گڼونونه} } ",
+    "@account": {
+        "description": "Describes the user account",
+        "placeholders": {
+            "count": {
+                "description": "The number of accounts"
+            }
+        }
+    },
+    "accountBirthday": "گڼون زېږون ورځ {additionalInfo}",
+    "@accountBirthday": {
+        "description": "User descriptor for accounts created on today's date",
+        "placeholders": {
+            "additionalInfo": {
+                "description": "Additional information about the account"
+            }
+        }
+    },
+    "accountSettingOverrideWarning": "ستاسو د گڼون اوڼنې لاندې اوڼنې له پامه غورځوي",
+    "@accountSettingOverrideWarning": {
+        "description": "Warning for account settings override"
+    },
+    "accountSettings": "گڼون اوڼنې",
+    "@accountSettings": {},
+    "accountSettingsExportedSuccessfully": "د لېمي گڼون د اوڼنو بهرلېږنه په برياليتوب سره {savedFilePath} ته وشوه!",
+    "@accountSettingsExportedSuccessfully": {
+        "description": "Message shown to user when account settings are exported successfully",
+        "placeholders": {
+            "savedFilePath": {
+                "description": "The path to the saved file"
+            }
+        }
+    },
+    "accountSettingsImportedSuccessfully": "لېمي گڼون اوڼنې په برياليتوب سره راولېږدول شوې!",
+    "@accountSettingsImportedSuccessfully": {
+        "description": "Message shown to user when account settings are imported successfully"
+    },
+    "accountSwitchParentCommentNotFound": "غوره شوې څرگندونه په '{instance}' کې ونه موندل شوه",
+    "@accountSwitchParentCommentNotFound": {
+        "description": "Error message for when we couldn't resolve comment to reply to",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "accountSwitchPostNotFound": "غوره شوی پوسټ په '{instance}' کې ونه موندل شو",
+    "@accountSwitchPostNotFound": {
+        "description": "Error message for when we couldn't resolve post to reply to",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "actionColors": "چارو رنگونه",
+    "@actionColors": {
+        "description": "Setting heading for action colors"
+    },
+    "actionColorsRedirect": "غواړئ رنگونه دوديز کړئ؟",
+    "@actionColorsRedirect": {
+        "description": "Redirect hint to action colors"
+    },
+    "actions": "چارې",
+    "@actions": {},
+    "active": "کارنده",
+    "@active": {},
+    "activity": "چاره",
+    "@activity": {
+        "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+    },
+    "add": "ورگډول",
+    "@add": {},
+    "addAccount": "گڼون ورگډول",
+    "@addAccount": {},
+    "addAccountToSeeProfile": "د خپل گڼون ليدلو لپاره غونډال ته ننوځئ.",
+    "@addAccountToSeeProfile": {},
+    "addAnonymousInstance": "بې نومه بېلگه ورگډول",
+    "@addAnonymousInstance": {},
+    "addAsCommunityModerator": "د ټولنې د مدير په توگه ورگډول",
+    "@addAsCommunityModerator": {
+        "description": "Moderator action to add a user as community moderator"
+    },
+    "addDiscussionLanguage": "ژبه ورگډول",
+    "@addDiscussionLanguage": {
+        "description": "Hint for text field to add language"
+    },
+    "addKeywordFilter": "ليکدړه ورگډول",
+    "@addKeywordFilter": {
+        "description": "Hint for text field to add keyword"
+    },
+    "addOriginalPostBody": "د ار پوسټ بدنه ورگډه کړي؟",
+    "@addOriginalPostBody": {
+        "description": "Prompt to add the original post body to a cross post"
+    },
+    "addToFavorites": "خواپورو ته ورگډول",
+    "@addToFavorites": {
+        "description": "Action to add a community in drawer to favorites"
+    },
+    "addUserLabel": "کارن نښکه ورگډول",
+    "@addUserLabel": {
+        "description": "Action for adding a user label"
+    },
+    "addedCommunityToSubscriptions": "ټولنه کې گډون کول",
+    "@addedCommunityToSubscriptions": {},
+    "addedInstanceMod": "د بېلگې مدير ورگډ شو",
+    "@addedInstanceMod": {
+        "description": "Short decription for moderator action to add a mod to an instance"
+    },
+    "addedModToCommunity": "مدير په ټولنه کې ورگډ شو",
+    "@addedModToCommunity": {
+        "description": "Short decription for moderator action to add a mod to a community"
+    },
+    "addedUserAsCommunityModerator": "{username} د ټولنې د مدير په توگه ورگډ شو",
+    "@addedUserAsCommunityModerator": {
+        "description": "Short decription for moderator action to add a user as community moderator",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user"
+            }
+        }
+    },
+    "admin": "پازوال",
+    "@admin": {
+        "description": "Role name for admin"
+    },
+    "advanced": "پرمختللی",
+    "@advanced": {
+        "description": "Heading for advanced settings"
+    },
+    "ago": "{time} دمخه",
+    "@ago": {
+        "description": "Represents a duration in the past",
+        "placeholders": {
+            "time": {
+                "description": "The duration in the past"
+            }
+        }
+    },
+    "all": "ټول",
+    "@all": {},
+    "allPosts": "ټولو پوسټونه",
+    "@allPosts": {},
+    "allowOpenSupportedLinks": "کاريال ته د ملاتړ شوو تړونو د پرانېستلو اجازه ورکول.",
+    "@allowOpenSupportedLinks": {
+        "description": "Option to permit the app to open supported links."
+    },
+    "alreadyPostedTo": "واردمخه پوسټ شوی په",
+    "@alreadyPostedTo": {},
+    "altText": "سپيناو ليک",
+    "@altText": {
+        "description": "Create/edit post field for adding alt text to an image post"
+    },
+    "alternateSources": "بديلې سرچينې",
+    "@alternateSources": {
+        "description": "Action for viewing a link from alternate sources"
+    },
+    "always": "تل",
+    "@always": {},
+    "andXMore": "او {count} نور",
+    "@andXMore": {
+        "description": "Represents a number of items",
+        "placeholders": {
+            "count": {
+                "description": "The number of items"
+            }
+        }
+    },
+    "animations": "ځوندتياوې",
+    "@animations": {},
+    "anonymous": "ورک‌نومی",
+    "@anonymous": {},
+    "anonymousInstances": "ورک‌نومې بېلگه",
+    "@anonymousInstances": {
+        "description": "Heading for the anonymous instances section of the login page"
+    },
+    "appLanguage": "کاريال ژبه",
+    "@appLanguage": {
+        "description": "Language selection in settings."
+    },
+    "appearance": "ونگبڼه",
+    "@appearance": {
+        "description": "Title of Appearance in Settings -> Appearance"
+    },
+    "applePushNotificationService": "اپل د ټېله کولو خبرتيا چوپړ",
+    "@applePushNotificationService": {
+        "description": "Describes the notification type for Apple Push Notification Service"
+    },
+    "applied": "پلی شوی",
+    "@applied": {},
+    "apply": "پلي کو ل",
+    "@apply": {},
+    "areNotificationsAllowedBySystem": "خبرتياوو ته د غونډال له خوا اجازه ورکړل شوې: {yesOrNo}",
+    "@areNotificationsAllowedBySystem": {
+        "description": "A status indicator for whether notifications are allowed by OS permissions",
+        "placeholders": {
+            "yesOrNo": {
+                "description": "Whether notifications are allowed by OS permissions"
+            }
+        }
+    },
+    "averageComments": "{x} څرگندونې/مياشت",
+    "@averageComments": {
+        "description": "Describes the average number of comments created in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of comments created in the past month"
+            }
+        }
+    },
+    "averageContributions": "{x} ونډې/مياشت",
+    "@averageContributions": {
+        "description": "Describes the average number of contributions (both posts and comments) in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of contributions (both posts and comments) in the past month"
+            }
+        }
+    },
+    "averagePosts": "{x} پوسټونه/مياشت",
+    "@averagePosts": {
+        "description": "Describes the average number of posts created in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of posts created in the past month"
+            }
+        }
+    },
+    "back": "شا ته",
+    "@back": {},
+    "backButton": "شا تڼۍ",
+    "@backButton": {},
+    "blue": "شين",
+    "@blue": {
+        "description": "The color blue"
+    },
+    "bold": "زغرد",
+    "@bold": {
+        "description": "Bold name thickness/weight"
+    },
+    "boldCommunityName": "ټولنې نوم زغرد",
+    "@boldCommunityName": {
+        "description": "Setting for bolding the community name"
+    },
+    "boldInstanceName": "بېلگې نوم زغر",
+    "@boldInstanceName": {
+        "description": "Setting for bolding the instance name"
+    },
+    "boldUserName": "کارن نوم زغر",
+    "@boldUserName": {
+        "description": "Setting for bolding the username"
+    },
+    "bot": "روباټ",
+    "@bot": {
+        "description": "Label for a bot user."
+    },
+    "browserMode": "تړونی سمبالول",
+    "@browserMode": {
+        "description": "Title for link handling setting (called browserMode internally)"
+    },
+    "browsingAnonymously": "تاسو وسمهال په ورکنومي ډول {instance} پلټئ.",
+    "@browsingAnonymously": {
+        "description": "Message shown to user when browsing anonymously",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "cancel": "ناگارل",
+    "@cancel": {},
+    "cannotReportOwnComment": "تاسو شايد د خپلې څرگندونې لپاره راپور ونه سپارئ.",
+    "@cannotReportOwnComment": {},
+    "cantBlockAdmin": "تاسو د بېلگې پازوال باندې بنديز نشئ لگولی.",
+    "@cantBlockAdmin": {},
+    "cantBlockYourself": "په خپل ځان بنديز نشئ لگولی.",
+    "@cantBlockYourself": {},
+    "cardPostCardMetadataItems": "کارت کتنې گڼ‌اومتوک",
+    "@cardPostCardMetadataItems": {
+        "description": "Name of setting for card post card metadata items"
+    },
+    "cardView": "کارت کتنه",
+    "@cardView": {
+        "description": "Label for the card view option in Setting -> Appearance -> Posts"
+    },
+    "cardViewDescription": "د اوڼنو برابرولو لپاره کارت کتنه چارن کړئ",
+    "@cardViewDescription": {
+        "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+    },
+    "cardViewSettings": "کارت کتنې اوڼنې",
+    "@cardViewSettings": {
+        "description": "Subcategory in Setting -> Appearance -> Posts"
+    },
+    "changeAccountSettingsFor": "د گڼون اوڼنې بدلول لپاره د",
+    "@changeAccountSettingsFor": {
+        "description": "Heading for the profiler modal when changing account settings"
+    },
+    "changeNotificationSettings": "خبرتياوو اوڼنې بدلول...",
+    "@changeNotificationSettings": {
+        "description": "A shortcut to navigate to the notification settings"
+    },
+    "changePassword": "پټنوم بدلول",
+    "@changePassword": {
+        "description": "Label for action to change password"
+    },
+    "changePasswordWarning": "پټنوم بدلولو لپاره به تاسو د بېلگې وېبځي ته مخگرځ شئ.\n\nايا ډاډه ياست چې دوام ورکړئ؟",
+    "@changePasswordWarning": {
+        "description": "Warning label for changing password"
+    },
+    "changeSort": "اوډل بدلول",
+    "@changeSort": {},
+    "clearCache": "نيونگه سپاکول ({cacheSize})",
+    "@clearCache": {
+        "description": "Label for action to clear cache in the dialog",
+        "placeholders": {
+            "cacheSize": {
+                "description": "The size of the cache"
+            }
+        }
+    },
+    "clearCacheLabel": "نيونگه سپاکول",
+    "@clearCacheLabel": {
+        "description": "Label for action to clear cache in the dialog"
+    },
+    "clearDatabase": "اومتوک‌اډانه سپاکول",
+    "@clearDatabase": {
+        "description": "Label for action to clear local database in the dialog"
+    },
+    "clearPreferences": "غوره‌توبونه سپاکول",
+    "@clearPreferences": {
+        "description": "Label for action to clear local user preferences in the dialog"
+    },
+    "clearSearch": "پلټل سپاکول",
+    "@clearSearch": {},
+    "clearedCache": "نيونگه په برياليتوب سره سپا شوه.",
+    "@clearedCache": {
+        "description": "Message indicating that cache was cleared successfully"
+    },
+    "clearedDatabase": "ځايي اومتوک اډانه سپا شوه. د نوو بدلونونو پلې کېدو لپاره تندر له سره پيل کړئ.",
+    "@clearedDatabase": {},
+    "clearedUserPreferences": "د ټولو کارنانو غوره‌توبونه سپا شول",
+    "@clearedUserPreferences": {},
+    "close": "تړل",
+    "@close": {},
+    "collapse": "پرځول",
+    "@collapse": {
+        "description": "Action to collapse something"
+    },
+    "collapseCommentPreview": "څرگندونې مخکتنه پرځول",
+    "@collapseCommentPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+    },
+    "collapseInformation": "مالومات پرځول",
+    "@collapseInformation": {
+        "description": "Describes the action to collapse information - used in FAB settings"
+    },
+    "collapseParentCommentBodyOnGesture": "د غځېدلو پرمهال لويې څرگندونې پټول",
+    "@collapseParentCommentBodyOnGesture": {
+        "description": "Toggle to collapse parent comment body on gesture."
+    },
+    "collapsePost": "غځېدلی پوسټ",
+    "@collapsePost": {},
+    "collapsePostPreview": "غځېدلي پوسټ مخکتنه",
+    "@collapsePostPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+    },
+    "collapseSpoiler": "ورانکاري غځول",
+    "@collapseSpoiler": {
+        "description": "Label for collapsing spoiler"
+    },
+    "color": "رنگ",
+    "@color": {
+        "description": "Describes a color"
+    },
+    "colorizeCommunityName": "ټولنې نوم رنگول",
+    "@colorizeCommunityName": {
+        "description": "Setting for colorizing community name"
+    },
+    "colorizeInstanceName": "بېلگې نوم رنگول",
+    "@colorizeInstanceName": {
+        "description": "Setting for colorizing instance name"
+    },
+    "colorizeUserName": "کارن نوم رنگول",
+    "@colorizeUserName": {
+        "description": "Setting for colorizing username"
+    },
+    "colors": "رنگونه",
+    "@colors": {
+        "description": "Heading for colors"
+    },
+    "combineCommentScores": "څرگندونې نومرې يوځای‌کول",
+    "@combineCommentScores": {
+        "description": "Toggle to combine comment scores."
+    },
+    "combineCommentScoresLabel": "څرگندونې نومرې يوځای‌کول",
+    "@combineCommentScoresLabel": {
+        "description": "Label for setting to combine comment scores"
+    },
+    "combineNavAndFab": "اېف‌‌ای‌بي او گرځښت تڼۍ يوځای‌کول",
+    "@combineNavAndFab": {}
+}
