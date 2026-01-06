@@ -486,6 +486,7 @@ class _ThunderState extends State<Thunder> {
                                   postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType,
                                   scaffoldStateKey: scaffoldStateKey,
                                   showHidden: feedCubit.state.showHiddenPosts,
+                                  isActive: selectedPageIndex == 0,
                                 );
                               },
                             ),

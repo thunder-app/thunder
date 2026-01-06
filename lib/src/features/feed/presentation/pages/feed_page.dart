@@ -52,6 +52,7 @@ class FeedPage extends StatefulWidget {
     this.username,
     this.scaffoldStateKey,
     this.showHidden = false,
+    this.isActive = false,
   });
 
   /// The type of feed to display.
@@ -86,6 +87,9 @@ class FeedPage extends StatefulWidget {
 
   /// Whether to show hidden posts in the feed
   final bool showHidden;
+
+  /// Whether this feed page is currently active (visible)
+  final bool isActive;
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -131,7 +135,11 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
+        child: FeedView(
+          scaffoldStateKey: widget.scaffoldStateKey,
+          feedType: widget.feedType,
+          isActive: widget.isActive,
+        ),
       );
     }
 
@@ -150,19 +158,26 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
           showHidden: widget.showHidden,
         )),
-      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType),
+      child: FeedView(
+        scaffoldStateKey: widget.scaffoldStateKey,
+        feedType: widget.feedType,
+        isActive: widget.isActive,
+      ),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key, this.scaffoldStateKey, this.feedType});
+  const FeedView({super.key, this.scaffoldStateKey, this.feedType, this.isActive = false});
 
   /// The scaffold key which holds the drawer
   final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   /// The type of feed to display
   final FeedType? feedType;
+
+  /// Whether this feed view is currently active
+  final bool isActive;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -512,6 +527,9 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    // If the feed is not active, we should not be intercepting the back button
+    if (!widget.isActive) return false;
+
     ProfileBloc authBloc = context.read<ProfileBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
     final feedCubit = context.read<FeedPreferencesCubit>();

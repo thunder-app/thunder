@@ -53,10 +53,10 @@ class UserFullNameWidget extends StatelessWidget {
     final prefix = generateUserFullNamePrefix(outerContext, name, displayName, userSeparator: userSeparator, useDisplayName: useDisplayName);
     final suffix = generateUserFullNameSuffix(outerContext, instance, userSeparator: userSeparator);
 
-    final userNameThickness = this.userNameThickness ?? outerContext!.select<ThemePreferencesCubit, NameThickness>((cubit) => cubit.state.userFullNameUserNameThickness);
-    final userNameColor = this.userNameColor ?? outerContext!.select<ThemePreferencesCubit, NameColor>((cubit) => cubit.state.userFullNameUserNameColor);
-    final instanceNameThickness = this.instanceNameThickness ?? outerContext!.select<ThemePreferencesCubit, NameThickness>((cubit) => cubit.state.userFullNameInstanceNameThickness);
-    final instanceNameColor = this.instanceNameColor ?? outerContext!.select<ThemePreferencesCubit, NameColor>((cubit) => cubit.state.userFullNameInstanceNameColor);
+    final userNameThickness = this.userNameThickness ?? outerContext!.read<ThemePreferencesCubit>().state.userFullNameUserNameThickness;
+    final userNameColor = this.userNameColor ?? outerContext!.read<ThemePreferencesCubit>().state.userFullNameUserNameColor;
+    final instanceNameThickness = this.instanceNameThickness ?? outerContext!.read<ThemePreferencesCubit>().state.userFullNameInstanceNameThickness;
+    final instanceNameColor = this.instanceNameColor ?? outerContext!.read<ThemePreferencesCubit>().state.userFullNameInstanceNameColor;
 
     final textStyle = this.textStyle ?? Theme.of(outerContext!).textTheme.bodyMedium;
     final transformColor = this.transformColor ?? (color) => color;
