@@ -281,11 +281,15 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
     canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: gestureCubit.state, isPostPage: true) || !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
     builder: (context) {
+      final postNavigationCubit = PostNavigationCubit();
+      postNavigationCubit.setHighlightedCommentId(comment.id);
+
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: profileBloc),
           BlocProvider.value(value: thunderBloc),
           BlocProvider(create: (context) => PostBloc(account: account)),
+          BlocProvider.value(value: postNavigationCubit),
         ],
         child: FutureBuilder<ThunderPost>(
           future: getPostFromComment(comment, account),

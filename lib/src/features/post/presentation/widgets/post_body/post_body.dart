@@ -132,7 +132,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
 
     final post = widget.post;
-    final media = post.media.first;
+    final media = post.media.firstOrNull;
 
     List<Widget> children = [
       PostBodyTitle(
@@ -146,7 +146,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       ),
     ];
 
-    if (postBodyViewType != PostBodyViewType.condensed && media.mediaType != MediaType.text) {
+    if (postBodyViewType != PostBodyViewType.condensed && media != null && media.mediaType != MediaType.text) {
       children.add(
         Expandable(
           controller: expandableController,
@@ -218,7 +218,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
         unreadCommentCount: post.unreadComments,
         dateTime: post.updated?.toIso8601String() ?? post.published.toIso8601String(),
         hasBeenEdited: post.updated != null,
-        url: media.mediaType != MediaType.image ? post.url : null,
+        url: media?.mediaType != MediaType.image ? post.url : null,
       ),
     );
 

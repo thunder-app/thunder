@@ -55,14 +55,14 @@ class PostBodyTitle extends StatelessWidget {
   Widget _buildCondensedTitle(BuildContext context) {
     final showThumbnailPreviewOnRight = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showThumbnailPreviewOnRight);
 
-    final media = post.media.first;
+    final media = post.media.firstOrNull;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: media.mediaType == MediaType.text || showThumbnailPreviewOnRight ? 12.0 : 0.0).copyWith(top: 8.0, right: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: media?.mediaType == MediaType.text || media == null || showThumbnailPreviewOnRight ? 12.0 : 0.0).copyWith(top: 8.0, right: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (media.mediaType != MediaType.text && !showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
+          if (media != null && media.mediaType != MediaType.text && !showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -76,7 +76,7 @@ class PostBodyTitle extends StatelessWidget {
               ],
             ),
           ),
-          if (media.mediaType != MediaType.text && showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
+          if (media != null && media.mediaType != MediaType.text && showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
           _buildExpandButton(context, postBodyViewType),
         ],
       ),
@@ -125,10 +125,11 @@ class PostBodyTitle extends StatelessWidget {
   Widget _buildExpandButton(BuildContext context, PostBodyViewType postBodyViewType) {
     final l10n = GlobalContext.l10n;
 
-    final mediaType = post.media.first.mediaType;
+    final mediaType = post.media.firstOrNull?.mediaType;
     final hasPostBody = post.body?.isNotEmpty == true;
 
     if (mediaType == MediaType.text && !hasPostBody) return const SizedBox.shrink();
+    if (mediaType == null && !hasPostBody) return const SizedBox.shrink();
     if (postBodyViewType == PostBodyViewType.condensed && !hasPostBody) return const SizedBox.shrink();
 
     return IconButton(
@@ -189,6 +190,11 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
     final creator = widget.post.creator;
     final community = widget.post.community;
 
+    // Return empty widget if creator or community is null
+    if (creator == null || community == null) {
+      return const SizedBox.shrink();
+    }
+
     final postBodyShowUserInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowUserInstance);
     final postBodyShowCommunityInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowCommunityInstance);
 
@@ -197,7 +203,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         UserChip(
-          user: creator!,
+          user: creator,
           personAvatar: UserAvatar(user: creator, radius: 8, thumbnailSize: 20, format: 'png'),
           userGroups: userGroups,
           includeInstance: postBodyShowUserInstance,
@@ -208,7 +214,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
           color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
         ),
         CommunityChip(
-          communityId: community!.id,
+          communityId: community.id,
           communityAvatar: CommunityAvatar(community: community, radius: 8, thumbnailSize: 20, format: 'png'),
           communityName: community.name,
           communityTitle: community.title,

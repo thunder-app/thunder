@@ -191,19 +191,26 @@ class _PostPageState extends State<PostPage> {
         // If it is not visible, scroll to it.
         final navigationState = context.read<PostNavigationCubit>().state;
         final highlightedCommentId = navigationState.highlightedCommentId;
-        final highlightedCommentIndex = state.comments.indexWhere((element) => element.comment!.id == highlightedCommentId);
+        final highlightedCommentIndex = state.comments.indexWhere((element) => element.comment?.id == highlightedCommentId);
 
         if (widget.highlightedCommentId != null && listController.isAttached && highlightedCommentIndex != -1) {
           final visibleRange = listController.visibleRange;
+          // Add 1 to account for the placeholder widget at index 0
+          final adjustedIndex = highlightedCommentIndex + 1;
 
-          if (visibleRange != null && (highlightedCommentIndex < (visibleRange.$1 + 3) || highlightedCommentIndex > (visibleRange.$2 - 3))) {
-            listController.animateToItem(
-              index: highlightedCommentIndex,
-              scrollController: scrollController,
-              alignment: 0,
-              duration: (estimatedDistance) => const Duration(milliseconds: 250),
-              curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-            );
+          if (visibleRange != null && (adjustedIndex < (visibleRange.$1 + 3) || adjustedIndex > (visibleRange.$2 - 3))) {
+            // Defer animation to after the frame is rendered so that list extents are available
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (listController.isAttached) {
+                listController.animateToItem(
+                  index: adjustedIndex,
+                  scrollController: scrollController,
+                  alignment: 0,
+                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                );
+              }
+            });
           }
         }
 
@@ -318,7 +325,12 @@ class _PostPageState extends State<PostPage> {
                             }
 
                             final commentNode = state.comments[index - 1];
-                            final comment = commentNode.comment!;
+                            final comment = commentNode.comment;
+
+                            // Skip rendering if comment is null
+                            if (comment == null) {
+                              return const SizedBox.shrink();
+                            }
 
                             final collapsedComments = context.read<PostBloc>().state.collapsedComments;
 

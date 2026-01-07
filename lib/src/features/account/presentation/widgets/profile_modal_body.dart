@@ -767,7 +767,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
           count: 1,
           timeout: 5,
         ).stream.first;
-        setState(() => account.latency = pingData.response?.time);
+        if (mounted) {
+          setState(() => account.latency = pingData.response?.time);
+        }
       }
     }
   }
@@ -820,7 +822,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
         count: 1,
         timeout: 5,
       ).stream.first;
-      setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
+      if (mounted) {
+        setState(() => anonymousInstanceExtended.latency = pingData.response?.time);
+      }
     }
   }
 
