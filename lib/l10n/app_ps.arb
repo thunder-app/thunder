@@ -410,5 +410,83 @@
         "description": "Label for setting to combine comment scores"
     },
     "combineNavAndFab": "اېف‌‌ای‌بي او گرځښت تڼۍ يوځای‌کول",
-    "@combineNavAndFab": {}
+    "@combineNavAndFab": {},
+    "backToTop": "بېرته سر ته",
+    "@backToTop": {},
+    "backgroundCheckWarning": "په ياد ولرئ چې د خبرتياوو سم‌کتنه به زياتي بېټرۍ هم ولگوئ",
+    "@backgroundCheckWarning": {
+        "description": "Warning for enabling notifications"
+    },
+    "ban": "بنديز لگول",
+    "@ban": {
+        "description": "Short decription for moderator action to ban a user"
+    },
+    "banFromCommunity": "له ټولنې ويستل",
+    "@banFromCommunity": {
+        "description": "Moderator action to ban a user from a community"
+    },
+    "bannedUser": "بنديز لگېدلی کارن",
+    "@bannedUser": {
+        "description": "Short decription for moderator action to ban a user"
+    },
+    "bannedUserFromCommunity": "له ټولنې ويستل شوی کارن",
+    "@bannedUserFromCommunity": {
+        "description": "Short decription for moderator action to ban a user from a community"
+    },
+    "base": "اډانه",
+    "@base": {
+        "description": "Description for base font scale"
+    },
+    "block": "بنديز لگول",
+    "@block": {
+        "description": "Action for blocking an item"
+    },
+    "blockedCommunities": "بنديز لگول",
+    "@blockedCommunities": {},
+    "blockedInstances": "په بېلگه بنديز لگول",
+    "@blockedInstances": {},
+    "blockedUsers": "بنديز لگېدلي کارنان",
+    "@blockedUsers": {},
+    "combineNavAndFabDescription": "لامبو وهلو چارې تڼۍ به د گرځښت تڼيو ترمنځ وښودل شي.",
+    "@combineNavAndFabDescription": {},
+    "comfortable": "هوسا",
+    "@comfortable": {
+        "description": "Describes a comfortable visual density"
+    },
+    "comment": "څرگندونه",
+    "@comment": {},
+    "commentActions": "څرگندونې چارې",
+    "@commentActions": {
+        "description": "Title for the comment actions bottom sheet"
+    },
+    "commentBehaviourSettings": "څرگندونې",
+    "@commentBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "commentFontScale": "د څرگندونې د منځپانگې ليکبڼې کچه",
+    "@commentFontScale": {
+        "description": "Setting for comment font scale"
+    },
+    "commentPreview": "د ورکړل شوو اوڼنو سره د څرگندونې مخکتنه ښودل",
+    "@commentPreview": {
+        "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+    },
+    "commentReported": "څرگندونه د بياکتنې لپاره نښه شوې ده.",
+    "@commentReported": {},
+    "commentSavedAsDraft": "څرگندونه د گارليک په توگه خوندي شوه",
+    "@commentSavedAsDraft": {},
+    "commentShowUserAvatar": "کارن ځان‌بڼه ښودل",
+    "@commentShowUserAvatar": {
+        "description": "Settings toggle to display user avatar alongside their display name in comments"
+    },
+    "commentShowUserInstance": "کارن بېلگه ښودل",
+    "@commentShowUserInstance": {
+        "description": "Settings toggle to display user instance alongside their display name in comments"
+    },
+    "commentSortType": "څرگندونې اوډون ډول",
+    "@commentSortType": {},
+    "commentSwipeActions": "څرگندونې وار چارې",
+    "@commentSwipeActions": {
+        "description": "Setting for comment swipe actions"
+    }
 }
