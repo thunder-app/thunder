@@ -97,7 +97,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
-      final getSiteResponse = await instanceRepository.getSiteInfo();
+      final getSiteResponse = await instanceRepository.info();
 
       return emit(
         state.copyWith(
@@ -182,7 +182,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     try {
-      final getSiteResponse = await instanceRepository.getSiteInfo();
+      final getSiteResponse = await instanceRepository.info();
 
       final personBlocks = getSiteResponse.myUser!.personBlocks..sort((a, b) => a.name.compareTo(b.name));
       final communityBlocks = getSiteResponse.myUser!.communityBlocks..sort((a, b) => a.name.compareTo(b.name));

@@ -182,7 +182,13 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
 /// This includes the instance name, version, icon, and user count.
 /// If the URL is invalid or the instance is unreachable, it returns a default [ThunderInstanceInfo] with success set to false.
 Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
-  if (url?.isEmpty ?? true) return const ThunderInstanceInfo(success: false);
+  if (url?.isEmpty ?? true) {
+    return ThunderInstanceInfo(
+      domain: '',
+      name: '',
+      success: false,
+    );
+  }
 
   try {
     final platformInfo = await detectPlatformFromNodeInfo(url!);
@@ -191,12 +197,12 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
     // Create a temporary Account for the request
     final account = Account(instance: url, id: '', index: -1, platform: platform);
 
-    final site = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(timeout ?? const Duration(seconds: 5));
+    final site = await InstanceRepositoryImpl(account: account).info().timeout(timeout ?? const Duration(seconds: 5));
     final instance = site.site;
 
     return ThunderInstanceInfo(
       id: id,
-      domain: fetchInstanceNameFromUrl(instance.actorId),
+      domain: fetchInstanceNameFromUrl(instance.actorId)!,
       version: site.version,
       name: instance.name,
       icon: instance.icon,
@@ -207,8 +213,13 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
     );
   } catch (e) {
     debugPrint('Error getting instance info: $e');
+
     // Bad instances will throw an exception, so no icon
-    return const ThunderInstanceInfo(success: false);
+    return ThunderInstanceInfo(
+      domain: '',
+      name: '',
+      success: false,
+    );
   }
 }
 

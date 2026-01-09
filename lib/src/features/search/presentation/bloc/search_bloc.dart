@@ -111,7 +111,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             final lastSuccessfulPublishedTime = DateTime.parse(instance['federation_state']['last_successful_published_time']);
 
             if (lastSuccessfulPublishedTime.isAfter(DateTime.now().subtract(const Duration(days: 1))) == true) {
-              instances.add(ThunderInstanceInfo(success: true, domain: instance['domain'], id: instance['id'], version: instance['version']));
+              instances.add(
+                ThunderInstanceInfo(
+                  id: instance['id'],
+                  domain: instance['domain'],
+                  name: fetchInstanceNameFromUrl(instance['domain'])!,
+                  version: instance['version'],
+                  success: true,
+                ),
+              );
             }
           }
         }

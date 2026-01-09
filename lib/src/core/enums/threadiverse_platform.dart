@@ -18,6 +18,12 @@ enum ThreadiversePlatform {
     }
   }
 
+  /// The name of the platform, formatted for display
+  String get displayName => switch (this) {
+        ThreadiversePlatform.lemmy => 'Lemmy',
+        ThreadiversePlatform.piefed => 'PieFed',
+      };
+
   /// Converts ThreadiversePlatform enum to string
   String? toStringValue() => name;
 }

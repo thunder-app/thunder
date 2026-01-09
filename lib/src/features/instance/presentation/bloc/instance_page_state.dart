@@ -1,50 +1,91 @@
-part of 'instance_page_cubit.dart';
+part of 'instance_page_bloc.dart';
 
 enum InstancePageStatus { none, loading, success, failure, done }
 
-class InstancePageState extends Equatable {
+class InstanceTypeState<T> extends Equatable {
+  /// The status of the instance type
   final InstancePageStatus status;
-  final String? errorMessage;
-  final int? page;
-  final String resolutionInstance;
 
-  final List<ThunderCommunity>? communities;
-  final List<ThunderPost>? posts;
-  final List<ThunderUser>? users;
-  final List<ThunderComment>? comments;
+  /// The error message if the instance type failed to load
+  final String? message;
 
-  const InstancePageState({
+  /// The current page of the instance type
+  final int page;
+
+  /// The list of items for the instance type
+  final List<T> items;
+
+  const InstanceTypeState({
     this.status = InstancePageStatus.none,
-    this.errorMessage,
-    this.communities,
-    this.posts,
-    this.users,
-    this.comments,
-    this.page,
-    required this.resolutionInstance,
+    this.message,
+    this.page = 1,
+    this.items = const [],
   });
 
-  InstancePageState copyWith({
-    required InstancePageStatus status,
-    String? errorMessage,
-    List<ThunderCommunity>? communities,
-    List<ThunderPost>? posts,
-    List<ThunderUser>? users,
-    List<ThunderComment>? comments,
+  InstanceTypeState<T> copyWith({
+    InstancePageStatus? status,
+    String? message,
     int? page,
+    List<T>? items,
   }) {
-    return InstancePageState(
-      status: status,
-      errorMessage: errorMessage,
-      communities: communities,
-      posts: posts,
-      users: users,
-      comments: comments,
-      page: page,
-      resolutionInstance: resolutionInstance,
+    return InstanceTypeState<T>(
+      status: status ?? this.status,
+      message: message ?? this.message,
+      page: page ?? this.page,
+      items: items ?? this.items,
     );
   }
 
   @override
-  List<dynamic> get props => [status, errorMessage, communities, posts, users, comments, page, resolutionInstance];
+  List<Object?> get props => [status, message, page, items];
+}
+
+class InstancePageState extends Equatable {
+  /// The status of the instance page
+  final InstancePageStatus status;
+
+  /// The error message if the instance page failed to load
+  final String? message;
+
+  /// The communities for the instance page
+  final InstanceTypeState<ThunderCommunity> communities;
+
+  /// The posts for the instance page
+  final InstanceTypeState<ThunderPost> posts;
+
+  /// The users for the instance page
+  final InstanceTypeState<ThunderUser> users;
+
+  /// The comments for the instance page
+  final InstanceTypeState<ThunderComment> comments;
+
+  const InstancePageState({
+    this.status = InstancePageStatus.success,
+    this.message,
+    this.communities = const InstanceTypeState(),
+    this.posts = const InstanceTypeState(),
+    this.users = const InstanceTypeState(),
+    this.comments = const InstanceTypeState(),
+  });
+
+  InstancePageState copyWith({
+    InstancePageStatus? status,
+    String? message,
+    InstanceTypeState<ThunderCommunity>? communities,
+    InstanceTypeState<ThunderPost>? posts,
+    InstanceTypeState<ThunderUser>? users,
+    InstanceTypeState<ThunderComment>? comments,
+  }) {
+    return InstancePageState(
+      status: status ?? this.status,
+      message: message ?? this.message,
+      communities: communities ?? this.communities,
+      posts: posts ?? this.posts,
+      users: users ?? this.users,
+      comments: comments ?? this.comments,
+    );
+  }
+
+  @override
+  List<dynamic> get props => [status, message, communities, posts, users, comments];
 }

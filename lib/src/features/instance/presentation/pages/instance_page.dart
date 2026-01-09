@@ -1,365 +1,239 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
 
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/enums/meta_search_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/core/models/models.dart';
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
-import 'package:thunder/src/shared/error_message.dart';
-import 'package:thunder/src/shared/persistent_header.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/utils/numbers.dart';
+import 'package:thunder/src/features/instance/presentation/bloc/instance_page_bloc.dart';
+import 'package:thunder/src/features/instance/presentation/bloc/instance_page_event.dart';
+import 'package:thunder/src/features/instance/presentation/widgets/instance_page_app_bar.dart';
+import 'package:thunder/src/features/instance/presentation/widgets/instance_tabs.dart';
 
+/// A widget that displays the instance page.
+///
+/// The page contains information about a given instance, with the ability to explore its content.
 class InstancePage extends StatefulWidget {
-  /// The platform of the instance.
-  final ThreadiversePlatform platform;
-
-  /// The site information for the instance.
-  final ThunderSiteResponse site;
-
-  /// Whether the instance is blocked.
-  final bool? isBlocked;
-
-  // This is needed (in addition to Site) specifically for blocking.
-  // Since site is requested directly from the target instance, its ID is only right on its own server
-  // But it's wrong on the server we're connected to.
-  final int? instanceId;
+  /// The instance to display.
+  final ThunderInstanceInfo instance;
 
   const InstancePage({
     super.key,
-    required this.platform,
-    required this.site,
-    required this.isBlocked,
-    required this.instanceId,
+    required this.instance,
   });
 
   @override
   State<InstancePage> createState() => _InstancePageState();
 }
 
-class _InstancePageState extends State<InstancePage> {
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
-  bool _isLoading = false;
+class _InstancePageState extends State<InstancePage> with SingleTickerProviderStateMixin {
+  /// The tab controller
+  late final TabController _tabController;
 
-  bool? isBlocked;
-  bool currentlyTogglingBlock = false;
-
-  // Use the existing SearchType enum to represent what we're showing in the instance page
-  // with SearchType.all representing the about page
-  MetaSearchType viewType = MetaSearchType.all;
+  /// The post sort type to use
   PostSortType postSortType = PostSortType.topAll;
 
-  /// Context for [_onScroll] to use
+  /// Context for [_onScroll] to use to find the proper cubit
   BuildContext? buildContext;
+
+  /// The query to use for search
+  String? query;
 
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
+    _tabController = TabController(length: 5, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) _handleTabChange();
+    });
+
     super.initState();
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _onRefresh() {
+    final context = buildContext;
+    if (context == null || !context.mounted) return;
+
+    // Refresh specific tab and reset others
+    final bloc = context.read<InstancePageBloc>();
+
+    switch (_tabController.index) {
+      case 1:
+        bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.communities));
+        bloc.add(GetInstanceCommunities(page: 1, sortType: postSortType, query: query));
+        break;
+      case 2:
+        bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.users));
+        bloc.add(GetInstanceUsers(page: 1, sortType: postSortType, query: query));
+        break;
+      case 3:
+        bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.posts));
+        bloc.add(GetInstancePosts(page: 1, sortType: postSortType, query: query));
+        break;
+      case 4:
+        bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.comments));
+        bloc.add(GetInstanceComments(page: 1, sortType: postSortType, query: query));
+        break;
+      default:
+        bloc.add(const ResetInstanceTabs(excludeType: null));
+        break;
+    }
+  }
+
+  void _handleTabChange() {
+    final context = buildContext;
+    if (context == null || !context.mounted) return;
+
+    final bloc = context.read<InstancePageBloc>();
+
+    switch (_tabController.index) {
+      case 1:
+        if (bloc.state.communities.items.isEmpty) bloc.add(GetInstanceCommunities(sortType: postSortType, query: query));
+        break;
+      case 2:
+        if (bloc.state.users.items.isEmpty) bloc.add(GetInstanceUsers(sortType: postSortType, query: query));
+        break;
+      case 3:
+        if (bloc.state.posts.items.isEmpty) bloc.add(GetInstancePosts(sortType: postSortType, query: query));
+        break;
+      case 4:
+        if (bloc.state.comments.items.isEmpty) bloc.add(GetInstanceComments(sortType: postSortType, query: query));
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThemeData theme = Theme.of(context);
+    final l10n = GlobalContext.l10n;
 
-    isBlocked ??= widget.isBlocked ?? false;
-    final bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
-
-    final String accountInstance = context.read<ProfileBloc>().state.account.instance;
-
-    final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
-
-    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+    final account = context.read<ProfileBloc>().state.account;
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(
-          value: InstancePageCubit(
-            instance: fetchInstanceNameFromUrl(widget.site.site.actorId)!,
-            resolutionInstance: accountInstance,
-            account: account,
-          ),
-        ),
-        BlocProvider.value(
-          value: FeedBloc(
-            account: Account(
-              id: '',
-              instance: fetchInstanceNameFromUrl(widget.site.site.actorId)!,
-              index: -1,
-              platform: widget.platform,
-            ),
-          ),
-        ),
+        BlocProvider(create: (context) => InstancePageBloc(account: account, instanceInfo: widget.instance)),
+        BlocProvider(create: (context) => FeedBloc(account: account)),
       ],
-      child: BlocConsumer<InstancePageCubit, InstancePageState>(
+      child: BlocConsumer<InstancePageBloc, InstancePageState>(
         listener: (context, state) {
-          context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
+          context.read<FeedBloc>().add(PopulatePostsEvent(state.posts.items));
         },
         builder: (context, state) {
           buildContext = context;
+
           return Scaffold(
-            body: Container(
-              color: theme.colorScheme.surface,
-              child: SafeArea(
-                top: false,
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    SliverAppBar(
-                      pinned: true,
-                      toolbarHeight: APP_BAR_HEIGHT,
-                      title: ListTile(
-                        title: Text(
-                          fetchInstanceNameFromUrl(widget.site.site.actorId) ?? '',
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          softWrap: false,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                        subtitle: Text("v${widget.site.version} · ${l10n.countUsers(formatLongNumber(widget.site.site.users ?? 0))}"),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                      ),
-                      actions: [
-                        if (widget.instanceId != null)
-                          IconButton(
-                            tooltip: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
-                            onPressed: () async {
-                              currentlyTogglingBlock = true;
-
-                              final repository = InstanceRepositoryImpl(account: account);
-                              final blocked = await repository.block(widget.instanceId!, !isBlocked!);
-
-                              if (blocked) {
-                                showSnackbar(l10n.successfullyBlockedCommunity(fetchInstanceNameFromUrl(widget.site.site.actorId) ?? ''));
-                              } else {
-                                showSnackbar(l10n.successfullyUnblockedCommunity(fetchInstanceNameFromUrl(widget.site.site.actorId) ?? ''));
-                              }
-
-                              currentlyTogglingBlock = false;
-                              setState(() => isBlocked = !isBlocked!);
-                            },
-                            icon: Icon(
-                              isBlocked! ? Icons.undo_rounded : Icons.block,
-                              semanticLabel: isBlocked! ? l10n.unblockInstance : l10n.blockInstance,
-                            ),
-                          ),
-                        if (viewType == MetaSearchType.all)
-                          IconButton(
-                            tooltip: l10n.openInBrowser,
-                            onPressed: () => handleLink(context, url: widget.site.site.actorId),
-                            icon: Icon(
-                              Icons.open_in_browser_rounded,
-                              semanticLabel: l10n.openInBrowser,
-                            ),
-                          ),
-                        if (viewType != MetaSearchType.all)
-                          IconButton(
-                            icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-                            onPressed: () {
-                              final feedBloc = context.read<FeedBloc>();
-                              HapticFeedback.mediumImpact();
-
-                              showModalBottomSheet<void>(
-                                showDragHandle: true,
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (builderContext) => SortPicker(
-                                  account: feedBloc.account,
-                                  title: l10n.sortOptions,
-                                  onSelect: (selected) async {
-                                    postSortType = selected.payload;
-                                    _doLoad(context);
-                                  },
-                                  previouslySelected: postSortType,
-                                ),
-                              );
-                            },
-                          ),
-                        Semantics(
-                          label: l10n.menu,
-                          child: PopupMenuButton(
-                            itemBuilder: (context) => [
-                              ThunderPopupMenuItem(
-                                onTap: () async {
-                                  HapticFeedback.mediumImpact();
-                                  navigateToModlogPage(
-                                    context,
-                                    subtitle: fetchInstanceNameFromUrl(widget.site.site.actorId) ?? '',
-                                  );
-                                },
-                                icon: Icons.shield_rounded,
-                                title: l10n.modlog,
+            body: SafeArea(
+              top: false,
+              child: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                      sliver: InstancePageAppBar(
+                        instance: widget.instance,
+                        postSortType: postSortType,
+                        account: account,
+                        onSortSelected: (sortType) {
+                          setState(() => postSortType = sortType);
+                          _onRefresh();
+                        },
+                        onQueryChanged: (query) {
+                          setState(() => this.query = query);
+                          _onRefresh();
+                        },
+                        bottom: TabBar(
+                          controller: _tabController,
+                          isScrollable: true,
+                          tabAlignment: TabAlignment.start,
+                          tabs: [
+                            Tab(
+                              child: Row(
+                                spacing: 6.0,
+                                children: [const Icon(Icons.info_outline_rounded, size: 20.0), Text(l10n.about)],
                               ),
-                              if (viewType != MetaSearchType.all)
-                                ThunderPopupMenuItem(
-                                  onTap: () => handleLink(context, url: widget.site.site.actorId),
-                                  icon: Icons.open_in_browser_rounded,
-                                  title: l10n.openInBrowser,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: PersistentHeader(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: Row(
-                              spacing: 10.0,
-                              children: [
-                                ThunderActionChip(
-                                  backgroundColor: viewType == MetaSearchType.all ? chipColor : null,
-                                  icon: Icons.info_rounded,
-                                  onPressed: () => setState(() => viewType = MetaSearchType.all),
-                                  label: l10n.about,
-                                ),
-                                ThunderActionChip(
-                                  backgroundColor: viewType == MetaSearchType.communities ? chipColor : null,
-                                  icon: Icons.people_rounded,
-                                  onPressed: () async {
-                                    viewType = MetaSearchType.communities;
-                                    await context.read<InstancePageCubit>().loadCommunities(page: 1, postSortType: postSortType);
-                                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
-                                  },
-                                  label: l10n.communities,
-                                ),
-                                ThunderActionChip(
-                                  backgroundColor: viewType == MetaSearchType.users ? chipColor : null,
-                                  icon: Icons.person_rounded,
-                                  onPressed: () async {
-                                    viewType = MetaSearchType.users;
-                                    await context.read<InstancePageCubit>().loadUsers(page: 1, postSortType: postSortType);
-                                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
-                                  },
-                                  label: l10n.users,
-                                ),
-                                ThunderActionChip(
-                                  backgroundColor: viewType == MetaSearchType.posts ? chipColor : null,
-                                  icon: Icons.article_rounded,
-                                  onPressed: () async {
-                                    viewType = MetaSearchType.posts;
-                                    await context.read<InstancePageCubit>().loadPosts(page: 1, postSortType: postSortType);
-                                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
-                                  },
-                                  label: l10n.posts,
-                                ),
-                                ThunderActionChip(
-                                  backgroundColor: viewType == MetaSearchType.comments ? chipColor : null,
-                                  icon: Icons.comment_rounded,
-                                  onPressed: () async {
-                                    viewType = MetaSearchType.comments;
-                                    await context.read<InstancePageCubit>().loadComments(page: 1, postSortType: postSortType);
-                                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollController.jumpTo(0));
-                                  },
-                                  label: l10n.comments,
-                                ),
-                              ],
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (state.status == InstancePageStatus.loading)
-                      const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    if (state.status == InstancePageStatus.failure)
-                      SliverFillRemaining(
-                        child: ErrorMessage(
-                          message: state.errorMessage,
-                          actions: [
-                            (
-                              text: l10n.refreshContent,
-                              action: () async => await _doLoad(context),
-                              loading: false,
+                            Tab(
+                              child: Row(
+                                spacing: 6.0,
+                                children: [const Icon(Icons.groups_outlined, size: 20.0), Text(l10n.communities)],
+                              ),
+                            ),
+                            Tab(
+                              child: Row(
+                                spacing: 6.0,
+                                children: [const Icon(Icons.people_outlined, size: 20.0), Text(l10n.users)],
+                              ),
+                            ),
+                            Tab(
+                              child: Row(
+                                spacing: 6.0,
+                                children: [const Icon(Icons.splitscreen_rounded, size: 20.0), Text(l10n.posts)],
+                              ),
+                            ),
+                            Tab(
+                              child: Row(
+                                spacing: 6.0,
+                                children: [const Icon(Icons.comment_outlined, size: 20.0), Text(l10n.comments)],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    if (state.status == InstancePageStatus.success || state.status == InstancePageStatus.done) ...[
-                      if (viewType == MetaSearchType.all)
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Material(
-                              child: InstanceView(site: widget.site.site),
+                    ),
+                  ];
+                },
+                body: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // About Tab
+                    Builder(builder: (context) {
+                      return CustomScrollView(
+                        key: const PageStorageKey('about'),
+                        slivers: [
+                          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Material(
+                                child: InstanceInformation(instance: widget.instance),
+                              ),
                             ),
                           ),
-                        ),
-                      if (viewType == MetaSearchType.communities)
-                        SliverList.builder(
-                          itemCount: state.communities?.length,
-                          itemBuilder: (context, index) {
-                            final community = state.communities?[index];
-
-                            return Material(
-                              child: community != null ? CommunityListEntry(community: community, resolutionInstance: state.resolutionInstance) : Container(),
-                            );
-                          },
-                        ),
-                      if (viewType == MetaSearchType.users)
-                        SliverList.builder(
-                          itemCount: state.users?.length,
-                          itemBuilder: (context, index) {
-                            final user = state.users?[index];
-                            return Material(child: user != null ? UserListEntry(user: user, resolutionInstance: state.resolutionInstance) : Container());
-                          },
-                        ),
-                      if (viewType == MetaSearchType.posts)
-                        FeedPostCardList(
-                          markPostReadOnScroll: false,
-                          posts: state.posts ?? [],
-                          tabletMode: tabletMode,
-                        ),
-                      if (viewType == MetaSearchType.comments)
-                        SliverList.builder(
-                          itemCount: state.comments?.length,
-                          itemBuilder: (context, index) {
-                            final comment = state.comments?[index];
-                            return Material(
-                              child: comment != null ? CommentListEntry(comment: comment) : Container(),
-                            );
-                          },
-                        ),
-                    ],
-                    if (state.status == InstancePageStatus.success && viewType != MetaSearchType.all) ...[
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 10),
-                      ),
-                      const SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ],
-                    if (viewType != MetaSearchType.all)
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 10),
-                      ),
+                        ],
+                      );
+                    }),
+                    InstanceCommunityTab(
+                      account: account,
+                      query: query,
+                      postSortType: postSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceCommunities(sortType: postSortType, query: query)),
+                    ),
+                    InstanceUserTab(
+                      account: account,
+                      query: query,
+                      postSortType: postSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceUsers(sortType: postSortType, query: query)),
+                    ),
+                    InstancePostTab(
+                      account: account,
+                      query: query,
+                      postSortType: postSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstancePosts(sortType: postSortType, query: query)),
+                    ),
+                    InstanceCommentTab(
+                      account: account,
+                      query: query,
+                      postSortType: postSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceComments(sortType: postSortType, query: query)),
+                    ),
                   ],
                 ),
               ),
@@ -368,37 +242,5 @@ class _InstancePageState extends State<InstancePage> {
         },
       ),
     );
-  }
-
-  Future<void> _doLoad(BuildContext context, {int? page}) async {
-    final InstancePageCubit instancePageCubit = context.read<InstancePageCubit>();
-
-    switch (viewType) {
-      case MetaSearchType.communities:
-        await instancePageCubit.loadCommunities(page: page ?? 1, postSortType: postSortType);
-        break;
-      case MetaSearchType.users:
-        await instancePageCubit.loadUsers(page: page ?? 1, postSortType: postSortType);
-        break;
-      case MetaSearchType.posts:
-        await instancePageCubit.loadPosts(page: page ?? 1, postSortType: postSortType);
-        break;
-      case MetaSearchType.comments:
-        await instancePageCubit.loadComments(page: page ?? 1, postSortType: postSortType);
-        break;
-      default:
-        break;
-    }
-  }
-
-  Future<void> _onScroll() async {
-    if (!_isLoading && _scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      _isLoading = true;
-      InstancePageState? instancePageState = buildContext?.read<InstancePageCubit>().state;
-      if (instancePageState != null && instancePageState.status != InstancePageStatus.done) {
-        await _doLoad(buildContext!, page: (instancePageState.page ?? 0) + 1);
-      }
-      _isLoading = false;
-    }
   }
 }

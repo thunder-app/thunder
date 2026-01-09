@@ -13,7 +13,7 @@ import 'package:thunder/src/app/utils/global_context.dart';
 /// Interface for a instance repository
 abstract class InstanceRepository {
   /// Fetches the site info
-  Future<ThunderSiteResponse> getSiteInfo();
+  Future<ThunderSiteResponse> info();
 
   /// Blocks a given instance
   Future<bool> block(int instanceId, bool block);
@@ -49,7 +49,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
   }
 
   @override
-  Future<ThunderSiteResponse> getSiteInfo() async {
+  Future<ThunderSiteResponse> info() async {
     switch (account.platform) {
       case ThreadiversePlatform.lemmy:
         return await client.site();

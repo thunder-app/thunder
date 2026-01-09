@@ -25,14 +25,14 @@ class CommunityListEntry extends StatefulWidget {
   /// Whether to indicate that the community is a favorite.
   final bool indicateFavorites;
 
-  /// Whether the community should be resolved to a different instance
-  final String? resolutionInstance;
+  /// The account to use for resolving the community to a different instance
+  final Account? resolutionAccount;
 
   const CommunityListEntry({
     super.key,
     required this.community,
     this.indicateFavorites = true,
-    this.resolutionInstance,
+    this.resolutionAccount,
   });
 
   @override
@@ -120,7 +120,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
             ]
           ],
         ),
-        trailing: widget.resolutionInstance == null
+        trailing: widget.resolutionAccount == null
             ? IconButton(
                 onPressed: () {
                   onSubscribe(community.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
@@ -144,11 +144,9 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
         onTap: () async {
           int? communityId = widget.community.id;
 
-          if (widget.resolutionInstance != null) {
+          if (widget.resolutionAccount != null) {
             try {
-              // Create a temporary Account
-              final account = Account(instance: widget.resolutionInstance!, id: '', index: -1);
-              final response = await SearchRepositoryImpl(account: account).resolve(query: widget.community.actorId);
+              final response = await SearchRepositoryImpl(account: widget.resolutionAccount!).resolve(query: widget.community.actorId);
 
               communityId = response['community']?.id;
             } catch (e) {

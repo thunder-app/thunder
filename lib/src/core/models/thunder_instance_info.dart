@@ -1,11 +1,14 @@
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 
+/// A class that holds metadata about an instance.
 class ThunderInstanceInfo {
   const ThunderInstanceInfo({
     this.id,
-    this.domain,
+    required this.domain,
     this.version,
-    this.name,
+    required this.name,
+    this.description,
+    this.sidebar,
     this.icon,
     this.users,
     this.success = false,
@@ -13,32 +16,38 @@ class ThunderInstanceInfo {
     this.contentWarning,
   });
 
-  bool isMetadataPopulated() => icon != null || version != null || name != null || users != null;
+  bool isMetadataPopulated() => icon != null || version != null || users != null;
 
   /// The ID of the instance.
   final int? id;
 
   /// The domain of the instance.
-  final String? domain;
+  final String domain;
 
-  /// The Lemmy version of the instance.
+  /// The platform of the instance.
+  final ThreadiversePlatform? platform;
+
+  /// The version of the instance.
   final String? version;
 
   /// The name of the instance.
-  final String? name;
+  final String name;
 
   /// The icon of the instance.
   final String? icon;
+
+  /// The description of the instance.
+  final String? description;
+
+  /// The sidebar of the instance.
+  final String? sidebar;
+
+  /// The content warning of the instance.
+  final String? contentWarning;
 
   /// The number of users on the instance.
   final int? users;
 
   /// Whether the instance was successfully fetched.
   final bool success;
-
-  /// The platform of the instance.
-  final ThreadiversePlatform? platform;
-
-  /// The content warning of the instance.
-  final String? contentWarning;
 }

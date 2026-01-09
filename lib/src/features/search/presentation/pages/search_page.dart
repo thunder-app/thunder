@@ -747,8 +747,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 final instanceInfo = state.instances![index];
                 return AnimatedCrossFade(
                   duration: const Duration(milliseconds: 250),
-                  firstChild: InstanceListEntry(instanceInfo: ThunderInstanceInfo(success: instanceInfo.success, domain: instanceInfo.domain, id: instanceInfo.id)),
-                  secondChild: InstanceListEntry(instanceInfo: instanceInfo),
+                  firstChild: InstanceListEntry(
+                    instance: ThunderInstanceInfo(
+                      id: instanceInfo.id,
+                      domain: instanceInfo.domain,
+                      name: fetchInstanceNameFromUrl(instanceInfo.domain)!,
+                      success: instanceInfo.success,
+                    ),
+                  ),
+                  secondChild: InstanceListEntry(instance: instanceInfo),
                   // If the instance metadata is not fully populated, show one widget, otherwise show the other.
                   // This should allow the metadata to essentially "fade in".
                   crossFadeState: instanceInfo.isMetadataPopulated() ? CrossFadeState.showSecond : CrossFadeState.showFirst,

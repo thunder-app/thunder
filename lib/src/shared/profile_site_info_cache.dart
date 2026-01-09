@@ -35,7 +35,7 @@ class ProfileSiteInfoCache {
     }
 
     final repository = InstanceRepositoryImpl(account: account);
-    final response = await repository.getSiteInfo();
+    final response = await repository.info();
 
     _cacheByAccountKey[key] = _CacheEntry(response: response, fetchedAt: now, isDirty: false);
     debugPrint('ProfileSiteInfoCache: Cached site info for $key');

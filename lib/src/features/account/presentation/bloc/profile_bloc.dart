@@ -88,7 +88,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ThunderSiteResponse? siteResponse;
 
     try {
-      siteResponse = await instanceRepository!.getSiteInfo().timeout(const Duration(seconds: 15));
+      siteResponse = await instanceRepository!.info().timeout(const Duration(seconds: 15));
       downvotesEnabled = siteResponse.site.enableDownvotes ?? true;
     } catch (e) {
       return emit(state.copyWith(status: ProfileStatus.failureCheckingInstance, error: () => getExceptionErrorMessage(e)));
@@ -134,7 +134,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       // Create a temporary instance repository to use for the site information
       tempAccount = Account(id: '', index: -1, jwt: jwt, instance: tempAccount.instance, platform: platform);
-      final siteResponse = await InstanceRepositoryImpl(account: tempAccount).getSiteInfo();
+      final siteResponse = await InstanceRepositoryImpl(account: tempAccount).info();
 
       if (event.showContentWarning && siteResponse.site.contentWarning?.isNotEmpty == true) {
         return emit(state.copyWith(status: ProfileStatus.contentWarning, contentWarning: () => siteResponse.site.contentWarning!));
@@ -252,7 +252,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading));
 
       // Refresh the site information, which includes the user's settings
-      final response = await instanceRepository!.getSiteInfo();
+      final response = await instanceRepository!.info();
 
       return emit(state.copyWith(status: ProfileStatus.success, siteResponse: () => response));
     } catch (e) {

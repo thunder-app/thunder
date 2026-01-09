@@ -746,7 +746,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
     for (final account in accountsExtended) {
       final instanceInfo = await getInstanceInfo(account.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const ThunderInstanceInfo(success: false),
+        onTimeout: () => ThunderInstanceInfo(
+          domain: account.instance!,
+          name: fetchInstanceNameFromUrl(account.instance!)!,
+          success: false,
+        ),
       );
 
       if (mounted) {
@@ -802,7 +806,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
     for (final anonymousInstanceExtended in anonymousInstancesExtended) {
       final instanceInfo = await getInstanceInfo(anonymousInstanceExtended.anonymousInstance.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const ThunderInstanceInfo(success: false),
+        onTimeout: () => ThunderInstanceInfo(
+          domain: anonymousInstanceExtended.anonymousInstance.instance,
+          name: fetchInstanceNameFromUrl(anonymousInstanceExtended.anonymousInstance.instance)!,
+          success: false,
+        ),
       );
 
       if (mounted) {

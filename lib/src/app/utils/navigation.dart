@@ -7,9 +7,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/routing/swipeable_page_route.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/core/models/thunder_private_message.dart';
-import 'package:thunder/src/core/models/thunder_site_response.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -52,38 +54,25 @@ Future<void> navigateToInstancePage(
   required String instanceHost,
   required int? instanceId,
 }) async {
-  assert(instanceHost.isNotEmpty);
-
   showLoadingPage(context);
 
-  final l10n = AppLocalizations.of(context)!;
-
-  final profileBloc = context.read<ProfileBloc>();
-  final thunderBloc = context.read<ThunderBloc>();
-  final gestureCubit = context.read<GesturePreferencesCubit>();
-  final themeCubit = context.read<ThemePreferencesCubit>();
-
-  final reduceAnimations = themeCubit.state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
-
-  ThunderSiteResponse? getSiteResponse;
-  bool? isBlocked;
+  final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = context.read<GesturePreferencesCubit>().state.enableFullScreenSwipeNavigationGesture;
 
   final platformInfo = await detectPlatformFromNodeInfo(instanceHost);
-  final platform = platformInfo?['platform'];
+  final platform = platformInfo?['platform'] ?? ThreadiversePlatform.lemmy; // Fallback to Lemmy if we can't detect the platform
+
+  ThunderSiteResponse? site;
 
   try {
     // Get the site information by connecting to the given instance
     final account = Account(id: '', index: -1, instance: instanceHost, platform: platform);
-    getSiteResponse = await InstanceRepositoryImpl(account: account).getSiteInfo().timeout(const Duration(seconds: 5));
-
-    // Check whether this instance is blocked (we have to get our user from our current site first).
-    isBlocked = profileBloc.state.siteResponse?.myUser?.instanceBlocks.any((i) => i.instance['domain'] == instanceHost);
+    site = await InstanceRepositoryImpl(account: account).info().timeout(const Duration(seconds: 5));
   } catch (e) {
     // Continue if we can't get the site
   }
 
-  final SwipeablePageRoute route = SwipeablePageRoute(
+  final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
@@ -93,24 +82,35 @@ Future<void> navigateToInstancePage(
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => BlocProvider.value(
-      value: thunderBloc,
+      value: context.read<ThunderBloc>(),
       child: InstancePage(
-        platform: platform!,
-        site: getSiteResponse!,
-        isBlocked: isBlocked,
-        instanceId: instanceId,
+        instance: ThunderInstanceInfo(
+          id: instanceId,
+          domain: site!.site.actorId,
+          name: site.site.name,
+          description: site.site.description,
+          sidebar: site.site.sidebar,
+          icon: site.site.icon,
+          users: site.site.users,
+          version: site.version,
+          platform: platform,
+          contentWarning: site.site.contentWarning,
+        ),
       ),
     ),
   );
 
-  if (getSiteResponse != null) {
+  if (site != null) {
     pushOnTopOfLoadingPage(context, route);
   } else {
+    final l10n = GlobalContext.l10n;
+
     showSnackbar(
       l10n.unableToNavigateToInstance(instanceHost),
       trailingAction: () => handleLink(context, url: "https://$instanceHost", forceOpenInBrowser: true),
       trailingIcon: Icons.open_in_browser_rounded,
     );
+
     hideLoadingPage(context);
   }
 }

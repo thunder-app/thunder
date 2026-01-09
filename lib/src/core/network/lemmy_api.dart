@@ -539,7 +539,7 @@ class LemmyApi {
       'community': json['community'] != null ? ThunderCommunity.fromLemmyCommunityView(json['community']) : null,
       'post': json['post'] != null ? ThunderPost.fromLemmyPostView(json['post']) : null,
       'comment': json['comment'] != null ? ThunderComment.fromLemmyCommentView(json['comment']) : null,
-      'user': json['user'] != null ? ThunderUser.fromLemmyUserView(json['user']) : null,
+      'user': json['person'] != null ? ThunderUser.fromLemmyUserView(json['person']) : null,
     };
   }
 

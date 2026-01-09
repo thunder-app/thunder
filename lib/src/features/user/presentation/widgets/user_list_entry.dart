@@ -15,10 +15,10 @@ class UserListEntry extends StatelessWidget {
   /// The user to display.
   final ThunderUser user;
 
-  /// The instance to resolve the user on, if different from the current instance.
-  final String? resolutionInstance;
+  /// The account to use for resolving the user, if different from the current instance.
+  final Account? resolutionAccount;
 
-  const UserListEntry({super.key, required this.user, this.resolutionInstance});
+  const UserListEntry({super.key, required this.user, this.resolutionAccount});
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +51,9 @@ class UserListEntry extends StatelessWidget {
         onTap: () async {
           int? userId = user.id;
 
-          if (resolutionInstance != null) {
+          if (resolutionAccount != null) {
             try {
-              // Create a temporary Account for the request
-              final account = Account(instance: resolutionInstance!, id: '', index: -1);
-              final response = await SearchRepositoryImpl(account: account).resolve(query: user.actorId);
+              final response = await SearchRepositoryImpl(account: resolutionAccount!).resolve(query: user.actorId);
 
               userId = response['user']?.id;
             } catch (e) {
