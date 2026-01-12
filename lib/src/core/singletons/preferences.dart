@@ -86,7 +86,7 @@ class UserPreferences {
         final prefs = instance.preferences;
 
         data.forEach((key, value) {
-          _setValue(prefs, key, value);
+          setValue(prefs, key, value);
         });
 
         return true;
@@ -100,7 +100,7 @@ class UserPreferences {
   }
 
   /// Helper method to set a value in SharedPreferences based on its type
-  static void _setValue(SharedPreferences prefs, String key, dynamic value) {
+  static void setValue(SharedPreferences prefs, String key, dynamic value) {
     if (value is int) {
       prefs.setInt(key, value);
     } else if (value is double) {
@@ -109,8 +109,8 @@ class UserPreferences {
       prefs.setBool(key, value);
     } else if (value is String) {
       prefs.setString(key, value);
-    } else if (value is List<String>) {
-      prefs.setStringList(key, value);
+    } else if (value is List) {
+      prefs.setStringList(key, value.map((e) => e.toString()).toList());
     }
   }
 
