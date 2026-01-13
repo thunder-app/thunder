@@ -146,7 +146,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           if (widget.selectedPageIndex == 1 && index != 1) {
             FocusManager.instance.primaryFocus?.unfocus();
           } else if (widget.selectedPageIndex == 1 && index == 1) {
-            context.read<SearchBloc>().add(FocusSearchEvent());
+            context.read<SearchBloc>().add(SearchFocusRequested());
           }
 
           if (widget.selectedPageIndex == 3 && index == 3) {

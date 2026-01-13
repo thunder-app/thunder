@@ -711,7 +711,7 @@ void navigateToSearchPage(BuildContext context) {
           BlocProvider(create: (context) => SearchBloc(account: account)),
           BlocProvider.value(value: thunderBloc),
         ],
-        child: SearchPage(communityToSearch: feedBloc.state.community, isInitiallyFocused: true),
+        child: SearchPage(community: feedBloc.state.community),
       ),
     ),
   );

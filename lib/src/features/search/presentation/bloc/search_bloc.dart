@@ -1,14 +1,14 @@
+import 'package:flutter/widgets.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:collection/collection.dart';
 
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
@@ -17,7 +17,6 @@ import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
 
 part 'search_event.dart';
@@ -25,72 +24,86 @@ part 'search_state.dart';
 
 const throttleDuration = Duration(milliseconds: 300);
 const timeout = Duration(seconds: 10);
+const searchResultsPerPage = 15;
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
+/// Helper to count results for the current search type.
+int _resultsCount(
+  MetaSearchType searchType,
+  List<ThunderCommunity>? communities,
+  List<ThunderUser>? users,
+  List<ThunderComment>? comments,
+  List<ThunderPost>? posts,
+) {
+  return switch (searchType) {
+    MetaSearchType.communities => communities?.length ?? 0,
+    MetaSearchType.users => users?.length ?? 0,
+    MetaSearchType.comments => comments?.length ?? 0,
+    MetaSearchType.posts || MetaSearchType.url => posts?.length ?? 0,
+    _ => 0,
+  };
+}
+
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  /// The account to use for repositories
   Account account;
 
+  /// The comment repository to use for comment operations
   late CommentRepository commentRepository;
+
+  /// The search repository to use for search operations
   late SearchRepository searchRepository;
+
+  /// The community repository to use for community operations
   late CommunityRepository communityRepository;
+
+  /// The user repository to use for user operations
   late UserRepository userRepository;
+
+  /// The instance repository to use for instance operations
+  late InstanceRepository instanceRepository;
 
   SearchBloc({required this.account}) : super(SearchState()) {
     commentRepository = CommentRepositoryImpl(account: account);
     searchRepository = SearchRepositoryImpl(account: account);
     communityRepository = CommunityRepositoryImpl(account: account);
     userRepository = UserRepositoryImpl(account: account);
+    instanceRepository = InstanceRepositoryImpl(account: account);
 
-    on<StartSearchEvent>(
-      _startSearchEvent,
+    on<SearchReset>(_onSearchReset);
+    on<SearchStarted>(
+      _onSearchStarted,
       // Use restartable here so that a long search can essentially be "canceled" by a new one.
       // Note that we don't also need throttling because the search page text box has a debounce.
       transformer: restartable(),
     );
-    on<ChangeCommunitySubsciptionStatusEvent>(
-      _changeCommunitySubsciptionStatusEvent,
-      transformer: throttleDroppable(Duration.zero),
+    on<SearchContinued>(
+      _onSearchContinued,
+      transformer: droppable(),
     );
-    on<ResetSearch>(
-      _resetSearch,
-      transformer: throttleDroppable(throttleDuration),
+    on<SearchFocusRequested>(
+      _onSearchFocusRequested,
+      transformer: droppable(),
     );
-    on<ContinueSearchEvent>(
-      _continueSearchEvent,
-      transformer: throttleDroppable(throttleDuration),
+    on<TrendingCommunitiesRequested>(
+      _onTrendingCommunitiesRequested,
+      transformer: droppable(),
     );
-    on<FocusSearchEvent>(
-      _focusSearchEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<GetTrendingCommunitiesEvent>(
-      _getTrendingCommunitiesEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
-    on<VoteCommentEvent>(
-      _voteCommentEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
-    );
-    on<SaveCommentEvent>(
-      _saveCommentEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
-    );
+    on<SearchFiltersUpdated>(_onFiltersUpdated);
   }
 
-  Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
+  Future<void> _onSearchReset(SearchReset event, Emitter<SearchState> emit) async {
     emit(state.copyWith(status: SearchStatus.initial, trendingCommunities: [], viewingAll: false));
-    await _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent(), emit);
+    await _onTrendingCommunitiesRequested(const TrendingCommunitiesRequested(), emit);
   }
 
-  Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
+  Future<void> _onSearchStarted(SearchStarted event, Emitter<SearchState> emit) async {
     try {
-      emit(state.copyWith(status: SearchStatus.loading));
+      emit(state.copyWith(status: SearchStatus.loading, hasReachedMax: false));
       if (event.query.isEmpty && event.force != true) return emit(state.copyWith(status: SearchStatus.initial));
-
-      final account = await fetchActiveProfile();
 
       List<ThunderUser>? users;
       List<ThunderCommunity>? communities;
@@ -98,10 +111,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       List<ThunderPost>? posts;
       List<ThunderInstanceInfo> instances = [];
 
-      if (event.searchType == MetaSearchType.instances) {
+      final effectiveSearchType = state.effectiveSearchType;
+
+      if (effectiveSearchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
-        final federatedInstances = await InstanceRepositoryImpl(account: account).federated();
-        final linkedInstances = federatedInstances['federated_instances']['linked'] ?? [];
+        final federatedInstances = await instanceRepository.federated();
+        final federatedInstancesMap = federatedInstances['federated_instances'] as Map<String, dynamic>?;
+        final linkedInstances = federatedInstancesMap?['linked'] ?? [];
 
         final filteredInstances = linkedInstances.where((instance) => instance['software'] == "lemmy" && instance['domain'].contains(event.query)).toList();
 
@@ -128,13 +144,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       } else {
         final response = await searchRepository.search(
           query: event.query,
-          type: event.searchType,
-          sort: event.postSortType,
-          listingType: event.feedListType,
-          limit: 15,
+          type: effectiveSearchType,
+          sort: state.postSortType ?? PostSortType.active,
+          listingType: state.feedListType,
+          limit: searchResultsPerPage,
           page: 1,
-          communityId: event.communityId,
-          creatorId: event.creatorId,
+          communityId: state.communityFilter,
+          creatorId: state.creatorFilter,
         );
 
         users = response['users'];
@@ -144,31 +160,30 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       // If there are no search results, see if this is an exact search
-      if (event.searchType == MetaSearchType.communities && communities?.isEmpty == true) {
+      if (effectiveSearchType == MetaSearchType.communities && communities?.isEmpty == true) {
         // Note: We could jump straight to GetCommunity here.
         // However, getLemmyCommunity has a nice instance check that can short-circuit things
         // if the instance is not valid to start.
         String? communityName = await getLemmyCommunity(event.query);
         if (communityName != null) {
           try {
-            final account = await fetchActiveProfile();
-            final response = await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
+            final response = await communityRepository.getCommunity(name: communityName);
             communities = [response['community']];
           } catch (e) {
-            // Ignore any exceptions here and return an empty response below
+            debugPrint('SearchBloc: Failed to fetch community by name: $e');
           }
         }
       }
 
       // Check for exact user search
-      if (event.searchType == MetaSearchType.users && users?.isEmpty == true) {
+      if (effectiveSearchType == MetaSearchType.users && users?.isEmpty == true) {
         String? userName = await getLemmyUser(event.query);
         if (userName != null) {
           try {
             final response = await userRepository.getUser(username: userName);
             users = [response!['user']];
           } catch (e) {
-            // Ignore any exceptions here and return an empty response below
+            debugPrint('SearchBloc: Failed to fetch user by name: $e');
           }
         }
       }
@@ -184,11 +199,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         viewingAll: event.query.isEmpty,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
     }
   }
 
-  Future<void> _continueSearchEvent(ContinueSearchEvent event, Emitter<SearchState> emit) async {
+  Future<void> _onSearchContinued(SearchContinued event, Emitter<SearchState> emit) async {
+    // Early exit if pagination is exhausted
+    if (state.hasReachedMax) return;
+
     int attemptCount = 0;
 
     try {
@@ -196,11 +214,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         try {
           emit(state.copyWith(
             status: SearchStatus.refreshing,
-            communities: state.communities,
-            users: state.users,
-            comments: state.comments,
-            posts: state.posts,
-            instances: state.instances,
           ));
 
           List<ThunderUser>? users;
@@ -208,18 +221,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           List<ThunderComment>? comments;
           List<ThunderPost>? posts;
 
-          if (event.searchType == MetaSearchType.instances) {
+          final effectiveSearchType = state.effectiveSearchType;
+
+          if (effectiveSearchType == MetaSearchType.instances) {
             // Instance search is not paged, so this is a no-op.
           } else {
             final response = await searchRepository.search(
               query: event.query,
-              type: event.searchType,
-              sort: event.postSortType,
-              listingType: event.feedListType,
-              limit: 15,
+              type: effectiveSearchType,
+              sort: state.postSortType ?? PostSortType.active,
+              listingType: state.feedListType,
+              limit: searchResultsPerPage,
               page: state.page,
-              communityId: event.communityId,
-              creatorId: event.creatorId,
+              communityId: state.communityFilter,
+              creatorId: state.creatorFilter,
             );
 
             users = response['users'];
@@ -228,8 +243,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             posts = response['posts'];
           }
 
-          if (searchIsEmpty(event.searchType, searchResponse: {'users': users, 'communities': communities, 'comments': comments, 'posts': posts})) {
-            return emit(state.copyWith(status: SearchStatus.done));
+          if (searchIsEmpty(effectiveSearchType, searchResponse: {'users': users, 'communities': communities, 'comments': comments, 'posts': posts})) {
+            return emit(state.copyWith(status: SearchStatus.success, hasReachedMax: true));
           }
 
           // Append the search results
@@ -244,152 +259,54 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             users: allUsers,
             comments: allComments,
             posts: allPosts,
-            instances: state.instances,
             page: state.page + 1,
+            hasReachedMax: _resultsCount(effectiveSearchType, communities, users, comments, posts) < searchResultsPerPage,
           ));
         } catch (e) {
           attemptCount++;
+          debugPrint('SearchBloc: Continue search attempt $attemptCount failed: $e');
+          if (attemptCount >= 2) {
+            return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
+          }
+          await Future.delayed(const Duration(milliseconds: 500));
         }
       }
     } catch (e) {
-      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+      debugPrint('SearchBloc: Continue search failed: $e');
+      return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
     }
   }
 
-  Future<void> _focusSearchEvent(FocusSearchEvent event, Emitter<SearchState> emit) async {
+  Future<void> _onSearchFocusRequested(SearchFocusRequested event, Emitter<SearchState> emit) async {
     emit(state.copyWith(focusSearchId: state.focusSearchId + 1));
   }
 
-  Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<SearchState> emit) async {
-    try {
-      if (event.query.isNotEmpty) {
-        emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
-      }
-
-      final l10n = AppLocalizations.of(GlobalContext.context)!;
-      final account = await fetchActiveProfile();
-      if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-      await CommunityRepositoryImpl(account: account).subscribe(event.communityId, event.follow);
-
-      // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      Map<String, dynamic> response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
-      ThunderCommunity community = response['community'];
-
-      List<ThunderCommunity> communities;
-
-      if (event.query.isNotEmpty || state.viewingAll) {
-        communities = state.communities ?? [];
-
-        communities = state.communities?.map((ThunderCommunity c) {
-              if (c.id == community.id) return community;
-              return c;
-            }).toList() ??
-            [];
-
-        emit(state.copyWith(status: SearchStatus.success, communities: communities));
-      } else {
-        communities = state.trendingCommunities ?? [];
-
-        communities = state.trendingCommunities?.map((ThunderCommunity c) {
-              if (c.id == community.id) return community;
-              return c;
-            }).toList() ??
-            [];
-
-        emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
-      }
-
-      // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
-      await Future.delayed(const Duration(seconds: 1));
-
-      response = await CommunityRepositoryImpl(account: account).getCommunity(id: event.communityId);
-      community = response['community'];
-
-      if (event.query.isNotEmpty || state.viewingAll) {
-        communities = state.communities ?? [];
-
-        communities = state.communities?.map((ThunderCommunity c) {
-              if (c.id == community.id) return community;
-              return c;
-            }).toList() ??
-            [];
-
-        return emit(state.copyWith(status: event.query.isNotEmpty || state.viewingAll ? SearchStatus.success : SearchStatus.trending, communities: communities));
-      } else {
-        communities = state.trendingCommunities ?? [];
-
-        communities = state.trendingCommunities?.map((ThunderCommunity c) {
-              if (c.id == community.id) return community;
-              return c;
-            }).toList() ??
-            [];
-
-        return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
-      }
-    } catch (e) {
-      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
-    }
-  }
-
-  Future<void> _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent event, Emitter<SearchState> emit) async {
+  Future<void> _onTrendingCommunitiesRequested(TrendingCommunitiesRequested event, Emitter<SearchState> emit) async {
     try {
       final communities = await communityRepository.trending();
       return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
     } catch (e) {
-      // Not the end of the world if we can't load trending
+      debugPrint('SearchBloc: Failed to load trending communities: $e');
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: []));
     }
   }
 
-  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<SearchState> emit) async {
-    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
-
-    emit(state.copyWith(status: SearchStatus.performingCommentAction));
-
-    try {
-      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
-      if (comment == null) return;
-
-      ThunderComment updatedComment = await commentRepository.vote(comment, event.score).timeout(timeout, onTimeout: () {
-        throw Exception(l10n.timeoutUpvoteComment);
-      });
-
-      // If it worked, update and emit
-      int index = (state.comments?.indexOf(comment))!;
-
-      List<ThunderComment> comments = List.from(state.comments ?? []);
-      comments.insert(index, updatedComment);
-      comments.remove(comment);
-
-      emit(state.copyWith(status: SearchStatus.success, comments: comments));
-    } catch (e) {
-      // It just fails
-    }
-  }
-
-  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<SearchState> emit) async {
-    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
-
-    emit(state.copyWith(status: SearchStatus.performingCommentAction));
-
-    try {
-      ThunderComment? comment = state.comments?.firstWhereOrNull((comment) => comment.id == event.commentId);
-      if (comment == null) return;
-
-      ThunderComment updatedComment = await commentRepository.save(comment, event.save).timeout(timeout, onTimeout: () {
-        throw Exception(l10n.timeoutUpvoteComment);
-      });
-
-      // If it worked, update and emit
-      int index = (state.comments?.indexOf(comment))!;
-
-      List<ThunderComment> comments = List.from(state.comments ?? []);
-      comments.insert(index, updatedComment);
-      comments.remove(comment);
-
-      emit(state.copyWith(status: SearchStatus.success, comments: comments));
-    } catch (e) {
-      // It just fails
-    }
+  void _onFiltersUpdated(SearchFiltersUpdated event, Emitter<SearchState> emit) {
+    emit(
+      state.copyWith(
+        postSortType: event.sortType,
+        sortTypeIcon: event.sortTypeIcon,
+        sortTypeLabel: event.sortTypeLabel,
+        searchType: event.searchType,
+        feedListType: event.feedListType,
+        searchByUrl: event.searchByUrl,
+        communityFilter: event.communityFilter,
+        communityFilterName: event.communityFilterName,
+        clearCommunityFilter: event.clearCommunityFilter,
+        creatorFilter: event.creatorFilter,
+        creatorFilterName: event.creatorFilterName,
+        clearCreatorFilter: event.clearCreatorFilter,
+      ),
+    );
   }
 }

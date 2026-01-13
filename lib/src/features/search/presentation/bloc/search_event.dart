@@ -1,78 +1,108 @@
 part of 'search_bloc.dart';
 
-abstract class SearchEvent extends Equatable {
+sealed class SearchEvent extends Equatable {
   const SearchEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class StartSearchEvent extends SearchEvent {
-  final String query;
-  final PostSortType postSortType;
-  final FeedListType feedListType;
-  final MetaSearchType searchType;
-  final int? communityId;
-  final int? creatorId;
-  final List<ThunderCommunity>? favoriteCommunities;
-  final bool? force;
-
-  const StartSearchEvent({
-    required this.query,
-    required this.postSortType,
-    required this.feedListType,
-    required this.searchType,
-    this.communityId,
-    this.creatorId,
-    this.favoriteCommunities,
-    this.force,
-  });
-}
-
-class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
-  final int communityId;
-  final bool follow;
+/// Started a new search with the given query using the current filter state.
+final class SearchStarted extends SearchEvent {
+  /// The query to search for
   final String query;
 
-  const ChangeCommunitySubsciptionStatusEvent({required this.communityId, required this.follow, required this.query});
-}
+  /// Whether to force a new search (useful for viewing all items for a given search type)
+  final bool force;
 
-class ResetSearch extends SearchEvent {}
-
-class ContinueSearchEvent extends SearchEvent {
-  final String query;
-  final PostSortType postSortType;
-  final FeedListType feedListType;
-  final MetaSearchType searchType;
-  final int? communityId;
-  final int? creatorId;
+  /// The favorite communities
   final List<ThunderCommunity>? favoriteCommunities;
 
-  const ContinueSearchEvent({
+  const SearchStarted({
     required this.query,
-    required this.postSortType,
-    required this.feedListType,
-    required this.searchType,
-    this.communityId,
-    this.creatorId,
+    this.force = false,
     this.favoriteCommunities,
   });
+
+  @override
+  List<Object?> get props => [query, force, favoriteCommunities];
 }
 
-class FocusSearchEvent extends SearchEvent {}
-
-class GetTrendingCommunitiesEvent extends SearchEvent {}
-
-class VoteCommentEvent extends SearchEvent {
-  final int commentId;
-  final int score;
-
-  const VoteCommentEvent({required this.commentId, required this.score});
+/// Reset the search to initial state.
+final class SearchReset extends SearchEvent {
+  const SearchReset();
 }
 
-class SaveCommentEvent extends SearchEvent {
-  final int commentId;
-  final bool save;
+/// Continued pagination for the current search.
+final class SearchContinued extends SearchEvent {
+  /// The query to search for
+  final String query;
 
-  const SaveCommentEvent({required this.commentId, required this.save});
+  /// The favorite communities
+  final List<ThunderCommunity>? favoriteCommunities;
+
+  const SearchContinued({
+    required this.query,
+    this.favoriteCommunities,
+  });
+
+  @override
+  List<Object?> get props => [query, favoriteCommunities];
+}
+
+/// Requested focus on the search field.
+final class SearchFocusRequested extends SearchEvent {
+  const SearchFocusRequested();
+}
+
+/// Requested trending communities.
+final class TrendingCommunitiesRequested extends SearchEvent {
+  const TrendingCommunitiesRequested();
+}
+
+/// Updated the search filters.
+class SearchFiltersUpdated extends SearchEvent {
+  final PostSortType? sortType;
+  final IconData? sortTypeIcon;
+  final String? sortTypeLabel;
+  final MetaSearchType? searchType;
+  final FeedListType? feedListType;
+  final bool? searchByUrl;
+  final int? communityFilter;
+  final String? communityFilterName;
+  final bool clearCommunityFilter;
+  final int? creatorFilter;
+  final String? creatorFilterName;
+  final bool clearCreatorFilter;
+
+  const SearchFiltersUpdated({
+    this.sortType,
+    this.sortTypeIcon,
+    this.sortTypeLabel,
+    this.searchType,
+    this.feedListType,
+    this.searchByUrl,
+    this.communityFilter,
+    this.communityFilterName,
+    this.clearCommunityFilter = false,
+    this.creatorFilter,
+    this.creatorFilterName,
+    this.clearCreatorFilter = false,
+  });
+
+  @override
+  List<Object?> get props => [
+        sortType,
+        sortTypeIcon,
+        sortTypeLabel,
+        searchType,
+        feedListType,
+        searchByUrl,
+        communityFilter,
+        communityFilterName,
+        clearCommunityFilter,
+        creatorFilter,
+        creatorFilterName,
+        clearCreatorFilter,
+      ];
 }
