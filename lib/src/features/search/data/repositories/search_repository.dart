@@ -9,7 +9,7 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/network/piefed_api.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -23,7 +23,7 @@ abstract class SearchRepository {
   Future<Map<String, dynamic>> search({
     required String query,
     MetaSearchType? type,
-    PostSortType? sort,
+    SearchSortType? sort,
     FeedListType? listingType,
     int? limit,
     int? page,
@@ -65,7 +65,7 @@ class SearchRepositoryImpl implements SearchRepository {
   Future<Map<String, dynamic>> search({
     required String query,
     MetaSearchType? type,
-    PostSortType? sort,
+    SearchSortType? sort,
     FeedListType? listingType,
     int? limit,
     int? page,

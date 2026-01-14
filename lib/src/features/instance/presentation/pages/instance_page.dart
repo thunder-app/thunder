@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -35,7 +35,7 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
   late final TabController _tabController;
 
   /// The post sort type to use
-  PostSortType postSortType = PostSortType.topAll;
+  SearchSortType searchSortType = SearchSortType.topAll;
 
   /// Context for [_onScroll] to use to find the proper cubit
   BuildContext? buildContext;
@@ -69,19 +69,19 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
     switch (_tabController.index) {
       case 1:
         bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.communities));
-        bloc.add(GetInstanceCommunities(page: 1, sortType: postSortType, query: query));
+        bloc.add(GetInstanceCommunities(page: 1, sortType: searchSortType, query: query));
         break;
       case 2:
         bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.users));
-        bloc.add(GetInstanceUsers(page: 1, sortType: postSortType, query: query));
+        bloc.add(GetInstanceUsers(page: 1, sortType: searchSortType, query: query));
         break;
       case 3:
         bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.posts));
-        bloc.add(GetInstancePosts(page: 1, sortType: postSortType, query: query));
+        bloc.add(GetInstancePosts(page: 1, sortType: searchSortType, query: query));
         break;
       case 4:
         bloc.add(ResetInstanceTabs(excludeType: MetaSearchType.comments));
-        bloc.add(GetInstanceComments(page: 1, sortType: postSortType, query: query));
+        bloc.add(GetInstanceComments(page: 1, sortType: searchSortType, query: query));
         break;
       default:
         bloc.add(const ResetInstanceTabs(excludeType: null));
@@ -97,16 +97,16 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
 
     switch (_tabController.index) {
       case 1:
-        if (bloc.state.communities.items.isEmpty) bloc.add(GetInstanceCommunities(sortType: postSortType, query: query));
+        if (bloc.state.communities.items.isEmpty) bloc.add(GetInstanceCommunities(sortType: searchSortType, query: query));
         break;
       case 2:
-        if (bloc.state.users.items.isEmpty) bloc.add(GetInstanceUsers(sortType: postSortType, query: query));
+        if (bloc.state.users.items.isEmpty) bloc.add(GetInstanceUsers(sortType: searchSortType, query: query));
         break;
       case 3:
-        if (bloc.state.posts.items.isEmpty) bloc.add(GetInstancePosts(sortType: postSortType, query: query));
+        if (bloc.state.posts.items.isEmpty) bloc.add(GetInstancePosts(sortType: searchSortType, query: query));
         break;
       case 4:
-        if (bloc.state.comments.items.isEmpty) bloc.add(GetInstanceComments(sortType: postSortType, query: query));
+        if (bloc.state.comments.items.isEmpty) bloc.add(GetInstanceComments(sortType: searchSortType, query: query));
         break;
     }
   }
@@ -139,10 +139,10 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                       sliver: InstancePageAppBar(
                         instance: widget.instance,
-                        postSortType: postSortType,
+                        searchSortType: searchSortType,
                         account: account,
                         onSortSelected: (sortType) {
-                          setState(() => postSortType = sortType);
+                          setState(() => searchSortType = sortType);
                           _onRefresh();
                         },
                         onQueryChanged: (query) {
@@ -213,26 +213,26 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
                     InstanceCommunityTab(
                       account: account,
                       query: query,
-                      postSortType: postSortType,
-                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceCommunities(sortType: postSortType, query: query)),
+                      searchSortType: searchSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceCommunities(sortType: searchSortType, query: query)),
                     ),
                     InstanceUserTab(
                       account: account,
                       query: query,
-                      postSortType: postSortType,
-                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceUsers(sortType: postSortType, query: query)),
+                      searchSortType: searchSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceUsers(sortType: searchSortType, query: query)),
                     ),
                     InstancePostTab(
                       account: account,
                       query: query,
-                      postSortType: postSortType,
-                      onRetry: () => context.read<InstancePageBloc>().add(GetInstancePosts(sortType: postSortType, query: query)),
+                      searchSortType: searchSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstancePosts(sortType: searchSortType, query: query)),
                     ),
                     InstanceCommentTab(
                       account: account,
                       query: query,
-                      postSortType: postSortType,
-                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceComments(sortType: postSortType, query: query)),
+                      searchSortType: searchSortType,
+                      onRetry: () => context.read<InstancePageBloc>().add(GetInstanceComments(sortType: searchSortType, query: query)),
                     ),
                   ],
                 ),

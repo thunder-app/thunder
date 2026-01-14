@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
 
+import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/fab_action.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -277,7 +278,7 @@ class FeedFAB extends StatelessWidget {
       showDragHandle: true,
       context: context,
       isScrollControlled: true,
-      builder: (builderContext) => SortPicker(
+      builder: (builderContext) => SortPicker<PostSortType>(
         account: feedBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),

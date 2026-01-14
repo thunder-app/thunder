@@ -15,6 +15,7 @@ import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/core/models/thunder_site.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
@@ -415,7 +416,7 @@ class PiefedApi {
   Future<Map<String, dynamic>> search({
     required String query,
     MetaSearchType? type,
-    PostSortType? sort,
+    SearchSortType? sort,
     FeedListType? listingType,
     int? page,
     int? limit,

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/thunder.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -121,8 +121,8 @@ class InstanceCommunityTab extends StatelessWidget {
   /// The account to use for the tab.
   final Account account;
 
-  /// The post sort type to use for the tab.
-  final PostSortType postSortType;
+  /// The search sort type to use for the tab.
+  final SearchSortType searchSortType;
 
   /// Callback to retry loading items.
   final VoidCallback onRetry;
@@ -130,7 +130,7 @@ class InstanceCommunityTab extends StatelessWidget {
   /// The query to use for the tab.
   final String? query;
 
-  const InstanceCommunityTab({super.key, required this.account, required this.postSortType, required this.onRetry, this.query});
+  const InstanceCommunityTab({super.key, required this.account, required this.searchSortType, required this.onRetry, this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class InstanceCommunityTab extends StatelessWidget {
           state: state.communities,
           storageKey: 'communities',
           onRetry: onRetry,
-          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceCommunities(page: state.communities.page + 1, sortType: postSortType, query: query)),
+          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceCommunities(page: state.communities.page + 1, sortType: searchSortType, query: query)),
           itemBuilder: (context, item) => CommunityListEntry(community: item, resolutionAccount: account),
         );
       },
@@ -153,8 +153,8 @@ class InstanceUserTab extends StatelessWidget {
   /// The account to use for the tab.
   final Account account;
 
-  /// The post sort type to use for the tab.
-  final PostSortType postSortType;
+  /// The search sort type to use for the tab.
+  final SearchSortType searchSortType;
 
   /// Callback to retry loading items.
   final VoidCallback onRetry;
@@ -162,7 +162,7 @@ class InstanceUserTab extends StatelessWidget {
   /// The query to use for the tab.
   final String? query;
 
-  const InstanceUserTab({super.key, required this.account, required this.postSortType, required this.onRetry, this.query});
+  const InstanceUserTab({super.key, required this.account, required this.searchSortType, required this.onRetry, this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,7 @@ class InstanceUserTab extends StatelessWidget {
           state: state.users,
           storageKey: 'users',
           onRetry: onRetry,
-          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceUsers(page: state.users.page + 1, sortType: postSortType, query: query)),
+          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceUsers(page: state.users.page + 1, sortType: searchSortType, query: query)),
           itemBuilder: (context, item) => UserListEntry(user: item, resolutionAccount: account),
         );
       },
@@ -185,8 +185,8 @@ class InstancePostTab extends StatelessWidget {
   /// The account to use for the tab.
   final Account account;
 
-  /// The post sort type to use for the tab.
-  final PostSortType postSortType;
+  /// The search sort type to use for the tab.
+  final SearchSortType searchSortType;
 
   /// Callback to retry loading items.
   final VoidCallback onRetry;
@@ -194,7 +194,7 @@ class InstancePostTab extends StatelessWidget {
   /// The query to use for the tab.
   final String? query;
 
-  const InstancePostTab({super.key, required this.account, required this.postSortType, required this.onRetry, this.query});
+  const InstancePostTab({super.key, required this.account, required this.searchSortType, required this.onRetry, this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +207,7 @@ class InstancePostTab extends StatelessWidget {
           state: state.posts,
           storageKey: 'posts',
           onRetry: onRetry,
-          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstancePosts(page: state.posts.page + 1, sortType: postSortType, query: query)),
+          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstancePosts(page: state.posts.page + 1, sortType: searchSortType, query: query)),
           loadingWidget: SliverMainAxisGroup(
             slivers: [
               FeedPostCardList(
@@ -229,8 +229,8 @@ class InstanceCommentTab extends StatelessWidget {
   /// The account to use for the tab.
   final Account account;
 
-  /// The post sort type to use for the tab.
-  final PostSortType postSortType;
+  /// The search sort type to use for the tab.
+  final SearchSortType searchSortType;
 
   /// Callback to retry loading items.
   final VoidCallback onRetry;
@@ -238,7 +238,7 @@ class InstanceCommentTab extends StatelessWidget {
   /// The query to use for the tab.
   final String? query;
 
-  const InstanceCommentTab({super.key, required this.account, required this.postSortType, required this.onRetry, this.query});
+  const InstanceCommentTab({super.key, required this.account, required this.searchSortType, required this.onRetry, this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +249,7 @@ class InstanceCommentTab extends StatelessWidget {
           state: state.comments,
           storageKey: 'comments',
           onRetry: onRetry,
-          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceComments(page: state.comments.page + 1, sortType: postSortType, query: query)),
+          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstanceComments(page: state.comments.page + 1, sortType: searchSortType, query: query)),
           itemBuilder: (context, item) => CommentListEntry(comment: item),
         );
       },

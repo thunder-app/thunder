@@ -6,13 +6,14 @@ import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/features/post/post.dart';
 
 const FeedListType DEFAULT_LISTING_TYPE = FeedListType.all;
 
 const PostSortType DEFAULT_POST_SORT_TYPE = PostSortType.hot;
 
-const PostSortType DEFAULT_SEARCH_POST_SORT_TYPE = PostSortType.topYear;
+const SearchSortType DEFAULT_SEARCH_SORT_TYPE = SearchSortType.topYear;
 
 const CommentSortType DEFAULT_COMMENT_SORT_TYPE = CommentSortType.top;
 

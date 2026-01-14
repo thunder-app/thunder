@@ -14,9 +14,9 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/models/thunder_language.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -784,7 +784,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       final response = await SearchRepositoryImpl(account: account!).search(
         query: url,
         type: MetaSearchType.url,
-        sort: PostSortType.topAll,
+        sort: SearchSortType.topAll,
         listingType: FeedListType.all,
         limit: 20,
       );

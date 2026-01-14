@@ -6,7 +6,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -79,8 +79,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void initializePreferences() {
     final prefs = UserPreferences.instance.preferences;
 
-    final sortType = PostSortType.values.byName(prefs.getString("search_default_sort_type") ?? DEFAULT_SEARCH_POST_SORT_TYPE.name);
-    final sortTypeItem = allPostSortTypeItems.firstWhere((item) => item.payload == sortType);
+    final sortType = SearchSortType.values.byName(prefs.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
+    final sortTypeItem = allSearchSortTypeItems.firstWhere((item) => item.payload == sortType);
 
     context.read<SearchBloc>().add(SearchFiltersUpdated(sortType: sortType, sortTypeIcon: sortTypeItem.icon, sortTypeLabel: sortTypeItem.label));
   }
@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (builderContext) => SortPicker(
+      builder: (builderContext) => SortPicker<SearchSortType>(
         account: feedBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
@@ -157,7 +157,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           prefs.setString("search_default_sort_type", selected.payload.name);
           search();
         },
-        previouslySelected: searchBloc.state.postSortType ?? PostSortType.active,
+        previouslySelected: searchBloc.state.searchSortType ?? DEFAULT_SEARCH_SORT_TYPE,
       ),
     );
   }

@@ -12,6 +12,7 @@ import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
 import "package:thunder/src/core/enums/threadiverse_platform.dart";
+import "package:thunder/src/core/enums/post_sort_type.dart";
 import "package:thunder/src/core/models/thunder_local_user.dart";
 import "package:thunder/src/core/models/thunder_my_user.dart";
 import "package:thunder/src/core/models/thunder_site_response.dart";
@@ -336,7 +337,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               icon: Icons.sort_rounded,
                               onChanged: (_) async {},
                               isBottomModalScrollControlled: true,
-                              customListPicker: SortPicker(
+                              customListPicker: SortPicker<PostSortType>(
                                 account: account,
                                 title: l10n.defaultFeedSortType,
                                 onSelect: (value) async {

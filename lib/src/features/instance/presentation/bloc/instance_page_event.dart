@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 
 abstract class InstancePageEvent extends Equatable {
   const InstancePageEvent();
@@ -12,7 +12,7 @@ abstract class InstancePageEvent extends Equatable {
 
 class GetInstanceCommunities extends InstancePageEvent {
   final int? page;
-  final PostSortType sortType;
+  final SearchSortType sortType;
   final String? query;
 
   const GetInstanceCommunities({this.page, required this.sortType, this.query});
@@ -23,7 +23,7 @@ class GetInstanceCommunities extends InstancePageEvent {
 
 class GetInstanceUsers extends InstancePageEvent {
   final int? page;
-  final PostSortType sortType;
+  final SearchSortType sortType;
   final String? query;
 
   const GetInstanceUsers({this.page, required this.sortType, this.query});
@@ -34,7 +34,7 @@ class GetInstanceUsers extends InstancePageEvent {
 
 class GetInstancePosts extends InstancePageEvent {
   final int? page;
-  final PostSortType sortType;
+  final SearchSortType sortType;
   final String? query;
 
   const GetInstancePosts({this.page, required this.sortType, this.query});
@@ -45,7 +45,7 @@ class GetInstancePosts extends InstancePageEvent {
 
 class GetInstanceComments extends InstancePageEvent {
   final int? page;
-  final PostSortType sortType;
+  final SearchSortType sortType;
   final String? query;
 
   const GetInstanceComments({this.page, required this.sortType, this.query});

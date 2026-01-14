@@ -10,10 +10,11 @@ import 'package:thunder/src/app/utils/navigation.dart';
 import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
 import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
 import 'package:thunder/src/core/enums/fab_action.dart';
+import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/comment_sort_picker.dart';
+import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/snackbar.dart';
@@ -56,7 +57,7 @@ class _PostPageFABState extends State<PostPageFAB> {
     showModalBottomSheet<void>(
       showDragHandle: true,
       context: context,
-      builder: (builderContext) => CommentSortPicker(
+      builder: (builderContext) => SortPicker<CommentSortType>(
         account: account,
         title: l10n.sortOptions,
         onSelect: (selected) async {

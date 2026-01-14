@@ -12,7 +12,7 @@ import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
@@ -145,7 +145,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         final response = await searchRepository.search(
           query: event.query,
           type: effectiveSearchType,
-          sort: state.postSortType ?? PostSortType.active,
+          sort: state.searchSortType ?? SearchSortType.topYear,
           listingType: state.feedListType,
           limit: searchResultsPerPage,
           page: 1,
@@ -229,7 +229,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             final response = await searchRepository.search(
               query: event.query,
               type: effectiveSearchType,
-              sort: state.postSortType ?? PostSortType.active,
+              sort: state.searchSortType ?? SearchSortType.topYear,
               listingType: state.feedListType,
               limit: searchResultsPerPage,
               page: state.page,
@@ -294,7 +294,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   void _onFiltersUpdated(SearchFiltersUpdated event, Emitter<SearchState> emit) {
     emit(
       state.copyWith(
-        postSortType: event.sortType,
+        searchSortType: event.sortType,
         sortTypeIcon: event.sortTypeIcon,
         sortTypeLabel: event.sortTypeLabel,
         searchType: event.searchType,

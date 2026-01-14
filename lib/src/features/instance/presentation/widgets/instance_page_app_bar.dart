@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -23,13 +23,13 @@ class InstancePageAppBar extends StatefulWidget {
   final ThunderInstanceInfo instance;
 
   /// The sort type for the instance's data.
-  final PostSortType postSortType;
+  final SearchSortType searchSortType;
 
   /// The account being used.
   final Account account;
 
   /// Callback for when the sort type is changed.
-  final Function(PostSortType sortType) onSortSelected;
+  final Function(SearchSortType sortType) onSortSelected;
 
   /// Widget to be displayed at the bottom of the app bar.
   final PreferredSizeWidget? bottom;
@@ -40,7 +40,7 @@ class InstancePageAppBar extends StatefulWidget {
   const InstancePageAppBar({
     super.key,
     required this.instance,
-    required this.postSortType,
+    required this.searchSortType,
     required this.account,
     required this.onSortSelected,
     required this.onQueryChanged,
@@ -107,13 +107,13 @@ class _InstancePageAppBarState extends State<InstancePageAppBar> {
                 showDragHandle: true,
                 context: context,
                 isScrollControlled: true,
-                builder: (builderContext) => SortPicker(
+                builder: (builderContext) => SortPicker<SearchSortType>(
                   account: account,
                   title: l10n.sortOptions,
                   onSelect: (selected) async {
                     widget.onSortSelected(selected.payload);
                   },
-                  previouslySelected: widget.postSortType,
+                  previouslySelected: widget.searchSortType,
                 ),
               );
             },

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/utils/constants.dart';
@@ -167,7 +168,7 @@ class FeedAppBarCommunityActions extends StatelessWidget {
                 showDragHandle: true,
                 context: context,
                 isScrollControlled: true,
-                builder: (builderContext) => SortPicker(
+                builder: (builderContext) => SortPicker<PostSortType>(
                   account: feedBloc.account,
                   title: l10n.sortOptions,
                   onSelect: (selected) async => context.read<FeedBloc>().add(FeedChangePostSortTypeEvent(selected.payload)),
@@ -211,7 +212,7 @@ class FeedAppBarUserActions extends StatelessWidget {
                 showDragHandle: true,
                 context: context,
                 isScrollControlled: true,
-                builder: (builderContext) => SortPicker(
+                builder: (builderContext) => SortPicker<PostSortType>(
                   account: feedBloc.account,
                   title: l10n.sortOptions,
                   onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),
@@ -253,7 +254,7 @@ class FeedAppBarGeneralActions extends StatelessWidget {
               showDragHandle: true,
               context: context,
               isScrollControlled: true,
-              builder: (builderContext) => SortPicker(
+              builder: (builderContext) => SortPicker<PostSortType>(
                 account: feedBloc.account,
                 title: l10n.sortOptions,
                 onSelect: (selected) async => feedBloc.add(FeedChangePostSortTypeEvent(selected.payload)),

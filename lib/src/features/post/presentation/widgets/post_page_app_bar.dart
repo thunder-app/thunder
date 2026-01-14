@@ -8,7 +8,7 @@ import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/comment_sort_picker.dart';
+import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
 import 'package:thunder/src/app/bloc/thunder_bloc.dart';
 import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
@@ -211,7 +211,7 @@ class PostAppBarActions extends StatelessWidget {
             showModalBottomSheet<void>(
               showDragHandle: true,
               context: context,
-              builder: (builderContext) => CommentSortPicker(
+              builder: (builderContext) => SortPicker<CommentSortType>(
                 account: postBloc.account,
                 title: l10n.sortOptions,
                 onSelect: (selected) async {

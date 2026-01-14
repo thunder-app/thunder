@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
@@ -149,7 +150,7 @@ class _SortActionChip extends StatelessWidget {
           showDragHandle: true,
           context: context,
           isScrollControlled: true,
-          builder: (builderContext) => SortPicker(
+          builder: (builderContext) => SortPicker<PostSortType>(
             account: feedBloc.account,
             title: l10n.sortOptions,
             onSelect: (selected) async {

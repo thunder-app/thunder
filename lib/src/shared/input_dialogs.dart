@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:collection/collection.dart';
 
+import 'package:thunder/src/core/enums/search_sort_type.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
 import 'package:thunder/src/core/models/thunder_language.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -203,7 +203,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
     query: query,
     type: MetaSearchType.communities,
     limit: 20,
-    sort: PostSortType.topAll,
+    sort: SearchSortType.topAll,
   );
 
   return prioritizeFavorites(response['communities'], favoritedCommunities) ?? [];

@@ -23,7 +23,6 @@ import 'package:thunder/src/core/enums/local_settings.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/comment_sort_picker.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/dialogs.dart';
 import 'package:thunder/src/shared/divider.dart';
@@ -408,7 +407,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 icon: Icons.sort_rounded,
                 onChanged: (_) async {},
                 isBottomModalScrollControlled: true,
-                customListPicker: SortPicker(
+                customListPicker: SortPicker<PostSortType>(
                   title: l10n.defaultFeedSortType,
                   onSelect: (value) async {
                     setPreferences(LocalSettings.defaultFeedPostSortType, value.payload.name);
@@ -579,7 +578,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 options: getCommentSortTypeItems(),
                 icon: Icons.comment_bank_rounded,
                 onChanged: (_) async {},
-                customListPicker: CommentSortPicker(
+                customListPicker: SortPicker<CommentSortType>(
                   title: l10n.commentSortType,
                   onSelect: (value) async {
                     setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);

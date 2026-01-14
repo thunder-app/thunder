@@ -14,7 +14,7 @@ class SearchState extends Equatable {
     this.message,
     this.page = 1,
     this.hasReachedMax = false,
-    this.postSortType,
+    this.searchSortType,
     this.sortTypeIcon,
     this.sortTypeLabel,
     this.focusSearchId = 0,
@@ -38,7 +38,7 @@ class SearchState extends Equatable {
   final FeedListType feedListType;
 
   /// The sort type to use for the search
-  final PostSortType? postSortType;
+  final SearchSortType? searchSortType;
 
   /// The icon for the sort type
   final IconData? sortTypeIcon;
@@ -108,7 +108,7 @@ class SearchState extends Equatable {
     String? message,
     int? page,
     bool? hasReachedMax,
-    PostSortType? postSortType,
+    SearchSortType? searchSortType,
     IconData? sortTypeIcon,
     String? sortTypeLabel,
     int? focusSearchId,
@@ -134,7 +134,7 @@ class SearchState extends Equatable {
       message: message ?? this.message,
       page: page ?? this.page,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      postSortType: postSortType ?? this.postSortType,
+      searchSortType: searchSortType ?? this.searchSortType,
       sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
       sortTypeLabel: sortTypeLabel ?? this.sortTypeLabel,
       focusSearchId: focusSearchId ?? this.focusSearchId,
@@ -161,7 +161,7 @@ class SearchState extends Equatable {
         message,
         page,
         hasReachedMax,
-        postSortType,
+        searchSortType,
         sortTypeIcon,
         sortTypeLabel,
         focusSearchId,

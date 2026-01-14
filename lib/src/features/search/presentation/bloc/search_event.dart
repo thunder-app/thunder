@@ -62,7 +62,7 @@ final class TrendingCommunitiesRequested extends SearchEvent {
 
 /// Updated the search filters.
 class SearchFiltersUpdated extends SearchEvent {
-  final PostSortType? sortType;
+  final SearchSortType? sortType;
   final IconData? sortTypeIcon;
   final String? sortTypeLabel;
   final MetaSearchType? searchType;

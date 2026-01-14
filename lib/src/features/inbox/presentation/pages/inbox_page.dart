@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/shared/comment_sort_picker.dart';
+import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/dialogs.dart';
 import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
@@ -76,7 +76,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
     showModalBottomSheet<void>(
       showDragHandle: true,
       context: context,
-      builder: (builderContext) => CommentSortPicker(
+      builder: (builderContext) => SortPicker<CommentSortType>(
         account: inboxBloc.account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
