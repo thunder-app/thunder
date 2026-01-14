@@ -75,6 +75,10 @@ final RegExp _lemmyPostCommentUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)/([
 /// Groups: 2=instance, 3=postId, 4=commentId
 final RegExp _piefedCommentUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)/comment/([0-9]+).*$');
 
+/// Matches instance.tld/c/community/p/123/slug (PieFed community post format)
+/// Groups: 2=instance, 3=community, 4=postId
+final RegExp _piefedCommunityPostUrl = RegExp(r'^(https?:\/\/)([^/]+)/c/([^/]+)/p/([0-9]+)');
+
 // ============================================================================
 // Lemmy Parsers
 // ============================================================================
@@ -89,6 +93,11 @@ final RegExp _piefedCommentUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)/comme
 ParsedLink? parseLemmyCommunity(String text) {
   // Skip if this looks like a user URL
   if (text.contains('/u/')) {
+    return null;
+  }
+
+  // Skip if this looks like a PieFed post URL (/c/community/p/postId)
+  if (text.contains('/p/')) {
     return null;
   }
 
@@ -237,12 +246,23 @@ ParsedLink? parsePiefedUser(String text) => parseLemmyUser(text);
 ///
 /// Supports formats:
 /// - https://instance.tld/post/123
+/// - https://instance.tld/c/community/p/123/slug
 ParsedLink? parsePiefedPostId(String text) {
   // Skip if this is a comment URL
   if (text.contains('/comment/')) {
     return null;
   }
 
+  // Try PieFed community post format: /c/community/p/123/slug
+  final communityPostMatch = _piefedCommunityPostUrl.firstMatch(text);
+  if (communityPostMatch != null && communityPostMatch.groupCount >= 4) {
+    return ParsedLink(
+      value: communityPostMatch.group(4)!,
+      instance: communityPostMatch.group(2)!,
+    );
+  }
+
+  // Try standard post format: /post/123
   final match = _lemmyPostUrl.firstMatch(text);
   if (match != null && match.groupCount >= 3) {
     return ParsedLink(
@@ -299,7 +319,13 @@ ParsedLink? parsePostId(String text) {
     return null;
   }
 
-  // Try Lemmy format (handles both Lemmy and PieFed post URLs)
+  // Try PieFed format first (includes /c/community/p/123/slug format)
+  final piefedResult = parsePiefedPostId(text);
+  if (piefedResult != null) {
+    return piefedResult;
+  }
+
+  // Try Lemmy format
   return parseLemmyPostId(text);
 }
 

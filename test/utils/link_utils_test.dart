@@ -47,6 +47,11 @@ void main() {
     test('returns null for @ mentions (users)', () {
       expect(parseLemmyCommunity('@darklightxi@lemmy.world'), isNull);
     });
+
+    test('returns null for PieFed post URLs (/c/community/p/postId)', () {
+      expect(parseLemmyCommunity('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support'), isNull);
+      expect(parseLemmyCommunity('https://piefed.social/c/thunder_app/p/1422697'), isNull);
+    });
   });
 
   group('Lemmy User Parsing', () {
@@ -223,6 +228,36 @@ void main() {
       final result = parseCommentId('https://piefed.social/post/1663157/comment/9679172');
       expect(result, isNotNull);
       expect(result!.value, '9679172');
+      expect(result.instance, 'piefed.social');
+    });
+
+    test('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support (community post format)', () {
+      final result = parsePostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+      expect(result, isNotNull);
+      expect(result!.value, '1422697');
+      expect(result.instance, 'piefed.social');
+    });
+  });
+
+  group('PieFed Community Post URL Format', () {
+    test('parses /c/community/p/postId/slug format', () {
+      final result = parsePiefedPostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+      expect(result, isNotNull);
+      expect(result!.value, '1422697');
+      expect(result.instance, 'piefed.social');
+    });
+
+    test('parses /c/community/p/postId format (no slug)', () {
+      final result = parsePiefedPostId('https://piefed.social/c/thunder_app/p/1422697');
+      expect(result, isNotNull);
+      expect(result!.value, '1422697');
+      expect(result.instance, 'piefed.social');
+    });
+
+    test('unified parsePostId handles PieFed community post format', () {
+      final result = parsePostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+      expect(result, isNotNull);
+      expect(result!.value, '1422697');
       expect(result.instance, 'piefed.social');
     });
   });
