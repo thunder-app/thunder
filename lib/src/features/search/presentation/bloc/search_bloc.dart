@@ -73,7 +73,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     userRepository = UserRepositoryImpl(account: account);
     instanceRepository = InstanceRepositoryImpl(account: account);
 
-    on<SearchReset>(_onSearchReset);
+    on<SearchReset>(
+      _onSearchReset,
+      transformer: restartable(),
+    );
     on<SearchStarted>(
       _onSearchStarted,
       // Use restartable here so that a long search can essentially be "canceled" by a new one.

@@ -8,6 +8,7 @@ import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
+import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/search/search.dart';
@@ -103,17 +104,21 @@ class _SearchFiltersRowState extends State<SearchFiltersRow> {
                     if (widget.community == null) ...[
                       const SizedBox(width: 10),
                       _FeedTypeChip(onSearch: widget.onSearch),
+                      if (!(state.searchType == MetaSearchType.users || state.searchType == MetaSearchType.communities)) ...[
+                        const SizedBox(width: 10),
+                        _CommunityFilterChip(
+                          account: widget.account,
+                          onSearch: widget.onSearch,
+                        ),
+                      ]
+                    ],
+                    if (!(state.searchType == MetaSearchType.users || state.searchType == MetaSearchType.communities || widget.account.platform == ThreadiversePlatform.piefed)) ...[
                       const SizedBox(width: 10),
-                      _CommunityFilterChip(
+                      _CreatorFilterChip(
                         account: widget.account,
                         onSearch: widget.onSearch,
                       ),
                     ],
-                    const SizedBox(width: 10),
-                    _CreatorFilterChip(
-                      account: widget.account,
-                      onSearch: widget.onSearch,
-                    ),
                   ],
                 ],
               ),
