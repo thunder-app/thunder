@@ -3,11 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/core/cache/platform_version_cache.dart';
-import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/network/piefed_api.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/utils/error_messages.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
@@ -47,23 +43,11 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadInProgress)) : emit(state.copyWith(status: CreatePostStatus.imageUploadInProgress));
 
     try {
+      final accountRepository = AccountRepositoryImpl(account: account);
+
       for (String imageFile in imageFiles) {
-        final version = PlatformVersionCache().get(account.instance);
-
-        switch (account.platform) {
-          case ThreadiversePlatform.lemmy:
-            final result = await LemmyApi(account: account, debug: kDebugMode, version: version).uploadImage(imageFile);
-            String url = "https://${account.instance}/pictrs/image/${result['files'][0]['file']}";
-
-            urls.add(url);
-            break;
-          case ThreadiversePlatform.piefed:
-            final url = await PiefedApi(account: account, debug: kDebugMode, version: version).uploadImage(imageFile);
-            urls.add(url);
-            break;
-          default:
-            throw Exception(l10n.unexpectedError);
-        }
+        final url = await accountRepository.uploadImage(imageFile);
+        urls.add(url);
 
         // Add a delay between each upload to avoid possible rate limiting
         await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));

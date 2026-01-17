@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/shared/snackbar.dart';
@@ -47,18 +48,30 @@ class ModlogFeedPage extends StatefulWidget {
 class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ModlogCubit>(
-      create: (_) => ModlogCubit(
-        repository: ModlogRepositoryImpl(),
-      )..fetchModlogFeed(
-          modlogActionType: widget.modlogActionType,
-          communityId: widget.communityId,
-          userId: widget.userId,
-          moderatorId: widget.moderatorId,
-          commentId: widget.commentId,
-          reset: true,
-        ),
-      child: ModlogFeedView(subtitle: widget.subtitle),
+    return FutureBuilder<Account>(
+      future: fetchActiveProfile(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final account = snapshot.data!;
+        return BlocProvider<ModlogCubit>(
+          create: (_) => ModlogCubit(
+            repository: ModlogRepositoryImpl(account: account),
+          )..fetchModlogFeed(
+              modlogActionType: widget.modlogActionType,
+              communityId: widget.communityId,
+              userId: widget.userId,
+              moderatorId: widget.moderatorId,
+              commentId: widget.commentId,
+              reset: true,
+            ),
+          child: ModlogFeedView(subtitle: widget.subtitle),
+        );
+      },
     );
   }
 }

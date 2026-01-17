@@ -18,6 +18,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/shared/utils/error_messages.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -202,7 +203,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         viewingAll: event.query.isEmpty,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 
@@ -269,14 +270,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           attemptCount++;
           debugPrint('SearchBloc: Continue search attempt $attemptCount failed: $e');
           if (attemptCount >= 2) {
-            return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
+            return emit(state.copyWith(status: SearchStatus.failure, message: getExceptionErrorMessage(e)));
           }
           await Future.delayed(const Duration(milliseconds: 500));
         }
       }
     } catch (e) {
       debugPrint('SearchBloc: Continue search failed: $e');
-      return emit(state.copyWith(status: SearchStatus.failure, message: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 

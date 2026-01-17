@@ -2,16 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/core/cache/platform_version_cache.dart';
+import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/models/thunder_private_message.dart';
-import 'package:thunder/src/core/network/lemmy_api.dart';
+import 'package:thunder/src/core/network/api_client_factory.dart';
+import 'package:thunder/src/core/network/thunder_api_client.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/network/piefed_api.dart';
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
 
 /// Interface for a notification repository
 abstract class NotificationRepository {
@@ -63,31 +60,18 @@ abstract class NotificationRepository {
   Future<void> markAllNotificationsAsRead();
 }
 
-/// Implementation of [InstanceRepository]
+/// Implementation of [NotificationRepository]
 class NotificationRepositoryImpl implements NotificationRepository {
   /// The account to use for methods invoked in this repository
-  Account account;
+  final Account account;
 
-  /// The Lemmy client to use for the repository
-  late LemmyApi lemmy;
+  /// The API client to use for the repository
+  final ThunderApiClient _api;
 
-  /// The Piefed client to use for the repository
-  late PiefedApi piefed;
-
-  NotificationRepositoryImpl({required this.account}) {
-    final version = PlatformVersionCache().get(account.instance);
-
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        lemmy = LemmyApi(account: account, debug: kDebugMode, version: version);
-        break;
-      case ThreadiversePlatform.piefed:
-        piefed = PiefedApi(account: account, debug: kDebugMode, version: version);
-        break;
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
-  }
+  /// Creates a new NotificationRepositoryImpl.
+  ///
+  /// An optional [api] client can be provided for testing.
+  NotificationRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
 
   @override
   Future<List<ThunderComment>> replies({
@@ -97,35 +81,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int page = 1,
   }) async {
     if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
-
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        final response = await lemmy.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
-
-        final replies = response['replies'].map<ThunderComment>((crv) {
-          final comment = ThunderComment.fromLemmyCommentView(crv);
-
-          return comment.copyWith(
-            recipient: ThunderUser.fromLemmyUser(crv['recipient']),
-            replyMentionId: crv['comment_reply']['id'],
-            read: crv['comment_reply']['read'],
-          );
-        }).toList();
-        return replies;
-      case ThreadiversePlatform.piefed:
-        final response = await piefed.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
-        return response['replies'].map<ThunderComment>((crv) {
-          final comment = ThunderComment.fromPiefedCommentView(crv);
-
-          return comment.copyWith(
-            recipient: ThunderUser.fromPiefedUser(crv['recipient']),
-            replyMentionId: crv['comment_reply']['id'],
-            read: crv['comment_reply']['read'],
-          );
-        }).toList();
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    return await _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
@@ -133,14 +89,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        await lemmy.markCommentReplyAsRead(replyId: replyId, read: read);
-      case ThreadiversePlatform.piefed:
-        await piefed.markCommentReplyAsRead(replyId: replyId, read: read);
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    await _api.markCommentReplyAsRead(replyId: replyId, read: read);
   }
 
   @override
@@ -150,36 +99,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
-    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        final response = await lemmy.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
-
-        return response['mentions'].map<ThunderComment>((mention) {
-          final comment = ThunderComment.fromLemmyCommentView(mention);
-
-          return comment.copyWith(
-            recipient: ThunderUser.fromLemmyUser(mention['recipient']),
-            replyMentionId: mention['person_mention']['id'],
-            read: mention['person_mention']['read'],
-          );
-        }).toList();
-      case ThreadiversePlatform.piefed:
-        final response = await piefed.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
-
-        return response['replies'].map<ThunderComment>((mention) {
-          final comment = ThunderComment.fromPiefedCommentView(mention);
-
-          return comment.copyWith(
-            recipient: ThunderUser.fromPiefedUser(mention['recipient']),
-            replyMentionId: mention['comment_reply']['id'],
-            read: mention['comment_reply']['read'],
-          );
-        }).toList();
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    return await _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
@@ -187,14 +110,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        await lemmy.markCommentMentionAsRead(mentionId: mentionId, read: read);
-      case ThreadiversePlatform.piefed:
-        await piefed.markCommentReplyAsRead(replyId: mentionId, read: read);
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    await _api.markCommentMentionAsRead(mentionId: mentionId, read: read);
   }
 
   @override
@@ -203,16 +119,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int limit = 50,
     int page = 1,
   }) async {
-    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
+    final l10n = GlobalContext.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        return await lemmy.getPrivateMessages(page: page, limit: limit, unread: unread);
-      case ThreadiversePlatform.piefed:
-        throw Exception('This feature is not yet available');
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    return await _api.getPrivateMessages(page: page, limit: limit, unread: unread);
   }
 
   @override
@@ -220,14 +130,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        await lemmy.markPrivateMessageAsRead(messageId: messageId, read: read);
-      case ThreadiversePlatform.piefed:
-        await piefed.markPrivateMessageAsRead(messageId: messageId, read: read);
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    await _api.markPrivateMessageAsRead(messageId: messageId, read: read);
   }
 
   @override
@@ -235,14 +138,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        return await lemmy.unreadCount();
-      case ThreadiversePlatform.piefed:
-        return await piefed.unreadCount();
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    final response = await _api.unreadCount();
+    return {
+      'replies': response.replies,
+      'mentions': response.mentions,
+      'private_messages': response.privateMessages,
+    };
   }
 
   @override
@@ -250,13 +151,6 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = GlobalContext.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    switch (account.platform) {
-      case ThreadiversePlatform.lemmy:
-        await lemmy.markAllNotificationsAsRead();
-      case ThreadiversePlatform.piefed:
-        await piefed.markAllNotificationsAsRead();
-      default:
-        throw Exception('Unsupported platform: ${account.platform}');
-    }
+    await _api.markAllNotificationsAsRead();
   }
 }

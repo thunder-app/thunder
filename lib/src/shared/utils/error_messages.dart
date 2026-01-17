@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/network/lemmy_api.dart';
+import 'package:thunder/src/core/network/api_exception.dart';
 
 /// Generates a user-friendly error message from an exception (or any thrown object)
 String getExceptionErrorMessage(Object? e, {String? additionalInfo}) {
-  if (e is LemmyApiException) {
+  if (e is ApiException) {
     return getErrorMessage(GlobalContext.context, e.message, additionalInfo: e.errorCode) ?? e.message;
   }
 

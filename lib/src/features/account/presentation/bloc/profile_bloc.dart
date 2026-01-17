@@ -163,7 +163,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return await _initializeAuth(InitializeAuth(), emit);
     } catch (e) {
       debugPrint('Error adding profile: ${e.toString()}');
-      return emit(state.copyWith(status: ProfileStatus.failure, error: () => e.toString()));
+      return emit(state.copyWith(status: ProfileStatus.failure, error: () => getExceptionErrorMessage(e)));
     }
   }
 

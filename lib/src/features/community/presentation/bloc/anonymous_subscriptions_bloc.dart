@@ -7,6 +7,8 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 
+import 'package:thunder/src/shared/utils/error_messages.dart';
+
 part 'anonymous_subscriptions_event.dart';
 part 'anonymous_subscriptions_state.dart';
 
@@ -35,7 +37,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
         ),
       );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 
@@ -55,7 +57,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
         ),
       );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 
@@ -80,7 +82,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
         ),
       );
     } catch (e) {
-      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: e.toString()));
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 }

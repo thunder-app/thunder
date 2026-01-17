@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:thunder/src/features/modlog/modlog.dart';
+import 'package:thunder/src/shared/utils/error_messages.dart';
 
 part 'modlog_state.dart';
 part 'modlog_cubit.freezed.dart';
@@ -116,7 +118,8 @@ class ModlogCubit extends Cubit<ModlogState> {
         message: null,
       ));
     } catch (e) {
-      emit(state.copyWith(status: ModlogStatus.failure, message: e.toString()));
+      debugPrint(e.toString());
+      emit(state.copyWith(status: ModlogStatus.failure, message: getExceptionErrorMessage(e)));
     }
   }
 }

@@ -34,4 +34,10 @@ abstract class AccountRepository {
 
   /// Exports the user's settings.
   Future<dynamic> exportSettings();
+
+  /// Upload an image.
+  Future<String> uploadImage(String filePath);
+
+  /// Delete an uploaded image.
+  Future<void> deleteImage({required String file, required String token});
 }

@@ -3,8 +3,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:thunder/src/core/cache/platform_version_cache.dart';
-import 'package:thunder/src/core/network/lemmy_api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
@@ -304,8 +302,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       final account = await fetchActiveProfile();
       if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-      final version = PlatformVersionCache().get(account.instance);
-      await LemmyApi(account: account, version: version).deleteImage(file: event.id, token: event.deleteToken);
+      await accountRepository.deleteImage(file: event.id, token: event.deleteToken);
 
       return emit(state.copyWith(status: UserSettingsStatus.succeededListingMedia, images: state.images));
     } catch (e) {
