@@ -1349,6 +1349,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get linkHandlingInAppShort => 'V aplikaci';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Odkazy';
 
   @override
@@ -1805,6 +1808,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get pinned => 'Pinned';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'Pinned post to community';

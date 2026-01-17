@@ -1586,6 +1586,10 @@
   "@linkHandlingInAppShort": {
     "description": "Short description for in-app link handling"
   },
+  "linkPostsUseCompactView": "Show Compact Link Posts",
+  "@linkPostsUseCompactView": {
+    "description": "Toggle to use compact view for link posts."
+  },
   "linksBehaviourSettings": "Links",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -2080,6 +2084,10 @@
   "pinned": "Pinned",
   "@pinned": {
     "description": "Status to indicate that an item has been pinned"
+  },
+  "pinnedPostsUseCompactView": "Show Compact Pinned Posts",
+  "@pinnedPostsUseCompactView": {
+    "description": "Toggle to use compact view for pinned posts."
   },
   "pinnedPostToCommunity": "Pinned post to community",
   "@pinnedPostToCommunity": {

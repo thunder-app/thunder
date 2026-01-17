@@ -1357,6 +1357,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get linkHandlingInAppShort => 'Intern';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Koppelingen';
 
   @override
@@ -1818,6 +1821,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get pinned => 'Vastgepind';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'Bericht vastgepind in gemeenschap';

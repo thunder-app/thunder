@@ -188,6 +188,8 @@ enum LocalSettings {
   hideThumbnails(name: 'setting_general_hide_thumbnails', key: 'hideThumbnails', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.feed),
   showThumbnailPreviewOnRight(
       name: 'setting_compact_show_thumbnail_on_right', key: 'showThumbnailPreviewOnRight', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  linkPostsUseCompactView(name: 'setting_general_links_use_compact_view', key: 'linkPostsUseCompactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  pinnedPostsUseCompactView(name: 'setting_general_pins_use_compact_view', key: 'pinnedPostsUseCompactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', key: 'showTextPostIndicator', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   tappableAuthorCommunity(name: 'setting_compact_tappable_author_community', key: 'tappableAuthorCommunity', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
 
@@ -521,6 +523,8 @@ extension LocalizationExt on AppLocalizations {
       'showPostTitleFirst': showPostTitleFirst,
       'hideThumbnails': hideThumbnails,
       'showThumbnailPreviewOnRight': showThumbnailPreviewOnRight,
+      'linkPostsUseCompactView': linkPostsUseCompactView,
+      'pinnedPostsUseCompactView': pinnedPostsUseCompactView,
       'showTextPostIndicator': showTextPostIndicator,
       'tappableAuthorCommunity': tappableAuthorCommunity,
       'postBodyViewType': postBodyViewType,

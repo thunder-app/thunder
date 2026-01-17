@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
+import 'package:thunder/src/core/enums/media_type.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -165,6 +166,8 @@ class _PostCardState extends State<PostCard> {
     final showEdgeToEdgeImages = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showEdgeToEdgeImages);
     final showTitleFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTitleFirst);
     final showTextContent = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextContent);
+    final linkPostsUseCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.linkPostsUseCompactView);
+    final pinnedPostsUseCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.pinnedPostsUseCompactView);
 
     final currentSwipeDirection = determinePostSwipeDirection(
       isUserLoggedIn: isUserLoggedIn,
@@ -176,9 +179,12 @@ class _PostCardState extends State<PostCard> {
       disableSwiping: widget.disableSwiping,
     );
     final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
+    final postIsCompact = useCompactView ||
+        (pinnedPostsUseCompactView && (widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity))) ||
+        (linkPostsUseCompactView && widget.post.media.first.mediaType == MediaType.link && widget.post.media.first.originalUrl?.isNotEmpty == true);
 
     // Determine which post card view to use based on the settings
-    Widget child = useCompactView || widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity)
+    Widget child = postIsCompact
         ? PostCardViewCompact(
             post: widget.post,
             creator: widget.post.creator!,

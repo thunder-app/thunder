@@ -1366,6 +1366,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get linkHandlingInAppShort => 'பயன்பாட்டில்';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'இணைப்புகள்';
 
   @override
@@ -1833,6 +1836,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get pinned => 'குத்திவைக்கப்பட்டது';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'சமூகத்தில் பின் செய்யப்பட்ட இடுகை';

@@ -1353,6 +1353,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get linkHandlingInAppShort => 'Uygulama içi';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Bağlantılar';
 
   @override
@@ -1807,6 +1810,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pinned => 'Sabitlenmiş';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'Pinned post to community';

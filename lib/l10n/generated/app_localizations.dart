@@ -2476,6 +2476,12 @@ abstract class AppLocalizations {
   /// **'In-app'**
   String get linkHandlingInAppShort;
 
+  /// Toggle to use compact view for link posts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Compact Link Posts'**
+  String get linkPostsUseCompactView;
+
   /// Subcategory in Setting -> General
   ///
   /// In en, this message translates to:
@@ -3273,6 +3279,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pinned'**
   String get pinned;
+
+  /// Toggle to use compact view for pinned posts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Compact Pinned Posts'**
+  String get pinnedPostsUseCompactView;
 
   /// Message shown when a post is pinned to a community
   ///

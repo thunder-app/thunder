@@ -14,6 +14,8 @@ class FeedPreferencesState extends Equatable {
     this.showTitleFirst = false,
     this.hideThumbnails = false,
     this.showThumbnailPreviewOnRight = false,
+    this.linkPostsUseCompactView = false,
+    this.pinnedPostsUseCompactView = true,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
     this.showVoteActions = true,
@@ -74,6 +76,12 @@ class FeedPreferencesState extends Equatable {
 
   /// Whether to show thumbnail preview on the right (compact view)
   final bool showThumbnailPreviewOnRight;
+
+  /// Whether to use compact view for link posts
+  final bool linkPostsUseCompactView;
+
+  /// Whether to use compact view for pinned posts
+  final bool pinnedPostsUseCompactView;
 
   /// Whether to show text post indicator (compact view)
   final bool showTextPostIndicator;
@@ -158,6 +166,8 @@ class FeedPreferencesState extends Equatable {
     bool? showTitleFirst,
     bool? hideThumbnails,
     bool? showThumbnailPreviewOnRight,
+    bool? linkPostsUseCompactView,
+    bool? pinnedPostsUseCompactView,
     bool? showTextPostIndicator,
     bool? tappableAuthorCommunity,
     bool? showVoteActions,
@@ -195,6 +205,8 @@ class FeedPreferencesState extends Equatable {
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
       hideThumbnails: hideThumbnails ?? this.hideThumbnails,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
+      linkPostsUseCompactView: linkPostsUseCompactView ?? this.linkPostsUseCompactView,
+      pinnedPostsUseCompactView: pinnedPostsUseCompactView ?? this.pinnedPostsUseCompactView,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -235,6 +247,8 @@ class FeedPreferencesState extends Equatable {
         showTitleFirst,
         hideThumbnails,
         showThumbnailPreviewOnRight,
+        linkPostsUseCompactView,
+        pinnedPostsUseCompactView,
         showTextPostIndicator,
         tappableAuthorCommunity,
         showVoteActions,

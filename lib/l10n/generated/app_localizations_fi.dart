@@ -1336,6 +1336,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get linkHandlingInAppShort => 'In-app';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Linkit';
 
   @override
@@ -1791,6 +1794,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get pinned => 'Pinned';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'Pinned post to community';

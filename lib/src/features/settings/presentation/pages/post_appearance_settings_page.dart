@@ -13,6 +13,7 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/core/enums/custom_theme_type.dart';
 import 'package:thunder/src/core/enums/feed_card_divider_thickness.dart';
 import 'package:thunder/src/core/enums/local_settings.dart';
+import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/core/enums/post_body_view_type.dart';
 import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/core/singletons/preferences.dart';
@@ -48,6 +49,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// When enabled, the thumbnail previews will be shown on the right. By default, they are shown on the left
   bool showThumbnailPreviewOnRight = false;
+
+  /// When enabled, link posts will use compact view
+  bool linkPostsUseCompactView = false;
+
+  /// When enabled, pinned posts will use compact view
+  bool pinnedPostsUseCompactView = true;
 
   /// When enabled, the text post indicator will be shown for text posts
   bool showTextPostIndicator = false;
@@ -152,6 +159,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       // Card View Settings
       showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      linkPostsUseCompactView = prefs.getBool(LocalSettings.linkPostsUseCompactView.name) ?? false;
+      pinnedPostsUseCompactView = prefs.getBool(LocalSettings.pinnedPostsUseCompactView.name) ?? true;
       showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? true;
       showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
@@ -224,6 +233,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.showThumbnailPreviewOnRight:
         await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
         setState(() => showThumbnailPreviewOnRight = value);
+        break;
+      case LocalSettings.linkPostsUseCompactView:
+        await prefs.setBool(LocalSettings.linkPostsUseCompactView.name, value);
+        setState(() => linkPostsUseCompactView = value);
+        break;
+      case LocalSettings.pinnedPostsUseCompactView:
+        await prefs.setBool(LocalSettings.pinnedPostsUseCompactView.name, value);
+        setState(() => pinnedPostsUseCompactView = value);
         break;
       case LocalSettings.showTextPostIndicator:
         await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
@@ -307,6 +324,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.feedCardDividerColor.name);
     await prefs.remove(LocalSettings.compactPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
+    await prefs.remove(LocalSettings.linkPostsUseCompactView.name);
+    await prefs.remove(LocalSettings.pinnedPostsUseCompactView.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
     await prefs.remove(LocalSettings.cardPostCardMetadataItems.name);
     await prefs.remove(LocalSettings.showPostTitleFirst.name);
@@ -334,6 +353,18 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   Future<List<ThunderPost?>> getExamplePosts() async {
     final account = context.read<ProfileBloc>().state.account;
     final repository = PostRepositoryImpl(account: account);
+
+    ThunderPost? postPinned = await repository.createExample(
+      postTitle: 'Example Pinned Post',
+      personName: 'Lightning',
+      personInstance: 'lemmy.world',
+      communityName: 'Thunder',
+      postBody: 'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
+      pinned: true,
+      read: false,
+      scoreCount: 76,
+      commentCount: 1437,
+    );
 
     ThunderPost? postText = await repository.createExample(
       postTitle: 'Example Text Post',
@@ -366,12 +397,13 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       personInstance: 'lemmy.world',
       communityName: 'Thunder',
       postUrl: 'https://github.com/thunder-app/thunder',
+      postThumbnailUrl: 'https://raw.githubusercontent.com/thunder-app/thunder/refs/heads/develop/assets/logo.png',
       read: false,
       scoreCount: 1210,
       commentCount: 543,
     );
 
-    return [postText, postLink, postImage].nonNulls.toList();
+    return [postPinned, postText, postLink, postImage].nonNulls.toList();
   }
 
   @override
@@ -516,10 +548,12 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                 final post = snapshot.data![index]!;
                                 final creator = post.creator!;
                                 final community = post.community!;
+                                final postIsCompact =
+                                    useCompactView || (pinnedPostsUseCompactView && post.featuredCommunity) || (linkPostsUseCompactView && post.media.first.mediaType == MediaType.link);
 
                                 return Column(
                                   children: [
-                                    (useCompactView)
+                                    (postIsCompact)
                                         ? IgnorePointer(
                                             child: PostCardViewCompact(
                                               post: post,
@@ -527,6 +561,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                               community: community,
                                               indicateRead: dimReadPosts,
                                               isLastTapped: false,
+                                              showMedia: !hideThumbnails,
                                             ),
                                           )
                                         : IgnorePointer(
@@ -947,6 +982,26 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.showPostSaveAction,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.linkPostsUseCompactView,
+                value: linkPostsUseCompactView,
+                iconEnabled: Icons.add_link,
+                iconDisabled: Icons.link,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.linkPostsUseCompactView, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.linkPostsUseCompactView,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.pinnedPostsUseCompactView,
+                value: pinnedPostsUseCompactView,
+                iconEnabled: Icons.push_pin,
+                iconDisabled: Icons.push_pin_outlined,
+                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.pinnedPostsUseCompactView, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.pinnedPostsUseCompactView,
                 highlightedSetting: settingToHighlight,
               ),
               SizedBox(height: 32.0),

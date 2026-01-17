@@ -1350,6 +1350,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get linkHandlingInAppShort => 'В приложении';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Ссылки';
 
   @override
@@ -1797,6 +1800,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pinned => 'Прикреплено';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get pinnedPostToCommunity => 'Pinned post to community';

@@ -51,6 +51,8 @@ class FeedPreferencesCubit extends Cubit<FeedPreferencesState> {
     final showTitleFirst = UserPreferences.getLocalSetting(LocalSettings.showPostTitleFirst) ?? false;
     final hideThumbnails = UserPreferences.getLocalSetting(LocalSettings.hideThumbnails) ?? false;
     final showThumbnailPreviewOnRight = UserPreferences.getLocalSetting(LocalSettings.showThumbnailPreviewOnRight) ?? false;
+    final linkPostsUseCompactView = UserPreferences.getLocalSetting(LocalSettings.linkPostsUseCompactView) ?? false;
+    final pinnedPostsUseCompactView = UserPreferences.getLocalSetting(LocalSettings.pinnedPostsUseCompactView) ?? true;
     final showTextPostIndicator = UserPreferences.getLocalSetting(LocalSettings.showTextPostIndicator) ?? false;
     final tappableAuthorCommunity = UserPreferences.getLocalSetting(LocalSettings.tappableAuthorCommunity) ?? false;
 
@@ -96,6 +98,8 @@ class FeedPreferencesCubit extends Cubit<FeedPreferencesState> {
         showTitleFirst: showTitleFirst,
         hideThumbnails: hideThumbnails,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
+        linkPostsUseCompactView: linkPostsUseCompactView,
+        pinnedPostsUseCompactView: pinnedPostsUseCompactView,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
         showVoteActions: showVoteActions,
