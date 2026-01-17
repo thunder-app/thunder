@@ -181,7 +181,7 @@ class _PostCardState extends State<PostCard> {
     final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
     final postIsCompact = useCompactView ||
         (pinnedPostsUseCompactView && (widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity))) ||
-        (linkPostsUseCompactView && widget.post.media.first.mediaType == MediaType.link && widget.post.media.first.originalUrl?.isNotEmpty == true);
+        (linkPostsUseCompactView && widget.post.media.first.mediaType == MediaType.link);
 
     // Determine which post card view to use based on the settings
     Widget child = postIsCompact
