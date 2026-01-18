@@ -184,6 +184,7 @@ enum LocalSettings {
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
   useCompactView(name: 'setting_general_use_compact_view', key: 'compactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+  showPostCommunityFirst(name: 'setting_general_show_community_first', key: 'showPostCommunityFirst', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showPostTitleFirst(name: 'setting_general_show_title_first', key: 'showPostTitleFirst', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   hideThumbnails(name: 'setting_general_hide_thumbnails', key: 'hideThumbnails', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.feed),
   showThumbnailPreviewOnRight(
@@ -520,6 +521,7 @@ extension LocalizationExt on AppLocalizations {
       'showScoreCounters': showScoreCounters,
       'appLanguage': appLanguage,
       'compactView': compactView,
+      'showPostCommunityFirst': showPostCommunityFirst,
       'showPostTitleFirst': showPostTitleFirst,
       'hideThumbnails': hideThumbnails,
       'showThumbnailPreviewOnRight': showThumbnailPreviewOnRight,

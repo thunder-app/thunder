@@ -1799,10 +1799,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get pinned => 'Pinned';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostToCommunity => 'Pinned post to community';
 
   @override
-  String get pinnedPostToCommunity => 'Pinned post to community';
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get placeholderText =>
@@ -2486,6 +2486,9 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get showPostAuthorSubtitle =>
       'Post author is always shown in community feeds';
+
+  @override
+  String get showPostCommunityFirst => 'Show Community and Author First';
 
   @override
   String get showPostCommunityIcons => 'Show Community Icons';

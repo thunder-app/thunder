@@ -59,7 +59,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// When enabled, the text post indicator will be shown for text posts
   bool showTextPostIndicator = false;
 
-  /// Shows the title of the post first, instead of the media or link
+  /// Shows the community and author of the post first, instead of the media or link
+  bool showCommunityFirst = false;
+
+  /// Shows the title of the post first, or below the community and author if showCommunityFirst is true
   bool showTitleFirst = false;
 
   /// When enabled, vote actions are shown when the user is logged in
@@ -158,6 +161,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
 
       // Card View Settings
+      showCommunityFirst = prefs.getBool(LocalSettings.showPostCommunityFirst.name) ?? false;
       showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
       linkPostsUseCompactView = prefs.getBool(LocalSettings.linkPostsUseCompactView.name) ?? false;
       pinnedPostsUseCompactView = prefs.getBool(LocalSettings.pinnedPostsUseCompactView.name) ?? true;
@@ -249,6 +253,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.cardPostCardMetadataItems:
         await prefs.setStringList(LocalSettings.cardPostCardMetadataItems.name, value);
         break;
+      case LocalSettings.showPostCommunityFirst:
+        await prefs.setBool(LocalSettings.showPostCommunityFirst.name, value);
+        setState(() => showCommunityFirst = value);
+        break;
       case LocalSettings.showPostTitleFirst:
         await prefs.setBool(LocalSettings.showPostTitleFirst.name, value);
         setState(() => showTitleFirst = value);
@@ -328,6 +336,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.pinnedPostsUseCompactView.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
     await prefs.remove(LocalSettings.cardPostCardMetadataItems.name);
+    await prefs.remove(LocalSettings.showPostCommunityFirst.name);
     await prefs.remove(LocalSettings.showPostTitleFirst.name);
     await prefs.remove(LocalSettings.showPostFullHeightImages.name);
     await prefs.remove(LocalSettings.showPostEdgeToEdgeImages.name);
@@ -630,6 +639,16 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
                 highlightKey: settingToHighlightKey,
                 setting: LocalSettings.hideThumbnails,
+                highlightedSetting: settingToHighlight,
+              ),
+              ToggleOption(
+                description: l10n.showPostCommunityFirst,
+                value: showCommunityFirst,
+                iconEnabled: Icons.vertical_align_top_rounded,
+                iconDisabled: Icons.vertical_align_bottom_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityFirst, value),
+                highlightKey: settingToHighlightKey,
+                setting: LocalSettings.showPostCommunityFirst,
                 highlightedSetting: settingToHighlight,
               ),
               ToggleOption(
@@ -1092,9 +1111,35 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
+    final communityAndAuthor = Row(
+      children: [
+        if (showCommunityIcons)
+          Container(
+            width: 25,
+            height: 25,
+            margin: const EdgeInsets.only(right: 6.0),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            height: 15,
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ],
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (showCommunityFirst) ...[communityAndAuthor, const SizedBox(height: 6.0)],
         if (showTitleFirst) ...[
           Container(
             width: MediaQuery.of(context).size.width,
@@ -1145,31 +1190,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      if (showCommunityIcons)
-                        Container(
-                          width: 25,
-                          height: 25,
-                          margin: const EdgeInsets.only(right: 6.0),
-                          decoration: BoxDecoration(
-                            color: theme.dividerColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      Expanded(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: 15,
-                          decoration: BoxDecoration(
-                            color: theme.dividerColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
+                  if (!showCommunityFirst) ...[communityAndAuthor, const SizedBox(height: 8.0)],
                   PostCardMetadataDraggableTarget(
                     isDisabled: useCompactView == true,
                     containerHeight: 25.0,
@@ -1215,6 +1236,31 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   Widget buildCompactViewMetadataPreview({bool isDisabled = false}) {
     final theme = Theme.of(context);
 
+    final communityAndAuthor = Row(
+      children: [
+        if (showCommunityIcons)
+          Container(
+            width: 25,
+            height: 25,
+            margin: const EdgeInsets.only(right: 6.0),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            height: 15,
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ],
+    );
+
     return Container(
       padding: const EdgeInsets.only(bottom: 8.0, top: 6),
       child: Row(
@@ -1238,6 +1284,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (showCommunityFirst) ...[communityAndAuthor, const SizedBox(height: 6.0)],
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 25,
@@ -1247,15 +1294,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                     ),
                   ), // Title
                   const SizedBox(height: 6.0),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      color: theme.dividerColor,
-                      borderRadius: BorderRadius.circular((showEdgeToEdgeImages ? 0 : 12)),
-                    ),
-                  ),
-                  const SizedBox(height: 6.0),
+                  if (!showCommunityFirst) ...[communityAndAuthor, const SizedBox(height: 6.0)],
                   PostCardMetadataDraggableTarget(
                     isDisabled: useCompactView == false,
                     containerHeight: 25.0,

@@ -1838,10 +1838,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get pinned => 'குத்திவைக்கப்பட்டது';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostToCommunity => 'சமூகத்தில் பின் செய்யப்பட்ட இடுகை';
 
   @override
-  String get pinnedPostToCommunity => 'சமூகத்தில் பின் செய்யப்பட்ட இடுகை';
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get placeholderText =>
@@ -2532,6 +2532,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get showPostAuthorSubtitle =>
       'இடுகை ஆசிரியர் எப்போதும் சமூக ஊட்டங்களில் காட்டப்படுகிறார்';
+
+  @override
+  String get showPostCommunityFirst => 'Show Community and Author First';
 
   @override
   String get showPostCommunityIcons => 'சமூக சின்னங்களைக் காட்டு';

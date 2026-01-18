@@ -3280,17 +3280,17 @@ abstract class AppLocalizations {
   /// **'Pinned'**
   String get pinned;
 
-  /// Toggle to use compact view for pinned posts.
-  ///
-  /// In en, this message translates to:
-  /// **'Show Compact Pinned Posts'**
-  String get pinnedPostsUseCompactView;
-
   /// Message shown when a post is pinned to a community
   ///
   /// In en, this message translates to:
   /// **'Pinned post to community'**
   String get pinnedPostToCommunity;
+
+  /// Toggle to use compact view for pinned posts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Compact Pinned Posts'**
+  String get pinnedPostsUseCompactView;
 
   /// Placeholder text for any previews. This comes from https://www.lipsum.com/
   ///
@@ -4521,6 +4521,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Post author is always shown in community feeds'**
   String get showPostAuthorSubtitle;
+
+  /// Toggle to show community and author first.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Community and Author First'**
+  String get showPostCommunityFirst;
 
   /// Toggle to show community icons.
   ///

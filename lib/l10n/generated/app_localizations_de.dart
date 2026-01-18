@@ -1835,10 +1835,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pinned => 'Angeheftet';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostToCommunity => 'Post an Community angeheftet';
 
   @override
-  String get pinnedPostToCommunity => 'Post an Community angeheftet';
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get placeholderText =>
@@ -2527,6 +2527,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get showPostAuthorSubtitle =>
       'Der Autor eines Posts wird immer in den Community Feeds angezeigt';
+
+  @override
+  String get showPostCommunityFirst => 'Show Community and Author First';
 
   @override
   String get showPostCommunityIcons => 'Community-Symbole anzeigen';

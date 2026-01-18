@@ -2878,6 +2878,10 @@
   "@showPostAuthorSubtitle": {
     "description": "Subtitle for the Show Post Author setting"
   },
+  "showPostCommunityFirst": "Show Community and Author First",
+  "@showPostCommunityFirst": {
+    "description": "Toggle to show community and author first."
+  },
   "showPostCommunityIcons": "Show Community Icons",
   "@showPostCommunityIcons": {
     "description": "Toggle to show community icons."

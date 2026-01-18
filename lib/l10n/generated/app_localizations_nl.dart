@@ -1823,10 +1823,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pinned => 'Vastgepind';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostToCommunity => 'Bericht vastgepind in gemeenschap';
 
   @override
-  String get pinnedPostToCommunity => 'Bericht vastgepind in gemeenschap';
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get placeholderText =>
@@ -2515,6 +2515,9 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get showPostAuthorSubtitle =>
       'Bericht­auteur wordt altĳd getoond in gemeenschaps­feeds';
+
+  @override
+  String get showPostCommunityFirst => 'Show Community and Author First';
 
   @override
   String get showPostCommunityIcons => 'Gemeenschaps­pictogrammen tonen';

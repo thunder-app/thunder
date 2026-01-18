@@ -48,6 +48,7 @@ class FeedPreferencesCubit extends Cubit<FeedPreferencesState> {
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
     final useCompactView = UserPreferences.getLocalSetting(LocalSettings.useCompactView) ?? false;
+    final showPostCommunityFirst = UserPreferences.getLocalSetting(LocalSettings.showPostCommunityFirst) ?? false;
     final showTitleFirst = UserPreferences.getLocalSetting(LocalSettings.showPostTitleFirst) ?? false;
     final hideThumbnails = UserPreferences.getLocalSetting(LocalSettings.hideThumbnails) ?? false;
     final showThumbnailPreviewOnRight = UserPreferences.getLocalSetting(LocalSettings.showThumbnailPreviewOnRight) ?? false;
@@ -96,6 +97,7 @@ class FeedPreferencesCubit extends Cubit<FeedPreferencesState> {
         showExpandedTaglines: showExpandedTaglines,
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
+        showPostCommunityFirst: showPostCommunityFirst,
         hideThumbnails: hideThumbnails,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         linkPostsUseCompactView: linkPostsUseCompactView,

@@ -136,6 +136,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final dimReadPosts = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts);
     final contentFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale);
+    final showCommunityFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showPostCommunityFirst);
 
     final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
@@ -169,8 +170,16 @@ class PostCardViewComfortable extends StatelessWidget {
       );
     }
 
+    final postCardAuthor = PostCommunityAndAuthor(
+      user: post.creator!,
+      community: post.community!,
+      dim: dim,
+    );
+
+    final edgesPadding = const EdgeInsets.symmetric(horizontal: 12.0);
+
     final postCardTitle = Padding(
-      padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+      padding: edgesPadding,
       child: PostCardTitle(
         title: post.name,
         hidden: post.hidden ?? false,
@@ -185,22 +194,23 @@ class PostCardViewComfortable extends StatelessWidget {
 
     return Container(
       color: containerColor,
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: showCommunityFirst ? const EdgeInsets.only(top: 12.0) : const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         spacing: 2.0,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (showCommunityFirst) Padding(padding: edgesPadding, child: postCardAuthor),
           if (showTitleFirst) postCardTitle,
           if (media != null && media.mediaType != MediaType.text)
             Padding(
-              padding: edgeToEdgeImages ? const EdgeInsets.symmetric(vertical: 8.0) : const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              padding: edgeToEdgeImages ? const EdgeInsets.symmetric(vertical: 8.0) : edgesPadding + const EdgeInsets.symmetric(vertical: 8.0),
               child: mediaView,
             ),
           if (!showTitleFirst) postCardTitle,
           if (showTextContent && textContent.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
+              padding: showCommunityFirst ? edgesPadding : edgesPadding + const EdgeInsets.only(bottom: 6.0),
               child: ScalableText(
                 post.textPreview ?? textContent,
                 maxLines: 4,
@@ -212,20 +222,16 @@ class PostCardViewComfortable extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
+            padding: edgesPadding + const EdgeInsets.only(bottom: 4.0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: showCommunityFirst ? CrossAxisAlignment.center : CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: Column(
                     spacing: 8.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PostCommunityAndAuthor(
-                        user: post.creator!,
-                        community: post.community!,
-                        dim: dim,
-                      ),
+                      if (!showCommunityFirst) postCardAuthor,
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
                         score: post.score,

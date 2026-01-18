@@ -65,6 +65,7 @@ class PostCardViewCompact extends StatelessWidget {
     final showThumbnailPreviewOnRight = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showThumbnailPreviewOnRight);
     final showTextPostIndicator = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextPostIndicator);
     final dimReadPostsSetting = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts);
+    final showCommunityFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showPostCommunityFirst);
 
     final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
@@ -82,6 +83,8 @@ class PostCardViewCompact extends StatelessWidget {
     final edited = post.updated != null;
     final mediaUrl = post.media.firstOrNull?.originalUrl;
 
+    final postCardAuthor = PostCommunityAndAuthor(user: creator, community: community, dim: dim);
+
     return Container(
       color: containerColor,
       padding: containerPadding,
@@ -96,6 +99,7 @@ class PostCardViewCompact extends StatelessWidget {
               spacing: 6.0,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (showCommunityFirst) postCardAuthor,
                 PostCardTitle(
                   title: post.name,
                   hidden: post.hidden ?? false,
@@ -106,7 +110,7 @@ class PostCardViewCompact extends StatelessWidget {
                   removed: post.removed,
                   dim: dim,
                 ),
-                PostCommunityAndAuthor(user: creator, community: community, dim: dim),
+                if (!showCommunityFirst) postCardAuthor,
                 PostCardMetadata(
                   postCardViewType: ViewMode.compact,
                   score: post.score,

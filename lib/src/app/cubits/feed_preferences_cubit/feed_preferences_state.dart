@@ -11,6 +11,7 @@ class FeedPreferencesState extends Equatable {
     this.showHiddenPosts = false,
     this.showExpandedTaglines = false,
     this.useCompactView = false,
+    this.showPostCommunityFirst = false,
     this.showTitleFirst = false,
     this.hideThumbnails = false,
     this.showThumbnailPreviewOnRight = false,
@@ -67,6 +68,9 @@ class FeedPreferencesState extends Equatable {
 
   /// Whether to use compact view for the post list
   final bool useCompactView;
+
+  /// Whether to show the community and author of the post at the top (card view)
+  final bool showPostCommunityFirst;
 
   /// Whether to show the title of the post at the top (card view)
   final bool showTitleFirst;
@@ -163,6 +167,7 @@ class FeedPreferencesState extends Equatable {
     bool? showHiddenPosts,
     bool? showExpandedTaglines,
     bool? useCompactView,
+    bool? showPostCommunityFirst,
     bool? showTitleFirst,
     bool? hideThumbnails,
     bool? showThumbnailPreviewOnRight,
@@ -202,6 +207,7 @@ class FeedPreferencesState extends Equatable {
       showHiddenPosts: showHiddenPosts ?? this.showHiddenPosts,
       showExpandedTaglines: showExpandedTaglines ?? this.showExpandedTaglines,
       useCompactView: useCompactView ?? this.useCompactView,
+      showPostCommunityFirst: showPostCommunityFirst ?? this.showPostCommunityFirst,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
       hideThumbnails: hideThumbnails ?? this.hideThumbnails,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
@@ -244,6 +250,7 @@ class FeedPreferencesState extends Equatable {
         showHiddenPosts,
         showExpandedTaglines,
         useCompactView,
+        showPostCommunityFirst,
         showTitleFirst,
         hideThumbnails,
         showThumbnailPreviewOnRight,
