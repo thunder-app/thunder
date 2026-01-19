@@ -4,13 +4,9 @@
         "description": "About settings category."
     },
     "active": "Ativo",
-    "@active": {},
     "actions": "Ações",
-    "@actions": {},
     "accessibility": "Acessibilidade",
-    "@accessibility": {},
     "addAnonymousInstance": "Adicionar instância anônima",
-    "@addAnonymousInstance": {},
     "addKeywordFilter": "Adicionar palavra-chave",
     "@addKeywordFilter": {
         "description": "Hint for text field to add keyword"
@@ -20,7 +16,6 @@
         "description": "Action to add a community in drawer to favorites"
     },
     "addedCommunityToSubscriptions": "Inscrito na comunidade",
-    "@addedCommunityToSubscriptions": {},
     "advanced": "Avançado",
     "@advanced": {
         "description": "Heading for advanced settings"
@@ -30,15 +25,12 @@
         "description": "The color blue"
     },
     "animations": "Animações",
-    "@animations": {},
     "anonymous": "Anônimo",
-    "@anonymous": {},
     "allowOpenSupportedLinks": "Permitir que o aplicativo abra links suportados.",
     "@allowOpenSupportedLinks": {
         "description": "Option to permit the app to open supported links."
     },
     "andXMore": "e {count} mais",
-    "@andXMore": {},
     "appLanguage": "Idioma do aplicativo",
     "@appLanguage": {
         "description": "Language selection in settings."
@@ -48,39 +40,24 @@
         "description": "Title of Appearance in Settings -> Appearance"
     },
     "applied": "Aplicado",
-    "@applied": {},
     "browsingAnonymously": "Você está navegando {instance} anonimamente.",
-    "@browsingAnonymously": {},
     "cancel": "Cancelar",
-    "@cancel": {},
     "cantBlockYourself": "Você não pode bloquear a si mesmo.",
-    "@cantBlockYourself": {},
     "close": "Fechar",
-    "@close": {},
     "communities": "Comunidades",
-    "@communities": {},
     "community": "Comunidade",
-    "@community": {},
     "always": "Sempre",
-    "@always": {},
     "accountSettings": "Configurações da conta",
-    "@accountSettings": {},
     "addAccount": "Adicionar conta",
-    "@addAccount": {},
     "add": "Adicionar",
-    "@add": {},
     "addAccountToSeeProfile": "Faça login para ver sua conta.",
-    "@addAccountToSeeProfile": {},
     "addDiscussionLanguage": "Adicionar idioma",
     "@addDiscussionLanguage": {
         "description": "Hint for text field to add language"
     },
     "blockedInstances": "Instâncias bloqueadas",
-    "@blockedInstances": {},
     "blockedUsers": "Usuários bloqueados",
-    "@blockedUsers": {},
     "cantBlockAdmin": "Você não pode bloquear um administrador da instância.",
-    "@cantBlockAdmin": {},
     "color": "Cor",
     "@color": {
         "description": "Describes a color"
@@ -106,7 +83,6 @@
         "description": "Heading for the profiler modal when changing account settings"
     },
     "clearSearch": "Limpar pesquisa",
-    "@clearSearch": {},
     "bold": "Negrito",
     "@bold": {
         "description": "Bold name thickness/weight"
@@ -116,11 +92,8 @@
         "description": "Role name for admin"
     },
     "all": "Todos",
-    "@all": {},
     "allPosts": "Todas as postagens",
-    "@allPosts": {},
     "cannotReportOwnComment": "Você não pode denunciar seu próprio comentário.",
-    "@cannotReportOwnComment": {},
     "colors": "Cores",
     "@colors": {
         "description": "Heading for colors"
@@ -130,27 +103,18 @@
         "description": "Describes a comfortable visual density"
     },
     "commentSavedAsDraft": "Comentário salvo como rascunho",
-    "@commentSavedAsDraft": {},
     "blockedCommunities": "Comunidades bloqueadas",
-    "@blockedCommunities": {},
     "apply": "Aplicar",
-    "@apply": {},
     "back": "Voltar",
-    "@back": {},
     "backButton": "Botão de voltar",
-    "@backButton": {},
     "backToTop": "Voltar ao topo",
-    "@backToTop": {},
     "blockCommunity": "Bloquear comunidade",
-    "@blockCommunity": {},
     "blockInstance": "Bloquear instância",
-    "@blockInstance": {},
     "bannedUser": "Usuário banido",
     "@bannedUser": {
         "description": "Short decription for moderator action to ban a user"
     },
     "blockUser": "Bloquear usuário",
-    "@blockUser": {},
     "bot": "Robô",
     "@bot": {
         "description": "Label for a bot user."
@@ -164,9 +128,7 @@
         "description": "User descriptor for accounts created on today's date"
     },
     "accessibilityProfilesDescription": "Perfis de acessibilidade permitem aplicar múltiplas configurações de uma vez para acomodar um requisito específico de acessibilidade.",
-    "@accessibilityProfilesDescription": {},
     "alreadyPostedTo": "Já postado em",
-    "@alreadyPostedTo": {},
     "accountSettingOverrideWarning": "Suas configurações de conta sobrescrevem as configurações a seguir",
     "@accountSettingOverrideWarning": {
         "description": "Warning for account settings override"
@@ -192,7 +154,6 @@
         "description": "Description for the comment preview in Setting -> Appearance -> Comments"
     },
     "comments": "Comentários",
-    "@comments": {},
     "clearPreferences": "Limpar preferências",
     "@clearPreferences": {
         "description": "Label for action to clear local user preferences in the dialog"
@@ -210,7 +171,6 @@
         "description": "Heading for community style setting"
     },
     "clearedUserPreferences": "As preferências de usuários foram limpas",
-    "@clearedUserPreferences": {},
     "collapse": "Colapsar",
     "@collapse": {
         "description": "Action to collapse something"
@@ -220,11 +180,8 @@
         "description": "Describes the action to collapse information - used in FAB settings"
     },
     "clearedDatabase": "O banco de dados local foi limpo. Reinicie o Thunder para que as mudanças sejam aplicadas.",
-    "@clearedDatabase": {},
     "collapsePost": "Recolher postagem",
-    "@collapsePost": {},
     "commentReported": "O comentário foi marcado para revisão.",
-    "@commentReported": {},
     "colorizeCommunityName": "Colorir nome da comunidade",
     "@colorizeCommunityName": {
         "description": "Setting for colorizing community name"
@@ -500,11 +457,8 @@
         "description": "Heading for content warning dialog"
     },
     "controversial": "Controverso",
-    "@controversial": {},
     "copiedToClipboard": "Copiado para a área de transferência",
-    "@copiedToClipboard": {},
     "copy": "Copiar",
-    "@copy": {},
     "copyComment": "Copiar comentário",
     "@copyComment": {
         "description": "Action for copying a whole comment"
@@ -514,13 +468,9 @@
         "description": "Action for copying selected text"
     },
     "copyText": "Copiar texto",
-    "@copyText": {},
     "couldNotDetermineCommentDelete": "Erro: Não foi possível determinar a postagem para excluir o comentário.",
-    "@couldNotDetermineCommentDelete": {},
     "couldNotDeterminePostComment": "Erro: Não foi possível determinar a postagem a comentar.",
-    "@couldNotDeterminePostComment": {},
     "couldntCreateReport": "Seu relatório de comentário não pôde ser enviado neste momento. Por favor, tente novamente mais tarde",
-    "@couldntCreateReport": {},
     "countComments": "{count} comentários",
     "@countComments": {
         "description": "Number of comments",
@@ -603,11 +553,8 @@
         }
     },
     "createAccount": "Criar conta",
-    "@createAccount": {},
     "createComment": "Criar comentário",
-    "@createComment": {},
     "createPost": "Criar postagem",
-    "@createPost": {},
     "created": "Criado em {date}",
     "@created": {
         "description": "The date that something was created",
@@ -662,7 +609,6 @@
         "description": "Default setting value (e.g., color)"
     },
     "delete": "Excluir",
-    "@delete": {},
     "deleteAccount": "Excluir conta",
     "@deleteAccount": {
         "description": "Label for action to delete account"
@@ -729,7 +675,6 @@
         "description": "Only load posts and communities in your language(s)"
     },
     "discussionLanguagesTooltip": "O conteúdo é filtrado para os idiomas selecionados.",
-    "@discussionLanguagesTooltip": {},
     "displayName": "Nome de exibição",
     "@displayName": {
         "description": "Label for display name"
@@ -739,9 +684,7 @@
         "description": "Action for hiding something permanently"
     },
     "edit": "Editar",
-    "@edit": {},
     "editComment": "Editar comentário",
-    "@editComment": {},
     "editPost": "Editar postagem",
     "@editPost": {
         "description": "Title when editing a post."
@@ -751,21 +694,15 @@
         "description": "Label for email input"
     },
     "empty": "Vazio",
-    "@empty": {},
     "emptyInbox": "Caixa de entrada vazia",
-    "@emptyInbox": {},
     "ok": "OK",
-    "@ok": {},
     "onlyModsCanPostInCommunity": "Apenas moderadores podem publicar nesta comunidade",
-    "@onlyModsCanPostInCommunity": {},
     "openByDefault": "Abrir por padrão",
     "@openByDefault": {
         "description": "Indicating the default behavior of opening links."
     },
     "openInBrowser": "Abrir no navegador",
-    "@openInBrowser": {},
     "openInstance": "Abrir instância",
-    "@openInstance": {},
     "openLinksInExternalBrowser": "Abrir links no navegador externo",
     "@openLinksInExternalBrowser": {
         "description": "Toggle to open links in an external browser."
@@ -783,9 +720,7 @@
         "description": "The color orange"
     },
     "overview": "Visão geral",
-    "@overview": {},
     "password": "Senha",
-    "@password": {},
     "pending": "Pendente",
     "@pending": {
         "description": "Describes the subscription status for 'Pending'"
@@ -812,7 +747,6 @@
         "description": "Subcategory in Setting -> General"
     },
     "postBody": "Corpo de postagem",
-    "@postBody": {},
     "postBodySettings": "Configurações do corpo de postagem",
     "@postBodySettings": {
         "description": "Settings heading for post body settings"
@@ -822,15 +756,10 @@
         "description": "Whether to show the community instance for post bodies"
     },
     "postTitle": "Título",
-    "@postTitle": {},
     "postURL": "URL",
-    "@postURL": {},
     "postUploadImageError": "Não foi possível fazer upload da imagem",
-    "@postUploadImageError": {},
     "posts": "Postagens",
-    "@posts": {},
     "profiles": "Perfis",
-    "@profiles": {},
     "public": "Público",
     "@public": {
         "description": "Public community visibility"
@@ -860,7 +789,6 @@
         "description": "The color purple"
     },
     "reachedTheBottom": "Não há mais itens para carregar",
-    "@reachedTheBottom": {},
     "read": "Lido",
     "@read": {
         "description": "Indicates that a post has been read"
@@ -878,17 +806,13 @@
         "description": "The color red"
     },
     "refresh": "Atualizar",
-    "@refresh": {},
     "refreshContent": "Atualizar conteúdo",
-    "@refreshContent": {},
     "removalReason": "Motivo da remoção",
     "@removalReason": {
         "description": "Title for the dialog for removing a post"
     },
     "remove": "Remover",
-    "@remove": {},
     "removeAccount": "Remover conta",
-    "@removeAccount": {},
     "removeAsCommunityModerator": "Remover como moderador de comunidade",
     "@removeAsCommunityModerator": {
         "description": "Moderator action to remove user as community moderator"
@@ -902,7 +826,6 @@
         "description": "Action to remove a community in drawer from favorites"
     },
     "removeInstance": "Remover instância",
-    "@removeInstance": {},
     "removeKeyword": "Remover \"{keyword}\"?",
     "@removeKeyword": {
         "description": "Description of removing a keyword filter",
@@ -945,9 +868,7 @@
         "description": "Name of reply color setting"
     },
     "replyToPost": "Responder à postagem",
-    "@replyToPost": {},
     "reportComment": "Denunciar comentário",
-    "@reportComment": {},
     "reportPost": "Denunciar postagem",
     "@reportPost": {
         "description": "Action to report a post (moderator action)"
@@ -973,7 +894,6 @@
         "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
     },
     "save": "Salvar",
-    "@save": {},
     "saveColor": "Salvar cor",
     "@saveColor": {
         "description": "Name of save color setting"
@@ -983,9 +903,7 @@
         "description": "Action to save the application settings."
     },
     "saved": "Salvo",
-    "@saved": {},
     "search": "Pesquisa",
-    "@search": {},
     "settingsPageAbout": "Sobre",
     "@settingsPageAbout": {
         "description": "About settings page"
@@ -1047,7 +965,6 @@
         "description": "Video settings page"
     },
     "share": "Compartilhar",
-    "@share": {},
     "shareComment": "Compartilhar link do comentário",
     "@shareComment": {
         "description": "Menu item for sharing a comment"
@@ -1077,9 +994,7 @@
         "description": "Menu item for sharing a Lemmy link"
     },
     "shareLink": "Compartilhar link externo",
-    "@shareLink": {},
     "shareMedia": "Compartilhar mídia",
-    "@shareMedia": {},
     "shareMediaLink": "Compartilhar link da mídia",
     "@shareMediaLink": {
         "description": "Action for sharing the link to the media associated with a post"
@@ -1089,7 +1004,6 @@
         "description": "Action for sharing the original link associated with a post"
     },
     "sharePost": "Compartilhar link da postagem",
-    "@sharePost": {},
     "sharePostLocal": "Compartilhar link da postagem (minha instância)",
     "@sharePostLocal": {
         "description": "Item for sharing a link to a post on my instance"
@@ -1127,15 +1041,12 @@
         "description": "The name of the setting for showing hidden posts"
     },
     "showLess": "Mostrar menos",
-    "@showLess": {},
     "showMore": "Mostrar mais",
-    "@showMore": {},
     "showOwnContent": "Mostrar conteúdo próprio",
     "@showOwnContent": {
         "description": "Toggle to show your own posts/comments."
     },
     "showPassword": "Mostrar senha",
-    "@showPassword": {},
     "showPostAuthor": "Mostrar autor de postagem",
     "@showPostAuthor": {
         "description": "Toggle to show post author."
@@ -1177,9 +1088,7 @@
         "description": "Toggle to show user instance."
     },
     "sidebar": "Barra lateral",
-    "@sidebar": {},
     "somethingWentWrong": "Opa, algo deu errado!",
-    "@somethingWentWrong": {},
     "spoiler": "Spoiler",
     "@spoiler": {
         "description": "Placeholder label for spoiler"
@@ -1197,9 +1106,7 @@
         "description": "Status of the action"
     },
     "submit": "Enviar",
-    "@submit": {},
     "subscriptions": "Inscrições",
-    "@subscriptions": {},
     "successfullyBannedUser": "{username} banido",
     "@successfullyBannedUser": {
         "description": "Notification for successfully banning a user",
@@ -1210,7 +1117,6 @@
         }
     },
     "successfullyBlocked": "Bloqueado.",
-    "@successfullyBlocked": {},
     "successfullyBlockedCommunity": "{communityName} bloqueado",
     "@successfullyBlockedCommunity": {
         "description": "Notification for successfully blocking a community",
@@ -1239,7 +1145,6 @@
         }
     },
     "successfullyUnblocked": "Desbloqueado.",
-    "@successfullyUnblocked": {},
     "successfullyUnblockedCommunity": "{communityName} desbloqueado",
     "@successfullyUnblockedCommunity": {
         "description": "Notification for successfully unblocking a community",
@@ -1283,7 +1188,6 @@
         "description": "A message describing the background test notification"
     },
     "text": "Texto",
-    "@text": {},
     "textActions": "Ações de texto",
     "@textActions": {
         "description": "Option for text actions"
@@ -1321,15 +1225,12 @@
         "description": "Title for link handling setting (called browserMode internally)"
     },
     "changeSort": "Alterar ordenação",
-    "@changeSort": {},
     "commentSwipeGesturesHint": "Quer usar botões? Ative-os na seção de comentários nas configurações gerais.",
-    "@commentSwipeGesturesHint": {},
     "linksBehaviourSettings": "Links",
     "@linksBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
     },
     "commentSortType": "Tipo de ordenação dos comentários",
-    "@commentSortType": {},
     "condensed": "Condensado",
     "@condensed": {
         "description": "Condensed post body view type"
@@ -1348,7 +1249,6 @@
         }
     },
     "customizeSwipeActions": "Personalizar ações de deslizar (toque para alterar)",
-    "@customizeSwipeActions": {},
     "databaseExportedSuccessfully": "O banco de dados foi exportado com sucesso para '{savedFilePath}'",
     "@databaseExportedSuccessfully": {
         "description": "Message shown to the user when the db was successfully exported",
@@ -1423,7 +1323,6 @@
         "description": "Setting name for inbox notifications"
     },
     "endOfComments": "Fim dos comentários",
-    "@endOfComments": {},
     "errorDeletingImage": "Ocorreu um erro ao excluir a imagem: {error}",
     "@errorDeletingImage": {
         "description": "Error message for deleting an image",
@@ -1486,9 +1385,7 @@
         "description": "Describes the action to expand information - used in FAB settings"
     },
     "expandOptions": "Expandir opções",
-    "@expandOptions": {},
     "expandPost": "Expandir postagem",
-    "@expandPost": {},
     "expandPostPreview": "Expandir pré-visualização da postagem",
     "@expandPostPreview": {
         "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
@@ -1581,7 +1478,6 @@
         "description": "Short decription for moderator action to feature a post"
     },
     "feed": "Feed",
-    "@feed": {},
     "feedBehaviourSettings": "Feed",
     "@feedBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
@@ -1595,7 +1491,6 @@
         "description": "Subcategory in Setting -> General"
     },
     "fetchAccountError": "Não foi possível determinar a conta",
-    "@fetchAccountError": {},
     "filteringBy": "Filtrando por {entity}",
     "@filteringBy": {
         "description": "Filtering by a community or creator in search.",
@@ -1626,9 +1521,7 @@
         "description": "Subcategory in Settings"
     },
     "gestures": "Gestos",
-    "@gestures": {},
     "gettingStarted": "Como começar",
-    "@gettingStarted": {},
     "green": "Verde",
     "@green": {
         "description": "The color green"
@@ -1654,7 +1547,6 @@
         "description": "Name of the hide color setting"
     },
     "hidePassword": "Ocultar senha",
-    "@hidePassword": {},
     "hideThumbnails": "Ocultar miniaturas",
     "@hideThumbnails": {
         "description": "Option to hide thumbnails in feed"
@@ -1664,7 +1556,6 @@
         "description": "Settings toggle to hide the top bar on scroll"
     },
     "image": "Imagem",
-    "@image": {},
     "imageCachingMode": "Modo de cache de imagens",
     "@imageCachingMode": {
         "description": "Title for setting related to image caching mode"
@@ -1718,9 +1609,7 @@
         "description": "Description for base font scale"
     },
     "combineNavAndFab": "Combinar FAB e botões de navegação",
-    "@combineNavAndFab": {},
     "combineNavAndFabDescription": "O botão de ação flutuante (FAB) será exibido entre os botões de navegação.",
-    "@combineNavAndFabDescription": {},
     "commentFontScale": "Escala da fonte do conteúdo do comentário",
     "@commentFontScale": {
         "description": "Setting for comment font scale"
@@ -1750,7 +1639,6 @@
         "description": "Setting for comment swipe actions"
     },
     "createNewCrossPost": "Criar nova postagem cruzada",
-    "@createNewCrossPost": {},
     "crossPostedFrom": "postagem cruzada de: {postUrl}",
     "@crossPostedFrom": {
         "description": "Initial heading for text-based cross-post",
@@ -1761,11 +1649,8 @@
         }
     },
     "crossPostedTo": "Postagem cruzada criada em",
-    "@crossPostedTo": {},
     "currentLongPress": "Atualmente definido como toque longo",
-    "@currentLongPress": {},
     "currentSinglePress": "Atualmente definido como toque único",
-    "@currentSinglePress": {},
     "deleteUserLabelConfirmation": "Tem certeza de que deseja excluir o rótulo?",
     "@deleteUserLabelConfirmation": {
         "description": "Confirmation message for deleting a label"
@@ -1775,7 +1660,6 @@
         "description": "Divider appearance category"
     },
     "downloadingMedia": "Baixando mídia para compartilhar…",
-    "@downloadingMedia": {},
     "downvote": "Dar voto negativo",
     "@downvote": {
         "description": "Action for downvoting a post/comment"
@@ -1789,7 +1673,6 @@
         "description": "Short description for downvoting a post/comment"
     },
     "downvotesDisabled": "Votos negativos estão desativos nesta instância.",
-    "@downvotesDisabled": {},
     "enableExperimentalFeatures": "Ativar recursos experimentais",
     "@enableExperimentalFeatures": {
         "description": "Setting to enable experimental features"
@@ -1853,7 +1736,6 @@
         "description": "Label for navigating forward (e.g., in a browser)"
     },
     "fullScreenNavigationSwipeDescription": "Deslize em qualquer lugar para voltar quando os gestos da esquerda para a direita estiverem desativados",
-    "@fullScreenNavigationSwipeDescription": {},
     "guestModeFeedSettings": "Configurações do feed do modo convidado",
     "@guestModeFeedSettings": {
         "description": "Feed settings for guest accounts"
@@ -1899,19 +1781,12 @@
         "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
     },
     "inbox": "Entrada",
-    "@inbox": {},
     "includeCommunity": "Incluir comunidade",
-    "@includeCommunity": {},
     "includeExternalLink": "Incluir link externo",
-    "@includeExternalLink": {},
     "includeImage": "Incluir imagem",
-    "@includeImage": {},
     "includePostLink": "Incluir link da postagem",
-    "@includePostLink": {},
     "includeText": "Incluir texto",
-    "@includeText": {},
     "includeTitle": "Incluir título",
-    "@includeTitle": {},
     "information": "Informação",
     "@information": {
         "description": "Information heading - used in the FAB settings page"
@@ -1951,7 +1826,6 @@
         "description": "Title for settings related to instances"
     },
     "internetOrInstanceIssues": "Você pode não estar conectado à Internet ou sua instância pode estar indisponível no momento.",
-    "@internetOrInstanceIssues": {},
     "invalidUrl": "Formato de URL inválido",
     "@invalidUrl": {
         "description": "Error message for invalid URL format"
@@ -1982,7 +1856,6 @@
         "description": "Label when creating or editing a post."
     },
     "languageFilters": "Procurando filtros de idioma?",
-    "@languageFilters": {},
     "languageNotAllowed": "A comunidade em que você está postando não permite postagens no idioma que você selecionou. Tente outro idioma.",
     "@languageNotAllowed": {
         "description": "The error message for the language_not_allowed Lemmy exception"
@@ -2004,7 +1877,6 @@
         "description": "Describes using the light theme"
     },
     "linkActions": "Ações de link",
-    "@linkActions": {},
     "linkHandlingCustomTabs": "Abrir no navegador do sistema incorporado no aplicativo",
     "@linkHandlingCustomTabs": {
         "description": "Description for custom tabs link handling"
@@ -2052,7 +1924,6 @@
         "description": "Placeholder text for loading"
     },
     "local": "Local",
-    "@local": {},
     "localNotifications": "Notificações locais",
     "@localNotifications": {
         "description": "Describes the notification type for Local Notifications"
@@ -2062,7 +1933,6 @@
         "description": "Local community visibility"
     },
     "localPosts": "Postagens locais",
-    "@localPosts": {},
     "lockPost": "Trancar postagem",
     "@lockPost": {
         "description": "Action for locking a post (moderator action)"
@@ -2076,9 +1946,7 @@
         "description": "Short decription for moderator action to lock a post"
     },
     "logOut": "Sair",
-    "@logOut": {},
     "login": "Entrar",
-    "@login": {},
     "loginAttemptCanceled": "Tentativa de login cancelada.",
     "@loginAttemptCanceled": {
         "description": "Message shown to user when they cancel a login attempt"
@@ -2093,11 +1961,8 @@
         }
     },
     "loginSucceeded": "Logado.",
-    "@loginSucceeded": {},
     "loginToPerformAction": "Você precisa estar logado para realizar esta tarefa.",
-    "@loginToPerformAction": {},
     "loginToSeeInbox": "Faça login para ver sua caixa de entrada",
-    "@loginToSeeInbox": {},
     "lookingForAccountSpecificFeedSettings": "Procurando configurações de feed específicas para sua conta?",
     "@lookingForAccountSpecificFeedSettings": {
         "description": "Helper setting which navigates to account page"
@@ -2107,7 +1972,6 @@
         "description": "Error related to unsupported link format."
     },
     "manageAccounts": "Gerenciar contas",
-    "@manageAccounts": {},
     "manageMedia": "Gerenciar mídia",
     "@manageMedia": {
         "description": "Setting name and page title for media management"
@@ -2153,7 +2017,6 @@
         "description": "Setting for metadata font scale"
     },
     "missingErrorMessage": "Nenhuma mensagem de erro disponível",
-    "@missingErrorMessage": {},
     "modAdd": "Adicionar/remover moderadores da instância",
     "@modAdd": {
         "description": "Description for modlog filter for actions that add instance moderators"
@@ -2211,33 +2074,23 @@
         "description": "Option for viewing modlog."
     },
     "mostComments": "Mais comentários",
-    "@mostComments": {},
     "mustBeLoggedIn": "Você precisa estar logado",
-    "@mustBeLoggedIn": {},
     "mustBeLoggedInComment": "Você precisa estar logado para comentar",
-    "@mustBeLoggedInComment": {},
     "mustBeLoggedInPost": "Você precisa estar logado para criar uma postagem",
-    "@mustBeLoggedInPost": {},
     "names": "Nomes",
     "@names": {
         "description": "Heading for name-related settings"
     },
     "navigateDown": "Próximo comentário",
-    "@navigateDown": {},
     "navigateUp": "Comentário anterior",
-    "@navigateUp": {},
     "navigation": "Navegação",
-    "@navigation": {},
     "never": "Nunca",
-    "@never": {},
     "newComments": "Novos comentários",
-    "@newComments": {},
     "newPost": "Nova postagem",
     "@newPost": {
         "description": "Setting for new post"
     },
     "new_": "Novo",
-    "@new_": {},
     "no": "Não",
     "@no": {
         "description": "A negative status"
@@ -2251,11 +2104,8 @@
         "description": "Placeholder text when no anonymous instances have been added"
     },
     "noCommentsFound": "Nenhum comentário encontrado",
-    "@noCommentsFound": {},
     "noCommunitiesFound": "Nenhuma comunidade encontrada",
-    "@noCommunitiesFound": {},
     "noCommunityBlocks": "Nenhuma comunidade bloqueada",
-    "@noCommunityBlocks": {},
     "noCompatibleAppFound": "Nenhum aplicativo compatível encontrado",
     "@noCompatibleAppFound": {
         "description": "Tell the user we didn't find a compatible UnifiedPush app"
@@ -2281,7 +2131,6 @@
         "description": "Message for no uploaded images"
     },
     "noInstanceBlocks": "Nenhuma instância bloqueada.",
-    "@noInstanceBlocks": {},
     "noItems": "Sem itens",
     "@noItems": {
         "description": "Generic text when there are no items"
@@ -2307,7 +2156,6 @@
         "description": "Label for when there are no messages in the inbox"
     },
     "noPostsFound": "Nenhuma postagem encontrada.",
-    "@noPostsFound": {},
     "noProfileBioSet": "Nenhuma biografia definida no perfil",
     "@noProfileBioSet": {
         "description": "Message for no profile bio set"
@@ -2321,19 +2169,16 @@
         "description": "Label for when there are no replies in the list"
     },
     "noResultsFound": "Nenhum resultado encontrado.",
-    "@noResultsFound": {},
     "noSubscriptions": "Sem inscrições",
     "@noSubscriptions": {
         "description": "Message for no subscriptions on the drawer"
     },
     "noUserBlocks": "Nenhum usuário bloqueado.",
-    "@noUserBlocks": {},
     "noUserLabels": "Você ainda não criou nenhum rótulo de usuário",
     "@noUserLabels": {
         "description": "Placeholder message for empty list of labels"
     },
     "noUsersFound": "Nenhum usuário encontrado.",
-    "@noUsersFound": {},
     "noVisibleComments": "Os comentários podem não estar visíveis porque a comunidade está bloqueada.",
     "@noVisibleComments": {
         "description": "A message that shows up when a user navigates to a post but the associated community is blocked."
@@ -2356,9 +2201,7 @@
         }
     },
     "notValidUrl": "URL inválido",
-    "@notValidUrl": {},
     "nothingToShare": "Nada a compartilhar",
-    "@nothingToShare": {},
     "notificationsBehaviourSettings": "Notificações",
     "@notificationsBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
@@ -2368,21 +2211,15 @@
         "description": "Description for when notifications are now allowed for app"
     },
     "off": "desligado",
-    "@off": {},
     "offline": "off-line",
     "@offline": {
         "description": "Describes a service that is unavailable"
     },
     "old": "Antigo",
-    "@old": {},
     "on": "ligado",
-    "@on": {},
     "onWifi": "No Wifi",
-    "@onWifi": {},
     "open": "Abrir",
-    "@open": {},
     "openAccountSwitcher": "Abrir alternador de conta",
-    "@openAccountSwitcher": {},
     "permissionDenied": "O Thunder não recebeu permissão para exibir notificações. Ative essa opção nas configurações do sistema.",
     "@permissionDenied": {
         "description": "Title for error when user denies OS permissions"
@@ -2432,7 +2269,6 @@
         "description": "Notifying the user that their post was created successfully"
     },
     "postLocked": "Postagem trancada. Não são permitidas respostas.",
-    "@postLocked": {},
     "postMetadataInstructions": "Você pode personalizar as informações de metadados arrastando e soltando as informações desejadas",
     "@postMetadataInstructions": {
         "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
@@ -2442,7 +2278,6 @@
         "description": "Description for the post preview in Setting -> Appearance -> Posts"
     },
     "postSavedAsDraft": "Postagem salva como rascunho",
-    "@postSavedAsDraft": {},
     "postShowUserInstance": "Exibir instância do usuário",
     "@postShowUserInstance": {
         "description": "Whether to show the user instance for post listings"
@@ -2452,19 +2287,16 @@
         "description": "Setting for post swipe actions"
     },
     "postSwipeGesturesHint": "Prefere usar botões? Altere os botões que aparecem nos cartões de postagem nas configurações gerais.",
-    "@postSwipeGesturesHint": {},
     "postTitleFontScale": "Escala da fonte de título de postagens",
     "@postTitleFontScale": {
         "description": "Setting for post title font scale"
     },
     "postTogglePreview": "Alternar pré-visualização",
-    "@postTogglePreview": {},
     "postViewType": "Tipo da visualização de postagens",
     "@postViewType": {
         "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
     },
     "preview": "Pré-visualização",
-    "@preview": {},
     "profileAppliedSuccessfully": "{profile} aplicado com sucesso!",
     "@profileAppliedSuccessfully": {
         "description": "Message shown to user when a profile is applied successfully",
@@ -2495,9 +2327,7 @@
         "description": "Toggle to reduce animations."
     },
     "reducesAnimations": "Reduze as animações usadas no Thunder",
-    "@reducesAnimations": {},
     "removedCommunityFromSubscriptions": "Cancelou a inscrição da comunidade",
-    "@removedCommunityFromSubscriptions": {},
     "removedInstanceMod": "Moderador da instância removido",
     "@removedInstanceMod": {
         "description": "Short decription for moderator action to remove a mod from an instance"
@@ -2520,7 +2350,6 @@
         "description": "Tooltip text for the list editor button"
     },
     "replyNotSupported": "Atualmente, ainda não é possível responder a partir desta visualização",
-    "@replyNotSupported": {},
     "replyingTo": "Respondendo a {author}",
     "@replyingTo": {
         "description": "Describes the author of the post that is being replied to",
@@ -2539,13 +2368,11 @@
         "description": "Semantic label for button in post appearance settings."
     },
     "resetPreferences": "Reiniciar preferências",
-    "@resetPreferences": {},
     "resetPreferencesAndData": "Reiniciar preferências e dados",
     "@resetPreferencesAndData": {
         "description": "Debug setting header for resetting all user preferences and data."
     },
     "restore": "Restaurar",
-    "@restore": {},
     "restoreComment": "Restaurar comentário",
     "@restoreComment": {
         "description": "Moderator action to restore a comment"
@@ -2559,7 +2386,6 @@
         "description": "Short decription for moderator action to restore a comment"
     },
     "restoredCommentFromDraft": "Comentário restaurado do rascunho",
-    "@restoredCommentFromDraft": {},
     "restoredCommunity": "Comunidade restaurada",
     "@restoredCommunity": {
         "description": "Short decription for moderator action to restore a community"
@@ -2569,19 +2395,12 @@
         "description": "Short decription for moderator action to restore a post"
     },
     "restoredPostFromDraft": "Postagem restaurada do rascunho",
-    "@restoredPostFromDraft": {},
     "retry": "Retentar",
-    "@retry": {},
     "screenReaderProfile": "Perfil do leitor de tela",
-    "@screenReaderProfile": {},
     "screenReaderProfileDescription": "Otimiza o Thunder para leitores de tela, reduzindo os elementos gerais e removendo gestos potencialmente conflitantes.",
-    "@screenReaderProfileDescription": {},
     "searchByText": "Pesquisar por texto",
-    "@searchByText": {},
     "searchByUrl": "Pesquisar por URL",
-    "@searchByUrl": {},
     "searchComments": "Pesquisar comentários",
-    "@searchComments": {},
     "searchCommentsFederatedWith": "Pesquisar comentários federados com {instance}",
     "@searchCommentsFederatedWith": {
         "description": "Placeholder text for searching for comments",
@@ -2628,7 +2447,6 @@
         }
     },
     "searchTerm": "Pesquisar termo",
-    "@searchTerm": {},
     "searchUsersFederatedWith": "Pesquisar usuários federados com {instance}",
     "@searchUsersFederatedWith": {
         "description": "Placeholder text for searching for users",
@@ -2643,7 +2461,6 @@
         "description": "Action for selecting all text"
     },
     "selectCommunity": "Selecione uma comunidade (obrigatório)",
-    "@selectCommunity": {},
     "selectLanguage": "Selecionar idioma",
     "@selectLanguage": {
         "description": "The prompt to select a language in the post creation page"
@@ -2674,7 +2491,6 @@
         "description": "Message which indicates that the (instance) settings override the app settings"
     },
     "settings": "Configurações",
-    "@settings": {},
     "settingsImportedSuccessfully": "As configurações foram importadas com sucesso!",
     "@settingsImportedSuccessfully": {
         "description": "Message shown to the user when the settings were imported successfully"
@@ -2692,7 +2508,6 @@
         "description": "User labels settings page"
     },
     "showAll": "Mostrar tudo",
-    "@showAll": {},
     "showBotAccounts": "Mostrar contas de robô",
     "@showBotAccounts": {
         "description": "Option to show bot accounts."
@@ -2746,23 +2561,18 @@
         "description": "Toggle to show user display names."
     },
     "sidebarBottomNavDoubleTapDescription": "Toque duas vezes na barra de navegação inferior para abrir a barra lateral",
-    "@sidebarBottomNavDoubleTapDescription": {},
     "small": "Pequeno",
     "@small": {
         "description": "Description for small font scale"
     },
     "sortBy": "Ordenar por",
-    "@sortBy": {},
     "sortOptions": "Opções de ordenação",
-    "@sortOptions": {},
     "subscribe": "Inscrever-se",
-    "@subscribe": {},
     "subscribeToCommunity": "Inscrever-se na comunidade",
     "@subscribeToCommunity": {
         "description": "Action for subscribing to a community"
     },
     "subscribed": "Inscrito",
-    "@subscribed": {},
     "subscriptionRequestSent": "Pedido de inscrição enviado",
     "@subscriptionRequestSent": {
         "description": "Message for subscription request sent"
@@ -2819,33 +2629,21 @@
         }
     },
     "timeoutComments": "Erro: Tempo limite ao tentar buscar comentários",
-    "@timeoutComments": {},
     "timeoutErrorMessage": "Houve um tempo limite aguardando uma resposta.",
-    "@timeoutErrorMessage": {},
     "timeoutSaveComment": "Erro: Tempo limite ao tentar salvar um comentário",
-    "@timeoutSaveComment": {},
     "timeoutSavingPost": "Erro: Tempo limite ao tentar salvar a postagem.",
-    "@timeoutSavingPost": {},
     "timeoutUpvoteComment": "Erro: Tempo limite ao tentar votar em um comentário",
-    "@timeoutUpvoteComment": {},
     "timeoutVotingPost": "Erro: Tempo limite ao tentar votar na postagem.",
-    "@timeoutVotingPost": {},
     "top": "Melhores",
-    "@top": {},
     "topAll": "Melhores te todos os tempos",
-    "@topAll": {},
     "topDay": "Melhores hoje",
-    "@topDay": {},
     "topHour": "Melhores na última hora",
-    "@topHour": {},
     "topMonth": "Melhores mês",
-    "@topMonth": {},
     "topNineMonths": "Melhores nos últimos 9 meses",
     "@topNineMonths": {
         "description": "Sort mode for top in past 9 months"
     },
     "topSixHour": "Melhores nas últimas 6 horas",
-    "@topSixHour": {},
     "topSixMonths": "Melhores nos últimos 6 meses",
     "@topSixMonths": {
         "description": "Sort mode for top in past 6 months"
@@ -2855,11 +2653,8 @@
         "description": "Sort mode for top in past 3 months"
     },
     "topTwelveHour": "Melhores nas últimas 12 horas",
-    "@topTwelveHour": {},
     "topWeek": "Melhores semana",
-    "@topWeek": {},
     "topYear": "Melhores ano",
-    "@topYear": {},
     "totalComments": "{x} comentários",
     "@totalComments": {
         "description": "The total comments created by a user",
@@ -2879,7 +2674,6 @@
         }
     },
     "totp": "TOTP (opcional)",
-    "@totp": {},
     "transferredModToCommunity": "Comunidade transferida",
     "@transferredModToCommunity": {
         "description": "Short decription for moderator action to transfer a community"
@@ -2889,13 +2683,11 @@
         "description": "Warning that translations may not be complete when selecting a language in the settings"
     },
     "trendingCommunities": "Comunidades em destaque",
-    "@trendingCommunities": {},
     "trySearchingFor": "Tente pesquisar por…",
     "@trySearchingFor": {
         "description": "Suggestion for the user to try searching for a different type"
     },
     "unableToFindCommunity": "Não é possível encontrar a comunidade",
-    "@unableToFindCommunity": {},
     "unableToFindCommunityName": "Não é possível encontrar a comunidade '{communityName}'",
     "@unableToFindCommunityName": {
         "description": "Error message for when we are unable to find a community, including the name",
@@ -2910,7 +2702,6 @@
         "description": "An error message for when we can't find a community on an instance"
     },
     "unableToFindInstance": "Não é possível encontrar a instância",
-    "@unableToFindInstance": {},
     "unableToFindLanguage": "Não é possível encontrar o idioma",
     "@unableToFindLanguage": {
         "description": "Error message when language cannot be found."
@@ -2920,7 +2711,6 @@
         "description": "Error message when we are unable to find a post"
     },
     "unableToFindUser": "Não é possível encontrar o usuário",
-    "@unableToFindUser": {},
     "unableToFindUserName": "Não é possível encontrar o usuário '{username}'",
     "@unableToFindUserName": {
         "description": "Error message when we are unable to find a user",
@@ -2966,7 +2756,6 @@
         }
     },
     "unableToLoadReplies": "Não é possível carregar mais respostas.",
-    "@unableToLoadReplies": {},
     "unableToNavigateToInstance": "Não é possível navegar a {instanceHost}. Pode não ser uma instância Lemmy válida.",
     "@unableToNavigateToInstance": {
         "description": "Error message for when we can't navigate to a Lemmy instance",
@@ -3100,15 +2889,12 @@
         "description": "Description for unresolved status (e.g., unresolved reports)"
     },
     "unsubscribe": "Cancelar inscrição",
-    "@unsubscribe": {},
     "unsubscribeFromCommunity": "Cancelar inscrição da comunidade",
     "@unsubscribeFromCommunity": {
         "description": "Action for unsubscribing from a community"
     },
     "unsubscribePending": "Cancelar inscrição (inscrição pendente)",
-    "@unsubscribePending": {},
     "unsubscribed": "Inscrição cancelada",
-    "@unsubscribed": {},
     "updateReleased": "Atualização lançada: {version}",
     "@updateReleased": {
         "description": "Message shown to the user when a new update is released",
@@ -3119,7 +2905,6 @@
         }
     },
     "uploadImage": "Fazer upload de imagem",
-    "@uploadImage": {},
     "uploadedDate": "Upload: {date}",
     "@uploadedDate": {
         "description": "Metadata for image uploads",
@@ -3146,7 +2931,6 @@
         "description": "Unsupported link type at the present time."
     },
     "url": "URL",
-    "@url": {},
     "useAdvancedShareSheet": "Usar o painel de compartilhamento avançado",
     "@useAdvancedShareSheet": {
         "description": "Toggle to use advanced share sheet."
@@ -3238,7 +3022,6 @@
         "description": "Setting for user name thickness"
     },
     "userNotLoggedIn": "Usuário não logado",
-    "@userNotLoggedIn": {},
     "userProfiles": "Perfis de usuário",
     "@userProfiles": {
         "description": "Settings related to user profiles."
@@ -3252,13 +3035,11 @@
         "description": "Heading for user style setting"
     },
     "username": "Nome de usuário",
-    "@username": {},
     "usernameFormattingRedirect": "Procurando por formatação de nome de usuário?",
     "@usernameFormattingRedirect": {
         "description": "Setting title for sending the user to the new formatting options"
     },
     "users": "Usuários",
-    "@users": {},
     "versionNumber": "Versão {version}",
     "@versionNumber": {
         "description": "String for describing the current version",
@@ -3309,7 +3090,6 @@
         "description": "A title for viewing all of something (e.g., instances)"
     },
     "viewAllComments": "Ver todos os comentários",
-    "@viewAllComments": {},
     "viewCommentSource": "Ver fonte do comentário",
     "@viewCommentSource": {
         "description": "Menu item for viewing a comment's source"
@@ -3344,19 +3124,16 @@
         }
     },
     "visitCommunity": "Visitar comunidade",
-    "@visitCommunity": {},
     "visitCommunityInstance": "Visitar instância da comunidade",
     "@visitCommunityInstance": {
         "description": "Action to visit the instance of a community"
     },
     "visitInstance": "Visitar instância",
-    "@visitInstance": {},
     "visitUserInstance": "Visitar instância do usuário",
     "@visitUserInstance": {
         "description": "Action to visit the instance of a user"
     },
     "visitUserProfile": "Visitar perfil do usuário",
-    "@visitUserProfile": {},
     "warning": "Aviso",
     "@warning": {
         "description": "Heading for warning dialogs"
@@ -3397,7 +3174,6 @@
         }
     },
     "hot": "Em alta",
-    "@hot": {},
     "imageDimensionTimeout": "Tempo limite de dimensão da imagem",
     "@imageDimensionTimeout": {
         "description": "Setting for how long to wait for the image dimensions to be fetched"
@@ -3503,11 +3279,8 @@
         }
     },
     "searchPostSearchType": "Selecionar tipo de pesquisa de postagens",
-    "@searchPostSearchType": {},
     "selectFeedType": "Selecionar tipo de feed",
-    "@selectFeedType": {},
     "selectSearchType": "Selecionar tipo de pesquisa",
-    "@selectSearchType": {},
     "sendBackgroundTestLocalNotification": "Enviar notificação local de teste em segundo plano",
     "@sendBackgroundTestLocalNotification": {
         "description": "The option to send a background notification for testing"
@@ -3517,11 +3290,8 @@
         "description": "The option to send a notification for testing"
     },
     "sentRequestForTestNotification": "Enviada solicitação de notificação de teste.",
-    "@sentRequestForTestNotification": {},
     "setLongPress": "Definir como ação de toque longo",
-    "@setLongPress": {},
     "setShortPress": "Definir como ação de toque curto",
-    "@setShortPress": {},
     "settingTypeNotSupported": "As configurações do tipo {settingType} ainda não são suportadas.",
     "@settingTypeNotSupported": {
         "description": "Error message for when a setting type is not supported",
@@ -3557,7 +3327,6 @@
         "description": "Setting for showing changelogs after updates"
     },
     "sortByTop": "Ordenar por melhores",
-    "@sortByTop": {},
     "testBackgroundUnifiedPushNotificationDescription": "O Thunder solicitará ao servidor de notificações que envie uma notificação atrasada e, em seguida, se fechará. (Isso pode levar alguns minutos.)",
     "@testBackgroundUnifiedPushNotificationDescription": {
         "description": "A message describing the UnifiedPush background test notification"
@@ -3608,7 +3377,6 @@
         "description": "Label for setting to combine comment scores"
     },
     "deselectUndeterminedWarning": "Se você desmarcar Indeterminado, não verá a maior parte do conteúdo.",
-    "@deselectUndeterminedWarning": {},
     "hideNsfwPostsFromFeed": "Ocultar postagens NSFW do feed",
     "@hideNsfwPostsFromFeed": {
         "description": "Toggle to hide NSFW posts from the feed."
@@ -3626,7 +3394,6 @@
         "description": "Warning for NSFW posts"
     },
     "postNSFW": "Marcar como NSFW",
-    "@postNSFW": {},
     "showNsfwContent": "Mostrar conteúdo NSFW",
     "@showNsfwContent": {
         "description": "Toggle to show NSFW content."
@@ -3648,9 +3415,7 @@
         }
     },
     "comment": "Comentário",
-    "@comment": {},
     "dismissRead": "Descartar lidas",
-    "@dismissRead": {},
     "enableCommentNavigation": "Ativar navegação nos comentários",
     "@enableCommentNavigation": {
         "description": "Setting for enable comment navigation"
@@ -3660,7 +3425,6 @@
         "description": "Label for the original poster."
     },
     "endSearch": "Encerrar pesquisa",
-    "@endSearch": {},
     "fullscreenSwipeGestures": "Gestos de deslizar em tela cheia",
     "@fullscreenSwipeGestures": {
         "description": "Setting for fullscreen swipe gestures"
@@ -3706,9 +3470,7 @@
         "description": "Description for setting for showing navigation labels"
     },
     "sidebarBottomNavSwipeDescription": "Deslize a barra de navegação inferior para abrir a barra lateral",
-    "@sidebarBottomNavSwipeDescription": {},
     "tapToExit": "Pressione voltar novamente para sair",
-    "@tapToExit": {},
     "tappableAuthorCommunity": "Autores e comunidades tocáveis",
     "@tappableAuthorCommunity": {
         "description": "Toggle to make authors and communities tappable."
@@ -3718,11 +3480,8 @@
         "description": "Chip for viewing all possible search results"
     },
     "scaled": "Escalonado",
-    "@scaled": {},
     "toggelRead": "Alternar status de leitura",
-    "@toggelRead": {},
     "readAll": "Ler tudo",
-    "@readAll": {},
     "fullscreen": "Tela cheia",
     "@fullscreen": {
         "description": "Action for entering fullscreen"
@@ -3742,5 +3501,13 @@
     "media": "Mídia",
     "@media": {
         "description": "Describes a piece of media content (e.g., image, video)"
+    },
+    "linkPostsUseCompactView": "Mostrar postagens de link compactas",
+    "@linkPostsUseCompactView": {
+        "description": "Toggle to use compact view for link posts."
+    },
+    "pinnedPostsUseCompactView": "Mostrar postagens fixadas compactas",
+    "@pinnedPostsUseCompactView": {
+        "description": "Toggle to use compact view for pinned posts."
     }
 }
