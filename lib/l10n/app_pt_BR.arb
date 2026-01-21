@@ -3509,5 +3509,9 @@
     "pinnedPostsUseCompactView": "Mostrar postagens fixadas compactas",
     "@pinnedPostsUseCompactView": {
         "description": "Toggle to use compact view for pinned posts."
+    },
+    "showPostCommunityFirst": "Mostrar comunidade e autor primeiro",
+    "@showPostCommunityFirst": {
+        "description": "Toggle to show community and author first."
     }
 }
