@@ -41,7 +41,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  bool get supportsHidePosts => false;
+  bool get supportsHidePosts => true;
 
   @override
   bool get supportsPostReports => false;
@@ -50,7 +50,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   bool get supportsCommentReports => false;
 
   @override
-  bool get supportsPrivateMessages => false;
+  bool get supportsPrivateMessages => true;
 
   @override
   bool get supportsModlog => false;
@@ -59,13 +59,13 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   bool get supportsSettingsImportExport => false;
 
   @override
-  bool get supportsMedia => false;
+  bool get supportsMedia => true;
 
   @override
   bool get supportsTOTP => false;
 
   @override
-  bool get supportsInstanceBlock => false;
+  bool get supportsInstanceBlock => true;
 
   // =============================================================
   // Authentication & Site
@@ -74,12 +74,12 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
     // PieFed doesn't support TOTP
-    if (totp != null) {
+    if (totp?.isNotEmpty == true) {
       throw UnsupportedFeatureException('TOTP authentication', platformName: platformName);
     }
 
     final json = await request(HttpMethod.post, '$basePath/user/login', {
-      'username_or_email': username,
+      'username': username,
       'password': password,
     });
     return json['jwt'] as String?;
@@ -99,7 +99,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   Future<GetPostResponse> getPost(int postId, {int? commentId}) async {
     final json = await request(HttpMethod.get, '$basePath/post', {
       'id': postId,
-      'comment_id': commentId,
     });
 
     final post = ThunderPost.fromPiefedPostView(json['post_view']);
@@ -121,18 +120,30 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     PostSortType? postSortType,
     int? communityId,
     String? communityName,
+    String? query,
+    int? personId,
+    bool? likedOnly,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
     bool? showHidden,
     bool? showSaved,
   }) async {
     final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
 
     final Map<String, dynamic> queryParams = {
+      'q': query,
       'type_': feedListType?.value,
       'sort': postSortType?.value,
       'page': page,
       'limit': limit,
       'community_name': communityName,
       'community_id': communityId,
+      'person_id': personId,
+      'liked_only': likedOnly,
+      'feed_id': feedId,
+      'topic_id': topicId,
+      'ignore_sticky': ignoreSticky,
     };
 
     if (showSaved == true) queryParams['saved_only'] = showSaved;
@@ -140,7 +151,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     final json = await request(HttpMethod.get, '$basePath/post/list', queryParams);
 
     final posts = (json['posts'] as List).map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
-    final nextPage = posts.isNotEmpty ? (page + 1).toString() : null;
+    final nextPage = (json['next_cursor'] ?? json['next_page'])?.toString();
 
     return (posts: posts, nextPage: nextPage);
   }
@@ -157,10 +168,11 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     String? altText,
   }) async {
     final json = await request(HttpMethod.post, '$basePath/post', {
-      'name': title,
+      'title': title,
       'community_id': communityId,
       'url': url,
       'body': contents,
+      'alt_text': altText,
       'nsfw': nsfw,
       'language_id': languageId,
     });
@@ -180,9 +192,10 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }) async {
     final json = await request(HttpMethod.put, '$basePath/post', {
       'post_id': postId,
-      'name': title,
+      'title': title,
       'url': url,
       'body': contents,
+      'alt_text': altText,
       'nsfw': nsfw,
       'language_id': languageId,
     });
@@ -219,8 +232,13 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<bool> hidePost({required int postId, required bool hide}) {
-    throw UnsupportedFeatureException('Hiding posts', platformName: platformName);
+  Future<bool> hidePost({required int postId, required bool hide}) async {
+    final json = await request(HttpMethod.post, '$basePath/post/hide', {
+      'post_id': postId,
+      'hidden': hide,
+    });
+    final post = ThunderPost.fromPiefedPostView(json['post_view']);
+    return post.hidden == hide;
   }
 
   @override
@@ -273,6 +291,87 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     });
   }
 
+  /// Fetch a list of likes for a post.
+  Future<Map<String, dynamic>> listPostLikes({required int postId, int? page, int? limit}) async {
+    return await request(HttpMethod.get, '$basePath/post/like/list', {
+      'post_id': postId,
+      'page': page,
+      'limit': limit,
+    });
+  }
+
+  /// Alternate posts list endpoint (list2).
+  Future<GetPostsResponse> listPosts2({
+    String? cursor,
+    int? limit,
+    FeedListType? feedListType,
+    PostSortType? postSortType,
+    int? communityId,
+    String? communityName,
+    String? query,
+    int? personId,
+    bool? likedOnly,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
+  }) async {
+    final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
+
+    final Map<String, dynamic> queryParams = {
+      'q': query,
+      'type_': feedListType?.value,
+      'sort': postSortType?.value,
+      'page': page,
+      'limit': limit,
+      'community_name': communityName,
+      'community_id': communityId,
+      'person_id': personId,
+      'liked_only': likedOnly,
+      'feed_id': feedId,
+      'topic_id': topicId,
+      'ignore_sticky': ignoreSticky,
+    };
+
+    final json = await request(HttpMethod.get, '$basePath/post/list2', queryParams);
+
+    final posts = (json['posts'] as List).map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
+    final nextPage = json['next_page'] as String?;
+
+    return (posts: posts, nextPage: nextPage);
+  }
+
+  /// Assign flair to a post.
+  Future<Map<String, dynamic>> setPostFlair({required int postId, List<int>? flairIdList}) async {
+    return await request(HttpMethod.post, '$basePath/post/assign_flair', {
+      'post_id': postId,
+      'flair_id_list': flairIdList,
+    });
+  }
+
+  /// Subscribe or unsubscribe from a post.
+  Future<ThunderPost> subscribePost({required int postId, required bool subscribe}) async {
+    final json = await request(HttpMethod.put, '$basePath/post/subscribe', {
+      'post_id': postId,
+      'subscribe': subscribe,
+    });
+    return ThunderPost.fromPiefedPostView(json['post_view']);
+  }
+
+  /// Vote on a poll attached to a post.
+  Future<Map<String, dynamic>> voteInPoll({required int postId, required List<int> choiceId}) async {
+    return await request(HttpMethod.post, '$basePath/post/poll_vote', {
+      'post_id': postId,
+      'choice_id': choiceId,
+    });
+  }
+
+  /// Get site metadata for a URL.
+  Future<Map<String, dynamic>> getSiteMetadata({String? url}) async {
+    return await request(HttpMethod.get, '$basePath/post/site_metadata', {
+      'url': url,
+    });
+  }
+
   @override
   Future<List<ThunderPostReport>> getPostReports({
     int? postId,
@@ -303,40 +402,143 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   Future<GetCommentsResponse> getComments({
     required int postId,
     int? page,
+    String? cursor,
     int? limit,
     int? maxDepth,
     int? communityId,
     int? parentId,
     CommentSortType? commentSortType,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/comment/list', {
+    final json = await request(HttpMethod.get, '$basePath/post/replies', {
       'sort': commentSortType?.value,
       'max_depth': maxDepth,
-      'page': page,
+      'page': cursor ?? page?.toString(),
       'limit': limit,
-      'community_id': communityId,
       'post_id': postId,
       'parent_id': parentId,
     });
 
-    // PieFed returns nested comments, flatten them
-    final flattenedComments = _flattenComments(json['comments'] as List);
+    // PieFed returns nested replies for a post; flatten them in-order and inherit post/community.
+    final flattenedComments = _flattenReplies(json['comments'] as List);
     final comments = flattenedComments.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
-    final nextPage = (limit != null && comments.length < limit) ? null : (page ?? 0) + 1;
+    final nextPage = json['next_page']?.toString();
 
     return (comments: comments, nextPage: nextPage);
   }
 
-  /// Flattens nested PieFed comment structure.
-  List<dynamic> _flattenComments(List<dynamic> comments) {
+  /// List comments using the comment list endpoint.
+  Future<GetCommentsResponse> listComments({
+    int? page,
+    String? cursor,
+    int? limit,
+    CommentSortType? commentSortType,
+    bool? likedOnly,
+    bool? savedOnly,
+    int? personId,
+    int? communityId,
+    int? postId,
+    int? parentId,
+    int? maxDepth,
+    bool? depthFirst,
+  }) async {
+    final json = await request(HttpMethod.get, '$basePath/comment/list', {
+      'sort': commentSortType?.value,
+      'page': cursor ?? page,
+      'limit': limit,
+      'liked_only': likedOnly,
+      'saved_only': savedOnly,
+      'person_id': personId,
+      'community_id': communityId,
+      'post_id': postId,
+      'parent_id': parentId,
+      'max_depth': maxDepth,
+      'depth_first': depthFirst,
+    });
+
+    final comments = (json['comments'] as List).map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+    final nextPage = json['next_page']?.toString();
+
+    return (comments: comments, nextPage: nextPage);
+  }
+
+  /// Flattens nested PieFed reply structure, ensuring nested replies inherit post/community.
+  List<dynamic> _flattenReplies(
+    List<dynamic> comments, {
+    Map<String, dynamic>? fallbackPost,
+    Map<String, dynamic>? fallbackCommunity,
+  }) {
     final flattened = <dynamic>[];
     for (final comment in comments) {
-      flattened.add(comment);
-      if (comment['replies'] != null && (comment['replies'] as List).isNotEmpty) {
-        flattened.addAll(_flattenComments(comment['replies'] as List));
+      if (comment is! Map) continue;
+      final commentMap = Map<String, dynamic>.from(comment);
+      final post = commentMap['post'] as Map<String, dynamic>? ?? fallbackPost;
+      final community = commentMap['community'] as Map<String, dynamic>? ?? fallbackCommunity;
+
+      if (post != null && commentMap['post'] == null) {
+        commentMap['post'] = post;
+      }
+      if (community != null && commentMap['community'] == null) {
+        commentMap['community'] = community;
+      }
+
+      flattened.add(commentMap);
+
+      if (commentMap['replies'] is List && (commentMap['replies'] as List).isNotEmpty) {
+        flattened.addAll(
+          _flattenReplies(
+            commentMap['replies'] as List,
+            fallbackPost: post,
+            fallbackCommunity: community,
+          ),
+        );
       }
     }
     return flattened;
+  }
+
+  /// Fetch a list of likes for a comment.
+  Future<Map<String, dynamic>> listCommentLikes({required int commentId, int? page, int? limit}) async {
+    return await request(HttpMethod.get, '$basePath/comment/like/list', {
+      'comment_id': commentId,
+      'page': page,
+      'limit': limit,
+    });
+  }
+
+  /// Lock or unlock a comment.
+  Future<ThunderComment> lockComment({required int commentId, required bool locked}) async {
+    final json = await request(HttpMethod.post, '$basePath/comment/lock', {
+      'comment_id': commentId,
+      'locked': locked,
+    });
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Mark or unmark a comment reply as the answer.
+  Future<Map<String, dynamic>> markCommentAsAnswer({required int commentReplyId, required bool answer}) async {
+    return await request(HttpMethod.post, '$basePath/comment/mark_as_answer', {
+      'comment_reply_id': commentReplyId,
+      'answer': answer,
+    });
+  }
+
+  /// Remove or restore a comment.
+  Future<ThunderComment> removeComment({required int commentId, required bool removed, String? reason}) async {
+    final json = await request(HttpMethod.post, '$basePath/comment/remove', {
+      'comment_id': commentId,
+      'removed': removed,
+      'reason': reason,
+    });
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+  }
+
+  /// Subscribe or unsubscribe from a comment.
+  Future<ThunderComment> subscribeComment({required int commentId, required bool subscribe}) async {
+    final json = await request(HttpMethod.put, '$basePath/comment/subscribe', {
+      'comment_id': commentId,
+      'subscribe': subscribe,
+    });
+    return ThunderComment.fromPiefedCommentView(json['comment_view']);
   }
 
   @override
@@ -348,7 +550,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }) async {
     final json = await request(HttpMethod.post, '$basePath/comment', {
       'post_id': postId,
-      'content': content,
+      'body': content,
       'parent_id': parentId,
       'language_id': languageId,
     });
@@ -363,7 +565,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }) async {
     final json = await request(HttpMethod.put, '$basePath/comment', {
       'comment_id': commentId,
-      'content': content,
+      'body': content,
       'language_id': languageId,
     });
     return ThunderComment.fromPiefedCommentView(json['comment_view']);
@@ -474,6 +676,88 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
   }
 
+  /// Delete or restore a community.
+  Future<ThunderCommunity> deleteCommunity({required int communityId, required bool deleted}) async {
+    final json = await request(HttpMethod.post, '$basePath/community/delete', {
+      'community_id': communityId,
+      'deleted': deleted,
+    });
+    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+  }
+
+  /// Create a flair for a community.
+  Future<Map<String, dynamic>> createCommunityFlair({
+    required int communityId,
+    required String flairTitle,
+    String? textColor,
+    String? backgroundColor,
+    bool? blurImages,
+  }) async {
+    return await request(HttpMethod.post, '$basePath/community/flair', {
+      'community_id': communityId,
+      'flair_title': flairTitle,
+      'text_color': textColor,
+      'background_color': backgroundColor,
+      'blur_images': blurImages,
+    });
+  }
+
+  /// Edit a community flair.
+  Future<Map<String, dynamic>> editCommunityFlair({
+    required int flairId,
+    String? flairTitle,
+    String? textColor,
+    String? backgroundColor,
+    bool? blurImages,
+  }) async {
+    return await request(HttpMethod.put, '$basePath/community/flair', {
+      'flair_id': flairId,
+      'flair_title': flairTitle,
+      'text_color': textColor,
+      'background_color': backgroundColor,
+      'blur_images': blurImages,
+    });
+  }
+
+  /// Delete a community flair.
+  Future<Map<String, dynamic>> deleteCommunityFlair({required int flairId}) async {
+    return await request(HttpMethod.post, '$basePath/community/flair/delete', {
+      'flair_id': flairId,
+    });
+  }
+
+  /// Leave all communities.
+  Future<Map<String, dynamic>> leaveAllCommunities() async {
+    return await request(HttpMethod.post, '$basePath/community/leave_all', {});
+  }
+
+  /// List bans for a community.
+  Future<Map<String, dynamic>> listCommunityBans({required int communityId, int? page, int? limit}) async {
+    return await request(HttpMethod.get, '$basePath/community/moderate/bans', {
+      'community_id': communityId,
+      'page': page,
+      'limit': limit,
+    });
+  }
+
+  /// Update a post's NSFW status in a community.
+  Future<ThunderPost> setCommunityPostNsfw({required int postId, required bool nsfw}) async {
+    final json = await request(HttpMethod.post, '$basePath/community/moderate/post/nsfw', {
+      'post_id': postId,
+      'nsfw_status': nsfw,
+    });
+    return ThunderPost.fromPiefedPostView(json);
+  }
+
+  /// Subscribe or unsubscribe to a community.
+  Future<ThunderCommunity> subscribeCommunity({required int communityId, required bool subscribe}) async {
+    final json = await request(HttpMethod.put, '$basePath/community/subscribe', {
+      'community_id': communityId,
+      'subscribe': subscribe,
+    });
+    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+  }
+
   // =============================================================
   // Users
   // =============================================================
@@ -514,6 +798,67 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return ThunderUser.fromPiefedUserView(json['person_view']);
   }
 
+  /// Ban a user instance-wide.
+  Future<ThunderUser> banUser({
+    required int userId,
+    required bool banIpAddress,
+    required bool purgeContent,
+    String? reason,
+  }) async {
+    final json = await request(HttpMethod.post, '$basePath/user/ban', {
+      'person_id': userId,
+      'ban_ip_address': banIpAddress,
+      'purge_content': purgeContent,
+      'reason': reason,
+    });
+    return ThunderUser.fromPiefedUserView(json['person_view']);
+  }
+
+  /// Unban a user instance-wide.
+  Future<ThunderUser> unbanUser({required int userId}) async {
+    final json = await request(HttpMethod.post, '$basePath/user/unban', {
+      'person_id': userId,
+    });
+    return ThunderUser.fromPiefedUserView(json['person_view']);
+  }
+
+  /// Subscribe or unsubscribe from a user.
+  Future<Map<String, dynamic>> subscribeUser({required int userId, required bool subscribe}) async {
+    return await request(HttpMethod.put, '$basePath/user/subscribe', {
+      'person_id': userId,
+      'subscribe': subscribe,
+    });
+  }
+
+  /// Set a note on a user.
+  Future<Map<String, dynamic>> setUserNote({required int userId, String? note}) async {
+    return await request(HttpMethod.post, '$basePath/user/note', {
+      'person_id': userId,
+      'note': note,
+    });
+  }
+
+  /// Set user flair in a community.
+  Future<Map<String, dynamic>> setUserFlair({required int communityId, String? flairText}) async {
+    return await request(HttpMethod.post, '$basePath/user/set_flair', {
+      'community_id': communityId,
+      'flair_text': flairText,
+    });
+  }
+
+  /// Fetch the current user's profile.
+  Future<Map<String, dynamic>> getUserMe() async {
+    return await request(HttpMethod.get, '$basePath/user/me', {});
+  }
+
+  /// Verify credentials.
+  Future<void> verifyCredentials({required String username, required String password}) async {
+    await request(HttpMethod.post, '$basePath/user/verify_credentials', {
+      'username': username,
+      'password': password,
+    });
+  }
+
   @override
   Future<ThunderUser> banUserFromCommunity({
     required int userId,
@@ -523,15 +868,32 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     String? reason,
     int? expires,
   }) async {
-    final json = await request(HttpMethod.post, '$basePath/community/ban_user', {
-      'person_id': userId,
+    if (!ban) {
+      final json = await request(HttpMethod.put, '$basePath/community/moderate/unban', {
+        'community_id': communityId,
+        'user_id': userId,
+      });
+      return ThunderUser.fromPiefedUser(json['banned_user']);
+    }
+
+    String? expiresAt;
+    bool? permanent;
+    if (expires != null) {
+      final millis = expires > 1000000000000 ? expires : expires * 1000;
+      expiresAt = DateTime.fromMillisecondsSinceEpoch(millis, isUtc: true).toIso8601String();
+      permanent = false;
+    } else {
+      permanent = true;
+    }
+
+    final json = await request(HttpMethod.post, '$basePath/community/moderate/ban', {
       'community_id': communityId,
-      'ban': ban,
-      'remove_data': removeData,
-      'reason': reason,
-      'expires': expires,
+      'user_id': userId,
+      'reason': reason ?? '',
+      'expires_at': expiresAt,
+      'permanent': permanent,
     });
-    return ThunderUser.fromPiefedUserView(json['person_view']);
+    return ThunderUser.fromPiefedUser(json['banned_user']);
   }
 
   @override
@@ -563,17 +925,20 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     FeedListType? listingType,
     int? page,
     int? limit,
+    int? minimumUpvotes,
+    bool? nsfw,
   }) async {
     final json = await request(HttpMethod.get, '$basePath/search', {
       'q': query,
       'community_id': communityId,
       'community_name': communityName,
-      'creator_id': creatorId,
       'type_': type?.searchType,
       'sort': sort?.value,
       'listing_type': listingType?.value,
       'page': page,
       'limit': limit,
+      'minimum_upvotes': minimumUpvotes,
+      'nsfw': nsfw,
     });
 
     return (
@@ -607,7 +972,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return (
       replies: json['replies'] as int? ?? 0,
       mentions: json['mentions'] as int? ?? 0,
-      privateMessages: 0, // PieFed doesn't support private messages
+      privateMessages: json['private_messages'] as int? ?? 0,
     );
   }
 
@@ -651,7 +1016,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     CommentSortType? sort,
     bool unread = false,
   }) async {
-    final response = await request(HttpMethod.get, '$basePath/user/mention', {
+    final response = await request(HttpMethod.get, '$basePath/user/mentions', {
       'page': page,
       'limit': limit,
       'sort': sort?.value,
@@ -671,8 +1036,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<void> markCommentMentionAsRead({required int mentionId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/user/mention/mark_as_read', {
-      'person_mention_id': mentionId,
+    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {
+      'comment_reply_id': mentionId,
       'read': read,
     });
   }
@@ -680,6 +1045,33 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   @override
   Future<void> markAllNotificationsAsRead() async {
     await request(HttpMethod.post, '$basePath/user/mark_all_as_read', {});
+  }
+
+  /// Mark all notifications as read using the notifications endpoint.
+  Future<Map<String, dynamic>> markAllNotificationsRead() async {
+    return await request(HttpMethod.put, '$basePath/user/mark_all_notifications_read', {});
+  }
+
+  /// Update a notification's read state.
+  Future<Map<String, dynamic>> setNotificationState({required int notificationId, required bool read}) async {
+    return await request(HttpMethod.put, '$basePath/user/notification_state', {
+      'notif_id': notificationId,
+      'read_state': read,
+    });
+  }
+
+  /// List notifications with a given status.
+  Future<Map<String, dynamic>> listNotifications({required String status, int? page, int? limit}) async {
+    return await request(HttpMethod.get, '$basePath/user/notifications', {
+      'status': status,
+      'page': page,
+      'limit': limit,
+    });
+  }
+
+  /// Get notification counts.
+  Future<Map<String, dynamic>> getNotificationsCount() async {
+    return await request(HttpMethod.get, '$basePath/user/notifications_count', {});
   }
 
   // =============================================================
@@ -692,13 +1084,81 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     int? limit,
     bool unread = false,
     int? creatorId,
-  }) {
-    throw UnsupportedFeatureException('Private messages', platformName: platformName);
+  }) async {
+    final response = await request(HttpMethod.get, '$basePath/private_message/list', {
+      'page': page,
+      'limit': limit,
+      'unread_only': unread,
+    });
+
+    return (response['private_messages'] as List).map<ThunderPrivateMessage>((pmv) => _parsePrivateMessageView(pmv)).toList();
   }
 
   @override
-  Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) {
-    throw UnsupportedFeatureException('Private messages', platformName: platformName);
+  Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
+    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
+      'private_message_id': messageId,
+      'read': read,
+    });
+  }
+
+  /// Create a private message.
+  Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
+    final json = await request(HttpMethod.post, '$basePath/private_message', {
+      'recipient_id': recipientId,
+      'content': content,
+    });
+    return _parsePrivateMessageView(json['private_message_view']);
+  }
+
+  /// Edit a private message.
+  Future<ThunderPrivateMessage> editPrivateMessage({required int messageId, required String content}) async {
+    final json = await request(HttpMethod.put, '$basePath/private_message', {
+      'private_message_id': messageId,
+      'content': content,
+    });
+    return _parsePrivateMessageView(json['private_message_view']);
+  }
+
+  /// Delete or restore a private message.
+  Future<ThunderPrivateMessage> deletePrivateMessage({required int messageId, required bool deleted}) async {
+    final json = await request(HttpMethod.post, '$basePath/private_message/delete', {
+      'private_message_id': messageId,
+      'deleted': deleted,
+    });
+    return _parsePrivateMessageView(json['private_message_view']);
+  }
+
+  /// Report a private message.
+  Future<ThunderPrivateMessage> reportPrivateMessage({required int messageId, required String reason}) async {
+    final json = await request(HttpMethod.post, '$basePath/private_message/report', {
+      'private_message_id': messageId,
+      'reason': reason,
+    });
+    return _parsePrivateMessageView(json['private_message_view']);
+  }
+
+  /// Get private message conversation.
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
+    int? personId,
+    int? conversationId,
+    int? page,
+    int? limit,
+  }) async {
+    final response = await request(HttpMethod.get, '$basePath/private_message/conversation', {
+      'person_id': personId,
+      'conversation_id': conversationId,
+      'page': page,
+      'limit': limit,
+    });
+    return (response['private_messages'] as List).map<ThunderPrivateMessage>((pmv) => _parsePrivateMessageView(pmv)).toList();
+  }
+
+  /// Leave a private message conversation.
+  Future<void> leavePrivateMessageConversation({required int conversationId}) async {
+    await request(HttpMethod.post, '$basePath/private_message/conversation/leave', {
+      'conversation_id': conversationId,
+    });
   }
 
   // =============================================================
@@ -738,8 +1198,21 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> media({int? page, int? limit}) {
-    throw UnsupportedFeatureException('Media management', platformName: platformName);
+  Future<Map<String, dynamic>> media({int? page, int? limit}) async {
+    return await request(HttpMethod.get, '$basePath/user/media', {
+      'page': page,
+      'limit': limit,
+    });
+  }
+
+  /// List user media with additional filters.
+  Future<Map<String, dynamic>> listUserMedia({int? page, int? limit, String? sort, bool? unreadOnly}) async {
+    return await request(HttpMethod.get, '$basePath/user/media', {
+      'page': page,
+      'limit': limit,
+      'sort': sort,
+      'unread_only': unreadOnly,
+    });
   }
 
   // =============================================================
@@ -769,8 +1242,79 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<bool> blockInstance({required int instanceId, required bool block}) {
-    throw UnsupportedFeatureException('Instance blocking', platformName: platformName);
+  Future<bool> blockInstance({required int instanceId, required bool block}) async {
+    final json = await request(HttpMethod.post, '$basePath/site/block', {
+      'instance_id': instanceId,
+      'block': block,
+    });
+    return json['blocked'] as bool? ?? block;
+  }
+
+  /// Fetch instance chooser data.
+  Future<Map<String, dynamic>> getInstanceChooser() async {
+    return await request(HttpMethod.get, '$basePath/site/instance_chooser', {});
+  }
+
+  /// Search instance chooser data.
+  Future<Map<String, dynamic>> searchInstanceChooser({
+    String? query,
+    bool? nsfw,
+    String? language,
+    bool? newbie,
+  }) async {
+    return await request(HttpMethod.get, '$basePath/site/instance_chooser_search', {
+      'q': query,
+      'nsfw': nsfw,
+      'language': language,
+      'newbie': newbie,
+    });
+  }
+
+  /// Get site version information.
+  Future<Map<String, dynamic>> getSiteVersion() async {
+    return await request(HttpMethod.get, '$basePath/site/version', {});
+  }
+
+  /// Block or unblock a domain.
+  Future<Map<String, dynamic>> blockDomain({required String domain, required bool block}) async {
+    return await request(HttpMethod.post, '$basePath/domain/block', {
+      'domain': domain,
+      'block': block,
+    });
+  }
+
+  // =============================================================
+  // Feeds & Topics
+  // =============================================================
+
+  /// Get a feed by id or name.
+  Future<Map<String, dynamic>> getFeed({int? id, String? name}) async {
+    return await request(HttpMethod.get, '$basePath/feed', {
+      'id': id,
+      'name': name,
+    });
+  }
+
+  /// List feeds.
+  Future<Map<String, dynamic>> listFeeds({bool? includeCommunities, bool? mineOnly}) async {
+    return await request(HttpMethod.get, '$basePath/feed/list', {
+      'include_communities': includeCommunities,
+      'mine_only': mineOnly,
+    });
+  }
+
+  /// List topics.
+  Future<Map<String, dynamic>> listTopics({bool? includeCommunities}) async {
+    return await request(HttpMethod.get, '$basePath/topic/list', {
+      'include_communities': includeCommunities,
+    });
+  }
+
+  /// Suggest completion for a query.
+  Future<Map<String, dynamic>> suggestCompletion({String? query}) async {
+    return await request(HttpMethod.get, '$basePath/suggest_completion', {
+      'q': query,
+    });
   }
 
   // =============================================================
@@ -779,16 +1323,63 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<Map<String, dynamic>> uploadImage(String filePath) async {
+    return _uploadImageTo('$basePath/upload/image', filePath);
+  }
+
+  /// Upload a user image.
+  Future<Map<String, dynamic>> uploadUserImage(String filePath) async {
+    return _uploadImageTo('$basePath/upload/user_image', filePath);
+  }
+
+  /// Upload a community image.
+  Future<Map<String, dynamic>> uploadCommunityImage(String filePath) async {
+    return _uploadImageTo('$basePath/upload/community_image', filePath);
+  }
+
+  @override
+  Future<void> deleteImage({required String file, required String token}) async {
+    await request(HttpMethod.post, '$basePath/image/delete', {
+      'file': file,
+    });
+  }
+
+  ThunderPrivateMessage _parsePrivateMessageView(Map<String, dynamic> privateMessageView) {
+    final privateMessage = privateMessageView['private_message'] as Map<String, dynamic>;
+    final recipient = privateMessageView['recipient'] as Map<String, dynamic>?;
+    final creator = privateMessageView['creator'] as Map<String, dynamic>?;
+
+    return ThunderPrivateMessage(
+      id: privateMessage['id'],
+      content: privateMessage['content'],
+      deleted: privateMessage['deleted'],
+      read: privateMessage['read'],
+      published: DateTime.parse(privateMessage['published']),
+      recipient: recipient != null ? ThunderUser.fromPiefedUser(recipient) : null,
+      creator: creator != null ? ThunderUser.fromPiefedUser(creator) : null,
+    );
+  }
+
+  Future<Map<String, dynamic>> _uploadImageTo(String endpoint, String filePath) async {
     try {
       final uploadRequest = http.MultipartRequest(
         'POST',
-        Uri.https(account.instance, '/pictrs/image'),
+        Uri.https(account.instance, endpoint),
       );
-      uploadRequest.headers.addAll(buildHeaders());
-      uploadRequest.files.add(await http.MultipartFile.fromPath('images[]', filePath));
+      final headers = Map<String, String>.from(buildHeaders())..remove('Content-Type');
+      uploadRequest.headers.addAll(headers);
+      uploadRequest.files.add(await http.MultipartFile.fromPath('file', filePath));
 
-      final response = await uploadRequest.send();
-      if (response.statusCode != 201) {
+      final streamedResponse = await uploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 429) {
+        throw RateLimitException(
+          'Rate limit exceeded',
+          platformName: platformName,
+        );
+      }
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
         throw ApiErrorException(
           'Failed to upload image: ${response.statusCode} ${response.reasonPhrase}',
           statusCode: response.statusCode,
@@ -796,16 +1387,22 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
         );
       }
 
-      final responseBody = await response.stream.bytesToString();
-      return jsonDecode(responseBody) as Map<String, dynamic>;
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) return decoded;
+        if (decoded is String && decoded.isNotEmpty) return {'url': decoded};
+      } catch (_) {
+        // Fall through to handle non-JSON responses.
+      }
+
+      throw ApiErrorException(
+        'Failed to upload image: Invalid response ${response.body}',
+        statusCode: response.statusCode,
+        platformName: platformName,
+      );
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
     }
-  }
-
-  @override
-  Future<void> deleteImage({required String file, required String token}) async {
-    await request(HttpMethod.get, '/pictrs/image/delete/$token/$file', {});
   }
 }

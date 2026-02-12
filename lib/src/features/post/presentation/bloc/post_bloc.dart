@@ -19,17 +19,21 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
-  Account account;
+  final Account account;
 
-  late PostRepository postRepository;
-  late CommentRepository commentRepository;
-  late CommunityRepository communityRepository;
+  final PostRepository postRepository;
+  final CommentRepository commentRepository;
+  final CommunityRepository communityRepository;
 
-  PostBloc({required this.account}) : super(PostState()) {
-    postRepository = PostRepositoryImpl(account: account);
-    commentRepository = CommentRepositoryImpl(account: account);
-    communityRepository = CommunityRepositoryImpl(account: account);
-
+  PostBloc({
+    required this.account,
+    PostRepository? postRepository,
+    CommentRepository? commentRepository,
+    CommunityRepository? communityRepository,
+  })  : postRepository = postRepository ?? PostRepositoryImpl(account: account),
+        commentRepository = commentRepository ?? CommentRepositoryImpl(account: account),
+        communityRepository = communityRepository ?? CommunityRepositoryImpl(account: account),
+        super(PostState()) {
     on<GetPostEvent>(_getPostEvent);
     on<GetPostCommentsEvent>(_getPostCommentsEvent);
     on<ReportCommentEvent>(_reportCommentEvent);
@@ -45,7 +49,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Fetches the post, along with the initial set of comments
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
-      event.post != null ? emit(state.copyWith(status: PostStatus.refreshing, post: event.post, communityId: event.post?.community?.id)) : emit(state.copyWith(status: PostStatus.loading));
+      emit(
+        state.copyWith(
+          status: event.post != null ? PostStatus.refreshing : PostStatus.loading,
+          post: event.post ?? state.post,
+          communityId: event.post?.community?.id ?? state.post?.community?.id,
+          comments: const [],
+          commentNodes: null,
+          commentResponseMap: const [],
+          commentPage: 1,
+          commentCursor: null,
+          commentCount: 0,
+          hasReachedCommentEnd: false,
+        ),
+      );
 
       // Retrieve the full post for moderators and cross-posts
       int? postId = event.postId ?? event.post?.id;
@@ -99,7 +116,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
     final l10n = GlobalContext.l10n;
     final originalPost = state.post;
-    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    if (originalPost == null) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    }
 
     try {
       // Optimistically update the post
@@ -124,7 +143,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _savePostEvent(SavePostEvent event, Emitter<PostState> emit) async {
     final l10n = GlobalContext.l10n;
     final originalPost = state.post;
-    if (originalPost == null) return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    if (originalPost == null) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: l10n.failedToPerformAction));
+    }
 
     try {
       // Optimistically update the post
@@ -149,6 +170,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
     final platform = account.platform ?? ThreadiversePlatform.lemmy;
+    final isReplyFetch = event.commentParentId != null;
 
     final defaultCommentSortType = CommentSortType.values.byName(UserPreferences.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
     final commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
@@ -161,7 +183,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           commentNodes: null,
           commentResponseMap: const [],
           commentPage: 1,
-          commentCursor: "1",
+          commentCursor: null,
           commentCount: 0,
           hasReachedCommentEnd: false,
           commentSortType: commentSortType,
@@ -178,34 +200,34 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           cursor: null,
         );
 
-        final comments = response['comments'];
-        final nextPage = response['next_page'];
+        final comments = response.comments;
+        final nextPage = response.nextPage;
+        final int? nextPageNumber = nextPage != null ? int.tryParse(nextPage) : null;
 
-        final commentNode = buildCommentTree(comments);
+        final listing = CommentList.fromApi(comments);
 
         return emit(
           state.copyWith(
             status: PostStatus.success,
-            comments: commentNode.flatten(),
-            commentNodes: commentNode,
-            commentResponseMap: comments,
-            commentPage: platform == ThreadiversePlatform.lemmy ? nextPage : null,
+            comments: listing.comments,
+            commentNodes: listing.tree,
+            commentResponseMap: listing.api,
+            commentPage: platform == ThreadiversePlatform.lemmy ? nextPageNumber : null,
             commentCursor: platform == ThreadiversePlatform.piefed ? nextPage : null,
-            commentCount: comments.length,
-            hasReachedCommentEnd: nextPage == null,
+            commentCount: listing.api.length,
+            // If we're intentionally loading a single comment thread, prevent root-level auto pagination.
+            hasReachedCommentEnd: isReplyFetch || nextPage == null,
             commentSortType: commentSortType,
           ),
         );
       }
 
-      // Prevent duplicate requests if we're done fetching comments
-      if (state.commentCount >= state.post!.comments! || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+      // Prevent duplicate root-level requests if we already loaded everything.
+      if (!isReplyFetch && (state.commentCount >= state.post!.comments! || state.hasReachedCommentEnd)) {
         if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
           emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
         }
-        if (event.commentParentId == null) {
-          return;
-        }
+        return;
       }
 
       emit(state.copyWith(status: PostStatus.refreshing));
@@ -229,38 +251,40 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             : null,
       );
 
-      final comments = response['comments'] as List<ThunderComment>;
-      final nextPage = response['next_page'];
+      final comments = response.comments;
+      final nextPage = response.nextPage;
+      final int? nextPageNumber = nextPage != null ? int.tryParse(nextPage) : null;
 
       // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it, so we should display an error
       if (event.commentParentId != null) {
-        final anyDirectChildren = comments.any((comment) => comment.path.contains('${event.commentParentId}.${comment.id}'));
-        if (!anyDirectChildren) throw Exception(GlobalContext.l10n.unableToLoadReplies);
+        final anyDirectChildren = containsDirectReplyToParent(comments, event.commentParentId!);
+        if (!anyDirectChildren) {
+          throw Exception(GlobalContext.l10n.unableToLoadReplies);
+        }
       }
 
-      final allComments = [...state.commentResponseMap, ...comments];
-      final commentNode = buildCommentTree(allComments);
+      final listing = CommentList.fromApi(state.commentResponseMap).merge(comments);
 
-      // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
       return emit(
         state.copyWith(
           status: PostStatus.success,
           commentSortType: commentSortType,
-          comments: commentNode.flatten(),
-          commentNodes: commentNode,
-          commentResponseMap: allComments,
+          comments: listing.comments,
+          commentNodes: listing.tree,
+          commentResponseMap: listing.api,
           commentPage: platform == ThreadiversePlatform.lemmy
-              ? event.commentParentId != null
-                  ? 1
-                  : nextPage
+              ? isReplyFetch
+                  ? state.commentPage
+                  : nextPageNumber
               : null,
           commentCursor: platform == ThreadiversePlatform.piefed
-              ? event.commentParentId != null
-                  ? null
+              ? isReplyFetch
+                  ? state.commentCursor
                   : nextPage
               : null,
-          commentCount: comments.length,
-          hasReachedCommentEnd: event.commentParentId != null || (comments.isEmpty || state.commentCount == comments.length),
+          commentCount: listing.api.length,
+          // Reply loads should not terminate root pagination.
+          hasReachedCommentEnd: isReplyFetch ? state.hasReachedCommentEnd : nextPage == null,
         ),
       );
     } catch (e) {
@@ -271,10 +295,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Handles comment related actions on a given item within the post
   Future<void> _commentActionEvent(CommentActionEvent event, Emitter<PostState> emit) async {
     emit(state.copyWith(status: PostStatus.refreshing));
-    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (state.commentNodes == null) {
+      return emit(state.copyWith(status: PostStatus.failure));
+    }
 
     CommentNode? existingCommentNode = state.commentNodes!.search(event.commentId);
-    if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (existingCommentNode == null) {
+      return emit(state.copyWith(status: PostStatus.failure));
+    }
 
     switch (event.action) {
       case CommentAction.vote:
@@ -328,11 +356,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   Future<void> _commentItemUpdatedEvent(CommentItemUpdatedEvent event, Emitter<PostState> emit) async {
-    if (state.comments.isEmpty) return emit(state.copyWith(status: PostStatus.failure));
+    if (state.comments.isEmpty) {
+      return emit(state.copyWith(status: PostStatus.failure));
+    }
     emit(state.copyWith(status: PostStatus.refreshing));
 
     final existingCommentNode = state.commentNodes?.search(event.comment.id);
-    if (existingCommentNode == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (existingCommentNode == null) {
+      return emit(state.copyWith(status: PostStatus.failure));
+    }
 
     existingCommentNode.insert(CommentNode(comment: event.comment, replies: existingCommentNode.replies));
 
@@ -344,7 +376,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   Future<void> _commentItemInsertedEvent(CommentItemInsertedEvent event, Emitter<PostState> emit) async {
-    if (state.commentNodes == null) return emit(state.copyWith(status: PostStatus.failure));
+    if (state.commentNodes == null) {
+      return emit(state.copyWith(status: PostStatus.failure));
+    }
     emit(state.copyWith(status: PostStatus.refreshing));
 
     final commentPath = event.comment.path.split('.');

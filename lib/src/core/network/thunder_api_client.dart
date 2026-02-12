@@ -30,7 +30,7 @@ typedef GetPostsResponse = ({
 /// Response from getting a list of comments.
 typedef GetCommentsResponse = ({
   List<ThunderComment> comments,
-  int? nextPage,
+  String? nextPage,
 });
 
 /// Response from getting a community.
@@ -112,6 +112,12 @@ abstract class ThunderApiClient {
     PostSortType? postSortType,
     int? communityId,
     String? communityName,
+    String? query,
+    int? personId,
+    bool? likedOnly,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
     bool? showHidden,
     bool? showSaved,
   });
@@ -190,6 +196,7 @@ abstract class ThunderApiClient {
   Future<GetCommentsResponse> getComments({
     required int postId,
     int? page,
+    String? cursor,
     int? limit,
     int? maxDepth,
     int? communityId,
@@ -306,6 +313,8 @@ abstract class ThunderApiClient {
     FeedListType? listingType,
     int? page,
     int? limit,
+    int? minimumUpvotes,
+    bool? nsfw,
   });
 
   /// Resolve an ActivityPub URL or Webfinger address.

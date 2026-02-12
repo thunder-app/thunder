@@ -5,6 +5,7 @@ enum FeedListType {
   local('Local'),
   subscribed('Subscribed'),
   moderatorView('ModeratorView'),
+  moderating('Moderating', platform: ThreadiversePlatform.piefed),
   popular('Popular', platform: ThreadiversePlatform.piefed);
 
   /// The value of the enum. This corresponds to the value used in the request.

@@ -26,6 +26,8 @@ abstract class SearchRepository {
     int? page,
     int? communityId,
     int? creatorId,
+    int? minimumUpvotes,
+    bool? nsfw,
   });
 
   /// Resolves a given query
@@ -55,6 +57,8 @@ class SearchRepositoryImpl implements SearchRepository {
     int? page,
     int? communityId,
     int? creatorId,
+    int? minimumUpvotes,
+    bool? nsfw,
   }) async {
     final response = await _api.search(
       query: query,
@@ -65,6 +69,8 @@ class SearchRepositoryImpl implements SearchRepository {
       page: page,
       communityId: communityId,
       creatorId: creatorId,
+      minimumUpvotes: minimumUpvotes,
+      nsfw: nsfw,
     );
 
     // Lists are already parsed by the API client

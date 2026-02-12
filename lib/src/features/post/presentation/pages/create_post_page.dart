@@ -418,7 +418,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(
+                l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
+                leadingIcon: Icons.warning_rounded,
+                leadingIconColor: theme.colorScheme.errorContainer,
+              );
             default:
               break;
           }

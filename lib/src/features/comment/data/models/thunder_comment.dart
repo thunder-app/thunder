@@ -298,6 +298,8 @@ class ThunderComment extends Equatable {
     final comment = commentView['comment'];
     final creator = commentView['creator'];
     final counts = commentView['counts'];
+    final postMap = commentView['post'];
+    final communityMap = commentView['community'];
 
     final subscribed = commentView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == commentView['subscribed']) : null;
 
@@ -316,8 +318,8 @@ class ThunderComment extends Equatable {
       distinguished: comment['distinguished'] ?? false,
       languageId: comment['language_id'],
       creator: ThunderUser.fromPiefedUser(creator),
-      post: post ?? ThunderPost.fromPiefedPost(commentView['post']),
-      community: community ?? ThunderCommunity.fromPiefedCommunity(commentView['community']),
+      post: post ?? (postMap is Map<String, dynamic> ? ThunderPost.fromPiefedPost(postMap) : null),
+      community: community ?? (communityMap is Map<String, dynamic> ? ThunderCommunity.fromPiefedCommunity(communityMap) : null),
       score: counts['score'],
       upvotes: counts['upvotes'],
       downvotes: counts['downvotes'],

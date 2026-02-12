@@ -56,8 +56,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadSuccess, imageUrls: urls)) : emit(state.copyWith(status: CreatePostStatus.imageUploadSuccess, imageUrls: urls));
     } catch (e) {
       isPostImage
-          ? emit(state.copyWith(status: CreatePostStatus.postImageUploadFailure, message: e.toString()))
-          : emit(state.copyWith(status: CreatePostStatus.imageUploadFailure, message: e.toString()));
+          ? emit(state.copyWith(status: CreatePostStatus.postImageUploadFailure, message: getExceptionErrorMessage(e)))
+          : emit(state.copyWith(status: CreatePostStatus.imageUploadFailure, message: getExceptionErrorMessage(e)));
     }
   }
 

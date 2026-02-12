@@ -31,7 +31,7 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> getComments({
+  Future<CommentPage> getComments({
     required int postId,
     int? parentId,
     int? page,
@@ -44,6 +44,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final response = await _api.getComments(
       postId: postId,
       page: page,
+      cursor: cursor,
       limit: limit,
       maxDepth: maxDepth,
       communityId: communityId,
@@ -51,10 +52,10 @@ class CommentRepositoryImpl implements CommentRepository {
       commentSortType: commentSortType,
     );
 
-    return {
-      'comments': response.comments,
-      'next_page': response.nextPage,
-    };
+    return CommentPage(
+      comments: response.comments,
+      nextPage: response.nextPage,
+    );
   }
 
   @override

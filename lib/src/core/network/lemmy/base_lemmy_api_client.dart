@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
 import 'package:thunder/src/core/enums/comment_sort_type.dart';
 import 'package:thunder/src/core/enums/feed_list_type.dart';
 import 'package:thunder/src/core/enums/meta_search_type.dart';
@@ -12,7 +8,6 @@ import 'package:thunder/src/core/models/thunder_post_report.dart';
 import 'package:thunder/src/core/models/thunder_private_message.dart';
 import 'package:thunder/src/core/models/thunder_site.dart';
 import 'package:thunder/src/core/models/thunder_site_response.dart';
-import 'package:thunder/src/core/network/api_exception.dart';
 import 'package:thunder/src/core/network/base_api_client.dart';
 import 'package:thunder/src/core/network/thunder_api_client.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -21,7 +16,8 @@ import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 
-/// Base class for Lemmy API clients, containing shared logic between v3 and v4.
+/// Base class for Lemmy API clients, containing shared parsing helpers.
+/// Endpoint implementations live in version-specific clients.
 abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiClient {
   BaseLemmyApiClient({
     required super.account,
@@ -64,20 +60,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
-    final body = {
-      'username_or_email': username,
-      'password': password,
-      'totp_2fa_token': totp,
-    };
-
-    final json = await request(HttpMethod.post, '$basePath/user/login', body);
-    return json['jwt'] as String?;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderSiteResponse> site() async {
-    final json = await request(HttpMethod.get, '$basePath/site', {});
-    return parseSiteResponse(json);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -86,20 +74,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<GetPostResponse> getPost(int postId, {int? commentId}) async {
-    final json = await request(HttpMethod.get, '$basePath/post', {
-      'id': postId,
-      'comment_id': commentId,
-    });
-
-    final posts = await parsePosts([parsePost(json['post_view'])]);
-    final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => parseUser(mu['moderator'])).toList();
-    final crossPosts = (json['cross_posts'] as List).map<ThunderPost>((cp) => parsePost(cp)).toList();
-
-    return (
-      post: posts.first,
-      moderators: moderators,
-      crossPosts: crossPosts,
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -110,31 +85,16 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     PostSortType? postSortType,
     int? communityId,
     String? communityName,
+    String? query,
+    int? personId,
+    bool? likedOnly,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
     bool? showHidden,
     bool? showSaved,
   }) async {
-    // Use page-based pagination for Lemmy 0.19.x instances
-    // See https://github.com/LemmyNet/lemmy/issues/6171
-    final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
-
-    final Map<String, dynamic> queryParams = {
-      'type_': feedListType?.value,
-      'sort': postSortType?.value,
-      'page': page,
-      'limit': limit,
-      'community_name': communityName,
-      'community_id': communityId,
-    };
-
-    if (showSaved == true) queryParams['saved_only'] = showSaved;
-    if (showHidden == true) queryParams['show_hidden'] = showHidden;
-
-    final json = await request(HttpMethod.get, '$basePath/post/list', queryParams);
-
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => parsePost(pv)).toList();
-    final nextPage = posts.isNotEmpty ? (page + 1).toString() : null;
-
-    return (posts: posts, nextPage: nextPage);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -148,19 +108,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     String? customThumbnail,
     String? altText,
   }) async {
-    final body = {
-      'name': title,
-      'community_id': communityId,
-      'url': url,
-      'body': contents,
-      'alt_text': altText,
-      'nsfw': nsfw,
-      'language_id': languageId,
-      'custom_thumbnail': customThumbnail,
-    };
-
-    final json = await request(HttpMethod.post, '$basePath/post', body);
-    return parsePost(json['post_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -174,105 +122,52 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     int? languageId,
     String? customThumbnail,
   }) async {
-    final body = {
-      'post_id': postId,
-      'name': title,
-      'url': url,
-      'body': contents,
-      'alt_text': altText,
-      'nsfw': nsfw,
-      'language_id': languageId,
-      'custom_thumbnail': customThumbnail,
-    };
-
-    final json = await request(HttpMethod.put, '$basePath/post', body);
-    return parsePost(json['post_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderPost> votePost({required int postId, required int score}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/like', {
-      'post_id': postId,
-      'score': score,
-    });
-    return parsePost(json['post_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderPost> savePost({required int postId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/post/save', {
-      'post_id': postId,
-      'save': save,
-    });
-    return parsePost(json['post_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> readPost({required List<int> postIds, required bool read}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/mark_as_read', {
-      'post_ids': postIds,
-      'read': read,
-    });
-    return json['success'] as bool;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> hidePost({required int postId, required bool hide}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/hide', {
-      'post_ids': [postId],
-      'hide': hide,
-    });
-    return json['success'] as bool;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> deletePost({required int postId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/delete', {
-      'post_id': postId,
-      'deleted': deleted,
-    });
-    final post = parsePost(json['post_view']);
-    return post.deleted == deleted;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> lockPost({required int postId, required bool locked}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/lock', {
-      'post_id': postId,
-      'locked': locked,
-    });
-    final post = parsePost(json['post_view']);
-    return post.locked == locked;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> pinPost({required int postId, required bool pinned}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/feature', {
-      'post_id': postId,
-      'featured': pinned,
-      'feature_type': 'Community',
-    });
-    final post = parsePost(json['post_view']);
-    return post.featuredCommunity == pinned;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> removePost({required int postId, required bool removed, required String reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/remove', {
-      'post_id': postId,
-      'removed': removed,
-      'reason': reason,
-    });
-    final post = parsePost(json['post_view']);
-    return post.removed == removed;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> reportPost({required int postId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/post/report', {
-      'post_id': postId,
-      'reason': reason,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -283,23 +178,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool unresolved = false,
     int? communityId,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/post/report/list', {
-      'post_id': postId,
-      'page': page,
-      'limit': limit,
-      'unresolved_only': unresolved,
-      'community_id': communityId,
-    });
-    return (json['post_reports'] as List).map<ThunderPostReport>((pr) => ThunderPostReport.fromLemmyPostReportView(pr)).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderPostReport> resolvePostReport({required int reportId, required bool resolved}) async {
-    final json = await request(HttpMethod.put, '$basePath/post/report/resolve', {
-      'report_id': reportId,
-      'resolved': resolved,
-    });
-    return ThunderPostReport.fromLemmyPostReportView(json['post_report_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -308,36 +192,21 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
-    final json = await request(HttpMethod.get, '$basePath/comment', {'id': commentId});
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<GetCommentsResponse> getComments({
     required int postId,
     int? page,
+    String? cursor,
     int? limit,
     int? maxDepth,
     int? communityId,
     int? parentId,
     CommentSortType? commentSortType,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/comment/list', {
-      'sort': commentSortType?.value,
-      'max_depth': maxDepth,
-      'page': page,
-      'limit': limit,
-      'community_id': communityId,
-      'post_id': postId,
-      'parent_id': parentId,
-      'depth_first': true,
-      'type_': 'All',
-    });
-
-    final comments = (json['comments'] as List).map<ThunderComment>((cv) => parseComment(cv)).toList();
-    final nextPage = (limit != null && comments.length < limit) ? null : (page ?? 0) + 1;
-
-    return (comments: comments, nextPage: nextPage);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -347,13 +216,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     int? parentId,
     int? languageId,
   }) async {
-    final json = await request(HttpMethod.post, '$basePath/comment', {
-      'post_id': postId,
-      'content': content,
-      'parent_id': parentId,
-      'language_id': languageId,
-    });
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -362,47 +225,27 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     required String content,
     int? languageId,
   }) async {
-    final json = await request(HttpMethod.put, '$basePath/comment', {
-      'comment_id': commentId,
-      'content': content,
-      'language_id': languageId,
-    });
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderComment> voteComment({required int commentId, required int score}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/like', {
-      'comment_id': commentId,
-      'score': score,
-    });
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderComment> saveComment({required int commentId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/comment/save', {
-      'comment_id': commentId,
-      'save': save,
-    });
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderComment> deleteComment({required int commentId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/delete', {
-      'comment_id': commentId,
-      'deleted': deleted,
-    });
-    return parseComment(json['comment_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> reportComment({required int commentId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/comment/report', {
-      'comment_id': commentId,
-      'reason': reason,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -413,23 +256,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool unresolved = false,
     int? communityId,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/comment/report/list', {
-      'comment_id': commentId,
-      'page': page,
-      'limit': limit,
-      'unresolved_only': unresolved,
-      'community_id': communityId,
-    });
-    return (json['comment_reports'] as List).map<ThunderCommentReport>((cr) => ThunderCommentReport.fromLemmyCommentReportView(cr)).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderCommentReport> resolveCommentReport({required int reportId, required bool resolved}) async {
-    final json = await request(HttpMethod.put, '$basePath/comment/report/resolve', {
-      'report_id': reportId,
-      'resolved': resolved,
-    });
-    return ThunderCommentReport.fromLemmyCommentReportView(json['comment_report_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -438,17 +270,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<GetCommunityResponse> getCommunity({int? id, String? name}) async {
-    final json = await request(HttpMethod.get, '$basePath/community', {
-      'id': id,
-      'name': name,
-    });
-
-    return (
-      community: parseCommunityView(json['community_view']),
-      site: json['site'] != null ? ThunderSite.fromLemmySite(json['site']) : null,
-      moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList(),
-      discussionLanguages: (json['discussion_languages'] as List).cast<int>(),
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -458,31 +280,17 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     FeedListType? feedListType,
     PostSortType? postSortType,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/community/list', {
-      'page': page,
-      'limit': limit,
-      'type_': feedListType?.value,
-      'sort': postSortType?.value,
-    });
-    return (json['communities'] as List).map<ThunderCommunity>((cv) => parseCommunityView(cv)).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderCommunity> subscribeToCommunity({required int communityId, required bool follow}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/follow', {
-      'community_id': communityId,
-      'follow': follow,
-    });
-    return parseCommunityView(json['community_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderCommunity> blockCommunity({required int communityId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/block', {
-      'community_id': communityId,
-      'block': block,
-    });
-    return parseCommunityView(json['community_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -498,31 +306,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     int? limit,
     bool? saved,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/user', {
-      'person_id': userId,
-      'username': username,
-      'sort': sort?.value,
-      'page': page,
-      'limit': limit,
-      'saved_only': saved,
-    });
-
-    return (
-      user: parseUserView(json['person_view']),
-      site: json['site'] != null ? ThunderSite.fromLemmySite(json['site']) : null,
-      posts: (json['posts'] as List).map<ThunderPost>((pv) => parsePost(pv)).toList(),
-      comments: (json['comments'] as List).map<ThunderComment>((cv) => parseComment(cv)).toList(),
-      moderates: (json['moderates'] as List).map<ThunderCommunity>((cmv) => parseCommunity(cmv['community'])).toList(),
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderUser> blockUser({required int userId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/user/block', {
-      'person_id': userId,
-      'block': block,
-    });
-    return parseUserView(json['person_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -534,15 +323,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     String? reason,
     int? expires,
   }) async {
-    final json = await request(HttpMethod.post, '$basePath/community/ban_user', {
-      'person_id': userId,
-      'community_id': communityId,
-      'ban': ban,
-      'remove_data': removeData,
-      'reason': reason,
-      'expires': expires,
-    });
-    return parseUserView(json['person_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -551,12 +332,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     required int communityId,
     required bool added,
   }) async {
-    final json = await request(HttpMethod.post, '$basePath/community/mod', {
-      'person_id': userId,
-      'community_id': communityId,
-      'added': added,
-    });
-    return (json['moderators'] as List).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -574,38 +350,15 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     FeedListType? listingType,
     int? page,
     int? limit,
+    int? minimumUpvotes,
+    bool? nsfw,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/search', {
-      'q': query,
-      'community_id': communityId,
-      'community_name': communityName,
-      'creator_id': creatorId,
-      'type_': type?.searchType,
-      'sort': sort?.value,
-      'listing_type': listingType?.value,
-      'page': page,
-      'limit': limit,
-    });
-
-    return (
-      type: MetaSearchType.values.firstWhere((e) => e.searchType == json['type_']),
-      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => parsePost(pv)).toList() ?? [],
-      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => parseComment(cv)).toList() ?? [],
-      communities: (json['communities'] as List?)?.map<ThunderCommunity>((cv) => parseCommunityView(cv)).toList() ?? [],
-      users: (json['users'] as List?)?.map<ThunderUser>((pv) => parseUserView(pv)).toList() ?? [],
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ResolveResponse> resolve({required String query}) async {
-    final json = await request(HttpMethod.get, '$basePath/resolve_object', {'q': query});
-
-    return (
-      community: json['community'] != null ? parseCommunityView(json['community']) : null,
-      post: json['post'] != null ? parsePost(json['post']) : null,
-      comment: json['comment'] != null ? parseComment(json['comment']) : null,
-      user: json['person'] != null ? parseUserView(json['person']) : null,
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -614,12 +367,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<UnreadCountResponse> unreadCount() async {
-    final json = await request(HttpMethod.get, '$basePath/user/unread_count', {});
-    return (
-      replies: json['replies'] as int,
-      mentions: json['mentions'] as int,
-      privateMessages: json['private_messages'] as int,
-    );
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -629,31 +377,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     CommentSortType? sort,
     bool unread = false,
   }) async {
-    final response = await request(HttpMethod.get, '$basePath/user/replies', {
-      'page': page,
-      'limit': limit,
-      'sort': sort?.value,
-      'unread_only': unread,
-    });
-
-    return (response['replies'] as List).map<ThunderComment>((crv) {
-      // Parse the full comment reply view (includes post, creator info, etc.)
-      final comment = parseComment(crv);
-
-      return comment.copyWith(
-        recipient: parseUser(crv['recipient']),
-        replyMentionId: crv['comment_reply']['id'],
-        read: crv['comment_reply']['read'],
-      );
-    }).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> markCommentReplyAsRead({required int replyId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {
-      'comment_reply_id': replyId,
-      'read': read,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -663,36 +392,17 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     CommentSortType? sort,
     bool unread = false,
   }) async {
-    final response = await request(HttpMethod.get, '$basePath/user/mention', {
-      'page': page,
-      'limit': limit,
-      'sort': sort?.value,
-      'unread_only': unread,
-    });
-
-    return (response['mentions'] as List).map<ThunderComment>((mention) {
-      // Parse the full mention view (includes post, creator info, etc.)
-      final comment = parseComment(mention);
-
-      return comment.copyWith(
-        recipient: parseUser(mention['recipient']),
-        replyMentionId: mention['person_mention']['id'],
-        read: mention['person_mention']['read'],
-      );
-    }).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> markCommentMentionAsRead({required int mentionId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/user/mention/mark_as_read', {
-      'person_mention_id': mentionId,
-      'read': read,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> markAllNotificationsAsRead() async {
-    await request(HttpMethod.post, '$basePath/user/mark_all_as_read', {});
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -706,21 +416,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool unread = false,
     int? creatorId,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/private_message/list', {
-      'page': page,
-      'limit': limit,
-      'unread_only': unread,
-      'creator_id': creatorId,
-    });
-    return (json['private_messages'] as List).map<ThunderPrivateMessage>((pm) => ThunderPrivateMessage.fromLemmyPrivateMessageView(pm)).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
-      'private_message_id': messageId,
-      'read': read,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -742,41 +443,22 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool? showBotAccounts,
     List<int>? discussionLanguages,
   }) async {
-    await request(HttpMethod.put, '$basePath/user/save_user_settings', {
-      'bio': bio,
-      'email': email,
-      'matrix_user_id': matrixUserId,
-      'display_name': displayName,
-      'default_listing_type': defaultFeedListType?.value,
-      'default_sort_type': defaultPostSortType?.value,
-      'show_nsfw': showNsfw,
-      'show_read_posts': showReadPosts,
-      'show_scores': showScores,
-      'bot_account': botAccount,
-      'show_bot_accounts': showBotAccounts,
-      'discussion_languages': discussionLanguages,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> importSettings(String settings) async {
-    final json = await request(HttpMethod.post, '$basePath/user/import_settings', {
-      'data': settings,
-    });
-    return json['success'] as bool;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<dynamic> exportSettings() async {
-    return await request(HttpMethod.get, '$basePath/user/export_settings', {});
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<Map<String, dynamic>> media({int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/account/list_media', {
-      'page': page,
-      'limit': limit,
-    });
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -793,52 +475,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     int? moderatorId,
     int? commentId,
   }) async {
-    final response = await request(HttpMethod.get, '$basePath/modlog', {
-      'page': page,
-      'limit': limit,
-      'type_': modlogActionType?.value,
-      'community_id': communityId,
-      'other_person_id': userId,
-      'mod_person_id': moderatorId,
-      'comment_id': commentId,
-    });
-
-    List<ModlogEventItem> items = [];
-
-    // Convert the response to a list of modlog events
-    List<ModlogEventItem> removedPosts = (response['removed_posts'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemovePost, e)).toList();
-    List<ModlogEventItem> lockedPosts = (response['locked_posts'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modLockPost, e)).toList();
-    List<ModlogEventItem> featuredPosts = (response['featured_posts'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modFeaturePost, e)).toList();
-    List<ModlogEventItem> removedComments = (response['removed_comments'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemoveComment, e)).toList();
-    List<ModlogEventItem> removedCommunities = (response['removed_communities'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modRemoveCommunity, e)).toList();
-    List<ModlogEventItem> bannedFromCommunity = (response['banned_from_community'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modBanFromCommunity, e)).toList();
-    List<ModlogEventItem> banned = (response['banned'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modBan, e)).toList();
-    List<ModlogEventItem> addedToCommunity = (response['added_to_community'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modAddCommunity, e)).toList();
-    List<ModlogEventItem> transferredToCommunity = (response['transferred_to_community'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modTransferCommunity, e)).toList();
-    List<ModlogEventItem> added = (response['added'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modAdd, e)).toList();
-    List<ModlogEventItem> adminPurgedPersons = (response['admin_purged_persons'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgePerson, e)).toList();
-    List<ModlogEventItem> adminPurgedCommunities = (response['admin_purged_communities'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgeCommunity, e)).toList();
-    List<ModlogEventItem> adminPurgedPosts = (response['admin_purged_posts'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgePost, e)).toList();
-    List<ModlogEventItem> adminPurgedComments = (response['admin_purged_comments'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.adminPurgeComment, e)).toList();
-    List<ModlogEventItem> hiddenCommunities = (response['hidden_communities'] as List).map<ModlogEventItem>((e) => parseModlogEvent(ModlogActionType.modHideCommunity, e)).toList();
-
-    items.addAll(removedPosts);
-    items.addAll(lockedPosts);
-    items.addAll(featuredPosts);
-    items.addAll(removedComments);
-    items.addAll(removedCommunities);
-    items.addAll(bannedFromCommunity);
-    items.addAll(banned);
-    items.addAll(addedToCommunity);
-    items.addAll(transferredToCommunity);
-    items.addAll(added);
-    items.addAll(adminPurgedPersons);
-    items.addAll(adminPurgedCommunities);
-    items.addAll(adminPurgedPosts);
-    items.addAll(adminPurgedComments);
-    items.addAll(hiddenCommunities);
-
-    return items;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   /// Given a modlog event, return a normalized [ModlogEventItem].
@@ -990,16 +627,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<Map<String, dynamic>> federated() async {
-    return await request(HttpMethod.get, '$basePath/federated_instances', {});
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<bool> blockInstance({required int instanceId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/site/block', {
-      'instance_id': instanceId,
-      'block': block,
-    });
-    return json['blocked'] as bool;
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================
@@ -1008,34 +641,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
 
   @override
   Future<Map<String, dynamic>> uploadImage(String filePath) async {
-    try {
-      final uploadRequest = http.MultipartRequest(
-        'POST',
-        Uri.https(account.instance, '/pictrs/image'),
-      );
-      uploadRequest.headers.addAll(buildHeaders());
-      uploadRequest.files.add(await http.MultipartFile.fromPath('images[]', filePath));
-
-      final response = await uploadRequest.send();
-      if (response.statusCode != 201) {
-        throw ApiErrorException(
-          'Failed to upload image: ${response.statusCode} ${response.reasonPhrase}',
-          statusCode: response.statusCode,
-          platformName: platformName,
-        );
-      }
-
-      final responseBody = await response.stream.bytesToString();
-      return jsonDecode(responseBody) as Map<String, dynamic>;
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
-    }
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<void> deleteImage({required String file, required String token}) async {
-    await request(HttpMethod.get, '/pictrs/image/delete/$token/$file', {});
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   // =============================================================

@@ -7,8 +7,8 @@ enum MetaSearchType {
   comments(searchType: 'Comments'),
   posts(searchType: 'Posts'),
   communities(searchType: 'Communities'),
-  users(searchType: 'Users', platform: ThreadiversePlatform.lemmy),
-  url(searchType: 'Url', platform: ThreadiversePlatform.lemmy),
+  users(searchType: 'Users'),
+  url(searchType: 'Url'),
   instances(),
   ;
 

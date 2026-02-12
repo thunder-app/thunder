@@ -5,7 +5,7 @@ enum CommentSortType {
   top('Top'),
   new_('New'),
   old('Old'),
-  controversial('Controversial', platform: ThreadiversePlatform.lemmy);
+  controversial('Controversial');
 
   /// The value of the sort type for the API.
   final String value;

@@ -115,12 +115,19 @@ class AccountRepositoryImpl implements AccountRepository {
 
     final response = await _api.uploadImage(filePath);
 
+    if (response['url'] is String && (response['url'] as String).isNotEmpty) {
+      return response['url'] as String;
+    }
+
     if (response['files'] != null && (response['files'] as List).isNotEmpty) {
       final filename = response['files'][0]['file'];
       return "https://${account.instance}/pictrs/image/$filename";
     }
 
-    throw ApiErrorException('Failed to upload image: Invalid response', platformName: 'Unknown');
+    throw ApiErrorException(
+      'Failed to upload image: Invalid response $response',
+      platformName: _api.platformName,
+    );
   }
 
   @override

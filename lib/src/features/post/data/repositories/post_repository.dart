@@ -31,6 +31,11 @@ abstract class PostRepository {
     bool showHidden = false,
     bool showSaved = false,
     int? personId,
+    String? query,
+    bool? likedOnly,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
   });
 
   /// Creates a new post
@@ -147,6 +152,10 @@ class PostRepositoryImpl implements PostRepository {
     bool? showHidden,
     bool? showSaved,
     bool? likedOnly,
+    String? query,
+    int? feedId,
+    int? topicId,
+    bool? ignoreSticky,
   }) async {
     final response = await _api.getPosts(
       cursor: cursor,
@@ -155,6 +164,12 @@ class PostRepositoryImpl implements PostRepository {
       postSortType: postSortType,
       communityId: communityId,
       communityName: communityName,
+      query: query,
+      personId: personId,
+      likedOnly: likedOnly,
+      feedId: feedId,
+      topicId: topicId,
+      ignoreSticky: ignoreSticky,
       showHidden: showHidden,
       showSaved: showSaved,
     );

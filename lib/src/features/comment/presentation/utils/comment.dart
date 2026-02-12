@@ -5,6 +5,54 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/app/utils/global_context.dart';
 import 'package:thunder/src/app/utils/navigation.dart';
 
+/// Deterministic representation of API and UI comment ordering.
+///
+/// `api` represents the merged API order (first-seen order, latest values).
+/// `uiComments` is the DFS-flattened tree order shown in the UI.
+class CommentList {
+  /// The comments returned by the API in API order for this page.
+  final List<ThunderComment> api;
+
+  /// The tree of comments in the UI.
+  final CommentNode tree;
+
+  const CommentList._({
+    required this.api,
+    required this.tree,
+  });
+
+  factory CommentList.empty() {
+    return CommentList._(
+      api: const [],
+      tree: CommentNode(comment: null, replies: []),
+    );
+  }
+
+  factory CommentList.fromApi(List<ThunderComment> comments) {
+    final mergedComments = mergeComments(const [], comments);
+    return CommentList._(
+      api: mergedComments,
+      tree: buildCommentTree(mergedComments),
+    );
+  }
+
+  CommentList merge(List<ThunderComment> incomingComments) {
+    if (incomingComments.isEmpty) return this;
+
+    final mergedComments = mergeComments(api, incomingComments);
+    return CommentList._(
+      api: mergedComments,
+      tree: buildCommentTree(mergedComments),
+    );
+  }
+
+  List<CommentNode> get comments => tree.flatten();
+
+  List<int> get apiCommentIds => List<int>.unmodifiable(api.map((comment) => comment.id));
+
+  List<int> get uiCommentIds => List<int>.unmodifiable(comments.map((node) => node.comment?.id).whereType<int>());
+}
+
 // Optimistically updates a comment
 ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
   assert(comment.score != null && comment.upvotes != null && comment.downvotes != null, 'Comment must have score, upvotes and downvotes');
@@ -99,6 +147,45 @@ CommentNode buildCommentTree(List<ThunderComment> comments, {bool flatten = fals
   }
 
   return root;
+}
+
+/// Merges two comment batches by comment id while preserving first-seen order.
+///
+/// Existing comments keep their positions; new comments are appended in order.
+/// If an incoming comment id already exists, the existing entry is replaced.
+List<ThunderComment> mergeComments(List<ThunderComment> existing, List<ThunderComment> incoming) {
+  final merged = existing.toList();
+  final indexById = <int, int>{};
+
+  for (int i = 0; i < merged.length; i++) {
+    indexById[merged[i].id] = i;
+  }
+
+  for (final comment in incoming) {
+    final existingIndex = indexById[comment.id];
+    if (existingIndex != null) {
+      merged[existingIndex] = comment;
+    } else {
+      indexById[comment.id] = merged.length;
+      merged.add(comment);
+    }
+  }
+
+  return merged;
+}
+
+/// Returns true when [comments] contains at least one direct child of [parentId].
+bool containsDirectReplyToParent(List<ThunderComment> comments, int parentId) {
+  return comments.any((comment) => hasDirectParent(comment, parentId));
+}
+
+/// Returns true when [comment] is a direct reply to [parentId].
+bool hasDirectParent(ThunderComment comment, int parentId) {
+  final pathParts = comment.path.split('.');
+  if (pathParts.length < 2) return false;
+
+  final parentSegment = pathParts.length > 2 ? pathParts[pathParts.length - 2] : pathParts.first;
+  return int.tryParse(parentSegment) == parentId;
 }
 
 String cleanCommentContent(ThunderComment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
