@@ -261,6 +261,12 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         height = (widget.showFullHeightImages && !widget.allowUnconstrainedImageHeight) ? widget.media.height : null;
     }
 
+    final shouldContainTallFullHeightImage = widget.media.mediaType == ContentMediaType.image &&
+        widget.viewMode == ContentViewMode.comfortable &&
+        widget.showFullHeightImages &&
+        widget.media.height != null &&
+        widget.media.height! > getMaxHeight();
+
     Widget? child;
 
     if (widget.media.mediaType == ContentMediaType.link) {
@@ -410,7 +416,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 contentType: widget.media.contentType,
                 width: width,
                 height: height,
-                fit: widget.viewMode == ContentViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+                fit: widget.viewMode == ContentViewMode.compact
+                    ? BoxFit.cover
+                    : shouldContainTallFullHeightImage
+                        ? BoxFit.contain
+                        : BoxFit.fitWidth,
                 mediaType: widget.media.mediaType,
                 viewed: widget.read,
                 blur: blurNSFWPreviews,
