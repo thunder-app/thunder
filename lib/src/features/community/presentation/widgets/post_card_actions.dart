@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 
 /// Represents the actions that can be performed on a post when using the card view.
 class PostCardActions extends StatelessWidget {

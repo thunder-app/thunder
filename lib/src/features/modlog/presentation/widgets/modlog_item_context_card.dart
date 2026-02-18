@@ -2,24 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
-import 'package:thunder/src/core/enums/font_scale.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// Provides some additional context for a [ModlogEventItem]
 class ModlogItemContextCard extends StatelessWidget {

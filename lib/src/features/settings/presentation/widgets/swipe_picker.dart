@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/core/enums/swipe_action.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
 
 enum SwipePickerSide { left, right }
 

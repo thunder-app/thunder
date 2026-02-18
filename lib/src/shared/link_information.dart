@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/shared/utils/links.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/shared/links/widgets/link_bottom_sheet.dart';
 
 /// A widget that displays information about a link, including the link's media type if applicable.
 ///

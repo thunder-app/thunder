@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/comment_reference.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
 
 /// A widget that can display a single comment entry for use within a list (e.g., search page, instance explorer)
 class CommentListEntry extends StatelessWidget {
@@ -19,7 +20,7 @@ class CommentListEntry extends StatelessWidget {
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider<PostBloc>(
-      create: (BuildContext context) => PostBloc(account: account),
+      create: (BuildContext context) => createPostBloc(account),
       child: CommentReference(comment: comment),
     );
   }

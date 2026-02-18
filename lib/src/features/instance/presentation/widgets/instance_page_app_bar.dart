@@ -5,18 +5,15 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/models.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem, showSnackbar;
 
 class InstancePageAppBar extends StatefulWidget {
   /// The instance being displayed.

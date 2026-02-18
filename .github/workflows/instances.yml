@@ -30,10 +30,10 @@ jobs:
           cat lemmy-instances.txt piefed-instances.txt | sort | uniq -i > instances.txt
 
           # Convert to a dart file with a map of domain -> platform
-          cat << EOF > lib/instances.dart
-          import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+          cat << EOF > lib/src/features/instance/data/constants/known_instances.dart
+          import 'package:thunder/src/foundation/primitives/primitives.dart';
 
-          const Map<String, ThreadiversePlatform> instances = {
+          const Map<String, ThreadiversePlatform> knownInstances = {
           $(awk '{ print "  \047"$0"\047: ThreadiversePlatform.lemmy," }' lemmy-instances.txt)
           $(awk '{ print "  \047"$0"\047: ThreadiversePlatform.piefed," }' piefed-instances.txt)
           };
@@ -140,7 +140,7 @@ jobs:
         with:
           commit-message: Update instances
           title: Update instances
-          body: This PR is updating `instances.dart`, `AndroidManifest.xml`, `manifest.json` and `content.js` with the latest list of Lemmy and PieFed instances retrieved from fediverse.observer.
+          body: This PR is updating `known_instances.dart`, `AndroidManifest.xml`, `manifest.json` and `content.js` with the latest list of Lemmy and PieFed instances retrieved from fediverse.observer.
           branch: update-instances
           delete-branch: true
           author: GitHub <noreply@github.com>

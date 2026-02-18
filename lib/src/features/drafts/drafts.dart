@@ -1,2 +1,2 @@
 export 'data/models/draft.dart';
-export 'domain/enums/draft_type.dart';
+export 'package:thunder/src/foundation/primitives/enums/draft_type.dart';

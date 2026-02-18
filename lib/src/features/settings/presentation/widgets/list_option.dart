@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
 
 class ListOption<T> extends StatelessWidget {
   // Appearance

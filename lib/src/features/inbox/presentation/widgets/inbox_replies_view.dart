@@ -9,8 +9,8 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/shared/comment_reference.dart';
-import 'package:thunder/src/shared/divider.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
 
 class InboxRepliesView extends StatefulWidget {
   final List<ThunderComment> replies;
@@ -54,7 +54,8 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                   CommentReference(
                     comment: reply,
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: reply.replyMentionId!, value: !reply.read!)),
+                      onPressed: () =>
+                          context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: reply.replyMentionId!, actionInput: ReadInboxActionInput(!reply.read!))),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,

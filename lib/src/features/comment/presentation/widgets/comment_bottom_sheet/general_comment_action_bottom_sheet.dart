@@ -4,13 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/shared/multi_picker_item.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, MultiPickerItem, PickerItemData;
 
 /// Defines the general actions that can be taken on a comment
 enum GeneralCommentAction {

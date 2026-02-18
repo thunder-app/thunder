@@ -5,9 +5,10 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// A widget that displays the currently selected user account with the ability to switch between accounts.
 ///
@@ -152,7 +153,9 @@ class _UserSelectorState extends State<UserSelector> {
   @override
   void didUpdateWidget(UserSelector oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.account.id != widget.account.id) _loadUserData(widget.account);
+    if (oldWidget.account.id != widget.account.id) {
+      _loadUserData(widget.account);
+    }
   }
 
   /// Loads user data for the specified account
@@ -203,7 +206,9 @@ class _UserSelectorState extends State<UserSelector> {
       builder: (context) => _UserProfileSelector(widget.account),
     );
 
-    if (newAccount == null || !mounted || widget.account.id == newAccount.id) return;
+    if (newAccount == null || !mounted || widget.account.id == newAccount.id) {
+      return;
+    }
 
     final resolvedItems = await _performAccountSwitch(newAccount);
     if (resolvedItems != null) {
@@ -263,7 +268,7 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderCommunity?> _resolveCommunity(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response['community'];
+      return response.community;
     } catch (e) {
       debugPrint('Failed to resolve community: $e');
       return null;
@@ -274,9 +279,9 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderPost?> _resolvePost(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      if (response['post'] == null) return null;
+      if (response.post == null) return null;
 
-      final parsedPosts = await parsePosts([response['post']]);
+      final parsedPosts = await parsePosts([response.post!]);
       return parsedPosts.isNotEmpty ? parsedPosts.first : null;
     } catch (e) {
       debugPrint('Failed to resolve post: $e');
@@ -288,7 +293,7 @@ class _UserSelectorState extends State<UserSelector> {
   Future<ThunderComment?> _resolveParentComment(Account account, String actorId) async {
     try {
       final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response['comment'];
+      return response.comment;
     } catch (e) {
       debugPrint('Failed to resolve parent comment: $e');
       return null;

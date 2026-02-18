@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
 
 void showSelectableTextModal(BuildContext context, {String? title, required String text}) {
   final l10n = GlobalContext.l10n;

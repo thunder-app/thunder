@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:thunder/src/core/enums/swipe_action.dart';
+import 'package:thunder/src/features/settings/domain/swipe_action.dart';
 
 typedef SwipeBackgroundBuilder = Widget Function(
   BuildContext context,

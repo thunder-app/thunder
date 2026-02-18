@@ -3,21 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/enums/post_body_view_type.dart';
-import 'package:thunder/src/core/enums/user_type.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/community_chip.dart';
 import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/shared/widgets/media/compact_thumbnail_preview.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/thunder.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/compact_thumbnail_preview.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// Displays the title and related information for a given post.
 ///

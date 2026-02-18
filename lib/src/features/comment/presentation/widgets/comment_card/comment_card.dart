@@ -5,14 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/src/core/enums/swipe_action.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/app/thunder.dart';
-import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
-import 'package:thunder/src/shared/utils/swipe.dart';
+import 'package:thunder/src/shared/gestures/swipe_utils.dart';
 
 /// A widget that displays a given comment.
 ///

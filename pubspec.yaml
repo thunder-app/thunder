@@ -49,7 +49,7 @@ dependencies:
   flutter_displaymode: ^0.7.0
   flutter_file_dialog: ^3.0.2
   flutter_keyboard_visibility: ^6.0.0
-  flutter_local_notifications: ^19.2.1
+  flutter_local_notifications: ^20.1.0
   flutter_markdown: ^0.7.3+1
   flutter_native_splash: ^2.4.7
   flutter_sharing_intent: ^2.0.4
@@ -93,10 +93,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  bloc_test: ^10.0.0
   build_runner: ^2.5.4
   drift_dev: ^2.28.0
   flutter_launcher_icons: ^0.14.1
   flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
   sqflite: ^2.4.0
   sqflite_common_ffi: ^2.3.4
 

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
 
 /// A widget that displays the number of replies to a comment.
 ///

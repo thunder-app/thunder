@@ -118,7 +118,9 @@ void main() {
         expect(root.replies[0].comment, equals(comment));
       });
 
-      test('insert does not add comment if it is not a direct child of this comment', () {
+      test(
+          'insert does not add comment if it is not a direct child of this comment',
+          () {
         final root = CommentNode();
 
         final comment = createMockComment(id: 1, path: '0.1');
@@ -132,7 +134,8 @@ void main() {
         expect(node.replies.length, equals(0));
       });
 
-      test('insert does not add comment if it has the same id as this comment', () {
+      test('insert does not add comment if it has the same id as this comment',
+          () {
         final root = CommentNode();
 
         final comment = createMockComment(id: 1, path: '0.1');
@@ -154,11 +157,13 @@ void main() {
       test('insert replaces comment if it already exists', () {
         final root = CommentNode();
 
-        final comment = createMockComment(id: 1, path: '0.1', content: 'Original');
+        final comment =
+            createMockComment(id: 1, path: '0.1', content: 'Original');
         final node = CommentNode(comment: comment);
         root.insert(node);
 
-        final updatedComment = createMockComment(id: 1, path: '0.1', content: 'Updated');
+        final updatedComment =
+            createMockComment(id: 1, path: '0.1', content: 'Updated');
         final updatedNode = CommentNode(comment: updatedComment);
         root.insert(updatedNode);
 

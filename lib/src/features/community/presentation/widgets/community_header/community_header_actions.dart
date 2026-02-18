@@ -3,21 +3,16 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/models.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
-import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip, showSnackbar;
 
 /// A widget that displays relevant actions for a community in a scrollable chip list.
 class CommunityHeaderActions extends StatelessWidget {
@@ -184,8 +179,12 @@ class _SubscriptionActionChip extends StatelessWidget {
         HapticFeedback.mediumImpact();
         final updatedCommunity = await handleSubscription(context, community);
 
-        if (community.subscribed != updatedCommunity?.subscribed) context.read<ProfileBloc>().add(FetchProfileSubscriptions());
-        if (updatedCommunity != null) context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: updatedCommunity));
+        if (community.subscribed != updatedCommunity?.subscribed) {
+          context.read<ProfileBloc>().add(FetchProfileSubscriptions());
+        }
+        if (updatedCommunity != null) {
+          context.read<FeedBloc>().add(FeedCommunityUpdatedEvent(community: updatedCommunity));
+        }
       },
     );
   }

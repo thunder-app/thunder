@@ -6,16 +6,16 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem;
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {
@@ -306,7 +306,9 @@ class _FeedDrawerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Show profile picture only if it's the root feed and profile picture is enabled
-    if (isRoot && showProfilePicture) return _buildProfilePictureButton(context);
+    if (isRoot && showProfilePicture) {
+      return _buildProfilePictureButton(context);
+    }
     return _buildIconButton(context);
   }
 

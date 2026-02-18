@@ -2,22 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/core/enums/feed_list_type.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/links.dart';
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/features/search/domain/models/search_results.dart';
+import 'package:thunder/src/features/search/domain/models/search_resolve_result.dart';
 
 /// Interface for a search repository
 abstract class SearchRepository {
   /// Searches for posts, comments, users, communities, etc.
-  Future<Map<String, dynamic>> search({
+  Future<SearchResults> search({
     required String query,
     MetaSearchType? type,
     SearchSortType? sort,
@@ -31,7 +26,7 @@ abstract class SearchRepository {
   });
 
   /// Resolves a given query
-  Future<Map<String, dynamic>> resolve({required String query});
+  Future<SearchResolveResult> resolve({required String query});
 }
 
 /// Implementation of [SearchRepository]
@@ -48,7 +43,7 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
 
   @override
-  Future<Map<String, dynamic>> search({
+  Future<SearchResults> search({
     required String query,
     MetaSearchType? type,
     SearchSortType? sort,
@@ -93,23 +88,23 @@ class SearchRepositoryImpl implements SearchRepository {
       }
     }
 
-    return {
-      'type': response.type,
-      'comments': comments,
-      'posts': posts,
-      'communities': communities,
-      'users': users,
-    };
+    return SearchResults(
+      type: response.type,
+      comments: comments,
+      posts: posts,
+      communities: communities,
+      users: users,
+    );
   }
 
   @override
-  Future<Map<String, dynamic>> resolve({required String query}) async {
+  Future<SearchResolveResult> resolve({required String query}) async {
     final response = await _api.resolve(query: query);
-    return {
-      'community': response.community,
-      'post': response.post,
-      'comment': response.comment,
-      'person': response.user,
-    };
+    return SearchResolveResult(
+      community: response.community,
+      post: response.post,
+      comment: response.comment,
+      user: response.user,
+    );
   }
 }

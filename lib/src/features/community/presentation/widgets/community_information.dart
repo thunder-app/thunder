@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/models/models.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/utils/date_time.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 
 /// A widget that displays information about a community.
 class CommunityInformation extends StatelessWidget {

@@ -11,27 +11,20 @@ import "package:html/parser.dart";
 import "package:path_provider/path_provider.dart";
 import 'package:markdown/markdown.dart' hide Text;
 
-import "package:thunder/src/core/enums/threadiverse_platform.dart";
-import "package:thunder/src/core/enums/post_sort_type.dart";
-import "package:thunder/src/core/models/thunder_local_user.dart";
-import "package:thunder/src/core/models/thunder_my_user.dart";
-import "package:thunder/src/core/models/thunder_site_response.dart";
+import "package:thunder/src/foundation/primitives/models/thunder_local_user.dart";
+import "package:thunder/src/foundation/primitives/models/thunder_site_response.dart";
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
-import "package:thunder/src/core/enums/enums.dart";
-import "package:thunder/src/core/enums/local_settings.dart";
+import "package:thunder/src/foundation/primitives/enums/enums.dart";
 import "package:thunder/src/features/settings/settings.dart";
-import "package:thunder/src/shared/dialogs.dart";
-import "package:thunder/src/shared/snackbar.dart";
 import "package:thunder/src/shared/sort_picker.dart";
-import "package:thunder/src/app/widgets/thunder_icons.dart";
 import "package:thunder/src/features/user/user.dart";
-import "package:thunder/src/shared/utils/bottom_sheet_list_picker.dart";
-import "package:thunder/src/shared/utils/constants.dart";
-import "package:thunder/src/shared/utils/error_messages.dart";
-import "package:thunder/src/app/utils/global_context.dart";
-import "package:thunder/src/shared/utils/links.dart";
-import "package:thunder/src/app/utils/navigation.dart";
+import "package:thunder/src/foundation/config/app_constants.dart";
+import "package:thunder/src/foundation/networking/error_message_utils.dart";
+import "package:thunder/src/foundation/config/global_context.dart";
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import "package:thunder/src/app/shell/navigation/navigation_utils.dart";
+import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, Thunder, showSnackbar, showThunderDialog;
 
 /// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
 class UserSettingsPage extends StatefulWidget {

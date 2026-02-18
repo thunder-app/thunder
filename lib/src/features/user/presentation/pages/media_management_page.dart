@@ -5,21 +5,21 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/core/enums/image_caching_mode.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/media/image.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/media_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class MediaManagementPage extends StatelessWidget {
   const MediaManagementPage({super.key});
@@ -187,7 +187,7 @@ class MediaManagementPage extends StatelessWidget {
                                                             else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
-                                                                  value: FeedBloc(account: account),
+                                                                  value: createFeedBloc(account),
                                                                   child: CustomScrollView(
                                                                     physics: const NeverScrollableScrollPhysics(),
                                                                     shrinkWrap: true,

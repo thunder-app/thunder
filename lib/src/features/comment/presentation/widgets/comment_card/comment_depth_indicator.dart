@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/src/shared/utils/colors.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/shared/theme/color_utils.dart';
 
 class CommentDepthIndicatorDecoration extends Decoration {
   /// The [BuildContext] used to access the theme and colors for rendering.

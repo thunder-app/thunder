@@ -4,7 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/comment_reference.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
 
 /// Widget representing the list of comments on the feed. This is used when viewing a user's profile.
 class FeedCommentCardList extends StatelessWidget {

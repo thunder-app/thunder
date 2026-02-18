@@ -2,18 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/enums.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
-import 'package:thunder/src/core/models/thunder_post_report.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/api_exception.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/user/user.dart';
 
 /// Interface for a post repository
 abstract class PostRepository {
@@ -133,10 +127,16 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
     final response = await _api.getPost(postId, commentId: commentId);
+
+    final parsedPost = await parsePostWithCurrentPreferences(response.post);
+    final parsedCrossPosts = await Future.wait(response.crossPosts.map(parsePostWithCurrentPreferences));
+
     return {
-      'post': response.post,
+      'post': parsedPost,
       'moderators': response.moderators,
-      'cross_posts': response.crossPosts,
+      'cross_posts': parsedCrossPosts,
+      // Keep camelCase key for existing consumers.
+      'crossPosts': parsedCrossPosts,
     };
   }
 

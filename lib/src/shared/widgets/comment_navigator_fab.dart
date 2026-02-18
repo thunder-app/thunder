@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 
 class CommentNavigatorFab extends StatefulWidget {
   /// The [ScrollController] for the scrollable list

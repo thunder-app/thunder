@@ -4,16 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/links.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/shared/links/widgets/link_bottom_sheet.dart';
+import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, ThunderPopupMenuItem;
 
 /// Holds the app bar for the post page.
 class PostPageAppBar extends StatelessWidget {
@@ -216,7 +214,9 @@ class PostAppBarActions extends StatelessWidget {
                 title: l10n.sortOptions,
                 onSelect: (selected) async {
                   await onReset?.call();
-                  if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
+                  if (context.mounted) {
+                    context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
+                  }
                 },
                 previouslySelected: state.commentSortType,
               ),

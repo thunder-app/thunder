@@ -9,12 +9,13 @@ import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
 
 class UserLabelSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;

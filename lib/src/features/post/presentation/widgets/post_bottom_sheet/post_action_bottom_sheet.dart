@@ -7,14 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/models/thunder_my_user.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/profile_site_info_cache.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 
 /// Programatically show the post action bottom sheet
 void showPostActionBottomModalSheet(

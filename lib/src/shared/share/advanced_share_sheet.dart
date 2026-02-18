@@ -8,11 +8,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/settings/settings.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/shared/image_preview.dart';
 
 class AdvancedShareSheetOptions {

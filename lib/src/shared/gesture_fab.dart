@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 
 /// Enum to distinguish between feed and post FABs
 enum FabType { feed, post }

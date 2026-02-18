@@ -5,17 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/utils/numbers.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// A widget that displays a given community's information. This widget is generally used in a list.
 class CommunityListEntry extends StatefulWidget {
@@ -148,7 +149,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
             try {
               final response = await SearchRepositoryImpl(account: widget.resolutionAccount!).resolve(query: widget.community.actorId);
 
-              communityId = response['community']?.id;
+              communityId = response.community?.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about communityId being un-navigable
             }

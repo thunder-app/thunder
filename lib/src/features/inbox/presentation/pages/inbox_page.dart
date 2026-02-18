@@ -4,14 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem, showSnackbar, showThunderDialog;
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {

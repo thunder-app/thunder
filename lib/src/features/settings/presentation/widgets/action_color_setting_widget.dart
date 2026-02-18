@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/enums/action_color.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
 
 class ActionColorSettingWidget extends StatelessWidget {
   final LocalSettings? settingToHighlight;

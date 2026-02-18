@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
-import 'package:thunder/src/core/models/thunder_private_message.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
+import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/features/notification/domain/models/unread_notifications_count.dart';
 
 /// Interface for a notification repository
 abstract class NotificationRepository {
@@ -54,7 +51,7 @@ abstract class NotificationRepository {
   });
 
   /// Fetches number of unread notifications
-  Future<Map<String, dynamic>> unreadNotificationsCount();
+  Future<UnreadNotificationsCount> unreadNotificationsCount();
 
   /// Marks all notifications as read
   Future<void> markAllNotificationsAsRead();
@@ -68,10 +65,18 @@ class NotificationRepositoryImpl implements NotificationRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  /// The localization service to use for user-facing errors
+  final LocalizationService _localizationService;
+
   /// Creates a new NotificationRepositoryImpl.
   ///
   /// An optional [api] client can be provided for testing.
-  NotificationRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  NotificationRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localizationService = const GlobalContextLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localizationService = localizationService;
 
   @override
   Future<List<ThunderComment>> replies({
@@ -80,13 +85,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
-    if (account.anonymous) throw Exception(GlobalContext.l10n.userNotLoggedIn);
+    if (account.anonymous) {
+      throw Exception(_localizationService.l10n.userNotLoggedIn);
+    }
     return await _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
   Future<void> markReplyAsRead({required int replyId, bool read = true}) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await _api.markCommentReplyAsRead(replyId: replyId, read: read);
@@ -99,7 +106,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
@@ -107,7 +114,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> markMentionAsRead({required int mentionId, bool read = true}) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await _api.markCommentMentionAsRead(mentionId: mentionId, read: read);
@@ -119,7 +126,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int limit = 50,
     int page = 1,
   }) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.getPrivateMessages(page: page, limit: limit, unread: unread);
@@ -127,28 +134,28 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> markMessageAsRead({required int messageId, bool read = true}) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await _api.markPrivateMessageAsRead(messageId: messageId, read: read);
   }
 
   @override
-  Future<Map<String, dynamic>> unreadNotificationsCount() async {
-    final l10n = GlobalContext.l10n;
+  Future<UnreadNotificationsCount> unreadNotificationsCount() async {
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await _api.unreadCount();
-    return {
-      'replies': response.replies,
-      'mentions': response.mentions,
-      'private_messages': response.privateMessages,
-    };
+    return UnreadNotificationsCount(
+      replies: response.replies,
+      mentions: response.mentions,
+      privateMessages: response.privateMessages,
+    );
   }
 
   @override
   Future<void> markAllNotificationsAsRead() async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await _api.markAllNotificationsAsRead();

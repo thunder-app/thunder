@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/thunder.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/instance/presentation/bloc/instance_page_bloc.dart';
-import 'package:thunder/src/features/instance/presentation/bloc/instance_page_event.dart';
+import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
+import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
 import 'package:thunder/src/shared/error_message.dart';
 
 /// A scaffold for instance tabs. Handles loading, retry and loading more.

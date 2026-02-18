@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:thunder/src/core/database/database.dart';
+import 'package:thunder/src/foundation/persistence/database/database.dart';
 
 import 'generated/schema.dart';
 import 'generated/schema_v3.dart' as v3;
@@ -40,8 +40,26 @@ void main() {
     group('from v3 to v4', () {
       test('add custom_thumbnail to Drafts table', () async {
         // Add data to insert into the old database, and the expected rows after the migration.
-        final oldDraftsData = <v3.DraftsData>[v3.DraftsData(id: 1, draftType: 'postCreate', existingId: 1, replyId: 1, title: 'title', url: 'url', body: 'body')];
-        final expectedNewDraftsData = <v4.DraftsData>[v4.DraftsData(id: 1, draftType: 'postCreate', existingId: 1, replyId: 1, title: 'title', url: 'url', body: 'body')];
+        final oldDraftsData = <v3.DraftsData>[
+          v3.DraftsData(
+              id: 1,
+              draftType: 'postCreate',
+              existingId: 1,
+              replyId: 1,
+              title: 'title',
+              url: 'url',
+              body: 'body')
+        ];
+        final expectedNewDraftsData = <v4.DraftsData>[
+          v4.DraftsData(
+              id: 1,
+              draftType: 'postCreate',
+              existingId: 1,
+              replyId: 1,
+              title: 'title',
+              url: 'url',
+              body: 'body')
+        ];
 
         await verifier.testWithDataIntegrity(
           oldVersion: 3,
@@ -49,8 +67,10 @@ void main() {
           createOld: v3.DatabaseAtV3.new,
           createNew: v4.DatabaseAtV4.new,
           openTestedDatabase: AppDatabase.new,
-          createItems: (batch, oldDb) => batch.insertAll(oldDb.drafts, oldDraftsData),
-          validateItems: (newDb) async => expect(expectedNewDraftsData, await newDb.select(newDb.drafts).get()),
+          createItems: (batch, oldDb) =>
+              batch.insertAll(oldDb.drafts, oldDraftsData),
+          validateItems: (newDb) async => expect(
+              expectedNewDraftsData, await newDb.select(newDb.drafts).get()),
         );
       });
     });
@@ -59,13 +79,31 @@ void main() {
       test('add list_index column and set list_index to id', () async {
         // Add data to insert into the old database, and the expected rows after the migration.
         final oldAccountsData = <v4.AccountsData>[
-          v4.AccountsData(id: 1, username: 'thunder', jwt: 'jwt', instance: 'lemmy.thunderapp.dev', anonymous: false, userId: 1),
-          v4.AccountsData(id: 2, instance: 'lemmy.thunderapp.dev', anonymous: true),
+          v4.AccountsData(
+              id: 1,
+              username: 'thunder',
+              jwt: 'jwt',
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: false,
+              userId: 1),
+          v4.AccountsData(
+              id: 2, instance: 'lemmy.thunderapp.dev', anonymous: true),
         ];
 
         final expectedNewAccountsData = <v5.AccountsData>[
-          v5.AccountsData(id: 1, username: 'thunder', jwt: 'jwt', instance: 'lemmy.thunderapp.dev', anonymous: false, userId: 1, listIndex: 1),
-          v5.AccountsData(id: 2, instance: 'lemmy.thunderapp.dev', anonymous: true, listIndex: 2),
+          v5.AccountsData(
+              id: 1,
+              username: 'thunder',
+              jwt: 'jwt',
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: false,
+              userId: 1,
+              listIndex: 1),
+          v5.AccountsData(
+              id: 2,
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: true,
+              listIndex: 2),
         ];
 
         await verifier.testWithDataIntegrity(
@@ -74,8 +112,10 @@ void main() {
           createOld: v4.DatabaseAtV4.new,
           createNew: v5.DatabaseAtV5.new,
           openTestedDatabase: AppDatabase.new,
-          createItems: (batch, oldDb) => batch.insertAll(oldDb.accounts, oldAccountsData),
-          validateItems: (newDb) async => expect(expectedNewAccountsData, await newDb.select(newDb.accounts).get()),
+          createItems: (batch, oldDb) =>
+              batch.insertAll(oldDb.accounts, oldAccountsData),
+          validateItems: (newDb) async => expect(expectedNewAccountsData,
+              await newDb.select(newDb.accounts).get()),
         );
       });
     });
@@ -83,8 +123,26 @@ void main() {
     group('from v5 to v6', () {
       test('add alt_text column to Drafts table', () async {
         // Add data to insert into the old database, and the expected rows after the migration.
-        final oldDraftsData = <v5.DraftsData>[v5.DraftsData(id: 1, draftType: 'postCreate', existingId: 1, replyId: 1, title: 'title', url: 'url', body: 'body')];
-        final expectedNewDraftsData = <v6.DraftsData>[v6.DraftsData(id: 1, draftType: 'postCreate', existingId: 1, replyId: 1, title: 'title', url: 'url', body: 'body')];
+        final oldDraftsData = <v5.DraftsData>[
+          v5.DraftsData(
+              id: 1,
+              draftType: 'postCreate',
+              existingId: 1,
+              replyId: 1,
+              title: 'title',
+              url: 'url',
+              body: 'body')
+        ];
+        final expectedNewDraftsData = <v6.DraftsData>[
+          v6.DraftsData(
+              id: 1,
+              draftType: 'postCreate',
+              existingId: 1,
+              replyId: 1,
+              title: 'title',
+              url: 'url',
+              body: 'body')
+        ];
 
         await verifier.testWithDataIntegrity(
           oldVersion: 5,
@@ -92,23 +150,50 @@ void main() {
           createOld: v5.DatabaseAtV5.new,
           createNew: v6.DatabaseAtV6.new,
           openTestedDatabase: AppDatabase.new,
-          createItems: (batch, oldDb) => batch.insertAll(oldDb.drafts, oldDraftsData),
-          validateItems: (newDb) async => expect(expectedNewDraftsData, await newDb.select(newDb.drafts).get()),
+          createItems: (batch, oldDb) =>
+              batch.insertAll(oldDb.drafts, oldDraftsData),
+          validateItems: (newDb) async => expect(
+              expectedNewDraftsData, await newDb.select(newDb.drafts).get()),
         );
       });
     });
 
     group('from v6 to v7', () {
-      test('add platform column to Accounts table and set platform to lemmy', () async {
+      test('add platform column to Accounts table and set platform to lemmy',
+          () async {
         // Add data to insert into the old database, and the expected rows after the migration.
         final oldAccountsData = <v6.AccountsData>[
-          v6.AccountsData(id: 1, username: 'thunder', jwt: 'jwt', instance: 'lemmy.thunderapp.dev', anonymous: false, userId: 1, listIndex: 1),
-          v6.AccountsData(id: 2, instance: 'lemmy.thunderapp.dev', anonymous: true, listIndex: 2),
+          v6.AccountsData(
+              id: 1,
+              username: 'thunder',
+              jwt: 'jwt',
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: false,
+              userId: 1,
+              listIndex: 1),
+          v6.AccountsData(
+              id: 2,
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: true,
+              listIndex: 2),
         ];
 
         final expectedNewAccountsData = <v7.AccountsData>[
-          v7.AccountsData(id: 1, username: 'thunder', jwt: 'jwt', instance: 'lemmy.thunderapp.dev', anonymous: false, userId: 1, listIndex: 1, platform: 'lemmy'),
-          v7.AccountsData(id: 2, instance: 'lemmy.thunderapp.dev', anonymous: true, listIndex: 2, platform: 'lemmy'),
+          v7.AccountsData(
+              id: 1,
+              username: 'thunder',
+              jwt: 'jwt',
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: false,
+              userId: 1,
+              listIndex: 1,
+              platform: 'lemmy'),
+          v7.AccountsData(
+              id: 2,
+              instance: 'lemmy.thunderapp.dev',
+              anonymous: true,
+              listIndex: 2,
+              platform: 'lemmy'),
         ];
 
         await verifier.testWithDataIntegrity(
@@ -117,8 +202,10 @@ void main() {
           createOld: v6.DatabaseAtV6.new,
           createNew: v7.DatabaseAtV7.new,
           openTestedDatabase: AppDatabase.new,
-          createItems: (batch, oldDb) => batch.insertAll(oldDb.accounts, oldAccountsData),
-          validateItems: (newDb) async => expect(expectedNewAccountsData, await newDb.select(newDb.accounts).get()),
+          createItems: (batch, oldDb) =>
+              batch.insertAll(oldDb.accounts, oldAccountsData),
+          validateItems: (newDb) async => expect(expectedNewAccountsData,
+              await newDb.select(newDb.accounts).get()),
         );
       });
     });

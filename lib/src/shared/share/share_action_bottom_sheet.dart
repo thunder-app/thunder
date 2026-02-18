@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/shared/share/advanced_share_sheet.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, showSnackbar;
 
 /// Defines the actions that can be taken on a post when sharing
 enum ShareBottomSheetAction {

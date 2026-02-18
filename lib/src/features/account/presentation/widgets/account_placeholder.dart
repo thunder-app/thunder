@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// A widget that displays a placeholder when no user account is logged in.
 ///
@@ -15,8 +14,9 @@ class AccountPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final instance = context.select<ThunderBloc, String?>((bloc) => bloc.state.currentAnonymousInstance) ?? '';
+    final l10n = GlobalContext.l10n;
+
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return Center(
       child: Padding(
@@ -27,7 +27,7 @@ class AccountPlaceholder extends StatelessWidget {
           children: [
             Icon(Icons.people_rounded, size: 100.0, color: theme.dividerColor),
             const SizedBox(height: 16.0),
-            Text(l10n.browsingAnonymously(instance), textAlign: TextAlign.center),
+            Text(l10n.browsingAnonymously(account.instance), textAlign: TextAlign.center),
             Text(l10n.addAccountToSeeProfile, textAlign: TextAlign.center),
             const SizedBox(height: 24.0),
             ElevatedButton(

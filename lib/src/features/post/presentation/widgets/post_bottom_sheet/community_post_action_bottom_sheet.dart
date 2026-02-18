@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/widgets/thunder_icons.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar;
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
@@ -111,25 +108,33 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       case CommunityPostAction.subscribeToCommunity:
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, true);
-        if (community.subscribed != SubscriptionStatus.notSubscribed) showSnackbar('Subscribed to ${community.titleOrName}');
+        if (community.subscribed != SubscriptionStatus.notSubscribed) {
+          showSnackbar('Subscribed to ${community.titleOrName}');
+        }
         widget.onAction(CommunityAction.follow, community);
         break;
       case CommunityPostAction.unsubscribeFromCommunity:
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, false);
-        if (community.subscribed == SubscriptionStatus.notSubscribed) showSnackbar('Unsubscribed from ${community.titleOrName}');
+        if (community.subscribed == SubscriptionStatus.notSubscribed) {
+          showSnackbar('Unsubscribed from ${community.titleOrName}');
+        }
         widget.onAction(CommunityAction.follow, community);
         break;
       case CommunityPostAction.blockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, true);
-        if (community.blocked == true) showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
+        if (community.blocked == true) {
+          showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
+        }
         widget.onAction(CommunityAction.block, community);
         break;
       case CommunityPostAction.unblockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, false);
-        if (community.blocked == false) showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
+        if (community.blocked == false) {
+          showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
+        }
         widget.onAction(CommunityAction.block, community);
         break;
     }

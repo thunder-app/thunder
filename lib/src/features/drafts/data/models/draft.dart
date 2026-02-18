@@ -1,9 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
-import 'package:thunder/src/core/database/database.dart';
-import 'package:thunder/src/core/database/type_converters.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
-import 'package:thunder/main.dart';
 
 class Draft {
   /// The database identifier for this object

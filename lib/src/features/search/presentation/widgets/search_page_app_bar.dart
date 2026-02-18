@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/config/config.dart';
 
 /// The app bar for the search page containing the search bar.
 class SearchPageAppBar extends StatelessWidget implements PreferredSizeWidget {

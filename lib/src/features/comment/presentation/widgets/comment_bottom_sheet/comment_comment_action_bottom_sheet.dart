@@ -5,15 +5,11 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
-import 'package:thunder/src/app/widgets/thunder_icons.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar, showThunderDialog;
 
 /// Defines the actions that can be taken on a comment
 enum CommentBottomSheetAction {

@@ -5,16 +5,17 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thunder/src/shared/widgets/thunder_popup_menu_item.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/src/shared/utils/web_utils.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/shared/links/widgets/link_bottom_sheet.dart';
+import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/shared/widgets/webview/custom_web_view_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem;
 
 class WebView extends StatefulWidget {
   final String url;

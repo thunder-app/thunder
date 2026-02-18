@@ -4,21 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-import 'package:thunder/src/app/thunder.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
-import 'package:thunder/src/core/enums/fab_action.dart';
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+
 import 'package:thunder/src/shared/widgets/comment_navigator_fab.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// The FAB for the post page.
 class PostPageFAB extends StatefulWidget {
@@ -62,7 +61,9 @@ class _PostPageFABState extends State<PostPageFAB> {
         title: l10n.sortOptions,
         onSelect: (selected) async {
           await widget.scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
-          if (context.mounted) context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
+          if (context.mounted) {
+            context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
+          }
         },
         previouslySelected: commentSortType,
       ),

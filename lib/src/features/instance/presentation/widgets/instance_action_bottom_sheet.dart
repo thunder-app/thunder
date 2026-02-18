@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/models/thunder_my_user.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, showSnackbar;
 
 /// Defines the actions that can be taken on an instance
 enum InstanceBottomSheetAction {
@@ -117,13 +116,17 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
       case InstanceBottomSheetAction.blockCommunityInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, true);
-        if (blocked) showSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
+        if (blocked) {
+          showSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
+        }
         widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.unblockCommunityInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, false);
-        if (!blocked) showSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
+        if (!blocked) {
+          showSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
+        }
         widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.visitUserInstance:
@@ -138,7 +141,9 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
       case InstanceBottomSheetAction.unblockUserInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.userInstanceId!, false);
-        if (!blocked) showSnackbar(l10n.successfullyUnblockedUser(userInstance!));
+        if (!blocked) {
+          showSnackbar(l10n.successfullyUnblockedUser(userInstance!));
+        }
         widget.onAction?.call();
         break;
     }

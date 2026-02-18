@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
+import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 
 /// Represents a modlog event based on [ModlogActionType].
 /// This class is used to display modlog events in the UI.
@@ -23,6 +24,21 @@ class ModlogEventItem {
     this.community,
     required this.actioned,
   });
+
+  factory ModlogEventItem.fromModlogEvent(ModlogEvent event) {
+    return ModlogEventItem(
+      type: event.type,
+      dateTime: event.dateTime,
+      moderator: event.moderator,
+      admin: event.admin,
+      reason: event.reason,
+      user: event.user,
+      post: event.post,
+      comment: event.comment,
+      community: event.community,
+      actioned: event.actioned,
+    );
+  }
 
   /// The type of the event.
   final ModlogActionType type;

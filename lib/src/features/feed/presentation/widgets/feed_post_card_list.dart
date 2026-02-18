@@ -8,11 +8,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/enums.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/features/feed/api.dart';
 
 /// Widget representing the list of posts on the feed.
 class FeedPostCardList extends StatefulWidget {
@@ -94,16 +94,16 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     Widget child = PostCard(
       post: post,
       onVoteAction: (int voteType) {
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, value: voteType));
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, actionInput: VotePostInput(voteType)));
       },
       onSaveAction: (bool saved) {
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, value: saved));
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, actionInput: SavePostInput(saved)));
       },
       onReadAction: (bool read) {
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, value: read));
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, actionInput: ReadPostInput(read)));
       },
       onHideAction: (bool hide) {
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, value: hide));
+        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, actionInput: HidePostInput(hide)));
         context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
       },
       onDownAction: () {
@@ -155,7 +155,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
               if (index > lastProcessedIndex) lastProcessedIndex = index;
 
               if (markReadPostIds.isNotEmpty) {
-                context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, value: true));
+                context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, actionInput: const MultiReadPostInput(true)));
                 readPostIds.addAll(markReadPostIds); // Add all post ids that were queued to prevent them from being queued again
                 markReadPostIds = <int>{}; // Reset the list of post ids to mark as read
               }

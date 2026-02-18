@@ -5,14 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/date_time.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 
 /// A widget that displays detailed information about a user.
 class UserInformation extends StatefulWidget {

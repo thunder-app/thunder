@@ -5,29 +5,23 @@ import 'package:flutter/services.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/wiring/state_factories.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/enums.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
-import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/nav_bar_state_cubit/nav_bar_state_cubit.dart';
-import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 enum FeedType { community, user, general, account }
 
@@ -146,7 +140,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
 
     return BlocProvider<FeedBloc>(
-      create: (_) => FeedBloc(account: account)
+      create: (_) => createFeedBloc(account)
         ..add(FeedFetchedEvent(
           feedType: widget.feedType,
           feedListType: widget.feedListType,
@@ -376,7 +370,9 @@ class _FeedViewState extends State<FeedView> {
                 Future.delayed(const Duration(milliseconds: 1000), () {
                   if (!mounted) return;
                   bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                  if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
+                  if (!isScrollable) {
+                    context.read<FeedBloc>().add(const FeedFetchedEvent());
+                  }
                 });
               }
 

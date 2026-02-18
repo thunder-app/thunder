@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 
 class UserIndicator extends StatefulWidget {
   /// The user to display.

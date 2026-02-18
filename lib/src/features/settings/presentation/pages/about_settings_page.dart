@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/update/check_github_update.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/utils/links.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/utils/check_github_update.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   final LocalSettings? settingToHighlight;

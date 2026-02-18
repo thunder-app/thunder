@@ -7,17 +7,15 @@ import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:thunder/src/app/routing/swipeable_page_route.dart';
+import 'package:thunder/src/app/shell/navigation/swipeable_page_route.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/models.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 /// Creates a widget which can display a list of accounts and anonymous instances.
@@ -783,7 +781,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
       try {
         final unread = await NotificationRepositoryImpl(account: account.account).unreadNotificationsCount();
 
-        int? totalUnreadCount = unread['replies'] + unread['mentions'] + unread['private_messages'];
+        int? totalUnreadCount = unread.total;
         if (totalUnreadCount == 0) totalUnreadCount = null;
         setState(() => account.totalUnreadCount = totalUnreadCount);
       } catch (e) {

@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/models/thunder_site_response.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/api_exception.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
 
 /// Interface for a instance repository

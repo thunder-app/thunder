@@ -8,17 +8,15 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
-import 'package:thunder/src/core/models/thunder_instance_info.dart';
-import 'package:thunder/instances.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/links.dart';
-import 'package:thunder/src/shared/utils/text_input_formatter.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
+
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class LoginPage extends StatefulWidget {
   /// The callback to pop the register page.
@@ -76,7 +74,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     // Fetches the instance information and updates the icon
     _instanceTextEditingController.addListener(() async {
-      if (instanceTextDebounceTimer?.isActive == true) instanceTextDebounceTimer!.cancel();
+      if (instanceTextDebounceTimer?.isActive == true) {
+        instanceTextDebounceTimer!.cancel();
+      }
       instanceTextDebounceTimer = Timer(const Duration(milliseconds: 300), () async {
         if (_instanceTextEditingController.text.isEmpty) return;
         final instanceInfo = await getInstanceInfo(_instanceTextEditingController.text);
@@ -286,7 +286,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       autocorrect: false,
                       controller: controller,
                       focusNode: focusNode,
-                      inputFormatters: [LowerCaseTextFormatter()],
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         labelText: AppLocalizations.of(context)!.instance(1),
@@ -302,7 +301,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                     suggestionsCallback: (String pattern) {
                       if (pattern.isNotEmpty != true) return [];
-                      return instances.keys.where((instance) => instance.contains(pattern)).toList();
+                      return knownInstances.keys.where((instance) => instance.contains(pattern)).toList();
                     },
                     itemBuilder: (BuildContext context, String itemData) {
                       return ListTile(title: Text(itemData));

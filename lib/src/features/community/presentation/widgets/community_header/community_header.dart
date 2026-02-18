@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/core/models/models.dart';
-import 'package:thunder/src/shared/images/image_preview.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/icon_text.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/numbers.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show ImagePreview;
 
 /// A widget that displays a community's header information and related actions.
 ///

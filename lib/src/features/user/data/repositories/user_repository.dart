@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/user/user.dart';
 
 /// Interface for a user repository
 abstract class UserRepository {
@@ -19,6 +17,7 @@ abstract class UserRepository {
     int? page,
     int? limit,
     bool? saved,
+    bool? includeContent,
   });
 
   /// Blocks or unblocks a person
@@ -46,6 +45,7 @@ class UserRepositoryImpl implements UserRepository {
     int? page,
     int? limit,
     bool? saved,
+    bool? includeContent,
   }) async {
     final response = await _api.getUser(
       userId: userId,
@@ -54,6 +54,7 @@ class UserRepositoryImpl implements UserRepository {
       page: page,
       limit: limit,
       saved: saved,
+      includeContent: includeContent,
     );
 
     return {

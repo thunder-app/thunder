@@ -5,21 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_body.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_filters_row.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_page_app_bar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/shared/utils/debounce.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show ListPickerItem;
 
 /// The main search page that handles search functionality.
 class SearchPage extends StatefulWidget {

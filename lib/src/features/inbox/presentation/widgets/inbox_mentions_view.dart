@@ -8,8 +8,8 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/shared/comment_reference.dart';
-import 'package:thunder/src/shared/divider.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
 
 class InboxMentionsView extends StatefulWidget {
   final List<ThunderComment> mentions;
@@ -53,7 +53,8 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
                   CommentReference(
                     comment: comment,
                     child: IconButton(
-                      onPressed: () => context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: comment.replyMentionId!, value: !comment.read!)),
+                      onPressed: () =>
+                          context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: comment.replyMentionId!, actionInput: ReadInboxActionInput(!comment.read!))),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,

@@ -1,9 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/core/database/database.dart';
-import 'package:thunder/main.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 
 /// Represents a UserLabel, which is used to associate a textual description along with a Lemmy user.
 /// Contains helper methods to load/save corresponding objects in the database.

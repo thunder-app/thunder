@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'package:dynamic_color/dynamic_color.dart';
 
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 class SettingProfile extends StatelessWidget {
   final IconData icon;

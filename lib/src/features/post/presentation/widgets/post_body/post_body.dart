@@ -12,24 +12,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/utils/colors.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/shared/theme/color_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/enums/post_body_view_type.dart';
-import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/conditional_parent_widget.dart';
-import 'package:thunder/src/shared/cross_posts.dart';
-import 'package:thunder/src/shared/widgets/media/media_view.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
+import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
 
 /// A widget that displays the body of a post. This includes the title, body, media, and metadata.
 ///
@@ -250,8 +246,12 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
               post,
               page: GeneralPostAction.share,
               onAction: ({postAction, userAction, communityAction, post}) {
-                if (postAction == null && userAction == null && communityAction == null) return;
-                if (post != null) context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+                if (postAction == null && userAction == null && communityAction == null) {
+                  return;
+                }
+                if (post != null) {
+                  context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+                }
 
                 switch (postAction) {
                   case PostAction.hide:

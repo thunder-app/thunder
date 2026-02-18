@@ -3,19 +3,16 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
+import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/widgets/media/media_view.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// Displays a card view of a post card. This view is used in the feed related pages.
 class PostCardViewComfortable extends StatelessWidget {

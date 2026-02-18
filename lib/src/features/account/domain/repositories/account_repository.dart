@@ -1,6 +1,5 @@
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/feed_list_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/account/domain/models/account_media.dart';
 
 //// Interface for an account repository
 abstract class AccountRepository {
@@ -11,7 +10,7 @@ abstract class AccountRepository {
   Future<List<ThunderCommunity>> subscriptions();
 
   /// Fetches the user's media.
-  Future<Map<String, dynamic>> media({int? page, int? limit});
+  Future<AccountMedia> media({int? page, int? limit});
 
   /// Saves the user's settings.
   Future<void> saveSettings({

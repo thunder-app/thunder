@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 
 /// A widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 class UserListEntry extends StatelessWidget {
@@ -55,7 +56,7 @@ class UserListEntry extends StatelessWidget {
             try {
               final response = await SearchRepositoryImpl(account: resolutionAccount!).resolve(query: user.actorId);
 
-              userId = response['user']?.id;
+              userId = response.user?.id;
             } catch (e) {
               // If we can't find it, then we'll get a standard error message about personId being un-navigable
             }

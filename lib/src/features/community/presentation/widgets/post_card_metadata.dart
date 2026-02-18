@@ -3,28 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/models/thunder_language.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/enums.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
-import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/icon_text.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/date_time.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/utils/numbers.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.
 ///

@@ -1,7 +1,8 @@
-export 'presentation/bloc/profile_bloc.dart';
+export 'presentation/state/profile_bloc.dart';
 export 'presentation/pages/pages.dart';
 export 'presentation/widgets/widgets.dart';
-export 'presentation/utils/utils.dart';
-export 'data/models/models.dart';
+export 'presentation/utils/profile_utils.dart';
+export 'package:thunder/src/foundation/contracts/account.dart';
+export 'domain/models/account_media.dart';
 export 'domain/repositories/account_repository.dart';
 export 'data/repositories/account_repository_impl.dart';

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 class AccessibilitySettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;

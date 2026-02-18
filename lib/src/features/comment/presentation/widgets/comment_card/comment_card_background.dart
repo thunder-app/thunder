@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/cubits/gesture_preferences_cubit/gesture_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/swipe_action.dart';
+import 'package:thunder/src/features/settings/api.dart';
 
 /// A widget that displays the proper background when a swipe action is performed on a comment.
 class CommentCardBackground extends StatelessWidget {

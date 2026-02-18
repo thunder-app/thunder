@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thunder/src/shared/utils/link_utils.dart';
+import 'package:thunder/src/foundation/primitives/models/parsed_link.dart';
+import 'package:thunder/src/foundation/utils/threadiverse_link_parser_utils.dart';
 
 void main() {
   group('ParsedLink', () {
@@ -41,7 +42,8 @@ void main() {
 
     test('returns null for user URLs', () {
       expect(parseLemmyCommunity('https://lemmy.world/u/darklightxi'), isNull);
-      expect(parseLemmyCommunity('https://lemmy.world/u/darklightxi@lemmy.ca'), isNull);
+      expect(parseLemmyCommunity('https://lemmy.world/u/darklightxi@lemmy.ca'),
+          isNull);
     });
 
     test('returns null for @ mentions (users)', () {
@@ -49,14 +51,20 @@ void main() {
     });
 
     test('returns null for PieFed post URLs (/c/community/p/postId)', () {
-      expect(parseLemmyCommunity('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support'), isNull);
-      expect(parseLemmyCommunity('https://piefed.social/c/thunder_app/p/1422697'), isNull);
+      expect(
+          parseLemmyCommunity(
+              'https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support'),
+          isNull);
+      expect(
+          parseLemmyCommunity('https://piefed.social/c/thunder_app/p/1422697'),
+          isNull);
     });
   });
 
   group('Lemmy User Parsing', () {
     test('parses full user URL with federation', () {
-      final result = parseLemmyUser('https://lemmy.world/u/darklightxi@lemmy.ca');
+      final result =
+          parseLemmyUser('https://lemmy.world/u/darklightxi@lemmy.ca');
       expect(result, isNotNull);
       expect(result!.value, 'darklightxi');
       expect(result.instance, 'lemmy.ca');
@@ -95,7 +103,8 @@ void main() {
     });
 
     test('returns null for PieFed comment URLs', () {
-      expect(parseLemmyPostId('https://piefed.social/post/123/comment/456'), isNull);
+      expect(parseLemmyPostId('https://piefed.social/post/123/comment/456'),
+          isNull);
     });
 
     test('returns null for Lemmy new format comment URLs', () {
@@ -125,7 +134,8 @@ void main() {
 
   group('PieFed Comment Parsing', () {
     test('parses PieFed comment URL (/post/123/comment/456)', () {
-      final result = parsePiefedCommentId('https://piefed.social/post/1663157/comment/9679172');
+      final result = parsePiefedCommentId(
+          'https://piefed.social/post/1663157/comment/9679172');
       expect(result, isNotNull);
       expect(result!.value, '9679172');
       expect(result.instance, 'piefed.social');
@@ -145,7 +155,8 @@ void main() {
       });
 
       test('parses PieFed community URL', () {
-        final result = parseCommunity('https://piefed.social/c/news@lemmy.world');
+        final result =
+            parseCommunity('https://piefed.social/c/news@lemmy.world');
         expect(result?.qualified, 'news@lemmy.world');
       });
     });
@@ -157,7 +168,8 @@ void main() {
       });
 
       test('parses PieFed user URL', () {
-        final result = parseUser('https://piefed.social/u/darklightxi@lemmy.ca');
+        final result =
+            parseUser('https://piefed.social/u/darklightxi@lemmy.ca');
         expect(result?.qualified, 'darklightxi@lemmy.ca');
       });
     });
@@ -176,14 +188,16 @@ void main() {
       });
 
       test('returns null for comment URLs', () {
-        expect(parsePostId('https://piefed.social/post/123/comment/456'), isNull);
+        expect(
+            parsePostId('https://piefed.social/post/123/comment/456'), isNull);
         expect(parsePostId('https://lemmy.world/post/123/456'), isNull);
       });
     });
 
     group('parseCommentId', () {
       test('parses PieFed comment URL', () {
-        final result = parseCommentId('https://piefed.social/post/1663157/comment/9679172');
+        final result = parseCommentId(
+            'https://piefed.social/post/1663157/comment/9679172');
         expect(result?.value, '9679172');
         expect(result?.instance, 'piefed.social');
       });
@@ -225,14 +239,18 @@ void main() {
     });
 
     test('https://piefed.social/post/1663157/comment/9679172', () {
-      final result = parseCommentId('https://piefed.social/post/1663157/comment/9679172');
+      final result =
+          parseCommentId('https://piefed.social/post/1663157/comment/9679172');
       expect(result, isNotNull);
       expect(result!.value, '9679172');
       expect(result.instance, 'piefed.social');
     });
 
-    test('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support (community post format)', () {
-      final result = parsePostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+    test(
+        'https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support (community post format)',
+        () {
+      final result = parsePostId(
+          'https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
       expect(result, isNotNull);
       expect(result!.value, '1422697');
       expect(result.instance, 'piefed.social');
@@ -241,21 +259,24 @@ void main() {
 
   group('PieFed Community Post URL Format', () {
     test('parses /c/community/p/postId/slug format', () {
-      final result = parsePiefedPostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+      final result = parsePiefedPostId(
+          'https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
       expect(result, isNotNull);
       expect(result!.value, '1422697');
       expect(result.instance, 'piefed.social');
     });
 
     test('parses /c/community/p/postId format (no slug)', () {
-      final result = parsePiefedPostId('https://piefed.social/c/thunder_app/p/1422697');
+      final result =
+          parsePiefedPostId('https://piefed.social/c/thunder_app/p/1422697');
       expect(result, isNotNull);
       expect(result!.value, '1422697');
       expect(result.instance, 'piefed.social');
     });
 
     test('unified parsePostId handles PieFed community post format', () {
-      final result = parsePostId('https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
+      final result = parsePostId(
+          'https://piefed.social/c/thunder_app/p/1422697/thunder-release-v0-8-0-initial-piefed-support');
       expect(result, isNotNull);
       expect(result!.value, '1422697');
       expect(result.instance, 'piefed.social');

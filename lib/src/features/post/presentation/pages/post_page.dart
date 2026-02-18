@@ -8,20 +8,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/error_message.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/cross_posts.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
 import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// A page that displays the post details and comments associated with a post.
 class PostPage extends StatefulWidget {
@@ -452,7 +453,9 @@ class _PostPageFeedEndState extends State<_PostPageFeedEnd> {
     final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     if (bottomSpacerHeight == null) {
-      if (_calculateBottomSpacerTimer != null) _calculateBottomSpacerTimer!.cancel();
+      if (_calculateBottomSpacerTimer != null) {
+        _calculateBottomSpacerTimer!.cancel();
+      }
       _calculateBottomSpacerTimer = Timer(Duration(milliseconds: 250), _getBottomSpacerHeight);
     }
 

@@ -2,19 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/feed_list_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/features/user/user.dart';
 
 /// Interface for a community repository
 abstract class CommunityRepository {
   /// Fetches community information by ID or name
-  Future<Map<String, dynamic>> getCommunity({int? id, String? name});
+  Future<CommunityDetails> getCommunity({int? id, String? name});
 
   /// Lists trending communities
   Future<List<ThunderCommunity>> trending();
@@ -43,25 +39,33 @@ class CommunityRepositoryImpl implements CommunityRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  /// The localization service to use for user-facing errors
+  final LocalizationService _localizationService;
+
   /// Creates a new CommunityRepositoryImpl.
   ///
   /// An optional [api] client can be provided for testing.
-  CommunityRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  CommunityRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localizationService = const GlobalContextLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localizationService = localizationService;
 
   @override
-  Future<Map<String, dynamic>> getCommunity({int? id, String? name}) async {
+  Future<CommunityDetails> getCommunity({int? id, String? name}) async {
     final response = await _api.getCommunity(id: id, name: name);
-    return {
-      'community': response.community,
-      'site': response.site,
-      'moderators': response.moderators,
-      'discussion_languages': response.discussionLanguages,
-    };
+    return CommunityDetails(
+      community: response.community,
+      site: response.site,
+      moderators: response.moderators,
+      discussionLanguages: response.discussionLanguages,
+    );
   }
 
   @override
   Future<ThunderCommunity> subscribe(int communityId, bool follow) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.subscribeToCommunity(communityId: communityId, follow: follow);
@@ -69,7 +73,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
   @override
   Future<ThunderCommunity> block(int communityId, bool block) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.blockCommunity(communityId: communityId, block: block);
@@ -84,7 +88,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     int? expires,
     bool removeData = false,
   }) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.banUserFromCommunity(
@@ -103,7 +107,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required bool added,
     required int communityId,
   }) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     return await _api.addModerator(

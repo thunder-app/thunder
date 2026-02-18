@@ -1,6 +1,5 @@
-import 'package:thunder/src/core/models/thunder_comment_report.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/comment_sort_type.dart';
 
 /// Interface for a comment repository
 abstract class CommentRepository {

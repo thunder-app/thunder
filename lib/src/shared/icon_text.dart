@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
 
 /// Creates a widget that displays an icon followed by text.
 ///

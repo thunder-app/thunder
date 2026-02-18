@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/models/thunder_language.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/dialogs.dart';
+
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
 
 class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});

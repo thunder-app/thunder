@@ -9,8 +9,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 
 /// The main function which triggers push notification logic. This handles delegating push notification logic to the correct service.
@@ -44,7 +44,7 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
     const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
     );
 

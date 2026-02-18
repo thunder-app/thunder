@@ -8,16 +8,15 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/enums.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 
 class CommunityDrawer extends StatefulWidget {
   const CommunityDrawer({super.key, this.navigateToAccount});
@@ -143,7 +142,6 @@ class UserDrawerItem extends StatelessWidget {
     ProfileState profileState = context.watch<ProfileBloc>().state;
 
     bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
-    String? anonymousInstance = context.select<ThunderBloc, String?>((bloc) => bloc.state.currentAnonymousInstance);
 
     return Container(
       color: theme.colorScheme.surfaceContainerLow,
@@ -180,7 +178,7 @@ class UserDrawerItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  isLoggedIn ? profileState.account.instance : anonymousInstance ?? '',
+                  profileState.account.instance,
                   style: theme.textTheme.bodyMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

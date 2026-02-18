@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/feed_list_type.dart';
-import 'package:thunder/src/core/enums/post_sort_type.dart';
-import 'package:thunder/src/core/network/api_client_factory.dart';
-import 'package:thunder/src/core/network/api_exception.dart';
-import 'package:thunder/src/core/network/thunder_api_client.dart';
+import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
 
 /// Implementation of [AccountRepository]
 class AccountRepositoryImpl implements AccountRepository {
@@ -19,10 +16,18 @@ class AccountRepositoryImpl implements AccountRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  /// The localization service to use for user-facing errors
+  final LocalizationService _localizationService;
+
   /// Creates a new AccountRepositoryImpl.
   ///
   /// An optional [api] client can be provided for testing.
-  AccountRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  AccountRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localizationService = const GlobalContextLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localizationService = localizationService;
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
@@ -31,7 +36,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<List<ThunderCommunity>> subscriptions() async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await _api.site();
@@ -39,15 +44,17 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> media({int? page, int? limit}) async {
-    final l10n = GlobalContext.l10n;
+  Future<AccountMedia> media({int? page, int? limit}) async {
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsMedia) {
       throw UnsupportedFeatureException('Media management', platformName: _api.platformName);
     }
 
-    return await _api.media(page: page, limit: limit);
+    final response = await _api.media(page: page, limit: limit);
+    final images = (response['images'] as List<dynamic>? ?? []).whereType<Map<String, dynamic>>().toList();
+    return AccountMedia(images: images);
   }
 
   @override
@@ -65,7 +72,7 @@ class AccountRepositoryImpl implements AccountRepository {
     bool? showBotAccounts,
     List<int>? discussionLanguages,
   }) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     await _api.saveUserSettings(
@@ -86,7 +93,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<bool> importSettings(String settings) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsSettingsImportExport) {
@@ -98,7 +105,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<dynamic> exportSettings() async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsSettingsImportExport) {
@@ -110,7 +117,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<String> uploadImage(String filePath) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     final response = await _api.uploadImage(filePath);
@@ -132,7 +139,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<void> deleteImage({required String file, required String token}) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsMedia) {

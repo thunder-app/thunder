@@ -4,18 +4,14 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/enums.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem, ThunderActionChip;
 
 /// The horizontal filter chips row for search options.
 class SearchFiltersRow extends StatefulWidget {

@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/font_scale.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/nested_comment_indicator.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/conditional_parent_widget.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
 
 /// A widget that displays the content of a comment.
 class CommentContent extends StatefulWidget {

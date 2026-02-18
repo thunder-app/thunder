@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/core/enums/threadiverse_platform.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
-import 'package:thunder/src/shared/multi_picker_item.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, MultiPickerItem, PickerItemData;
 
 /// Defines the general actions that can be taken on a post
 enum GeneralPostAction {
@@ -271,7 +269,9 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     // Determine the available sub-menus to display
     List<GeneralPostAction> submenus = GeneralPostAction.values.where((page) => page != GeneralPostAction.general).toList();
-    if (widget.account.anonymous) submenus = submenus.where((action) => action != GeneralPostAction.post).toList();
+    if (widget.account.anonymous) {
+      submenus = submenus.where((action) => action != GeneralPostAction.post).toList();
+    }
 
     return Column(
       children: [

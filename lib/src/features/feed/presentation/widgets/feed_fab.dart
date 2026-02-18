@@ -5,19 +5,17 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/cubits/feed_ui_cubit/feed_ui_cubit.dart';
+import 'package:thunder/src/features/feed/api.dart';
 
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/fab_action.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/app/cubits/fab_cubit/fab_cubit.dart';
-import 'package:thunder/src/app/cubits/fab_preferences_cubit/fab_preferences_cubit.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag});

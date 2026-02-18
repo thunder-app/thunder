@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/src/core/enums/user_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/snackbar.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/bottom_sheet_action.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/app/widgets/thunder_icons.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar, showThunderDialog;
 
 /// Defines the actions that can be taken on a user
 enum UserBottomSheetAction {
@@ -164,19 +160,25 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       case UserBottomSheetAction.unbanUserFromCommunity:
         Navigator.of(context).pop();
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: false);
-        if (!user.banned) showSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
+        if (!user.banned) {
+          showSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
+        }
         widget.onAction(UserAction.banFromCommunity, null);
         break;
       case UserBottomSheetAction.addUserAsCommunityModerator:
         Navigator.of(context).pop();
         final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: true);
-        if (moderators.where((m) => m.id == widget.user.id).isNotEmpty) showSnackbar(l10n.addedUserAsCommunityModerator(widget.user.displayNameOrName));
+        if (moderators.where((m) => m.id == widget.user.id).isNotEmpty) {
+          showSnackbar(l10n.addedUserAsCommunityModerator(widget.user.displayNameOrName));
+        }
         widget.onAction(UserAction.addModerator, null);
         break;
       case UserBottomSheetAction.removeUserAsCommunityModerator:
         Navigator.of(context).pop();
         final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: false);
-        if (moderators.where((m) => m.id == widget.user.id).isEmpty) showSnackbar(l10n.removedUserAsCommunityModerator(widget.user.displayNameOrName));
+        if (moderators.where((m) => m.id == widget.user.id).isEmpty) {
+          showSnackbar(l10n.removedUserAsCommunityModerator(widget.user.displayNameOrName));
+        }
         widget.onAction(UserAction.addModerator, null);
         break;
     }
@@ -197,7 +199,9 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         final communityRepository = CommunityRepositoryImpl(account: widget.account);
 
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: true, reason: controller.text, removeData: removeData);
-        if (user.banned) showSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
+        if (user.banned) {
+          showSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
+        }
         widget.onAction(UserAction.banFromCommunity, null);
 
         Navigator.of(dialogContext).pop();

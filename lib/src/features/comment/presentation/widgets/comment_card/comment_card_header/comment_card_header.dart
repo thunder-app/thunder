@@ -7,12 +7,11 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_date.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_reply_count.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_score.dart';
-import 'package:thunder/src/core/enums/user_type.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/app/cubits/comment_preferences_cubit/comment_preferences_cubit.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/action_color.dart';
+import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 
 /// A widget that displays the header of a comment, including user information, score, and metadata

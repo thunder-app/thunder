@@ -7,26 +7,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:collection/collection.dart';
 
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/models/thunder_language.dart';
-import 'package:thunder/src/features/instance/instance.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/features/community/api.dart';
+import 'package:thunder/src/features/instance/api.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/full_name.dart';
-import 'package:thunder/src/core/enums/subscription_status.dart';
-import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/search/api.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/marquee_widget.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/numbers.dart';
+import 'package:thunder/src/features/user/api.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(
@@ -88,7 +86,7 @@ Future<List<ThunderUser>> getUserSuggestions(
     limit: 20,
   );
 
-  return response['users'];
+  return response.users;
 }
 
 Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {void Function(ThunderUser)? onSelected}) {
@@ -167,7 +165,7 @@ void showCommunityInputDialog(
     if (normalizedCommunity != null) {
       try {
         final response = await CommunityRepositoryImpl(account: account).getCommunity(name: normalizedCommunity);
-        final community = response['community'];
+        final community = response.community;
 
         onCommunitySelected(community);
         Navigator.of(context).pop();
@@ -206,7 +204,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
     sort: SearchSortType.topAll,
   );
 
-  return prioritizeFavorites(response['communities'], favoritedCommunities) ?? [];
+  return prioritizeFavorites(response.communities, favoritedCommunities) ?? [];
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {

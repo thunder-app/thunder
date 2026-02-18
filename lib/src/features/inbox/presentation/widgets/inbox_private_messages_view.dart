@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/models/thunder_private_message.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/utils/date_time.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
 
 class InboxPrivateMessagesView extends StatefulWidget {
   final List<ThunderPrivateMessage> privateMessages;
@@ -103,7 +102,7 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                                 InboxItemActionEvent(
                                   action: CommentAction.read,
                                   privateMessageId: widget.privateMessages[index].id,
-                                  value: !widget.privateMessages[index].read,
+                                  actionInput: ReadInboxActionInput(!widget.privateMessages[index].read),
                                 ),
                               ),
                           icon: Icon(

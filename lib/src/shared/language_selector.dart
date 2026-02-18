@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/src/core/models/thunder_language.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 // Project imports
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 
 /// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language

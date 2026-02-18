@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/core/models/models.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/features/instance/presentation/bloc/instance_page_bloc.dart';
-import 'package:thunder/src/features/instance/presentation/bloc/instance_page_event.dart';
+import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
+import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
 import 'package:thunder/src/features/instance/presentation/widgets/instance_page_app_bar.dart';
 import 'package:thunder/src/features/instance/presentation/widgets/instance_tabs.dart';
 
@@ -119,8 +118,13 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => InstancePageBloc(account: account, instanceInfo: widget.instance)),
-        BlocProvider(create: (context) => FeedBloc(account: account)),
+        BlocProvider(
+          create: (context) => createInstancePageBloc(
+            account: account,
+            instanceInfo: widget.instance,
+          ),
+        ),
+        BlocProvider(create: (context) => createFeedBloc(account)),
       ],
       child: BlocConsumer<InstancePageBloc, InstancePageState>(
         listener: (context, state) {

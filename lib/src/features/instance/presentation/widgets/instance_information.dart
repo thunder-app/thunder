@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/core/models/models.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/widgets/avatars/instance_avatar.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/instance_avatar.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
 
 /// A widget that displays information about a given instance.
 class InstanceInformation extends StatelessWidget {

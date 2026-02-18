@@ -13,34 +13,26 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
-import 'package:thunder/src/app/cubits/feed_preferences_cubit/feed_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/search_sort_type.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/enums/meta_search_type.dart';
-import 'package:thunder/src/core/models/thunder_language.dart';
+import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/core/enums/enums.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
-import 'package:thunder/src/core/enums/media_type.dart';
-import 'package:thunder/src/core/models/media.dart';
-import 'package:thunder/src/core/enums/view_mode.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/cross_posts.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/language_selector.dart';
-import 'package:thunder/src/shared/widgets/media/media_view.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/colors.dart';
-import 'package:thunder/src/shared/utils/debounce.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/media/image.dart';
+import 'package:thunder/src/shared/theme/color_utils.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show isImageUrl, selectImagesToUpload, showSnackbar;
 
 class CreatePostPage extends StatefulWidget {
   /// The community ID to create the post in
@@ -240,7 +232,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (context.mounted) context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
+          if (context.mounted) {
+            context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
+          }
         });
       }
 
@@ -528,10 +522,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 contentPadding: const EdgeInsets.all(13),
                                 suffixIcon: IconButton(
                                   onPressed: () async {
-                                    if (state.status == CreatePostStatus.postImageUploadInProgress) return;
+                                    if (state.status == CreatePostStatus.postImageUploadInProgress) {
+                                      return;
+                                    }
 
                                     List<String> imagesPath = await selectImagesToUpload();
-                                    if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
+                                    if (context.mounted) {
+                                      context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
+                                    }
                                   },
                                   icon: state.status == CreatePostStatus.postImageUploadInProgress
                                       ? const SizedBox(
@@ -712,10 +710,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                               imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
                               customImageButtonAction: () async {
-                                if (state.status == CreatePostStatus.imageUploadInProgress) return;
+                                if (state.status == CreatePostStatus.imageUploadInProgress) {
+                                  return;
+                                }
 
                                 List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                if (context.mounted) context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                                if (context.mounted) {
+                                  context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                                }
                               },
                             ),
                           ),
@@ -729,7 +731,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 }
 
                                 setState(() => showPreview = !showPreview);
-                                if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                if (!showPreview && wasKeyboardVisible) {
+                                  _bodyFocusNode.requestFocus();
+                                }
                               },
                               icon: Icon(
                                 showPreview ? Icons.visibility_off_rounded : Icons.visibility,
@@ -793,7 +797,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         limit: 20,
       );
 
-      setState(() => crossPosts = response['posts']);
+      setState(() => crossPosts = response.posts);
     } catch (e) {
       // Ignore
     }

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/enums/image_caching_mode.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/colors.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/shared/theme/color_utils.dart';
 
-import 'package:thunder/src/shared/utils/media/image.dart';
+import 'package:thunder/src/features/content/presentation/widgets/media/media_utils.dart';
 
 class ImagePreview extends StatefulWidget {
   final String? url;

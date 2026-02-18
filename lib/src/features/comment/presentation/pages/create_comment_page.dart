@@ -11,22 +11,22 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/core/models/thunder_language.dart';
+import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
+import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/language_selector.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/colors.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
-import 'package:thunder/src/shared/utils/media/image.dart';
+import 'package:thunder/src/shared/theme/color_utils.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show selectImagesToUpload, showSnackbar;
 
 class CreateCommentPage extends StatefulWidget {
   /// [post] is passed in when replying to a post. [comment] and [parentComment] must be null if this is passed in.
@@ -243,7 +243,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: BlocProvider(
-        create: (context) => CreateCommentCubit(account: account!),
+        create: (context) => createCreateCommentCubit(account!),
         child: BlocConsumer<CreateCommentCubit, CreateCommentState>(
           listener: (ctx, state) {
             if (state.status == CreateCommentStatus.success && state.comment != null) {
@@ -461,10 +461,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   },
                                   imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
                                   customImageButtonAction: () async {
-                                    if (state.status == CreateCommentStatus.imageUploadInProgress) return;
+                                    if (state.status == CreateCommentStatus.imageUploadInProgress) {
+                                      return;
+                                    }
 
                                     List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                    if (context.mounted) context.read<CreateCommentCubit>().uploadImages(imagesPath);
+                                    if (context.mounted) {
+                                      context.read<CreateCommentCubit>().uploadImages(imagesPath);
+                                    }
                                   },
                                   getAlternativeSelection: () => replyViewSelection,
                                 ),
@@ -480,7 +484,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                   }
 
                                   setState(() => showPreview = !showPreview);
-                                  if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
+                                  if (!showPreview && wasKeyboardVisible) {
+                                    _bodyFocusNode.requestFocus();
+                                  }
                                 },
                                 icon: Icon(
                                   showPreview ? Icons.visibility_off_rounded : Icons.visibility,

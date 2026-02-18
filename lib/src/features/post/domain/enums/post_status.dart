@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 enum PostStatusType {
   hidden(icon: Icons.visibility_off_rounded, size: 16.0),

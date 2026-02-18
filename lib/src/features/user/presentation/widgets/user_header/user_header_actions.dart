@@ -3,16 +3,14 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/core/enums/post_sort_type.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/chips/thunder_action_chip.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
 
 /// A widget that displays relevant actions for a user in a scrollable chip list.
 class UserHeaderActions extends StatelessWidget {
@@ -210,37 +208,6 @@ class _FeedTypeActionChip extends StatelessWidget {
         trailingIconSize: 17.0,
         label: label,
         onPressed: () => onChangeFeedType(feedType == FeedTypeSubview.post ? FeedTypeSubview.comment : FeedTypeSubview.post),
-      ),
-    );
-  }
-
-  void _showFeedTypePicker(BuildContext context) {
-    final l10n = GlobalContext.l10n;
-
-    HapticFeedback.mediumImpact();
-
-    showModalBottomSheet<void>(
-      showDragHandle: true,
-      context: context,
-      isScrollControlled: true,
-      builder: (builderContext) => BottomSheetListPicker(
-        title: l10n.selectFeedType,
-        previouslySelected: feedType,
-        items: [
-          ListPickerItem(
-            label: FeedTypeSubview.post.name,
-            icon: Icons.article_rounded,
-            payload: FeedTypeSubview.post,
-          ),
-          ListPickerItem(
-            label: FeedTypeSubview.comment.name,
-            icon: Icons.chat_rounded,
-            payload: FeedTypeSubview.comment,
-          ),
-        ],
-        onSelect: (selection) async {
-          onChangeFeedType(selection.payload);
-        },
       ),
     );
   }

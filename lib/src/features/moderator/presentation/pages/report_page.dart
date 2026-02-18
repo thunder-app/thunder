@@ -6,19 +6,21 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
-import 'package:thunder/src/shared/comment_reference.dart';
-import 'package:thunder/src/shared/full_name_widgets.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/shared/widgets/text/scalable_text.dart';
-import 'package:thunder/src/app/cubits/theme_preferences_cubit/theme_preferences_cubit.dart';
-import 'package:thunder/src/core/enums/font_scale.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/shared/utils/instance.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
+import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+
+import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 enum ReportFeedType { post, comment }
 
@@ -34,7 +36,7 @@ class _ReportFeedPageState extends State<ReportFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ReportBloc>(
-      create: (_) => ReportBloc()..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
+      create: (_) => createReportBloc()..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
       child: const ReportFeedView(),
     );
   }
@@ -164,7 +166,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
           },
           body: BlocConsumer<ReportBloc, ReportState>(
             listenWhen: (previous, current) {
-              if (current.status == ReportStatus.initial) globalKey.currentState?.innerController.jumpTo(0);
+              if (current.status == ReportStatus.initial) {
+                globalKey.currentState?.innerController.jumpTo(0);
+              }
               return true;
             },
             listener: (context, state) {
@@ -263,7 +267,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
                                                             reportAction: ReportAction.resolvePost,
                                                             postReportView: state.postReports[index],
-                                                            value: !state.postReports[index].resolved,
+                                                            actionInput: ResolveReportActionInput(!state.postReports[index].resolved),
                                                           ));
                                                     },
                                                     icon: Icon(state.postReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),
@@ -367,7 +371,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
                                                             reportAction: ReportAction.resolveComment,
                                                             commentReportView: state.commentReports[index],
-                                                            value: !state.commentReports[index].resolved,
+                                                            actionInput: ResolveReportActionInput(!state.commentReports[index].resolved),
                                                           ));
                                                     },
                                                     icon: Icon(state.commentReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),

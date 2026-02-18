@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -28,7 +29,7 @@ class _SearchPostsResultsState extends State<SearchPostsResults> {
   @override
   void initState() {
     super.initState();
-    _feedBloc = FeedBloc(account: widget.account);
+    _feedBloc = createFeedBloc(widget.account);
 
     // Initialize with current posts
     final posts = context.read<SearchBloc>().state.posts;

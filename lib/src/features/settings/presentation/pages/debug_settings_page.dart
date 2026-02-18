@@ -14,20 +14,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/enums/local_settings.dart';
-import 'package:thunder/src/core/singletons/preferences.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/dialogs.dart';
-import 'package:thunder/src/shared/divider.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/src/shared/utils/cache.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
-import 'package:thunder/src/app/utils/global_context.dart';
-import 'package:thunder/src/app/utils/navigation.dart';
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:unifiedpush/unifiedpush.dart';
+import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, ThunderDivider, showSnackbar, showThunderDialog;
 
 class DebugSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;

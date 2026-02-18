@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/divider.dart';
 import 'package:thunder/src/shared/icon_text.dart';
-import 'package:thunder/src/shared/snackbar.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider, showSnackbar;
 
 /// Defines a widget which provides action buttons for the preview of a post or comment when replying
 ///

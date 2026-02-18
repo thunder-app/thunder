@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/shared/snackbar.dart';
-import 'package:thunder/src/app/bloc/thunder_bloc.dart';
-import 'package:thunder/src/shared/utils/constants.dart';
+
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -140,7 +141,9 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 // Wait until the layout is complete before performing check
                 bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-                if (!isScrollable) context.read<ModlogCubit>().fetchModlogFeed();
+                if (!isScrollable) {
+                  context.read<ModlogCubit>().fetchModlogFeed();
+                }
               });
             }
 

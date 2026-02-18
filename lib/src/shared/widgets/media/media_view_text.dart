@@ -6,8 +6,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
-import 'package:thunder/src/core/enums/view_mode.dart';
-import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/notification/api.dart';
 
 /// Creates a [MediaViewText] widget which displays a preview of the text content of a post.
 ///
