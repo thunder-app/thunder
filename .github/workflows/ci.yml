@@ -92,7 +92,7 @@ jobs:
         id: output-globals-version
         uses: juliangruber/read-file-action@v1
         with:
-          path: lib/src/core/config/app_config.dart
+          path: lib/src/foundation/config/app_config.dart
 
       # Get just the first line of the app_config.dart file
       - name: Get first line of app_config.dart file
