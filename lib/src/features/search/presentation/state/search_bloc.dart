@@ -99,7 +99,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _onSearchReset(SearchReset event, Emitter<SearchState> emit) async {
-    emit(state.copyWith(status: SearchStatus.initial, trendingCommunities: [], viewingAll: false));
+    emit(state.copyWith(
+      status: SearchStatus.initial,
+      communities: null,
+      trendingCommunities: const <ThunderCommunity>[],
+      users: null,
+      comments: null,
+      posts: null,
+      instances: null,
+      message: null,
+      errorReason: null,
+      page: 1,
+      hasReachedMax: false,
+      viewingAll: false,
+    ));
     await _onTrendingCommunitiesRequested(const TrendingCommunitiesRequested(), emit);
   }
 
@@ -218,6 +231,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _onSearchContinued(SearchContinued event, Emitter<SearchState> emit) async {
+    if (event.query.isEmpty && !state.viewingAll) return;
+
     // Early exit if pagination is exhausted
     if (state.hasReachedMax) return;
 
@@ -334,7 +349,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
         status: SearchStatus.trending,
-        trendingCommunities: [],
+        trendingCommunities: const <ThunderCommunity>[],
         message: message,
         errorReason: AppErrorReason.unexpected(
           message: message,

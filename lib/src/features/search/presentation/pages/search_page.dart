@@ -92,15 +92,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent * 0.8) {
       final bloc = context.read<SearchBloc>();
       final favorites = context.read<ProfileBloc>().state.favorites;
+      final query = controller.text;
+
+      if (query.isEmpty && !bloc.state.viewingAll) return;
 
       if (bloc.state.status != SearchStatus.done) {
-        bloc.add(SearchContinued(query: controller.text, favoriteCommunities: favorites));
+        bloc.add(SearchContinued(query: query, favoriteCommunities: favorites));
       }
     }
   }
 
   void onSearchFieldChanged(String value) {
     final bloc = context.read<SearchBloc>();
+
+    if (value.isEmpty) {
+      bloc.add(const SearchReset());
+      return;
+    }
 
     // Auto-detect URL mode for post searches
     if (bloc.state.searchType == MetaSearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
