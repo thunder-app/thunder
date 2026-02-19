@@ -53,9 +53,16 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     initializePreferences();
     scrollController.addListener(onScroll);
 
-    // Initialize search type based on whether we're searching within a community
+    // Initialize community-scoped search defaults.
     if (widget.community != null) {
-      context.read<SearchBloc>().add(const SearchFiltersUpdated(searchType: MetaSearchType.posts));
+      final community = widget.community!;
+      context.read<SearchBloc>().add(
+            SearchFiltersUpdated(
+              searchType: MetaSearchType.posts,
+              communityFilter: community.id,
+              communityFilterName: community.name,
+            ),
+          );
       WidgetsBinding.instance.addPostFrameCallback((_) => searchTextFieldFocus.requestFocus());
     }
 

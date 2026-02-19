@@ -362,17 +362,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   void _onFiltersUpdated(SearchFiltersUpdated event, Emitter<SearchState> emit) {
     emit(
       state.copyWith(
-        searchSortType: event.sortType,
-        sortTypeIcon: event.sortTypeIcon,
-        sortTypeLabel: event.sortTypeLabel,
+        searchSortType: event.sortType ?? _searchUnset,
+        sortTypeIcon: event.sortTypeIcon ?? _searchUnset,
+        sortTypeLabel: event.sortTypeLabel ?? _searchUnset,
         searchType: event.searchType,
         feedListType: event.feedListType,
         searchByUrl: event.searchByUrl,
-        communityFilter: event.communityFilter,
-        communityFilterName: event.communityFilterName,
+        communityFilter: event.communityFilter ?? _searchUnset,
+        communityFilterName: event.communityFilterName ?? _searchUnset,
         clearCommunityFilter: event.clearCommunityFilter,
-        creatorFilter: event.creatorFilter,
-        creatorFilterName: event.creatorFilterName,
+        creatorFilter: event.creatorFilter ?? _searchUnset,
+        creatorFilterName: event.creatorFilterName ?? _searchUnset,
         clearCreatorFilter: event.clearCreatorFilter,
       ),
     );
