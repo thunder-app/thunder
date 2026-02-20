@@ -4,7 +4,15 @@ import 'package:flutter/material.dart';
 ///
 /// When tapped, will call the [onTap] callback.
 class BottomSheetAction extends StatelessWidget {
-  const BottomSheetAction({super.key, required this.leading, this.trailing, required this.title, this.subtitle, required this.onTap});
+  const BottomSheetAction({
+    super.key,
+    required this.leading,
+    this.trailing,
+    required this.title,
+    this.subtitle,
+    required this.onTap,
+    this.onLongPress,
+  });
 
   /// The leading widget
   final Widget leading;
@@ -21,20 +29,21 @@ class BottomSheetAction extends StatelessWidget {
   /// Callback function to be called when the category is tapped
   final Function() onTap;
 
+  /// Callback function to be called when the category is long pressed
+  final Function()? onLongPress;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       customBorder: const StadiumBorder(),
       child: ListTile(
         leading: leading,
         trailing: trailing,
-        title: Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
-        ),
+        title: Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500)),
         subtitle: subtitle != null
             ? Text(
                 subtitle ?? '',

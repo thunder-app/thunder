@@ -8,6 +8,7 @@ import 'package:thunder/src/features/identity/presentation/widgets/full_name_wid
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/shared/full_name_copy_utils.dart';
 
 /// A chip which displays the given community and instance information.
 ///
@@ -52,6 +53,13 @@ class CommunityChip extends StatelessWidget {
       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId),
       child: Tooltip(
         excludeFromSemantics: true,
+        triggerMode: TooltipTriggerMode.longPress,
+        onTriggered: () => copyActivityPubFullName(
+          type: ActivityPubFullNameType.community,
+          name: communityName,
+          displayName: communityTitle,
+          instance: fetchInstanceNameFromUrl(communityUrl),
+        ),
         message: generateCommunityFullName(
           context,
           communityName,

@@ -11,6 +11,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/shared/full_name_copy_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show Thunder;
 
 /// A chip which displays the given user and instance information. Additionally, it renders special chips for special users.
@@ -60,6 +61,13 @@ class UserChip extends StatelessWidget {
       ignoring: ignorePointerEvents,
       child: Tooltip(
         excludeFromSemantics: true,
+        triggerMode: TooltipTriggerMode.longPress,
+        onTriggered: () => copyActivityPubFullName(
+          type: ActivityPubFullNameType.user,
+          name: user.name,
+          displayName: user.displayName,
+          instance: fetchInstanceNameFromUrl(user.actorId),
+        ),
         message: '${generateUserFullName(
           context,
           user.name,
