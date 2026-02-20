@@ -31,10 +31,10 @@ Future<void> bootstrap() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Initialize preferences and database
-  await UserPreferences.instance.initialize();
-  await performSharedPreferencesMigration();
   initializeDatabase();
   await performDatabaseIntegrityChecks();
+  await UserPreferences.instance.initialize();
+  await performSharedPreferencesMigration();
 
   final account = await fetchActiveProfile();
 

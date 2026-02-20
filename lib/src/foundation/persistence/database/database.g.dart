@@ -994,6 +994,13 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   static const VerificationMeta _replyIdMeta = const VerificationMeta('replyId');
   @override
   late final GeneratedColumn<int> replyId = GeneratedColumn<int>('reply_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>('active', aliasedName, false,
+      type: DriftSqlType.bool, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'), defaultValue: const Constant(false));
+  static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>('account_id', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>('title', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
@@ -1006,11 +1013,18 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   static const VerificationMeta _altTextMeta = const VerificationMeta('altText');
   @override
   late final GeneratedColumn<String> altText = GeneratedColumn<String>('alt_text', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _nsfwMeta = const VerificationMeta('nsfw');
+  @override
+  late final GeneratedColumn<bool> nsfw = GeneratedColumn<bool>('nsfw', aliasedName, false,
+      type: DriftSqlType.bool, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("nsfw" IN (0, 1))'), defaultValue: const Constant(false));
+  static const VerificationMeta _languageIdMeta = const VerificationMeta('languageId');
+  @override
+  late final GeneratedColumn<int> languageId = GeneratedColumn<int>('language_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _bodyMeta = const VerificationMeta('body');
   @override
   late final GeneratedColumn<String> body = GeneratedColumn<String>('body', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, title, url, customThumbnail, altText, body];
+  List<GeneratedColumn> get $columns => [id, draftType, existingId, replyId, active, accountId, title, url, customThumbnail, altText, nsfw, languageId, body];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1029,6 +1043,12 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
     if (data.containsKey('reply_id')) {
       context.handle(_replyIdMeta, replyId.isAcceptableOrUnknown(data['reply_id']!, _replyIdMeta));
     }
+    if (data.containsKey('active')) {
+      context.handle(_activeMeta, active.isAcceptableOrUnknown(data['active']!, _activeMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta, accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    }
     if (data.containsKey('title')) {
       context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     }
@@ -1040,6 +1060,12 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
     }
     if (data.containsKey('alt_text')) {
       context.handle(_altTextMeta, altText.isAcceptableOrUnknown(data['alt_text']!, _altTextMeta));
+    }
+    if (data.containsKey('nsfw')) {
+      context.handle(_nsfwMeta, nsfw.isAcceptableOrUnknown(data['nsfw']!, _nsfwMeta));
+    }
+    if (data.containsKey('language_id')) {
+      context.handle(_languageIdMeta, languageId.isAcceptableOrUnknown(data['language_id']!, _languageIdMeta));
     }
     if (data.containsKey('body')) {
       context.handle(_bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
@@ -1057,10 +1083,14 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
       draftType: $DraftsTable.$converterdraftType.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}draft_type'])!),
       existingId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}existing_id']),
       replyId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}reply_id']),
+      active: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}active'])!,
+      accountId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}account_id']),
       title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title']),
       url: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}url']),
       customThumbnail: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}custom_thumbnail']),
       altText: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}alt_text']),
+      nsfw: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}nsfw'])!,
+      languageId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}language_id']),
       body: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}body']),
     );
   }
@@ -1078,12 +1108,29 @@ class Draft extends DataClass implements Insertable<Draft> {
   final DraftType draftType;
   final int? existingId;
   final int? replyId;
+  final bool active;
+  final String? accountId;
   final String? title;
   final String? url;
   final String? customThumbnail;
   final String? altText;
+  final bool nsfw;
+  final int? languageId;
   final String? body;
-  const Draft({required this.id, required this.draftType, this.existingId, this.replyId, this.title, this.url, this.customThumbnail, this.altText, this.body});
+  const Draft(
+      {required this.id,
+      required this.draftType,
+      this.existingId,
+      this.replyId,
+      required this.active,
+      this.accountId,
+      this.title,
+      this.url,
+      this.customThumbnail,
+      this.altText,
+      required this.nsfw,
+      this.languageId,
+      this.body});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1097,6 +1144,10 @@ class Draft extends DataClass implements Insertable<Draft> {
     if (!nullToAbsent || replyId != null) {
       map['reply_id'] = Variable<int>(replyId);
     }
+    map['active'] = Variable<bool>(active);
+    if (!nullToAbsent || accountId != null) {
+      map['account_id'] = Variable<String>(accountId);
+    }
     if (!nullToAbsent || title != null) {
       map['title'] = Variable<String>(title);
     }
@@ -1108,6 +1159,10 @@ class Draft extends DataClass implements Insertable<Draft> {
     }
     if (!nullToAbsent || altText != null) {
       map['alt_text'] = Variable<String>(altText);
+    }
+    map['nsfw'] = Variable<bool>(nsfw);
+    if (!nullToAbsent || languageId != null) {
+      map['language_id'] = Variable<int>(languageId);
     }
     if (!nullToAbsent || body != null) {
       map['body'] = Variable<String>(body);
@@ -1121,10 +1176,14 @@ class Draft extends DataClass implements Insertable<Draft> {
       draftType: Value(draftType),
       existingId: existingId == null && nullToAbsent ? const Value.absent() : Value(existingId),
       replyId: replyId == null && nullToAbsent ? const Value.absent() : Value(replyId),
+      active: Value(active),
+      accountId: accountId == null && nullToAbsent ? const Value.absent() : Value(accountId),
       title: title == null && nullToAbsent ? const Value.absent() : Value(title),
       url: url == null && nullToAbsent ? const Value.absent() : Value(url),
       customThumbnail: customThumbnail == null && nullToAbsent ? const Value.absent() : Value(customThumbnail),
       altText: altText == null && nullToAbsent ? const Value.absent() : Value(altText),
+      nsfw: Value(nsfw),
+      languageId: languageId == null && nullToAbsent ? const Value.absent() : Value(languageId),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
     );
   }
@@ -1136,10 +1195,14 @@ class Draft extends DataClass implements Insertable<Draft> {
       draftType: serializer.fromJson<DraftType>(json['draftType']),
       existingId: serializer.fromJson<int?>(json['existingId']),
       replyId: serializer.fromJson<int?>(json['replyId']),
+      active: serializer.fromJson<bool>(json['active']),
+      accountId: serializer.fromJson<String?>(json['accountId']),
       title: serializer.fromJson<String?>(json['title']),
       url: serializer.fromJson<String?>(json['url']),
       customThumbnail: serializer.fromJson<String?>(json['customThumbnail']),
       altText: serializer.fromJson<String?>(json['altText']),
+      nsfw: serializer.fromJson<bool>(json['nsfw']),
+      languageId: serializer.fromJson<int?>(json['languageId']),
       body: serializer.fromJson<String?>(json['body']),
     );
   }
@@ -1151,10 +1214,14 @@ class Draft extends DataClass implements Insertable<Draft> {
       'draftType': serializer.toJson<DraftType>(draftType),
       'existingId': serializer.toJson<int?>(existingId),
       'replyId': serializer.toJson<int?>(replyId),
+      'active': serializer.toJson<bool>(active),
+      'accountId': serializer.toJson<String?>(accountId),
       'title': serializer.toJson<String?>(title),
       'url': serializer.toJson<String?>(url),
       'customThumbnail': serializer.toJson<String?>(customThumbnail),
       'altText': serializer.toJson<String?>(altText),
+      'nsfw': serializer.toJson<bool>(nsfw),
+      'languageId': serializer.toJson<int?>(languageId),
       'body': serializer.toJson<String?>(body),
     };
   }
@@ -1164,20 +1231,28 @@ class Draft extends DataClass implements Insertable<Draft> {
           DraftType? draftType,
           Value<int?> existingId = const Value.absent(),
           Value<int?> replyId = const Value.absent(),
+          bool? active,
+          Value<String?> accountId = const Value.absent(),
           Value<String?> title = const Value.absent(),
           Value<String?> url = const Value.absent(),
           Value<String?> customThumbnail = const Value.absent(),
           Value<String?> altText = const Value.absent(),
+          bool? nsfw,
+          Value<int?> languageId = const Value.absent(),
           Value<String?> body = const Value.absent()}) =>
       Draft(
         id: id ?? this.id,
         draftType: draftType ?? this.draftType,
         existingId: existingId.present ? existingId.value : this.existingId,
         replyId: replyId.present ? replyId.value : this.replyId,
+        active: active ?? this.active,
+        accountId: accountId.present ? accountId.value : this.accountId,
         title: title.present ? title.value : this.title,
         url: url.present ? url.value : this.url,
         customThumbnail: customThumbnail.present ? customThumbnail.value : this.customThumbnail,
         altText: altText.present ? altText.value : this.altText,
+        nsfw: nsfw ?? this.nsfw,
+        languageId: languageId.present ? languageId.value : this.languageId,
         body: body.present ? body.value : this.body,
       );
   Draft copyWithCompanion(DraftsCompanion data) {
@@ -1186,10 +1261,14 @@ class Draft extends DataClass implements Insertable<Draft> {
       draftType: data.draftType.present ? data.draftType.value : this.draftType,
       existingId: data.existingId.present ? data.existingId.value : this.existingId,
       replyId: data.replyId.present ? data.replyId.value : this.replyId,
+      active: data.active.present ? data.active.value : this.active,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
       title: data.title.present ? data.title.value : this.title,
       url: data.url.present ? data.url.value : this.url,
       customThumbnail: data.customThumbnail.present ? data.customThumbnail.value : this.customThumbnail,
       altText: data.altText.present ? data.altText.value : this.altText,
+      nsfw: data.nsfw.present ? data.nsfw.value : this.nsfw,
+      languageId: data.languageId.present ? data.languageId.value : this.languageId,
       body: data.body.present ? data.body.value : this.body,
     );
   }
@@ -1201,17 +1280,21 @@ class Draft extends DataClass implements Insertable<Draft> {
           ..write('draftType: $draftType, ')
           ..write('existingId: $existingId, ')
           ..write('replyId: $replyId, ')
+          ..write('active: $active, ')
+          ..write('accountId: $accountId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
           ..write('altText: $altText, ')
+          ..write('nsfw: $nsfw, ')
+          ..write('languageId: $languageId, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, draftType, existingId, replyId, title, url, customThumbnail, altText, body);
+  int get hashCode => Object.hash(id, draftType, existingId, replyId, active, accountId, title, url, customThumbnail, altText, nsfw, languageId, body);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1220,10 +1303,14 @@ class Draft extends DataClass implements Insertable<Draft> {
           other.draftType == this.draftType &&
           other.existingId == this.existingId &&
           other.replyId == this.replyId &&
+          other.active == this.active &&
+          other.accountId == this.accountId &&
           other.title == this.title &&
           other.url == this.url &&
           other.customThumbnail == this.customThumbnail &&
           other.altText == this.altText &&
+          other.nsfw == this.nsfw &&
+          other.languageId == this.languageId &&
           other.body == this.body);
 }
 
@@ -1232,20 +1319,28 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   final Value<DraftType> draftType;
   final Value<int?> existingId;
   final Value<int?> replyId;
+  final Value<bool> active;
+  final Value<String?> accountId;
   final Value<String?> title;
   final Value<String?> url;
   final Value<String?> customThumbnail;
   final Value<String?> altText;
+  final Value<bool> nsfw;
+  final Value<int?> languageId;
   final Value<String?> body;
   const DraftsCompanion({
     this.id = const Value.absent(),
     this.draftType = const Value.absent(),
     this.existingId = const Value.absent(),
     this.replyId = const Value.absent(),
+    this.active = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
     this.altText = const Value.absent(),
+    this.nsfw = const Value.absent(),
+    this.languageId = const Value.absent(),
     this.body = const Value.absent(),
   });
   DraftsCompanion.insert({
@@ -1253,10 +1348,14 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     required DraftType draftType,
     this.existingId = const Value.absent(),
     this.replyId = const Value.absent(),
+    this.active = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
     this.altText = const Value.absent(),
+    this.nsfw = const Value.absent(),
+    this.languageId = const Value.absent(),
     this.body = const Value.absent(),
   }) : draftType = Value(draftType);
   static Insertable<Draft> custom({
@@ -1264,10 +1363,14 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     Expression<String>? draftType,
     Expression<int>? existingId,
     Expression<int>? replyId,
+    Expression<bool>? active,
+    Expression<String>? accountId,
     Expression<String>? title,
     Expression<String>? url,
     Expression<String>? customThumbnail,
     Expression<String>? altText,
+    Expression<bool>? nsfw,
+    Expression<int>? languageId,
     Expression<String>? body,
   }) {
     return RawValuesInsertable({
@@ -1275,10 +1378,14 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       if (draftType != null) 'draft_type': draftType,
       if (existingId != null) 'existing_id': existingId,
       if (replyId != null) 'reply_id': replyId,
+      if (active != null) 'active': active,
+      if (accountId != null) 'account_id': accountId,
       if (title != null) 'title': title,
       if (url != null) 'url': url,
       if (customThumbnail != null) 'custom_thumbnail': customThumbnail,
       if (altText != null) 'alt_text': altText,
+      if (nsfw != null) 'nsfw': nsfw,
+      if (languageId != null) 'language_id': languageId,
       if (body != null) 'body': body,
     });
   }
@@ -1288,20 +1395,28 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
       Value<DraftType>? draftType,
       Value<int?>? existingId,
       Value<int?>? replyId,
+      Value<bool>? active,
+      Value<String?>? accountId,
       Value<String?>? title,
       Value<String?>? url,
       Value<String?>? customThumbnail,
       Value<String?>? altText,
+      Value<bool>? nsfw,
+      Value<int?>? languageId,
       Value<String?>? body}) {
     return DraftsCompanion(
       id: id ?? this.id,
       draftType: draftType ?? this.draftType,
       existingId: existingId ?? this.existingId,
       replyId: replyId ?? this.replyId,
+      active: active ?? this.active,
+      accountId: accountId ?? this.accountId,
       title: title ?? this.title,
       url: url ?? this.url,
       customThumbnail: customThumbnail ?? this.customThumbnail,
       altText: altText ?? this.altText,
+      nsfw: nsfw ?? this.nsfw,
+      languageId: languageId ?? this.languageId,
       body: body ?? this.body,
     );
   }
@@ -1321,6 +1436,12 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     if (replyId.present) {
       map['reply_id'] = Variable<int>(replyId.value);
     }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
@@ -1332,6 +1453,12 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     }
     if (altText.present) {
       map['alt_text'] = Variable<String>(altText.value);
+    }
+    if (nsfw.present) {
+      map['nsfw'] = Variable<bool>(nsfw.value);
+    }
+    if (languageId.present) {
+      map['language_id'] = Variable<int>(languageId.value);
     }
     if (body.present) {
       map['body'] = Variable<String>(body.value);
@@ -1346,10 +1473,14 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
           ..write('draftType: $draftType, ')
           ..write('existingId: $existingId, ')
           ..write('replyId: $replyId, ')
+          ..write('active: $active, ')
+          ..write('accountId: $accountId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
           ..write('altText: $altText, ')
+          ..write('nsfw: $nsfw, ')
+          ..write('languageId: $languageId, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
@@ -1898,10 +2029,14 @@ typedef $$DraftsTableCreateCompanionBuilder = DraftsCompanion Function({
   required DraftType draftType,
   Value<int?> existingId,
   Value<int?> replyId,
+  Value<bool> active,
+  Value<String?> accountId,
   Value<String?> title,
   Value<String?> url,
   Value<String?> customThumbnail,
   Value<String?> altText,
+  Value<bool> nsfw,
+  Value<int?> languageId,
   Value<String?> body,
 });
 typedef $$DraftsTableUpdateCompanionBuilder = DraftsCompanion Function({
@@ -1909,10 +2044,14 @@ typedef $$DraftsTableUpdateCompanionBuilder = DraftsCompanion Function({
   Value<DraftType> draftType,
   Value<int?> existingId,
   Value<int?> replyId,
+  Value<bool> active,
+  Value<String?> accountId,
   Value<String?> title,
   Value<String?> url,
   Value<String?> customThumbnail,
   Value<String?> altText,
+  Value<bool> nsfw,
+  Value<int?> languageId,
   Value<String?> body,
 });
 
@@ -1932,6 +2071,10 @@ class $$DraftsTableFilterComposer extends Composer<_$AppDatabase, $DraftsTable> 
 
   ColumnFilters<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<bool> get active => $composableBuilder(column: $table.active, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get url => $composableBuilder(column: $table.url, builder: (column) => ColumnFilters(column));
@@ -1939,6 +2082,10 @@ class $$DraftsTableFilterComposer extends Composer<_$AppDatabase, $DraftsTable> 
   ColumnFilters<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get nsfw => $composableBuilder(column: $table.nsfw, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get languageId => $composableBuilder(column: $table.languageId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get body => $composableBuilder(column: $table.body, builder: (column) => ColumnFilters(column));
 }
@@ -1959,6 +2106,10 @@ class $$DraftsTableOrderingComposer extends Composer<_$AppDatabase, $DraftsTable
 
   ColumnOrderings<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get active => $composableBuilder(column: $table.active, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get title => $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get url => $composableBuilder(column: $table.url, builder: (column) => ColumnOrderings(column));
@@ -1966,6 +2117,10 @@ class $$DraftsTableOrderingComposer extends Composer<_$AppDatabase, $DraftsTable
   ColumnOrderings<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get nsfw => $composableBuilder(column: $table.nsfw, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get languageId => $composableBuilder(column: $table.languageId, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get body => $composableBuilder(column: $table.body, builder: (column) => ColumnOrderings(column));
 }
@@ -1986,6 +2141,10 @@ class $$DraftsTableAnnotationComposer extends Composer<_$AppDatabase, $DraftsTab
 
   GeneratedColumn<int> get replyId => $composableBuilder(column: $table.replyId, builder: (column) => column);
 
+  GeneratedColumn<bool> get active => $composableBuilder(column: $table.active, builder: (column) => column);
+
+  GeneratedColumn<String> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => column);
+
   GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
 
   GeneratedColumn<String> get url => $composableBuilder(column: $table.url, builder: (column) => column);
@@ -1993,6 +2152,10 @@ class $$DraftsTableAnnotationComposer extends Composer<_$AppDatabase, $DraftsTab
   GeneratedColumn<String> get customThumbnail => $composableBuilder(column: $table.customThumbnail, builder: (column) => column);
 
   GeneratedColumn<String> get altText => $composableBuilder(column: $table.altText, builder: (column) => column);
+
+  GeneratedColumn<bool> get nsfw => $composableBuilder(column: $table.nsfw, builder: (column) => column);
+
+  GeneratedColumn<int> get languageId => $composableBuilder(column: $table.languageId, builder: (column) => column);
 
   GeneratedColumn<String> get body => $composableBuilder(column: $table.body, builder: (column) => column);
 }
@@ -2011,10 +2174,14 @@ class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsT
             Value<DraftType> draftType = const Value.absent(),
             Value<int?> existingId = const Value.absent(),
             Value<int?> replyId = const Value.absent(),
+            Value<bool> active = const Value.absent(),
+            Value<String?> accountId = const Value.absent(),
             Value<String?> title = const Value.absent(),
             Value<String?> url = const Value.absent(),
             Value<String?> customThumbnail = const Value.absent(),
             Value<String?> altText = const Value.absent(),
+            Value<bool> nsfw = const Value.absent(),
+            Value<int?> languageId = const Value.absent(),
             Value<String?> body = const Value.absent(),
           }) =>
               DraftsCompanion(
@@ -2022,10 +2189,14 @@ class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsT
             draftType: draftType,
             existingId: existingId,
             replyId: replyId,
+            active: active,
+            accountId: accountId,
             title: title,
             url: url,
             customThumbnail: customThumbnail,
             altText: altText,
+            nsfw: nsfw,
+            languageId: languageId,
             body: body,
           ),
           createCompanionCallback: ({
@@ -2033,10 +2204,14 @@ class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsT
             required DraftType draftType,
             Value<int?> existingId = const Value.absent(),
             Value<int?> replyId = const Value.absent(),
+            Value<bool> active = const Value.absent(),
+            Value<String?> accountId = const Value.absent(),
             Value<String?> title = const Value.absent(),
             Value<String?> url = const Value.absent(),
             Value<String?> customThumbnail = const Value.absent(),
             Value<String?> altText = const Value.absent(),
+            Value<bool> nsfw = const Value.absent(),
+            Value<int?> languageId = const Value.absent(),
             Value<String?> body = const Value.absent(),
           }) =>
               DraftsCompanion.insert(
@@ -2044,10 +2219,14 @@ class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsT
             draftType: draftType,
             existingId: existingId,
             replyId: replyId,
+            active: active,
+            accountId: accountId,
             title: title,
             url: url,
             customThumbnail: customThumbnail,
             altText: altText,
+            nsfw: nsfw,
+            languageId: languageId,
             body: body,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

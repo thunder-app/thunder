@@ -14,6 +14,7 @@ import 'package:thunder/packages/ui/ui.dart' show NameColor;
 /// Performs migrations for shared preferences.
 Future<void> performSharedPreferencesMigration() async {
   final prefs = UserPreferences.instance.preferences;
+  final draftRepository = DraftRepositoryImpl(database: database);
 
   // Migrate the openInExternalBrowser setting, if found.
   bool? legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
@@ -91,7 +92,7 @@ Future<void> performSharedPreferencesMigration() async {
         body: (draftPost?['text'] ?? draftComment?['text']) as String?,
       );
 
-      Draft.upsertDraft(draft);
+      await draftRepository.upsertDraft(draft);
 
       // If we've gotten this far without exception, it's safe to delete the shared pref eky
       prefs.remove(draftKey);

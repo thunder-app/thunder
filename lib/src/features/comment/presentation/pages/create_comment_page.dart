@@ -12,6 +12,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 // Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/comment/comment.dart';
@@ -29,6 +30,9 @@ import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.d
 import 'package:thunder/packages/ui/ui.dart' show selectImagesToUpload, showSnackbar;
 
 class CreateCommentPage extends StatefulWidget {
+  /// The account to use for composing this comment.
+  final Account? account;
+
   /// [post] is passed in when replying to a post. [comment] and [parentComment] must be null if this is passed in.
   /// When this is passed in, a post preview will be shown.
   final ThunderPost? post;
@@ -44,6 +48,7 @@ class CreateCommentPage extends StatefulWidget {
 
   const CreateCommentPage({
     super.key,
+    this.account,
     this.post,
     this.comment,
     this.parentComment,
@@ -54,29 +59,20 @@ class CreateCommentPage extends StatefulWidget {
   State<CreateCommentPage> createState() => _CreateCommentPageState();
 }
 
-class _CreateCommentPageState extends State<CreateCommentPage> {
+class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindingObserver {
   /// The current account
   Account? account;
 
   /// The account's user information
   ThunderUser? user;
 
-  /// Holds the draft type associated with the comment. This type is determined by the input parameters passed in.
-  /// If [comment], it will be [DraftType.commentEdit].
-  /// If [post] or [parentComment] is passed in, it will be [DraftType.commentCreate].
-  late DraftType draftType;
-
-  /// The ID of the comment we are editing, to find a corresponding draft, if any
-  int? draftExistingId;
-
-  /// The ID of the post or comment we're replying to, to find a corresponding draft, if any
-  int? draftReplyId;
+  final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
 
   /// Whether to save this comment as a draft
   bool saveDraft = true;
 
-  /// Timer for saving the current draft
-  Timer? _draftTimer;
+  /// Debounces writes while the user is typing
+  Timer? _draftDebounceTimer;
 
   /// Whether or not to show the preview for the comment from the raw markdown
   bool showPreview = false;
@@ -118,13 +114,16 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   void initState() {
     super.initState();
 
-    account = context.read<ProfileBloc>().state.account;
+    WidgetsBinding.instance.addObserver(this);
+
+    account = widget.account ?? context.read<ProfileBloc>().state.account;
 
     postId = widget.post?.id ?? widget.parentComment?.postId;
     parentCommentId = widget.parentComment?.id;
 
     _bodyTextController.addListener(() {
       _validateSubmission();
+      _onDraftInputChanged();
     });
 
     // Logic for pre-populating the comment with the [post] for edits
@@ -146,57 +145,43 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   @override
   void dispose() {
-    _bodyTextController.dispose();
-    _bodyFocusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    _draftTimer?.cancel();
+    _draftDebounceTimer?.cancel();
 
-    Draft draft = _generateDraft();
+    _persistOrDeleteDraft(showSaveDraftSnackbar: true);
+    unawaited(_draftRepository.clearActiveDraft());
 
-    if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
-      final l10n = GlobalContext.l10n;
-
-      Draft.upsertDraft(draft);
-      showSnackbar(l10n.commentSavedAsDraft);
-    } else {
-      Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-    }
+    _bodyTextController.dispose();
+    _bodyFocusNode.dispose();
 
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      _persistOrDeleteDraft();
+    }
+  }
+
   /// Attempts to restore an existing draft of a comment
   void _restoreExistingDraft() async {
-    if (widget.comment != null) {
-      draftType = DraftType.commentEdit;
-      draftExistingId = widget.comment!.id;
-    } else if (widget.post != null) {
-      draftType = DraftType.commentCreate;
-      draftReplyId = widget.post!.id;
-    } else if (widget.parentComment != null) {
-      draftType = DraftType.commentCreate;
-      draftReplyId = widget.parentComment!.id;
-    } else {
-      // Should never come here.
-      return;
-    }
+    final draftContext = _draftContext;
 
-    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
+    final draft = await restoreDraft(
+      repository: _draftRepository,
+      context: draftContext,
+    );
 
     if (draft != null) {
       _bodyTextController.text = draft.body ?? '';
+      setState(() {
+        languageId = draft.languageId;
+      });
     }
-
-    _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      Draft draft = _generateDraft();
-      if (draft.isCommentNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
-        Draft.upsertDraft(draft);
-      } else {
-        Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-      }
-    });
 
     if (context.mounted && draft?.isCommentNotEmpty == true) {
       // We need to wait until the keyboard is visible before showing the snackbar
@@ -206,8 +191,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           trailingIcon: Icons.delete_forever_rounded,
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
-            Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
+            unawaited(_draftRepository.deleteDraft(draftContext.draftType, draftContext.existingId, draftContext.replyId));
             _bodyTextController.text = widget.comment?.content ?? '';
+            setState(() {
+              languageId = widget.comment?.languageId;
+            });
           },
           closable: true,
         );
@@ -215,24 +203,41 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     }
   }
 
-  Draft _generateDraft() {
-    return Draft(
-      id: '',
-      draftType: draftType,
-      existingId: draftExistingId,
-      replyId: draftReplyId,
-      body: _bodyTextController.text,
-    );
+  DraftContext get _draftContext => resolveCommentDraftContext(
+        editingCommentId: widget.comment?.id,
+        postId: postId,
+        parentCommentId: parentCommentId,
+      );
+
+  Draft _buildDraft() => buildCommentDraft(
+        context: _draftContext,
+        accountId: account?.id,
+        languageId: languageId,
+        body: _bodyTextController.text,
+      );
+
+  void _onDraftInputChanged() {
+    _draftDebounceTimer?.cancel();
+    _draftDebounceTimer = Timer(const Duration(milliseconds: 800), _persistOrDeleteDraft);
   }
 
-  /// Checks whether we are potentially saving a draft of an edit and, if so,
-  /// whether the draft contains different contents from the edit
-  bool _draftDiffersFromEdit(Draft draft) {
-    if (widget.comment == null) {
-      return true;
-    }
+  void _persistOrDeleteDraft({bool showSaveDraftSnackbar = false}) {
+    final draft = _buildDraft();
 
-    return draft.body != widget.comment!.content;
+    unawaited(
+      persistDraft(
+        repository: _draftRepository,
+        context: _draftContext,
+        draft: draft,
+        save: saveDraft,
+        differsFromEdit: commentDraftDiffersFromEdit(draft, widget.comment),
+        hasContent: draft.isCommentNotEmpty,
+      ).then((result) {
+        if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
+          showSnackbar(GlobalContext.l10n.commentSavedAsDraft);
+        }
+      }),
+    );
   }
 
   @override
@@ -339,11 +344,15 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     child: UserSelector(
                                       account: account!,
                                       postActorId: widget.post?.apId,
-                                      onPostChanged: (ThunderPost post) => postId = post.id,
+                                      onPostChanged: (ThunderPost post) {
+                                        postId = post.id;
+                                        _onDraftInputChanged();
+                                      },
                                       parentCommentActorId: widget.parentComment?.apId,
                                       onParentCommentChanged: (ThunderComment parentComment) {
                                         postId = parentComment.postId;
                                         parentCommentId = parentComment.id;
+                                        _onDraftInputChanged();
                                       },
                                       onUserChanged: (account) {
                                         setState(() {
@@ -352,6 +361,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         });
 
                                         context.read<CreateCommentCubit>().switchAccount(account);
+                                        _onDraftInputChanged();
                                       },
                                       enableAccountSwitching: widget.comment == null,
                                     ),
@@ -363,6 +373,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                       languageId: languageId,
                                       onLanguageSelected: (ThunderLanguage? language) {
                                         setState(() => languageId = language?.id);
+                                        _onDraftInputChanged();
                                       },
                                     ),
                                   ),

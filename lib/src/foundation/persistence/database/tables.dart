@@ -38,9 +38,13 @@ class Drafts extends Table {
   TextColumn get draftType => text().map(const DraftTypeConverter())();
   IntColumn get existingId => integer().nullable()();
   IntColumn get replyId => integer().nullable()();
+  BoolColumn get active => boolean().withDefault(const Constant(false))();
+  TextColumn get accountId => text().nullable()();
   TextColumn get title => text().nullable()();
   TextColumn get url => text().nullable()();
   TextColumn get customThumbnail => text().nullable()();
   TextColumn get altText => text().nullable()();
+  BoolColumn get nsfw => boolean().withDefault(const Constant(false))();
+  IntColumn get languageId => integer().nullable()();
   TextColumn get body => text().nullable()();
 }

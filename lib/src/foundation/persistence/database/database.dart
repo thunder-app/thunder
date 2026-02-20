@@ -16,7 +16,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
@@ -34,6 +34,7 @@ class AppDatabase extends _$AppDatabase {
     return MigrationStrategy(
       onCreate: (m) async {
         await m.createAll();
+        await customStatement('CREATE UNIQUE INDEX IF NOT EXISTS drafts_single_active_idx ON drafts(active) WHERE active = 1');
       },
       onUpgrade: (m, from, to) async {
         await customStatement('PRAGMA foreign_keys = OFF');
@@ -93,6 +94,39 @@ class AppDatabase extends _$AppDatabase {
                   await customStatement('UPDATE accounts SET platform = \'lemmy\'');
                 }
               },
+              from7To8: (m, schema) async {
+                try {
+                  await customStatement('SELECT active FROM drafts LIMIT 1');
+                } catch (e) {
+                  // Add active column to drafts
+                  await m.addColumn(schema.drafts, schema.drafts.active);
+                }
+
+                try {
+                  await customStatement('SELECT account_id FROM drafts LIMIT 1');
+                } catch (e) {
+                  // Add account_id column to drafts
+                  await m.addColumn(schema.drafts, schema.drafts.accountId);
+                }
+
+                try {
+                  await customStatement('SELECT nsfw FROM drafts LIMIT 1');
+                } catch (e) {
+                  // Add nsfw column to drafts
+                  await m.addColumn(schema.drafts, schema.drafts.nsfw);
+                }
+
+                try {
+                  await customStatement('SELECT language_id FROM drafts LIMIT 1');
+                } catch (e) {
+                  // Add language_id column to drafts
+                  await m.addColumn(schema.drafts, schema.drafts.languageId);
+                }
+
+                await customStatement('UPDATE drafts SET active = 0 WHERE active IS NULL');
+                await customStatement('UPDATE drafts SET nsfw = 0 WHERE nsfw IS NULL');
+                await customStatement('CREATE UNIQUE INDEX IF NOT EXISTS drafts_single_active_idx ON drafts(active) WHERE active = 1');
+              },
             ),
           );
 
@@ -132,7 +166,15 @@ Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) 
 }
 
 Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVersion) async {
-  if (fromVersion == 7 && toVersion == 6) {
+  if (fromVersion == 8 && toVersion == 7) {
+    await database.customStatement('DROP INDEX IF EXISTS drafts_single_active_idx');
+
+    // Drop active, account_id, nsfw, and language_id columns from drafts
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN active');
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN account_id');
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN nsfw');
+    await database.customStatement('ALTER TABLE drafts DROP COLUMN language_id');
+  } else if (fromVersion == 7 && toVersion == 6) {
     // Drop the platform column on the accounts table
     await database.customStatement('ALTER TABLE accounts DROP COLUMN platform');
   } else if (fromVersion == 6 && toVersion == 5) {

@@ -4,5 +4,5 @@ targets:
       drift_dev:
         options:
           databases:
-            thunder: lib/src/core/database/database.dart
-          schema_dir: lib/src/core/database/schemas/
+            thunder: lib/src/foundation/persistence/database/database.dart
+          schema_dir: lib/src/foundation/persistence/database/schemas/

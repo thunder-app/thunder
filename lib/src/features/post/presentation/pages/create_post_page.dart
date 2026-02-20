@@ -13,7 +13,9 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
+import 'package:thunder/src/features/community/data/repositories/community_repository_impl.dart';
 import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -35,6 +37,9 @@ import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.d
 import 'package:thunder/packages/ui/ui.dart' show isImageUrl, selectImagesToUpload, showSnackbar;
 
 class CreatePostPage extends StatefulWidget {
+  /// The account to use for composing this post.
+  final Account? account;
+
   /// The community ID to create the post in
   final int? communityId;
 
@@ -73,6 +78,7 @@ class CreatePostPage extends StatefulWidget {
 
   const CreatePostPage({
     super.key,
+    this.account,
     required this.communityId,
     this.community,
     this.image,
@@ -91,30 +97,20 @@ class CreatePostPage extends StatefulWidget {
   State<CreatePostPage> createState() => _CreatePostPageState();
 }
 
-class _CreatePostPageState extends State<CreatePostPage> {
+class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObserver {
   /// The account to use for the post
   Account? account;
 
   /// The account's user information
   ThunderUser? user;
 
-  /// Holds the draft type associated with the post. This type is determined by the input parameters passed in.
-  /// If [post] is passed in, this will be a [DraftType.postEdit].
-  /// If [communityId] or [communityView] is passed in, this will be a [DraftType.postCreate].
-  /// Otherwise it will be a [DraftType.postCreateGeneral].
-  late DraftType draftType;
-
-  /// The ID of the post we are editing, to find a corresponding draft, if any
-  int? draftExistingId;
-
-  /// The ID of the community we're replying to, to find a corresponding draft, if any
-  int? draftReplyId;
+  final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
 
   /// Whether to save this post as a draft
   bool saveDraft = true;
 
-  /// Timer for saving the current draft
-  Timer? _draftTimer;
+  /// Debounces writes while the user is typing
+  Timer? _draftDebounceTimer;
 
   /// Whether or not to show the preview for the post from the raw markdown
   bool showPreview = false;
@@ -174,35 +170,48 @@ class _CreatePostPageState extends State<CreatePostPage> {
   void initState() {
     super.initState();
 
-    account = context.read<ProfileBloc>().state.account;
+    WidgetsBinding.instance.addObserver(this);
+
+    account = widget.account ?? context.read<ProfileBloc>().state.account;
 
     communityId = widget.communityId;
 
     if (widget.community != null) {
       community = widget.community;
+      communityId ??= widget.community?.id;
     }
+
+    unawaited(_restoreCommunity());
 
     // Set up any text controller listeners
     _titleTextController.addListener(() {
       _validateSubmission();
+      _onDraftInputChanged();
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
       _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
+      _onDraftInputChanged();
     });
 
     _customThumbnailTextController.addListener(() {
       customThumbnail = _customThumbnailTextController.text;
       _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
+      _onDraftInputChanged();
     });
 
     _altTextTextController.addListener(() {
       altText = _altTextTextController.text;
       _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [altText]);
+      _onDraftInputChanged();
+    });
+
+    _bodyTextController.addListener(() {
+      _onDraftInputChanged();
     });
 
     // Logic for pre-populating the post with the given fields
@@ -237,29 +246,36 @@ class _CreatePostPageState extends State<CreatePostPage> {
           }
         });
       }
+    } else {
+      // Logic for pre-populating the post with the [postView] for edits
+      if (widget.post != null) {
+        _titleTextController.text = widget.post!.name;
+        _urlTextController.text = widget.post!.url ?? '';
+        _customThumbnailTextController.text = widget.post!.thumbnailUrl ?? '';
+        _altTextTextController.text = widget.post!.altText ?? '';
+        _bodyTextController.text = widget.post!.body ?? '';
+        isNSFW = widget.post!.nsfw;
+        languageId = widget.post!.languageId;
+      }
 
-      return;
+      // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        _restoreExistingDraft();
+      });
     }
-
-    // Logic for pre-populating the post with the [postView] for edits
-    if (widget.post != null) {
-      _titleTextController.text = widget.post!.name;
-      _urlTextController.text = widget.post!.url ?? '';
-      _customThumbnailTextController.text = widget.post!.thumbnailUrl ?? '';
-      _altTextTextController.text = widget.post!.altText ?? '';
-      _bodyTextController.text = widget.post!.body ?? '';
-      isNSFW = widget.post!.nsfw;
-      languageId = widget.post!.languageId;
-    }
-
-    // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _restoreExistingDraft();
-    });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    _draftDebounceTimer?.cancel();
+
+    _persistOrDeleteDraft(showSaveDraftSnackbar: true);
+    unawaited(_draftRepository.clearActiveDraft());
+
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
@@ -267,40 +283,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _altTextTextController.dispose();
     _bodyFocusNode.dispose();
 
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    _draftTimer?.cancel();
-
-    Draft draft = _generateDraft();
-
-    if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
-      final l10n = GlobalContext.l10n;
-
-      Draft.upsertDraft(draft);
-      showSnackbar(l10n.postSavedAsDraft);
-    } else {
-      Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-    }
-
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      _persistOrDeleteDraft();
+    }
   }
 
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
-    if (widget.post != null) {
-      draftType = DraftType.postEdit;
-      draftExistingId = widget.post?.id;
-    } else if (widget.communityId != null) {
-      draftType = DraftType.postCreate;
-      draftReplyId = widget.communityId;
-    } else if (widget.community != null) {
-      draftType = DraftType.postCreate;
-      draftReplyId = widget.community!.id;
-    } else {
-      draftType = DraftType.postCreateGeneral;
-    }
+    final draftContext = _draftContext;
 
-    Draft? draft = await Draft.fetchDraft(draftType, draftExistingId, draftReplyId);
+    final draft = await restoreDraft(
+      repository: _draftRepository,
+      context: draftContext,
+    );
 
     if (draft != null) {
       _titleTextController.text = draft.title ?? '';
@@ -308,60 +308,94 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _customThumbnailTextController.text = draft.customThumbnail ?? '';
       _altTextTextController.text = draft.altText ?? '';
       _bodyTextController.text = draft.body ?? '';
+
+      setState(() {
+        isNSFW = draft.nsfw;
+        languageId = draft.languageId;
+      });
     }
 
-    _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      Draft draft = _generateDraft();
-      if (draft.isPostNotEmpty && saveDraft && _draftDiffersFromEdit(draft)) {
-        Draft.upsertDraft(draft);
-      } else {
-        Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
-      }
-    });
-
-    if (context.mounted && draft?.isPostNotEmpty == true && _draftDiffersFromEdit(draft!)) {
+    if (context.mounted && draft?.isPostNotEmpty == true && postDraftDiffersFromEdit(draft!, widget.post)) {
       showSnackbar(
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
-          Draft.deleteDraft(draftType, draftExistingId, draftReplyId);
+          unawaited(_draftRepository.deleteDraft(draftContext.draftType, draftContext.existingId, draftContext.replyId));
           _titleTextController.text = widget.post?.name ?? '';
           _urlTextController.text = widget.post?.url ?? '';
           _customThumbnailTextController.text = widget.post?.thumbnailUrl ?? '';
           _altTextTextController.text = widget.post?.altText ?? '';
           _bodyTextController.text = widget.post?.body ?? '';
+
+          setState(() {
+            isNSFW = widget.post?.nsfw ?? false;
+            languageId = widget.post?.languageId;
+          });
         },
       );
     }
   }
 
-  Draft _generateDraft() {
-    return Draft(
-      id: '',
-      draftType: draftType,
-      existingId: draftExistingId,
-      replyId: draftReplyId,
-      title: _titleTextController.text,
-      url: _urlTextController.text,
-      customThumbnail: _customThumbnailTextController.text,
-      altText: _altTextTextController.text,
-      body: _bodyTextController.text,
-    );
-  }
-
-  /// Checks whether we are potentially saving a draft of an edit and, if so,
-  /// whether the draft contains different contents from the edit
-  bool _draftDiffersFromEdit(Draft draft) {
-    if (widget.post == null) {
-      return true;
+  Future<void> _restoreCommunity() async {
+    if (community != null || communityId == null || account == null) {
+      return;
     }
 
-    return draft.title != widget.post!.name ||
-        draft.url != (widget.post!.url ?? '') ||
-        draft.customThumbnail != (widget.post!.thumbnailUrl ?? '') ||
-        draft.altText != (widget.post!.altText ?? '') ||
-        draft.body != (widget.post!.body ?? '');
+    try {
+      final details = await CommunityRepositoryImpl(account: account!).getCommunity(id: communityId);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        community = details.community;
+      });
+    } catch (_) {
+      // It's fine to continue without the full community object.
+    }
+  }
+
+  DraftContext get _draftContext => resolvePostDraftContext(
+        editingPostId: widget.post?.id,
+        communityId: communityId,
+      );
+
+  Draft _buildDraft() => buildPostDraft(
+        context: _draftContext,
+        accountId: account?.id,
+        title: _titleTextController.text,
+        url: _urlTextController.text,
+        customThumbnail: _customThumbnailTextController.text,
+        altText: _altTextTextController.text,
+        nsfw: isNSFW,
+        languageId: languageId,
+        body: _bodyTextController.text,
+      );
+
+  void _onDraftInputChanged() {
+    _draftDebounceTimer?.cancel();
+    _draftDebounceTimer = Timer(const Duration(milliseconds: 800), _persistOrDeleteDraft);
+  }
+
+  void _persistOrDeleteDraft({bool showSaveDraftSnackbar = false}) {
+    final draft = _buildDraft();
+
+    unawaited(
+      persistDraft(
+        repository: _draftRepository,
+        context: _draftContext,
+        draft: draft,
+        save: saveDraft,
+        differsFromEdit: postDraftDiffersFromEdit(draft, widget.post),
+        hasContent: draft.isPostNotEmpty,
+      ).then((result) {
+        if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
+          showSnackbar(GlobalContext.l10n.postSavedAsDraft);
+        }
+      }),
+    );
   }
 
   /// Attempts to get the suggested title for a given link
@@ -450,6 +484,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   communityId = c.id;
                                   community = c;
                                 });
+                                _onDraftInputChanged();
                                 _validateSubmission();
                               },
                             ),
@@ -463,6 +498,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   community = community;
                                 });
 
+                                _onDraftInputChanged();
                                 _validateSubmission();
                               },
                               onUserChanged: (account) {
@@ -472,6 +508,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 });
 
                                 context.read<CreatePostCubit>().switchAccount(account);
+                                _onDraftInputChanged();
                               },
                               enableAccountSwitching: widget.post == null,
                             ),
@@ -611,6 +648,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     languageId: languageId,
                                     onLanguageSelected: (ThunderLanguage? language) {
                                       setState(() => languageId = language?.id);
+                                      _onDraftInputChanged();
                                     },
                                   ),
                                 ),
@@ -621,7 +659,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     const SizedBox(width: 4.0),
                                     Switch(
                                       value: isNSFW,
-                                      onChanged: (bool value) => setState(() => isNSFW = value),
+                                      onChanged: (bool value) {
+                                        setState(() => isNSFW = value);
+                                        _onDraftInputChanged();
+                                      },
                                     ),
                                   ],
                                 ),

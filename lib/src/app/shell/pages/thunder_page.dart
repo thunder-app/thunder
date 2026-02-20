@@ -30,6 +30,7 @@ import 'package:thunder/src/features/notification/application/state/notification
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/app/shell/widgets/bottom_nav_bar.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
@@ -57,6 +58,7 @@ class _ThunderState extends State<Thunder> {
   bool hasShownUpdateDialog = false;
   bool hasShownChangelogDialog = false;
   bool hasShownPageView = false;
+  bool hasAttemptedDraftRestore = false;
 
   bool _isFabOpen = false;
 
@@ -69,6 +71,8 @@ class _ThunderState extends State<Thunder> {
   final ScrollController _changelogScrollController = ScrollController();
 
   bool errorMessageLoading = false;
+
+  final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
 
   @override
   void initState() {
@@ -148,6 +152,68 @@ class _ThunderState extends State<Thunder> {
         }
       });
     }
+  }
+
+  void _restoreDraftSession(ProfileState profileState) {
+    if (hasAttemptedDraftRestore) {
+      return;
+    }
+
+    hasAttemptedDraftRestore = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+
+      final launchedFromExternalIntent = currentIntent == ANDROID_INTENT_ACTION_VIEW || currentIntent == 'android.intent.action.SEND' || currentIntent == 'android.intent.action.SEND_MULTIPLE';
+
+      if (!mounted || launchedFromExternalIntent) {
+        return;
+      }
+
+      if (Navigator.of(context).canPop()) {
+        return;
+      }
+
+      await restoreActiveDraftSession(
+        repository: _draftRepository,
+        account: profileState.account,
+        onPostCreateRestore: (account, communityId, community) async {
+          if (!mounted || Navigator.of(context).canPop()) {
+            return;
+          }
+
+          await navigateToCreatePostPage(context, account: account, communityId: communityId, community: community);
+        },
+        onPostEditRestore: (account, post) async {
+          if (!mounted || Navigator.of(context).canPop()) {
+            return;
+          }
+
+          await navigateToCreatePostPage(context, account: account, post: post);
+        },
+        onCommentCreateFromPostRestore: (account, post) async {
+          if (!mounted || Navigator.of(context).canPop()) {
+            return;
+          }
+
+          await navigateToCreateCommentPage(context, account: account, post: post);
+        },
+        onCommentCreateFromCommentRestore: (account, comment) async {
+          if (!mounted || Navigator.of(context).canPop()) {
+            return;
+          }
+
+          await navigateToCreateCommentPage(context, account: account, parentComment: comment);
+        },
+        onCommentEditRestore: (account, comment) async {
+          if (!mounted || Navigator.of(context).canPop()) {
+            return;
+          }
+
+          await navigateToCreateCommentPage(context, account: account, comment: comment);
+        },
+      );
+    });
   }
 
   FutureOr<bool> _handleBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
@@ -370,6 +436,8 @@ class _ThunderState extends State<Thunder> {
                         );
                       case ProfileStatus.contentWarning:
                       case ProfileStatus.success:
+                        _restoreDraftSession(state);
+
                         Version? version = thunderBlocState.version;
                         bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
 

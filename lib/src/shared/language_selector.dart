@@ -33,23 +33,12 @@ class LanguageSelector extends StatefulWidget {
 }
 
 class _LanguageSelectorState extends State<LanguageSelector> {
-  late int? _languageId;
-  late ThunderLanguage? _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _languageId = widget.languageId;
-
-    // Determine the language from the languageId
-    final languages = context.read<ProfileBloc>().state.siteResponse?.allLanguages ?? <ThunderLanguage>[];
-    _language = languages.firstWhereOrNull((ThunderLanguage language) => language.id == _languageId);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final languages = context.read<ProfileBloc>().state.siteResponse?.allLanguages ?? <ThunderLanguage>[];
+    final language = languages.firstWhereOrNull((ThunderLanguage candidate) => candidate.id == widget.languageId);
 
     return Transform.translate(
       offset: const Offset(-8, 0),
@@ -60,13 +49,8 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             title: l10n.language,
             onLanguageSelected: (language) {
               if (language.id == -1) {
-                setState(() => _languageId = _language = null);
                 widget.onLanguageSelected(null);
               } else {
-                setState(() {
-                  _languageId = language.id;
-                  _language = language;
-                });
                 widget.onLanguageSelected(language);
               }
             },
@@ -79,7 +63,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             softWrap: true,
             TextSpan(
               children: <InlineSpan>[
-                TextSpan(text: _language != null ? '${l10n.language}: ${_language?.name}' : l10n.selectLanguage),
+                TextSpan(text: language != null ? '${l10n.language}: ${language.name}' : l10n.selectLanguage),
                 const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Icon(Icons.chevron_right_rounded),

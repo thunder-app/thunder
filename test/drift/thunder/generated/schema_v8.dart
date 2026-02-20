@@ -14,35 +14,47 @@ class Accounts extends Table with TableInfo<Accounts, AccountsData> {
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
       'username', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> jwt = GeneratedColumn<String>(
       'jwt', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> instance = GeneratedColumn<String>(
       'instance', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  late final GeneratedColumn<bool> anonymous = GeneratedColumn<bool>(
-      'anonymous', aliasedName, false,
-      type: DriftSqlType.bool,
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("anonymous" IN (0, 1))'),
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<int> anonymous = GeneratedColumn<int>(
+      'anonymous', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (anonymous IN (0, 1))',
       defaultValue: const CustomExpression('0'));
   late final GeneratedColumn<int> userId = GeneratedColumn<int>(
       'user_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<int> listIndex = GeneratedColumn<int>(
       'list_index', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT (-1)',
       defaultValue: const CustomExpression('-1'));
+  late final GeneratedColumn<String> platform = GeneratedColumn<String>(
+      'platform', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   @override
   List<GeneratedColumn> get $columns =>
-      [id, username, jwt, instance, anonymous, userId, listIndex];
+      [id, username, jwt, instance, anonymous, userId, listIndex, platform];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -63,11 +75,13 @@ class Accounts extends Table with TableInfo<Accounts, AccountsData> {
       instance: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}instance']),
       anonymous: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}anonymous'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}anonymous'])!,
       userId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}user_id']),
       listIndex: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}list_index'])!,
+      platform: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}platform']),
     );
   }
 
@@ -75,6 +89,9 @@ class Accounts extends Table with TableInfo<Accounts, AccountsData> {
   Accounts createAlias(String alias) {
     return Accounts(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class AccountsData extends DataClass implements Insertable<AccountsData> {
@@ -82,9 +99,10 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
   final String? username;
   final String? jwt;
   final String? instance;
-  final bool anonymous;
+  final int anonymous;
   final int? userId;
   final int listIndex;
+  final String? platform;
   const AccountsData(
       {required this.id,
       this.username,
@@ -92,7 +110,8 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
       this.instance,
       required this.anonymous,
       this.userId,
-      required this.listIndex});
+      required this.listIndex,
+      this.platform});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -106,11 +125,14 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
     if (!nullToAbsent || instance != null) {
       map['instance'] = Variable<String>(instance);
     }
-    map['anonymous'] = Variable<bool>(anonymous);
+    map['anonymous'] = Variable<int>(anonymous);
     if (!nullToAbsent || userId != null) {
       map['user_id'] = Variable<int>(userId);
     }
     map['list_index'] = Variable<int>(listIndex);
+    if (!nullToAbsent || platform != null) {
+      map['platform'] = Variable<String>(platform);
+    }
     return map;
   }
 
@@ -128,6 +150,9 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
       userId:
           userId == null && nullToAbsent ? const Value.absent() : Value(userId),
       listIndex: Value(listIndex),
+      platform: platform == null && nullToAbsent
+          ? const Value.absent()
+          : Value(platform),
     );
   }
 
@@ -139,9 +164,10 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
       username: serializer.fromJson<String?>(json['username']),
       jwt: serializer.fromJson<String?>(json['jwt']),
       instance: serializer.fromJson<String?>(json['instance']),
-      anonymous: serializer.fromJson<bool>(json['anonymous']),
+      anonymous: serializer.fromJson<int>(json['anonymous']),
       userId: serializer.fromJson<int?>(json['userId']),
       listIndex: serializer.fromJson<int>(json['listIndex']),
+      platform: serializer.fromJson<String?>(json['platform']),
     );
   }
   @override
@@ -152,9 +178,10 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
       'username': serializer.toJson<String?>(username),
       'jwt': serializer.toJson<String?>(jwt),
       'instance': serializer.toJson<String?>(instance),
-      'anonymous': serializer.toJson<bool>(anonymous),
+      'anonymous': serializer.toJson<int>(anonymous),
       'userId': serializer.toJson<int?>(userId),
       'listIndex': serializer.toJson<int>(listIndex),
+      'platform': serializer.toJson<String?>(platform),
     };
   }
 
@@ -163,9 +190,10 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
           Value<String?> username = const Value.absent(),
           Value<String?> jwt = const Value.absent(),
           Value<String?> instance = const Value.absent(),
-          bool? anonymous,
+          int? anonymous,
           Value<int?> userId = const Value.absent(),
-          int? listIndex}) =>
+          int? listIndex,
+          Value<String?> platform = const Value.absent()}) =>
       AccountsData(
         id: id ?? this.id,
         username: username.present ? username.value : this.username,
@@ -174,6 +202,7 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
         anonymous: anonymous ?? this.anonymous,
         userId: userId.present ? userId.value : this.userId,
         listIndex: listIndex ?? this.listIndex,
+        platform: platform.present ? platform.value : this.platform,
       );
   AccountsData copyWithCompanion(AccountsCompanion data) {
     return AccountsData(
@@ -184,6 +213,7 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
       anonymous: data.anonymous.present ? data.anonymous.value : this.anonymous,
       userId: data.userId.present ? data.userId.value : this.userId,
       listIndex: data.listIndex.present ? data.listIndex.value : this.listIndex,
+      platform: data.platform.present ? data.platform.value : this.platform,
     );
   }
 
@@ -196,14 +226,15 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
           ..write('userId: $userId, ')
-          ..write('listIndex: $listIndex')
+          ..write('listIndex: $listIndex, ')
+          ..write('platform: $platform')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, username, jwt, instance, anonymous, userId, listIndex);
+  int get hashCode => Object.hash(
+      id, username, jwt, instance, anonymous, userId, listIndex, platform);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -214,7 +245,8 @@ class AccountsData extends DataClass implements Insertable<AccountsData> {
           other.instance == this.instance &&
           other.anonymous == this.anonymous &&
           other.userId == this.userId &&
-          other.listIndex == this.listIndex);
+          other.listIndex == this.listIndex &&
+          other.platform == this.platform);
 }
 
 class AccountsCompanion extends UpdateCompanion<AccountsData> {
@@ -222,9 +254,10 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
   final Value<String?> username;
   final Value<String?> jwt;
   final Value<String?> instance;
-  final Value<bool> anonymous;
+  final Value<int> anonymous;
   final Value<int?> userId;
   final Value<int> listIndex;
+  final Value<String?> platform;
   const AccountsCompanion({
     this.id = const Value.absent(),
     this.username = const Value.absent(),
@@ -233,6 +266,7 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
     this.listIndex = const Value.absent(),
+    this.platform = const Value.absent(),
   });
   AccountsCompanion.insert({
     this.id = const Value.absent(),
@@ -242,15 +276,17 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
     this.anonymous = const Value.absent(),
     this.userId = const Value.absent(),
     this.listIndex = const Value.absent(),
+    this.platform = const Value.absent(),
   });
   static Insertable<AccountsData> custom({
     Expression<int>? id,
     Expression<String>? username,
     Expression<String>? jwt,
     Expression<String>? instance,
-    Expression<bool>? anonymous,
+    Expression<int>? anonymous,
     Expression<int>? userId,
     Expression<int>? listIndex,
+    Expression<String>? platform,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -260,6 +296,7 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
       if (anonymous != null) 'anonymous': anonymous,
       if (userId != null) 'user_id': userId,
       if (listIndex != null) 'list_index': listIndex,
+      if (platform != null) 'platform': platform,
     });
   }
 
@@ -268,9 +305,10 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
       Value<String?>? username,
       Value<String?>? jwt,
       Value<String?>? instance,
-      Value<bool>? anonymous,
+      Value<int>? anonymous,
       Value<int?>? userId,
-      Value<int>? listIndex}) {
+      Value<int>? listIndex,
+      Value<String?>? platform}) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -279,6 +317,7 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
       anonymous: anonymous ?? this.anonymous,
       userId: userId ?? this.userId,
       listIndex: listIndex ?? this.listIndex,
+      platform: platform ?? this.platform,
     );
   }
 
@@ -298,13 +337,16 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
       map['instance'] = Variable<String>(instance.value);
     }
     if (anonymous.present) {
-      map['anonymous'] = Variable<bool>(anonymous.value);
+      map['anonymous'] = Variable<int>(anonymous.value);
     }
     if (userId.present) {
       map['user_id'] = Variable<int>(userId.value);
     }
     if (listIndex.present) {
       map['list_index'] = Variable<int>(listIndex.value);
+    }
+    if (platform.present) {
+      map['platform'] = Variable<String>(platform.value);
     }
     return map;
   }
@@ -318,7 +360,8 @@ class AccountsCompanion extends UpdateCompanion<AccountsData> {
           ..write('instance: $instance, ')
           ..write('anonymous: $anonymous, ')
           ..write('userId: $userId, ')
-          ..write('listIndex: $listIndex')
+          ..write('listIndex: $listIndex, ')
+          ..write('platform: $platform')
           ..write(')'))
         .toString();
   }
@@ -334,14 +377,17 @@ class Favorites extends Table with TableInfo<Favorites, FavoritesData> {
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
       'account_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<int> communityId = GeneratedColumn<int>(
       'community_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
   List<GeneratedColumn> get $columns => [id, accountId, communityId];
   @override
@@ -368,6 +414,9 @@ class Favorites extends Table with TableInfo<Favorites, FavoritesData> {
   Favorites createAlias(String alias) {
     return Favorites(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class FavoritesData extends DataClass implements Insertable<FavoritesData> {
@@ -521,20 +570,27 @@ class LocalSubscriptions extends Table
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<String> actorId = GeneratedColumn<String>(
       'actor_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
       'icon', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   @override
   List<GeneratedColumn> get $columns => [id, name, title, actorId, icon];
   @override
@@ -565,6 +621,9 @@ class LocalSubscriptions extends Table
   LocalSubscriptions createAlias(String alias) {
     return LocalSubscriptions(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class LocalSubscriptionsData extends DataClass
@@ -772,14 +831,17 @@ class UserLabels extends Table with TableInfo<UserLabels, UserLabelsData> {
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
       'username', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<String> label = GeneratedColumn<String>(
       'label', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
   List<GeneratedColumn> get $columns => [id, username, label];
   @override
@@ -806,6 +868,9 @@ class UserLabels extends Table with TableInfo<UserLabels, UserLabelsData> {
   UserLabels createAlias(String alias) {
     return UserLabels(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class UserLabelsData extends DataClass implements Insertable<UserLabelsData> {
@@ -957,32 +1022,85 @@ class Drafts extends Table with TableInfo<Drafts, DraftsData> {
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String> draftType = GeneratedColumn<String>(
       'draft_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   late final GeneratedColumn<int> existingId = GeneratedColumn<int>(
       'existing_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<int> replyId = GeneratedColumn<int>(
       'reply_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<int> active = GeneratedColumn<int>(
+      'active', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (active IN (0, 1))',
+      defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> url = GeneratedColumn<String>(
       'url', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> customThumbnail = GeneratedColumn<String>(
       'custom_thumbnail', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<String> altText = GeneratedColumn<String>(
+      'alt_text', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
+  late final GeneratedColumn<int> nsfw = GeneratedColumn<int>(
+      'nsfw', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (nsfw IN (0, 1))',
+      defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<int> languageId = GeneratedColumn<int>(
+      'language_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   late final GeneratedColumn<String> body = GeneratedColumn<String>(
       'body', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NULL');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, draftType, existingId, replyId, title, url, customThumbnail, body];
+  List<GeneratedColumn> get $columns => [
+        id,
+        draftType,
+        existingId,
+        replyId,
+        active,
+        accountId,
+        title,
+        url,
+        customThumbnail,
+        altText,
+        nsfw,
+        languageId,
+        body
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1002,12 +1120,22 @@ class Drafts extends Table with TableInfo<Drafts, DraftsData> {
           .read(DriftSqlType.int, data['${effectivePrefix}existing_id']),
       replyId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}reply_id']),
+      active: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}active'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id']),
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title']),
       url: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}url']),
       customThumbnail: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}custom_thumbnail']),
+      altText: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}alt_text']),
+      nsfw: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}nsfw'])!,
+      languageId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}language_id']),
       body: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}body']),
     );
@@ -1017,6 +1145,9 @@ class Drafts extends Table with TableInfo<Drafts, DraftsData> {
   Drafts createAlias(String alias) {
     return Drafts(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class DraftsData extends DataClass implements Insertable<DraftsData> {
@@ -1024,18 +1155,28 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
   final String draftType;
   final int? existingId;
   final int? replyId;
+  final int active;
+  final String? accountId;
   final String? title;
   final String? url;
   final String? customThumbnail;
+  final String? altText;
+  final int nsfw;
+  final int? languageId;
   final String? body;
   const DraftsData(
       {required this.id,
       required this.draftType,
       this.existingId,
       this.replyId,
+      required this.active,
+      this.accountId,
       this.title,
       this.url,
       this.customThumbnail,
+      this.altText,
+      required this.nsfw,
+      this.languageId,
       this.body});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1048,6 +1189,10 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
     if (!nullToAbsent || replyId != null) {
       map['reply_id'] = Variable<int>(replyId);
     }
+    map['active'] = Variable<int>(active);
+    if (!nullToAbsent || accountId != null) {
+      map['account_id'] = Variable<String>(accountId);
+    }
     if (!nullToAbsent || title != null) {
       map['title'] = Variable<String>(title);
     }
@@ -1056,6 +1201,13 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
     }
     if (!nullToAbsent || customThumbnail != null) {
       map['custom_thumbnail'] = Variable<String>(customThumbnail);
+    }
+    if (!nullToAbsent || altText != null) {
+      map['alt_text'] = Variable<String>(altText);
+    }
+    map['nsfw'] = Variable<int>(nsfw);
+    if (!nullToAbsent || languageId != null) {
+      map['language_id'] = Variable<int>(languageId);
     }
     if (!nullToAbsent || body != null) {
       map['body'] = Variable<String>(body);
@@ -1073,12 +1225,23 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
       replyId: replyId == null && nullToAbsent
           ? const Value.absent()
           : Value(replyId),
+      active: Value(active),
+      accountId: accountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountId),
       title:
           title == null && nullToAbsent ? const Value.absent() : Value(title),
       url: url == null && nullToAbsent ? const Value.absent() : Value(url),
       customThumbnail: customThumbnail == null && nullToAbsent
           ? const Value.absent()
           : Value(customThumbnail),
+      altText: altText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(altText),
+      nsfw: Value(nsfw),
+      languageId: languageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(languageId),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
     );
   }
@@ -1091,9 +1254,14 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
       draftType: serializer.fromJson<String>(json['draftType']),
       existingId: serializer.fromJson<int?>(json['existingId']),
       replyId: serializer.fromJson<int?>(json['replyId']),
+      active: serializer.fromJson<int>(json['active']),
+      accountId: serializer.fromJson<String?>(json['accountId']),
       title: serializer.fromJson<String?>(json['title']),
       url: serializer.fromJson<String?>(json['url']),
       customThumbnail: serializer.fromJson<String?>(json['customThumbnail']),
+      altText: serializer.fromJson<String?>(json['altText']),
+      nsfw: serializer.fromJson<int>(json['nsfw']),
+      languageId: serializer.fromJson<int?>(json['languageId']),
       body: serializer.fromJson<String?>(json['body']),
     );
   }
@@ -1105,9 +1273,14 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
       'draftType': serializer.toJson<String>(draftType),
       'existingId': serializer.toJson<int?>(existingId),
       'replyId': serializer.toJson<int?>(replyId),
+      'active': serializer.toJson<int>(active),
+      'accountId': serializer.toJson<String?>(accountId),
       'title': serializer.toJson<String?>(title),
       'url': serializer.toJson<String?>(url),
       'customThumbnail': serializer.toJson<String?>(customThumbnail),
+      'altText': serializer.toJson<String?>(altText),
+      'nsfw': serializer.toJson<int>(nsfw),
+      'languageId': serializer.toJson<int?>(languageId),
       'body': serializer.toJson<String?>(body),
     };
   }
@@ -1117,20 +1290,30 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
           String? draftType,
           Value<int?> existingId = const Value.absent(),
           Value<int?> replyId = const Value.absent(),
+          int? active,
+          Value<String?> accountId = const Value.absent(),
           Value<String?> title = const Value.absent(),
           Value<String?> url = const Value.absent(),
           Value<String?> customThumbnail = const Value.absent(),
+          Value<String?> altText = const Value.absent(),
+          int? nsfw,
+          Value<int?> languageId = const Value.absent(),
           Value<String?> body = const Value.absent()}) =>
       DraftsData(
         id: id ?? this.id,
         draftType: draftType ?? this.draftType,
         existingId: existingId.present ? existingId.value : this.existingId,
         replyId: replyId.present ? replyId.value : this.replyId,
+        active: active ?? this.active,
+        accountId: accountId.present ? accountId.value : this.accountId,
         title: title.present ? title.value : this.title,
         url: url.present ? url.value : this.url,
         customThumbnail: customThumbnail.present
             ? customThumbnail.value
             : this.customThumbnail,
+        altText: altText.present ? altText.value : this.altText,
+        nsfw: nsfw ?? this.nsfw,
+        languageId: languageId.present ? languageId.value : this.languageId,
         body: body.present ? body.value : this.body,
       );
   DraftsData copyWithCompanion(DraftsCompanion data) {
@@ -1140,11 +1323,17 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
       existingId:
           data.existingId.present ? data.existingId.value : this.existingId,
       replyId: data.replyId.present ? data.replyId.value : this.replyId,
+      active: data.active.present ? data.active.value : this.active,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
       title: data.title.present ? data.title.value : this.title,
       url: data.url.present ? data.url.value : this.url,
       customThumbnail: data.customThumbnail.present
           ? data.customThumbnail.value
           : this.customThumbnail,
+      altText: data.altText.present ? data.altText.value : this.altText,
+      nsfw: data.nsfw.present ? data.nsfw.value : this.nsfw,
+      languageId:
+          data.languageId.present ? data.languageId.value : this.languageId,
       body: data.body.present ? data.body.value : this.body,
     );
   }
@@ -1156,17 +1345,22 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
           ..write('draftType: $draftType, ')
           ..write('existingId: $existingId, ')
           ..write('replyId: $replyId, ')
+          ..write('active: $active, ')
+          ..write('accountId: $accountId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
+          ..write('altText: $altText, ')
+          ..write('nsfw: $nsfw, ')
+          ..write('languageId: $languageId, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, draftType, existingId, replyId, title, url, customThumbnail, body);
+  int get hashCode => Object.hash(id, draftType, existingId, replyId, active,
+      accountId, title, url, customThumbnail, altText, nsfw, languageId, body);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1175,9 +1369,14 @@ class DraftsData extends DataClass implements Insertable<DraftsData> {
           other.draftType == this.draftType &&
           other.existingId == this.existingId &&
           other.replyId == this.replyId &&
+          other.active == this.active &&
+          other.accountId == this.accountId &&
           other.title == this.title &&
           other.url == this.url &&
           other.customThumbnail == this.customThumbnail &&
+          other.altText == this.altText &&
+          other.nsfw == this.nsfw &&
+          other.languageId == this.languageId &&
           other.body == this.body);
 }
 
@@ -1186,18 +1385,28 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
   final Value<String> draftType;
   final Value<int?> existingId;
   final Value<int?> replyId;
+  final Value<int> active;
+  final Value<String?> accountId;
   final Value<String?> title;
   final Value<String?> url;
   final Value<String?> customThumbnail;
+  final Value<String?> altText;
+  final Value<int> nsfw;
+  final Value<int?> languageId;
   final Value<String?> body;
   const DraftsCompanion({
     this.id = const Value.absent(),
     this.draftType = const Value.absent(),
     this.existingId = const Value.absent(),
     this.replyId = const Value.absent(),
+    this.active = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
+    this.altText = const Value.absent(),
+    this.nsfw = const Value.absent(),
+    this.languageId = const Value.absent(),
     this.body = const Value.absent(),
   });
   DraftsCompanion.insert({
@@ -1205,9 +1414,14 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
     required String draftType,
     this.existingId = const Value.absent(),
     this.replyId = const Value.absent(),
+    this.active = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.title = const Value.absent(),
     this.url = const Value.absent(),
     this.customThumbnail = const Value.absent(),
+    this.altText = const Value.absent(),
+    this.nsfw = const Value.absent(),
+    this.languageId = const Value.absent(),
     this.body = const Value.absent(),
   }) : draftType = Value(draftType);
   static Insertable<DraftsData> custom({
@@ -1215,9 +1429,14 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
     Expression<String>? draftType,
     Expression<int>? existingId,
     Expression<int>? replyId,
+    Expression<int>? active,
+    Expression<String>? accountId,
     Expression<String>? title,
     Expression<String>? url,
     Expression<String>? customThumbnail,
+    Expression<String>? altText,
+    Expression<int>? nsfw,
+    Expression<int>? languageId,
     Expression<String>? body,
   }) {
     return RawValuesInsertable({
@@ -1225,9 +1444,14 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
       if (draftType != null) 'draft_type': draftType,
       if (existingId != null) 'existing_id': existingId,
       if (replyId != null) 'reply_id': replyId,
+      if (active != null) 'active': active,
+      if (accountId != null) 'account_id': accountId,
       if (title != null) 'title': title,
       if (url != null) 'url': url,
       if (customThumbnail != null) 'custom_thumbnail': customThumbnail,
+      if (altText != null) 'alt_text': altText,
+      if (nsfw != null) 'nsfw': nsfw,
+      if (languageId != null) 'language_id': languageId,
       if (body != null) 'body': body,
     });
   }
@@ -1237,18 +1461,28 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
       Value<String>? draftType,
       Value<int?>? existingId,
       Value<int?>? replyId,
+      Value<int>? active,
+      Value<String?>? accountId,
       Value<String?>? title,
       Value<String?>? url,
       Value<String?>? customThumbnail,
+      Value<String?>? altText,
+      Value<int>? nsfw,
+      Value<int?>? languageId,
       Value<String?>? body}) {
     return DraftsCompanion(
       id: id ?? this.id,
       draftType: draftType ?? this.draftType,
       existingId: existingId ?? this.existingId,
       replyId: replyId ?? this.replyId,
+      active: active ?? this.active,
+      accountId: accountId ?? this.accountId,
       title: title ?? this.title,
       url: url ?? this.url,
       customThumbnail: customThumbnail ?? this.customThumbnail,
+      altText: altText ?? this.altText,
+      nsfw: nsfw ?? this.nsfw,
+      languageId: languageId ?? this.languageId,
       body: body ?? this.body,
     );
   }
@@ -1268,6 +1502,12 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
     if (replyId.present) {
       map['reply_id'] = Variable<int>(replyId.value);
     }
+    if (active.present) {
+      map['active'] = Variable<int>(active.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
@@ -1276,6 +1516,15 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
     }
     if (customThumbnail.present) {
       map['custom_thumbnail'] = Variable<String>(customThumbnail.value);
+    }
+    if (altText.present) {
+      map['alt_text'] = Variable<String>(altText.value);
+    }
+    if (nsfw.present) {
+      map['nsfw'] = Variable<int>(nsfw.value);
+    }
+    if (languageId.present) {
+      map['language_id'] = Variable<int>(languageId.value);
     }
     if (body.present) {
       map['body'] = Variable<String>(body.value);
@@ -1290,17 +1539,22 @@ class DraftsCompanion extends UpdateCompanion<DraftsData> {
           ..write('draftType: $draftType, ')
           ..write('existingId: $existingId, ')
           ..write('replyId: $replyId, ')
+          ..write('active: $active, ')
+          ..write('accountId: $accountId, ')
           ..write('title: $title, ')
           ..write('url: $url, ')
           ..write('customThumbnail: $customThumbnail, ')
+          ..write('altText: $altText, ')
+          ..write('nsfw: $nsfw, ')
+          ..write('languageId: $languageId, ')
           ..write('body: $body')
           ..write(')'))
         .toString();
   }
 }
 
-class DatabaseAtV5 extends GeneratedDatabase {
-  DatabaseAtV5(QueryExecutor e) : super(e);
+class DatabaseAtV8 extends GeneratedDatabase {
+  DatabaseAtV8(QueryExecutor e) : super(e);
   late final Accounts accounts = Accounts(this);
   late final Favorites favorites = Favorites(this);
   late final LocalSubscriptions localSubscriptions = LocalSubscriptions(this);
@@ -1313,5 +1567,5 @@ class DatabaseAtV5 extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [accounts, favorites, localSubscriptions, userLabels, drafts];
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 8;
 }

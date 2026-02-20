@@ -152,6 +152,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
 
 Future<ThunderComment?> navigateToCreateCommentPage(
   BuildContext context, {
+  Account? account,
   ThunderPost? post,
   ThunderComment? comment,
   ThunderComment? parentComment,
@@ -183,6 +184,7 @@ Future<ThunderComment?> navigateToCreateCommentPage(
         BlocProvider<ProfileBloc>.value(value: profileBloc),
       ],
       child: CreateCommentPage(
+        account: account ?? profileBloc.state.account,
         post: post,
         comment: comment,
         parentComment: parentComment,
@@ -198,6 +200,7 @@ Future<ThunderComment?> navigateToCreateCommentPage(
 
 Future<void> navigateToCreatePostPage(
   BuildContext context, {
+  Account? account,
   String? title,
   String? text,
   File? image,
@@ -211,13 +214,13 @@ Future<void> navigateToCreatePostPage(
 }) async {
   try {
     final l10n = AppLocalizations.of(context)!;
-    final account = context.read<ProfileBloc>().state.account;
+    final effectiveAccount = account ?? context.read<ProfileBloc>().state.account;
 
     FeedBloc? feedBloc;
     PostBloc? postBloc;
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     ProfileBloc profileBloc = context.read<ProfileBloc>();
-    CreatePostCubit createPostCubit = createCreatePostCubit(account);
+    CreatePostCubit createPostCubit = createCreatePostCubit(effectiveAccount);
 
     final themeCubit = context.read<ThemePreferencesCubit>();
     final bool reduceAnimations = themeCubit.state.reduceAnimations;
@@ -250,13 +253,14 @@ Future<void> navigateToCreatePostPage(
       builder: (navigatorContext) {
         return MultiBlocProvider(
           providers: [
-            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => createFeedBloc(account)),
+            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider(create: (context) => createFeedBloc(effectiveAccount)),
             if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
             BlocProvider<ThunderBloc>.value(value: thunderBloc),
             BlocProvider<ProfileBloc>.value(value: profileBloc),
             BlocProvider<CreatePostCubit>.value(value: createPostCubit),
           ],
           child: CreatePostPage(
+            account: effectiveAccount,
             title: title,
             text: text,
             image: image,

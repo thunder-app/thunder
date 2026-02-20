@@ -1,7 +1,4 @@
-import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/drafts/drafts.dart';
+import 'package:thunder/src/foundation/primitives/enums/draft_type.dart';
 
 class Draft {
   /// The database identifier for this object
@@ -16,6 +13,12 @@ class Draft {
   /// The community/post/comment we're replying to
   final int? replyId;
 
+  /// Whether this draft is currently considered active for draft resume.
+  final bool active;
+
+  /// The account currently selected for publishing this draft.
+  final String? accountId;
+
   /// The title of the post
   final String? title;
 
@@ -28,6 +31,12 @@ class Draft {
   /// Alternative text for the image
   final String? altText;
 
+  /// Whether the post is marked as NSFW.
+  final bool nsfw;
+
+  /// The selected language for the post/comment.
+  final int? languageId;
+
   /// The body of the post/comment
   final String? body;
 
@@ -36,10 +45,14 @@ class Draft {
     required this.draftType,
     this.existingId,
     this.replyId,
+    this.active = false,
+    this.accountId,
     this.title,
     this.url,
     this.customThumbnail,
     this.altText,
+    this.nsfw = false,
+    this.languageId,
     this.body,
   });
 
@@ -48,10 +61,14 @@ class Draft {
     DraftType? draftType,
     int? existingId,
     int? replyId,
+    bool? active,
+    String? accountId,
     String? title,
     String? url,
     String? customThumbnail,
     String? altText,
+    bool? nsfw,
+    int? languageId,
     String? body,
   }) =>
       Draft(
@@ -59,102 +76,24 @@ class Draft {
         draftType: draftType ?? this.draftType,
         existingId: existingId ?? this.existingId,
         replyId: replyId ?? this.replyId,
+        active: active ?? this.active,
+        accountId: accountId ?? this.accountId,
         title: title ?? this.title,
         url: url ?? this.url,
         customThumbnail: customThumbnail ?? this.customThumbnail,
         altText: altText ?? this.altText,
+        nsfw: nsfw ?? this.nsfw,
+        languageId: languageId ?? this.languageId,
         body: body ?? this.body,
       );
 
   /// See whether this draft contains enough info to save for a post
-  bool get isPostNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || altText?.isNotEmpty == true || body?.isNotEmpty == true;
+  bool get isPostNotEmpty =>
+      title?.isNotEmpty == true || url?.isNotEmpty == true || customThumbnail?.isNotEmpty == true || altText?.isNotEmpty == true || body?.isNotEmpty == true || nsfw || languageId != null;
 
   /// See whether this draft contains enough info to save for a comment
-  bool get isCommentNotEmpty => body?.isNotEmpty == true;
+  bool get isCommentNotEmpty => body?.isNotEmpty == true || languageId != null;
 
-  /// Create or update a draft in the db
-  static Future<Draft?> upsertDraft(Draft draft) async {
-    try {
-      final existingDraft = await (database.select(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draft.draftType)))
-            ..where((t) => draft.existingId == null ? t.existingId.isNull() : t.existingId.equals(draft.existingId!))
-            ..where((t) => draft.replyId == null ? t.replyId.isNull() : t.replyId.equals(draft.replyId!)))
-          .getSingleOrNull();
-
-      if (existingDraft == null) {
-        final id = await database.into(database.drafts).insert(
-              DraftsCompanion.insert(
-                draftType: draft.draftType,
-                existingId: Value(draft.existingId),
-                replyId: Value(draft.replyId),
-                title: Value(draft.title),
-                url: Value(draft.url),
-                customThumbnail: Value(draft.customThumbnail),
-                altText: Value(draft.altText),
-                body: Value(draft.body),
-              ),
-            );
-        return draft.copyWith(id: id.toString());
-      } else {
-        await database.update(database.drafts).replace(
-              DraftsCompanion(
-                id: Value(existingDraft.id),
-                draftType: Value(draft.draftType),
-                existingId: Value(draft.existingId),
-                replyId: Value(draft.replyId),
-                title: Value(draft.title),
-                url: Value(draft.url),
-                customThumbnail: Value(draft.customThumbnail),
-                altText: Value(draft.altText),
-                body: Value(draft.body),
-              ),
-            );
-        return draft.copyWith(id: existingDraft.id.toString());
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
-    }
-  }
-
-  /// Retrieve a draft from the db
-  static Future<Draft?> fetchDraft(DraftType draftType, int? existingId, int? replyId) async {
-    try {
-      final draft = await (database.select(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
-            ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
-            ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
-          .getSingleOrNull();
-
-      if (draft == null) return null;
-
-      return Draft(
-        id: draft.id.toString(),
-        draftType: draft.draftType,
-        existingId: draft.existingId,
-        replyId: draft.replyId,
-        title: draft.title,
-        url: draft.url,
-        customThumbnail: draft.customThumbnail,
-        altText: draft.altText,
-        body: draft.body,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
-    }
-  }
-
-  /// Delete a draft from the db
-  static Future<void> deleteDraft(DraftType draftType, int? existingId, int? replyId) async {
-    try {
-      await (database.delete(database.drafts)
-            ..where((t) => t.draftType.equals(const DraftTypeConverter().toSql(draftType)))
-            ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
-            ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
-          .go();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+  /// See whether this draft contains enough information to attempt a draft restore on startup.
+  bool get hasRestorableContent => isPostNotEmpty || isCommentNotEmpty;
 }
