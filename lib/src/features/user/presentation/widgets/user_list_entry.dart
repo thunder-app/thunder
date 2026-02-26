@@ -5,8 +5,8 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
@@ -39,10 +39,9 @@ class UserListEntry extends StatelessWidget {
           children: [
             Flexible(
               child: UserFullNameWidget(
-                context,
-                user.name,
-                user.displayName,
-                fetchInstanceNameFromUrl(user.actorId),
+                name: user.name,
+                displayName: user.displayName,
+                instance: fetchInstanceNameFromUrl(user.actorId),
                 // Override because we're showing display name above
                 useDisplayName: false,
               ),

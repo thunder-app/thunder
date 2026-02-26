@@ -18,11 +18,11 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
+import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
@@ -198,7 +198,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
                   ? ScalableText(
                       post.body ?? '',
                       style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                      fontScale: contentFontSizeScale,
+                      textScaleFactor: contentFontSizeScale.textScaleFactor,
                     )
                   : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews),
             ),

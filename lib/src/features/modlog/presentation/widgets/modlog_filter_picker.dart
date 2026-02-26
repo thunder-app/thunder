@@ -157,7 +157,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             ...defaultModlogActionTypeItems.map(
-              (item) => PickerItem<ModlogActionType>(
+              (item) => PickerItem(
                 label: item.label,
                 icon: item.icon,
                 onSelected: () {
@@ -291,7 +291,7 @@ class ModlogSubFilterPicker extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: items
               .map(
-                (item) => PickerItem<ModlogActionType>(
+                (item) => PickerItem(
                     label: item.label,
                     icon: item.icon,
                     onSelected: () {

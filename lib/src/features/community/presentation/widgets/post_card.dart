@@ -13,10 +13,9 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart' show ThunderMultiActionDismissible, ThunderSwipeAction, showSnackbar;
 
 class PostCard extends StatefulWidget {
   /// The associated post information to display in the card.
@@ -259,17 +258,17 @@ class _PostCardState extends State<PostCard> {
       final leftActions = [leftPrimaryPostGesture, leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
       final rightActions = [rightPrimaryPostGesture, rightSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
 
-      child = MultiActionDismissible(
+      child = ThunderMultiActionDismissible<SwipeAction>(
         key: ObjectKey(widget.post.id),
         direction: widget.disableSwiping ? DismissDirection.none : currentSwipeDirection,
-        leftActions: leftActions,
-        rightActions: rightActions,
+        leftActions: leftActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(read: read, hidden: hidden), color: (context) => action.getColor(context))).toList(),
+        rightActions: rightActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(read: read, hidden: hidden), color: (context) => action.getColor(context))).toList(),
         actionThresholds: actionThresholds,
-        onAction: (action) => _onAction(action),
+        onAction: (action) => _onAction(action.value),
         onPointerDown: widget.onDownAction,
         onDragEnd: (dy) => widget.onUpAction(dy),
         backgroundBuilder: (context, dir, progress, action) => PostCardActionBackground(
-          swipeAction: action,
+          swipeAction: action?.value,
           dismissThreshold: progress,
           firstActionThreshold: actionThresholds.first,
           dismissDirection: dir,

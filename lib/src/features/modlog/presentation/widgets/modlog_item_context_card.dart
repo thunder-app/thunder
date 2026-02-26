@@ -8,12 +8,12 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
@@ -115,7 +115,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
                   ScalableText(
                     HtmlUnescape().convert(post.name),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                    fontScale: titleFontSizeScale,
+                    textScaleFactor: titleFontSizeScale.textScaleFactor,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 6.0, top: 6.0),
@@ -123,13 +123,11 @@ class ModlogPostItemContextCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
                       child: CommunityFullNameWidget(
-                        context,
-                        community?.name,
-                        community?.title,
-                        fetchInstanceNameFromUrl(community?.actorId),
-                        fontScale: metadataFontSizeScale,
-                        transformColor: (color) => color?.withValues(alpha: 0.75),
-                      ),
+                          name: community?.name,
+                          displayName: community?.title,
+                          instance: fetchInstanceNameFromUrl(community?.actorId),
+                          fontScale: metadataFontSizeScale,
+                          transformColor: (color) => color?.withValues(alpha: 0.75)),
                     ),
                   ),
                 ],
@@ -242,7 +240,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               child: ScalableText(
                                 l10n.sensitiveContentWarning,
                                 style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.secondary),
-                                fontScale: metadataFontSizeScale,
+                                textScaleFactor: metadataFontSizeScale.textScaleFactor,
                               ),
                             ),
                           ),
@@ -262,13 +260,13 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                               onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
                               child: ScalableText(
                                 '${widget.user?.displayName ?? widget.user?.displayNameOrName}',
-                                fontScale: metadataFontSizeScale,
+                                textScaleFactor: metadataFontSizeScale.textScaleFactor,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
                             ),
                             ScalableText(
                               ' in ',
-                              fontScale: metadataFontSizeScale,
+                              textScaleFactor: metadataFontSizeScale.textScaleFactor,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
@@ -280,13 +278,11 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           borderRadius: BorderRadius.circular(6),
                           onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
                           child: CommunityFullNameWidget(
-                            context,
-                            widget.community?.name,
-                            widget.community?.title,
-                            fetchInstanceNameFromUrl(widget.community?.actorId),
-                            fontScale: metadataFontSizeScale,
-                            transformColor: textStyleCommunityAndAuthor,
-                          ),
+                              name: widget.community?.name,
+                              displayName: widget.community?.title,
+                              instance: fetchInstanceNameFromUrl(widget.community?.actorId),
+                              fontScale: metadataFontSizeScale,
+                              transformColor: textStyleCommunityAndAuthor),
                         ),
                       ],
                     ),
@@ -338,15 +334,10 @@ class ModlogUserItemContextCard extends StatelessWidget {
                     ScalableText(
                       HtmlUnescape().convert(user?.displayName ?? user?.displayNameOrName ?? l10n.user),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                      fontScale: titleFontSizeScale,
+                      textScaleFactor: titleFontSizeScale.textScaleFactor,
                     ),
                     UserFullNameWidget(
-                      context,
-                      user?.displayNameOrName,
-                      user?.displayName,
-                      fetchInstanceNameFromUrl(user?.actorId),
-                      transformColor: (color) => color?.withValues(alpha: 0.75),
-                    ),
+                        name: user?.displayNameOrName, displayName: user?.displayName, instance: fetchInstanceNameFromUrl(user?.actorId), transformColor: (color) => color?.withValues(alpha: 0.75)),
                   ],
                 ),
               ],
@@ -396,16 +387,14 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                     ScalableText(
                       HtmlUnescape().convert(community?.title ?? community?.name ?? l10n.community),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                      fontScale: titleFontSizeScale,
+                      textScaleFactor: titleFontSizeScale.textScaleFactor,
                     ),
                     CommunityFullNameWidget(
-                      context,
-                      community?.name,
-                      community?.title,
-                      fetchInstanceNameFromUrl(community?.actorId),
-                      fontScale: metadataFontSizeScale,
-                      transformColor: (color) => color?.withValues(alpha: 0.75),
-                    ),
+                        name: community?.name,
+                        displayName: community?.title,
+                        instance: fetchInstanceNameFromUrl(community?.actorId),
+                        fontScale: metadataFontSizeScale,
+                        transformColor: (color) => color?.withValues(alpha: 0.75)),
                   ],
                 ),
               ],

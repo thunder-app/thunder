@@ -10,9 +10,9 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
@@ -59,11 +59,10 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(person.displayName ?? person.name, overflow: TextOverflow.ellipsis),
           subtitle: UserFullNameWidget(
-            context,
-            person.name,
-            person.displayName,
-            fetchInstanceNameFromUrl(person.actorId) ?? '-',
-            // Override because we're showing display name above
+            name: person.name,
+            displayName: person.displayName,
+            instance: fetchInstanceNameFromUrl(person.actorId) ?? '-',
+// Override because we're showing display name above
             useDisplayName: false,
           ),
           leading: UserAvatar(user: person),
@@ -104,10 +103,9 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
           title: Text(community.title, overflow: TextOverflow.ellipsis),
           subtitle: CommunityFullNameWidget(
-            context,
-            community.title,
-            community.title,
-            fetchInstanceNameFromUrl(community.actorId) ?? '-',
+            name: community.title,
+            displayName: community.title,
+            instance: fetchInstanceNameFromUrl(community.actorId) ?? '-',
             // Override because we're showing display name above
             useDisplayName: false,
           ),

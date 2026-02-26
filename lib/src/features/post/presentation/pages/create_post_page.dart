@@ -22,19 +22,20 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/language_selector.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
+import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show isImageUrl, selectImagesToUpload, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
 
 class CreatePostPage extends StatefulWidget {
   /// The account to use for composing this post.
@@ -944,13 +945,12 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                           children: [
                             Text('${widget.community!.title} '),
                             CommunityFullNameWidget(
-                              context,
-                              widget.community!.name,
-                              widget.community!.title,
-                              fetchInstanceNameFromUrl(widget.community!.actorId),
-                              // Override, because we have the display name right above
+                              name: widget.community!.name,
+                              displayName: widget.community!.title,
+                              instance: fetchInstanceNameFromUrl(widget.community!.actorId),
+                              // Override because we have the display name right above.
                               useDisplayName: false,
-                            )
+                            ),
                           ],
                         )
                       : SizedBox(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
+import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 
 class ActionColorSettingWidget extends StatelessWidget {
   final LocalSettings? settingToHighlight;
@@ -51,282 +51,282 @@ class ActionColorSettingWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
             child: Text(l10n.colors, style: theme.textTheme.titleLarge),
           ),
-          ListOption(
-            isBottomModalScrollControlled: true,
-            value: const ListPickerItem(payload: -1),
-            description: l10n.actionColors,
-            icon: Icons.color_lens_rounded,
-            highlightKey: settingToHighlightKey,
-            setting: LocalSettings.actionColors,
-            highlightedSetting: settingToHighlight,
-            customListPicker: StatefulBuilder(
-              builder: (context, setState) {
-                return BottomSheetListPicker(
-                  title: l10n.actionColors,
-                  items: [
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.upvoteColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: upvoteColor,
-                            items: ActionColor.getPossibleValues(upvoteColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+          ThunderListOption(
+              isBottomModalScrollControlled: true,
+              value: const ListPickerItem(payload: -1),
+              options: const [],
+              title: l10n.actionColors,
+              leading: Icon(Icons.color_lens_rounded),
+              highlightKey: settingToHighlightKey,
+              onLongPress: () => shareLocalSetting(context, LocalSettings.actionColors),
+              highlighted: settingToHighlight == LocalSettings.actionColors,
+              customListPicker: StatefulBuilder(
+                builder: (context, setState) {
+                  return BottomSheetListPicker(
+                    title: l10n.actionColors,
+                    items: [
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.upvoteColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: upvoteColor,
+                              items: ActionColor.getPossibleValues(upvoteColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.upvoteColor, value?.colorRaw);
-                              setState(() => upvoteColor = value ?? upvoteColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.upvoteColor, value?.colorRaw);
+                                setState(() => upvoteColor = value ?? upvoteColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.downvoteColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: downvoteColor,
-                            items: ActionColor.getPossibleValues(downvoteColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.downvoteColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: downvoteColor,
+                              items: ActionColor.getPossibleValues(downvoteColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.downvoteColor, value?.colorRaw);
-                              setState(() => downvoteColor = value ?? downvoteColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.downvoteColor, value?.colorRaw);
+                                setState(() => downvoteColor = value ?? downvoteColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.saveColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: saveColor,
-                            items: ActionColor.getPossibleValues(saveColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.saveColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: saveColor,
+                              items: ActionColor.getPossibleValues(saveColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.saveColor, value?.colorRaw);
-                              setState(() => saveColor = value ?? saveColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.saveColor, value?.colorRaw);
+                                setState(() => saveColor = value ?? saveColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.markReadColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: markReadColor,
-                            items: ActionColor.getPossibleValues(markReadColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.markReadColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: markReadColor,
+                              items: ActionColor.getPossibleValues(markReadColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.markReadColor, value?.colorRaw);
-                              setState(() => markReadColor = value ?? markReadColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.markReadColor, value?.colorRaw);
+                                setState(() => markReadColor = value ?? markReadColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.replyColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: replyColor,
-                            items: ActionColor.getPossibleValues(replyColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.replyColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: replyColor,
+                              items: ActionColor.getPossibleValues(replyColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.replyColor, value?.colorRaw);
-                              setState(() => replyColor = value ?? replyColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.replyColor, value?.colorRaw);
+                                setState(() => replyColor = value ?? replyColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListPickerItem(
-                      payload: -1,
-                      customWidget: ListTile(
-                        title: Text(
-                          l10n.hideColor,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: DropdownButton<ActionColor>(
-                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                            isExpanded: true,
-                            underline: Container(),
-                            value: hideColor,
-                            items: ActionColor.getPossibleValues(hideColor)
-                                .map(
-                                  (actionColor) => DropdownMenuItem<ActionColor>(
-                                    alignment: Alignment.center,
-                                    value: actionColor,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 10.0,
-                                          backgroundColor: actionColor.color,
-                                        ),
-                                        const SizedBox(width: 16.0),
-                                        Text(
-                                          actionColor.label(context),
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ],
+                      ListPickerItem(
+                        payload: -1,
+                        customWidget: ListTile(
+                          title: Text(
+                            l10n.hideColor,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: DropdownButton<ActionColor>(
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: hideColor,
+                              items: ActionColor.getPossibleValues(hideColor)
+                                  .map(
+                                    (actionColor) => DropdownMenuItem<ActionColor>(
+                                      alignment: Alignment.center,
+                                      value: actionColor,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.0,
+                                            backgroundColor: actionColor.color,
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                            actionColor.label(context),
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) async {
-                              await setPreferences(LocalSettings.hideColor, value?.colorRaw);
-                              setState(() => hideColor = value ?? hideColor);
-                            },
+                                  )
+                                  .toList(),
+                              onChanged: (value) async {
+                                await setPreferences(LocalSettings.hideColor, value?.colorRaw);
+                                setState(() => hideColor = value ?? hideColor);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                    ],
+                  );
+                },
+              )),
         ],
       ),
     );

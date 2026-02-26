@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/community_chip.dart';
 import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/compact_thumbnail_preview.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/shared/content/widgets/media/compact_thumbnail_preview.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -111,7 +111,7 @@ class PostBodyTitle extends StatelessWidget {
 
     return ScalableText(
       post.name,
-      fontScale: titleFontSizeScale,
+      textScaleFactor: titleFontSizeScale.textScaleFactor,
       style: theme.textTheme.titleMedium,
     );
   }

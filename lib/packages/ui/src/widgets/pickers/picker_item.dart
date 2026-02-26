@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PickerItem<T> extends StatelessWidget {
+class PickerItem extends StatelessWidget {
   final String label;
   final String? subtitle;
   final Widget? subtitleWidget;
@@ -19,8 +19,8 @@ class PickerItem<T> extends StatelessWidget {
     this.subtitle,
     this.subtitleWidget,
     this.labelWidget,
-    required this.icon,
-    required this.onSelected,
+    this.icon,
+    this.onSelected,
     this.isSelected,
     this.trailingIcon,
     this.leading,
@@ -30,7 +30,7 @@ class PickerItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Material(

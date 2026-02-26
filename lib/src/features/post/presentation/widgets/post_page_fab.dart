@@ -14,10 +14,9 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
-import 'package:thunder/src/shared/input_dialogs.dart';
 
 import 'package:thunder/src/shared/widgets/comment_navigator_fab.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderTypeaheadDialog;
 
 /// The FAB for the post page.
 class PostPageFAB extends StatefulWidget {
@@ -100,10 +99,12 @@ class _PostPageFABState extends State<PostPageFAB> {
           return;
         }
 
-        showInputDialog<String>(
+        showThunderTypeaheadDialog<String>(
           context: context,
           title: l10n.searchComments,
           inputLabel: l10n.searchTerm,
+          primaryButtonText: l10n.ok,
+          secondaryButtonText: l10n.cancel,
           onSubmitted: ({payload, value}) {
             Navigator.of(context).pop();
             Map<int, int> commentSearchResults = {};

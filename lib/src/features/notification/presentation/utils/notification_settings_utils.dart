@@ -12,7 +12,7 @@ import 'package:unifiedpush/unifiedpush.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 /// This function is used to update the notification settings. It is called when the user changes the notification settings.

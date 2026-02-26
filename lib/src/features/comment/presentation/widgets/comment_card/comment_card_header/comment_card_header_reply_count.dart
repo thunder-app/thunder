@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 
 /// A widget that displays the number of replies to a comment.
 ///
@@ -35,7 +35,7 @@ class CommentCardHeaderReplyCount extends StatelessWidget {
           color: theme.colorScheme.primaryContainer,
           borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0)),
         ),
-        child: ScalableText('+$replies', fontScale: metadataFontSizeScale),
+        child: ScalableText('+$replies', textScaleFactor: metadataFontSizeScale.textScaleFactor),
       ),
     );
   }

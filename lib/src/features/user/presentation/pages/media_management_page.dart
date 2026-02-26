@@ -11,14 +11,14 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_utils.dart';
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class MediaManagementPage extends StatelessWidget {
@@ -59,11 +59,9 @@ class MediaManagementPage extends StatelessWidget {
                         style: theme.textTheme.titleLarge,
                       ),
                       subtitle: UserFullNameWidget(
-                        context,
-                        context.read<ProfileBloc>().state.account.username,
-                        context.read<ProfileBloc>().state.account.displayName,
-                        context.read<ProfileBloc>().state.account.instance,
-                      ),
+                          name: context.read<ProfileBloc>().state.account.username,
+                          displayName: context.read<ProfileBloc>().state.account.displayName,
+                          instance: context.read<ProfileBloc>().state.account.instance),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
                   ),
@@ -224,7 +222,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                       l10n.noReferencesToImage,
                                                                       textAlign: TextAlign.center,
                                                                       style: theme.textTheme.titleSmall,
-                                                                      fontScale: metadataFontSizeScale,
+                                                                      textScaleFactor: metadataFontSizeScale.textScaleFactor,
                                                                     ),
                                                                   ),
                                                                 ),
@@ -287,7 +285,7 @@ class MediaManagementPage extends StatelessWidget {
                             l10n.noImages,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,
-                            fontScale: metadataFontSizeScale,
+                            textScaleFactor: metadataFontSizeScale.textScaleFactor,
                           ),
                         ),
                       ),

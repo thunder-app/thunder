@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 /// Defines a custom [PopupMenuItem] that can be used throughout the app
-class ThunderPopupMenuItem extends PopupMenuItem {
+class ThunderPopupMenuItem<T> extends PopupMenuItem<T> {
   final IconData icon;
   final String title;
   final Widget? trailing;
 
   ThunderPopupMenuItem({
     super.key,
+    super.value,
     required super.onTap,
     required this.icon,
     required this.title,

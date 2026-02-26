@@ -8,10 +8,9 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
-import 'package:thunder/src/shared/icon_text.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText, ThunderIconLabel;
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
@@ -210,7 +209,7 @@ class ScorePostCardMetaData extends StatelessWidget {
             ScalableText(
               formattedScore,
               semanticsLabel: l10n.xScore(formattedScore),
-              fontScale: metadataFontScale,
+              textScaleFactor: metadataFontScale.textScaleFactor,
               style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
             ),
         ],
@@ -260,12 +259,12 @@ class UpvotePostCardMetaData extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: IconText(
-        fontScale: metadataFontScale,
-        text: formattedUpvotes,
-        textColor: color,
-        padding: 2.0,
+      child: ThunderIconLabel(
         icon: Icon(Icons.arrow_upward, size: 17.0, color: color),
+        label: formattedUpvotes,
+        labelStyle: TextStyle(color: color),
+        textScaleFactor: metadataFontScale.textScaleFactor,
+        gap: 2.0,
       ),
     );
   }
@@ -312,12 +311,12 @@ class DownvotePostCardMetaData extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: IconText(
-        fontScale: metadataFontScale,
-        text: formattedDownvotes,
-        textColor: color,
-        padding: 2.0,
+      child: ThunderIconLabel(
         icon: Icon(Icons.arrow_downward, size: 17.0, color: color),
+        label: formattedDownvotes,
+        labelStyle: TextStyle(color: color),
+        textScaleFactor: metadataFontScale.textScaleFactor,
+        gap: 2.0,
       ),
     );
   }
@@ -359,12 +358,12 @@ class CommentCountPostCardMetaData extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: IconText(
-        fontScale: fontScale,
-        text: commentCountText,
-        textColor: color,
-        padding: 4.0,
+      child: ThunderIconLabel(
         icon: Icon(icon, size: 17.0, color: color),
+        label: commentCountText,
+        labelStyle: TextStyle(color: color),
+        textScaleFactor: fontScale.textScaleFactor,
+        gap: 4.0,
       ),
     );
   }
@@ -407,12 +406,12 @@ class DateTimePostCardMetaData extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: IconText(
-        fontScale: fontScale,
-        text: formattedDate,
-        textColor: color,
-        padding: 2.0,
+      child: ThunderIconLabel(
         icon: Icon(icon, size: 17.0, color: color),
+        label: formattedDate,
+        labelStyle: TextStyle(color: color),
+        textScaleFactor: fontScale.textScaleFactor,
+        gap: 2.0,
       ),
     );
   }
@@ -454,12 +453,12 @@ class UrlPostCardMetaData extends StatelessWidget {
       child: Tooltip(
         message: url!,
         preferBelow: false,
-        child: IconText(
-          fontScale: fontScale,
-          text: host ?? url!,
-          textColor: textColor,
-          padding: 3.0,
+        child: ThunderIconLabel(
           icon: Icon(Icons.public, size: 17.0, color: textColor),
+          label: host ?? url!,
+          labelStyle: TextStyle(color: textColor),
+          textScaleFactor: fontScale.textScaleFactor,
+          gap: 3.0,
         ),
       ),
     );
@@ -506,12 +505,12 @@ class LanguagePostCardMetaData extends StatelessWidget {
       child: Tooltip(
         message: languageName,
         preferBelow: false,
-        child: IconText(
-          fontScale: fontScale,
-          text: languageName,
-          textColor: color,
-          padding: 3.0,
+        child: ThunderIconLabel(
           icon: Icon(Icons.map_rounded, size: 17.0, color: color),
+          label: languageName,
+          labelStyle: TextStyle(color: color),
+          textScaleFactor: fontScale.textScaleFactor,
+          gap: 3.0,
         ),
       ),
     );
@@ -646,14 +645,7 @@ class CommunityPostCardMetadata extends StatelessWidget {
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
     final showCommunitySubscription = (feedListType == FeedListType.all || feedListType == FeedListType.local) && subscribed;
 
-    Widget child = CommunityFullNameWidget(
-      context,
-      communityName,
-      displayName,
-      instanceName,
-      fontScale: fontScale,
-      transformColor: _transformColor,
-    );
+    Widget child = CommunityFullNameWidget(name: communityName, displayName: displayName, instance: instanceName, fontScale: fontScale, transformColor: _transformColor);
 
     if (!showCommunitySubscription) return child;
 
@@ -698,13 +690,6 @@ class UserPostCardMetadata extends StatelessWidget {
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 
     return UserFullNameWidget(
-      context,
-      username,
-      displayName,
-      instanceName,
-      includeInstance: postShowUserInstance,
-      fontScale: metadataFontSizeScale,
-      transformColor: _transformColor,
-    );
+        name: username, displayName: displayName, instance: instanceName, includeInstance: postShowUserInstance, fontScale: metadataFontSizeScale, transformColor: _transformColor);
   }
 }

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
-import 'package:thunder/src/shared/icon_text.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ImagePreview;
+import 'package:thunder/src/shared/content/widgets/media/image_preview.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderIconLabel;
 
 /// A widget that displays a user's header information and related actions.
 ///
@@ -130,10 +130,9 @@ class _UserInfo extends StatelessWidget {
           maxLines: 1,
         ),
         UserFullNameWidget(
-          context,
-          user.name,
-          user.displayName,
-          fetchInstanceNameFromUrl(user.actorId),
+          name: user.name,
+          displayName: user.displayName,
+          instance: fetchInstanceNameFromUrl(user.actorId),
           autoSize: true,
           useDisplayName: false, // Override because we're showing display name above
         ),
@@ -158,13 +157,13 @@ class _UserStats extends StatelessWidget {
     return Row(
       spacing: 10.0,
       children: [
-        IconText(
+        ThunderIconLabel(
           icon: Icon(Icons.wysiwyg_rounded, size: iconSize),
-          text: formatNumberToK(user.posts ?? 0),
+          label: formatNumberToK(user.posts ?? 0),
         ),
-        IconText(
+        ThunderIconLabel(
           icon: Icon(Icons.chat_rounded, size: iconSize),
-          text: formatNumberToK(user.comments ?? 0),
+          label: formatNumberToK(user.comments ?? 0),
         ),
       ],
     );

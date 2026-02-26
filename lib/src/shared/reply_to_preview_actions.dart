@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/shared/icon_text.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderDivider, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart' show ThunderDivider, ThunderIconLabel, showSnackbar;
 
 /// Defines a widget which provides action buttons for the preview of a post or comment when replying
 ///
@@ -44,10 +43,10 @@ class ReplyToPreviewActions extends StatelessWidget {
                   onTap: onViewSourceToggled,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-                    child: IconText(
-                      padding: 5.0,
+                    child: ThunderIconLabel(
+                      gap: 5.0,
                       icon: Icon(Icons.edit_document, size: 15.0),
-                      text: viewSource ? l10n.viewOriginal : l10n.viewSource,
+                      label: viewSource ? l10n.viewOriginal : l10n.viewSource,
                     ),
                   ),
                 ),
@@ -59,10 +58,10 @@ class ReplyToPreviewActions extends StatelessWidget {
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-                    child: IconText(
-                      padding: 5.0,
+                    child: ThunderIconLabel(
+                      gap: 5.0,
                       icon: Icon(Icons.copy_rounded, size: 15.0),
-                      text: l10n.copyText,
+                      label: l10n.copyText,
                     ),
                   ),
                 ),

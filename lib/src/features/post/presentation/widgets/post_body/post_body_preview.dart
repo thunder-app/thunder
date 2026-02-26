@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 
 /// Provides a preview of the post body when the post is collapsed.
 ///
@@ -57,7 +57,7 @@ class PostBodyPreview extends StatelessWidget {
         ? ScalableText(
             post.body ?? '',
             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-            fontScale: contentFontSizeScale,
+            textScaleFactor: contentFontSizeScale.textScaleFactor,
           )
         : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews);
 

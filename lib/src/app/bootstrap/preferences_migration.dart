@@ -9,7 +9,7 @@ import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/packages/ui/ui.dart' show NameColor;
+import 'package:thunder/src/shared/identity/models/name_style.dart' show NameColor;
 
 /// Performs migrations for shared preferences.
 Future<void> performSharedPreferencesMigration() async {

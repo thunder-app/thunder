@@ -71,6 +71,8 @@ bool _isImageUrl(String url) {
     '@jpeg',
   ];
 
+  if (url.contains('/image_proxy')) return true;
+
   final uri = Uri.tryParse(url);
   if (uri == null) return false;
 

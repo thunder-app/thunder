@@ -6,10 +6,9 @@ import 'package:dynamic_color/dynamic_color.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/settings/settings.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 class SettingProfile extends StatelessWidget {
   final IconData icon;
@@ -31,9 +30,9 @@ class SettingProfile extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     bool recentSuccess = false;
 
-    return ExpandableOption(
-      icon: icon,
-      description: name,
+    return ThunderExpandableOption(
+      icon: Icon(icon),
+      title: name,
       child: Column(
         children: [
           Text(description),

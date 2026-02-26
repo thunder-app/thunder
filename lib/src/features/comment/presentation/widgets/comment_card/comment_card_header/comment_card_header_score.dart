@@ -8,7 +8,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 
 /// A widget that displays voting scores for comments with upvote/downvote indicators
 ///
@@ -67,7 +67,7 @@ class CommentCardHeaderScore extends StatelessWidget {
           ScalableText(
             scoreLabel,
             semanticsLabel: l10n.xScore(scoreLabel),
-            fontScale: metadataFontSizeScale,
+            textScaleFactor: metadataFontSizeScale.textScaleFactor,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: (voteType != null && voteType != 0)
                   ? voteType == 1
@@ -90,7 +90,7 @@ class CommentCardHeaderScore extends StatelessWidget {
         ScalableText(
           upvotesLabel,
           semanticsLabel: l10n.xUpvotes(upvotesLabel),
-          fontScale: metadataFontSizeScale,
+          textScaleFactor: metadataFontSizeScale.textScaleFactor,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: (voteType == 1) ? upvoteColor : theme.colorScheme.onSurface,
           ),
@@ -102,7 +102,7 @@ class CommentCardHeaderScore extends StatelessWidget {
           ScalableText(
             downvotesLabel,
             semanticsLabel: l10n.xDownvotes(downvotesLabel),
-            fontScale: metadataFontSizeScale,
+            textScaleFactor: metadataFontSizeScale.textScaleFactor,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: (voteType == -1) ? downvoteColor : theme.colorScheme.onSurface,
             ),

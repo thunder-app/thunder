@@ -7,10 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 class AccessibilitySettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -107,17 +107,16 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                         style: theme.textTheme.titleLarge,
                       ),
                     ),
-                    ToggleOption(
-                      description: l10n.reduceAnimations,
-                      subtitle: l10n.reducesAnimations,
-                      value: reduceAnimations,
-                      iconEnabled: Icons.animation,
-                      iconDisabled: Icons.animation,
-                      onToggle: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.reduceAnimations,
-                      highlightedSetting: settingToHighlight,
-                    ),
+                    ThunderToggleOption(
+                        title: l10n.reduceAnimations,
+                        subtitle: l10n.reducesAnimations,
+                        value: reduceAnimations,
+                        iconEnabled: Icons.animation,
+                        iconDisabled: Icons.animation,
+                        onChanged: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.reduceAnimations),
+                        highlighted: settingToHighlight == LocalSettings.reduceAnimations),
                   ],
                 ),
               ),

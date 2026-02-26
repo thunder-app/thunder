@@ -11,7 +11,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -153,12 +153,10 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                           return ListTile(
                             contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                             title: UserFullNameWidget(
-                              context,
-                              UserLabel.partsFromUsername(userLabels[index].username).username,
-                              null,
-                              UserLabel.partsFromUsername(userLabels[index].username).instance,
-                              textStyle: theme.textTheme.bodyLarge,
-                            ),
+                                name: UserLabel.partsFromUsername(userLabels[index].username).username,
+                                displayName: null,
+                                instance: UserLabel.partsFromUsername(userLabels[index].username).instance,
+                                textStyle: theme.textTheme.bodyLarge),
                             subtitle: Text(userLabels[index].label),
                             trailing: IconButton(
                               icon: Icon(Icons.clear, semanticLabel: l10n.remove),

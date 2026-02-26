@@ -6,9 +6,9 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
@@ -131,7 +131,7 @@ class _CommentReferenceHeader extends StatelessWidget {
                     ExcludeSemantics(
                       child: ScalableText(
                         l10n.in_,
-                        fontScale: contentFontSizeScale,
+                        textScaleFactor: contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                         ),
@@ -139,13 +139,11 @@ class _CommentReferenceHeader extends StatelessWidget {
                     ),
                     ExcludeSemantics(
                       child: CommunityFullNameWidget(
-                        context,
-                        comment.community?.name,
-                        comment.community?.title,
-                        fetchInstanceNameFromUrl(comment.community?.actorId),
-                        fontScale: contentFontSizeScale,
-                        transformColor: (color) => color?.withValues(alpha: 0.75),
-                      ),
+                          name: comment.community?.name,
+                          displayName: comment.community?.title,
+                          instance: fetchInstanceNameFromUrl(comment.community?.actorId),
+                          fontScale: contentFontSizeScale,
+                          transformColor: (color) => color?.withValues(alpha: 0.75)),
                     ),
                   ],
                 ),

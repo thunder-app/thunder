@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
@@ -44,7 +44,7 @@ class UserLabelChip extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: ScalableText(
               label,
-              fontScale: metadataFontSizeScale,
+              textScaleFactor: metadataFontSizeScale.textScaleFactor,
             ),
           ),
         );

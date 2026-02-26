@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/post/api.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
@@ -72,12 +72,10 @@ class _CrossPostsState extends State<CrossPosts> {
                                       SizedBox(width: 4.0),
                                       Flexible(
                                         child: CommunityFullNameWidget(
-                                          context,
-                                          widget.crossPosts[index].community?.name,
-                                          widget.crossPosts[index].community?.title,
-                                          fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
-                                          textStyle: crossPostLinkTextStyle,
-                                        ),
+                                            name: widget.crossPosts[index].community?.name,
+                                            displayName: widget.crossPosts[index].community?.title,
+                                            instance: fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
+                                            textStyle: crossPostLinkTextStyle),
                                       ),
                                     ],
                                   ),
@@ -118,12 +116,10 @@ class _CrossPostsState extends State<CrossPosts> {
                         if (!_areCrossPostsExpanded)
                           WidgetSpan(
                             child: CommunityFullNameWidget(
-                              context,
-                              widget.crossPosts[0].community?.name,
-                              widget.crossPosts[0].community?.title,
-                              fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
-                              textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
-                            ),
+                                name: widget.crossPosts[0].community?.name,
+                                displayName: widget.crossPosts[0].community?.title,
+                                instance: fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
+                                textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color)),
                           ),
                         TextSpan(
                           text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',

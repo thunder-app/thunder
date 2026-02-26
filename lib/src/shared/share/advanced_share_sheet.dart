@@ -10,8 +10,8 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/shared/image_preview.dart';
+import 'package:thunder/src/shared/share/share_image_preview.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 class AdvancedShareSheetOptions {
   AdvancedShareSheetOptions({
@@ -186,7 +186,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                               style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
                             ),
                           if (!_isImageCustomized(options, post) && options.includeImage && _hasImage(post))
-                            ImagePreview(
+                            ShareImagePreview(
                               url: post.media.first.thumbnailUrl.toString(),
                               isExpandable: true,
                               isComment: true,
@@ -195,7 +195,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                             ),
                           if (_isImageCustomized(options, post))
                             snapshot.hasData && !isGeneratingImage
-                                ? ImagePreview(
+                                ? ShareImagePreview(
                                     bytes: snapshot.data!,
                                     isExpandable: true,
                                     isComment: true,
@@ -223,60 +223,52 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                               ),
                             ),
                           ),
-                          ToggleOption(
-                            description: AppLocalizations.of(context)!.includeTitle,
-                            iconEnabled: Icons.title_rounded,
-                            iconDisabled: Icons.title_rounded,
-                            value: options.includeTitle,
-                            onToggle: (_) => setState(() {
-                              isGeneratingImage = true;
-                              options.includeTitle = !options.includeTitle;
-                            }),
-                            highlightKey: null,
-                            setting: null,
-                            highlightedSetting: null,
-                          ),
+                          ThunderToggleOption(
+                              title: AppLocalizations.of(context)!.includeTitle,
+                              iconEnabled: Icons.title_rounded,
+                              iconDisabled: Icons.title_rounded,
+                              value: options.includeTitle,
+                              onChanged: (_) => setState(() {
+                                    isGeneratingImage = true;
+                                    options.includeTitle = !options.includeTitle;
+                                  }),
+                              highlightKey: null,
+                              highlighted: null == null),
                           if (_hasImage(post))
-                            ToggleOption(
-                              description: AppLocalizations.of(context)!.includeImage,
-                              iconEnabled: Icons.image_rounded,
-                              iconDisabled: Icons.image_rounded,
-                              value: options.includeImage,
-                              onToggle: (_) => setState(() {
-                                isGeneratingImage = true;
-                                options.includeImage = !options.includeImage;
-                              }),
-                              highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
-                            ),
+                            ThunderToggleOption(
+                                title: AppLocalizations.of(context)!.includeImage,
+                                iconEnabled: Icons.image_rounded,
+                                iconDisabled: Icons.image_rounded,
+                                value: options.includeImage,
+                                onChanged: (_) => setState(() {
+                                      isGeneratingImage = true;
+                                      options.includeImage = !options.includeImage;
+                                    }),
+                                highlightKey: null,
+                                highlighted: null == null),
                           if (_hasText(post))
-                            ToggleOption(
-                              description: AppLocalizations.of(context)!.includeText,
-                              iconEnabled: Icons.comment_rounded,
-                              iconDisabled: Icons.comment_rounded,
-                              value: options.includeText,
-                              onToggle: (_) => setState(() {
-                                isGeneratingImage = true;
-                                options.includeText = !options.includeText;
-                              }),
+                            ThunderToggleOption(
+                                title: AppLocalizations.of(context)!.includeText,
+                                iconEnabled: Icons.comment_rounded,
+                                iconDisabled: Icons.comment_rounded,
+                                value: options.includeText,
+                                onChanged: (_) => setState(() {
+                                      isGeneratingImage = true;
+                                      options.includeText = !options.includeText;
+                                    }),
+                                highlightKey: null,
+                                highlighted: null == null),
+                          ThunderToggleOption(
+                              title: AppLocalizations.of(context)!.includeCommunity,
+                              iconEnabled: Icons.people_rounded,
+                              iconDisabled: Icons.people_rounded,
+                              value: options.includeCommnity,
+                              onChanged: (_) => setState(() {
+                                    isGeneratingImage = true;
+                                    options.includeCommnity = !options.includeCommnity;
+                                  }),
                               highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
-                            ),
-                          ToggleOption(
-                            description: AppLocalizations.of(context)!.includeCommunity,
-                            iconEnabled: Icons.people_rounded,
-                            iconDisabled: Icons.people_rounded,
-                            value: options.includeCommnity,
-                            onToggle: (_) => setState(() {
-                              isGeneratingImage = true;
-                              options.includeCommnity = !options.includeCommnity;
-                            }),
-                            highlightKey: null,
-                            setting: null,
-                            highlightedSetting: null,
-                          ),
+                              highlighted: null == null),
                           const SizedBox(height: 20),
                           Align(
                             alignment: Alignment.centerLeft,
@@ -288,27 +280,23 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) async {
                               ),
                             ),
                           ),
-                          ToggleOption(
-                            description: AppLocalizations.of(context)!.includePostLink,
-                            iconEnabled: Icons.link_rounded,
-                            iconDisabled: Icons.link_rounded,
-                            value: options.includePostLink,
-                            onToggle: (_) => setState(() => options.includePostLink = !options.includePostLink),
-                            highlightKey: null,
-                            setting: null,
-                            highlightedSetting: null,
-                          ),
-                          if (_hasExternalLink(post))
-                            ToggleOption(
-                              description: AppLocalizations.of(context)!.includeExternalLink,
+                          ThunderToggleOption(
+                              title: AppLocalizations.of(context)!.includePostLink,
                               iconEnabled: Icons.link_rounded,
                               iconDisabled: Icons.link_rounded,
-                              value: options.includeExternalLink,
-                              onToggle: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
+                              value: options.includePostLink,
+                              onChanged: (_) => setState(() => options.includePostLink = !options.includePostLink),
                               highlightKey: null,
-                              setting: null,
-                              highlightedSetting: null,
-                            ),
+                              highlighted: null == null),
+                          if (_hasExternalLink(post))
+                            ThunderToggleOption(
+                                title: AppLocalizations.of(context)!.includeExternalLink,
+                                iconEnabled: Icons.link_rounded,
+                                iconDisabled: Icons.link_rounded,
+                                value: options.includeExternalLink,
+                                onChanged: (_) => setState(() => options.includeExternalLink = !options.includeExternalLink),
+                                highlightKey: null,
+                                highlighted: null == null),
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

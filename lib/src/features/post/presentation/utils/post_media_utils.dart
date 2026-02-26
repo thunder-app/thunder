@@ -8,8 +8,8 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show getScaledMediaSize, isImageUrl, isVideoUrl, retrieveImageDimensions;
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart' show getScaledMediaSize, isImageUrl, isVideoUrl, retrieveImageDimensions;
 
 final _htmlUnescape = HtmlUnescape();
 

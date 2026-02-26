@@ -1,7 +1,6 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:thunder/packages/ui/src/widgets/pickers/picker_item.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 
 class BottomSheetListPicker<T> extends StatefulWidget {
   final String title;
@@ -11,6 +10,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
   final bool closeOnSelect;
   final Widget? heading;
   final Widget Function()? onUpdateHeading;
+  final String saveButtonLabel;
 
   const BottomSheetListPicker({
     super.key,
@@ -21,6 +21,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
     this.closeOnSelect = true,
     this.heading,
     this.onUpdateHeading,
+    this.saveButtonLabel = 'Save',
   });
 
   @override
@@ -162,7 +163,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                   backgroundColor: theme.colorScheme.primaryContainer,
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.save,
+                  widget.saveButtonLabel,
                   style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
                 ),
                 onPressed: () {

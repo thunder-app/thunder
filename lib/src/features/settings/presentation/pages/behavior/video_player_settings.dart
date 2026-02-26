@@ -10,7 +10,7 @@ import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show ListPickerItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 class VideoPlayerSettingsPage extends StatefulWidget {
   const VideoPlayerSettingsPage({super.key, this.settingToHighlight});
@@ -135,98 +135,92 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
           SliverAppBar(title: Text(l10n.video), centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, pinned: true),
           SliverList.list(
             children: [
-              ToggleOption(
-                description: l10n.videoAutoFullscreen,
-                value: videoAutoFullscreen,
-                iconEnabled: Icons.fullscreen,
-                iconDisabled: Icons.fullscreen_exit,
-                onToggle: (bool value) => setPreferences(LocalSettings.videoAutoFullscreen, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoAutoFullscreen,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.videoAutoMute,
-                value: videoAutoMute,
-                iconEnabled: Icons.volume_off,
-                iconDisabled: Icons.volume_up,
-                onToggle: (bool value) => setPreferences(LocalSettings.videoAutoMute, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoAutoMute,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.videoAutoLoop,
-                value: videoAutoLoop,
-                iconEnabled: Icons.loop,
-                iconDisabled: Icons.loop_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.videoAutoLoop, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoAutoLoop,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.videoAutoPlay,
-                value: ListPickerItem(
-                    label: switch (videoAutoPlay) {
-                      VideoAutoPlay.never => l10n.never,
-                      VideoAutoPlay.always => l10n.always,
-                      VideoAutoPlay.onWifi => l10n.onWifi,
+              ThunderToggleOption(
+                  title: l10n.videoAutoFullscreen,
+                  value: videoAutoFullscreen,
+                  iconEnabled: Icons.fullscreen,
+                  iconDisabled: Icons.fullscreen_exit,
+                  onChanged: (bool value) => setPreferences(LocalSettings.videoAutoFullscreen, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoAutoFullscreen),
+                  highlighted: settingToHighlight == LocalSettings.videoAutoFullscreen),
+              ThunderToggleOption(
+                  title: l10n.videoAutoMute,
+                  value: videoAutoMute,
+                  iconEnabled: Icons.volume_off,
+                  iconDisabled: Icons.volume_up,
+                  onChanged: (bool value) => setPreferences(LocalSettings.videoAutoMute, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoAutoMute),
+                  highlighted: settingToHighlight == LocalSettings.videoAutoMute),
+              ThunderToggleOption(
+                  title: l10n.videoAutoLoop,
+                  value: videoAutoLoop,
+                  iconEnabled: Icons.loop,
+                  iconDisabled: Icons.loop_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.videoAutoLoop, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoAutoLoop),
+                  highlighted: settingToHighlight == LocalSettings.videoAutoLoop),
+              ThunderListOption(
+                  title: l10n.videoAutoPlay,
+                  value: ListPickerItem(
+                      label: switch (videoAutoPlay) {
+                        VideoAutoPlay.never => l10n.never,
+                        VideoAutoPlay.always => l10n.always,
+                        VideoAutoPlay.onWifi => l10n.onWifi,
+                      },
+                      icon: Icons.video_settings_outlined,
+                      payload: videoAutoPlay),
+                  options: [
+                    ListPickerItem(icon: Icons.not_interested, label: l10n.never, payload: VideoAutoPlay.never),
+                    ListPickerItem(icon: Icons.play_arrow, label: l10n.always, payload: VideoAutoPlay.always),
+                    ListPickerItem(icon: Icons.wifi, label: l10n.onWifi, payload: VideoAutoPlay.onWifi),
+                  ],
+                  leading: Icon(Icons.play_circle),
+                  onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoAutoPlay),
+                  highlighted: settingToHighlight == LocalSettings.videoAutoPlay),
+              ThunderListOption(
+                  title: l10n.videoDefaultPlaybackSpeed,
+                  value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
+                  options: [
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
+                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
+                  ],
+                  leading: Icon(Icons.speed),
+                  onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoDefaultPlaybackSpeed),
+                  highlighted: settingToHighlight == LocalSettings.videoDefaultPlaybackSpeed),
+              ThunderListOption(
+                  title: l10n.videoPlayerMode,
+                  value: ListPickerItem(
+                    label: switch (videoPlayerMode) {
+                      VideoPlayerMode.inApp => l10n.videoPlayerInApp,
+                      VideoPlayerMode.customTabs => l10n.linkHandlingCustomTabsShort,
+                      VideoPlayerMode.externalPlayer => l10n.linkHandlingExternalShort,
                     },
-                    icon: Icons.video_settings_outlined,
-                    payload: videoAutoPlay),
-                options: [
-                  ListPickerItem(icon: Icons.not_interested, label: l10n.never, payload: VideoAutoPlay.never),
-                  ListPickerItem(icon: Icons.play_arrow, label: l10n.always, payload: VideoAutoPlay.always),
-                  ListPickerItem(icon: Icons.wifi, label: l10n.onWifi, payload: VideoAutoPlay.onWifi),
-                ],
-                icon: Icons.play_circle,
-                onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoAutoPlay,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.videoDefaultPlaybackSpeed,
-                value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
-                options: [
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
-                  ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
-                ],
-                icon: Icons.speed,
-                onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoDefaultPlaybackSpeed,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.videoPlayerMode,
-                value: ListPickerItem(
-                  label: switch (videoPlayerMode) {
-                    VideoPlayerMode.inApp => l10n.videoPlayerInApp,
-                    VideoPlayerMode.customTabs => l10n.linkHandlingCustomTabsShort,
-                    VideoPlayerMode.externalPlayer => l10n.linkHandlingExternalShort,
-                  },
-                  payload: videoPlayerMode,
-                  capitalizeLabel: false,
-                ),
-                options: [
-                  ListPickerItem(label: l10n.videoPlayerInApp, icon: Icons.play_circle_fill, payload: VideoPlayerMode.inApp),
-                  ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: VideoPlayerMode.customTabs),
-                  ListPickerItem(label: l10n.videoLinkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: VideoPlayerMode.externalPlayer),
-                ],
-                icon: Icons.video_label_outlined,
-                onChanged: (value) => setPreferences(LocalSettings.videoPlayerMode, value.payload.name),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.videoPlayerMode,
-                highlightedSetting: settingToHighlight,
-              ),
+                    payload: videoPlayerMode,
+                    capitalizeLabel: false,
+                  ),
+                  options: [
+                    ListPickerItem(label: l10n.videoPlayerInApp, icon: Icons.play_circle_fill, payload: VideoPlayerMode.inApp),
+                    ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: VideoPlayerMode.customTabs),
+                    ListPickerItem(label: l10n.videoLinkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: VideoPlayerMode.externalPlayer),
+                  ],
+                  leading: Icon(Icons.video_label_outlined),
+                  onChanged: (value) => setPreferences(LocalSettings.videoPlayerMode, value.payload.name),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.videoPlayerMode),
+                  highlighted: settingToHighlight == LocalSettings.videoPlayerMode),
             ],
           ),
         ],

@@ -24,7 +24,7 @@ import 'package:thunder/src/app/shell/routing/deep_link.dart';
 import 'package:thunder/src/app/share/share_intent_handler.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/app/state/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/src/features/notification/application/state/notifications_cubit.dart';
 import 'package:thunder/src/features/settings/api.dart';

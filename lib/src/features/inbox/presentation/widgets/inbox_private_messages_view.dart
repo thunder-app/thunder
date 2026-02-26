@@ -7,8 +7,8 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
@@ -63,23 +63,19 @@ class _InboxPrivateMessagesViewState extends State<InboxPrivateMessagesView> {
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 UserFullNameWidget(
-                                  context,
-                                  widget.privateMessages[index].creator?.name,
-                                  widget.privateMessages[index].creator?.displayName,
-                                  fetchInstanceNameFromUrl(widget.privateMessages[index].creator?.actorId),
-                                  includeInstance: true,
-                                ),
+                                    name: widget.privateMessages[index].creator?.name,
+                                    displayName: widget.privateMessages[index].creator?.displayName,
+                                    instance: fetchInstanceNameFromUrl(widget.privateMessages[index].creator?.actorId),
+                                    includeInstance: true),
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Icon(Icons.arrow_forward_rounded, size: 14),
                                 ),
                                 UserFullNameWidget(
-                                  context,
-                                  widget.privateMessages[index].recipient?.name,
-                                  widget.privateMessages[index].recipient?.displayName,
-                                  fetchInstanceNameFromUrl(widget.privateMessages[index].recipient?.actorId),
-                                  includeInstance: true,
-                                ),
+                                    name: widget.privateMessages[index].recipient?.name,
+                                    displayName: widget.privateMessages[index].recipient?.displayName,
+                                    instance: fetchInstanceNameFromUrl(widget.privateMessages[index].recipient?.actorId),
+                                    includeInstance: true),
                               ],
                             ),
                           ),

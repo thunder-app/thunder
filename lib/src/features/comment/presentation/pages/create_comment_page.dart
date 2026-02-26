@@ -18,7 +18,7 @@ import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/language_selector.dart';
 
@@ -27,7 +27,8 @@ import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show selectImagesToUpload, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart' show selectImagesToUpload;
 
 class CreateCommentPage extends StatefulWidget {
   /// The account to use for composing this comment.

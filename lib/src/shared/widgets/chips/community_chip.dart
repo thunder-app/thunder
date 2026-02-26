@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
@@ -74,14 +74,12 @@ class CommunityChip extends StatelessWidget {
           children: [
             if (showCommunityAvatar) Padding(padding: const EdgeInsets.only(top: 3, bottom: 3, right: 3), child: communityAvatar),
             CommunityFullNameWidget(
-              context,
-              communityName,
-              communityTitle,
-              fetchInstanceNameFromUrl(communityUrl),
-              includeInstance: includeInstance ?? postBodyShowCommunityInstance,
-              fontScale: metadataFontSizeScale,
-              transformColor: (color) => color?.withValues(alpha: 0.75),
-            ),
+                name: communityName,
+                displayName: communityTitle,
+                instance: fetchInstanceNameFromUrl(communityUrl),
+                includeInstance: includeInstance ?? postBodyShowCommunityInstance,
+                fontScale: metadataFontSizeScale,
+                transformColor: (color) => color?.withValues(alpha: 0.75)),
           ],
         ),
       ),

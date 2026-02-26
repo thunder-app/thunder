@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
@@ -80,7 +80,7 @@ class ModlogItemCard extends StatelessWidget {
                       ScalableText(
                         event.getModlogEventTypeName(),
                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                        fontScale: titleFontSizeScale,
+                        textScaleFactor: titleFontSizeScale.textScaleFactor,
                       ),
                     ],
                   ),
@@ -105,7 +105,7 @@ class ModlogItemCard extends StatelessWidget {
                     l10n.detailedReason('${event.reason}'),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
-                    fontScale: contentFontSizeScale,
+                    textScaleFactor: contentFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90),
                     ),

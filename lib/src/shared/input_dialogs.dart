@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
@@ -15,16 +13,16 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/search/api.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/marquee_widget.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart' show showThunderTypeaheadDialog;
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(
@@ -63,10 +61,12 @@ void showUserInputDialog(
     return l10n.unableToFindUser;
   }
 
-  showInputDialog<ThunderUser>(
+  showThunderTypeaheadDialog<ThunderUser>(
     context: context,
     title: title,
     inputLabel: l10n.username,
+    primaryButtonText: l10n.ok,
+    secondaryButtonText: l10n.cancel,
     onSubmitted: onSubmitted,
     getSuggestions: (query) => getUserSuggestions(context, query: query, account: account),
     suggestionBuilder: (payload) => buildUserSuggestionWidget(context, payload),
@@ -110,10 +110,9 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
             backDuration: const Duration(seconds: 2),
             pauseDuration: const Duration(seconds: 1),
             child: UserFullNameWidget(
-              context,
-              payload.name,
-              payload.displayName,
-              fetchInstanceNameFromUrl(payload.actorId),
+              name: payload.name,
+              displayName: payload.displayName,
+              instance: fetchInstanceNameFromUrl(payload.actorId),
               // Override because we're showing display name above
               useDisplayName: false,
             ),
@@ -178,10 +177,12 @@ void showCommunityInputDialog(
     return l10n.unableToFindCommunity;
   }
 
-  showInputDialog<ThunderCommunity>(
+  showThunderTypeaheadDialog<ThunderCommunity>(
     context: context,
     title: title,
     inputLabel: l10n.community,
+    primaryButtonText: l10n.ok,
+    secondaryButtonText: l10n.cancel,
     onSubmitted: onSubmitted,
     getSuggestions: (query) => getCommunitySuggestions(context, query: query, account: account, emptySuggestions: emptySuggestions, favoritedCommunities: favoritedCommunities),
     suggestionBuilder: (payload) => buildCommunitySuggestionWidget(context, payload),
@@ -233,10 +234,9 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                 backDuration: const Duration(seconds: 2),
                 pauseDuration: const Duration(seconds: 1),
                 child: CommunityFullNameWidget(
-                  context,
-                  payload.name,
-                  payload.title,
-                  fetchInstanceNameFromUrl(payload.actorId),
+                  name: payload.name,
+                  displayName: payload.title,
+                  instance: fetchInstanceNameFromUrl(payload.actorId),
                   // Override because we're showing display name above
                   useDisplayName: false,
                 ),
@@ -305,10 +305,12 @@ void showInstanceInputDialog(
   }
 
   if (context.mounted) {
-    showInputDialog<Map<String, dynamic>>(
+    showThunderTypeaheadDialog<Map<String, dynamic>>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance(1),
+      primaryButtonText: AppLocalizations.of(context)!.ok,
+      secondaryButtonText: AppLocalizations.of(context)!.cancel,
       onSubmitted: onSubmitted,
       getSuggestions: (query) => getInstanceSuggestions(query, linkedInstances),
       suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
@@ -389,10 +391,12 @@ void showLanguageInputDialog(BuildContext context,
   }
 
   if (context.mounted) {
-    showInputDialog<ThunderLanguage>(
+    showThunderTypeaheadDialog<ThunderLanguage>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
+      primaryButtonText: AppLocalizations.of(context)!.ok,
+      secondaryButtonText: AppLocalizations.of(context)!.cancel,
       onSubmitted: onSubmitted,
       getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
       suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
@@ -455,86 +459,15 @@ void showKeywordInputDialog(BuildContext context, {required String title, requir
   }
 
   if (context.mounted) {
-    showInputDialog<String>(
+    showThunderTypeaheadDialog<String>(
       context: context,
       title: title,
       inputLabel: l10n.addKeywordFilter,
+      primaryButtonText: l10n.ok,
+      secondaryButtonText: l10n.cancel,
       onSubmitted: onSubmitted,
       getSuggestions: (query) => [],
       suggestionBuilder: (payload) => Container(),
     );
   }
-}
-
-/// Shows a dialog which takes input and offers suggestions
-void showInputDialog<T>({
-  required BuildContext context,
-  required String title,
-  required String inputLabel,
-  required Future<String?> Function({T? payload, String? value}) onSubmitted,
-  required FutureOr<List<T>?> Function(String query) getSuggestions,
-  required Widget Function(T payload) suggestionBuilder,
-}) async {
-  final textController = TextEditingController();
-  // Capture our content widget's setState function so we can call it outside the widget
-  StateSetter? contentWidgetSetState;
-  String? contentWidgetError;
-
-  await showThunderDialog(
-    context: context,
-    title: title,
-    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-    secondaryButtonText: AppLocalizations.of(context)!.cancel,
-    primaryButtonInitialEnabled: false,
-    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
-      setPrimaryButtonEnabled(false);
-      final String? submitError = await onSubmitted(value: textController.text);
-      contentWidgetSetState?.call(() => contentWidgetError = submitError);
-    },
-    primaryButtonText: AppLocalizations.of(context)!.ok,
-    // Use a stateful widget for the content so we can update the error message
-    contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(builder: (context, setState) {
-      contentWidgetSetState = setState;
-      return SizedBox(
-        width: min(MediaQuery.of(context).size.width, 700),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TypeAheadField<T>(
-              controller: textController,
-              builder: (context, controller, focusNode) => TextField(
-                controller: controller,
-                focusNode: focusNode,
-                onChanged: (value) {
-                  setPrimaryButtonEnabled(value.trim().isNotEmpty);
-                  setState(() => contentWidgetError = null);
-                },
-                autofocus: true,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: inputLabel,
-                  errorText: contentWidgetError,
-                ),
-                onSubmitted: (text) async {
-                  setPrimaryButtonEnabled(false);
-                  final String? submitError = await onSubmitted(value: text);
-                  setState(() => contentWidgetError = submitError);
-                },
-              ),
-              suggestionsCallback: getSuggestions,
-              itemBuilder: (context, payload) => suggestionBuilder(payload),
-              onSelected: (payload) async {
-                setPrimaryButtonEnabled(false);
-                final String? submitError = await onSubmitted(payload: payload);
-                setState(() => contentWidgetError = submitError);
-              },
-              hideOnEmpty: true,
-              hideOnLoading: true,
-              hideOnError: true,
-            ),
-          ],
-        ),
-      );
-    }),
-  );
 }

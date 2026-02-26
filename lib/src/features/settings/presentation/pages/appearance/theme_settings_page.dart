@@ -14,7 +14,72 @@ import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, FullNameSeparator, ListPickerItem, NameColor, NameThickness;
+import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart' show CommunityFullNameWidget, UserFullNameWidget;
+
+String _generateSampleUserFullName(FullNameSeparator separator, bool useDisplayName) => generateUserFullName(
+      null,
+      'name',
+      'name',
+      'instance.tld',
+      userSeparator: separator,
+      useDisplayName: useDisplayName,
+    );
+
+Widget _generateSampleUserFullNameWidget(
+  FullNameSeparator separator, {
+  NameThickness? userNameThickness,
+  NameColor? userNameColor,
+  NameThickness? instanceNameThickness,
+  NameColor? instanceNameColor,
+  TextStyle? textStyle,
+  bool? useDisplayName,
+}) =>
+    UserFullNameWidget(
+      name: 'name',
+      displayName: 'name',
+      instance: 'instance.tld',
+      userSeparator: separator,
+      useDisplayName: useDisplayName ?? false,
+      userNameThickness: userNameThickness ?? NameThickness.normal,
+      userNameColor: userNameColor ?? const NameColor.fromString(color: NameColor.defaultColor),
+      instanceNameThickness: instanceNameThickness ?? NameThickness.light,
+      instanceNameColor: instanceNameColor ?? const NameColor.fromString(color: NameColor.defaultColor),
+      textStyle: textStyle,
+      fontScale: FontScale.base,
+    );
+
+String _generateSampleCommunityFullName(FullNameSeparator separator, bool useDisplayName) => generateCommunityFullName(
+      null,
+      'name',
+      'name',
+      'instance.tld',
+      communitySeparator: separator,
+      useDisplayName: useDisplayName,
+    );
+
+Widget _generateSampleCommunityFullNameWidget(
+  FullNameSeparator separator, {
+  NameThickness? communityNameThickness,
+  NameColor? communityNameColor,
+  NameThickness? instanceNameThickness,
+  NameColor? instanceNameColor,
+  TextStyle? textStyle,
+  bool? useDisplayName,
+}) =>
+    CommunityFullNameWidget(
+      name: 'name',
+      displayName: 'name',
+      instance: 'instance.tld',
+      communitySeparator: separator,
+      useDisplayName: useDisplayName ?? false,
+      communityNameThickness: communityNameThickness ?? NameThickness.normal,
+      communityNameColor: communityNameColor ?? const NameColor.fromString(color: NameColor.defaultColor),
+      instanceNameThickness: instanceNameThickness ?? NameThickness.light,
+      instanceNameColor: instanceNameColor ?? const NameColor.fromString(color: NameColor.defaultColor),
+      textStyle: textStyle,
+      fontScale: FontScale.base,
+    );
 
 class ThemeSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -370,95 +435,91 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(l10n.theme, style: theme.textTheme.titleLarge),
                     ),
-                    ListOption(
-                      description: l10n.theme,
-                      value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
-                      options: themeOptions,
-                      icon: Icons.wallpaper_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.appTheme,
-                      highlightedSetting: settingToHighlight,
-                    ),
+                    ThunderListOption(
+                        title: l10n.theme,
+                        value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
+                        options: themeOptions,
+                        leading: Icon(Icons.wallpaper_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.appTheme),
+                        highlighted: settingToHighlight == LocalSettings.appTheme),
                     AnimatedSize(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOutCubicEmphasized,
                       child: themeType == ThemeType.dark || themeType == ThemeType.system
-                          ? ToggleOption(
-                              description: l10n.pureBlack,
+                          ? ThunderToggleOption(
+                              title: l10n.pureBlack,
                               subtitle: l10n.systemDarkModeDescription,
                               value: usePureBlackTheme,
                               iconEnabled: Icons.dark_mode_rounded,
                               iconDisabled: Icons.dark_mode_outlined,
-                              onToggle: (bool value) => setPreferences(LocalSettings.usePureBlackTheme, value),
+                              onChanged: (bool value) => setPreferences(LocalSettings.usePureBlackTheme, value),
                               highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.usePureBlackTheme,
-                              highlightedSetting: settingToHighlight,
-                            )
+                              onLongPress: () => shareLocalSetting(context, LocalSettings.usePureBlackTheme),
+                              highlighted: settingToHighlight == LocalSettings.usePureBlackTheme)
                           : Container(),
                     ),
-                    ListOption(
-                      description: l10n.themeAccentColor,
-                      value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
-                      valueDisplay: Stack(
-                        children: [
-                          Container(
-                            height: 28,
-                            width: 28,
-                            decoration: BoxDecoration(
-                              color: selectedTheme.primaryColor,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            child: Container(
-                              height: 14,
-                              width: 14,
+                    ThunderListOption(
+                        title: l10n.themeAccentColor,
+                        value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                        valueDisplay: Stack(
+                          children: [
+                            Container(
+                              height: 28,
+                              width: 28,
                               decoration: BoxDecoration(
-                                color: selectedTheme.secondaryColor,
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(100),
+                                color: selectedTheme.primaryColor,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                height: 14,
+                                width: 14,
+                                decoration: BoxDecoration(
+                                  color: selectedTheme.secondaryColor,
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(100),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              height: 14,
-                              width: 14,
-                              decoration: BoxDecoration(
-                                color: selectedTheme.tertiaryColor,
-                                borderRadius: const BorderRadius.only(
-                                  bottomRight: Radius.circular(100),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                height: 14,
+                                width: 14,
+                                decoration: BoxDecoration(
+                                  color: selectedTheme.tertiaryColor,
+                                  borderRadius: const BorderRadius.only(
+                                    bottomRight: Radius.circular(100),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      options: customThemeOptions,
-                      icon: Icons.wallpaper_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
-                      closeOnSelect: false,
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.appThemeAccentColor,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    if (!kIsWeb && Platform.isAndroid) ...[
-                      ToggleOption(
-                        description: l10n.useMaterialYouTheme,
-                        subtitle: l10n.useMaterialYouThemeDescription,
-                        value: useMaterialYouTheme,
-                        iconEnabled: Icons.color_lens_rounded,
-                        iconDisabled: Icons.color_lens_rounded,
-                        onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
+                          ],
+                        ),
+                        options: customThemeOptions,
+                        leading: Icon(Icons.wallpaper_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
+                        closeOnSelect: false,
                         highlightKey: settingToHighlightKey,
-                        setting: LocalSettings.useMaterialYouTheme,
-                        highlightedSetting: settingToHighlight,
-                      )
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.appThemeAccentColor),
+                        highlighted: settingToHighlight == LocalSettings.appThemeAccentColor),
+                    if (!kIsWeb && Platform.isAndroid) ...[
+                      ThunderToggleOption(
+                          title: l10n.useMaterialYouTheme,
+                          subtitle: l10n.useMaterialYouThemeDescription,
+                          value: useMaterialYouTheme,
+                          iconEnabled: Icons.color_lens_rounded,
+                          iconDisabled: Icons.color_lens_rounded,
+                          onChanged: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
+                          highlightKey: settingToHighlightKey,
+                          onLongPress: () => shareLocalSetting(context, LocalSettings.useMaterialYouTheme),
+                          highlighted: settingToHighlight == LocalSettings.useMaterialYouTheme)
                     ],
                   ],
                 ),
@@ -484,46 +545,42 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(l10n.fonts, style: theme.textTheme.titleLarge),
                     ),
-                    ListOption(
-                      description: l10n.postTitleFontScale,
-                      value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
-                      options: fontScaleOptions,
-                      icon: Icons.text_fields_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.titleFontSizeScale,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ListOption(
-                      description: l10n.postContentFontScale,
-                      value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
-                      options: fontScaleOptions,
-                      icon: Icons.text_fields_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.contentFontSizeScale,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ListOption(
-                      description: l10n.commentFontScale,
-                      value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
-                      options: fontScaleOptions,
-                      icon: Icons.text_fields_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.commentFontSizeScale,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ListOption(
-                      description: l10n.metadataFontScale,
-                      value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
-                      options: fontScaleOptions,
-                      icon: Icons.text_fields_rounded,
-                      onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.metadataFontSizeScale,
-                      highlightedSetting: settingToHighlight,
-                    ),
+                    ThunderListOption(
+                        title: l10n.postTitleFontScale,
+                        value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
+                        options: fontScaleOptions,
+                        leading: Icon(Icons.text_fields_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.titleFontSizeScale),
+                        highlighted: settingToHighlight == LocalSettings.titleFontSizeScale),
+                    ThunderListOption(
+                        title: l10n.postContentFontScale,
+                        value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
+                        options: fontScaleOptions,
+                        leading: Icon(Icons.text_fields_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.contentFontSizeScale),
+                        highlighted: settingToHighlight == LocalSettings.contentFontSizeScale),
+                    ThunderListOption(
+                        title: l10n.commentFontScale,
+                        value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                        options: fontScaleOptions,
+                        leading: Icon(Icons.text_fields_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.commentFontSizeScale),
+                        highlighted: settingToHighlight == LocalSettings.commentFontSizeScale),
+                    ThunderListOption(
+                        title: l10n.metadataFontScale,
+                        value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                        options: fontScaleOptions,
+                        leading: Icon(Icons.text_fields_rounded),
+                        onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.metadataFontSizeScale),
+                        highlighted: settingToHighlight == LocalSettings.metadataFontSizeScale),
                   ],
                 ),
               ),
@@ -537,29 +594,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                       child: Text(l10n.names, style: theme.textTheme.titleLarge),
                     ),
-                    ListOption(
-                      description: l10n.userFormat,
-                      value: ListPickerItem(
-                        label: generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
-                        labelWidget: generateSampleUserFullNameWidget(
-                          userSeparator,
-                          userNameThickness: userFullNameUserNameThickness,
-                          userNameColor: userFullNameUserNameColor,
-                          instanceNameThickness: userFullNameInstanceNameThickness,
-                          instanceNameColor: userFullNameInstanceNameColor,
-                          textStyle: theme.textTheme.bodyMedium,
-                          useDisplayName: useDisplayNamesForUsers,
-                        ),
-                        icon: Icons.person_rounded,
-                        payload: userSeparator,
-                        capitalizeLabel: false,
-                      ),
-                      options: [
-                        ListPickerItem(
-                          icon: const IconData(0x2022),
-                          label: generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
-                          labelWidget: generateSampleUserFullNameWidget(
-                            FullNameSeparator.dot,
+                    ThunderListOption(
+                        title: l10n.userFormat,
+                        value: ListPickerItem(
+                          label: _generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
+                          labelWidget: _generateSampleUserFullNameWidget(
+                            userSeparator,
                             userNameThickness: userFullNameUserNameThickness,
                             userNameColor: userFullNameUserNameColor,
                             instanceNameThickness: userFullNameInstanceNameThickness,
@@ -567,60 +607,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             textStyle: theme.textTheme.bodyMedium,
                             useDisplayName: useDisplayNamesForUsers,
                           ),
-                          payload: FullNameSeparator.dot,
+                          icon: Icons.person_rounded,
+                          payload: userSeparator,
                           capitalizeLabel: false,
                         ),
-                        ListPickerItem(
-                          icon: Icons.alternate_email_rounded,
-                          label: generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
-                          labelWidget: generateSampleUserFullNameWidget(
-                            FullNameSeparator.at,
-                            userNameThickness: userFullNameUserNameThickness,
-                            userNameColor: userFullNameUserNameColor,
-                            instanceNameThickness: userFullNameInstanceNameThickness,
-                            instanceNameColor: userFullNameInstanceNameColor,
-                            textStyle: theme.textTheme.bodyMedium,
-                            useDisplayName: useDisplayNamesForUsers,
-                          ),
-                          payload: FullNameSeparator.at,
-                          capitalizeLabel: false,
-                        ),
-                        ListPickerItem(
-                          icon: Icons.alternate_email_rounded,
-                          label: generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
-                          labelWidget: generateSampleUserFullNameWidget(
-                            FullNameSeparator.lemmy,
-                            userNameThickness: userFullNameUserNameThickness,
-                            userNameColor: userFullNameUserNameColor,
-                            instanceNameThickness: userFullNameInstanceNameThickness,
-                            instanceNameColor: userFullNameInstanceNameColor,
-                            textStyle: theme.textTheme.bodyMedium,
-                            useDisplayName: useDisplayNamesForUsers,
-                          ),
-                          payload: FullNameSeparator.lemmy,
-                          capitalizeLabel: false,
-                        ),
-                      ],
-                      icon: Icons.person_rounded,
-                      onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.userFormat,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ListOption(
-                      isBottomModalScrollControlled: true,
-                      value: const ListPickerItem(payload: -1),
-                      description: l10n.userStyle,
-                      icon: Icons.person_rounded,
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.userStyle,
-                      highlightedSetting: settingToHighlight,
-                      customListPicker: StatefulBuilder(
-                        builder: (context, setState) {
-                          return BottomSheetListPicker(
-                            title: l10n.userStyle,
-                            heading: generateSampleUserFullNameWidget(
-                              userSeparator,
+                        options: [
+                          ListPickerItem(
+                            icon: const IconData(0x2022),
+                            label: _generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
+                            labelWidget: _generateSampleUserFullNameWidget(
+                              FullNameSeparator.dot,
                               userNameThickness: userFullNameUserNameThickness,
                               userNameColor: userFullNameUserNameColor,
                               instanceNameThickness: userFullNameInstanceNameThickness,
@@ -628,165 +624,208 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               textStyle: theme.textTheme.bodyMedium,
                               useDisplayName: useDisplayNamesForUsers,
                             ),
-                            items: [
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.userNameThickness,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: SizedBox(
-                                    width: 200.0,
-                                    child: Slider(
-                                      value: userFullNameUserNameThickness.toSliderValue(),
-                                      max: 2,
-                                      divisions: 2,
-                                      label: userFullNameUserNameThickness.label(context),
-                                      onChanged: (double value) async {
-                                        await setPreferences(LocalSettings.userFullNameUserNameThickness, NameThickness.fromSliderValue(value).name);
-                                        setState(() {});
-                                      },
+                            payload: FullNameSeparator.dot,
+                            capitalizeLabel: false,
+                          ),
+                          ListPickerItem(
+                            icon: Icons.alternate_email_rounded,
+                            label: _generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
+                            labelWidget: _generateSampleUserFullNameWidget(
+                              FullNameSeparator.at,
+                              userNameThickness: userFullNameUserNameThickness,
+                              userNameColor: userFullNameUserNameColor,
+                              instanceNameThickness: userFullNameInstanceNameThickness,
+                              instanceNameColor: userFullNameInstanceNameColor,
+                              textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForUsers,
+                            ),
+                            payload: FullNameSeparator.at,
+                            capitalizeLabel: false,
+                          ),
+                          ListPickerItem(
+                            icon: Icons.alternate_email_rounded,
+                            label: _generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
+                            labelWidget: _generateSampleUserFullNameWidget(
+                              FullNameSeparator.lemmy,
+                              userNameThickness: userFullNameUserNameThickness,
+                              userNameColor: userFullNameUserNameColor,
+                              instanceNameThickness: userFullNameInstanceNameThickness,
+                              instanceNameColor: userFullNameInstanceNameColor,
+                              textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForUsers,
+                            ),
+                            payload: FullNameSeparator.lemmy,
+                            capitalizeLabel: false,
+                          ),
+                        ],
+                        leading: Icon(Icons.person_rounded),
+                        onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.userFormat),
+                        highlighted: settingToHighlight == LocalSettings.userFormat),
+                    ThunderListOption(
+                        isBottomModalScrollControlled: true,
+                        value: const ListPickerItem(payload: -1),
+                        options: const [],
+                        title: l10n.userStyle,
+                        leading: Icon(Icons.person_rounded),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.userStyle),
+                        highlighted: settingToHighlight == LocalSettings.userStyle,
+                        customListPicker: StatefulBuilder(
+                          builder: (context, setState) {
+                            return BottomSheetListPicker(
+                              title: l10n.userStyle,
+                              heading: _generateSampleUserFullNameWidget(
+                                userSeparator,
+                                userNameThickness: userFullNameUserNameThickness,
+                                userNameColor: userFullNameUserNameColor,
+                                instanceNameThickness: userFullNameInstanceNameThickness,
+                                instanceNameColor: userFullNameInstanceNameColor,
+                                textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForUsers,
+                              ),
+                              items: [
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.userNameThickness,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: SizedBox(
+                                      width: 200.0,
+                                      child: Slider(
+                                        value: userFullNameUserNameThickness.toSliderValue(),
+                                        max: 2,
+                                        divisions: 2,
+                                        label: userFullNameUserNameThickness.label(context),
+                                        onChanged: (double value) async {
+                                          await setPreferences(LocalSettings.userFullNameUserNameThickness, NameThickness.fromSliderValue(value).name);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.instanceNameThickness,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: SizedBox(
-                                    width: 200.0,
-                                    child: Slider(
-                                      value: userFullNameInstanceNameThickness.toSliderValue(),
-                                      max: 2,
-                                      divisions: 2,
-                                      label: userFullNameInstanceNameThickness.label(context),
-                                      onChanged: (double value) async {
-                                        await setPreferences(LocalSettings.userFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
-                                        setState(() {});
-                                      },
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.instanceNameThickness,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: SizedBox(
+                                      width: 200.0,
+                                      child: Slider(
+                                        value: userFullNameInstanceNameThickness.toSliderValue(),
+                                        max: 2,
+                                        divisions: 2,
+                                        label: userFullNameInstanceNameThickness.label(context),
+                                        onChanged: (double value) async {
+                                          await setPreferences(LocalSettings.userFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.userNameColor,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                                    child: DropdownButton<NameColor>(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      value: userFullNameUserNameColor,
-                                      items: NameColor.getPossibleValues(userFullNameUserNameColor)
-                                          .map(
-                                            (nameColor) => DropdownMenuItem<NameColor>(
-                                              alignment: Alignment.center,
-                                              value: nameColor,
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10.0,
-                                                    backgroundColor: nameColor.toColor(context),
-                                                  ),
-                                                  const SizedBox(width: 16.0),
-                                                  Text(
-                                                    nameColor.label(context),
-                                                    style: theme.textTheme.bodyMedium,
-                                                  ),
-                                                ],
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.userNameColor,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                      child: DropdownButton<NameColor>(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        value: userFullNameUserNameColor,
+                                        items: NameColor.getPossibleValues(userFullNameUserNameColor)
+                                            .map(
+                                              (nameColor) => DropdownMenuItem<NameColor>(
+                                                alignment: Alignment.center,
+                                                value: nameColor,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 10.0,
+                                                      backgroundColor: nameColor.toColor(context),
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    Text(
+                                                      nameColor.label(context),
+                                                      style: theme.textTheme.bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) async {
-                                        await setPreferences(LocalSettings.userFullNameUserNameColor, value?.color);
-                                        setState(() {});
-                                      },
+                                            )
+                                            .toList(),
+                                        onChanged: (value) async {
+                                          await setPreferences(LocalSettings.userFullNameUserNameColor, value?.color);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.instanceNameColor,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                                    child: DropdownButton<NameColor>(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      value: userFullNameInstanceNameColor,
-                                      items: NameColor.getPossibleValues(userFullNameInstanceNameColor)
-                                          .map(
-                                            (nameColor) => DropdownMenuItem<NameColor>(
-                                              alignment: Alignment.center,
-                                              value: nameColor,
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10.0,
-                                                    backgroundColor: nameColor.toColor(context),
-                                                  ),
-                                                  const SizedBox(width: 16.0),
-                                                  Text(
-                                                    nameColor.label(context),
-                                                    style: theme.textTheme.bodyMedium,
-                                                  ),
-                                                ],
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.instanceNameColor,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                      child: DropdownButton<NameColor>(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        value: userFullNameInstanceNameColor,
+                                        items: NameColor.getPossibleValues(userFullNameInstanceNameColor)
+                                            .map(
+                                              (nameColor) => DropdownMenuItem<NameColor>(
+                                                alignment: Alignment.center,
+                                                value: nameColor,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 10.0,
+                                                      backgroundColor: nameColor.toColor(context),
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    Text(
+                                                      nameColor.label(context),
+                                                      style: theme.textTheme.bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) async {
-                                        await setPreferences(LocalSettings.userFullNameInstanceNameColor, value?.color);
-                                        setState(() {});
-                                      },
+                                            )
+                                            .toList(),
+                                        onChanged: (value) async {
+                                          await setPreferences(LocalSettings.userFullNameInstanceNameColor, value?.color);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    ListOption(
-                      description: l10n.communityFormat,
-                      value: ListPickerItem(
-                        label: generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
-                        labelWidget: generateSampleCommunityFullNameWidget(
-                          communitySeparator,
-                          communityNameThickness: communityFullNameCommunityNameThickness,
-                          communityNameColor: communityFullNameCommunityNameColor,
-                          instanceNameThickness: communityFullNameInstanceNameThickness,
-                          instanceNameColor: communityFullNameInstanceNameColor,
-                          textStyle: theme.textTheme.bodyMedium,
-                          useDisplayName: useDisplayNamesForCommunities,
-                        ),
-                        icon: Icons.people_rounded,
-                        payload: communitySeparator,
-                        capitalizeLabel: false,
-                      ),
-                      options: [
-                        ListPickerItem(
-                          icon: const IconData(0x2022),
-                          label: generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
-                          labelWidget: generateSampleCommunityFullNameWidget(
-                            FullNameSeparator.dot,
+                              ],
+                            );
+                          },
+                        )),
+                    ThunderListOption(
+                        title: l10n.communityFormat,
+                        value: ListPickerItem(
+                          label: _generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
+                          labelWidget: _generateSampleCommunityFullNameWidget(
+                            communitySeparator,
                             communityNameThickness: communityFullNameCommunityNameThickness,
                             communityNameColor: communityFullNameCommunityNameColor,
                             instanceNameThickness: communityFullNameInstanceNameThickness,
@@ -794,60 +833,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             textStyle: theme.textTheme.bodyMedium,
                             useDisplayName: useDisplayNamesForCommunities,
                           ),
-                          payload: FullNameSeparator.dot,
+                          icon: Icons.people_rounded,
+                          payload: communitySeparator,
                           capitalizeLabel: false,
                         ),
-                        ListPickerItem(
-                          icon: Icons.alternate_email_rounded,
-                          label: generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
-                          labelWidget: generateSampleCommunityFullNameWidget(
-                            FullNameSeparator.at,
-                            communityNameThickness: communityFullNameCommunityNameThickness,
-                            communityNameColor: communityFullNameCommunityNameColor,
-                            instanceNameThickness: communityFullNameInstanceNameThickness,
-                            instanceNameColor: communityFullNameInstanceNameColor,
-                            textStyle: theme.textTheme.bodyMedium,
-                            useDisplayName: useDisplayNamesForCommunities,
-                          ),
-                          payload: FullNameSeparator.at,
-                          capitalizeLabel: false,
-                        ),
-                        ListPickerItem(
-                          icon: Icons.alternate_email_rounded,
-                          label: generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
-                          labelWidget: generateSampleCommunityFullNameWidget(
-                            FullNameSeparator.lemmy,
-                            communityNameThickness: communityFullNameCommunityNameThickness,
-                            communityNameColor: communityFullNameCommunityNameColor,
-                            instanceNameThickness: communityFullNameInstanceNameThickness,
-                            instanceNameColor: communityFullNameInstanceNameColor,
-                            textStyle: theme.textTheme.bodyMedium,
-                            useDisplayName: useDisplayNamesForCommunities,
-                          ),
-                          payload: FullNameSeparator.lemmy,
-                          capitalizeLabel: false,
-                        ),
-                      ],
-                      icon: Icons.people_rounded,
-                      onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.communityFormat,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ListOption(
-                      isBottomModalScrollControlled: true,
-                      value: const ListPickerItem(payload: -1),
-                      description: l10n.communityStyle,
-                      icon: Icons.person_rounded,
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.communityStyle,
-                      highlightedSetting: settingToHighlight,
-                      customListPicker: StatefulBuilder(
-                        builder: (context, setState) {
-                          return BottomSheetListPicker(
-                            title: l10n.communityStyle,
-                            heading: generateSampleCommunityFullNameWidget(
-                              communitySeparator,
+                        options: [
+                          ListPickerItem(
+                            icon: const IconData(0x2022),
+                            label: _generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
+                            labelWidget: _generateSampleCommunityFullNameWidget(
+                              FullNameSeparator.dot,
                               communityNameThickness: communityFullNameCommunityNameThickness,
                               communityNameColor: communityFullNameCommunityNameColor,
                               instanceNameThickness: communityFullNameInstanceNameThickness,
@@ -855,162 +850,220 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               textStyle: theme.textTheme.bodyMedium,
                               useDisplayName: useDisplayNamesForCommunities,
                             ),
-                            items: [
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.communityNameThickness,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: SizedBox(
-                                    width: 200.0,
-                                    child: Slider(
-                                      value: communityFullNameCommunityNameThickness.toSliderValue(),
-                                      max: 2,
-                                      divisions: 2,
-                                      label: communityFullNameCommunityNameThickness.label(context),
-                                      onChanged: (double value) async {
-                                        await setPreferences(LocalSettings.communityFullNameCommunityNameThickness, NameThickness.fromSliderValue(value).name);
-                                        setState(() {});
-                                      },
+                            payload: FullNameSeparator.dot,
+                            capitalizeLabel: false,
+                          ),
+                          ListPickerItem(
+                            icon: Icons.alternate_email_rounded,
+                            label: _generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
+                            labelWidget: _generateSampleCommunityFullNameWidget(
+                              FullNameSeparator.at,
+                              communityNameThickness: communityFullNameCommunityNameThickness,
+                              communityNameColor: communityFullNameCommunityNameColor,
+                              instanceNameThickness: communityFullNameInstanceNameThickness,
+                              instanceNameColor: communityFullNameInstanceNameColor,
+                              textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForCommunities,
+                            ),
+                            payload: FullNameSeparator.at,
+                            capitalizeLabel: false,
+                          ),
+                          ListPickerItem(
+                            icon: Icons.alternate_email_rounded,
+                            label: _generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
+                            labelWidget: _generateSampleCommunityFullNameWidget(
+                              FullNameSeparator.lemmy,
+                              communityNameThickness: communityFullNameCommunityNameThickness,
+                              communityNameColor: communityFullNameCommunityNameColor,
+                              instanceNameThickness: communityFullNameInstanceNameThickness,
+                              instanceNameColor: communityFullNameInstanceNameColor,
+                              textStyle: theme.textTheme.bodyMedium,
+                              useDisplayName: useDisplayNamesForCommunities,
+                            ),
+                            payload: FullNameSeparator.lemmy,
+                            capitalizeLabel: false,
+                          ),
+                        ],
+                        leading: Icon(Icons.people_rounded),
+                        onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.communityFormat),
+                        highlighted: settingToHighlight == LocalSettings.communityFormat),
+                    ThunderListOption(
+                        isBottomModalScrollControlled: true,
+                        value: const ListPickerItem(payload: -1),
+                        options: const [],
+                        title: l10n.communityStyle,
+                        leading: Icon(Icons.person_rounded),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.communityStyle),
+                        highlighted: settingToHighlight == LocalSettings.communityStyle,
+                        customListPicker: StatefulBuilder(
+                          builder: (context, setState) {
+                            return BottomSheetListPicker(
+                              title: l10n.communityStyle,
+                              heading: _generateSampleCommunityFullNameWidget(
+                                communitySeparator,
+                                communityNameThickness: communityFullNameCommunityNameThickness,
+                                communityNameColor: communityFullNameCommunityNameColor,
+                                instanceNameThickness: communityFullNameInstanceNameThickness,
+                                instanceNameColor: communityFullNameInstanceNameColor,
+                                textStyle: theme.textTheme.bodyMedium,
+                                useDisplayName: useDisplayNamesForCommunities,
+                              ),
+                              items: [
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.communityNameThickness,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: SizedBox(
+                                      width: 200.0,
+                                      child: Slider(
+                                        value: communityFullNameCommunityNameThickness.toSliderValue(),
+                                        max: 2,
+                                        divisions: 2,
+                                        label: communityFullNameCommunityNameThickness.label(context),
+                                        onChanged: (double value) async {
+                                          await setPreferences(LocalSettings.communityFullNameCommunityNameThickness, NameThickness.fromSliderValue(value).name);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.instanceNameThickness,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: SizedBox(
-                                    width: 200.0,
-                                    child: Slider(
-                                      value: communityFullNameInstanceNameThickness.toSliderValue(),
-                                      max: 2,
-                                      divisions: 2,
-                                      label: communityFullNameInstanceNameThickness.label(context),
-                                      onChanged: (double value) async {
-                                        await setPreferences(LocalSettings.communityFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
-                                        setState(() {});
-                                      },
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.instanceNameThickness,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: SizedBox(
+                                      width: 200.0,
+                                      child: Slider(
+                                        value: communityFullNameInstanceNameThickness.toSliderValue(),
+                                        max: 2,
+                                        divisions: 2,
+                                        label: communityFullNameInstanceNameThickness.label(context),
+                                        onChanged: (double value) async {
+                                          await setPreferences(LocalSettings.communityFullNameInstanceNameThickness, NameThickness.fromSliderValue(value).name);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.communityNameColor,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                                    child: DropdownButton<NameColor>(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      value: communityFullNameCommunityNameColor,
-                                      items: NameColor.getPossibleValues(communityFullNameCommunityNameColor)
-                                          .map(
-                                            (nameColor) => DropdownMenuItem<NameColor>(
-                                              alignment: Alignment.center,
-                                              value: nameColor,
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10.0,
-                                                    backgroundColor: nameColor.toColor(context),
-                                                  ),
-                                                  const SizedBox(width: 16.0),
-                                                  Text(
-                                                    nameColor.label(context),
-                                                    style: theme.textTheme.bodyMedium,
-                                                  ),
-                                                ],
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.communityNameColor,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                      child: DropdownButton<NameColor>(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        value: communityFullNameCommunityNameColor,
+                                        items: NameColor.getPossibleValues(communityFullNameCommunityNameColor)
+                                            .map(
+                                              (nameColor) => DropdownMenuItem<NameColor>(
+                                                alignment: Alignment.center,
+                                                value: nameColor,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 10.0,
+                                                      backgroundColor: nameColor.toColor(context),
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    Text(
+                                                      nameColor.label(context),
+                                                      style: theme.textTheme.bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) async {
-                                        await setPreferences(LocalSettings.communityFullNameCommunityNameColor, value?.color);
-                                        setState(() {});
-                                      },
+                                            )
+                                            .toList(),
+                                        onChanged: (value) async {
+                                          await setPreferences(LocalSettings.communityFullNameCommunityNameColor, value?.color);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListPickerItem(
-                                payload: -1,
-                                customWidget: ListTile(
-                                  title: Text(
-                                    l10n.instanceNameColor,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                                    child: DropdownButton<NameColor>(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      value: communityFullNameInstanceNameColor,
-                                      items: NameColor.getPossibleValues(communityFullNameInstanceNameColor)
-                                          .map(
-                                            (nameColor) => DropdownMenuItem<NameColor>(
-                                              alignment: Alignment.center,
-                                              value: nameColor,
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10.0,
-                                                    backgroundColor: nameColor.toColor(context),
-                                                  ),
-                                                  const SizedBox(width: 16.0),
-                                                  Text(
-                                                    nameColor.label(context),
-                                                    style: theme.textTheme.bodyMedium,
-                                                  ),
-                                                ],
+                                ListPickerItem(
+                                  payload: -1,
+                                  customWidget: ListTile(
+                                    title: Text(
+                                      l10n.instanceNameColor,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                      child: DropdownButton<NameColor>(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        value: communityFullNameInstanceNameColor,
+                                        items: NameColor.getPossibleValues(communityFullNameInstanceNameColor)
+                                            .map(
+                                              (nameColor) => DropdownMenuItem<NameColor>(
+                                                alignment: Alignment.center,
+                                                value: nameColor,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 10.0,
+                                                      backgroundColor: nameColor.toColor(context),
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    Text(
+                                                      nameColor.label(context),
+                                                      style: theme.textTheme.bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) async {
-                                        await setPreferences(LocalSettings.communityFullNameInstanceNameColor, value?.color);
-                                        setState(() {});
-                                      },
+                                            )
+                                            .toList(),
+                                        onChanged: (value) async {
+                                          await setPreferences(LocalSettings.communityFullNameInstanceNameColor, value?.color);
+                                          setState(() {});
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    ToggleOption(
-                      description: l10n.showUserDisplayNames,
-                      value: useDisplayNamesForUsers,
-                      iconEnabled: Icons.person_rounded,
-                      iconDisabled: Icons.person_off_rounded,
-                      onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.useDisplayNamesForUsers,
-                      highlightedSetting: settingToHighlight,
-                    ),
-                    ToggleOption(
-                      description: l10n.showCommunityDisplayNames,
-                      value: useDisplayNamesForCommunities,
-                      iconEnabled: Icons.people_rounded,
-                      iconDisabled: Icons.people_outline_rounded,
-                      onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForCommunities, value),
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.useDisplayNamesForCommunities,
-                      highlightedSetting: settingToHighlight,
-                    ),
+                              ],
+                            );
+                          },
+                        )),
+                    ThunderToggleOption(
+                        title: l10n.showUserDisplayNames,
+                        value: useDisplayNamesForUsers,
+                        iconEnabled: Icons.person_rounded,
+                        iconDisabled: Icons.person_off_rounded,
+                        onChanged: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.useDisplayNamesForUsers),
+                        highlighted: settingToHighlight == LocalSettings.useDisplayNamesForUsers),
+                    ThunderToggleOption(
+                        title: l10n.showCommunityDisplayNames,
+                        value: useDisplayNamesForCommunities,
+                        iconEnabled: Icons.people_rounded,
+                        iconDisabled: Icons.people_outline_rounded,
+                        onChanged: (bool value) => setPreferences(LocalSettings.useDisplayNamesForCommunities, value),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.useDisplayNamesForCommunities),
+                        highlighted: settingToHighlight == LocalSettings.useDisplayNamesForCommunities),
                   ],
                 ),
               ),

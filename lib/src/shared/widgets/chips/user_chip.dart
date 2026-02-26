@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/api.dart';
@@ -93,14 +93,12 @@ class UserChip extends StatelessWidget {
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: (constraints?.maxWidth ?? MediaQuery.sizeOf(context).width) * 0.55),
                     child: UserFullNameWidget(
-                      context,
-                      user.name,
-                      user.displayName,
-                      fetchInstanceNameFromUrl(user.actorId),
-                      includeInstance: includeInstance,
-                      fontScale: metadataFontSizeScale,
-                      transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
-                    ),
+                        name: user.name,
+                        displayName: user.displayName,
+                        instance: fetchInstanceNameFromUrl(user.actorId),
+                        includeInstance: includeInstance,
+                        fontScale: metadataFontSizeScale,
+                        transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity)),
                   ),
                   if (userGroups.isNotEmpty) const SizedBox(width: 2.0),
                   if (userGroups.contains(UserType.op))

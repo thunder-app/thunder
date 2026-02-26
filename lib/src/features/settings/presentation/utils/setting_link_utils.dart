@@ -18,3 +18,10 @@ void shareSetting(BuildContext context, LocalSettings? setting, String descripti
   Clipboard.setData(ClipboardData(text: '[Thunder Setting: $path](thunder://setting-${setting.name})'));
   showSnackbar('Setting link copied to clipboard!');
 }
+
+void shareLocalSetting(BuildContext context, LocalSettings setting) {
+  final l10n = AppLocalizations.of(context)!;
+  final description = l10n.getLocalSettingLocalization(setting.key);
+
+  shareSetting(context, setting, description);
+}

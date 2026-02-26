@@ -15,13 +15,12 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem, showThunderDialog;
+import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 
 class PostAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -603,214 +602,204 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
               ),
-              ListOption(
-                description: l10n.postViewType,
-                value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
-                options: [
-                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
-                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
-                ],
-                icon: Icons.view_list_rounded,
-                onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.useCompactView,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.hideNsfwPreviews,
-                value: hideNsfwPreviews,
-                iconEnabled: Icons.no_adult_content,
-                iconDisabled: Icons.no_adult_content,
-                onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.hideNsfwPreviews,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.hideThumbnails,
-                value: hideThumbnails,
-                iconEnabled: Icons.hide_image_outlined,
-                iconDisabled: Icons.image_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.hideThumbnails,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostCommunityFirst,
-                value: showCommunityFirst,
-                iconEnabled: Icons.vertical_align_top_rounded,
-                iconDisabled: Icons.vertical_align_bottom_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityFirst, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostCommunityFirst,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostCommunityIcons,
-                value: showCommunityIcons,
-                iconEnabled: Icons.groups,
-                iconDisabled: Icons.groups,
-                onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostCommunityIcons,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostAuthor,
-                subtitle: l10n.showPostAuthorSubtitle,
-                value: showPostAuthor,
-                iconEnabled: Icons.person_rounded,
-                iconDisabled: Icons.person_off_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostAuthor,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showUserInstance,
-                value: postShowUserInstance,
-                iconEnabled: Icons.dns_sharp,
-                iconDisabled: Icons.dns_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.postShowUserInstance,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.dimReadPosts,
-                subtitle: l10n.dimReadPosts,
-                value: dimReadPosts,
-                iconEnabled: Icons.chrome_reader_mode,
-                iconDisabled: Icons.chrome_reader_mode_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.dimReadPosts,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showFullDate,
-                subtitle: l10n.showFullDateDescription,
-                value: showFullPostDate,
-                iconEnabled: Icons.date_range_rounded,
-                iconDisabled: Icons.date_range_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showFullPostDate,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.dateFormat,
-                disabled: !showFullPostDate,
-                value: ListPickerItem(
-                  label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
-                  icon: Icons.access_time_filled_rounded,
-                  payload: selectedDateFormat,
-                  capitalizeLabel: false,
-                ),
-                options: dateFormats
-                    .map(
-                      (DateFormat dateFormat) => ListPickerItem(
-                        icon: Icons.access_time_filled_rounded,
-                        label: dateFormat.format(DateTime.now()),
-                        payload: dateFormat,
-                        subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
-                      ),
-                    )
-                    .toList(),
-                icon: Icons.access_time_filled_rounded,
-                onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.dateFormat,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.dividerAppearance,
-                value: const ListPickerItem(payload: -1),
-                icon: Icons.splitscreen_rounded,
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.dividerAppearance,
-                highlightedSetting: settingToHighlight,
-                customListPicker: StatefulBuilder(
-                  builder: (context, setState) {
-                    return BottomSheetListPicker(
-                      title: l10n.dividerAppearance,
-                      heading: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.preview, style: theme.textTheme.titleMedium),
-                          const SizedBox(height: 20.0),
-                          const FeedCardDivider(),
-                          const SizedBox(height: 16.0),
-                        ],
-                      ),
-                      items: [
-                        ListPickerItem<int>(
-                          customWidget: ListTile(
-                            title: Text(l10n.thickness),
-                            contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
-                            trailing: DropdownButton<FeedCardDividerThickness>(
-                              value: feedCardDividerThickness,
-                              underline: const SizedBox(),
-                              items: FeedCardDividerThickness.values.map((e) => DropdownMenuItem(value: e, child: Text(e.label))).toList(),
-                              onChanged: (FeedCardDividerThickness? value) {
-                                setPreferences(LocalSettings.feedCardDividerThickness, value);
-                                setState(() {}); // Trigger rebuild
-                              },
-                            ),
-                          ),
-                          payload: -1,
+              ThunderListOption(
+                  title: l10n.postViewType,
+                  value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
+                  options: [
+                    ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
+                    ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
+                  ],
+                  leading: Icon(Icons.view_list_rounded),
+                  onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.useCompactView),
+                  highlighted: settingToHighlight == LocalSettings.useCompactView),
+              ThunderToggleOption(
+                  title: l10n.hideNsfwPreviews,
+                  value: hideNsfwPreviews,
+                  iconEnabled: Icons.no_adult_content,
+                  iconDisabled: Icons.no_adult_content,
+                  onChanged: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.hideNsfwPreviews),
+                  highlighted: settingToHighlight == LocalSettings.hideNsfwPreviews),
+              ThunderToggleOption(
+                  title: l10n.hideThumbnails,
+                  value: hideThumbnails,
+                  iconEnabled: Icons.hide_image_outlined,
+                  iconDisabled: Icons.image_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.hideThumbnails, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.hideThumbnails),
+                  highlighted: settingToHighlight == LocalSettings.hideThumbnails),
+              ThunderToggleOption(
+                  title: l10n.showPostCommunityFirst,
+                  value: showCommunityFirst,
+                  iconEnabled: Icons.vertical_align_top_rounded,
+                  iconDisabled: Icons.vertical_align_bottom_rounded,
+                  onChanged: (bool value) => setPreferences(LocalSettings.showPostCommunityFirst, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostCommunityFirst),
+                  highlighted: settingToHighlight == LocalSettings.showPostCommunityFirst),
+              ThunderToggleOption(
+                  title: l10n.showPostCommunityIcons,
+                  value: showCommunityIcons,
+                  iconEnabled: Icons.groups,
+                  iconDisabled: Icons.groups,
+                  onChanged: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostCommunityIcons),
+                  highlighted: settingToHighlight == LocalSettings.showPostCommunityIcons),
+              ThunderToggleOption(
+                  title: l10n.showPostAuthor,
+                  subtitle: l10n.showPostAuthorSubtitle,
+                  value: showPostAuthor,
+                  iconEnabled: Icons.person_rounded,
+                  iconDisabled: Icons.person_off_rounded,
+                  onChanged: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostAuthor),
+                  highlighted: settingToHighlight == LocalSettings.showPostAuthor),
+              ThunderToggleOption(
+                  title: l10n.showUserInstance,
+                  value: postShowUserInstance,
+                  iconEnabled: Icons.dns_sharp,
+                  iconDisabled: Icons.dns_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.postShowUserInstance, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.postShowUserInstance),
+                  highlighted: settingToHighlight == LocalSettings.postShowUserInstance),
+              ThunderToggleOption(
+                  title: l10n.dimReadPosts,
+                  subtitle: l10n.dimReadPosts,
+                  value: dimReadPosts,
+                  iconEnabled: Icons.chrome_reader_mode,
+                  iconDisabled: Icons.chrome_reader_mode_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.dimReadPosts),
+                  highlighted: settingToHighlight == LocalSettings.dimReadPosts),
+              ThunderToggleOption(
+                  title: l10n.showFullDate,
+                  subtitle: l10n.showFullDateDescription,
+                  value: showFullPostDate,
+                  iconEnabled: Icons.date_range_rounded,
+                  iconDisabled: Icons.date_range_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.showFullPostDate, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showFullPostDate),
+                  highlighted: settingToHighlight == LocalSettings.showFullPostDate),
+              ThunderListOption(
+                  title: l10n.dateFormat,
+                  disabled: !showFullPostDate,
+                  value: ListPickerItem(
+                    label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
+                    icon: Icons.access_time_filled_rounded,
+                    payload: selectedDateFormat,
+                    capitalizeLabel: false,
+                  ),
+                  options: dateFormats
+                      .map(
+                        (DateFormat dateFormat) => ListPickerItem(
+                          icon: Icons.access_time_filled_rounded,
+                          label: dateFormat.format(DateTime.now()),
+                          payload: dateFormat,
+                          subtitle: dateFormat.pattern == dateFormats.first.pattern ? l10n.system : dateFormat.pattern,
                         ),
-                        ListPickerItem<int>(
-                          customWidget: ListTile(
-                            title: Text(l10n.color),
-                            contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
-                            trailing: DropdownButton<Color?>(
-                              menuMaxHeight: 500.0,
-                              value: feedCardDividerColor,
-                              underline: const SizedBox(),
-                              items: CustomThemeType.values
-                                  .map((CustomThemeType customThemeType) => DropdownMenuItem<Color?>(
-                                        alignment: Alignment.center,
-                                        value: Color(customThemeType.primaryColor.toARGB32()),
-                                        child: CircleAvatar(
-                                          radius: 16.0,
-                                          backgroundColor: Color.alphaBlend(
-                                            theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                            Color(customThemeType.primaryColor.toARGB32()),
+                      )
+                      .toList(),
+                  leading: Icon(Icons.access_time_filled_rounded),
+                  onChanged: (value) async => setPreferences(LocalSettings.dateFormat, value.payload),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.dateFormat),
+                  highlighted: settingToHighlight == LocalSettings.dateFormat),
+              ThunderListOption(
+                  title: l10n.dividerAppearance,
+                  value: const ListPickerItem(payload: -1),
+                  options: const [],
+                  leading: Icon(Icons.splitscreen_rounded),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.dividerAppearance),
+                  highlighted: settingToHighlight == LocalSettings.dividerAppearance,
+                  customListPicker: StatefulBuilder(
+                    builder: (context, setState) {
+                      return BottomSheetListPicker(
+                        title: l10n.dividerAppearance,
+                        heading: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.preview, style: theme.textTheme.titleMedium),
+                            const SizedBox(height: 20.0),
+                            const FeedCardDivider(),
+                            const SizedBox(height: 16.0),
+                          ],
+                        ),
+                        items: [
+                          ListPickerItem<int>(
+                            customWidget: ListTile(
+                              title: Text(l10n.thickness),
+                              contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                              trailing: DropdownButton<FeedCardDividerThickness>(
+                                value: feedCardDividerThickness,
+                                underline: const SizedBox(),
+                                items: FeedCardDividerThickness.values.map((e) => DropdownMenuItem(value: e, child: Text(e.label))).toList(),
+                                onChanged: (FeedCardDividerThickness? value) {
+                                  setPreferences(LocalSettings.feedCardDividerThickness, value);
+                                  setState(() {}); // Trigger rebuild
+                                },
+                              ),
+                            ),
+                            payload: -1,
+                          ),
+                          ListPickerItem<int>(
+                            customWidget: ListTile(
+                              title: Text(l10n.color),
+                              contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
+                              trailing: DropdownButton<Color?>(
+                                menuMaxHeight: 500.0,
+                                value: feedCardDividerColor,
+                                underline: const SizedBox(),
+                                items: CustomThemeType.values
+                                    .map((CustomThemeType customThemeType) => DropdownMenuItem<Color?>(
+                                          alignment: Alignment.center,
+                                          value: Color(customThemeType.primaryColor.toARGB32()),
+                                          child: CircleAvatar(
+                                            radius: 16.0,
+                                            backgroundColor: Color.alphaBlend(
+                                              theme.colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                              Color(customThemeType.primaryColor.toARGB32()),
+                                            ),
                                           ),
-                                        ),
-                                      ))
-                                  .toList()
-                                ..insert(
-                                  0,
-                                  const DropdownMenuItem<Color?>(
-                                    alignment: Alignment.center,
-                                    value: null,
-                                    child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                        ))
+                                    .toList()
+                                  ..insert(
+                                    0,
+                                    const DropdownMenuItem<Color?>(
+                                      alignment: Alignment.center,
+                                      value: null,
+                                      child: CircleAvatar(radius: 16.0, child: Text('D')),
+                                    ),
+                                  )
+                                  ..insert(
+                                    1,
+                                    const DropdownMenuItem<Color?>(
+                                      alignment: Alignment.center,
+                                      value: Colors.transparent,
+                                      child: CircleAvatar(radius: 16.0, child: Text('T')),
+                                    ),
                                   ),
-                                )
-                                ..insert(
-                                  1,
-                                  const DropdownMenuItem<Color?>(
-                                    alignment: Alignment.center,
-                                    value: Colors.transparent,
-                                    child: CircleAvatar(radius: 16.0, child: Text('T')),
-                                  ),
-                                ),
-                              onChanged: (Color? value) {
-                                setPreferences(LocalSettings.feedCardDividerColor, value);
-                                setState(() {}); // Trigger rebuild
-                              },
+                                onChanged: (Color? value) {
+                                  setPreferences(LocalSettings.feedCardDividerColor, value);
+                                  setState(() {}); // Trigger rebuild
+                                },
+                              ),
                             ),
+                            payload: -1,
                           ),
-                          payload: -1,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
+                        ],
+                      );
+                    },
+                  )),
               SizedBox(height: 32.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -864,26 +853,24 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 ),
               ),
               SizedBox(height: 8.0),
-              ToggleOption(
-                description: l10n.showThumbnailPreviewOnRight,
-                value: showThumbnailPreviewOnRight,
-                iconEnabled: Icons.switch_left_rounded,
-                iconDisabled: Icons.switch_right_rounded,
-                onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showThumbnailPreviewOnRight,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showTextPostIndicator,
-                value: showTextPostIndicator,
-                iconEnabled: Icons.article,
-                iconDisabled: Icons.article_outlined,
-                onToggle: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showTextPostIndicator,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderToggleOption(
+                  title: l10n.showThumbnailPreviewOnRight,
+                  value: showThumbnailPreviewOnRight,
+                  iconEnabled: Icons.switch_left_rounded,
+                  iconDisabled: Icons.switch_right_rounded,
+                  onChanged: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showThumbnailPreviewOnRight),
+                  highlighted: settingToHighlight == LocalSettings.showThumbnailPreviewOnRight),
+              ThunderToggleOption(
+                  title: l10n.showTextPostIndicator,
+                  value: showTextPostIndicator,
+                  iconEnabled: Icons.article,
+                  iconDisabled: Icons.article_outlined,
+                  onChanged: useCompactView == false ? null : (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showTextPostIndicator),
+                  highlighted: settingToHighlight == LocalSettings.showTextPostIndicator),
               SizedBox(height: 32.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -938,86 +925,78 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 ),
               ),
               SizedBox(height: 8.0),
-              ToggleOption(
-                description: l10n.showPostTitleFirst,
-                value: showTitleFirst,
-                iconEnabled: Icons.vertical_align_top_rounded,
-                iconDisabled: Icons.vertical_align_bottom_rounded,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostTitleFirst,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showFullHeightImages,
-                value: showFullHeightImages,
-                iconEnabled: Icons.image_rounded,
-                iconDisabled: Icons.image_outlined,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostFullHeightImages,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showEdgeToEdgeImages,
-                value: showEdgeToEdgeImages,
-                iconEnabled: Icons.fit_screen_rounded,
-                iconDisabled: Icons.fit_screen_outlined,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostEdgeToEdgeImages,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostTextContentPreview,
-                value: showTextContent,
-                iconEnabled: Icons.notes_rounded,
-                iconDisabled: Icons.notes_rounded,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostTextContentPreview,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostVoteActions,
-                value: showVoteActions,
-                iconEnabled: Icons.import_export_rounded,
-                iconDisabled: Icons.import_export_rounded,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostVoteActions,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostSaveAction,
-                value: showSaveAction,
-                iconEnabled: Icons.star_rounded,
-                iconDisabled: Icons.star_border_rounded,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showPostSaveAction,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.linkPostsUseCompactView,
-                value: linkPostsUseCompactView,
-                iconEnabled: Icons.add_link,
-                iconDisabled: Icons.link,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.linkPostsUseCompactView, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.linkPostsUseCompactView,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.pinnedPostsUseCompactView,
-                value: pinnedPostsUseCompactView,
-                iconEnabled: Icons.push_pin,
-                iconDisabled: Icons.push_pin_outlined,
-                onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.pinnedPostsUseCompactView, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.pinnedPostsUseCompactView,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderToggleOption(
+                  title: l10n.showPostTitleFirst,
+                  value: showTitleFirst,
+                  iconEnabled: Icons.vertical_align_top_rounded,
+                  iconDisabled: Icons.vertical_align_bottom_rounded,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostTitleFirst),
+                  highlighted: settingToHighlight == LocalSettings.showPostTitleFirst),
+              ThunderToggleOption(
+                  title: l10n.showFullHeightImages,
+                  value: showFullHeightImages,
+                  iconEnabled: Icons.image_rounded,
+                  iconDisabled: Icons.image_outlined,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostFullHeightImages),
+                  highlighted: settingToHighlight == LocalSettings.showPostFullHeightImages),
+              ThunderToggleOption(
+                  title: l10n.showEdgeToEdgeImages,
+                  value: showEdgeToEdgeImages,
+                  iconEnabled: Icons.fit_screen_rounded,
+                  iconDisabled: Icons.fit_screen_outlined,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostEdgeToEdgeImages),
+                  highlighted: settingToHighlight == LocalSettings.showPostEdgeToEdgeImages),
+              ThunderToggleOption(
+                  title: l10n.showPostTextContentPreview,
+                  value: showTextContent,
+                  iconEnabled: Icons.notes_rounded,
+                  iconDisabled: Icons.notes_rounded,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostTextContentPreview),
+                  highlighted: settingToHighlight == LocalSettings.showPostTextContentPreview),
+              ThunderToggleOption(
+                  title: l10n.showPostVoteActions,
+                  value: showVoteActions,
+                  iconEnabled: Icons.import_export_rounded,
+                  iconDisabled: Icons.import_export_rounded,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostVoteActions),
+                  highlighted: settingToHighlight == LocalSettings.showPostVoteActions),
+              ThunderToggleOption(
+                  title: l10n.showPostSaveAction,
+                  value: showSaveAction,
+                  iconEnabled: Icons.star_rounded,
+                  iconDisabled: Icons.star_border_rounded,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showPostSaveAction),
+                  highlighted: settingToHighlight == LocalSettings.showPostSaveAction),
+              ThunderToggleOption(
+                  title: l10n.linkPostsUseCompactView,
+                  value: linkPostsUseCompactView,
+                  iconEnabled: Icons.add_link,
+                  iconDisabled: Icons.link,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.linkPostsUseCompactView, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.linkPostsUseCompactView),
+                  highlighted: settingToHighlight == LocalSettings.linkPostsUseCompactView),
+              ThunderToggleOption(
+                  title: l10n.pinnedPostsUseCompactView,
+                  value: pinnedPostsUseCompactView,
+                  iconEnabled: Icons.push_pin,
+                  iconDisabled: Icons.push_pin_outlined,
+                  onChanged: useCompactView ? null : (bool value) => setPreferences(LocalSettings.pinnedPostsUseCompactView, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.pinnedPostsUseCompactView),
+                  highlighted: settingToHighlight == LocalSettings.pinnedPostsUseCompactView),
               SizedBox(height: 32.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -1034,66 +1013,61 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   ],
                 ),
               ),
-              ToggleOption(
-                description: l10n.showCrossPosts,
-                value: showCrossPosts,
-                iconEnabled: Icons.repeat_on_rounded,
-                iconDisabled: Icons.repeat_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.showCrossPosts,
-                highlightedSetting: settingToHighlight,
-              ),
-              ListOption(
-                description: l10n.postBodyViewType,
-                value: ListPickerItem(
-                    label: switch (postBodyViewType) {
-                      PostBodyViewType.condensed => l10n.condensed,
-                      PostBodyViewType.expanded => l10n.expanded,
-                    },
-                    icon: Icons.crop_16_9_rounded,
-                    payload: postBodyViewType,
-                    capitalizeLabel: false),
-                options: [
-                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
-                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
-                ],
-                icon: Icons.view_list_rounded,
-                onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.postBodyViewType,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showUserInstance,
-                value: postBodyShowUserInstance,
-                iconEnabled: Icons.dns_sharp,
-                iconDisabled: Icons.dns_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.postBodyShowUserInstance,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.postBodyShowCommunityInstance,
-                value: postBodyShowCommunityInstance,
-                iconEnabled: Icons.dns_sharp,
-                iconDisabled: Icons.dns_outlined,
-                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.postBodyShowCommunityInstance,
-                highlightedSetting: settingToHighlight,
-              ),
-              ToggleOption(
-                description: l10n.showPostCommunityIcons,
-                value: postBodyShowCommunityAvatar,
-                iconEnabled: Icons.groups,
-                iconDisabled: Icons.groups,
-                onToggle: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.postBodyShowCommunityAvatar,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderToggleOption(
+                  title: l10n.showCrossPosts,
+                  value: showCrossPosts,
+                  iconEnabled: Icons.repeat_on_rounded,
+                  iconDisabled: Icons.repeat_rounded,
+                  onChanged: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.showCrossPosts),
+                  highlighted: settingToHighlight == LocalSettings.showCrossPosts),
+              ThunderListOption(
+                  title: l10n.postBodyViewType,
+                  value: ListPickerItem(
+                      label: switch (postBodyViewType) {
+                        PostBodyViewType.condensed => l10n.condensed,
+                        PostBodyViewType.expanded => l10n.expanded,
+                      },
+                      icon: Icons.crop_16_9_rounded,
+                      payload: postBodyViewType,
+                      capitalizeLabel: false),
+                  options: [
+                    ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
+                    ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
+                  ],
+                  leading: Icon(Icons.view_list_rounded),
+                  onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.postBodyViewType),
+                  highlighted: settingToHighlight == LocalSettings.postBodyViewType),
+              ThunderToggleOption(
+                  title: l10n.showUserInstance,
+                  value: postBodyShowUserInstance,
+                  iconEnabled: Icons.dns_sharp,
+                  iconDisabled: Icons.dns_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.postBodyShowUserInstance, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.postBodyShowUserInstance),
+                  highlighted: settingToHighlight == LocalSettings.postBodyShowUserInstance),
+              ThunderToggleOption(
+                  title: l10n.postBodyShowCommunityInstance,
+                  value: postBodyShowCommunityInstance,
+                  iconEnabled: Icons.dns_sharp,
+                  iconDisabled: Icons.dns_outlined,
+                  onChanged: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityInstance, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.postBodyShowCommunityInstance),
+                  highlighted: settingToHighlight == LocalSettings.postBodyShowCommunityInstance),
+              ThunderToggleOption(
+                  title: l10n.showPostCommunityIcons,
+                  value: postBodyShowCommunityAvatar,
+                  iconEnabled: Icons.groups,
+                  iconDisabled: Icons.groups,
+                  onChanged: (bool value) => setPreferences(LocalSettings.postBodyShowCommunityAvatar, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.postBodyShowCommunityAvatar),
+                  highlighted: settingToHighlight == LocalSettings.postBodyShowCommunityAvatar),
               SizedBox(height: 128.0),
             ],
           ),

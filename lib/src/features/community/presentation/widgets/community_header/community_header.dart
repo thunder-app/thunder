@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
-import 'package:thunder/src/shared/icon_text.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ImagePreview;
+import 'package:thunder/src/shared/content/widgets/media/image_preview.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderIconLabel;
 
 /// A widget that displays a community's header information and related actions.
 ///
@@ -123,10 +123,9 @@ class _CommunityInfo extends StatelessWidget {
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         CommunityFullNameWidget(
-          context,
-          community.name,
-          community.title,
-          fetchInstanceNameFromUrl(community.actorId),
+          name: community.name,
+          displayName: community.title,
+          instance: fetchInstanceNameFromUrl(community.actorId),
           useDisplayName: false, // Override because we're showing title above
         ),
         const SizedBox(height: 8.0),
@@ -150,13 +149,13 @@ class _CommunityStats extends StatelessWidget {
     return Row(
       spacing: 10.0,
       children: [
-        IconText(
+        ThunderIconLabel(
           icon: Icon(Icons.people_rounded, size: iconSize),
-          text: formatNumberToK(community.subscribers ?? 0),
+          label: formatNumberToK(community.subscribers ?? 0),
         ),
-        IconText(
+        ThunderIconLabel(
           icon: Icon(Icons.library_books_rounded, size: iconSize),
-          text: formatNumberToK(community.posts ?? 0),
+          label: formatNumberToK(community.posts ?? 0),
         ),
       ],
     );

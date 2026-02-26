@@ -16,7 +16,7 @@ import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/app/shell/navigation/loading_page.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_utils.dart';
+import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';

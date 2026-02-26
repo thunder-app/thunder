@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show FullNameSeparator, NameColor, NameThickness;
+import 'package:thunder/src/shared/identity/models/name_style.dart' show FullNameSeparator, NameColor, NameThickness;
 
 part 'theme_preferences_state.dart';
 

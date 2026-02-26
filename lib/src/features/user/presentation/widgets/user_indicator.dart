@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 
@@ -106,10 +106,9 @@ class _UserIndicatorState extends State<UserIndicator> {
                 children: [
                   Text(user!.displayNameOrName),
                   UserFullNameWidget(
-                    context,
-                    user!.name,
-                    user!.displayName,
-                    fetchInstanceNameFromUrl(user!.actorId) ?? '-',
+                    name: user!.name,
+                    displayName: user!.displayName,
+                    instance: fetchInstanceNameFromUrl(user!.actorId) ?? '-',
                     // Override because we're showing display name above
                     useDisplayName: false,
                   ),

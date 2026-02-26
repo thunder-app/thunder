@@ -9,8 +9,8 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
-import 'package:thunder/src/shared/widgets/multi_action_dismissible.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderMultiActionDismissible, ThunderSwipeAction;
 
 /// A widget that displays a given comment.
 ///
@@ -221,20 +221,20 @@ class _CommentCardState extends State<CommentCard> {
     );
 
     if (currentSwipeDirection != DismissDirection.none) {
-      child = MultiActionDismissible(
+      child = ThunderMultiActionDismissible<SwipeAction>(
         key: ObjectKey(comment.id),
         direction: currentSwipeDirection,
-        leftActions: leftActions,
-        rightActions: rightActions,
+        leftActions: leftActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(), color: (context) => action.getColor(context))).toList(),
+        rightActions: rightActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(), color: (context) => action.getColor(context))).toList(),
         actionThresholds: actionThresholds,
         enableBackSwipeOverride: true,
         onProgressChanged: (progress, _, __) {
           final dragged = progress > 0;
           if (dragged != _dragged) setState(() => _dragged = dragged);
         },
-        onAction: (action) => _onAction(action),
+        onAction: (action) => _onAction(action.value),
         backgroundBuilder: (context, dismissDirection, progress, action) => CommentCardBackground(
-          swipeAction: action == SwipeAction.reply && isOwnComment ? SwipeAction.edit : action,
+          swipeAction: action?.value == SwipeAction.reply && isOwnComment ? SwipeAction.edit : action?.value,
           dismissThreshold: progress,
           firstActionThreshold: actionThresholds.first,
           dismissDirection: dismissDirection,

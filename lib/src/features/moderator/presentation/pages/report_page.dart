@@ -13,9 +13,9 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -236,11 +236,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                        context,
-                                                        state.postReports[index].creator?.name ?? '',
-                                                        state.postReports[index].creator?.displayName ?? '',
-                                                        fetchInstanceNameFromUrl(state.postReports[index].creator?.actorId ?? ''),
-                                                      ),
+                                                          name: state.postReports[index].creator?.name ?? '',
+                                                          displayName: state.postReports[index].creator?.displayName ?? '',
+                                                          instance: fetchInstanceNameFromUrl(state.postReports[index].creator?.actorId ?? '')),
                                                     ),
                                                   ),
                                                 ],
@@ -254,7 +252,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     l10n.detailedReason(state.postReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
-                                                    fontScale: contentFontSizeScale,
+                                                    textScaleFactor: contentFontSizeScale.textScaleFactor,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
                                                       color: theme.colorScheme.error,
                                                       fontWeight: FontWeight.w600,
@@ -339,11 +337,9 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                        context,
-                                                        state.commentReports[index].creator?.name,
-                                                        state.commentReports[index].creator?.displayName,
-                                                        fetchInstanceNameFromUrl(state.commentReports[index].creator?.actorId),
-                                                      ),
+                                                          name: state.commentReports[index].creator?.name,
+                                                          displayName: state.commentReports[index].creator?.displayName,
+                                                          instance: fetchInstanceNameFromUrl(state.commentReports[index].creator?.actorId)),
                                                     ),
                                                   ),
                                                 ],
@@ -357,7 +353,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     l10n.detailedReason(state.commentReports[index].reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
-                                                    fontScale: contentFontSizeScale,
+                                                    textScaleFactor: contentFontSizeScale.textScaleFactor,
                                                     style: theme.textTheme.bodyMedium?.copyWith(
                                                       color: theme.colorScheme.error,
                                                       fontWeight: FontWeight.w600,

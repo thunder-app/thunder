@@ -17,14 +17,14 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:unifiedpush/unifiedpush.dart';
-import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, ThunderDivider, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 
 class DebugSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -182,95 +182,92 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   ],
                 ),
               ),
-              SettingsListTile(
-                icon: Icons.co_present_rounded,
-                description: l10n.deleteLocalPreferences,
-                widget: const SizedBox(
-                  height: 42.0,
-                  child: Icon(Icons.chevron_right_rounded),
-                ),
-                onTap: () async {
-                  showThunderDialog<void>(
-                    context: context,
-                    title: l10n.deleteLocalPreferences,
-                    contentText: l10n.deleteLocalPreferencesDescription,
-                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                    secondaryButtonText: l10n.cancel,
-                    onPrimaryButtonPressed: (dialogContext, _) async {
-                      final cleared = await UserPreferences.clearAllPreferences();
+              ThunderSettingsTile(
+                  leading: Icon(Icons.co_present_rounded),
+                  title: l10n.deleteLocalPreferences,
+                  trailing: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () async {
+                    showThunderDialog<void>(
+                      context: context,
+                      title: l10n.deleteLocalPreferences,
+                      contentText: l10n.deleteLocalPreferencesDescription,
+                      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                      secondaryButtonText: l10n.cancel,
+                      onPrimaryButtonPressed: (dialogContext, _) async {
+                        final cleared = await UserPreferences.clearAllPreferences();
 
-                      if (cleared) {
-                        context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
-                        showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
-                      } else {
-                        showSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
-                      }
+                        if (cleared) {
+                          context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                          showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
+                        } else {
+                          showSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
+                        }
 
-                      Navigator.of(dialogContext).pop();
-                    },
-                    primaryButtonText: l10n.clearPreferences,
-                  );
-                },
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.debugDeleteLocalPreferences,
-                highlightedSetting: settingToHighlight,
-              ),
+                        Navigator.of(dialogContext).pop();
+                      },
+                      primaryButtonText: l10n.clearPreferences,
+                    );
+                  },
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.debugDeleteLocalPreferences),
+                  highlighted: settingToHighlight == LocalSettings.debugDeleteLocalPreferences),
               SizedBox(height: 8.0),
-              SettingsListTile(
-                icon: Icons.data_array_rounded,
-                description: l10n.deleteLocalDatabase,
-                widget: const SizedBox(
-                  height: 42.0,
-                  child: Icon(Icons.chevron_right_rounded),
-                ),
-                onTap: () async {
-                  showThunderDialog<void>(
-                    context: context,
-                    title: l10n.deleteLocalDatabase,
-                    contentText: l10n.deleteLocalDatabaseDescription,
-                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                    secondaryButtonText: l10n.cancel,
-                    onPrimaryButtonPressed: (dialogContext, _) async {
-                      String path = join(await getDatabasesPath(), 'thunder.db');
+              ThunderSettingsTile(
+                  leading: Icon(Icons.data_array_rounded),
+                  title: l10n.deleteLocalDatabase,
+                  trailing: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () async {
+                    showThunderDialog<void>(
+                      context: context,
+                      title: l10n.deleteLocalDatabase,
+                      contentText: l10n.deleteLocalDatabaseDescription,
+                      onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                      secondaryButtonText: l10n.cancel,
+                      onPrimaryButtonPressed: (dialogContext, _) async {
+                        String path = join(await getDatabasesPath(), 'thunder.db');
 
-                      final dbFolder = await getApplicationDocumentsDirectory();
-                      final file = File(join(dbFolder.path, 'thunder.sqlite'));
+                        final dbFolder = await getApplicationDocumentsDirectory();
+                        final file = File(join(dbFolder.path, 'thunder.sqlite'));
 
-                      await databaseFactory.deleteDatabase(file.path);
+                        await databaseFactory.deleteDatabase(file.path);
 
-                      if (context.mounted) {
-                        showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    primaryButtonText: l10n.clearDatabase,
-                  );
-                },
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.debugDeleteLocalDatabase,
-                highlightedSetting: settingToHighlight,
-              ),
+                        if (context.mounted) {
+                          showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      primaryButtonText: l10n.clearDatabase,
+                    );
+                  },
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.debugDeleteLocalDatabase),
+                  highlighted: settingToHighlight == LocalSettings.debugDeleteLocalDatabase),
               const ThunderDivider(sliver: false),
               FutureBuilder<int>(
                 future: getExtendedImageCacheSize(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return SettingsListTile(
-                      icon: Icons.data_saver_off_rounded,
-                      description: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
-                      widget: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
-                      ),
-                      onTap: () async {
-                        await clearDiskCachedImages();
-                        if (context.mounted) showSnackbar(l10n.clearedCache);
-                        setState(() {}); // Trigger a rebuild to refresh the cache size
-                      },
-                      highlightKey: settingToHighlightKey,
-                      setting: LocalSettings.debugClearCache,
-                      highlightedSetting: settingToHighlight,
-                    );
+                    return ThunderSettingsTile(
+                        leading: Icon(Icons.data_saver_off_rounded),
+                        title: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
+                        trailing: const SizedBox(
+                          height: 42.0,
+                          child: Icon(Icons.chevron_right_rounded),
+                        ),
+                        onTap: () async {
+                          await clearDiskCachedImages();
+                          if (context.mounted) showSnackbar(l10n.clearedCache);
+                          setState(() {}); // Trigger a rebuild to refresh the cache size
+                        },
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.debugClearCache),
+                        highlighted: settingToHighlight == LocalSettings.debugClearCache);
                   }
                   return Container();
                 },
@@ -298,56 +295,46 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   children: [Text(l10n.status, style: theme.textTheme.titleSmall)],
                 ),
               ),
-              SettingsListTile(
-                icon: Icons.info_rounded,
-                description: l10n.currentNotificationsMode(inboxNotificationType.toString()),
-                widget: Container(),
-                onTap: null,
-                highlightKey: settingToHighlightKey,
-                setting: null,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderSettingsTile(
+                  leading: Icon(Icons.info_rounded),
+                  title: l10n.currentNotificationsMode(inboxNotificationType.toString()),
+                  trailing: Container(),
+                  onTap: null,
+                  highlightKey: settingToHighlightKey,
+                  highlighted: false),
               SizedBox(height: 8.0),
-              SettingsListTile(
-                icon: Icons.info_rounded,
-                description: l10n.areNotificationsAllowedBySystem(areNotificationsAllowed ? l10n.yes : l10n.no),
-                widget: Container(),
-                onTap: null,
-                highlightKey: settingToHighlightKey,
-                setting: null,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderSettingsTile(
+                  leading: Icon(Icons.info_rounded),
+                  title: l10n.areNotificationsAllowedBySystem(areNotificationsAllowed ? l10n.yes : l10n.no),
+                  trailing: Container(),
+                  onTap: null,
+                  highlightKey: settingToHighlightKey,
+                  highlighted: false),
               if (!kIsWeb && Platform.isAndroid && enableExperimentalFeatures) ...[
                 SizedBox(height: 8.0),
-                SettingsListTile(
-                  icon: Icons.info_rounded,
-                  description: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
-                  widget: Container(),
-                  onTap: null,
-                  highlightKey: settingToHighlightKey,
-                  setting: null,
-                  highlightedSetting: settingToHighlight,
-                ),
+                ThunderSettingsTile(
+                    leading: Icon(Icons.info_rounded),
+                    title: l10n.unifiedPushDistributorApp(unifiedPushDistributorApp ?? l10n.none, unifiedPushDistributorAppCount),
+                    trailing: Container(),
+                    onTap: null,
+                    highlightKey: settingToHighlightKey,
+                    highlighted: false),
                 SizedBox(height: 8.0),
-                SettingsListTile(
-                  icon: Icons.info_rounded,
-                  description: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
-                  widget: Container(),
-                  onTap: null,
-                  highlightKey: settingToHighlightKey,
-                  setting: null,
-                  highlightedSetting: settingToHighlight,
-                ),
+                ThunderSettingsTile(
+                    leading: Icon(Icons.info_rounded),
+                    title: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
+                    trailing: Container(),
+                    onTap: null,
+                    highlightKey: settingToHighlightKey,
+                    highlighted: false),
                 SizedBox(height: 8.0),
-                SettingsListTile(
-                  icon: Icons.info_rounded,
-                  description: l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
-                  widget: Container(),
-                  onTap: null,
-                  highlightKey: settingToHighlightKey,
-                  setting: null,
-                  highlightedSetting: settingToHighlight,
-                ),
+                ThunderSettingsTile(
+                    leading: Icon(Icons.info_rounded),
+                    title: l10n.unifiedPushServer(unifiedPushServer ?? l10n.none),
+                    trailing: Container(),
+                    onTap: null,
+                    highlightKey: settingToHighlightKey,
+                    highlighted: false),
               ],
               if (!kIsWeb && Platform.isAndroid) ...[
                 Padding(
@@ -357,109 +344,37 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     children: [Text(l10n.localNotifications, style: theme.textTheme.titleSmall)],
                   ),
                 ),
-                SettingsListTile(
-                  icon: Icons.notifications_rounded,
-                  description: l10n.sendTestLocalNotification,
-                  widget: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
-                  onTap: inboxNotificationType == NotificationType.local
-                      ? () {
-                          showTestAndroidNotification();
-                        }
-                      : null,
-                  highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.debugSendTestLocalNotification,
-                  highlightedSetting: settingToHighlight,
-                ),
-                SizedBox(height: 8.0),
-                SettingsListTile(
-                  icon: Icons.circle_notifications_rounded,
-                  description: l10n.sendBackgroundTestLocalNotification,
-                  widget: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
-                  onTap: inboxNotificationType == NotificationType.local
-                      ? () async {
-                          bool result = false;
-
-                          await showThunderDialog(
-                            context: context,
-                            title: l10n.confirm,
-                            contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundNotificationDescription),
-                            primaryButtonText: l10n.confirm,
-                            primaryButtonInitialEnabled: true,
-                            onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                              Navigator.of(dialogContext).pop();
-                              result = true;
-                            },
-                            secondaryButtonText: l10n.cancel,
-                            onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                          );
-
-                          if (result) {
-                            // Hook up a callback to generate a background notification.
-                            // The next time Thunder starts, this will get reset
-                            await disableBackgroundFetch();
-                            await initTestBackgroundFetch();
-                            initTestHeadlessBackgroundFetch();
-
-                            SystemNavigator.pop();
-                          }
-                        }
-                      : null,
-                  highlightKey: settingToHighlightKey,
-                  setting: LocalSettings.debugSendBackgroundTestLocalNotification,
-                  highlightedSetting: settingToHighlight,
-                ),
-                if (enableExperimentalFeatures) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text(l10n.unifiedpush, style: theme.textTheme.titleSmall)],
-                    ),
-                  ),
-                  SettingsListTile(
-                    icon: Icons.notifications_rounded,
-                    description: l10n.sendTestUnifiedPushNotification,
-                    widget: const SizedBox(
+                ThunderSettingsTile(
+                    leading: Icon(Icons.notifications_rounded),
+                    title: l10n.sendTestLocalNotification,
+                    trailing: const SizedBox(
                       height: 42.0,
                       child: Icon(Icons.chevron_right_rounded),
                     ),
-                    onTap: inboxNotificationType == NotificationType.unifiedPush
-                        ? () async {
-                            final error = await requestTestNotification();
-
-                            if (error == null) {
-                              showSnackbar(l10n.sentRequestForTestNotification);
-                            } else {
-                              showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
-                            }
+                    onTap: inboxNotificationType == NotificationType.local
+                        ? () {
+                            showTestAndroidNotification();
                           }
                         : null,
                     highlightKey: settingToHighlightKey,
-                    setting: LocalSettings.debugSendTestUnifiedPushNotification,
-                    highlightedSetting: settingToHighlight,
-                  ),
-                  SizedBox(height: 8.0),
-                  SettingsListTile(
-                    icon: Icons.circle_notifications_rounded,
-                    description: l10n.sendBackgroundTestUnifiedPushNotification,
-                    widget: const SizedBox(
+                    onLongPress: () => shareLocalSetting(context, LocalSettings.debugSendTestLocalNotification),
+                    highlighted: settingToHighlight == LocalSettings.debugSendTestLocalNotification),
+                SizedBox(height: 8.0),
+                ThunderSettingsTile(
+                    leading: Icon(Icons.circle_notifications_rounded),
+                    title: l10n.sendBackgroundTestLocalNotification,
+                    trailing: const SizedBox(
                       height: 42.0,
                       child: Icon(Icons.chevron_right_rounded),
                     ),
-                    onTap: inboxNotificationType == NotificationType.unifiedPush
+                    onTap: inboxNotificationType == NotificationType.local
                         ? () async {
                             bool result = false;
 
                             await showThunderDialog(
                               context: context,
                               title: l10n.confirm,
-                              contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundUnifiedPushNotificationDescription),
+                              contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundNotificationDescription),
                               primaryButtonText: l10n.confirm,
                               primaryButtonInitialEnabled: true,
                               onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
@@ -471,6 +386,36 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                             );
 
                             if (result) {
+                              // Hook up a callback to generate a background notification.
+                              // The next time Thunder starts, this will get reset
+                              await disableBackgroundFetch();
+                              await initTestBackgroundFetch();
+                              initTestHeadlessBackgroundFetch();
+
+                              SystemNavigator.pop();
+                            }
+                          }
+                        : null,
+                    highlightKey: settingToHighlightKey,
+                    onLongPress: () => shareLocalSetting(context, LocalSettings.debugSendBackgroundTestLocalNotification),
+                    highlighted: settingToHighlight == LocalSettings.debugSendBackgroundTestLocalNotification),
+                if (enableExperimentalFeatures) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text(l10n.unifiedpush, style: theme.textTheme.titleSmall)],
+                    ),
+                  ),
+                  ThunderSettingsTile(
+                      leading: Icon(Icons.notifications_rounded),
+                      title: l10n.sendTestUnifiedPushNotification,
+                      trailing: const SizedBox(
+                        height: 42.0,
+                        child: Icon(Icons.chevron_right_rounded),
+                      ),
+                      onTap: inboxNotificationType == NotificationType.unifiedPush
+                          ? () async {
                               final error = await requestTestNotification();
 
                               if (error == null) {
@@ -478,30 +423,66 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                               } else {
                                 showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
                               }
-
-                              SystemNavigator.pop();
                             }
-                          }
-                        : null,
-                    highlightKey: settingToHighlightKey,
-                    setting: LocalSettings.debugSendBackgroundTestUnifiedPushNotification,
-                    highlightedSetting: settingToHighlight,
-                  ),
+                          : null,
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.debugSendTestUnifiedPushNotification),
+                      highlighted: settingToHighlight == LocalSettings.debugSendTestUnifiedPushNotification),
+                  SizedBox(height: 8.0),
+                  ThunderSettingsTile(
+                      leading: Icon(Icons.circle_notifications_rounded),
+                      title: l10n.sendBackgroundTestUnifiedPushNotification,
+                      trailing: const SizedBox(
+                        height: 42.0,
+                        child: Icon(Icons.chevron_right_rounded),
+                      ),
+                      onTap: inboxNotificationType == NotificationType.unifiedPush
+                          ? () async {
+                              bool result = false;
+
+                              await showThunderDialog(
+                                context: context,
+                                title: l10n.confirm,
+                                contentWidgetBuilder: (setPrimaryButtonEnabled) => Text(l10n.testBackgroundUnifiedPushNotificationDescription),
+                                primaryButtonText: l10n.confirm,
+                                primaryButtonInitialEnabled: true,
+                                onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                                  Navigator.of(dialogContext).pop();
+                                  result = true;
+                                },
+                                secondaryButtonText: l10n.cancel,
+                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                              );
+
+                              if (result) {
+                                final error = await requestTestNotification();
+
+                                if (error == null) {
+                                  showSnackbar(l10n.sentRequestForTestNotification);
+                                } else {
+                                  showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
+                                }
+
+                                SystemNavigator.pop();
+                              }
+                            }
+                          : null,
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.debugSendBackgroundTestUnifiedPushNotification),
+                      highlighted: settingToHighlight == LocalSettings.debugSendBackgroundTestUnifiedPushNotification),
                 ],
               ],
               const ThunderDivider(sliver: false),
-              SettingsListTile(
-                icon: Icons.edit_notifications_rounded,
-                description: l10n.changeNotificationSettings,
-                widget: const SizedBox(
-                  height: 42.0,
-                  child: Icon(Icons.chevron_right_rounded),
-                ),
-                onTap: () => navigateToSettingPage(context, LocalSettings.inboxNotificationType),
-                highlightKey: settingToHighlightKey,
-                setting: null,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderSettingsTile(
+                  leading: Icon(Icons.edit_notifications_rounded),
+                  title: l10n.changeNotificationSettings,
+                  trailing: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () => navigateToSettingPage(context, LocalSettings.inboxNotificationType),
+                  highlightKey: settingToHighlightKey,
+                  highlighted: false),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                 child: Column(
@@ -519,31 +500,29 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 ),
               ),
               SizedBox(height: 8.0),
-              ToggleOption(
-                description: l10n.enableExperimentalFeatures,
-                value: enableExperimentalFeatures,
-                iconEnabled: Icons.construction_rounded,
-                iconDisabled: Icons.construction_outlined,
-                onToggle: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.enableExperimentalFeatures,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderToggleOption(
+                  title: l10n.enableExperimentalFeatures,
+                  value: enableExperimentalFeatures,
+                  iconEnabled: Icons.construction_rounded,
+                  iconDisabled: Icons.construction_outlined,
+                  onChanged: (value) => setPreferences(LocalSettings.enableExperimentalFeatures, value),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.enableExperimentalFeatures),
+                  highlighted: settingToHighlight == LocalSettings.enableExperimentalFeatures),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                 child: Text(l10n.feed, style: theme.textTheme.titleMedium),
               ),
               SizedBox(height: 8.0),
-              ListOption(
-                description: l10n.imageDimensionTimeout,
-                value: ListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
-                options: imageDimensionTimeouts.map((value) => ListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
-                icon: Icons.timelapse,
-                onChanged: (value) async => setPreferences(LocalSettings.imageDimensionTimeout, value.payload),
-                highlightKey: settingToHighlightKey,
-                setting: LocalSettings.imageDimensionTimeout,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderListOption(
+                  title: l10n.imageDimensionTimeout,
+                  value: ListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
+                  options: imageDimensionTimeouts.map((value) => ListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
+                  leading: Icon(Icons.timelapse),
+                  onChanged: (value) async => setPreferences(LocalSettings.imageDimensionTimeout, value.payload),
+                  highlightKey: settingToHighlightKey,
+                  onLongPress: () => shareLocalSetting(context, LocalSettings.imageDimensionTimeout),
+                  highlighted: settingToHighlight == LocalSettings.imageDimensionTimeout),
               SizedBox(height: 48),
             ],
           ),

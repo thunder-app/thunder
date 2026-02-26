@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/avatars/instance_avatar.dart';
+import 'package:thunder/src/shared/identity/widgets/avatars/instance_avatar.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 
 /// Creates a widget which can display a summary of an instance for a list.

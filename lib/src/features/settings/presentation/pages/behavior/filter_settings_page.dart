@@ -8,7 +8,6 @@ import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/settings/settings.dart';
 
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
@@ -16,7 +15,7 @@ import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 class FilterSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -157,56 +156,52 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         shrinkWrap: true,
                         itemCount: keywordFilters.length,
                         itemBuilder: (context, index) {
-                          return SettingsListTile(
-                            description: keywordFilters[index],
-                            widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                            onTap: () async {
-                              showThunderDialog(
-                                context: context,
-                                title: l10n.removeKeywordFilter,
-                                contentText: l10n.removeKeyword(keywordFilters[index]),
-                                primaryButtonText: l10n.remove,
-                                onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                                  setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
-                                  Navigator.of(dialogContext).pop();
-                                },
-                                secondaryButtonText: l10n.cancel,
-                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                              );
-                            },
-                            highlightKey: settingToHighlightKey,
-                            setting: null,
-                            highlightedSetting: settingToHighlight,
-                          );
+                          return ThunderSettingsTile(
+                              title: keywordFilters[index],
+                              trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              onTap: () async {
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.removeKeywordFilter,
+                                  contentText: l10n.removeKeyword(keywordFilters[index]),
+                                  primaryButtonText: l10n.remove,
+                                  onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                                    setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              },
+                              highlightKey: settingToHighlightKey,
+                              highlighted: false);
                         },
                       ),
               ),
               SizedBox(height: 16.0),
-              SettingsListTile(
-                icon: Icons.language,
-                description: l10n.languageFilters,
-                widget: const SizedBox(
-                  height: 42.0,
-                  child: Icon(Icons.chevron_right_rounded),
-                ),
-                onTap: () {
-                  // Can only set discussion language if user is logged in
-                  if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {
-                    navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
-                  } else {
-                    showThunderDialog(
-                      context: context,
-                      title: l10n.userNotLoggedIn,
-                      contentText: l10n.mustBeLoggedIn,
-                      primaryButtonText: l10n.ok,
-                      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
-                    );
-                  }
-                },
-                highlightKey: settingToHighlightKey,
-                setting: null,
-                highlightedSetting: settingToHighlight,
-              ),
+              ThunderSettingsTile(
+                  leading: Icon(Icons.language),
+                  title: l10n.languageFilters,
+                  trailing: const SizedBox(
+                    height: 42.0,
+                    child: Icon(Icons.chevron_right_rounded),
+                  ),
+                  onTap: () {
+                    // Can only set discussion language if user is logged in
+                    if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {
+                      navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
+                    } else {
+                      showThunderDialog(
+                        context: context,
+                        title: l10n.userNotLoggedIn,
+                        contentText: l10n.mustBeLoggedIn,
+                        primaryButtonText: l10n.ok,
+                        onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
+                      );
+                    }
+                  },
+                  highlightKey: settingToHighlightKey,
+                  highlighted: false),
               SizedBox(height: 128.0),
             ],
           ),

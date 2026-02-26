@@ -9,8 +9,8 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/content/presentation/widgets/media/media_view.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 
@@ -212,7 +212,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 post.textPreview ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                fontScale: contentFontSizeScale,
+                textScaleFactor: contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: post.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),

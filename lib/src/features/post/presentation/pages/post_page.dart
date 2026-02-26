@@ -17,7 +17,7 @@ import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
@@ -473,7 +473,7 @@ class _PostPageFeedEndState extends State<_PostPageFeedEnd> {
         padding: const EdgeInsets.symmetric(vertical: 32.0),
         child: ScalableText(
           comments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
-          fontScale: metadataFontSizeScale,
+          textScaleFactor: metadataFontSizeScale.textScaleFactor,
           textAlign: TextAlign.center,
           style: theme.textTheme.titleSmall,
         ),

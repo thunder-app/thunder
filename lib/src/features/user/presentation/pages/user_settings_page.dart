@@ -16,15 +16,15 @@ import "package:thunder/src/foundation/primitives/models/thunder_site_response.d
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
 import "package:thunder/src/foundation/primitives/enums/enums.dart";
-import "package:thunder/src/features/settings/settings.dart";
 import "package:thunder/src/shared/sort_picker.dart";
 import "package:thunder/src/features/user/user.dart";
 import "package:thunder/src/foundation/config/app_constants.dart";
 import "package:thunder/src/foundation/networking/error_message_utils.dart";
 import "package:thunder/src/foundation/config/global_context.dart";
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 import "package:thunder/src/app/shell/navigation/navigation_utils.dart";
-import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, Thunder, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the user's account settings. These settings are synchronized with the instance and should be preferred over the app settings.
 class UserSettingsPage extends StatefulWidget {
@@ -175,122 +175,118 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(l10n.general, style: theme.textTheme.titleMedium),
                             ),
-                            SettingsListTile(
-                              icon: Icons.person_rounded,
-                              description: l10n.displayName,
-                              subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                displayNameTextController.text = person?.displayName ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.displayName,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: displayNameTextController,
-                                    decoration: InputDecoration(hintText: l10n.displayName),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDisplayName,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.note_rounded,
-                              description: l10n.profileBio,
-                              subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
-                              subtitleMaxLines: 1,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                bioTextController.text = person?.bio ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.profileBio,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: bioTextController,
-                                    minLines: 8,
-                                    maxLines: 8,
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(),
-                                      hintText: l10n.profileBio,
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.person_rounded),
+                                title: l10n.displayName,
+                                subtitle: person?.displayName?.isNotEmpty == true ? person?.displayName : l10n.noDisplayNameSet,
+                                trailing: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  displayNameTextController.text = person?.displayName ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.displayName,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: displayNameTextController,
+                                      decoration: InputDecoration(hintText: l10n.displayName),
                                     ),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountProfileBio,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.email_rounded,
-                              description: l10n.email,
-                              subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                emailTextController.text = localUser?.email ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.email,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: emailTextController,
-                                    decoration: InputDecoration(hintText: l10n.email),
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountEmail,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.person_rounded,
-                              description: l10n.matrixUser,
-                              subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
-                              widget: const Padding(padding: EdgeInsets.all(20.0)),
-                              onTap: () {
-                                matrixUserTextController.text = person?.matrixUserId ?? "";
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.matrixUser,
-                                  contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
-                                    controller: matrixUserTextController,
-                                    decoration: const InputDecoration(hintText: "@user:instance"),
-                                  ),
-                                  primaryButtonText: l10n.save,
-                                  onPrimaryButtonPressed: (dialogContext, _) {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountMatrixUser,
-                              highlightedSetting: settingToHighlight,
-                            ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountDisplayName),
+                                highlighted: settingToHighlight == LocalSettings.accountDisplayName),
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.note_rounded),
+                                title: l10n.profileBio,
+                                subtitle: person?.bio?.isNotEmpty == true ? parse(markdownToHtml(person?.bio ?? "")).documentElement?.text.trim() : l10n.noProfileBioSet,
+                                subtitleMaxLines: 1,
+                                trailing: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  bioTextController.text = person?.bio ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.profileBio,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: bioTextController,
+                                      minLines: 8,
+                                      maxLines: 8,
+                                      keyboardType: TextInputType.multiline,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(),
+                                        hintText: l10n.profileBio,
+                                      ),
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountProfileBio),
+                                highlighted: settingToHighlight == LocalSettings.accountProfileBio),
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.email_rounded),
+                                title: l10n.email,
+                                subtitle: localUser?.email?.isNotEmpty == true ? localUser?.email : l10n.noEmailSet,
+                                trailing: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  emailTextController.text = localUser?.email ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.email,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: emailTextController,
+                                      decoration: InputDecoration(hintText: l10n.email),
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountEmail),
+                                highlighted: settingToHighlight == LocalSettings.accountEmail),
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.person_rounded),
+                                title: l10n.matrixUser,
+                                subtitle: person?.matrixUserId?.isNotEmpty == true ? person?.matrixUserId : l10n.noMatrixUserSet,
+                                trailing: const Padding(padding: EdgeInsets.all(20.0)),
+                                onTap: () {
+                                  matrixUserTextController.text = person?.matrixUserId ?? "";
+                                  showThunderDialog(
+                                    context: context,
+                                    title: l10n.matrixUser,
+                                    contentWidgetBuilder: (setPrimaryButtonEnabled) => TextField(
+                                      controller: matrixUserTextController,
+                                      decoration: const InputDecoration(hintText: "@user:instance"),
+                                    ),
+                                    primaryButtonText: l10n.save,
+                                    onPrimaryButtonPressed: (dialogContext, _) {
+                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                    secondaryButtonText: l10n.cancel,
+                                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                  );
+                                },
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountMatrixUser),
+                                highlighted: settingToHighlight == LocalSettings.accountMatrixUser),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(l10n.feedSettings, style: theme.textTheme.titleMedium),
@@ -305,127 +301,118 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 ),
                               ),
                             ),
-                            ListOption(
-                              description: l10n.defaultFeedType,
-                              value: ListPickerItem(label: localUser?.defaultListingType?.value ?? "", icon: Icons.feed, payload: localUser?.defaultListingType),
-                              options: [
-                                ListPickerItem(icon: Icons.view_list_rounded, label: FeedListType.subscribed.value, payload: FeedListType.subscribed),
-                                ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
-                                ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
-                              ],
-                              icon: Icons.filter_alt_rounded,
-                              onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultFeedListType: value.payload)),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDefaultFeedType,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ListOption(
-                              description: l10n.defaultFeedSortType,
-                              value: ListPickerItem(
-                                label: localUser?.defaultSortType?.name ?? "",
-                                icon: Icons.local_fire_department_rounded,
-                                payload: localUser?.defaultSortType,
-                              ),
-                              options: [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)],
-                              icon: Icons.sort_rounded,
-                              onChanged: (_) async {},
-                              isBottomModalScrollControlled: true,
-                              customListPicker: SortPicker<PostSortType>(
-                                account: account,
-                                title: l10n.defaultFeedSortType,
-                                onSelect: (value) async {
-                                  context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
-                                },
-                                previouslySelected: localUser?.defaultSortType,
-                              ),
-                              valueDisplay: Row(
-                                children: [
-                                  Icon(allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).icon, size: 13),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).label,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
+                            ThunderListOption(
+                                title: l10n.defaultFeedType,
+                                value: ListPickerItem(label: localUser?.defaultListingType?.value ?? "", icon: Icons.feed, payload: localUser?.defaultListingType),
+                                options: [
+                                  ListPickerItem(icon: Icons.view_list_rounded, label: FeedListType.subscribed.value, payload: FeedListType.subscribed),
+                                  ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
+                                  ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
                                 ],
-                              ),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDefaultFeedSortType,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showNsfwContent,
-                              value: localUser?.showNsfw,
-                              iconEnabled: Icons.no_adult_content,
-                              iconDisabled: Icons.no_adult_content,
-                              onToggle: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowNsfwContent,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showScores,
-                              value: localUser?.showScores,
-                              iconEnabled: Icons.onetwothree_rounded,
-                              iconDisabled: Icons.onetwothree_rounded,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowScores,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showReadPosts,
-                              value: localUser?.showReadPosts,
-                              iconEnabled: Icons.fact_check_rounded,
-                              iconDisabled: Icons.fact_check_outlined,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowReadPosts,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.bot,
-                              value: person?.botAccount,
-                              iconEnabled: Thunder.robot,
-                              iconDisabled: Thunder.robot,
-                              iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountIsBot,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            ToggleOption(
-                              description: l10n.showBotAccounts,
-                              value: localUser?.showBotAccounts,
-                              iconEnabled: Thunder.robot,
-                              iconDisabled: Thunder.robot,
-                              iconSpacing: 14.0,
-                              onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountShowBotAccounts,
-                              highlightedSetting: settingToHighlight,
-                            ),
+                                leading: Icon(Icons.filter_alt_rounded),
+                                onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultFeedListType: value.payload)),
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedType),
+                                highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType),
+                            ThunderListOption(
+                                title: l10n.defaultFeedSortType,
+                                value: ListPickerItem(
+                                  label: localUser?.defaultSortType?.name ?? "",
+                                  icon: Icons.local_fire_department_rounded,
+                                  payload: localUser?.defaultSortType,
+                                ),
+                                options: [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)],
+                                leading: Icon(Icons.sort_rounded),
+                                onChanged: (_) async {},
+                                isBottomModalScrollControlled: true,
+                                customListPicker: SortPicker<PostSortType>(
+                                  account: account,
+                                  title: l10n.defaultFeedSortType,
+                                  onSelect: (value) async {
+                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
+                                  },
+                                  previouslySelected: localUser?.defaultSortType,
+                                ),
+                                valueDisplay: Row(
+                                  children: [
+                                    Icon(allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).icon, size: 13),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      allPostSortTypeItems.firstWhere((item) => item.payload == localUser?.defaultSortType).label,
+                                      style: theme.textTheme.titleSmall,
+                                    ),
+                                  ],
+                                ),
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedSortType),
+                                highlighted: settingToHighlight == LocalSettings.accountDefaultFeedSortType),
+                            ThunderToggleOption(
+                                title: l10n.showNsfwContent,
+                                value: localUser?.showNsfw,
+                                iconEnabled: Icons.no_adult_content,
+                                iconDisabled: Icons.no_adult_content,
+                                onChanged: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowNsfwContent),
+                                highlighted: settingToHighlight == LocalSettings.accountShowNsfwContent),
+                            ThunderToggleOption(
+                                title: l10n.showScores,
+                                value: localUser?.showScores,
+                                iconEnabled: Icons.onetwothree_rounded,
+                                iconDisabled: Icons.onetwothree_rounded,
+                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowScores),
+                                highlighted: settingToHighlight == LocalSettings.accountShowScores),
+                            ThunderToggleOption(
+                                title: l10n.showReadPosts,
+                                value: localUser?.showReadPosts,
+                                iconEnabled: Icons.fact_check_rounded,
+                                iconDisabled: Icons.fact_check_outlined,
+                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowReadPosts),
+                                highlighted: settingToHighlight == LocalSettings.accountShowReadPosts),
+                            ThunderToggleOption(
+                                title: l10n.bot,
+                                value: person?.botAccount,
+                                iconEnabled: Thunder.robot,
+                                iconDisabled: Thunder.robot,
+                                iconSpacing: 14.0,
+                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountIsBot),
+                                highlighted: settingToHighlight == LocalSettings.accountIsBot),
+                            ThunderToggleOption(
+                                title: l10n.showBotAccounts,
+                                value: localUser?.showBotAccounts,
+                                iconEnabled: Thunder.robot,
+                                iconDisabled: Thunder.robot,
+                                iconSpacing: 14.0,
+                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowBotAccounts),
+                                highlighted: settingToHighlight == LocalSettings.accountShowBotAccounts),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(l10n.contentManagement, style: theme.textTheme.titleMedium),
                             ),
-                            SettingsListTile(
-                              icon: Icons.language_rounded,
-                              description: l10n.discussionLanguages,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.discussionLanguages,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.block_rounded,
-                              description: l10n.blockSettingLabel,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountBlocks,
-                              highlightedSetting: settingToHighlight,
-                            ),
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.language_rounded),
+                                title: l10n.discussionLanguages,
+                                trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.discussionLanguages),
+                                highlighted: settingToHighlight == LocalSettings.discussionLanguages),
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.block_rounded),
+                                title: l10n.blockSettingLabel,
+                                trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountBlocks),
+                                highlighted: settingToHighlight == LocalSettings.accountBlocks),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Column(
@@ -436,55 +423,54 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 ],
                               ),
                             ),
-                            SettingsListTile(
-                              icon: Icons.file_download_rounded,
-                              description: l10n.exportLemmyAccountSettingsDescription,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
-                              onTap: () async {
-                                dynamic exportSettings;
-                                try {
-                                  final account = context.read<ProfileBloc>().state.account;
-                                  exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
-                                } catch (e) {
-                                  // Catch rate-limit errors
-                                  showSnackbar(getExceptionErrorMessage(e));
-                                  return;
-                                }
-
-                                try {
-                                  final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
-                                  // Use the same naming convention as the web UI
-                                  String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
-                                  final filePath = '$initialFilePath/$initialFileName';
-
-                                  final File file = File(filePath);
-                                  await file.writeAsString(jsonEncode(exportSettings));
-
-                                  final String? savedFilePath = await FlutterFileDialog.saveFile(
-                                    params: SaveFileDialogParams(
-                                      mimeTypesFilter: ['application/json'],
-                                      sourceFilePath: filePath,
-                                      fileName: initialFileName,
-                                    ),
-                                  );
-
-                                  if (savedFilePath?.isNotEmpty == true) {
-                                    showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
-                                  } else {
-                                    showSnackbar(l10n.errorSavingAccountSettings);
+                            ThunderSettingsTile(
+                                leading: Icon(Icons.file_download_rounded),
+                                title: l10n.exportLemmyAccountSettingsDescription,
+                                trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                                onTap: () async {
+                                  dynamic exportSettings;
+                                  try {
+                                    final account = context.read<ProfileBloc>().state.account;
+                                    exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
+                                  } catch (e) {
+                                    // Catch rate-limit errors
+                                    showSnackbar(getExceptionErrorMessage(e));
+                                    return;
                                   }
-                                } catch (e) {
-                                  showSnackbar('${l10n.errorSavingAccountSettings} $e');
-                                }
-                              },
-                              highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountExportSettings,
-                              highlightedSetting: settingToHighlight,
-                            ),
-                            SettingsListTile(
-                              icon: Icons.file_upload_rounded,
-                              description: l10n.importLemmyAccountSettingsDescription,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+
+                                  try {
+                                    final String initialFilePath = (await getApplicationDocumentsDirectory()).path;
+                                    // Use the same naming convention as the web UI
+                                    String initialFileName = 'lemmy_user_settings_${DateTime.now().toUtc().toIso8601String().replaceAll(":", "").replaceAll("-", "")}.json';
+                                    final filePath = '$initialFilePath/$initialFileName';
+
+                                    final File file = File(filePath);
+                                    await file.writeAsString(jsonEncode(exportSettings));
+
+                                    final String? savedFilePath = await FlutterFileDialog.saveFile(
+                                      params: SaveFileDialogParams(
+                                        mimeTypesFilter: ['application/json'],
+                                        sourceFilePath: filePath,
+                                        fileName: initialFileName,
+                                      ),
+                                    );
+
+                                    if (savedFilePath?.isNotEmpty == true) {
+                                      showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
+                                    } else {
+                                      showSnackbar(l10n.errorSavingAccountSettings);
+                                    }
+                                  } catch (e) {
+                                    showSnackbar('${l10n.errorSavingAccountSettings} $e');
+                                  }
+                                },
+                                highlightKey: settingToHighlightKey,
+                                onLongPress: () => shareLocalSetting(context, LocalSettings.accountExportSettings),
+                                highlighted: settingToHighlight == LocalSettings.accountExportSettings),
+                            ThunderSettingsTile(
+                              leading: Icon(Icons.file_upload_rounded),
+                              title: l10n.importLemmyAccountSettingsDescription,
+                              trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 String importSettings;
 
@@ -531,17 +517,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 }
                               },
                               highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountImportSettings,
-                              highlightedSetting: settingToHighlight,
+                              onLongPress: () => shareLocalSetting(context, LocalSettings.accountImportSettings),
+                              highlighted: settingToHighlight == LocalSettings.accountImportSettings,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(l10n.dangerZone, style: theme.textTheme.titleMedium),
                             ),
-                            SettingsListTile(
-                              icon: Icons.password,
-                              description: l10n.changePassword,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                            ThunderSettingsTile(
+                              leading: Icon(Icons.password),
+                              title: l10n.changePassword,
+                              trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 showThunderDialog<void>(
                                   context: context,
@@ -561,13 +547,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 );
                               },
                               highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountChangePassword,
-                              highlightedSetting: settingToHighlight,
+                              onLongPress: () => shareLocalSetting(context, LocalSettings.accountChangePassword),
+                              highlighted: settingToHighlight == LocalSettings.accountChangePassword,
                             ),
-                            SettingsListTile(
-                              icon: Icons.delete_forever_rounded,
-                              description: l10n.deleteAccount,
-                              widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                            ThunderSettingsTile(
+                              leading: Icon(Icons.delete_forever_rounded),
+                              title: l10n.deleteAccount,
+                              trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
                               onTap: () async {
                                 showThunderDialog<void>(
                                   context: context,
@@ -587,20 +573,20 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 );
                               },
                               highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountDeleteAccount,
-                              highlightedSetting: settingToHighlight,
+                              onLongPress: () => shareLocalSetting(context, LocalSettings.accountDeleteAccount),
+                              highlighted: settingToHighlight == LocalSettings.accountDeleteAccount,
                             ),
-                            SettingsListTile(
-                              icon: Icons.hide_image_rounded,
-                              description: l10n.manageMedia,
-                              widget: const SizedBox(
+                            ThunderSettingsTile(
+                              leading: Icon(Icons.hide_image_rounded),
+                              title: l10n.manageMedia,
+                              trailing: const SizedBox(
                                 height: 42.0,
                                 child: Icon(Icons.chevron_right_rounded),
                               ),
                               onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
                               highlightKey: settingToHighlightKey,
-                              setting: LocalSettings.accountManageMedia,
-                              highlightedSetting: settingToHighlight,
+                              onLongPress: () => shareLocalSetting(context, LocalSettings.accountManageMedia),
+                              highlighted: settingToHighlight == LocalSettings.accountManageMedia,
                             ),
                             const SizedBox(height: 100.0),
                           ],

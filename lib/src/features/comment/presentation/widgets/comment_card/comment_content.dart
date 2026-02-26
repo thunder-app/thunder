@@ -8,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/content/presentation/widgets/common_markdown_body.dart';
+import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/src/features/identity/presentation/widgets/text/scalable_text.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
@@ -137,7 +137,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                   ? ScalableText(
                                       content,
                                       style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                                      fontScale: contentFontSizeScale,
+                                      textScaleFactor: contentFontSizeScale.textScaleFactor,
                                     )
                                   : CommonMarkdownBody(body: content, isComment: true),
                             ),
