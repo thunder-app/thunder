@@ -79,9 +79,10 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       videoPlayerOptions: VideoPlayerOptions(),
     );
 
-    _videoPlayerController.setVolume(videoState.videoAutoMute ? 0 : 1);
-    _videoPlayerController.setPlaybackSpeed(videoState.videoDefaultPlaybackSpeed.value);
-    _videoPlayerController.setLooping(videoState.videoAutoLoop);
+    _videoPlayerController
+      ..setVolume(videoState.videoAutoMute ? 0 : 1)
+      ..setPlaybackSpeed(videoState.videoDefaultPlaybackSpeed.value)
+      ..setLooping(videoState.videoAutoLoop);
 
     _videoPlayerController.addListener(() {
       if (_videoPlayerController.value.isPlaying && isVideoControlsVisible && timer?.isActive != true) {

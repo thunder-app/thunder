@@ -2,19 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 
 class ThunderYoutubePlayer extends StatefulWidget {
-  const ThunderYoutubePlayer({super.key, required this.videoUrl, this.postId});
+  const ThunderYoutubePlayer({
+    super.key,
+    required this.videoUrl,
+    this.postId,
+  });
 
   final int? postId;
   final String videoUrl;
@@ -23,153 +26,204 @@ class ThunderYoutubePlayer extends StatefulWidget {
   State<ThunderYoutubePlayer> createState() => _ThunderYoutubePlayerState();
 }
 
-class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> with SingleTickerProviderStateMixin {
-  late YoutubePlayerController _controller;
-  late ypf.YoutubePlayerController _ypfController;
+class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
+  late final ypf.YoutubePlayerController? _mobileController;
+  late final YoutubePlayerController? _webController;
 
-  /// Whether or not the video is muted.
-  bool muted = false;
+  bool _isMuted = false;
+  final bool _isMobile = Platform.isAndroid || Platform.isIOS;
 
   @override
   void initState() {
     super.initState();
+    _initializePlayer();
+  }
 
+  void _initializePlayer() {
     final videoPreferences = context.read<VideoPreferencesCubit>().state;
-    final videoAutoLoop = videoPreferences.videoAutoLoop;
-    final videoAutoMute = videoPreferences.videoAutoMute;
-    final videoAutoFullscreen = videoPreferences.videoAutoFullscreen;
-    final videoDefaultPlaybackSpeed = videoPreferences.videoDefaultPlaybackSpeed.value;
+    final startSeconds = _extractStartSeconds(widget.videoUrl);
+    final videoId = ypf.YoutubePlayer.convertUrlToId(widget.videoUrl) ?? '';
 
-    if (Platform.isAndroid || Platform.isIOS) {
-      _ypfController = ypf.YoutubePlayerController(
-        initialVideoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!,
+    _isMuted = videoPreferences.videoAutoMute;
+
+    if (_isMobile) {
+      _mobileController = ypf.YoutubePlayerController(
+        initialVideoId: videoId,
         flags: ypf.YoutubePlayerFlags(
           controlsVisibleAtStart: true,
-          autoPlay: autoPlayVideo(),
+          autoPlay: _shouldAutoPlay(),
           enableCaption: false,
           hideControls: false,
-          loop: videoAutoLoop,
-          mute: videoAutoMute,
+          loop: videoPreferences.videoAutoLoop,
+          mute: _isMuted,
+          startAt: startSeconds,
         ),
-      )..setPlaybackRate(videoDefaultPlaybackSpeed);
-      if (videoAutoFullscreen) _ypfController.toggleFullScreenMode();
+      )..setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
+
+      if (videoPreferences.videoAutoFullscreen) {
+        _mobileController?.toggleFullScreenMode();
+      }
+      _webController = null;
     } else {
-      _controller = YoutubePlayerController(
+      _webController = YoutubePlayerController(
         params: YoutubePlayerParams(
           showControls: true,
-          mute: videoAutoMute,
+          mute: _isMuted,
           showFullscreenButton: true,
-          loop: videoAutoLoop,
+          loop: videoPreferences.videoAutoLoop,
         ),
       );
-      _controller
-        ..loadVideoById(videoId: ypf.YoutubePlayer.convertUrlToId(widget.videoUrl)!)
-        ..setPlaybackRate(videoDefaultPlaybackSpeed);
-    }
 
-    setState(() => muted = videoAutoMute);
+      _webController?.loadVideoById(
+        videoId: videoId,
+        startSeconds: startSeconds.toDouble(),
+      );
+      _webController?.setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
+      _mobileController = null;
+    }
   }
 
   @override
   void dispose() {
-    if (Platform.isAndroid || Platform.isIOS) {
-      _ypfController.dispose();
-    } else {
-      _controller.close();
-    }
+    _mobileController?.dispose();
+    _webController?.close();
     super.dispose();
   }
 
-  bool autoPlayVideo() {
+  bool _shouldAutoPlay() {
     final videoAutoPlay = context.read<VideoPreferencesCubit>().state.videoAutoPlay;
-    final internetConnectionType = context.read<NetworkCheckerCubit>().state.internetConnectionType;
+    final connectionType = context.read<NetworkCheckerCubit>().state.internetConnectionType;
 
-    if (videoAutoPlay == VideoAutoPlay.always) {
-      return true;
-    } else if (videoAutoPlay == VideoAutoPlay.onWifi && internetConnectionType == InternetConnectionType.wifi) {
-      return true;
-    }
+    if (videoAutoPlay == VideoAutoPlay.always) return true;
+    if (videoAutoPlay == VideoAutoPlay.onWifi && connectionType == InternetConnectionType.wifi) return true;
 
     return false;
   }
 
+  int _extractStartSeconds(String url) {
+    try {
+      final uri = Uri.parse(url);
+      final queryParam = uri.queryParameters['t'] ?? uri.queryParameters['start'];
+
+      if (queryParam != null) {
+        return _parseTimeComponent(queryParam);
+      }
+
+      final fragment = uri.fragment;
+      if (fragment.isNotEmpty) {
+        final fragUri = Uri.parse('?${fragment.replaceFirst('!', '')}');
+        final fragParam = fragUri.queryParameters['t'];
+        if (fragParam != null) {
+          return _parseTimeComponent(fragParam);
+        }
+      }
+    } catch (_) {}
+    return 0;
+  }
+
+  int _parseTimeComponent(String time) {
+    if (RegExp(r'^\d+$').hasMatch(time)) {
+      return int.tryParse(time) ?? 0;
+    }
+
+    final regex = RegExp(r'(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?');
+    final match = regex.firstMatch(time);
+
+    if (match == null) return 0;
+
+    final hours = int.tryParse(match.group(1) ?? '0') ?? 0;
+    final minutes = int.tryParse(match.group(2) ?? '0') ?? 0;
+    final seconds = int.tryParse(match.group(3) ?? '0') ?? 0;
+
+    return Duration(hours: hours, minutes: minutes, seconds: seconds).inSeconds;
+  }
+
+  void _toggleMute() {
+    setState(() {
+      _isMuted = !_isMuted;
+      if (_isMuted) {
+        _mobileController?.mute();
+        _webController?.mute();
+      } else {
+        _mobileController?.unMute();
+        _webController?.unMute();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid || Platform.isIOS) {
-      // Use youtube_player_flutter to play the videos android ios
+    if (_isMobile && _mobileController != null) {
       return Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          bottom: false,
-          left: false,
-          right: false,
           child: Stack(
             children: [
               Center(
                 child: ypf.YoutubePlayerBuilder(
                   player: ypf.YoutubePlayer(
-                    aspectRatio: 16 / 10,
-                    controller: _ypfController,
+                    aspectRatio: 16 / 9,
+                    controller: _mobileController!,
                     actionsPadding: const EdgeInsets.only(bottom: 8),
-                    topActions: [],
+                    topActions: const [],
                   ),
                   builder: (context, player) => player,
-                  onExitFullScreen: () {
-                    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-                  },
+                  onExitFullScreen: () => SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 16.0),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                      color: Colors.white.withValues(alpha: 0.90),
-                    ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: _toggleMute,
+                        icon: Icon(
+                          _isMuted ? Icons.volume_off : Icons.volume_up,
+                          color: Colors.white,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                        icon: Icon(
+                          Icons.open_in_browser_rounded,
+                          semanticLabel: GlobalContext.l10n.openInBrowser,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ],
                   ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      muted ? _ypfController.unMute() : _ypfController.mute();
-                      setState(() => muted = !muted);
-                    },
-                    icon: Icon(
-                      muted ? Icons.volume_off : Icons.volume_up,
-                      color: Colors.white,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                    icon: Icon(
-                      Icons.open_in_browser_rounded,
-                      semanticLabel: GlobalContext.l10n.openInBrowser,
-                      color: Colors.white.withValues(alpha: 0.90),
-                    ),
-                  ),
-                  SizedBox(width: 16.0),
-                ],
+                ),
               ),
             ],
           ),
         ),
       );
-    } else {
-      /// Use youtube_player_iframe to play the videos
+    }
+
+    if (_webController != null) {
       return Material(
+        color: Colors.black,
         child: YoutubePlayerScaffold(
           autoFullScreen: false,
-          controller: _controller,
-          builder: (context, player) {
-            return LayoutBuilder(builder: (context, constraints) {
-              return player;
-            });
-          },
+          controller: _webController!,
+          builder: (context, player) => Center(child: player),
         ),
       );
     }
+
+    return const SizedBox.shrink();
   }
 }
