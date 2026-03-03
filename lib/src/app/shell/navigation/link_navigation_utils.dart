@@ -341,7 +341,6 @@ List<({String sourceName, String link})> generateAlternateSources(String link) {
 }
 
 List<({String sourceName, MessageFormat template})> _alternateSources = [
-  (sourceName: 'Archive Today', template: MessageFormat('https://archive.today/{link}')),
   (sourceName: 'Internet Archive', template: MessageFormat('https://web.archive.org/save/{link}')),
   (sourceName: 'Ground News', template: MessageFormat('https://ground.news/find?url={link}')),
 ];
