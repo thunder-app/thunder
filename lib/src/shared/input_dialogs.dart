@@ -274,30 +274,31 @@ bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
   return state.favorites.any((c) => c.id == community.id);
 }
 
-/// Shows a dialog which allows typing/search for an instance
+/// Shows a dialog which allows typing/search for an instance. Federated instances are loaded in the background; suggestions appear as they load.
 void showInstanceInputDialog(
   BuildContext context, {
   required String title,
-  required void Function(Map<String, dynamic>) onInstanceSelected,
+  required void Function(ThunderInstanceInfo) onInstanceSelected,
   Iterable<Map<String, dynamic>>? emptySuggestions,
 }) async {
-  Account? account = await fetchActiveProfile();
+  final account = await fetchActiveProfile();
+  final linkedInstances = <ThunderInstanceInfo>[];
+  unawaited(_loadLinkedInstances(account, linkedInstances));
 
-  final federatedInstances = await InstanceRepositoryImpl(account: account).federated();
-  final linkedInstances = federatedInstances['linked'];
-
-  Future<String?> onSubmitted({Map<String, dynamic>? payload, String? value}) async {
+  Future<String?> onSubmitted({ThunderInstanceInfo? payload, String? value}) async {
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
-    } else if (value != null) {
-      final Map<String, dynamic>? instance = linkedInstances.firstWhereOrNull((Map<String, dynamic> instance) => instance['domain'] == value);
+    } else if (value != null && value.trim().isNotEmpty) {
+      final trimmed = value.trim();
+      final instance = linkedInstances.firstWhereOrNull((ThunderInstanceInfo i) => i.domain == trimmed);
 
       if (instance != null) {
         onInstanceSelected(instance);
         Navigator.of(context).pop();
       } else {
-        return AppLocalizations.of(context)!.unableToFindInstance;
+        onInstanceSelected(ThunderInstanceInfo(domain: trimmed, name: trimmed));
+        Navigator.of(context).pop();
       }
     }
 
@@ -305,7 +306,7 @@ void showInstanceInputDialog(
   }
 
   if (context.mounted) {
-    showThunderTypeaheadDialog<Map<String, dynamic>>(
+    showThunderTypeaheadDialog<ThunderInstanceInfo>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance(1),
@@ -318,20 +319,39 @@ void showInstanceInputDialog(
   }
 }
 
-Future<List<Map<String, dynamic>>> getInstanceSuggestions(String query, List<Map<String, dynamic>>? emptySuggestions) async {
+Future<void> _loadLinkedInstances(Account? account, List<ThunderInstanceInfo> out) async {
+  if (account == null) return;
+
+  try {
+    final response = await InstanceRepositoryImpl(account: account).federated();
+    final List<ThunderInstanceInfo> parsed = List<ThunderInstanceInfo>.from(
+      (response['federated_instances']['linked'] as List).map<ThunderInstanceInfo>(
+        (instance) => ThunderInstanceInfo(id: instance['id'], domain: instance['domain'], name: instance['domain']),
+      ),
+    );
+
+    out
+      ..clear()
+      ..addAll(parsed);
+  } catch (_) {
+    // Dialog still works with empty list; user can type a domain and submit.
+  }
+}
+
+Future<List<ThunderInstanceInfo>> getInstanceSuggestions(String query, List<ThunderInstanceInfo>? emptySuggestions) async {
   if (query.isEmpty) {
     return [];
   }
 
-  List<Map<String, dynamic>> filteredInstances = emptySuggestions?.where((Map<String, dynamic> instance) => instance['domain'].contains(query)).toList() ?? [];
+  List<ThunderInstanceInfo> filteredInstances = emptySuggestions?.where((ThunderInstanceInfo instance) => instance.domain.contains(query)).toList() ?? [] as List<ThunderInstanceInfo>;
   return filteredInstances;
 }
 
-Widget buildInstanceSuggestionWidget(Map<String, dynamic> payload, {void Function(Map<String, dynamic>)? onSelected, BuildContext? context}) {
+Widget buildInstanceSuggestionWidget(ThunderInstanceInfo payload, {void Function(ThunderInstanceInfo)? onSelected, BuildContext? context}) {
   final theme = Theme.of(context!);
 
   return Tooltip(
-    message: '${payload['domain']}',
+    message: payload.domain,
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -340,7 +360,7 @@ Widget buildInstanceSuggestionWidget(Map<String, dynamic> payload, {void Functio
           backgroundColor: theme.colorScheme.secondaryContainer,
           maxRadius: 16.0,
           child: Text(
-            payload['domain'][0].toUpperCase(),
+            payload.domain[0].toUpperCase(),
             semanticsLabel: '',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -349,7 +369,7 @@ Widget buildInstanceSuggestionWidget(Map<String, dynamic> payload, {void Functio
           ),
         ),
         title: Text(
-          payload['domain'],
+          payload.domain,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

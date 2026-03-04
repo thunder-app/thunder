@@ -209,7 +209,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 context,
                 title: l10n.blockInstance,
                 onInstanceSelected: (instanceWithFederationState) {
-                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instanceWithFederationState['id'], unblock: false));
+                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instanceWithFederationState.id!, unblock: false));
                 },
               );
               break;
