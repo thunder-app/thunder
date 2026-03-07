@@ -15,6 +15,7 @@ export 'src/widgets/identity/scalable_text.dart';
 export 'src/widgets/layout/conditional_parent_widget.dart';
 export 'src/widgets/layout/thunder_bottom_sheet.dart';
 export 'src/widgets/layout/thunder_divider.dart';
+export 'src/widgets/media/thunder_image_viewer.dart';
 export 'src/widgets/pickers/bottom_sheet_list_picker.dart';
 export 'src/widgets/pickers/multi_picker_item.dart';
 export 'src/widgets/pickers/picker_item.dart';

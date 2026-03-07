@@ -40,10 +40,7 @@ void main() {
       ),
       act: (bloc) => bloc.add(InitializeAppEvent()),
       expect: () => [
-        isA<ThunderState>()
-            .having((state) => state.status, 'status', ThunderStatus.failure)
-            .having((state) => state.errorReason?.category, 'category',
-                AppErrorCategory.unexpected),
+        isA<ThunderState>().having((state) => state.status, 'status', ThunderStatus.failure).having((state) => state.errorReason?.category, 'category', AppErrorCategory.unexpected),
       ],
     );
 
@@ -62,11 +59,27 @@ void main() {
       ),
       act: (bloc) => bloc.add(UserPreferencesChangeEvent()),
       expect: () => [
-        isA<ThunderState>().having(
-            (state) => state.status, 'status', ThunderStatus.refreshing),
-        isA<ThunderState>()
-            .having((state) => state.status, 'status', ThunderStatus.success)
-            .having((state) => state.errorReason, 'errorReason', isNull),
+        isA<ThunderState>().having((state) => state.status, 'status', ThunderStatus.refreshing),
+        isA<ThunderState>().having((state) => state.status, 'status', ThunderStatus.success).having((state) => state.errorReason, 'errorReason', isNull),
+      ],
+    );
+
+    blocTest<ThunderBloc, ThunderState>(
+      'loads experimental features flag from preferences',
+      build: () => ThunderBloc(
+        preferencesStore: FakePreferencesStore(settings: {
+          LocalSettings.enableExperimentalFeatures: true,
+        }),
+        versionChecker: const _SuccessVersionChecker(),
+      ),
+      act: (bloc) => bloc.add(UserPreferencesChangeEvent()),
+      expect: () => [
+        isA<ThunderState>().having((state) => state.status, 'status', ThunderStatus.refreshing),
+        isA<ThunderState>().having((state) => state.status, 'status', ThunderStatus.success).having(
+              (state) => state.enableExperimentalFeatures,
+              'enableExperimentalFeatures',
+              isTrue,
+            ),
       ],
     );
   });

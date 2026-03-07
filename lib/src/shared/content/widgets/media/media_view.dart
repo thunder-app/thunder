@@ -15,7 +15,6 @@ import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/shared/links/widgets/link_bottom_sheet.dart';
 
 import 'package:thunder/src/shared/content/widgets/media/image_preview.dart';
-import 'package:thunder/src/shared/content/widgets/media/image_viewer.dart';
 import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
 import 'package:thunder/src/shared/content/widgets/media/link_information.dart';
 import 'package:thunder/src/shared/content/widgets/media/media_view_text.dart';
@@ -307,7 +306,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                       builder: (context) {
                         return FadeTransition(
                           opacity: _overlayAnimationController,
-                          child: ImageViewer(
+                          child: buildImageViewerWidget(
+                            context,
                             url: widget.media.thumbnailUrl ?? widget.media.mediaUrl,
                             postId: widget.postId,
                             navigateToPost: widget.navigateToPost,

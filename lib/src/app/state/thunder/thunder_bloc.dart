@@ -72,6 +72,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       String? appLanguageCode = _preferencesStore.getLocalSetting(LocalSettings.appLanguageCode) ?? 'en';
       bool useProfilePictureForDrawer = _preferencesStore.getLocalSetting(LocalSettings.useProfilePictureForDrawer) ?? false;
       ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(_preferencesStore.getLocalSetting(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
+      bool enableExperimentalFeatures = _preferencesStore.getLocalSetting(LocalSettings.enableExperimentalFeatures) ?? false;
       bool showNavigationLabels = _preferencesStore.getLocalSetting(LocalSettings.showNavigationLabels) ?? true;
       bool hideTopBarOnScroll = _preferencesStore.getLocalSetting(LocalSettings.hideTopBarOnScroll) ?? false;
       bool hideBottomBarOnScroll = _preferencesStore.getLocalSetting(LocalSettings.hideBottomBarOnScroll) ?? false;
@@ -90,6 +91,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         appLanguageCode: appLanguageCode,
         useProfilePictureForDrawer: useProfilePictureForDrawer,
         imageCachingMode: imageCachingMode,
+        enableExperimentalFeatures: enableExperimentalFeatures,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,
         hideBottomBarOnScroll: hideBottomBarOnScroll,

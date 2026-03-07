@@ -73,6 +73,10 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
       default:
         break;
     }
+
+    if (mounted) {
+      BlocProvider.of<ThunderBloc>(super.context).add(UserPreferencesChangeEvent());
+    }
   }
 
   @override
@@ -230,8 +234,6 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                       secondaryButtonText: l10n.cancel,
                       onPrimaryButtonPressed: (dialogContext, _) async {
-                        String path = join(await getDatabasesPath(), 'thunder.db');
-
                         final dbFolder = await getApplicationDocumentsDirectory();
                         final file = File(join(dbFolder.path, 'thunder.sqlite'));
 

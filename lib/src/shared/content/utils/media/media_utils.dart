@@ -19,6 +19,7 @@ import 'package:image_dimension_parser/image_dimension_parser.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/shared/content/widgets/media/experimental_image_viewer.dart';
 import 'package:thunder/src/shared/content/widgets/media/image_viewer.dart';
 
 final Map<String, Size> _imageDimensionsCache = <String, Size>{};
@@ -237,6 +238,41 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file.path];
 }
 
+bool useExperimentalImageViewer(BuildContext context) {
+  return context.read<ThunderBloc>().state.enableExperimentalFeatures;
+}
+
+Widget buildImageViewerWidget(
+  BuildContext context, {
+  String? altText,
+  Uint8List? bytes,
+  bool? clearMemoryCacheWhenDispose,
+  bool isPeek = false,
+  void Function()? navigateToPost,
+  int? postId,
+  String? url,
+}) {
+  if (useExperimentalImageViewer(context)) {
+    return ExperimentalImageViewer(
+      altText: altText,
+      bytes: bytes,
+      isPeek: isPeek,
+      navigateToPost: navigateToPost,
+      url: url,
+    );
+  }
+
+  return ImageViewer(
+    url: url,
+    bytes: bytes,
+    postId: postId,
+    navigateToPost: navigateToPost,
+    altText: altText,
+    isPeek: isPeek,
+    clearMemoryCacheWhenDispose: clearMemoryCacheWhenDispose ?? false,
+  );
+}
+
 void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText, bool? clearMemoryCacheWhenDispose}) {
   final resolvedClearMemoryCacheWhenDispose = clearMemoryCacheWhenDispose ?? context.read<ThunderBloc>().state.imageCachingMode == ImageCachingMode.relaxed;
 
@@ -246,7 +282,8 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
       transitionDuration: const Duration(milliseconds: 100),
       reverseTransitionDuration: const Duration(milliseconds: 50),
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return ImageViewer(
+        return buildImageViewerWidget(
+          context,
           url: url,
           bytes: bytes,
           postId: postId,
