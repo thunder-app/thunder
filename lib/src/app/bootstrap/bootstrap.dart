@@ -10,16 +10,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/app/shell/thunder_app.dart';
-import 'package:thunder/src/app/bootstrap/preferences_migration.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/features/session/api.dart';
 
+/// Initializes Thunder, including setting up the database, user preferences, and session management.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Fixes an issue with older Android devices connecting to instances with LetsEncrypt certificates
+    // Fixes an issue with older Android devices connecting to instances with LetsEncrypt certificates.
     // https://github.com/thunder-app/thunder/pull/1675
     final certificate = await PlatformAssetBundle().load('assets/ca/isrgrootx1.pem');
     SecurityContext.defaultContext.setTrustedCertificatesBytes(certificate.buffer.asUint8List());
@@ -36,11 +36,9 @@ Future<void> bootstrap() async {
   await UserPreferences.instance.initialize();
   await performSharedPreferencesMigration();
 
-  final account = await fetchActiveProfile();
-
   runApp(
-    BlocProvider<ProfileBloc>(
-      create: (context) => createProfileBloc(account)..add(InitializeAuth()),
+    BlocProvider<SessionBloc>(
+      create: (context) => createSessionBloc()..add(const SessionInitialized()),
       child: const ThunderApp(),
     ),
   );

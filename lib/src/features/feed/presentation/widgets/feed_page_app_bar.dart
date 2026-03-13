@@ -60,7 +60,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
   @override
   Widget build(BuildContext context) {
     final feedBloc = context.read<FeedBloc>();
-    final thunderBloc = context.read<ThunderBloc>();
+    final thunderBloc = context.read<ThunderCubit>();
     final ProfileState profileState = context.read<ProfileBloc>().state;
 
     return BlocListener<FeedBloc, FeedState>(

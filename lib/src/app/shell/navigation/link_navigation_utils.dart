@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:intl/message_format.dart';
-import 'package:thunder/src/features/account/api.dart';
-import 'package:thunder/src/features/community/api.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
+import 'package:thunder/src/features/community/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
@@ -22,11 +21,12 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/media/widgets/video_player.dart';
 import 'package:thunder/src/features/user/api.dart';
 
 void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {
-  final thunderPreferences = context.read<ThunderBloc>().state;
+  final thunderPreferences = context.read<ThunderCubit>().state;
   final browserMode = thunderPreferences.browserMode;
   final openInReaderMode = thunderPreferences.openInReaderMode;
 
@@ -128,7 +128,7 @@ void _showVideoPlayer(BuildContext context, {required String url, int? postId}) 
 /// Attempts to perform in-app navigtion to communities, users, posts, and comments
 /// Before falling back to opening in the browser (either Custom Tabs or system browser, as specified by the user).
 void handleLink(BuildContext context, {required String url, bool forceOpenInBrowser = false}) async {
-  final account = context.read<ProfileBloc>().state.account;
+  final account = resolveEffectiveAccount(context);
 
   // Try navigating to community
   String? communityName = await getLemmyCommunity(url);
@@ -273,7 +273,7 @@ Future<bool> _testValidCommunity(BuildContext context, String link, String commu
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
     await CommunityRepositoryImpl(account: account).getCommunity(name: communityName);
     return true;
   } catch (e) {
@@ -302,7 +302,7 @@ Future<bool> _testValidUser(BuildContext context, String link, String userName, 
     // Since this may take a while, show a loading page.
     showLoadingPage(context);
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
     await UserRepositoryImpl(account: account).getUser(username: userName);
     return true;
   } catch (e) {

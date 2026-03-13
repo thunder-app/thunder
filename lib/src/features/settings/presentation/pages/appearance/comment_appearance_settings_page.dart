@@ -103,7 +103,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<CommentPreferencesCubit>().reload();
     }
   }
@@ -122,7 +122,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await initPreferences();
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<CommentPreferencesCubit>().reload();
     }
   }

@@ -64,7 +64,7 @@ class CommentCardHeader extends StatelessWidget {
                       opacity: 1.0,
                       constraints: constraints,
                     ),
-                    CommentCardHeaderScore(score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
+                    CommentCardHeaderScore(account: account, score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
                   ],
                 ),
                 Row(

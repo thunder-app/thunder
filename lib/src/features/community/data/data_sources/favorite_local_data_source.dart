@@ -39,7 +39,9 @@ class Favorite {
   // A method that retrieves all favourites from the database
   static Future<List<Favorite>> favorites(String accountId) async {
     try {
-      return (await database.favorites.all().get()).map((favorite) => Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId)).toList();
+      return (await (database.select(database.favorites)..where((table) => table.accountId.equals(int.parse(accountId)))).get())
+          .map((favorite) => Favorite(id: favorite.id.toString(), accountId: favorite.accountId.toString(), communityId: favorite.communityId))
+          .toList();
     } catch (e) {
       debugPrint(e.toString());
       return [];

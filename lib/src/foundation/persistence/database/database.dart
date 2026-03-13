@@ -11,12 +11,12 @@ import 'package:thunder/src/foundation/primitives/enums/draft_type.dart';
 import 'database.steps.dart';
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts])
+@DriftDatabase(tables: [Accounts, Favorites, LocalSubscriptions, UserLabels, Drafts, SessionStateTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
@@ -127,6 +127,9 @@ class AppDatabase extends _$AppDatabase {
                 await customStatement('UPDATE drafts SET nsfw = 0 WHERE nsfw IS NULL');
                 await customStatement('CREATE UNIQUE INDEX IF NOT EXISTS drafts_single_active_idx ON drafts(active) WHERE active = 1');
               },
+              from8To9: (m, schema) async {
+                await m.createTable(schema.sessionState);
+              },
             ),
           );
 
@@ -166,7 +169,9 @@ Future<void> _onDowngrade(AppDatabase database, int fromVersion, int toVersion) 
 }
 
 Future<void> _onDownGradeOneStep(AppDatabase database, int fromVersion, int toVersion) async {
-  if (fromVersion == 8 && toVersion == 7) {
+  if (fromVersion == 9 && toVersion == 8) {
+    await database.customStatement('DROP TABLE IF EXISTS session_state');
+  } else if (fromVersion == 8 && toVersion == 7) {
     await database.customStatement('DROP INDEX IF EXISTS drafts_single_active_idx');
 
     // Drop active, account_id, nsfw, and language_id columns from drafts

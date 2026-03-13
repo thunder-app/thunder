@@ -14,6 +14,7 @@ import 'package:thunder/src/features/moderator/moderator.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/features/session/api.dart';
 
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
@@ -35,8 +36,10 @@ class ReportFeedPage extends StatefulWidget {
 class _ReportFeedPageState extends State<ReportFeedPage> {
   @override
   Widget build(BuildContext context) {
+    final account = resolveActiveAccount(context);
+
     return BlocProvider<ReportBloc>(
-      create: (_) => createReportBloc()..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
+      create: (_) => createReportBloc(account)..add(const ReportFeedFetchedEvent(reportFeedType: ReportFeedType.post, reset: true)),
       child: const ReportFeedView(),
     );
   }
@@ -131,6 +134,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           showDragHandle: true,
                           context: context,
                           builder: (builderContext) => ReportFilterBottomSheet(
+                            account: context.read<ReportBloc>().account,
                             status: showResolved ? ReportResolveStatus.all : ReportResolveStatus.unresolved,
                             onSubmit: (ReportResolveStatus status, ThunderCommunity? community) async => {
                               HapticFeedback.mediumImpact(),

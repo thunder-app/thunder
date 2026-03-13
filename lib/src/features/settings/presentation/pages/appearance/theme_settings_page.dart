@@ -308,7 +308,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<ThemePreferencesCubit>().reload();
     }
   }

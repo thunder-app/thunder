@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/widgets/chips/community_chip.dart';
@@ -169,12 +169,12 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
   }
 
   void determineUserGroups() {
-    final profileState = context.read<ProfileBloc>().state;
+    final account = resolveEffectiveAccount(context);
 
     if (widget.post.creator?.botAccount == true) userGroups.add(UserType.bot);
     if (widget.post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
     if (widget.post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
-    if (widget.post.creator?.id == profileState.account.userId) userGroups.add(UserType.self);
+    if (widget.post.creator?.id == account.userId) userGroups.add(UserType.self);
     if (widget.post.creator?.published.month == DateTime.now().month && widget.post.creator?.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
   }
 

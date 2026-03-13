@@ -135,7 +135,11 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     switch (action) {
       case UserBottomSheetAction.viewProfile:
         Navigator.of(context).pop();
-        navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user.id);
+        Future.microtask(() {
+          if (widget.context.mounted) {
+            navigateToFeedPage(widget.context, account: widget.account, feedType: FeedType.user, userId: widget.user.id);
+          }
+        });
         break;
       case UserBottomSheetAction.blockUser:
         Navigator.of(context).pop();

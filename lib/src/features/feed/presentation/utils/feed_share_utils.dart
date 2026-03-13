@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/presentation/models/feed_share_options.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
 
 /// Shows a bottom modal sheet which allows sharing the given [community].
 Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity community) async {
   final l10n = AppLocalizations.of(context)!;
-  final account = await fetchActiveProfile();
+  final account = resolveEffectiveAccount(context);
 
   final communityLink = await getLemmyCommunity(community.actorId) ?? '';
   final lemmyLink = '!$communityLink';
@@ -74,7 +74,7 @@ Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity comm
 /// Shows a bottom modal sheet which allows sharing the given [person].
 Future<void> showUserShareSheet(BuildContext context, ThunderUser person) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
-  final account = await fetchActiveProfile();
+  final account = resolveEffectiveAccount(context);
 
   String user = await getLemmyUser(person.actorId) ?? '';
   String lemmyLink = '@$user';

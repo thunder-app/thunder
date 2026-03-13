@@ -239,7 +239,7 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
 }
 
 bool useExperimentalImageViewer(BuildContext context) {
-  return context.read<ThunderBloc>().state.enableExperimentalFeatures;
+  return context.read<ThunderCubit>().state.enableExperimentalFeatures;
 }
 
 Widget buildImageViewerWidget(
@@ -274,7 +274,7 @@ Widget buildImageViewerWidget(
 }
 
 void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText, bool? clearMemoryCacheWhenDispose}) {
-  final resolvedClearMemoryCacheWhenDispose = clearMemoryCacheWhenDispose ?? context.read<ThunderBloc>().state.imageCachingMode == ImageCachingMode.relaxed;
+  final resolvedClearMemoryCacheWhenDispose = clearMemoryCacheWhenDispose ?? context.read<ThunderCubit>().state.imageCachingMode == ImageCachingMode.relaxed;
 
   Navigator.of(context).push(
     PageRouteBuilder(

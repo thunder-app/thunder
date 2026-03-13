@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -16,6 +17,9 @@ import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.d
 
 /// A widget that displays information about a community.
 class CommunityInformation extends StatelessWidget {
+  final BuildContext launchContext;
+  final Account account;
+
   /// The community to display in the sidebar
   final ThunderCommunity community;
 
@@ -27,6 +31,8 @@ class CommunityInformation extends StatelessWidget {
 
   const CommunityInformation({
     super.key,
+    required this.launchContext,
+    required this.account,
     required this.community,
     this.instance,
     required this.moderators,
@@ -44,7 +50,7 @@ class CommunityInformation extends StatelessWidget {
           SidebarSectionHeader(value: l10n.information),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: CommonMarkdownBody(body: community.description ?? '', imageMaxWidth: MediaQuery.of(context).size.width),
+            child: CommonMarkdownBody(body: community.description ?? '', imageMaxWidth: MediaQuery.of(context).size.width, launchContext: launchContext),
           ),
           SidebarSectionHeader(value: l10n.stats),
           Padding(
@@ -55,7 +61,7 @@ class CommunityInformation extends StatelessWidget {
             SidebarSectionHeader(value: l10n.moderator(2)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: CommunityModeratorList(moderators: moderators),
+              child: CommunityModeratorList(launchContext: launchContext, account: account, moderators: moderators),
             ),
           ],
           SizedBox(height: MediaQuery.of(context).viewPadding.bottom + 32.0),
@@ -132,10 +138,13 @@ class CommunityStatsList extends StatelessWidget {
 
 /// A widget that displays a list of moderators for a community.
 class CommunityModeratorList extends StatelessWidget {
+  final BuildContext launchContext;
+  final Account account;
+
   /// The moderators of the community
   final List<ThunderUser> moderators;
 
-  const CommunityModeratorList({super.key, required this.moderators});
+  const CommunityModeratorList({super.key, required this.launchContext, required this.account, required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +152,7 @@ class CommunityModeratorList extends StatelessWidget {
       children: [
         for (final moderator in moderators)
           InkWell(
-            onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: moderator.id),
+            onTap: () => navigateToFeedPage(launchContext, account: account, feedType: FeedType.user, userId: moderator.id),
             borderRadius: BorderRadius.circular(50),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

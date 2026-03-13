@@ -9,6 +9,7 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
@@ -180,7 +181,7 @@ class InstanceUserTab extends StatelessWidget {
   }
 }
 
-class InstancePostTab extends StatelessWidget {
+class InstancePostTab extends StatefulWidget {
   /// The account to use for the tab.
   final Account account;
 
@@ -196,23 +197,67 @@ class InstancePostTab extends StatelessWidget {
   const InstancePostTab({super.key, required this.account, required this.searchSortType, required this.onRetry, this.query});
 
   @override
+  State<InstancePostTab> createState() => _InstancePostTabState();
+}
+
+class _InstancePostTabState extends State<InstancePostTab> {
+  late final PostListActionController _postListActionController;
+  List<ThunderPost> _posts = const <ThunderPost>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _postListActionController = PostListActionController(postRepository: PostRepositoryImpl(account: widget.account));
+    _posts = context.read<InstancePageBloc>().state.posts.items;
+  }
+
+  void _setPosts(List<ThunderPost> posts) {
+    if (!mounted) return;
+    setState(() => _posts = posts);
+  }
+
+  void _syncSourcePosts(List<ThunderPost> sourcePosts) {
+    _posts = _postListActionController.reconcile(sourcePosts: sourcePosts, currentPosts: _posts);
+  }
+
+  Future<void> _handleVoteAction(ThunderPost post, int voteType) async => _setPosts(await _postListActionController.vote(_posts, post, voteType));
+
+  Future<void> _handleSaveAction(ThunderPost post, bool saved) async => _setPosts(await _postListActionController.save(_posts, post, saved));
+
+  Future<void> _handleReadAction(ThunderPost post, bool read) async => _setPosts(await _postListActionController.read(_posts, post, read));
+
+  Future<void> _handleHideAction(ThunderPost post, bool hidden) async => _setPosts(await _postListActionController.hide(_posts, post, hidden));
+
+  Future<void> _handleMultiReadAction(List<int> postIds, bool read) async => _setPosts(await _postListActionController.multiRead(_posts, postIds, read));
+
+  @override
   Widget build(BuildContext context) {
-    final tabletMode = context.read<ThunderBloc>().state.tabletMode;
+    final tabletMode = context.read<ThunderCubit>().state.tabletMode;
 
     return BlocBuilder<InstancePageBloc, InstancePageState>(
       buildWhen: (previous, current) => previous.posts != current.posts,
       builder: (context, state) {
+        _syncSourcePosts(state.posts.items);
+
         return _InstanceTabScaffold<ThunderPost>(
           state: state.posts,
           storageKey: 'posts',
-          onRetry: onRetry,
-          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstancePosts(page: state.posts.page + 1, sortType: searchSortType, query: query)),
+          onRetry: widget.onRetry,
+          onLoadMore: () => context.read<InstancePageBloc>().add(GetInstancePosts(page: state.posts.page + 1, sortType: widget.searchSortType, query: widget.query)),
           loadingWidget: SliverMainAxisGroup(
             slivers: [
               FeedPostCardList(
                 markPostReadOnScroll: false,
-                posts: state.posts.items,
+                posts: _posts,
                 tabletMode: tabletMode,
+                onVoteAction: _handleVoteAction,
+                onSaveAction: _handleSaveAction,
+                onReadAction: _handleReadAction,
+                onHideAction: _handleHideAction,
+                onMultiReadAction: _handleMultiReadAction,
+                onPostUpdated: (post) => _setPosts(_postListActionController.updatePost(_posts, post)),
+                onDismissHiddenPost: (postId) => _setPosts(_postListActionController.dismissHiddenPost(_posts, postId)),
+                onDismissBlocked: ({userId, communityId}) => _setPosts(_postListActionController.dismissBlocked(_posts, userId: userId, communityId: communityId)),
               ),
               if (state.posts.status == InstancePageStatus.loading) const SliverToBoxAdapter(child: Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))),
             ],

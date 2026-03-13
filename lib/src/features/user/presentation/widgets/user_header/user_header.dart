@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
@@ -56,17 +57,26 @@ class _UserHeaderState extends State<UserHeader> {
 
     content = GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => showModalBottomSheet(
-        context: context,
-        showDragHandle: true,
-        enableDrag: true,
-        useSafeArea: true,
-        scrollControlDisabledMaxHeightRatio: 0.90,
-        builder: (context) => UserInformation(
-          user: widget.user,
-          moderates: widget.moderates,
-        ),
-      ),
+      onTap: () {
+        final account = resolveEffectiveAccount(context);
+
+        showModalBottomSheet(
+          context: context,
+          showDragHandle: true,
+          enableDrag: true,
+          useSafeArea: true,
+          scrollControlDisabledMaxHeightRatio: 0.90,
+          builder: (_) => wrapWithCapturedAccountContext(
+            context,
+            UserInformation(
+              launchContext: context,
+              account: account,
+              user: widget.user,
+              moderates: widget.moderates,
+            ),
+          ),
+        );
+      },
       child: _UserHeaderWithBanner(user: widget.user, child: content),
     );
 

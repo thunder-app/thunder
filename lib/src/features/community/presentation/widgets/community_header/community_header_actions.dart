@@ -218,7 +218,7 @@ class _AnonymousSubscriptionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
-    final subscriptions = context.watch<AnonymousSubscriptionsBloc>().state.urls;
+    final subscriptions = context.watch<AnonymousSubscriptionsCubit>().state.urls;
     final isSubscribed = subscriptions.contains(community.actorId);
 
     return ThunderActionChip(
@@ -228,10 +228,10 @@ class _AnonymousSubscriptionChip extends StatelessWidget {
         HapticFeedback.mediumImpact();
 
         if (isSubscribed) {
-          context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(urls: {community.actorId}));
+          context.read<AnonymousSubscriptionsCubit>().removeSubscriptions({community.actorId});
           showSnackbar(l10n.unsubscribed);
         } else {
-          context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {community}));
+          context.read<AnonymousSubscriptionsCubit>().addSubscriptions({community});
           showSnackbar(l10n.subscribed);
         }
       },

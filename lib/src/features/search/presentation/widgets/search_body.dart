@@ -19,6 +19,9 @@ import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
 
 /// The main body content of the search page showing results based on search state.
 class SearchBody extends StatelessWidget {
+  final Account account;
+  final List<ThunderCommunity> favorites;
+
   /// The scroll controller for infinite scrolling.
   final ScrollController scrollController;
 
@@ -42,6 +45,8 @@ class SearchBody extends StatelessWidget {
 
   const SearchBody({
     super.key,
+    required this.account,
+    required this.favorites,
     required this.scrollController,
     required this.communityToSearch,
     required this.accountInstance,
@@ -69,6 +74,7 @@ class SearchBody extends StatelessWidget {
       case SearchStatus.initial:
       case SearchStatus.trending:
         return _SearchInitialView(
+          favorites: favorites,
           communityToSearch: communityToSearch,
           accountInstance: accountInstance,
           isQueryEmpty: isQueryEmpty,
@@ -83,6 +89,7 @@ class SearchBody extends StatelessWidget {
       case SearchStatus.done:
       case SearchStatus.performingCommentAction:
         return _SearchResultsView(
+          account: account,
           scrollController: scrollController,
           communityToSearch: communityToSearch,
           onSetSearchType: onSetSearchType,
@@ -101,6 +108,7 @@ class SearchBody extends StatelessWidget {
 
 /// Widget that displays the initial view when no search has been performed.
 class _SearchInitialView extends StatelessWidget {
+  final List<ThunderCommunity> favorites;
   final ThunderCommunity? communityToSearch;
   final String accountInstance;
   final bool isQueryEmpty;
@@ -109,6 +117,7 @@ class _SearchInitialView extends StatelessWidget {
   final MetaSearchType searchType;
 
   const _SearchInitialView({
+    required this.favorites,
     required this.communityToSearch,
     required this.accountInstance,
     required this.isQueryEmpty,
@@ -133,6 +142,7 @@ class _SearchInitialView extends StatelessWidget {
       ),
       secondChild: showTrending
           ? _SearchTrendingView(
+              favorites: favorites,
               trendingCommunities: trendingCommunities!,
               accountInstance: accountInstance,
               onViewAll: onViewAll,
@@ -200,11 +210,13 @@ class _SearchEmptyPrompt extends StatelessWidget {
 
 /// Widget that displays the trending communities view.
 class _SearchTrendingView extends StatelessWidget {
+  final List<ThunderCommunity> favorites;
   final List<ThunderCommunity> trendingCommunities;
   final String accountInstance;
   final VoidCallback onViewAll;
 
   const _SearchTrendingView({
+    required this.favorites,
     required this.trendingCommunities,
     required this.accountInstance,
     required this.onViewAll,
@@ -215,66 +227,63 @@ class _SearchTrendingView extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
-    return BlocSelector<ProfileBloc, ProfileState, List<ThunderCommunity>>(
-      selector: (state) => state.favorites,
-      builder: (context, favorites) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (favorites.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Text(l10n.favorites, style: theme.textTheme.titleLarge),
+            ),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: favorites.length,
+              itemBuilder: (context, index) => CommunityListEntry(community: favorites[index], indicateFavorites: false),
+            ),
+            const SizedBox(height: 20),
+          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            child: Text(l10n.trendingCommunities, style: theme.textTheme.titleLarge),
+          ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: trendingCommunities.length,
+            itemBuilder: (context, index) => CommunityListEntry(community: trendingCommunities[index]),
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (favorites.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: Text(l10n.favorites, style: theme.textTheme.titleLarge),
-                ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: favorites.length,
-                  itemBuilder: (context, index) => CommunityListEntry(community: favorites[index], indicateFavorites: false),
-                ),
-                const SizedBox(height: 20),
-              ],
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text(l10n.trendingCommunities, style: theme.textTheme.titleLarge),
+              ThunderActionChip(label: l10n.viewAll, onPressed: onViewAll),
+              const SizedBox(width: 10),
+              ThunderActionChip(
+                trailingIcon: Icons.chevron_right_rounded,
+                label: l10n.exploreInstance,
+                onPressed: () => navigateToInstancePage(context, instanceHost: accountInstance, instanceId: null),
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: trendingCommunities.length,
-                itemBuilder: (context, index) => CommunityListEntry(community: trendingCommunities[index]),
-              ),
-              const SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ThunderActionChip(label: l10n.viewAll, onPressed: onViewAll),
-                  const SizedBox(width: 10),
-                  ThunderActionChip(
-                    trailingIcon: Icons.chevron_right_rounded,
-                    label: l10n.exploreInstance,
-                    onPressed: () => navigateToInstancePage(context, instanceHost: accountInstance, instanceId: null),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 10),
+        ],
+      ),
     );
   }
 }
 
 /// Widget that displays search results based on the current search type.
 class _SearchResultsView extends StatelessWidget {
+  final Account account;
   final ScrollController scrollController;
   final ThunderCommunity? communityToSearch;
   final ValueChanged<MetaSearchType> onSetSearchType;
   final SearchState state;
 
   const _SearchResultsView({
+    required this.account,
     required this.scrollController,
     required this.communityToSearch,
     required this.onSetSearchType,
@@ -291,19 +300,14 @@ class _SearchResultsView extends StatelessWidget {
       );
     }
 
-    return BlocSelector<ProfileBloc, ProfileState, Account>(
-      selector: (state) => state.account,
-      builder: (context, account) {
-        return switch (state.searchType) {
-          MetaSearchType.communities => SearchCommunitiesResults(scrollController: scrollController),
-          MetaSearchType.users => SearchUsersResults(scrollController: scrollController),
-          MetaSearchType.comments => SearchCommentsResults(scrollController: scrollController),
-          MetaSearchType.posts => SearchPostsResults(scrollController: scrollController, account: account),
-          MetaSearchType.instances => SearchInstancesResults(scrollController: scrollController),
-          _ => const SizedBox.shrink(),
-        };
-      },
-    );
+    return switch (state.searchType) {
+      MetaSearchType.communities => SearchCommunitiesResults(scrollController: scrollController),
+      MetaSearchType.users => SearchUsersResults(scrollController: scrollController),
+      MetaSearchType.comments => SearchCommentsResults(scrollController: scrollController),
+      MetaSearchType.posts => SearchPostsResults(scrollController: scrollController, account: account),
+      MetaSearchType.instances => SearchInstancesResults(scrollController: scrollController),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 

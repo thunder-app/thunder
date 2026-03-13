@@ -2,5 +2,6 @@ export 'database/database.dart' hide Account, Favorite, LocalSubscription, UserL
 export 'database/database_utils.dart';
 export 'database/tables.dart';
 export 'database/type_converters.dart';
-export 'preferences.dart';
-export 'database_provider.dart';
+export 'preferences/preferences.dart';
+export 'preferences/preferences_migration.dart';
+export 'database/initialization.dart';

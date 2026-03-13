@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText, ThunderIconLabel;
@@ -79,7 +81,13 @@ class PostCardMetadata extends StatelessWidget {
   Widget build(BuildContext context) {
     final postCardMetadataItems = context
         .select<FeedPreferencesCubit, List<PostCardMetadataItem>>((cubit) => postCardViewType == ViewMode.compact ? cubit.state.compactPostCardMetadataItems : cubit.state.cardPostCardMetadataItems);
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
+    bool showScores = true;
+
+    try {
+      showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
+    } catch (_) {
+      showScores = true;
+    }
 
     final dim = this.dim ?? false;
     final voteType = this.voteType ?? 0;
@@ -466,7 +474,7 @@ class UrlPostCardMetaData extends StatelessWidget {
 }
 
 /// Contains metadata related to the language of a given post. This is used in the [PostCardMetadata] widget.
-class LanguagePostCardMetaData extends StatelessWidget {
+class LanguagePostCardMetaData extends StatefulWidget {
   /// The language to display in the metadata. If null, no language will be displayed.
   /// Pass `-1` to indicate that this widget is for demonstration purposes, and `English` will be displayed.
   final int? languageId;
@@ -474,21 +482,73 @@ class LanguagePostCardMetaData extends StatelessWidget {
   /// Whether or not the post has been read. This is used to determine the color.
   final bool hasBeenRead;
 
+  /// Optional explicit account used to resolve languages in overlays.
+  final Account? account;
+
   const LanguagePostCardMetaData({
     super.key,
     this.languageId,
     this.hasBeenRead = false,
+    this.account,
   });
+
+  @override
+  State<LanguagePostCardMetaData> createState() => _LanguagePostCardMetaDataState();
+}
+
+class _LanguagePostCardMetaDataState extends State<LanguagePostCardMetaData> {
+  List<ThunderLanguage> _languages = const <ThunderLanguage>[];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadLanguagesIfNeeded();
+  }
+
+  Future<void> _loadLanguagesIfNeeded() async {
+    if (widget.languageId == null || widget.languageId == -1) return;
+
+    if (widget.account == null) {
+      try {
+        final languages = context.read<ProfileBloc>().state.siteResponse?.allLanguages ?? const <ThunderLanguage>[];
+        if (!mounted || languages.isEmpty && _languages.isEmpty) return;
+
+        if (_languages != languages) {
+          setState(() => _languages = languages);
+        }
+        return;
+      } catch (_) {
+        // Fall back to account-scoped site info when no ProfileBloc is available.
+      }
+    }
+
+    final account = widget.account ?? resolveEffectiveAccount(context);
+    if (account.anonymous) return;
+
+    final siteInfo = await ProfileSiteInfoCache.instance.get(account);
+    if (!mounted) return;
+
+    setState(() => _languages = siteInfo.allLanguages ?? const <ThunderLanguage>[]);
+  }
 
   @override
   Widget build(BuildContext context) {
     String? languageName;
 
-    if (languageId == -1) {
+    if (widget.languageId == -1) {
       languageName = 'English';
-    } else if (languageId != null) {
-      final languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
-      final language = languages.firstWhereOrNull((language) => language.id == languageId);
+    } else if (widget.languageId != null) {
+      List<ThunderLanguage> languages = _languages;
+
+      if (widget.account == null) {
+        try {
+          languages = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.allLanguages ?? <ThunderLanguage>[]);
+        } catch (_) {
+          languages = _languages;
+        }
+      }
+
+      final language = languages.firstWhereOrNull((language) => language.id == widget.languageId);
       languageName = language?.name;
     }
 
@@ -498,7 +558,7 @@ class LanguagePostCardMetaData extends StatelessWidget {
     final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
     final readColor = theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45);
-    final color = hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color;
+    final color = widget.hasBeenRead ? readColor : theme.textTheme.bodyMedium?.color;
 
     return Container(
       margin: const EdgeInsets.only(right: 8.0),
@@ -539,7 +599,7 @@ class CrossPostMetaData extends StatelessWidget {
 }
 
 class PostCommunityAndAuthor extends StatelessWidget {
-  const PostCommunityAndAuthor({super.key, required this.user, required this.community, this.dim});
+  const PostCommunityAndAuthor({super.key, required this.user, required this.community, this.dim, this.feedType, this.feedListType});
 
   /// The user to display in the metadata
   final ThunderUser user;
@@ -550,21 +610,28 @@ class PostCommunityAndAuthor extends StatelessWidget {
   /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
   final bool? dim;
 
+  /// Optional feed type override for contexts without a FeedBloc.
+  final FeedType? feedType;
+
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
   @override
   Widget build(BuildContext context) {
     final showPostAuthor = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showPostAuthor);
     final showCommunityIcons = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showCommunityIcons);
 
-    final feedType = context.select((FeedBloc bloc) => bloc.state.feedType);
-    final showUsername = (showPostAuthor || feedType == FeedType.community) && feedType != FeedType.user;
-    final showCommunityName = feedType != FeedType.community;
+    final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
+    final resolvedFeedType = feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
+    final showUsername = (showPostAuthor || resolvedFeedType == FeedType.community) && resolvedFeedType != FeedType.user;
+    final showCommunityName = resolvedFeedType != FeedType.community;
 
     final dim = this.dim ?? false;
 
     return Row(
       spacing: 6.0,
       children: [
-        if (showCommunityIcons && feedType != FeedType.community)
+        if (showCommunityIcons && resolvedFeedType != FeedType.community)
           GestureDetector(
             child: CommunityAvatar(community: community, radius: showUsername && showCommunityName ? 14 : 7, thumbnailSize: 50, format: 'png'),
             onTap: () => navigateToFeedPage(context, communityId: community.id, feedType: FeedType.community),
@@ -579,6 +646,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 actorId: community.actorId,
                 subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
                 dim: dim,
+                feedListType: feedListType,
               ),
               UserPostCardMetadata(
                 username: user.name,
@@ -595,6 +663,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             actorId: community.actorId,
             subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
             dim: dim,
+            feedListType: feedListType,
           )
         else if (showUsername)
           UserPostCardMetadata(
@@ -616,6 +685,7 @@ class CommunityPostCardMetadata extends StatelessWidget {
     this.actorId,
     required this.dim,
     required this.subscribed,
+    this.feedListType,
   });
 
   /// The name of the community
@@ -633,6 +703,9 @@ class CommunityPostCardMetadata extends StatelessWidget {
   /// Whether the user is subscribed to the community
   final bool subscribed;
 
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
   Color? _transformColor(Color? color) => dim ? color?.withValues(alpha: 0.45) : color?.withValues(alpha: 0.75);
 
   @override
@@ -640,10 +713,11 @@ class CommunityPostCardMetadata extends StatelessWidget {
     final theme = Theme.of(context);
 
     final fontScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
-    final feedListType = context.select((FeedBloc bloc) => bloc.state.feedListType);
+    final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
+    final resolvedFeedListType = feedListType ?? (hasFeedBloc ? context.select<FeedBloc, FeedListType?>((bloc) => bloc.state.feedListType) : null);
 
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
-    final showCommunitySubscription = (feedListType == FeedListType.all || feedListType == FeedListType.local) && subscribed;
+    final showCommunitySubscription = (resolvedFeedListType == FeedListType.all || resolvedFeedListType == FeedListType.local) && subscribed;
 
     Widget child = CommunityFullNameWidget(name: communityName, displayName: displayName, instance: instanceName, fontScale: fontScale, transformColor: _transformColor);
 

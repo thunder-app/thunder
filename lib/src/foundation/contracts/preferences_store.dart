@@ -1,5 +1,5 @@
 import 'package:thunder/src/foundation/primitives/enums/local_settings.dart';
-import 'package:thunder/src/foundation/persistence/preferences.dart';
+import 'package:thunder/src/foundation/persistence/preferences/preferences.dart';
 
 abstract class PreferencesStore {
   T? getLocalSetting<T>(LocalSettings setting);

@@ -15,7 +15,7 @@ void navigateToNotificationPage(
   // It can take a little while to set up notifications, so show a loading page
   showLoadingPage(context);
 
-  final thunderBloc = context.read<ThunderBloc>();
+  final thunderBloc = context.read<ThunderCubit>();
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final themeCubit = context.read<ThemePreferencesCubit>();
   final reduceAnimations = themeCubit.state.reduceAnimations;

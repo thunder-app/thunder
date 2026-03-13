@@ -101,6 +101,7 @@ dev_dependencies:
   mocktail: ^1.0.4
   sqflite: ^2.4.0
   sqflite_common_ffi: ^2.3.4
+  bloc_lint: ^0.4.0
 
 flutter:
   uses-material-design: true

@@ -10,7 +10,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
@@ -114,7 +113,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
   }
 
   void _updateIsOwnPost() {
-    final userId = context.read<ProfileBloc>().state.account.userId;
+    final userId = context.read<PostBloc>().account.userId;
     isOwnPost = widget.post.creator?.id == userId;
   }
 
@@ -255,7 +254,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (postAction) {
                   case PostAction.hide:
-                    context.read<FeedUiCubit>().dismissHiddenPost(post!.id);
+                    FeedActionScope.maybeOf(context)?.dismissHiddenPost(post!.id);
                     break;
                   default:
                     break;
@@ -263,7 +262,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (userAction) {
                   case UserAction.block:
-                    context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
+                    FeedActionScope.maybeOf(context)?.dismissBlocked(userId: post!.creator!.id);
                     break;
                   default:
                     break;
@@ -271,7 +270,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
                 switch (communityAction) {
                   case CommunityAction.block:
-                    context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
+                    FeedActionScope.maybeOf(context)?.dismissBlocked(communityId: post!.community!.id);
                     break;
                   default:
                     break;

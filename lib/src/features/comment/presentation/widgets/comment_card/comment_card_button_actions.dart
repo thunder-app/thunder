@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -11,7 +12,9 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 /// Displays a row of actions that can be performed on a comment.
 ///
 /// This is only shown when comment button actions are enabled.
-class CommentCardButtonActions extends StatelessWidget {
+class CommentCardButtonActions extends StatefulWidget {
+  final Account account;
+
   /// The comment to perform actions on
   final ThunderComment comment;
 
@@ -26,6 +29,7 @@ class CommentCardButtonActions extends StatelessWidget {
 
   const CommentCardButtonActions({
     super.key,
+    required this.account,
     required this.comment,
     required this.isOwnComment,
     required this.onAction,
@@ -33,13 +37,43 @@ class CommentCardButtonActions extends StatelessWidget {
   });
 
   @override
+  State<CommentCardButtonActions> createState() => _CommentCardButtonActionsState();
+}
+
+class _CommentCardButtonActionsState extends State<CommentCardButtonActions> {
+  bool _downvotesEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSiteInfo();
+  }
+
+  @override
+  void didUpdateWidget(covariant CommentCardButtonActions oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.account.id != widget.account.id || oldWidget.account.instance != widget.account.instance || oldWidget.account.anonymous != widget.account.anonymous) {
+      _loadSiteInfo();
+    }
+  }
+
+  Future<void> _loadSiteInfo() async {
+    if (widget.account.anonymous) {
+      if (!mounted) return;
+      setState(() => _downvotesEnabled = true);
+      return;
+    }
+
+    final siteInfo = await ProfileSiteInfoCache.instance.get(widget.account);
+    if (!mounted) return;
+    setState(() => _downvotesEnabled = siteInfo.site.enableDownvotes ?? true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    // TODO: Check if the account's instance has downvotes enabled rather than the current profile bloc
-    final downvotesEnabled = context.select<ProfileBloc, bool>((bloc) => bloc.state.downvotesEnabled);
-
-    final voteType = comment.myVote ?? 0;
+    final voteType = widget.comment.myVote ?? 0;
     final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
     final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
@@ -47,16 +81,16 @@ class CommentCardButtonActions extends StatelessWidget {
       _CommentCardButtonAction(
         icon: Icons.more_horiz_rounded,
         label: l10n.actions,
-        onAction: onBottomSheetOpen,
+        onAction: widget.onBottomSheetOpen,
       )
     ];
 
-    if (isOwnComment) {
+    if (widget.isOwnComment) {
       widgets.add(
         _CommentCardButtonAction(
           icon: Icons.edit_rounded,
           label: l10n.edit,
-          onAction: () => onAction(SwipeAction.edit),
+          onAction: () => widget.onAction(SwipeAction.edit),
         ),
       );
     } else {
@@ -64,7 +98,7 @@ class CommentCardButtonActions extends StatelessWidget {
         _CommentCardButtonAction(
           icon: Icons.reply_rounded,
           label: l10n.reply(1),
-          onAction: () => onAction(SwipeAction.reply),
+          onAction: () => widget.onAction(SwipeAction.reply),
         ),
       );
     }
@@ -74,17 +108,17 @@ class CommentCardButtonActions extends StatelessWidget {
         icon: Icons.arrow_upward,
         label: voteType == 1 ? l10n.upvoted : l10n.upvote,
         color: voteType == 1 ? upvoteColor : null,
-        onAction: () => onAction(SwipeAction.upvote),
+        onAction: () => widget.onAction(SwipeAction.upvote),
       ),
     );
 
-    if (downvotesEnabled) {
+    if (_downvotesEnabled) {
       widgets.add(
         _CommentCardButtonAction(
           icon: Icons.arrow_downward,
           label: voteType == -1 ? l10n.downvoted : l10n.downvote,
           color: voteType == -1 ? downvoteColor : null,
-          onAction: () => onAction(SwipeAction.downvote),
+          onAction: () => widget.onAction(SwipeAction.downvote),
         ),
       );
     }

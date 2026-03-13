@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});
@@ -18,35 +19,35 @@ class DiscussionLanguageSelector extends StatefulWidget {
 }
 
 class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
-  List<ThunderLanguage> _languages = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    final state = context.read<UserSettingsBloc>().state;
-    setState(() => _languages = state.siteResponse?.allLanguages ?? []);
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<UserSettingsBloc, UserSettingsState>(
+    return BlocConsumer<AccountSettingsCubit, AccountSettingsState>(
+      listener: (context, state) {
+        if (state.status == AccountSettingsStatus.failure) {
+          showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+        } else if (state.status == AccountSettingsStatus.success) {
+          context.read<ProfileBloc>().add(FetchProfileSettings());
+        }
+      },
       builder: (context, state) {
+        final languages = state.siteResponse?.allLanguages ?? const <ThunderLanguage>[];
         final selectedLanguages = state.siteResponse?.myUser?.discussionLanguages ?? [];
-        final discussionLanguages = selectedLanguages.map((id) => _languages.firstWhere((language) => language.id == id)).toList();
+        final discussionLanguages = selectedLanguages.map((id) => languages.firstWhere((language) => language.id == id)).toList();
 
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () => showLanguageInputDialog(
               context,
               title: l10n.addDiscussionLanguage,
+              account: context.read<ProfileBloc>().state.account,
               excludedLanguageIds: [-1],
+              suggestions: languages,
               onLanguageSelected: (language) {
                 List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
-                context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
               },
             ),
             child: const Icon(Icons.add_rounded),
@@ -89,7 +90,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                           primaryButtonText: l10n.remove,
                           onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
                             final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                            context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                            context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
                             Navigator.of(dialogContext).pop();
                           },
                           secondaryButtonText: l10n.cancel,
@@ -97,7 +98,7 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
                         );
                       } else {
                         final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                        context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList()));
+                        context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
                       }
                     },
                   ),

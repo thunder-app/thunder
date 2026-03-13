@@ -5,6 +5,7 @@ export 'domain/enums/enums.dart';
 export 'presentation/pages/pages.dart';
 export 'presentation/utils/post_media_utils.dart';
 export 'presentation/utils/post_optimistic_utils.dart';
+export 'presentation/utils/post_list_action_controller.dart';
 export 'presentation/utils/user_label_dialog_utils.dart';
 export 'presentation/widgets/widgets.dart';
 export 'package:thunder/src/foundation/primitives/models/thunder_post.dart';

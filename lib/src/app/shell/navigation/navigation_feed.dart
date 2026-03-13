@@ -7,9 +7,10 @@ part of 'navigation_utils.dart';
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
 /// If [feedType] is [FeedType.user], one of [userId] or [username] must be provided
 ///
-/// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderBloc]
+/// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderCubit]
 Future<void> navigateToFeedPage(
   BuildContext context, {
+  Account? account,
   required FeedType feedType,
   FeedListType? feedListType,
   PostSortType? postSortType,
@@ -18,25 +19,22 @@ Future<void> navigateToFeedPage(
   String? username,
   int? userId,
 }) async {
-  // Push navigation
-  ProfileBloc profileBloc = context.read<ProfileBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  final routeScope = resolveAccountAwareRouteScope(context, account: account, includeThunderCubit: true);
+  final effectiveAccount = routeScope.account;
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final themeCubit = context.read<ThemePreferencesCubit>();
   final feedCubit = context.read<FeedPreferencesCubit>();
-  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  final anonymousSubscriptionsCubit = fetchAnonymousSubscriptionsCubit(context);
 
   final bool reduceAnimations = themeCubit.state.reduceAnimations;
+  final defaultPostSortType = postSortType ?? routeScope.profileBloc?.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
   if (feedType == FeedType.general) {
     return context.read<FeedBloc>().add(
           FeedFetchedEvent(
             feedType: feedType,
             feedListType: feedListType,
-            postSortType: postSortType ??
-                (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                    ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
-                    : feedCubit.state.defaultPostSortType),
+            postSortType: defaultPostSortType,
             communityId: communityId,
             communityName: communityName,
             userId: userId,
@@ -56,20 +54,22 @@ Future<void> navigateToFeedPage(
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
-    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: profileBloc.state.isLoggedIn, state: gestureCubit.state, isFeedPage: true) || !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
+    canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: !effectiveAccount.anonymous, state: gestureCubit.state, isFeedPage: true) || !gestureCubit.state.enableFullScreenSwipeNavigationGesture,
     builder: (context) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: profileBloc),
-        BlocProvider.value(value: thunderBloc),
-        BlocProvider.value(value: anonymousSubscriptionsBloc),
-      ],
+      providers: routeScope.providers(
+        provideThunderCubit: true,
+        extraProviders: [
+          if (anonymousSubscriptionsCubit != null)
+            BlocProvider<AnonymousSubscriptionsCubit>.value(value: anonymousSubscriptionsCubit)
+          else
+            BlocProvider<AnonymousSubscriptionsCubit>(create: (_) => AnonymousSubscriptionsCubit()..loadSubscribedCommunities()),
+        ],
+      ),
       child: Material(
         child: FeedPage(
+          account: effectiveAccount,
           feedType: feedType,
-          postSortType: postSortType ??
-              (profileBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType != null
-                  ? profileBloc.state.siteResponse!.myUser!.localUserView.localUser.defaultSortType
-                  : feedCubit.state.defaultPostSortType),
+          postSortType: defaultPostSortType,
           communityName: communityName,
           communityId: communityId,
           userId: userId,
@@ -86,20 +86,20 @@ Future<void> navigateToFeedPage(
 
 /// Navigates to the search page
 ///
-/// The [context] parameter should contain the following blocs within its widget tree: [FeedBloc], [ThunderBloc]
+/// The [context] parameter should contain the following blocs within its widget tree: [FeedBloc], [ThunderCubit]
 void navigateToSearchPage(BuildContext context) {
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
   assert(hasFeedBloc == true);
 
   final feedBloc = context.read<FeedBloc>();
-  final thunderBloc = context.read<ThunderBloc>();
+  final routeScope = resolveAccountAwareRouteScope(context, includeThunderCubit: true);
 
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final themeCubit = context.read<ThemePreferencesCubit>();
   final reduceAnimations = themeCubit.state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
-  final account = context.read<ProfileBloc>().state.account;
+  final account = routeScope.account;
 
   Navigator.of(context).push(
     SwipeablePageRoute(
@@ -107,11 +107,13 @@ void navigateToSearchPage(BuildContext context) {
       canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => createSearchBloc(account)),
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: SearchPage(community: feedBloc.state.community),
+        providers: routeScope.providers(
+          provideThunderCubit: true,
+          extraProviders: [
+            BlocProvider<SearchBloc>(create: (context) => createSearchBloc(account)),
+          ],
+        ),
+        child: SearchPage(account: account, community: feedBloc.state.community),
       ),
     ),
   );

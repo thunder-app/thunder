@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -14,7 +15,9 @@ import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 ///
 /// The widget will display the combined score if [combineCommentScores] is true. Otherwise, it will display the votes separately.
 /// If [showScores] is false, only the vote indicator (upvote/downvote) will be shown.
-class CommentCardHeaderScore extends StatelessWidget {
+class CommentCardHeaderScore extends StatefulWidget {
+  final Account account;
+
   /// The combined score
   final int score;
 
@@ -29,6 +32,7 @@ class CommentCardHeaderScore extends StatelessWidget {
 
   const CommentCardHeaderScore({
     super.key,
+    required this.account,
     required this.score,
     required this.upvotes,
     required this.downvotes,
@@ -36,11 +40,42 @@ class CommentCardHeaderScore extends StatelessWidget {
   });
 
   @override
+  State<CommentCardHeaderScore> createState() => _CommentCardHeaderScoreState();
+}
+
+class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
+  bool _showScores = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSiteInfo();
+  }
+
+  @override
+  void didUpdateWidget(covariant CommentCardHeaderScore oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.account.id != widget.account.id || oldWidget.account.instance != widget.account.instance || oldWidget.account.anonymous != widget.account.anonymous) {
+      _loadSiteInfo();
+    }
+  }
+
+  Future<void> _loadSiteInfo() async {
+    if (widget.account.anonymous) {
+      if (!mounted) return;
+      setState(() => _showScores = true);
+      return;
+    }
+
+    final siteInfo = await ProfileSiteInfoCache.instance.get(widget.account);
+    if (!mounted) return;
+    setState(() => _showScores = siteInfo.myUser?.localUserView.localUser.showScores ?? true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
-
-    final showScores = context.select((ProfileBloc bloc) => bloc.state.siteResponse?.myUser?.localUserView.localUser.showScores) ?? true;
 
     final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
     final combineCommentScores = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.combineCommentScores);
@@ -48,35 +83,35 @@ class CommentCardHeaderScore extends StatelessWidget {
     final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
     // Show only vote indicator if scores are hidden
-    if (!showScores) {
-      if (voteType == 1) return VoteIcon(type: voteType!, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale);
-      if (voteType == -1) return VoteIcon(type: voteType!, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale);
+    if (!_showScores) {
+      if (widget.voteType == 1) return VoteIcon(type: widget.voteType!, voteType: widget.voteType, color: upvoteColor, fontScale: metadataFontSizeScale);
+      if (widget.voteType == -1) return VoteIcon(type: widget.voteType!, voteType: widget.voteType, color: downvoteColor, fontScale: metadataFontSizeScale);
       return SizedBox.shrink();
     }
 
-    final scoreLabel = formatNumberToK(score);
-    final upvotesLabel = formatNumberToK(upvotes);
-    final downvotesLabel = formatNumberToK(downvotes);
+    final scoreLabel = formatNumberToK(widget.score);
+    final upvotesLabel = formatNumberToK(widget.upvotes);
+    final downvotesLabel = formatNumberToK(widget.downvotes);
 
     // Show the combined score
     if (combineCommentScores) {
       return Row(
         spacing: 2.0,
         children: [
-          VoteIcon(type: 1, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
+          VoteIcon(type: 1, voteType: widget.voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
           ScalableText(
             scoreLabel,
             semanticsLabel: l10n.xScore(scoreLabel),
             textScaleFactor: metadataFontSizeScale.textScaleFactor,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: (voteType != null && voteType != 0)
-                  ? voteType == 1
+              color: (widget.voteType != null && widget.voteType != 0)
+                  ? widget.voteType == 1
                       ? upvoteColor
                       : downvoteColor
                   : theme.colorScheme.onSurface,
             ),
           ),
-          VoteIcon(type: -1, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
+          VoteIcon(type: -1, voteType: widget.voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
         ],
       );
     }
@@ -85,26 +120,26 @@ class CommentCardHeaderScore extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        VoteIcon(type: 1, voteType: voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
+        VoteIcon(type: 1, voteType: widget.voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
         const SizedBox(width: 2.0),
         ScalableText(
           upvotesLabel,
           semanticsLabel: l10n.xUpvotes(upvotesLabel),
           textScaleFactor: metadataFontSizeScale.textScaleFactor,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: (voteType == 1) ? upvoteColor : theme.colorScheme.onSurface,
+            color: (widget.voteType == 1) ? upvoteColor : theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(width: 10.0),
-        if (downvotes != 0) ...[
-          VoteIcon(type: -1, voteType: voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
+        if (widget.downvotes != 0) ...[
+          VoteIcon(type: -1, voteType: widget.voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
           const SizedBox(width: 2.0),
           ScalableText(
             downvotesLabel,
             semanticsLabel: l10n.xDownvotes(downvotesLabel),
             textScaleFactor: metadataFontSizeScale.textScaleFactor,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: (voteType == -1) ? downvoteColor : theme.colorScheme.onSurface,
+              color: (widget.voteType == -1) ? downvoteColor : theme.colorScheme.onSurface,
             ),
           ),
         ],

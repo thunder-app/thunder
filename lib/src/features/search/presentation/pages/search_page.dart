@@ -21,10 +21,12 @@ import 'package:thunder/packages/ui/ui.dart' show ListPickerItem;
 
 /// The main search page that handles search functionality.
 class SearchPage extends StatefulWidget {
+  final Account account;
+
   /// Limits the search to a specific community.
   final ThunderCommunity? community;
 
-  const SearchPage({super.key, this.community});
+  const SearchPage({super.key, required this.account, this.community});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -98,7 +100,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void onScroll() {
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent * 0.8) {
       final bloc = context.read<SearchBloc>();
-      final favorites = context.read<ProfileBloc>().state.favorites;
+      final favorites = _favoriteCommunities();
       final query = controller.text;
 
       if (query.isEmpty && !bloc.state.viewingAll) return;
@@ -142,12 +144,20 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
 
     if (controller.text.isNotEmpty || force || bloc.state.viewingAll) {
-      final favorites = context.read<ProfileBloc>().state.favorites;
+      final favorites = _favoriteCommunities();
       final triggerSearch = force || bloc.state.viewingAll;
 
       bloc.add(SearchStarted(query: controller.text, force: triggerSearch, favoriteCommunities: favorites));
     } else {
       bloc.add(const SearchReset());
+    }
+  }
+
+  List<ThunderCommunity> _favoriteCommunities() {
+    try {
+      return context.read<ProfileBloc>().state.favorites;
+    } catch (_) {
+      return const <ThunderCommunity>[];
     }
   }
 
@@ -211,7 +221,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     super.build(context);
 
     final l10n = GlobalContext.l10n;
-    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+    final account = widget.account;
+    final favorites = _favoriteCommunities();
 
     return BlocListener<SearchBloc, SearchState>(
       listenWhen: (previous, current) => previous.focusSearchId != current.focusSearchId,
@@ -239,6 +250,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               onShowSortPicker: showSortPicker,
             ),
             SearchBody(
+              account: account,
+              favorites: favorites,
               scrollController: scrollController,
               communityToSearch: widget.community,
               accountInstance: account.instance,

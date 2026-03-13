@@ -10,6 +10,7 @@ import 'package:thunder/src/features/user/user.dart';
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
 Future<FeedResult> fetchFeedItems({
+  required Account account,
   String? cursor,
   FeedListType? feedListType,
   PostSortType? postSortType,
@@ -22,8 +23,6 @@ Future<FeedResult> fetchFeedItems({
   bool showSaved = false,
   void Function()? notifyExcessiveApiCalls,
 }) async {
-  final account = await fetchActiveProfile();
-
   List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
   int desiredPosts = 20;

@@ -22,6 +22,7 @@ import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
@@ -75,7 +76,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
     }
 
     if (mounted) {
-      BlocProvider.of<ThunderBloc>(super.context).add(UserPreferencesChangeEvent());
+      BlocProvider.of<ThunderCubit>(super.context).reload();
     }
   }
 
@@ -204,7 +205,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         final cleared = await UserPreferences.clearAllPreferences();
 
                         if (cleared) {
-                          context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                          context.read<ThunderCubit>().reload();
                           showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
                         } else {
                           showSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
@@ -418,7 +419,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       ),
                       onTap: inboxNotificationType == NotificationType.unifiedPush
                           ? () async {
-                              final error = await requestTestNotification();
+                              final error = await requestTestNotification(resolveActiveAccount(context));
 
                               if (error == null) {
                                 showSnackbar(l10n.sentRequestForTestNotification);
@@ -457,7 +458,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                               );
 
                               if (result) {
-                                final error = await requestTestNotification();
+                                final error = await requestTestNotification(resolveActiveAccount(context));
 
                                 if (error == null) {
                                   showSnackbar(l10n.sentRequestForTestNotification);

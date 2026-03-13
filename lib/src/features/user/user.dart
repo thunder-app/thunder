@@ -1,6 +1,8 @@
 export 'domain/enums/user_action.dart';
 export 'package:thunder/src/foundation/primitives/models/thunder_my_user.dart';
-export 'presentation/state/user_settings_bloc.dart';
+export 'presentation/state/account_settings_cubit.dart';
+export 'presentation/state/user_blocks_cubit.dart';
+export 'presentation/state/user_media_cubit.dart';
 export 'presentation/pages/media_management_page.dart';
 export 'presentation/pages/user_settings_block_page.dart';
 export 'presentation/pages/user_settings_page.dart';

@@ -305,7 +305,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<FeedPreferencesCubit>().reload();
     }
   }
@@ -347,7 +347,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await initPreferences();
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<FeedPreferencesCubit>().reload();
     }
   }

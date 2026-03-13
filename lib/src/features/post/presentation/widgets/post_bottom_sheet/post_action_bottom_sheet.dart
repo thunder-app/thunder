@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/shared/share/share_action_bottom_sheet.dart';
 import 'package:thunder/src/features/user/user.dart';
@@ -27,7 +27,7 @@ void showPostActionBottomModalSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => PostActionBottomSheet(context: context, initialPage: page, post: post, onAction: onAction),
+    builder: (_) => wrapWithCapturedAccountContext(context, PostActionBottomSheet(context: context, initialPage: page, post: post, onAction: onAction)),
   );
 }
 
@@ -87,7 +87,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
   @override
   void initState() {
     super.initState();
-    account = context.read<ProfileBloc>().state.account;
+    account = resolveEffectiveAccount(widget.context);
 
     currentPage = widget.initialPage;
     BackButtonInterceptor.add(_handleBack);
@@ -173,6 +173,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.community => CommunityPostActionBottomSheet(
+          context: widget.context,
           account: account,
           post: widget.post,
           moderatedCommunities: moderatedCommunities,
@@ -190,6 +191,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           },
         ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
+          context: widget.context,
           account: account,
           blockedInstances: blockedInstances,
           userInstanceId: widget.post.creator?.instanceId,
@@ -236,7 +238,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
               if (currentPage == GeneralPostAction.general)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                  child: LanguagePostCardMetaData(languageId: widget.post.languageId),
+                  child: LanguagePostCardMetaData(languageId: widget.post.languageId, account: account),
                 ),
               const SizedBox(height: 16.0),
               actions,

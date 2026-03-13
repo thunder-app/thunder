@@ -91,7 +91,7 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
   Widget imagePreview(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final ThunderState thunderState = context.read<ThunderCubit>().state;
 
     return Container(
       clipBehavior: Clip.hardEdge,

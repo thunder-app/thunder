@@ -52,7 +52,7 @@ class _AccountPageAppBarState extends State<AccountPageAppBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderCubit>().state;
 
     return BlocListener<FeedBloc, FeedState>(
       listenWhen: (previous, current) => current.status == FeedStatus.initial,

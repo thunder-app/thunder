@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -24,67 +23,73 @@ class SearchPostsResults extends StatefulWidget {
 }
 
 class _SearchPostsResultsState extends State<SearchPostsResults> {
-  late final FeedBloc _feedBloc;
+  late final PostListActionController _postListActionController;
+  List<ThunderPost> _posts = const <ThunderPost>[];
 
   @override
   void initState() {
     super.initState();
-    _feedBloc = createFeedBloc(widget.account);
-
-    // Initialize with current posts
-    final posts = context.read<SearchBloc>().state.posts;
-    if (posts != null && posts.isNotEmpty) {
-      _feedBloc.add(PopulatePostsEvent(posts));
-    }
+    _postListActionController = PostListActionController(postRepository: PostRepositoryImpl(account: widget.account));
+    _posts = context.read<SearchBloc>().state.posts ?? const <ThunderPost>[];
   }
 
-  @override
-  void dispose() {
-    _feedBloc.close();
-    super.dispose();
+  void _setPosts(List<ThunderPost> posts) {
+    if (!mounted) return;
+    setState(() => _posts = posts);
+  }
+
+  Future<void> _handleVoteAction(ThunderPost post, int voteType) async => _setPosts(await _postListActionController.vote(_posts, post, voteType));
+
+  Future<void> _handleSaveAction(ThunderPost post, bool saved) async => _setPosts(await _postListActionController.save(_posts, post, saved));
+
+  Future<void> _handleReadAction(ThunderPost post, bool read) async => _setPosts(await _postListActionController.read(_posts, post, read));
+
+  Future<void> _handleHideAction(ThunderPost post, bool hidden) async => _setPosts(await _postListActionController.hide(_posts, post, hidden));
+
+  Future<void> _handleMultiReadAction(List<int> postIds, bool read) async => _setPosts(await _postListActionController.multiRead(_posts, postIds, read));
+
+  void _handleSourcePostsChanged(List<ThunderPost> sourcePosts) {
+    _setPosts(_postListActionController.reconcile(sourcePosts: sourcePosts, currentPosts: _posts));
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
+    final tabletMode = context.select<ThunderCubit, bool>((bloc) => bloc.state.tabletMode);
 
-    return BlocProvider.value(
-      value: _feedBloc,
-      child: BlocListener<SearchBloc, SearchState>(
-        listenWhen: (previous, current) => previous.posts != current.posts,
-        listener: (context, state) {
-          _feedBloc.add(PopulatePostsEvent(state.posts ?? []));
-        },
-        child: BlocSelector<SearchBloc, SearchState, SearchStatus>(
-          selector: (state) => state.status,
-          builder: (context, status) {
-            // Read posts from FeedBloc - this ensures post actions are reflected in the UI
-            return BlocSelector<FeedBloc, FeedState, List<ThunderPost>>(
-              selector: (state) => state.posts,
-              builder: (context, posts) {
-                return CustomScrollView(
-                  controller: widget.scrollController,
-                  slivers: [
-                    FeedPostCardList(
-                      posts: posts,
-                      tabletMode: tabletMode,
-                      markPostReadOnScroll: false,
+    return BlocListener<SearchBloc, SearchState>(
+      listenWhen: (previous, current) => previous.posts != current.posts,
+      listener: (context, state) => _handleSourcePostsChanged(state.posts ?? const <ThunderPost>[]),
+      child: BlocSelector<SearchBloc, SearchState, SearchStatus>(
+        selector: (state) => state.status,
+        builder: (context, status) {
+          return CustomScrollView(
+            controller: widget.scrollController,
+            slivers: [
+              FeedPostCardList(
+                posts: _posts,
+                tabletMode: tabletMode,
+                markPostReadOnScroll: false,
+                onVoteAction: _handleVoteAction,
+                onSaveAction: _handleSaveAction,
+                onReadAction: _handleReadAction,
+                onHideAction: _handleHideAction,
+                onMultiReadAction: _handleMultiReadAction,
+                onPostUpdated: (post) => _setPosts(_postListActionController.updatePost(_posts, post)),
+                onDismissHiddenPost: (postId) => _setPosts(_postListActionController.dismissHiddenPost(_posts, postId)),
+                onDismissBlocked: ({userId, communityId}) => _setPosts(_postListActionController.dismissBlocked(_posts, userId: userId, communityId: communityId)),
+              ),
+              if (status == SearchStatus.refreshing)
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: CircularProgressIndicator(),
                     ),
-                    if (status == SearchStatus.refreshing)
-                      const SliverToBoxAdapter(
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 10.0),
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

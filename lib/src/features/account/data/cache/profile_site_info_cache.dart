@@ -15,7 +15,7 @@ class ProfileSiteInfoCache {
   final _cacheByAccountKey = HashMap();
 
   /// Default time-to-live for cache entries
-  final defaultTTL = const Duration(seconds: 30);
+  final defaultTTL = const Duration(seconds: 300);
 
   /// Returns a unique key for the given [account]
   String _accountKey(Account account) => '${account.instance}:${account.anonymous}:${account.id}';

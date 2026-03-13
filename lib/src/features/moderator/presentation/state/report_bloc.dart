@@ -19,7 +19,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  ReportBloc({required LocalizationService localizationService})
+  ReportBloc({required this.account, required LocalizationService localizationService})
       : _localizationService = localizationService,
         super(const ReportState()) {
     /// Handles resetting the report feed to its initial state
@@ -53,6 +53,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     );
   }
 
+  final Account account;
   final LocalizationService _localizationService;
 
   /// Handles clearing any messages from the state
@@ -103,6 +104,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         if (state.status != ReportStatus.initial) add(ResetReportEvent());
 
         Map<String, dynamic> fetchReportsResult = await fetchReports(
+          account: account,
           page: 1,
           unresolved: !event.showResolved,
           communityId: event.communityId,
@@ -150,6 +152,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       List<ThunderCommentReport> commentReportViews = List.from(state.commentReports);
 
       Map<String, dynamic> fetchReportsResult = await fetchReports(
+        account: account,
         page: state.currentPage,
         unresolved: !state.showResolved,
         communityId: state.communityId,
@@ -242,7 +245,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           emit(state.copyWith(status: ReportStatus.success, postReports: optimisticPostReports));
           emit(state.copyWith(status: ReportStatus.fetching, postReports: optimisticPostReports));
 
-          bool success = await resolvePostReport(postReportView.id, value);
+          bool success = await resolvePostReport(account, postReportView.id, value);
           if (success) {
             return emit(state.copyWith(
               status: ReportStatus.success,
@@ -308,7 +311,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           emit(state.copyWith(status: ReportStatus.success, commentReports: optimisticCommentReports));
           emit(state.copyWith(status: ReportStatus.fetching, commentReports: optimisticCommentReports));
 
-          bool success = await resolveCommentReport(originalCommentReport.id, value);
+          bool success = await resolveCommentReport(account, originalCommentReport.id, value);
           if (success) {
             return emit(state.copyWith(
               status: ReportStatus.success,

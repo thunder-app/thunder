@@ -26,6 +26,12 @@ class PostCardViewCompact extends StatelessWidget {
   /// Determines whether the post should be dimmed or not. This is usually to indicate when a post has been read.
   final bool? indicateRead;
 
+  /// Optional feed type override for contexts without a FeedBloc.
+  final FeedType? feedType;
+
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
   /// Determines whether the media thumbnails should be shown or not.
   final bool showMedia;
 
@@ -39,6 +45,8 @@ class PostCardViewCompact extends StatelessWidget {
     required this.community,
     this.navigateToPost,
     this.indicateRead,
+    this.feedType,
+    this.feedListType,
     this.showMedia = true,
     required this.isLastTapped,
   });
@@ -81,7 +89,7 @@ class PostCardViewCompact extends StatelessWidget {
     final edited = post.updated != null;
     final mediaUrl = post.media.firstOrNull?.originalUrl;
 
-    final postCardAuthor = PostCommunityAndAuthor(user: creator, community: community, dim: dim);
+    final postCardAuthor = PostCommunityAndAuthor(user: creator, community: community, dim: dim, feedType: feedType, feedListType: feedListType);
 
     return Container(
       color: containerColor,

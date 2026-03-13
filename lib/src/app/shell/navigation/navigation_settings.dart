@@ -4,15 +4,13 @@ part of 'navigation_utils.dart';
 ///
 /// Additionally, the [settingToHighlight] parameter can be used to highlight a specific setting when the page is opened.
 void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSettings? settingToHighlight}) {
-  final thunderBloc = context.read<ThunderBloc>();
-  final profileBloc = context.read<ProfileBloc>();
+  final routeScope = resolveAccountAwareRouteScope(context, useActiveAccount: true, includeThunderCubit: true);
+  final account = routeScope.account;
 
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final themeCubit = context.read<ThemePreferencesCubit>();
   final reduceAnimations = themeCubit.state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
-
-  final account = context.read<ProfileBloc>().state.account;
 
   String pageToNav = {
         LocalSettingsCategories.posts: SETTINGS_APPEARANCE_POSTS_PAGE,
@@ -42,20 +40,13 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: profileBloc),
-            BlocProvider.value(value: thunderBloc),
-          ],
+          providers: routeScope.providers(provideThunderCubit: true),
           child: AboutSettingsPage(settingToHighlight: settingToHighlight ?? setting),
         ),
       ),
     );
   } else if (pageToNav == SETTINGS_ACCOUNT_MEDIA_PAGE) {
-    final hasUserSettingsBloc = context.findAncestorWidgetOfExactType<BlocProvider<UserSettingsBloc>>() != null;
-
-    final userSettingsBloc = hasUserSettingsBloc ? context.read<UserSettingsBloc>() : createUserSettingsBloc(account);
-
-    userSettingsBloc.add(const ListMediaEvent());
+    final userMediaCubit = createUserMediaCubit(account)..loadMedia();
 
     Navigator.of(context).push(
       SwipeablePageRoute(
@@ -64,16 +55,40 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: userSettingsBloc),
+            BlocProvider<ThunderCubit>.value(value: routeScope.thunderCubit!),
+            BlocProvider<UserMediaCubit>(create: (_) => userMediaCubit),
           ],
-          child: MediaManagementPage(),
+          child: MediaManagementPage(account: account),
+        ),
+      ),
+    );
+  } else if (pageToNav == SETTINGS_ACCOUNT_BLOCKLIST_PAGE) {
+    final userBlocksCubit = createUserBlocksCubit(account)..loadBlocks();
+
+    Navigator.of(context).push(
+      SwipeablePageRoute(
+        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+        canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+        canOnlySwipeFromEdge: true,
+        builder: (context) => MultiBlocProvider(
+          providers: routeScope.providers(
+            provideFeatureAccountCubit: false,
+            extraProviders: [
+              BlocProvider<UserBlocksCubit>(create: (_) => userBlocksCubit),
+            ],
+          ),
+          child: UserSettingsBlockPage(),
         ),
       ),
     );
   } else {
-    final hasUserSettingsBloc = context.findAncestorWidgetOfExactType<BlocProvider<UserSettingsBloc>>() != null;
-    final userSettingsBloc = hasUserSettingsBloc ? context.read<UserSettingsBloc>() : createUserSettingsBloc(account);
+    final needsAccountSettingsCubit = pageToNav == SETTINGS_ACCOUNT_PAGE || pageToNav == SETTINGS_ACCOUNT_LANGUAGES_PAGE;
+    final hasAccountSettingsCubit = needsAccountSettingsCubit && context.findAncestorWidgetOfExactType<BlocProvider<AccountSettingsCubit>>() != null;
+    final accountSettingsCubit = !needsAccountSettingsCubit
+        ? null
+        : hasAccountSettingsCubit
+            ? context.read<AccountSettingsCubit>()
+            : createAccountSettingsCubit(account, initialSiteResponse: routeScope.profileBloc?.state.siteResponse);
 
     Navigator.of(context).push(
       SwipeablePageRoute(
@@ -81,11 +96,13 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: profileBloc),
-            BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: userSettingsBloc),
-          ],
+          providers: routeScope.providers(
+            provideThunderCubit: true,
+            provideFeatureAccountCubit: pageToNav != SETTINGS_ACCOUNT_LANGUAGES_PAGE,
+            extraProviders: [
+              if (accountSettingsCubit != null) BlocProvider<AccountSettingsCubit>.value(value: accountSettingsCubit),
+            ],
+          ),
           child: switch (pageToNav) {
             SETTINGS_GENERAL_PAGE => GeneralSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_APPEARANCE_POSTS_PAGE => PostAppearanceSettingsPage(settingToHighlight: settingToHighlight ?? setting),
@@ -95,7 +112,6 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
             SETTINGS_FILTERS_PAGE => FilterSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_ACCOUNT_PAGE => UserSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_ACCOUNT_LANGUAGES_PAGE => DiscussionLanguageSelector(),
-            SETTINGS_ACCOUNT_BLOCKLIST_PAGE => UserSettingsBlockPage(),
             SETTINGS_APPEARANCE_THEMES_PAGE => ThemeSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_DEBUG_PAGE => DebugSettingsPage(settingToHighlight: settingToHighlight ?? setting),
             SETTINGS_VIDEO_PAGE => VideoPlayerSettingsPage(settingToHighlight: settingToHighlight ?? setting),

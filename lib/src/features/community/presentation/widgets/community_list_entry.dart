@@ -50,10 +50,9 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
       context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
     } else {
       if (!subscribed) {
-        context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {widget.community}));
-        context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
+        context.read<AnonymousSubscriptionsCubit>().addSubscriptions({widget.community});
       } else {
-        context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(urls: {widget.community.actorId}));
+        context.read<AnonymousSubscriptionsCubit>().removeSubscriptions({widget.community.actorId});
       }
     }
   }
@@ -70,7 +69,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
       final subscriptions = context.select<ProfileBloc, List<ThunderCommunity>>((bloc) => bloc.state.subscriptions);
       community = subscriptions.firstWhereOrNull((c) => c.actorId == widget.community.actorId) ?? widget.community;
     } else {
-      final subscriptions = context.select<AnonymousSubscriptionsBloc, List<ThunderCommunity>>((bloc) => bloc.state.subscriptions);
+      final subscriptions = context.select<AnonymousSubscriptionsCubit, List<ThunderCommunity>>((cubit) => cubit.state.subscriptions);
       community = subscriptions.firstWhereOrNull((c) => c.actorId == widget.community.actorId) ?? widget.community;
     }
 

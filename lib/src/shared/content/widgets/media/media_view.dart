@@ -56,6 +56,9 @@ class MediaView extends StatefulWidget {
   /// Whether the post has been read.
   final bool? read;
 
+  /// Optional callback for marking the parent post as read.
+  final Future<void> Function()? onMarkPostRead;
+
   const MediaView({
     super.key,
     required this.media,
@@ -70,6 +73,7 @@ class MediaView extends StatefulWidget {
     this.viewMode = ViewMode.comfortable,
     this.navigateToPost,
     this.read,
+    this.onMarkPostRead,
   });
 
   @override
@@ -107,6 +111,11 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
   void _markPostAsRead() {
     if (!widget.isUserLoggedIn || !widget.markPostReadOnMediaView) return;
+
+    if (widget.onMarkPostRead != null) {
+      widget.onMarkPostRead!();
+      return;
+    }
 
     try {
       final feedBloc = BlocProvider.of<FeedBloc>(context);
@@ -195,7 +204,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final imagePeekDurationMs = context.select<GesturePreferencesCubit, int>((cubit) => cubit.state.imagePeekDuration);
-    final tabletMode = widget.viewMode == ViewMode.comfortable ? context.select((ThunderBloc bloc) => bloc.state.tabletMode) : false;
+    final tabletMode = widget.viewMode == ViewMode.comfortable ? context.select((ThunderCubit bloc) => bloc.state.tabletMode) : false;
     final l10n = AppLocalizations.of(context)!;
 
     final imageUrlCandidate = widget.media.imageUrl ?? widget.media.mediaUrl ?? widget.media.originalUrl;

@@ -1,4 +1,4 @@
-part of 'anonymous_subscriptions_bloc.dart';
+part of 'anonymous_subscriptions_cubit.dart';
 
 enum AnonymousSubscriptionsStatus { initial, loading, refreshing, success, empty, failure }
 
@@ -13,19 +13,10 @@ class AnonymousSubscriptionsState extends Equatable {
     this.errorReason,
   });
 
-  /// Status of the bloc
   final AnonymousSubscriptionsStatus status;
-
-  /// Error message
   final String? message;
-
-  /// Typed error reason for deterministic failure handling.
   final AppErrorReason? errorReason;
-
-  /// List of subscribed communities
   final List<ThunderCommunity> subscriptions;
-
-  /// Set of community actor ids (e.g., https://lemmy.ml/c/lemmy)
   final Set<String> urls;
 
   AnonymousSubscriptionsState copyWith({

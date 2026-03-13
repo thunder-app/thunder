@@ -2,19 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/community/api.dart';
 import 'package:thunder/src/features/instance/api.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/search/api.dart';
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-
 import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 import 'package:thunder/src/shared/marquee_widget.dart';
@@ -90,13 +88,15 @@ Future<List<ThunderUser>> getUserSuggestions(
 }
 
 Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {void Function(ThunderUser)? onSelected}) {
+  final tooltip = generateUserFullName(
+    context,
+    payload.name,
+    payload.displayName,
+    fetchInstanceNameFromUrl(payload.actorId),
+  );
+
   return Tooltip(
-    message: generateUserFullName(
-      context,
-      payload.name,
-      payload.displayName,
-      fetchInstanceNameFromUrl(payload.actorId),
-    ),
+    message: tooltip,
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -113,8 +113,7 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
               name: payload.name,
               displayName: payload.displayName,
               instance: fetchInstanceNameFromUrl(payload.actorId),
-              // Override because we're showing display name above
-              useDisplayName: false,
+              useDisplayName: false, // Override because we're showing display name above
             ),
           ),
         ),
@@ -123,28 +122,24 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
   );
 }
 
-/// Shows a dialog which allows typing/search for a community.
-/// Given an [account], the dialog will show subscriptions and favorites of that account.
-///
-/// When searching for communities, it will use the provided [account]'s instance.
+/// Shows a dialog which allows typing/search for a community. Favourited and subscribed communities are prioritized in suggestions.
 void showCommunityInputDialog(
   BuildContext context, {
   required String title,
   required Account account,
   required void Function(ThunderCommunity community) onCommunitySelected,
-  List<ThunderCommunity>? emptySuggestions,
+  List<ThunderCommunity>? suggestions,
 }) async {
   final l10n = GlobalContext.l10n;
 
-  List<ThunderCommunity>? favoritedCommunities;
+  List<ThunderCommunity>? favouritedCommunities;
 
   try {
-    // Fetch subscriptions from the given account
-    final favorites = await Favorite.favorites(account.id);
+    final favourites = await Favorite.favorites(account.id);
     final subscriptions = await AccountRepositoryImpl(account: account).subscriptions();
-    favoritedCommunities = subscriptions.where((community) => favorites.any((favorite) => favorite.communityId == community.id)).toList();
+    favouritedCommunities = subscriptions.where((community) => favourites.any((favorite) => favorite.communityId == community.id)).toList();
 
-    emptySuggestions ??= prioritizeFavorites(subscriptions, favoritedCommunities);
+    suggestions ??= prioritizeFavorites(subscriptions, favouritedCommunities);
   } catch (e) {
     // If this is unavailable, continue
   }
@@ -184,8 +179,8 @@ void showCommunityInputDialog(
     primaryButtonText: l10n.ok,
     secondaryButtonText: l10n.cancel,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(context, query: query, account: account, emptySuggestions: emptySuggestions, favoritedCommunities: favoritedCommunities),
-    suggestionBuilder: (payload) => buildCommunitySuggestionWidget(context, payload),
+    getSuggestions: (query) => getCommunitySuggestions(context, query: query, account: account, suggestions: suggestions, favouritedCommunities: favouritedCommunities),
+    suggestionBuilder: (payload) => buildCommunitySuggestionWidget(context, payload, favouriteCommunityIds: favouritedCommunities?.map((community) => community.id).toSet()),
   );
 }
 
@@ -193,10 +188,10 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
   BuildContext context, {
   required String query,
   required Account account,
-  List<ThunderCommunity>? favoritedCommunities,
-  List<ThunderCommunity>? emptySuggestions,
+  List<ThunderCommunity>? favouritedCommunities,
+  List<ThunderCommunity>? suggestions,
 }) async {
-  if (query.isEmpty) return emptySuggestions ?? [];
+  if (query.isEmpty) return suggestions ?? [];
 
   final response = await SearchRepositoryImpl(account: account).search(
     query: query,
@@ -205,19 +200,21 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
     sort: SearchSortType.topAll,
   );
 
-  return prioritizeFavorites(response.communities, favoritedCommunities) ?? [];
+  return prioritizeFavorites(response.communities, favouritedCommunities) ?? [];
 }
 
-Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {void Function(ThunderCommunity)? onSelected}) {
+Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {Set<int>? favouriteCommunityIds, void Function(ThunderCommunity)? onSelected}) {
   final l10n = GlobalContext.l10n;
 
+  final tooltip = generateCommunityFullName(
+    context,
+    payload.name,
+    payload.title,
+    fetchInstanceNameFromUrl(payload.actorId),
+  );
+
   return Tooltip(
-    message: generateCommunityFullName(
-      context,
-      payload.name,
-      payload.title,
-      fetchInstanceNameFromUrl(payload.actorId),
-    ),
+    message: tooltip,
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -237,8 +234,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   name: payload.name,
                   displayName: payload.title,
                   instance: fetchInstanceNameFromUrl(payload.actorId),
-                  // Override because we're showing display name above
-                  useDisplayName: false,
+                  useDisplayName: false, // Override because we're showing display name above
                 ),
               ),
               if (payload.subscribed != null && payload.subscribers != null) ...[
@@ -253,7 +249,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                       SubscriptionStatus.notSubscribed => '',
                       _ => '',
                     }}'),
-                    if (_getFavoriteStatus(context, payload)) ...[
+                    if (favouriteCommunityIds?.contains(payload.id) == true) ...[
                       Text(' · '),
                       Icon(Icons.star_rounded, size: 15.0),
                     ],
@@ -268,38 +264,41 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
   );
 }
 
-/// Checks whether the current community is a favorite of the current user
-bool _getFavoriteStatus(BuildContext context, ThunderCommunity community) {
-  final state = context.read<ProfileBloc>().state;
-  return state.favorites.any((c) => c.id == community.id);
-}
-
 /// Shows a dialog which allows typing/search for an instance. Federated instances are loaded in the background; suggestions appear as they load.
 void showInstanceInputDialog(
   BuildContext context, {
   required String title,
+  required Account account,
   required void Function(ThunderInstanceInfo) onInstanceSelected,
-  Iterable<Map<String, dynamic>>? emptySuggestions,
+  Iterable<Map<String, dynamic>>? suggestions,
 }) async {
-  final account = await fetchActiveProfile();
-  final linkedInstances = <ThunderInstanceInfo>[];
-  unawaited(_loadLinkedInstances(account, linkedInstances));
+  final l10n = GlobalContext.l10n;
+
+  final instances = <ThunderInstanceInfo>[];
+  unawaited(_loadLinkedInstances(account, instances));
 
   Future<String?> onSubmitted({ThunderInstanceInfo? payload, String? value}) async {
+    if (payload == null && value == null) return null;
+
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
-    } else if (value != null && value.trim().isNotEmpty) {
+      return null;
+    }
+
+    if (value != null && value.trim().isNotEmpty) {
       final trimmed = value.trim();
-      final instance = linkedInstances.firstWhereOrNull((ThunderInstanceInfo i) => i.domain == trimmed);
+      final instance = instances.firstWhereOrNull((i) => i.domain == trimmed);
 
       if (instance != null) {
         onInstanceSelected(instance);
         Navigator.of(context).pop();
-      } else {
-        onInstanceSelected(ThunderInstanceInfo(domain: trimmed, name: trimmed));
-        Navigator.of(context).pop();
+        return null;
       }
+
+      onInstanceSelected(ThunderInstanceInfo(domain: trimmed, name: trimmed));
+      Navigator.of(context).pop();
+      return null;
     }
 
     return null;
@@ -309,46 +308,42 @@ void showInstanceInputDialog(
     showThunderTypeaheadDialog<ThunderInstanceInfo>(
       context: context,
       title: title,
-      inputLabel: AppLocalizations.of(context)!.instance(1),
-      primaryButtonText: AppLocalizations.of(context)!.ok,
-      secondaryButtonText: AppLocalizations.of(context)!.cancel,
+      inputLabel: l10n.instance(1),
+      primaryButtonText: l10n.ok,
+      secondaryButtonText: l10n.cancel,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getInstanceSuggestions(query, linkedInstances),
-      suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
+      getSuggestions: (query) => getInstanceSuggestions(query, instances),
+      suggestionBuilder: (payload) => buildInstanceSuggestionWidget(context, payload, onSelected: (instance) => onSubmitted(payload: instance)),
     );
   }
 }
 
-Future<void> _loadLinkedInstances(Account? account, List<ThunderInstanceInfo> out) async {
-  if (account == null) return;
-
+Future<void> _loadLinkedInstances(Account account, List<ThunderInstanceInfo> out) async {
   try {
-    final response = await InstanceRepositoryImpl(account: account).federated();
-    final List<ThunderInstanceInfo> parsed = List<ThunderInstanceInfo>.from(
-      (response['federated_instances']['linked'] as List).map<ThunderInstanceInfo>(
+    final federated = await InstanceRepositoryImpl(account: account).federated();
+    final linked = List<ThunderInstanceInfo>.from(
+      (federated['federated_instances']['linked'] as List).map<ThunderInstanceInfo>(
         (instance) => ThunderInstanceInfo(id: instance['id'], domain: instance['domain'], name: instance['domain']),
       ),
     );
 
     out
       ..clear()
-      ..addAll(parsed);
+      ..addAll(linked);
   } catch (_) {
     // Dialog still works with empty list; user can type a domain and submit.
   }
 }
 
-Future<List<ThunderInstanceInfo>> getInstanceSuggestions(String query, List<ThunderInstanceInfo>? emptySuggestions) async {
-  if (query.isEmpty) {
-    return [];
-  }
+Future<List<ThunderInstanceInfo>> getInstanceSuggestions(String query, List<ThunderInstanceInfo>? suggestions) async {
+  if (query.isEmpty) return suggestions ?? [];
 
-  List<ThunderInstanceInfo> filteredInstances = emptySuggestions?.where((ThunderInstanceInfo instance) => instance.domain.contains(query)).toList() ?? [] as List<ThunderInstanceInfo>;
-  return filteredInstances;
+  final instances = suggestions?.where((instance) => instance.domain.contains(query)).toList() ?? [] as List<ThunderInstanceInfo>;
+  return instances;
 }
 
-Widget buildInstanceSuggestionWidget(ThunderInstanceInfo payload, {void Function(ThunderInstanceInfo)? onSelected, BuildContext? context}) {
-  final theme = Theme.of(context!);
+Widget buildInstanceSuggestionWidget(BuildContext context, ThunderInstanceInfo payload, {void Function(ThunderInstanceInfo)? onSelected}) {
+  final theme = Theme.of(context);
 
   return Tooltip(
     message: payload.domain,
@@ -379,31 +374,52 @@ Widget buildInstanceSuggestionWidget(ThunderInstanceInfo payload, {void Function
 }
 
 /// Shows a dialog which allows typing/search for an language
-void showLanguageInputDialog(BuildContext context,
-    {required String title, required void Function(ThunderLanguage) onLanguageSelected, Iterable<int>? excludedLanguageIds, Iterable<ThunderLanguage>? emptySuggestions}) async {
-  ProfileState state = context.read<ProfileBloc>().state;
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
+void showLanguageInputDialog(
+  BuildContext context, {
+  required String title,
+  required Account account,
+  required void Function(ThunderLanguage) onLanguageSelected,
+  Iterable<int>? excludedLanguageIds,
+  Iterable<ThunderLanguage>? suggestions,
+}) async {
+  final l10n = GlobalContext.l10n;
 
-  List<ThunderLanguage> languages = [ThunderLanguage(id: -1, code: '', name: l10n.noLanguage), ...(state.siteResponse?.allLanguages ?? [])];
+  List<ThunderLanguage> languages = suggestions?.toList() ?? const <ThunderLanguage>[];
+
+  if (languages.isEmpty) {
+    final site = await ProfileSiteInfoCache.instance.get(account);
+    languages = site.allLanguages ?? const <ThunderLanguage>[];
+  }
+
+  languages = [ThunderLanguage(id: -1, code: '', name: l10n.noLanguage), ...languages];
+
+  // Exclude languages with IDs in excludedLanguageIds
   languages = languages.where((language) {
     if (excludedLanguageIds != null && excludedLanguageIds.isNotEmpty) {
       return !excludedLanguageIds.contains(language.id);
     }
+
     return true;
   }).toList();
 
   Future<String?> onSubmitted({ThunderLanguage? payload, String? value}) async {
+    if (payload == null && value == null) return null;
+
     if (payload != null) {
       onLanguageSelected(payload);
       Navigator.of(context).pop();
-    } else if (value != null) {
-      final ThunderLanguage? language = languages.firstWhereOrNull((ThunderLanguage language) => language.name.toLowerCase().contains(value.toLowerCase()));
+      return null;
+    }
+
+    if (value != null) {
+      final language = languages.firstWhereOrNull((language) => language.name.toLowerCase().contains(value.toLowerCase()));
 
       if (language != null) {
         onLanguageSelected(language);
         Navigator.of(context).pop();
+        return null;
       } else {
-        return AppLocalizations.of(context)!.unableToFindLanguage;
+        return l10n.unableToFindLanguage;
       }
     }
 
@@ -414,35 +430,36 @@ void showLanguageInputDialog(BuildContext context,
     showThunderTypeaheadDialog<ThunderLanguage>(
       context: context,
       title: title,
-      inputLabel: AppLocalizations.of(context)!.language,
-      primaryButtonText: AppLocalizations.of(context)!.ok,
-      secondaryButtonText: AppLocalizations.of(context)!.cancel,
+      inputLabel: l10n.language,
+      primaryButtonText: l10n.ok,
+      secondaryButtonText: l10n.cancel,
       onSubmitted: onSubmitted,
       getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
-      suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
+      suggestionBuilder: (payload) => buildLanguageSuggestionWidget(context, payload),
     );
   }
 }
 
-Future<List<ThunderLanguage>> getLanguageSuggestions(BuildContext context, String query, List<ThunderLanguage>? emptySuggestions) async {
-  final Locale currentLocale = Localizations.localeOf(context);
+Future<List<ThunderLanguage>> getLanguageSuggestions(BuildContext context, String query, List<ThunderLanguage>? suggestions) async {
+  final currentLocale = Localizations.localeOf(context);
+  final currentLanguage = suggestions?.firstWhereOrNull((l) => l.code == currentLocale.languageCode);
 
-  final ThunderLanguage? currentLanguage = emptySuggestions?.firstWhereOrNull((ThunderLanguage l) => l.code == currentLocale.languageCode);
-  if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
-    emptySuggestions = emptySuggestions?.toList()
+  // Move the current language to the top of the suggestions list.
+  if (currentLanguage != null && (suggestions?.length ?? 0) >= 2) {
+    suggestions = suggestions?.toList()
       ?..remove(currentLanguage)
       ..insert(2, currentLanguage);
   }
 
   if (query.isEmpty) {
-    return emptySuggestions ?? [];
+    return suggestions ?? [];
   }
 
-  List<ThunderLanguage> filteredLanguages = emptySuggestions?.where((ThunderLanguage language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
-  return filteredLanguages;
+  final languages = suggestions?.where((language) => language.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  return languages;
 }
 
-Widget buildLanguageSuggestionWidget(ThunderLanguage payload, {void Function(ThunderLanguage)? onSelected, BuildContext? context}) {
+Widget buildLanguageSuggestionWidget(BuildContext context, ThunderLanguage payload, {void Function(ThunderLanguage)? onSelected}) {
   return Tooltip(
     message: payload.name,
     preferBelow: false,
@@ -460,19 +477,27 @@ Widget buildLanguageSuggestionWidget(ThunderLanguage payload, {void Function(Thu
 }
 
 /// Shows a dialog which allows typing/search for a keyword
-void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
-  final l10n = AppLocalizations.of(context)!;
+void showKeywordInputDialog(
+  BuildContext context, {
+  required String title,
+  required void Function(String) onKeywordSelected,
+}) async {
+  final l10n = GlobalContext.l10n;
 
   Future<String?> onSubmitted({String? payload, String? value}) async {
-    String? formattedPayload = payload?.trim();
-    String? formattedValue = value?.trim();
+    final formattedPayload = payload?.trim();
+    final formattedValue = value?.trim();
 
     if (formattedPayload != null && formattedPayload.isNotEmpty) {
       onKeywordSelected(formattedPayload);
       Navigator.of(context).pop();
-    } else if (formattedValue != null && formattedValue.isNotEmpty) {
+      return null;
+    }
+
+    if (formattedValue != null && formattedValue.isNotEmpty) {
       onKeywordSelected(formattedValue);
       Navigator.of(context).pop();
+      return null;
     }
 
     return null;

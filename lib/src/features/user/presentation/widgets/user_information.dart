@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -16,6 +17,9 @@ import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 
 /// A widget that displays detailed information about a user.
 class UserInformation extends StatefulWidget {
+  final BuildContext launchContext;
+  final Account account;
+
   /// The user to display in the sidebar.
   final ThunderUser user;
 
@@ -24,6 +28,8 @@ class UserInformation extends StatefulWidget {
 
   const UserInformation({
     super.key,
+    required this.launchContext,
+    required this.account,
     required this.user,
     required this.moderates,
   });
@@ -45,7 +51,7 @@ class _UserInformationState extends State<UserInformation> {
           SidebarSectionHeader(value: l10n.profileBio),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: CommonMarkdownBody(body: widget.user.bio ?? '_${l10n.noProfileBioSet}_', imageMaxWidth: MediaQuery.of(context).size.width),
+            child: CommonMarkdownBody(body: widget.user.bio ?? '_${l10n.noProfileBioSet}_', imageMaxWidth: MediaQuery.of(context).size.width, launchContext: widget.launchContext),
           ),
           SidebarSectionHeader(value: l10n.stats),
           Padding(
@@ -61,7 +67,7 @@ class _UserInformationState extends State<UserInformation> {
             SidebarSectionHeader(value: l10n.moderates),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: UserModeratorList(moderates: widget.moderates),
+              child: UserModeratorList(launchContext: widget.launchContext, account: widget.account, moderates: widget.moderates),
             ),
           ],
           SizedBox(height: MediaQuery.of(context).viewPadding.bottom + 32.0),
@@ -157,10 +163,13 @@ class UserActivityList extends StatelessWidget {
 
 /// A widget that displays a list of communities moderated by a user.
 class UserModeratorList extends StatelessWidget {
+  final BuildContext launchContext;
+  final Account account;
+
   /// The communities that the user moderates.
   final List<ThunderCommunity> moderates;
 
-  const UserModeratorList({super.key, required this.moderates});
+  const UserModeratorList({super.key, required this.launchContext, required this.account, required this.moderates});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +177,7 @@ class UserModeratorList extends StatelessWidget {
       children: [
         for (final community in moderates)
           InkWell(
-            onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community.id),
+            onTap: () => navigateToFeedPage(launchContext, account: account, feedType: FeedType.community, communityId: community.id),
             borderRadius: BorderRadius.circular(50),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

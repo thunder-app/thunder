@@ -22,7 +22,9 @@ import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class MediaManagementPage extends StatelessWidget {
-  const MediaManagementPage({super.key});
+  const MediaManagementPage({super.key, required this.account});
+
+  final Account account;
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +33,19 @@ class MediaManagementPage extends StatelessWidget {
 
     final dateFormat = context.select<FeedPreferencesCubit, DateFormat?>((cubit) => cubit.state.dateFormat);
     final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
-    final imageCachingMode = context.select<ThunderBloc, ImageCachingMode>((cubit) => cubit.state.imageCachingMode);
+    final imageCachingMode = context.select<ThunderCubit, ImageCachingMode>((cubit) => cubit.state.imageCachingMode);
 
-    return BlocBuilder<UserSettingsBloc, UserSettingsState>(
-      builder: (context, state) {
-        if (state.status == UserSettingsStatus.failedListingMedia && state.errorMessage?.isNotEmpty == true) {
+    return BlocConsumer<UserMediaCubit, UserMediaState>(
+      listener: (context, state) {
+        if (state.status == UserMediaStatus.loadFailure && state.errorMessage?.isNotEmpty == true) {
           showSnackbar(
             state.errorMessage!,
             trailingIcon: Icons.refresh_rounded,
-            trailingAction: () => context.read<UserSettingsBloc>().add(const ListMediaEvent()),
+            trailingAction: () => context.read<UserMediaCubit>().loadMedia(),
           );
         }
-
+      },
+      builder: (context, state) {
         return Scaffold(
           body: Container(
             color: theme.colorScheme.surface,
@@ -58,24 +61,21 @@ class MediaManagementPage extends StatelessWidget {
                         l10n.manageMedia,
                         style: theme.textTheme.titleLarge,
                       ),
-                      subtitle: UserFullNameWidget(
-                          name: context.read<ProfileBloc>().state.account.username,
-                          displayName: context.read<ProfileBloc>().state.account.displayName,
-                          instance: context.read<ProfileBloc>().state.account.instance),
+                      subtitle: UserFullNameWidget(name: account.username, displayName: account.displayName, instance: account.instance),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
                   ),
-                  if (state.status == UserSettingsStatus.listingMedia)
+                  if (state.status == UserMediaStatus.loading)
                     const SliverFillRemaining(
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  if (state.status == UserSettingsStatus.searchingMedia ||
-                      state.status == UserSettingsStatus.succeededSearchingMedia ||
-                      state.status == UserSettingsStatus.deletingMedia ||
-                      state.status == UserSettingsStatus.failedListingMedia ||
-                      state.status == UserSettingsStatus.succeededListingMedia) ...[
+                  if (state.status == UserMediaStatus.searching ||
+                      state.status == UserMediaStatus.searchSuccess ||
+                      state.status == UserMediaStatus.deleting ||
+                      state.status == UserMediaStatus.loadFailure ||
+                      state.status == UserMediaStatus.loadSuccess) ...[
                     if (state.images?.isNotEmpty == true)
                       SliverList.builder(
                         addSemanticIndexes: false,
@@ -83,7 +83,6 @@ class MediaManagementPage extends StatelessWidget {
                         addRepaintBoundaries: false,
                         itemCount: state.images!.length,
                         itemBuilder: (context, index) {
-                          final account = context.read<ProfileBloc>().state.account;
                           String url = 'https://${account.instance}/pictrs/image/${state.images![index]['local_image']['pictrs_alias']}';
 
                           return KeepAlive(
@@ -152,8 +151,8 @@ class MediaManagementPage extends StatelessWidget {
                                       const Spacer(),
                                       IconButton(
                                         onPressed: () async {
-                                          final UserSettingsBloc userSettingsBloc = context.read<UserSettingsBloc>();
-                                          userSettingsBloc.add(FindMediaUsagesEvent(id: state.images![index]['local_image']['pictrs_alias']));
+                                          final UserMediaCubit userMediaCubit = context.read<UserMediaCubit>();
+                                          userMediaCubit.findMediaUsages(id: state.images![index]['local_image']['pictrs_alias']);
 
                                           showModalBottomSheet(
                                             context: context,
@@ -163,26 +162,24 @@ class MediaManagementPage extends StatelessWidget {
                                               return AnimatedSize(
                                                 duration: const Duration(milliseconds: 250),
                                                 child: BlocProvider.value(
-                                                  value: userSettingsBloc,
-                                                  child: BlocBuilder<UserSettingsBloc, UserSettingsState>(
+                                                  value: userMediaCubit,
+                                                  child: BlocBuilder<UserMediaCubit, UserMediaState>(
                                                     builder: (context, state) {
-                                                      if (state.status == UserSettingsStatus.failedListingMedia) {
+                                                      if (state.status == UserMediaStatus.loadFailure) {
                                                         Navigator.of(context).pop();
                                                       }
-
-                                                      final account = context.read<ProfileBloc>().state.account;
 
                                                       return SingleChildScrollView(
                                                         child: Column(
                                                           children: [
-                                                            if (state.status == UserSettingsStatus.searchingMedia)
+                                                            if (state.status == UserMediaStatus.searching)
                                                               const SizedBox(
                                                                 height: 200,
                                                                 child: Center(
                                                                   child: CircularProgressIndicator(),
                                                                 ),
                                                               )
-                                                            else if (state.status == UserSettingsStatus.succeededSearchingMedia) ...[
+                                                            else if (state.status == UserMediaStatus.searchSuccess) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
                                                                   value: createFeedBloc(account),
@@ -208,7 +205,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                   itemBuilder: (context, index) => CommentListEntry(comment: state.imageSearchComments![index]),
                                                                 ),
                                                             ],
-                                                            if (state.status == UserSettingsStatus.succeededSearchingMedia &&
+                                                            if (state.status == UserMediaStatus.searchSuccess &&
                                                                 state.imageSearchComments?.isNotEmpty != true &&
                                                                 state.imageSearchPosts?.isNotEmpty != true)
                                                               SizedBox(
@@ -227,7 +224,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                   ),
                                                                 ),
                                                               ),
-                                                            if (state.status == UserSettingsStatus.succeededSearchingMedia &&
+                                                            if (state.status == UserMediaStatus.searchSuccess &&
                                                                 (state.imageSearchComments?.isNotEmpty == true || state.imageSearchPosts?.isNotEmpty == true))
                                                               const SizedBox(height: 50),
                                                           ],
@@ -262,8 +259,9 @@ class MediaManagementPage extends StatelessWidget {
                                           );
 
                                           if (result && context.mounted) {
-                                            context.read<UserSettingsBloc>().add(
-                                                DeleteMediaEvent(deleteToken: state.images![index]['local_image']['pictrs_delete_token'], id: state.images![index]['local_image']['pictrs_alias']));
+                                            context
+                                                .read<UserMediaCubit>()
+                                                .deleteMedia(deleteToken: state.images![index]['local_image']['pictrs_delete_token'], id: state.images![index]['local_image']['pictrs_alias']);
                                           }
                                         },
                                         icon: const Icon(Icons.delete_forever),

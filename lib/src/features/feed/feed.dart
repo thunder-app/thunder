@@ -1,9 +1,7 @@
 export 'presentation/state/feed_bloc.dart';
 export 'application/state/fab_preferences_cubit.dart';
-export 'application/state/fab_state_cubit.dart';
 export 'application/state/feed_preferences_cubit.dart';
-export 'application/state/feed_ui_cubit.dart';
-export 'application/state/nav_bar_state_cubit/nav_bar_state_cubit.dart';
+export 'presentation/controllers/feed_action_controller.dart';
 export 'domain/enums/enums.dart';
 export 'domain/models/feed_result.dart';
 export 'presentation/pages/pages.dart';

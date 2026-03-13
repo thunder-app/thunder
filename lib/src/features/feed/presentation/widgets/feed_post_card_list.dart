@@ -28,7 +28,7 @@ class FeedPostCardList extends StatefulWidget {
   /// The list of posts to show on the feed
   final List<ThunderPost> posts;
 
-  /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderBloc]
+  /// Whether or not to dim read posts. This value overrides [dimReadPosts] in [ThunderCubit]
   final bool? dimReadPosts;
 
   /// Whether to disable swiping of posts
@@ -36,6 +36,36 @@ class FeedPostCardList extends StatefulWidget {
 
   /// Overrides the system setting for whether to indicate read posts
   final bool? indicateRead;
+
+  /// Optional feed type override for contexts without a FeedBloc.
+  final FeedType? feedType;
+
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
+  /// Optional callback for voting a post.
+  final Future<void> Function(ThunderPost post, int voteType)? onVoteAction;
+
+  /// Optional callback for saving a post.
+  final Future<void> Function(ThunderPost post, bool saved)? onSaveAction;
+
+  /// Optional callback for toggling post read state.
+  final Future<void> Function(ThunderPost post, bool read)? onReadAction;
+
+  /// Optional callback for toggling post hidden state.
+  final Future<void> Function(ThunderPost post, bool hidden)? onHideAction;
+
+  /// Optional callback for marking multiple posts read.
+  final Future<void> Function(List<int> postIds, bool read)? onMultiReadAction;
+
+  /// Optional callback for replacing a post in the current list.
+  final void Function(ThunderPost post)? onPostUpdated;
+
+  /// Optional callback for dismissing a hidden post from view.
+  final void Function(int postId)? onDismissHiddenPost;
+
+  /// Optional callback for dismissing blocked content from view.
+  final void Function({int? userId, int? communityId})? onDismissBlocked;
 
   const FeedPostCardList({
     super.key,
@@ -46,6 +76,16 @@ class FeedPostCardList extends StatefulWidget {
     this.dimReadPosts,
     this.disableSwiping = false,
     this.indicateRead,
+    this.feedType,
+    this.feedListType,
+    this.onVoteAction,
+    this.onSaveAction,
+    this.onReadAction,
+    this.onHideAction,
+    this.onMultiReadAction,
+    this.onPostUpdated,
+    this.onDismissHiddenPost,
+    this.onDismissBlocked,
   });
 
   @override
@@ -93,16 +133,39 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   }) {
     Widget child = PostCard(
       post: post,
-      onVoteAction: (int voteType) {
+      feedType: feedType,
+      feedListType: feedListType,
+      onVoteAction: (int voteType) async {
+        if (widget.onVoteAction != null) {
+          await widget.onVoteAction!(post, voteType);
+          return;
+        }
+
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, actionInput: VotePostInput(voteType)));
       },
-      onSaveAction: (bool saved) {
+      onSaveAction: (bool saved) async {
+        if (widget.onSaveAction != null) {
+          await widget.onSaveAction!(post, saved);
+          return;
+        }
+
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, actionInput: SavePostInput(saved)));
       },
-      onReadAction: (bool read) {
+      onReadAction: (bool read) async {
+        if (widget.onReadAction != null) {
+          await widget.onReadAction!(post, read);
+          return;
+        }
+
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, actionInput: ReadPostInput(read)));
       },
-      onHideAction: (bool hide) {
+      onHideAction: (bool hide) async {
+        if (widget.onHideAction != null) {
+          await widget.onHideAction!(post, hide);
+          widget.onDismissHiddenPost?.call(post.id);
+          return;
+        }
+
         context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, actionInput: HidePostInput(hide)));
         context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
       },
@@ -122,6 +185,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
       indicateRead: dim,
       isLastTapped: lastTappedPost == post.id,
       disableSwiping: widget.disableSwiping,
+      onPostUpdated: widget.onPostUpdated,
+      onDismissHiddenPost: widget.onDismissHiddenPost,
+      onDismissBlocked: widget.onDismissBlocked,
     );
 
     // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
@@ -155,7 +221,11 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
               if (index > lastProcessedIndex) lastProcessedIndex = index;
 
               if (markReadPostIds.isNotEmpty) {
-                context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, actionInput: const MultiReadPostInput(true)));
+                if (widget.onMultiReadAction != null) {
+                  widget.onMultiReadAction!([...markReadPostIds], true);
+                } else {
+                  context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, actionInput: const MultiReadPostInput(true)));
+                }
                 readPostIds.addAll(markReadPostIds); // Add all post ids that were queued to prevent them from being queued again
                 markReadPostIds = <int>{}; // Reset the list of post ids to mark as read
               }
@@ -196,8 +266,9 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
   @override
   Widget build(BuildContext context) {
-    final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
-    final feedListType = context.select<FeedBloc, FeedListType?>((bloc) => bloc.state.feedListType);
+    final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
+    final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
+    final feedListType = widget.feedListType ?? (hasFeedBloc ? context.select<FeedBloc, FeedListType?>((bloc) => bloc.state.feedListType) : null);
     final isUserLoggedIn = context.select<ProfileBloc, bool>((bloc) => bloc.state.isLoggedIn);
 
     bool dimReadPosts = widget.dimReadPosts ?? (isUserLoggedIn && context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts));

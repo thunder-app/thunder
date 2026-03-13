@@ -67,6 +67,7 @@ enum InstanceBottomSheetAction {
 class InstanceActionBottomSheet extends StatefulWidget {
   const InstanceActionBottomSheet({
     super.key,
+    required this.context,
     required this.account,
     required this.blockedInstances,
     this.communityInstanceId,
@@ -75,6 +76,9 @@ class InstanceActionBottomSheet extends StatefulWidget {
     this.userInstanceUrl,
     this.onAction,
   });
+
+  /// The account to use for the instance actions
+  final BuildContext context;
 
   /// The account to use for the instance actions
   final Account account;
@@ -111,7 +115,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
 
     switch (action) {
       case InstanceBottomSheetAction.visitCommunityInstance:
-        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.communityInstanceUrl)!, instanceId: widget.communityInstanceId);
+        navigateToInstancePage(widget.context, account: widget.account, instanceHost: fetchInstanceNameFromUrl(widget.communityInstanceUrl)!, instanceId: widget.communityInstanceId);
         break;
       case InstanceBottomSheetAction.blockCommunityInstance:
         Navigator.of(context).pop();
@@ -130,7 +134,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
         widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.visitUserInstance:
-        navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(widget.userInstanceUrl)!, instanceId: widget.userInstanceId);
+        navigateToInstancePage(widget.context, account: widget.account, instanceHost: fetchInstanceNameFromUrl(widget.userInstanceUrl)!, instanceId: widget.userInstanceId);
         break;
       case InstanceBottomSheetAction.blockUserInstance:
         Navigator.of(context).pop();

@@ -1,18 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/app/shell/widgets/session.dart';
+import 'package:thunder/src/app/shell/widgets/session_scope.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
@@ -22,8 +26,6 @@ import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/community/api.dart';
-import 'package:thunder/src/features/account/api.dart';
-import 'package:thunder/src/features/inbox/api.dart';
 import 'package:thunder/src/features/notification/api.dart';
 import 'package:thunder/src/features/settings/domain/models/language_local.dart';
 
@@ -35,9 +37,9 @@ class ThunderApp extends StatefulWidget {
 }
 
 class _ThunderAppState extends State<ThunderApp> {
-  final StreamController<NotificationResponse> notificationsStreamController = StreamController<NotificationResponse>();
+  final notificationsStreamController = StreamController<NotificationResponse>();
 
-  PageController thunderPageController = PageController(initialPage: 0);
+  final thunderPageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -72,22 +74,21 @@ class _ThunderAppState extends State<ThunderApp> {
       providers: [
         BlocProvider(create: (context) => createDeepLinksCubit()),
         BlocProvider(create: (context) => NotificationsCubit(notificationsStream: notificationsStreamController.stream)),
-        BlocProvider(create: (context) => createThunderBloc()),
+        BlocProvider(create: (context) => createAppBootstrapCubit()),
+        BlocProvider(create: (context) => createThunderCubit()),
         BlocProvider(create: (context) => GesturePreferencesCubit(preferencesStore: const UserPreferencesStore())),
         BlocProvider(create: (context) => FeedPreferencesCubit(preferencesStore: const UserPreferencesStore())),
         BlocProvider(create: (context) => CommentPreferencesCubit(preferences: const UserPreferencesStore())),
         BlocProvider(create: (context) => ThemePreferencesCubit(preferencesStore: const UserPreferencesStore())),
         BlocProvider(create: (context) => VideoPreferencesCubit(preferencesStore: const UserPreferencesStore())),
         BlocProvider(create: (context) => FabPreferencesCubit(preferencesStore: const UserPreferencesStore())),
-        BlocProvider(create: (context) => FabStateCubit()),
-        BlocProvider(create: (context) => NavBarStateCubit()),
-        BlocProvider(create: (context) => FeedUiCubit()),
-        BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
+        BlocProvider(create: (context) => ShellChromeCubit()),
+        BlocProvider(create: (context) => AnonymousSubscriptionsCubit()..loadSubscribedCommunities()),
         BlocProvider(create: (context) => createNetworkCheckerCubit()..getConnectionType()),
       ],
       child: BlocBuilder<ThemePreferencesCubit, ThemePreferencesState>(
         builder: (context, state) {
-          final appLanguageCode = context.select<ThunderBloc, String?>((bloc) => bloc.state.appLanguageCode);
+          final appLanguageCode = context.select<ThunderCubit, String?>((bloc) => bloc.state.appLanguageCode);
 
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
@@ -142,39 +143,39 @@ class _ThunderAppState extends State<ThunderApp> {
               return OverlaySupport.global(
                 child: AnnotatedRegion<SystemUiOverlayStyle>(
                   value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                  child: BlocBuilder<ProfileBloc, ProfileState>(
-                    buildWhen: (previous, current) => previous.account.id != current.account.id,
-                    builder: (context, profileState) {
-                      final account = profileState.account;
-                      return MultiBlocProvider(
-                        key: ValueKey('account_${account.id}'),
-                        providers: [
-                          BlocProvider(create: (context) => createInboxBloc(account)..add(GetInboxEvent(reset: true))),
-                          BlocProvider(create: (context) => createSearchBloc(account)),
-                          BlocProvider(create: (context) => createFeedBloc(account)),
-                        ],
-                        child: MaterialApp(
-                          title: 'Thunder',
-                          locale: locale,
-                          localizationsDelegates: const [
-                            ...AppLocalizations.localizationsDelegates,
-                            MaterialLocalizationsEo.delegate,
-                            CupertinoLocalizationsEo.delegate,
-                          ],
-                          supportedLocales: const [
-                            ...AppLocalizations.supportedLocales,
-                            Locale('eo'),
-                          ],
-                          themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                          theme: theme,
-                          darkTheme: darkTheme,
-                          debugShowCheckedModeBanner: false,
-                          scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                          scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
-                          home: Thunder(pageController: thunderPageController),
-                        ),
-                      );
-                    },
+                  child: MaterialApp(
+                    title: 'Thunder',
+                    locale: locale,
+                    localizationsDelegates: const [
+                      ...AppLocalizations.localizationsDelegates,
+                      MaterialLocalizationsEo.delegate,
+                      CupertinoLocalizationsEo.delegate,
+                    ],
+                    supportedLocales: const [
+                      ...AppLocalizations.supportedLocales,
+                      Locale('eo'),
+                    ],
+                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                    theme: theme,
+                    darkTheme: darkTheme,
+                    debugShowCheckedModeBanner: false,
+                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                    home: Session(
+                      builder: (context, sessionState) {
+                        final account = sessionState.activeAccount!;
+
+                        return SessionScope(
+                          account: account,
+                          generation: sessionState.generation,
+                          profileBloc: createProfileBloc,
+                          inboxBloc: createInboxBloc,
+                          searchBloc: createSearchBloc,
+                          feedBloc: createFeedBloc,
+                          builder: (context, profileState) => Thunder(pageController: thunderPageController),
+                        );
+                      },
+                    ),
                   ),
                 ),
               );

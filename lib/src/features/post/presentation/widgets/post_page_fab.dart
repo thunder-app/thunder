@@ -4,14 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/gesture_fab.dart';
 
@@ -47,7 +48,7 @@ class _PostPageFABState extends State<PostPageFAB> {
   void showSortBottomSheet(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
     final commentSortType = context.read<PostBloc>().state.commentSortType;
 
     HapticFeedback.mediumImpact();
@@ -71,7 +72,7 @@ class _PostPageFABState extends State<PostPageFAB> {
 
   void replyToPost(BuildContext context, ThunderPost? post, {bool postLocked = false}) async {
     final l10n = GlobalContext.l10n;
-    final isLoggedIn = context.read<ProfileBloc>().state.isLoggedIn;
+    final isLoggedIn = !resolveEffectiveAccount(context).anonymous;
 
     if (postLocked) return showSnackbar(l10n.postLocked);
     if (!isLoggedIn) return showSnackbar(l10n.mustBeLoggedInComment);
@@ -142,10 +143,10 @@ class _PostPageFABState extends State<PostPageFAB> {
     final l10n = GlobalContext.l10n;
 
     final combineNavAndFab = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.combineNavAndFab);
-    final isFabSummoned = context.select<FabStateCubit, bool>((cubit) => cubit.state.isPostFabSummoned);
+    final isFabSummoned = context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isPostFabSummoned);
     final singlePressAction = context.select<FabPreferencesCubit, PostFabAction>((cubit) => cubit.state.postFabSinglePressAction);
     final longPressAction = context.select<FabPreferencesCubit, PostFabAction>((cubit) => cubit.state.postFabLongPressAction);
-    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
+    final hideTopBarOnScroll = context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll);
     final enableCommentNavigation = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableCommentNavigation);
     final enablePostsFab = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enablePostsFab);
     final postFabEnableRefresh = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.postFabEnableRefresh);

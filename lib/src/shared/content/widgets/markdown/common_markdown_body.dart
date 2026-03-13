@@ -38,6 +38,9 @@ class CommonMarkdownBody extends StatefulWidget {
   /// The maximum width of the image.
   final double? imageMaxWidth;
 
+  /// Optional source context used for link handling when this markdown is shown in an overlay.
+  final BuildContext? launchContext;
+
   const CommonMarkdownBody({
     super.key,
     required this.body,
@@ -45,6 +48,7 @@ class CommonMarkdownBody extends StatefulWidget {
     this.nsfw = false,
     this.isComment,
     this.imageMaxWidth,
+    this.launchContext,
   });
 
   @override
@@ -113,6 +117,8 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
 
     final accessibilityOn = SemanticsBinding.instance.accessibilityFeatures.accessibleNavigation;
 
+    final navigationContext = widget.launchContext ?? context;
+
     return ExcludeSemantics(
       excluding: !accessibilityOn,
       child: RepaintBoundary(
@@ -131,10 +137,10 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
                   imageMaxWidth: widget.imageMaxWidth,
                 ),
           onTapLink: (text, url, title) {
-            if (url != null) handleLink(context, url: url);
+            if (url != null) handleLink(navigationContext, url: url);
           },
           onLongPressLink: (text, url, title) {
-            if (url != null) handleLinkLongPress(context, text, url);
+            if (url != null) handleLinkLongPress(navigationContext, text, url);
           },
           styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor()),
         ),

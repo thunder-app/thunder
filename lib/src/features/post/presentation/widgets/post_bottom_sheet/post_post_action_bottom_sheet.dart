@@ -131,7 +131,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         return;
       case PostPostAction.editPost:
         Navigator.of(context).pop();
-        navigateToCreatePostPage(context, communityId: widget.post.community?.id, post: widget.post);
+        navigateToCreatePostPage(widget.context, account: widget.account, communityId: widget.post.community?.id, post: widget.post);
         return;
       case PostPostAction.deletePost:
         Navigator.of(context).pop();

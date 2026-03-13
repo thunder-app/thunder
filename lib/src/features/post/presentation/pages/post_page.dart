@@ -8,8 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/error_message.dart';
 
@@ -20,7 +21,6 @@ import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart'
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
@@ -74,10 +74,13 @@ class _PostPageState extends State<PostPage> {
 
   /// The timer for detecting when scrolling has stopped
   Timer? _updateScrollPositionTimer;
+  Set<int> _blockedCommunityIds = const <int>{};
+  final Set<int> _notifiedBlockedPostIds = <int>{};
 
   @override
   void initState() {
     super.initState();
+    _loadBlockedCommunities();
 
     highlightedCommentId = widget.highlightedCommentId;
 
@@ -118,15 +121,34 @@ class _PostPageState extends State<PostPage> {
     });
   }
 
+  Future<void> _loadBlockedCommunities() async {
+    final account = context.read<PostBloc>().account;
+    if (account.anonymous) return;
+
+    final siteInfo = await ProfileSiteInfoCache.instance.get(account);
+    if (!mounted) return;
+
+    final blockedCommunityIds = siteInfo.myUser?.communityBlocks.map((community) => community.id).toSet() ?? <int>{};
+    setState(() => _blockedCommunityIds = blockedCommunityIds);
+
+    final state = context.read<PostBloc>().state;
+    if (state.status == PostStatus.success && state.post != null && state.hasReachedCommentEnd) {
+      _maybeShowBlockedCommunityMessage(state.post!);
+    }
+  }
+
+  void _maybeShowBlockedCommunityMessage(ThunderPost post) {
+    final communityId = post.community?.id;
+    if (communityId == null || !_blockedCommunityIds.contains(communityId) || !_notifiedBlockedPostIds.add(post.id)) {
+      return;
+    }
+
+    showSnackbar(GlobalContext.l10n.noVisibleComments);
+  }
+
   bool listenWhen(PostState previous, PostState current) {
-    final l10n = GlobalContext.l10n;
-
     if (previous.status == PostStatus.loading && current.status == PostStatus.success && current.post != null && current.hasReachedCommentEnd) {
-      // Check if the post's community is blocked by the user. If so, show a message.
-      final blockedCommunities = context.read<ProfileBloc>().state.siteResponse?.myUser?.communityBlocks;
-      final isCommunityBlocked = blockedCommunities?.any((c) => c.id == current.post?.community?.id) ?? false;
-
-      if (isCommunityBlocked) showSnackbar(l10n.noVisibleComments);
+      _maybeShowBlockedCommunityMessage(current.post!);
     }
 
     return true;
@@ -155,7 +177,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final thunderState = context.read<ThunderBloc>().state;
+    final thunderState = context.read<ThunderCubit>().state;
 
     final account = context.read<PostBloc>().account;
 
@@ -374,9 +396,9 @@ class _PostPageState extends State<PostPage> {
                   if (thunderState.hideTopBarOnScroll) Positioned(child: Container(height: MediaQuery.of(context).padding.top, color: theme.colorScheme.surface)),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
-                    child: context.select<FabStateCubit, bool>((cubit) => cubit.state.isPostFabOpen)
+                    child: context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isPostFabOpen)
                         ? Listener(
-                            onPointerUp: (details) => context.read<FabStateCubit>().setPostFabOpen(false),
+                            onPointerUp: (details) => context.read<ShellChromeCubit>().setPostFabOpen(false),
                             child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95)),
                           )
                         : null,

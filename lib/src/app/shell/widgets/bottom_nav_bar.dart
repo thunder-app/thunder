@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
@@ -13,13 +14,16 @@ import 'package:thunder/src/features/settings/api.dart';
 
 /// A custom bottom navigation bar that enables tap/swipe gestures
 class CustomBottomNavigationBar extends StatefulWidget {
-  const CustomBottomNavigationBar({super.key, required this.selectedPageIndex, required this.onPageChange});
+  const CustomBottomNavigationBar({super.key, required this.selectedPageIndex, required this.onPageChange, this.feedActionController});
 
   /// The index of the currently selected page
   final int selectedPageIndex;
 
   /// Callback function that is triggered when a page is changed
   final Function(int index) onPageChange;
+
+  /// Optional controller for the root feed page.
+  final FeedActionController? feedActionController;
 
   @override
   State<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
@@ -79,7 +83,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final showNavigationLabels = context.select<ThunderBloc, bool>((bloc) => bloc.state.showNavigationLabels);
+    final showNavigationLabels = context.select<ThunderCubit, bool>((bloc) => bloc.state.showNavigationLabels);
     final bottomNavBarDoubleTapGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.bottomNavBarDoubleTapGestures);
     final inboxState = context.watch<InboxBloc>().state;
 
@@ -134,12 +138,12 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           ),
         ],
         onDestinationSelected: (index) {
-          if (context.read<FabStateCubit>().state.isFeedFabOpen) {
-            context.read<FabStateCubit>().setFeedFabOpen(false);
+          if (context.read<ShellChromeCubit>().state.isFeedFabOpen) {
+            context.read<ShellChromeCubit>().setFeedFabOpen(false);
           }
 
           if (widget.selectedPageIndex == 0 && index == 0) {
-            context.read<FeedUiCubit>().scrollToTop();
+            widget.feedActionController?.scrollToTop();
           }
 
           if (widget.selectedPageIndex == 1 && index != 1) {

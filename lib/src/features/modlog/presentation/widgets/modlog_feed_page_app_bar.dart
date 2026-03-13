@@ -23,7 +23,7 @@ class ModlogFeedPageAppBar extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
+    final hideTopBarOnScroll = context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll);
 
     return SliverAppBar(
       pinned: !hideTopBarOnScroll,

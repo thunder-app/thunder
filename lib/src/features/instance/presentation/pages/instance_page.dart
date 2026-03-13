@@ -6,7 +6,6 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
@@ -17,11 +16,14 @@ import 'package:thunder/src/features/instance/presentation/widgets/instance_tabs
 ///
 /// The page contains information about a given instance, with the ability to explore its content.
 class InstancePage extends StatefulWidget {
+  final Account account;
+
   /// The instance to display.
   final ThunderInstanceInfo instance;
 
   const InstancePage({
     super.key,
+    required this.account,
     required this.instance,
   });
 
@@ -114,7 +116,7 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    final account = context.read<ProfileBloc>().state.account;
+    final account = widget.account;
 
     return MultiBlocProvider(
       providers: [
@@ -124,12 +126,8 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
             instanceInfo: widget.instance,
           ),
         ),
-        BlocProvider(create: (context) => createFeedBloc(account)),
       ],
-      child: BlocConsumer<InstancePageBloc, InstancePageState>(
-        listener: (context, state) {
-          context.read<FeedBloc>().add(PopulatePostsEvent(state.posts.items));
-        },
+      child: BlocBuilder<InstancePageBloc, InstancePageState>(
         builder: (context, state) {
           buildContext = context;
 

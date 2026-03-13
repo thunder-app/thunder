@@ -57,7 +57,7 @@ class PostPageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<ThunderBloc>().state;
+    final state = context.read<ThunderCubit>().state;
 
     return SliverAppBar(
       pinned: !state.hideTopBarOnScroll,

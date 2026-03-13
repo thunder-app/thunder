@@ -1,18 +1,9 @@
 part of 'thunder_bloc.dart';
 
-enum ThunderStatus { initial, loading, refreshing, success, failure }
-
 const _thunderStateUnset = Object();
 
 class ThunderState extends Equatable {
   const ThunderState({
-    this.status = ThunderStatus.initial,
-
-    // General
-    this.version,
-    this.errorMessage,
-    this.errorReason,
-
     // Tablet Settings
     this.tabletMode = false,
 
@@ -30,13 +21,7 @@ class ThunderState extends Equatable {
     this.hideTopBarOnScroll = false,
     this.hideBottomBarOnScroll = false,
     this.appLanguageCode = 'en',
-    this.currentAnonymousInstance = DEFAULT_INSTANCE,
   });
-
-  final ThunderStatus status;
-  final Version? version;
-  final String? errorMessage;
-  final AppErrorReason? errorReason;
 
   // Tablet Settings
   final bool tabletMode;
@@ -55,13 +40,8 @@ class ThunderState extends Equatable {
   final bool hideTopBarOnScroll;
   final bool hideBottomBarOnScroll;
   final String? appLanguageCode;
-  final String? currentAnonymousInstance;
 
   ThunderState copyWith({
-    ThunderStatus? status,
-    Object? version = _thunderStateUnset,
-    Object? errorMessage = _thunderStateUnset,
-    Object? errorReason = _thunderStateUnset,
     bool? tabletMode,
     BrowserMode? browserMode,
     bool? openInReaderMode,
@@ -76,13 +56,8 @@ class ThunderState extends Equatable {
     bool? hideTopBarOnScroll,
     bool? hideBottomBarOnScroll,
     Object? appLanguageCode = _thunderStateUnset,
-    Object? currentAnonymousInstance = _thunderStateUnset,
   }) {
     return ThunderState(
-      status: status ?? this.status,
-      version: identical(version, _thunderStateUnset) ? this.version : version as Version?,
-      errorMessage: identical(errorMessage, _thunderStateUnset) ? this.errorMessage : errorMessage as String?,
-      errorReason: identical(errorReason, _thunderStateUnset) ? this.errorReason : errorReason as AppErrorReason?,
       tabletMode: tabletMode ?? this.tabletMode,
       browserMode: browserMode ?? this.browserMode,
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
@@ -97,16 +72,11 @@ class ThunderState extends Equatable {
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
       hideBottomBarOnScroll: hideBottomBarOnScroll ?? this.hideBottomBarOnScroll,
       appLanguageCode: identical(appLanguageCode, _thunderStateUnset) ? this.appLanguageCode : appLanguageCode as String?,
-      currentAnonymousInstance: identical(currentAnonymousInstance, _thunderStateUnset) ? this.currentAnonymousInstance : currentAnonymousInstance as String?,
     );
   }
 
   @override
   List<Object?> get props => [
-        status,
-        version,
-        errorMessage,
-        errorReason,
         tabletMode,
         browserMode,
         openInReaderMode,
@@ -121,6 +91,5 @@ class ThunderState extends Equatable {
         hideTopBarOnScroll,
         hideBottomBarOnScroll,
         appLanguageCode,
-        currentAnonymousInstance,
       ];
 }

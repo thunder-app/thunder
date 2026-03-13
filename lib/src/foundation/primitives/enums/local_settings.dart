@@ -388,8 +388,6 @@ enum LocalSettings {
       name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.experimental),
   imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.feed),
 
-  currentAnonymousInstance(name: 'setting_current_anonymous_instance', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
-
   // This setting exists purely to save/load the user's selected advanced share options
   advancedShareOptions(name: 'advanced_share_options', key: '', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.general, searchable: false),
   // import export settings
@@ -474,7 +472,6 @@ enum LocalSettings {
 
   /// Defines the settings that are excluded from import/export
   static List<LocalSettings> importExportExcludedSettings = [
-    LocalSettings.currentAnonymousInstance,
     LocalSettings.advancedShareOptions,
   ];
 }

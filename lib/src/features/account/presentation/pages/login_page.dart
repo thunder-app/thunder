@@ -10,8 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
+import 'package:thunder/src/features/session/api.dart';
 
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
@@ -120,20 +120,22 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<ProfileBloc, ProfileState>(
-          listenWhen: (previous, current) {
-            if (previous.status == ProfileStatus.initial && current.status == ProfileStatus.success) {
-              widget.popModal();
-              showSnackbar(l10n.loginSucceeded);
-            }
-            return true;
-          },
+        BlocListener<SessionBloc, SessionState>(
+          listenWhen: (previous, current) => previous.mutationStatus != current.mutationStatus,
           listener: (listenerContext, state) async {
-            if (state.status == ProfileStatus.loading) {
+            if (state.lastMutation != SessionMutationType.authenticatedLogin) {
+              return;
+            }
+
+            if (state.mutationStatus == SessionMutationStatus.loading) {
               setState(() => isLoading = true);
-            } else if (state.status == ProfileStatus.failure) {
+            } else if (state.mutationStatus == SessionMutationStatus.failure) {
               setState(() => isLoading = false);
               showSnackbar(l10n.loginFailed(state.error ?? l10n.missingErrorMessage));
+            } else if (state.mutationStatus == SessionMutationStatus.success) {
+              setState(() => isLoading = false);
+              widget.popModal();
+              showSnackbar(l10n.loginSucceeded);
             }
           },
         ),
@@ -450,30 +452,27 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         return;
       }
 
-      await Account.insertAnonymousInstance(Account(
-        id: '',
-        instance: _instanceTextEditingController.text,
-        index: -1,
-        anonymous: true,
-        platform: instanceInfo?.platform,
-      ));
-
-      context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
-      context.read<ProfileBloc>().add(SwitchProfile(accountId: _instanceTextEditingController.text));
+      context.read<SessionBloc>().add(AnonymousSessionAdded(
+            account: Account(
+              id: '',
+              instance: _instanceTextEditingController.text,
+              index: -1,
+              anonymous: true,
+              platform: instanceInfo?.platform,
+            ),
+            activate: true,
+          ));
       widget.popRegister();
 
       return;
     }
 
     // Perform login authentication
-    context.read<ProfileBloc>().add(
-          AddProfile(
-            username: _usernameTextEditingController.text,
-            password: _passwordTextEditingController.text,
-            instance: _instanceTextEditingController.text.trim(),
-            totp: _totpTextEditingController.text,
-            showContentWarning: false,
-          ),
-        );
+    context.read<SessionBloc>().add(AuthenticatedLoginRequested(
+          username: _usernameTextEditingController.text,
+          password: _passwordTextEditingController.text,
+          instance: _instanceTextEditingController.text.trim(),
+          totp: _totpTextEditingController.text,
+        ));
   }
 }

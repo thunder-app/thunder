@@ -143,7 +143,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<GesturePreferencesCubit>().reload();
     }
   }

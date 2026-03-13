@@ -56,7 +56,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
 
     if (widget.settingToHighlight != null) {
       setState(() => settingToHighlight = widget.settingToHighlight);
@@ -103,15 +102,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         body: SafeArea(
           top: false,
           child: BlocListener<ProfileBloc, ProfileState>(
+            listenWhen: (_, state) => state.status == ProfileStatus.success && state.siteResponse != null,
             listener: (context, state) {
               if (!context.mounted) return;
-              context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-              context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+              context.read<AccountSettingsCubit>().hydrateFromProfile(state.siteResponse);
             },
-            child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+            child: BlocConsumer<AccountSettingsCubit, AccountSettingsState>(
               listener: (context, state) {
-                if (state.status == UserSettingsStatus.failure) {
+                if (state.status == AccountSettingsStatus.failure) {
                   showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+                } else if (state.status == AccountSettingsStatus.success) {
+                  context.read<ProfileBloc>().add(FetchProfileSettings());
                 }
               },
               builder: (context, state) {
@@ -122,7 +123,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 ThunderUser? person = myUser?.localUserView.person;
 
                 return CustomScrollView(
-                  physics: state.status == UserSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
+                  physics: state.status == AccountSettingsStatus.notLoggedIn ? const NeverScrollableScrollPhysics() : null,
                   slivers: [
                     SliverAppBar(
                       pinned: true,
@@ -138,8 +139,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       ],
                     ),
                     switch (state.status) {
-                      UserSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
-                      UserSettingsStatus.initial => const SliverFillRemaining(
+                      AccountSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                      AccountSettingsStatus.initial => const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(
                             child: CircularProgressIndicator(),
@@ -191,7 +192,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                     primaryButtonText: l10n.save,
                                     onPrimaryButtonPressed: (dialogContext, _) {
-                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(displayName: displayNameTextController.text));
+                                      context.read<AccountSettingsCubit>().updateSettings(displayName: displayNameTextController.text);
                                       Navigator.of(dialogContext).pop();
                                     },
                                     secondaryButtonText: l10n.cancel,
@@ -224,7 +225,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                     primaryButtonText: l10n.save,
                                     onPrimaryButtonPressed: (dialogContext, _) {
-                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(bio: bioTextController.text));
+                                      context.read<AccountSettingsCubit>().updateSettings(bio: bioTextController.text);
                                       Navigator.of(dialogContext).pop();
                                     },
                                     secondaryButtonText: l10n.cancel,
@@ -251,7 +252,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                     primaryButtonText: l10n.save,
                                     onPrimaryButtonPressed: (dialogContext, _) {
-                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(email: emailTextController.text));
+                                      context.read<AccountSettingsCubit>().updateSettings(email: emailTextController.text);
                                       Navigator.of(dialogContext).pop();
                                     },
                                     secondaryButtonText: l10n.cancel,
@@ -277,7 +278,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                     ),
                                     primaryButtonText: l10n.save,
                                     onPrimaryButtonPressed: (dialogContext, _) {
-                                      context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(matrixUserId: matrixUserTextController.text));
+                                      context.read<AccountSettingsCubit>().updateSettings(matrixUserId: matrixUserTextController.text);
                                       Navigator.of(dialogContext).pop();
                                     },
                                     secondaryButtonText: l10n.cancel,
@@ -310,7 +311,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
                                 ],
                                 leading: Icon(Icons.filter_alt_rounded),
-                                onChanged: (value) async => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultFeedListType: value.payload)),
+                                onChanged: (value) async => context.read<AccountSettingsCubit>().updateSettings(defaultFeedListType: value.payload),
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedType),
                                 highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType),
@@ -329,7 +330,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                   account: account,
                                   title: l10n.defaultFeedSortType,
                                   onSelect: (value) async {
-                                    context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(defaultPostSortType: value.payload));
+                                    context.read<AccountSettingsCubit>().updateSettings(defaultPostSortType: value.payload);
                                   },
                                   previouslySelected: localUser?.defaultSortType,
                                 ),
@@ -351,7 +352,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 value: localUser?.showNsfw,
                                 iconEnabled: Icons.no_adult_content,
                                 iconDisabled: Icons.no_adult_content,
-                                onChanged: (bool value) => context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showNsfw: value)),
+                                onChanged: (bool value) => context.read<AccountSettingsCubit>().updateSettings(showNsfw: value),
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowNsfwContent),
                                 highlighted: settingToHighlight == LocalSettings.accountShowNsfwContent),
@@ -360,7 +361,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 value: localUser?.showScores,
                                 iconEnabled: Icons.onetwothree_rounded,
                                 iconDisabled: Icons.onetwothree_rounded,
-                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                                onChanged: (bool value) => {context.read<AccountSettingsCubit>().updateSettings(showScores: value)},
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowScores),
                                 highlighted: settingToHighlight == LocalSettings.accountShowScores),
@@ -369,7 +370,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 value: localUser?.showReadPosts,
                                 iconEnabled: Icons.fact_check_rounded,
                                 iconDisabled: Icons.fact_check_outlined,
-                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                                onChanged: (bool value) => {context.read<AccountSettingsCubit>().updateSettings(showReadPosts: value)},
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowReadPosts),
                                 highlighted: settingToHighlight == LocalSettings.accountShowReadPosts),
@@ -379,7 +380,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 iconEnabled: Thunder.robot,
                                 iconDisabled: Thunder.robot,
                                 iconSpacing: 14.0,
-                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(botAccount: value))},
+                                onChanged: (bool value) => {context.read<AccountSettingsCubit>().updateSettings(botAccount: value)},
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountIsBot),
                                 highlighted: settingToHighlight == LocalSettings.accountIsBot),
@@ -389,7 +390,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                 iconEnabled: Thunder.robot,
                                 iconDisabled: Thunder.robot,
                                 iconSpacing: 14.0,
-                                onChanged: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
+                                onChanged: (bool value) => {context.read<AccountSettingsCubit>().updateSettings(showBotAccounts: value)},
                                 highlightKey: settingToHighlightKey,
                                 onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowBotAccounts),
                                 highlighted: settingToHighlight == LocalSettings.accountShowBotAccounts),
@@ -505,10 +506,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                                   if (success) {
                                     showSnackbar(l10n.accountSettingsImportedSuccessfully);
-
-                                    // Reload the current page we're on to reflect changes to account settings
-                                    context.read<UserSettingsBloc>().add(const ResetUserSettingsEvent());
-                                    context.read<UserSettingsBloc>().add(const GetUserSettingsEvent());
+                                    context.read<ProfileBloc>().add(FetchProfileSettings());
                                   } else {
                                     showSnackbar(l10n.errorImportingAccountSettings);
                                   }

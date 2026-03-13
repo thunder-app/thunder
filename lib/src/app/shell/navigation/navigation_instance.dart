@@ -6,6 +6,7 @@ part of 'navigation_utils.dart';
 /// the id of the navigated instance from the original instance (e.g., lemmy.ml's instance id from lemmy.world).
 Future<void> navigateToInstancePage(
   BuildContext context, {
+  Account? account,
   required String instanceHost,
   required int? instanceId,
 }) async {
@@ -27,6 +28,10 @@ Future<void> navigateToInstancePage(
     // Continue if we can't get the site
   }
 
+  final fallbackAccount = Account(id: '', index: -1, anonymous: true, instance: instanceHost, platform: platform);
+  final routeScope = resolveAccountAwareRouteScope(context, account: account, fallbackAccount: fallbackAccount, useActiveAccount: true, includeThunderCubit: true);
+  final effectiveAccount = routeScope.account;
+
   final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
@@ -36,9 +41,10 @@ Future<void> navigateToInstancePage(
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
-    builder: (context) => BlocProvider.value(
-      value: context.read<ThunderBloc>(),
+    builder: (_) => MultiBlocProvider(
+      providers: routeScope.providers(provideThunderCubit: true),
       child: InstancePage(
+        account: effectiveAccount,
         instance: ThunderInstanceInfo(
           id: instanceId,
           domain: site!.site.actorId,
@@ -79,13 +85,14 @@ Future<void> navigateToModlogPage(
   int? moderatorId,
   int? commentId,
   required String subtitle,
+  Account? account,
 }) async {
-  final thunderBloc = context.read<ThunderBloc>();
-  final account = context.read<ProfileBloc>().state.account;
+  final routeScope = resolveAccountAwareRouteScope(context, account: account, includeThunderCubit: true);
+  final effectiveAccount = routeScope.account;
 
   // Optional blocs
   final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>();
-  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : createFeedBloc(account);
+  final feedBloc = hasFeedBloc != null ? context.read<FeedBloc>() : createFeedBloc(effectiveAccount);
 
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final themeCubit = context.read<ThemePreferencesCubit>();
@@ -102,11 +109,14 @@ Future<void> navigateToModlogPage(
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: feedBloc),
-        BlocProvider.value(value: thunderBloc),
-      ],
+      providers: routeScope.providers(
+        provideThunderCubit: true,
+        extraProviders: [
+          BlocProvider<FeedBloc>.value(value: feedBloc),
+        ],
+      ),
       child: ModlogFeedPage(
+        account: effectiveAccount,
         modlogActionType: modlogActionType,
         communityId: communityId,
         userId: userId,

@@ -15,6 +15,7 @@ import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 class ModlogFeedPage extends StatefulWidget {
   const ModlogFeedPage({
     super.key,
+    required this.account,
     this.modlogActionType,
     this.communityId,
     this.userId,
@@ -22,6 +23,9 @@ class ModlogFeedPage extends StatefulWidget {
     this.commentId,
     required this.subtitle,
   });
+
+  /// The filtering to be applied to the feed.
+  final Account account;
 
   /// The filtering to be applied to the feed.
   final ModlogActionType? modlogActionType;
@@ -49,30 +53,18 @@ class ModlogFeedPage extends StatefulWidget {
 class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Account>(
-      future: fetchActiveProfile(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        final account = snapshot.data!;
-        return BlocProvider<ModlogCubit>(
-          create: (_) => ModlogCubit(
-            repository: ModlogRepositoryImpl(account: account),
-          )..fetchModlogFeed(
-              modlogActionType: widget.modlogActionType,
-              communityId: widget.communityId,
-              userId: widget.userId,
-              moderatorId: widget.moderatorId,
-              commentId: widget.commentId,
-              reset: true,
-            ),
-          child: ModlogFeedView(subtitle: widget.subtitle),
-        );
-      },
+    return BlocProvider<ModlogCubit>(
+      create: (_) => ModlogCubit(
+        repository: ModlogRepositoryImpl(account: widget.account),
+      )..fetchModlogFeed(
+          modlogActionType: widget.modlogActionType,
+          communityId: widget.communityId,
+          userId: widget.userId,
+          moderatorId: widget.moderatorId,
+          commentId: widget.commentId,
+          reset: true,
+        ),
+      child: ModlogFeedView(subtitle: widget.subtitle),
     );
   }
 }
@@ -120,7 +112,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
 
   @override
   Widget build(BuildContext context) {
-    final hideTopBarOnScroll = context.select<ThunderBloc, bool>((bloc) => bloc.state.hideTopBarOnScroll);
+    final hideTopBarOnScroll = context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll);
 
     return Scaffold(
       body: SafeArea(

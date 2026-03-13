@@ -48,3 +48,14 @@ class Drafts extends Table {
   IntColumn get languageId => integer().nullable()();
   TextColumn get body => text().nullable()();
 }
+
+class SessionStateTable extends Table {
+  @override
+  String get tableName => 'session_state';
+
+  IntColumn get singleton => integer().withDefault(const Constant(0))();
+  IntColumn get accountId => integer().nullable().references(Accounts, #id, onDelete: KeyAction.setNull)();
+
+  @override
+  Set<Column> get primaryKey => {singleton};
+}

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -13,7 +11,9 @@ enum ReportResolveStatus { unresolved, all }
 /// A [BottomSheet] that allows the user to filter reports by status and community
 /// When the submit button is pressed, the [onSubmit] function is called with the selected [ReportResolveStatus] and [ThunderCommunity] if any.
 class ReportFilterBottomSheet extends StatefulWidget {
-  const ReportFilterBottomSheet({super.key, required this.status, required this.onSubmit});
+  const ReportFilterBottomSheet({super.key, required this.account, required this.status, required this.onSubmit});
+
+  final Account account;
 
   /// The status to filter by
   final ReportResolveStatus status;
@@ -80,7 +80,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
             Text(l10n.community, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             CommunitySelector(
-              account: context.read<ProfileBloc>().state.account,
+              account: widget.account,
               community: community,
               onCommunitySelected: (ThunderCommunity c) {
                 setState(() => community = c);

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/features/settings/api.dart';
 
 /// Enum to distinguish between feed and post FABs
@@ -82,13 +82,13 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   }
 
   /// Gets the current isFabOpen state based on the fabType
-  bool _getIsFabOpen(FabStateState state) {
+  bool _getIsFabOpen(ShellChromeState state) {
     return widget.fabType == FabType.feed ? state.isFeedFabOpen : state.isPostFabOpen;
   }
 
   /// Sets the FAB open state based on the fabType
   void _setFabOpen(BuildContext context, bool isOpen) {
-    final cubit = context.read<FabStateCubit>();
+    final cubit = context.read<ShellChromeCubit>();
     if (widget.fabType == FabType.feed) {
       cubit.setFeedFabOpen(isOpen);
     } else {
@@ -98,7 +98,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   /// Sets the FAB summoned state based on the fabType
   void _setFabSummoned(BuildContext context, bool isSummoned) {
-    final cubit = context.read<FabStateCubit>();
+    final cubit = context.read<ShellChromeCubit>();
     if (widget.fabType == FabType.feed) {
       cubit.setFeedFabSummoned(isSummoned);
     } else {
@@ -108,7 +108,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FabStateCubit, FabStateState>(
+    return BlocConsumer<ShellChromeCubit, ShellChromeState>(
       listenWhen: (previous, current) => _getIsFabOpen(previous) != _getIsFabOpen(current),
       listener: (context, state) {
         final isOpen = _getIsFabOpen(state);
@@ -286,7 +286,7 @@ class ActionButton extends StatelessWidget {
 
   /// Sets the FAB open state based on the fabType
   void _setFabOpen(BuildContext context, bool isOpen) {
-    final cubit = context.read<FabStateCubit>();
+    final cubit = context.read<ShellChromeCubit>();
     if (fabType == FabType.feed) {
       cubit.setFeedFabOpen(isOpen);
     } else {

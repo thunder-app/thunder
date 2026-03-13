@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/shared/share/share_action_bottom_sheet.dart';
@@ -28,7 +28,10 @@ void showCommentActionBottomModalSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => CommentActionBottomSheet(context: context, initialPage: page, comment: comment, onAction: onAction, isShowingSource: isShowingSource),
+    builder: (_) => wrapWithCapturedAccountContext(
+      context,
+      CommentActionBottomSheet(context: context, initialPage: page, comment: comment, onAction: onAction, isShowingSource: isShowingSource),
+    ),
   );
 }
 
@@ -85,7 +88,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
   @override
   void initState() {
     super.initState();
-    account = context.read<ProfileBloc>().state.account;
+    account = resolveEffectiveAccount(widget.context);
 
     currentPage = widget.initialPage;
     BackButtonInterceptor.add(_handleBack);
@@ -167,6 +170,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           },
         ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
+          context: widget.context,
           account: account,
           blockedInstances: blockedInstances,
           userInstanceId: widget.comment.creator!.instanceId,
@@ -212,7 +216,7 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
               if (currentPage == GeneralCommentAction.general)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                  child: LanguagePostCardMetaData(languageId: widget.comment.languageId),
+                  child: LanguagePostCardMetaData(languageId: widget.comment.languageId, account: account),
                 ),
               const SizedBox(height: 16.0),
               actions,

@@ -6,6 +6,7 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/session/api.dart';
 
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -14,7 +15,7 @@ import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialo
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   try {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
-    final account = await fetchActiveProfile();
+    final account = resolveEffectiveAccount(context);
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (isFavorite) {
@@ -88,7 +89,7 @@ Future<ThunderCommunity?> handleSubscription(BuildContext context, ThunderCommun
     if (!shouldUnsubscribe) return null;
   }
 
-  final account = context.read<ProfileBloc>().state.account;
+  final account = resolveEffectiveAccount(context);
   final repository = CommunityRepositoryImpl(account: account);
   return await repository.subscribe(community.id, !isSubscribed);
 }

@@ -46,7 +46,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<FeedPreferencesCubit>().reload();
     }
   }

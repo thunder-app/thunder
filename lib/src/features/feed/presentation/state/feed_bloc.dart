@@ -615,6 +615,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         }
 
         FeedResult feedItemResult = await fetchFeedItems(
+          account: account,
           cursor: null,
           feedListType: event.feedListType,
           postSortType: event.postSortType,
@@ -671,6 +672,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       List<ThunderComment> comments = List.from(state.comments);
 
       FeedResult feedItemResult = await fetchFeedItems(
+        account: account,
         cursor: state.cursor,
         feedListType: state.feedListType,
         postSortType: state.postSortType,

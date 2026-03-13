@@ -831,6 +831,132 @@ i1.GeneratedColumn<int> _column_49(String aliasedName) =>
     i1.GeneratedColumn<int>('nsfw', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0 CHECK (nsfw IN (0, 1))', defaultValue: const i1.CustomExpression('0'));
 i1.GeneratedColumn<int> _column_50(String aliasedName) => i1.GeneratedColumn<int>('language_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL');
 i1.GeneratedColumn<String> _column_51(String aliasedName) => i1.GeneratedColumn<String>('body', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+
+final class Schema9 extends i0.VersionedSchema {
+  Schema9({required super.database}) : super(version: 9);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    accounts,
+    favorites,
+    localSubscriptions,
+    userLabels,
+    drafts,
+    sessionState,
+  ];
+  late final Shape9 accounts = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'accounts',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_24,
+          _column_25,
+          _column_26,
+          _column_27,
+          _column_28,
+          _column_29,
+          _column_30,
+          _column_31,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 favorites = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'favorites',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_24,
+          _column_32,
+          _column_33,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 localSubscriptions = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'local_subscriptions',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_24,
+          _column_34,
+          _column_35,
+          _column_36,
+          _column_37,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 userLabels = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'user_labels',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_24,
+          _column_38,
+          _column_39,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape10 drafts = Shape10(
+      source: i0.VersionedTable(
+        entityName: 'drafts',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_24,
+          _column_40,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_44,
+          _column_45,
+          _column_46,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+          _column_51,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 sessionState = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'session_state',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(singleton)',
+        ],
+        columns: [
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+class Shape11 extends i0.VersionedTable {
+  Shape11({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get singleton => columnsByName['singleton']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get accountId => columnsByName['account_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_52(String aliasedName) =>
+    i1.GeneratedColumn<int>('singleton', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0', defaultValue: const i1.CustomExpression('0'));
+i1.GeneratedColumn<int> _column_53(String aliasedName) =>
+    i1.GeneratedColumn<int>('account_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL REFERENCES accounts(id)ON DELETE SET NULL');
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -839,6 +965,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
+  required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -877,6 +1004,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from7To8(migrator, schema);
         return 8;
+      case 8:
+        final schema = Schema9(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from8To9(migrator, schema);
+        return 9;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -891,6 +1023,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
+  required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -901,4 +1034,5 @@ i1.OnUpgrade stepByStep({
       from5To6: from5To6,
       from6To7: from6To7,
       from7To8: from7To8,
+      from8To9: from8To9,
     ));

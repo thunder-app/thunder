@@ -22,6 +22,7 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
+import 'package:thunder/src/features/session/session.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
@@ -99,12 +100,6 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObserver {
-  /// The account to use for the post
-  Account? account;
-
-  /// The account's user information
-  ThunderUser? user;
-
   final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
 
   /// Whether to save this post as a draft
@@ -167,13 +162,16 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
   bool userChanged = false;
 
+  /// The id of the account for which the draft is being saved. This is used to determine which draft to restore when the page is opened.
+  String? _draftAccountId;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
 
-    account = widget.account ?? context.read<ProfileBloc>().state.account;
+    _draftAccountId = widget.account?.id ?? context.read<FeatureAccountCubit>().state.effectiveAccount.id;
 
     communityId = widget.communityId;
 
@@ -339,12 +337,14 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
   }
 
   Future<void> _restoreCommunity() async {
-    if (community != null || communityId == null || account == null) {
+    final account = context.read<FeatureAccountCubit>().state.effectiveAccount;
+
+    if (community != null || communityId == null) {
       return;
     }
 
     try {
-      final details = await CommunityRepositoryImpl(account: account!).getCommunity(id: communityId);
+      final details = await CommunityRepositoryImpl(account: account).getCommunity(id: communityId);
 
       if (!mounted) {
         return;
@@ -365,7 +365,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
   Draft _buildDraft() => buildPostDraft(
         context: _draftContext,
-        accountId: account?.id,
+        accountId: _draftAccountId,
         title: _titleTextController.text,
         url: _urlTextController.text,
         customThumbnail: _customThumbnailTextController.text,
@@ -425,401 +425,412 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
-      child: BlocConsumer<CreatePostCubit, CreatePostState>(
-        listener: (context, state) {
-          if (state.status == CreatePostStatus.success && state.post != null) {
-            widget.onPostSuccess?.call(state.post!, userChanged);
-            Navigator.of(context).pop();
-          }
-
-          if (state.status == CreatePostStatus.error && state.message != null) {
-            showSnackbar(state.message!);
-            context.read<CreatePostCubit>().clearMessage();
-          }
-
-          switch (state.status) {
-            case CreatePostStatus.imageUploadSuccess:
-              String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
-              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
-              break;
-            case CreatePostStatus.postImageUploadSuccess:
-              _urlTextController.text = state.imageUrls?.first ?? '';
-              break;
-            case CreatePostStatus.imageUploadFailure:
-            case CreatePostStatus.postImageUploadFailure:
-              showSnackbar(
-                l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
-                leadingIcon: Icons.warning_rounded,
-                leadingIconColor: theme.colorScheme.errorContainer,
-              );
-            default:
-              break;
-          }
+      child: BlocConsumer<FeatureAccountCubit, FeatureAccountState>(
+        listener: (context, featureAccountState) {
+          _draftAccountId = featureAccountState.effectiveAccount.id;
+          context.read<CreatePostCubit>().switchAccount(featureAccountState.effectiveAccount);
         },
-        builder: (context, state) {
-          return GestureDetector(
-            onTap: () {
-              FocusManager.instance.primaryFocus?.unfocus();
+        builder: (context, featureAccountState) {
+          final account = featureAccountState.effectiveAccount;
+
+          return BlocConsumer<CreatePostCubit, CreatePostState>(
+            listener: (context, state) {
+              if (state.status == CreatePostStatus.success && state.post != null) {
+                widget.onPostSuccess?.call(state.post!, userChanged);
+                Navigator.of(context).pop();
+              }
+
+              if (state.status == CreatePostStatus.error && state.message != null) {
+                showSnackbar(state.message!);
+                context.read<CreatePostCubit>().clearMessage();
+              }
+
+              switch (state.status) {
+                case CreatePostStatus.imageUploadSuccess:
+                  String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
+                  break;
+                case CreatePostStatus.postImageUploadSuccess:
+                  _urlTextController.text = state.imageUrls?.first ?? '';
+                  break;
+                case CreatePostStatus.imageUploadFailure:
+                case CreatePostStatus.postImageUploadFailure:
+                  showSnackbar(
+                    l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
+                    leadingIcon: Icons.warning_rounded,
+                    leadingIconColor: theme.colorScheme.errorContainer,
+                  );
+                default:
+                  break;
+              }
             },
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
-                centerTitle: false,
-              ),
-              body: SafeArea(
-                bottom: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            CommunitySelector(
-                              account: account!,
-                              community: community,
-                              onCommunitySelected: (ThunderCommunity c) {
-                                setState(() {
-                                  communityId = c.id;
-                                  community = c;
-                                });
-                                _onDraftInputChanged();
-                                _validateSubmission();
-                              },
-                            ),
-                            const SizedBox(height: 4.0),
-                            UserSelector(
-                              account: account!,
-                              communityActorId: community?.actorId,
-                              onCommunityChanged: (community) {
-                                setState(() {
-                                  communityId = community?.id;
-                                  community = community;
-                                });
-
-                                _onDraftInputChanged();
-                                _validateSubmission();
-                              },
-                              onUserChanged: (account) {
-                                setState(() {
-                                  userChanged = this.account?.instance != account.instance;
-                                  this.account = account;
-                                });
-
-                                context.read<CreatePostCubit>().switchAccount(account);
-                                _onDraftInputChanged();
-                              },
-                              enableAccountSwitching: widget.post == null,
-                            ),
-                            const SizedBox(height: 12.0),
-                            TypeAheadField<String>(
-                              controller: _titleTextController,
-                              suggestionsCallback: (String pattern) async {
-                                if (pattern.isEmpty) {
-                                  String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
-                                  if (linkTitle?.isNotEmpty == true) {
-                                    return [linkTitle!];
-                                  }
-                                }
-                                return [];
-                              },
-                              itemBuilder: (BuildContext context, String itemData) {
-                                return ListTile(
-                                  title: Text(itemData),
-                                  subtitle: Text(l10n.suggestedTitle),
-                                );
-                              },
-                              onSelected: (String suggestion) {
-                                _titleTextController.text = suggestion;
-                              },
-                              builder: (context, controller, focusNode) => TextField(
-                                controller: controller,
-                                focusNode: focusNode,
-                                decoration: InputDecoration(
-                                  labelText: l10n.postTitle,
-                                  helperText: l10n.requiredField,
-                                  isDense: true,
-                                  border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(13),
-                                ),
-                              ),
-                              hideOnEmpty: true,
-                              hideOnLoading: true,
-                              hideOnError: true,
-                            ),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              controller: _urlTextController,
-                              decoration: InputDecoration(
-                                labelText: l10n.postURL,
-                                errorText: urlError,
-                                isDense: true,
-                                border: const OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.all(13),
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    if (state.status == CreatePostStatus.postImageUploadInProgress) {
-                                      return;
-                                    }
-
-                                    List<String> imagesPath = await selectImagesToUpload();
-                                    if (context.mounted) {
-                                      context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
-                                    }
+            builder: (context, state) {
+              return GestureDetector(
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  appBar: AppBar(
+                    title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
+                    centerTitle: false,
+                  ),
+                  body: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                                CommunitySelector(
+                                  account: account,
+                                  community: community,
+                                  onCommunitySelected: (ThunderCommunity c) {
+                                    setState(() {
+                                      communityId = c.id;
+                                      community = c;
+                                    });
+                                    _onDraftInputChanged();
+                                    _validateSubmission();
                                   },
-                                  icon: state.status == CreatePostStatus.postImageUploadInProgress
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: Center(
-                                            child: SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                          ),
-                                        )
-                                      : Icon(Icons.image, semanticLabel: l10n.uploadImage),
                                 ),
-                              ),
-                            ),
-                            if (!isImageUrl(_urlTextController.text)) ...[
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _customThumbnailTextController,
-                                decoration: InputDecoration(
-                                  labelText: l10n.thumbnailUrl,
-                                  errorText: customThumbnailError,
-                                  isDense: true,
-                                  border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(13),
+                                const SizedBox(height: 4.0),
+                                UserSelector(
+                                  account: account,
+                                  communityActorId: community?.actorId,
+                                  onCommunityChanged: (community) {
+                                    setState(() {
+                                      communityId = community?.id;
+                                      community = community;
+                                    });
+
+                                    _onDraftInputChanged();
+                                    _validateSubmission();
+                                  },
+                                  onUserChanged: (account) {
+                                    setState(() {
+                                      userChanged = featureAccountState.effectiveAccount.id != account.id;
+                                      _draftAccountId = account.id;
+                                    });
+
+                                    context.read<FeatureAccountCubit>().setOverride(account);
+                                    _onDraftInputChanged();
+                                  },
+                                  enableAccountSwitching: widget.post == null,
                                 ),
-                              ),
-                            ],
-                            if (isImageUrl(_urlTextController.text)) ...[
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _altTextTextController,
-                                decoration: InputDecoration(
-                                  labelText: l10n.altText,
-                                  isDense: true,
-                                  border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(13),
+                                const SizedBox(height: 12.0),
+                                TypeAheadField<String>(
+                                  controller: _titleTextController,
+                                  suggestionsCallback: (String pattern) async {
+                                    if (pattern.isEmpty) {
+                                      String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
+                                      if (linkTitle?.isNotEmpty == true) {
+                                        return [linkTitle!];
+                                      }
+                                    }
+                                    return [];
+                                  },
+                                  itemBuilder: (BuildContext context, String itemData) {
+                                    return ListTile(
+                                      title: Text(itemData),
+                                      subtitle: Text(l10n.suggestedTitle),
+                                    );
+                                  },
+                                  onSelected: (String suggestion) {
+                                    _titleTextController.text = suggestion;
+                                  },
+                                  builder: (context, controller, focusNode) => TextField(
+                                    controller: controller,
+                                    focusNode: focusNode,
+                                    decoration: InputDecoration(
+                                      labelText: l10n.postTitle,
+                                      helperText: l10n.requiredField,
+                                      isDense: true,
+                                      border: const OutlineInputBorder(),
+                                      contentPadding: const EdgeInsets.all(13),
+                                    ),
+                                  ),
+                                  hideOnEmpty: true,
+                                  hideOnLoading: true,
+                                  hideOnError: true,
                                 ),
-                              ),
-                            ],
-                            SizedBox(height: url.isNotEmpty ? 10 : 5),
-                            Visibility(
-                              visible: url.isNotEmpty,
-                              child: MediaView(
-                                showFullHeightImages: false,
-                                edgeToEdgeImages: false,
-                                viewMode: ViewMode.comfortable,
-                                markPostReadOnMediaView: false,
-                                isUserLoggedIn: true,
-                                media: Media(
-                                  originalUrl: url,
-                                  mediaUrl: isImageUrl(url)
-                                      ? url
-                                      : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
-                                          ? customThumbnail
-                                          : null,
-                                  nsfw: isNSFW,
-                                  mediaType: MediaType.link,
-                                ),
-                              ),
-                            ),
-                            if (crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
-                            Visibility(
-                              visible: url.isNotEmpty && crossPosts.isNotEmpty,
-                              child: CrossPosts(
-                                crossPosts: crossPosts,
-                                isNewPost: true,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
-                                  child: LanguageSelector(
-                                    languageId: languageId,
-                                    onLanguageSelected: (ThunderLanguage? language) {
-                                      setState(() => languageId = language?.id);
-                                      _onDraftInputChanged();
-                                    },
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  controller: _urlTextController,
+                                  decoration: InputDecoration(
+                                    labelText: l10n.postURL,
+                                    errorText: urlError,
+                                    isDense: true,
+                                    border: const OutlineInputBorder(),
+                                    contentPadding: const EdgeInsets.all(13),
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        if (state.status == CreatePostStatus.postImageUploadInProgress) {
+                                          return;
+                                        }
+
+                                        List<String> imagesPath = await selectImagesToUpload();
+                                        if (context.mounted) {
+                                          context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
+                                        }
+                                      },
+                                      icon: state.status == CreatePostStatus.postImageUploadInProgress
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: Center(
+                                                child: SizedBox(
+                                                  width: 18,
+                                                  height: 18,
+                                                  child: CircularProgressIndicator(),
+                                                ),
+                                              ),
+                                            )
+                                          : Icon(Icons.image, semanticLabel: l10n.uploadImage),
+                                    ),
                                   ),
                                 ),
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    Text(l10n.nsfw),
-                                    const SizedBox(width: 4.0),
-                                    Switch(
-                                      value: isNSFW,
-                                      onChanged: (bool value) {
-                                        setState(() => isNSFW = value);
-                                        _onDraftInputChanged();
-                                      },
+                                if (!isImageUrl(_urlTextController.text)) ...[
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    controller: _customThumbnailTextController,
+                                    decoration: InputDecoration(
+                                      labelText: l10n.thumbnailUrl,
+                                      errorText: customThumbnailError,
+                                      isDense: true,
+                                      border: const OutlineInputBorder(),
+                                      contentPadding: const EdgeInsets.all(13),
+                                    ),
+                                  ),
+                                ],
+                                if (isImageUrl(_urlTextController.text)) ...[
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    controller: _altTextTextController,
+                                    decoration: InputDecoration(
+                                      labelText: l10n.altText,
+                                      isDense: true,
+                                      border: const OutlineInputBorder(),
+                                      contentPadding: const EdgeInsets.all(13),
+                                    ),
+                                  ),
+                                ],
+                                SizedBox(height: url.isNotEmpty ? 10 : 5),
+                                Visibility(
+                                  visible: url.isNotEmpty,
+                                  child: MediaView(
+                                    showFullHeightImages: false,
+                                    edgeToEdgeImages: false,
+                                    viewMode: ViewMode.comfortable,
+                                    markPostReadOnMediaView: false,
+                                    isUserLoggedIn: true,
+                                    media: Media(
+                                      originalUrl: url,
+                                      mediaUrl: isImageUrl(url)
+                                          ? url
+                                          : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
+                                              ? customThumbnail
+                                              : null,
+                                      nsfw: isNSFW,
+                                      mediaType: MediaType.link,
+                                    ),
+                                  ),
+                                ),
+                                if (crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
+                                Visibility(
+                                  visible: url.isNotEmpty && crossPosts.isNotEmpty,
+                                  child: CrossPosts(
+                                    crossPosts: crossPosts,
+                                    isNewPost: true,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
+                                      child: LanguageSelector(
+                                        account: account,
+                                        languageId: languageId,
+                                        onLanguageSelected: (ThunderLanguage? language) {
+                                          setState(() => languageId = language?.id);
+                                          _onDraftInputChanged();
+                                        },
+                                      ),
+                                    ),
+                                    Wrap(
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      children: [
+                                        Text(l10n.nsfw),
+                                        const SizedBox(width: 4.0),
+                                        Switch(
+                                          value: isNSFW,
+                                          onChanged: (bool value) {
+                                            setState(() => isNSFW = value);
+                                            _onDraftInputChanged();
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            AnimatedCrossFade(
-                              firstChild: Container(
-                                margin: const EdgeInsets.only(top: 8.0),
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: getBackgroundColor(context),
-                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                const SizedBox(height: 10),
+                                AnimatedCrossFade(
+                                  firstChild: Container(
+                                    margin: const EdgeInsets.only(top: 8.0),
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      color: getBackgroundColor(context),
+                                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                    ),
+                                    child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: isNSFW && hideNsfwPreviews),
+                                  ),
+                                  secondChild: MarkdownTextInputField(
+                                    controller: _bodyTextController,
+                                    focusNode: _bodyFocusNode,
+                                    label: l10n.postBody,
+                                    minLines: 8,
+                                    maxLines: null,
+                                    textStyle: theme.textTheme.bodyLarge,
+                                    spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                                  ),
+                                  crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                  duration: const Duration(milliseconds: 120),
+                                  excludeBottomFocus: false,
                                 ),
-                                child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: isNSFW && hideNsfwPreviews),
-                              ),
-                              secondChild: MarkdownTextInputField(
-                                controller: _bodyTextController,
-                                focusNode: _bodyFocusNode,
-                                label: l10n.postBody,
-                                minLines: 8,
-                                maxLines: null,
-                                textStyle: theme.textTheme.bodyLarge,
-                                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-                              ),
-                              crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                              duration: const Duration(milliseconds: 120),
-                              excludeBottomFocus: false,
+                              ]),
                             ),
-                          ]),
+                          ),
                         ),
-                      ),
-                    ),
-                    const Divider(height: 1),
-                    Container(
-                      color: theme.cardColor,
-                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: MarkdownToolbar(
-                              controller: _bodyTextController,
-                              focusNode: _bodyFocusNode,
-                              actions: const [
-                                MarkdownType.image,
-                                MarkdownType.link,
-                                MarkdownType.bold,
-                                MarkdownType.italic,
-                                MarkdownType.blockquote,
-                                MarkdownType.strikethrough,
-                                MarkdownType.title,
-                                MarkdownType.list,
-                                MarkdownType.separator,
-                                MarkdownType.code,
-                                MarkdownType.spoiler,
-                                MarkdownType.username,
-                                MarkdownType.community,
-                              ],
-                              customTapActions: {
-                                MarkdownType.username: () {
-                                  showUserInputDialog(
-                                    context,
-                                    title: l10n.username,
-                                    account: account!,
-                                    onUserSelected: (ThunderUser user) {
-                                      _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                        _bodyTextController.selection.end,
-                                        _bodyTextController.selection.end,
-                                        '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
+                        const Divider(height: 1),
+                        Container(
+                          color: theme.cardColor,
+                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: MarkdownToolbar(
+                                  controller: _bodyTextController,
+                                  focusNode: _bodyFocusNode,
+                                  actions: const [
+                                    MarkdownType.image,
+                                    MarkdownType.link,
+                                    MarkdownType.bold,
+                                    MarkdownType.italic,
+                                    MarkdownType.blockquote,
+                                    MarkdownType.strikethrough,
+                                    MarkdownType.title,
+                                    MarkdownType.list,
+                                    MarkdownType.separator,
+                                    MarkdownType.code,
+                                    MarkdownType.spoiler,
+                                    MarkdownType.username,
+                                    MarkdownType.community,
+                                  ],
+                                  customTapActions: {
+                                    MarkdownType.username: () {
+                                      showUserInputDialog(
+                                        context,
+                                        title: l10n.username,
+                                        account: account,
+                                        onUserSelected: (ThunderUser user) {
+                                          _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                            _bodyTextController.selection.end,
+                                            _bodyTextController.selection.end,
+                                            '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
-                                MarkdownType.community: () {
-                                  showCommunityInputDialog(
-                                    context,
-                                    title: l10n.community,
-                                    account: account!,
-                                    onCommunitySelected: (community) {
-                                      _bodyTextController.text = _bodyTextController.text
-                                          .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
+                                    MarkdownType.community: () {
+                                      showCommunityInputDialog(
+                                        context,
+                                        title: l10n.community,
+                                        account: account,
+                                        onCommunitySelected: (community) {
+                                          _bodyTextController.text = _bodyTextController.text
+                                              .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
+                                        },
+                                      );
                                     },
-                                  );
-                                },
-                              },
-                              imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
-                              customImageButtonAction: () async {
-                                if (state.status == CreatePostStatus.imageUploadInProgress) {
-                                  return;
-                                }
+                                  },
+                                  imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
+                                  customImageButtonAction: () async {
+                                    if (state.status == CreatePostStatus.imageUploadInProgress) {
+                                      return;
+                                    }
 
-                                List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                if (context.mounted) {
-                                  context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
-                                }
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
-                            child: IconButton(
-                              onPressed: () {
-                                if (!showPreview) {
-                                  setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-
-                                setState(() => showPreview = !showPreview);
-                                if (!showPreview && wasKeyboardVisible) {
-                                  _bodyFocusNode.requestFocus();
-                                }
-                              },
-                              icon: Icon(
-                                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                                color: theme.colorScheme.onSecondary,
-                                semanticLabel: l10n.postTogglePreview,
-                              ),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
-                            child: SizedBox(
-                              width: 60,
-                              child: IconButton(
-                                onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
-                                icon: state.status == CreatePostStatus.submitting
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : Icon(
-                                        widget.post != null ? Icons.edit_rounded : Icons.send_rounded,
-                                        color: theme.colorScheme.onSecondary,
-                                        semanticLabel: widget.post != null ? l10n.editPost : l10n.createPost,
-                                      ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: theme.colorScheme.secondary,
-                                  disabledBackgroundColor: getBackgroundColor(context),
+                                    List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                    if (context.mounted) {
+                                      context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                                    }
+                                  },
                                 ),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
+                                child: IconButton(
+                                  onPressed: () {
+                                    if (!showPreview) {
+                                      setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                    }
+
+                                    setState(() => showPreview = !showPreview);
+                                    if (!showPreview && wasKeyboardVisible) {
+                                      _bodyFocusNode.requestFocus();
+                                    }
+                                  },
+                                  icon: Icon(
+                                    showPreview ? Icons.visibility_off_rounded : Icons.visibility,
+                                    color: theme.colorScheme.onSecondary,
+                                    semanticLabel: l10n.postTogglePreview,
+                                  ),
+                                  style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                                child: SizedBox(
+                                  width: 60,
+                                  child: IconButton(
+                                    onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
+                                    icon: state.status == CreatePostStatus.submitting
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : Icon(
+                                            widget.post != null ? Icons.edit_rounded : Icons.send_rounded,
+                                            color: theme.colorScheme.onSecondary,
+                                            semanticLabel: widget.post != null ? l10n.editPost : l10n.createPost,
+                                          ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: theme.colorScheme.secondary,
+                                      disabledBackgroundColor: getBackgroundColor(context),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).padding.bottom,
+                          color: theme.cardColor,
+                        ),
+                      ],
                     ),
-                    Container(
-                      height: MediaQuery.of(context).padding.bottom,
-                      color: theme.cardColor,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
@@ -831,7 +842,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
     try {
       // Fetch cross-posts
-      final response = await SearchRepositoryImpl(account: account!).search(
+      final response = await SearchRepositoryImpl(account: context.read<FeatureAccountCubit>().state.effectiveAccount).search(
         query: url,
         type: MetaSearchType.url,
         sort: SearchSortType.topAll,

@@ -123,7 +123,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
         Navigator.of(context).pop();
-        showSelectableTextModal(context, text: widget.comment.content);
+        showSelectableTextModal(widget.context, text: widget.comment.content);
         return;
       case CommentBottomSheetAction.viewCommentSource:
       case CommentBottomSheetAction.viewCommentMarkdown:
@@ -133,7 +133,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         break;
       case CommentBottomSheetAction.viewModlog:
         Navigator.of(context).pop();
-        await navigateToModlogPage(context, subtitle: l10n.removedComment, modlogActionType: ModlogActionType.modRemoveComment, commentId: widget.comment.id);
+        await navigateToModlogPage(widget.context, account: widget.account, subtitle: l10n.removedComment, modlogActionType: ModlogActionType.modRemoveComment, commentId: widget.comment.id);
         return;
       case CommentBottomSheetAction.reportComment:
         showReportCommentDialog();

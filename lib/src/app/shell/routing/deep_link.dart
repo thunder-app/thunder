@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/app/shell/routing/deep_link_enums.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
@@ -121,7 +119,7 @@ Future<void> _initializeLemmyClient(BuildContext context) async {
 
   while (attempts < maxRetries) {
     try {
-      final account = await fetchActiveProfile();
+      final account = resolveActiveAccount(context);
       if (account.instance.isEmpty) {
         throw DeepLinkException(GlobalContext.l10n.errorNoActiveInstance, type: DeepLinkErrorType.initialization);
       }
@@ -233,7 +231,7 @@ Future<DeepLinkResult> _navigateToPost(BuildContext context, String link) async 
   }
 
   try {
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
     final post = await PostRepositoryImpl(account: account).getPost(postId);
 
     if (!context.mounted) {
@@ -323,7 +321,7 @@ Future<DeepLinkResult> _navigateToComment(BuildContext context, String link) asy
     if (!context.mounted) {
       return DeepLinkResult.failure(GlobalContext.l10n.unexpectedError);
     }
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
     final comment = await CommentRepositoryImpl(account: account).getComment(commentId);
 
     navigateToComment(context, comment);

@@ -208,6 +208,7 @@ class _CommentCardState extends State<CommentCard> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0, top: 6.0, right: 4.0),
                   child: CommentCardButtonActions(
+                    account: widget.account,
                     comment: comment,
                     isOwnComment: isOwnComment,
                     onAction: (action) => _onAction(action),

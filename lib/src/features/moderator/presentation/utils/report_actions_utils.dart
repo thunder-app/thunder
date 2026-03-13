@@ -5,6 +5,7 @@ import 'package:thunder/src/features/post/post.dart';
 
 /// Helper function which handles the logic of fetching post/comment reports
 Future<Map<String, dynamic>> fetchReports({
+  required Account account,
   int page = 1,
   int limit = 10,
   bool unresolved = false,
@@ -13,8 +14,6 @@ Future<Map<String, dynamic>> fetchReports({
   int? commentId,
   ReportFeedType reportFeedType = ReportFeedType.post,
 }) async {
-  final account = await fetchActiveProfile();
-
   bool hasReachedPostReportsEnd = false;
   bool hasReachedCommentReportsEnd = false;
 
@@ -64,8 +63,7 @@ ThunderPostReport optimisticallyResolvePostReport(ThunderPostReport postReport, 
 }
 
 /// Logic to resolve a post report
-Future<bool> resolvePostReport(int postReportId, bool resolved) async {
-  final account = await fetchActiveProfile();
+Future<bool> resolvePostReport(Account account, int postReportId, bool resolved) async {
   final postReportResponse = await PostRepositoryImpl(account: account).resolvePostReport(postReportId, resolved);
 
   return postReportResponse.resolved == resolved;
@@ -77,8 +75,7 @@ ThunderCommentReport optimisticallyResolveCommentReport(ThunderCommentReport com
 }
 
 /// Logic to resolve a comment report
-Future<bool> resolveCommentReport(int commentReportId, bool resolved) async {
-  final account = await fetchActiveProfile();
+Future<bool> resolveCommentReport(Account account, int commentReportId, bool resolved) async {
   final commentReportResponse = await CommentRepositoryImpl(account: account).resolveCommentReport(commentReportId, resolved);
 
   return commentReportResponse.resolved == resolved;

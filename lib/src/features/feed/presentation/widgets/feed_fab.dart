@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/features/feed/api.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
@@ -18,16 +19,21 @@ import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key, this.heroTag});
+  const FeedFAB({super.key, this.heroTag, this.actionController});
 
   final String? heroTag;
+  final FeedActionController? actionController;
+
+  FeedActionController? _resolveActionController(BuildContext context) {
+    return actionController ?? FeedActionScope.maybeOf(context);
+  }
 
   @override
   build(BuildContext context) {
     final theme = Theme.of(context);
     final feedFabSinglePressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabSinglePressAction);
     final feedFabLongPressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabLongPressAction);
-    final isFabSummoned = context.select<FabStateCubit, bool>((cubit) => cubit.state.isFeedFabSummoned);
+    final isFabSummoned = context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isFeedFabSummoned);
     final FeedState feedState = context.watch<FeedBloc>().state;
     final ProfileState profileState = context.read<ProfileBloc>().state;
 
@@ -180,7 +186,7 @@ class FeedFAB extends StatelessWidget {
                   child: GestureDetector(
                     onVerticalDragEnd: (DragEndDetails details) {
                       if (details.primaryVelocity! < 0) {
-                        context.read<FabStateCubit>().setFeedFabSummoned(true);
+                        context.read<ShellChromeCubit>().setFeedFabSummoned(true);
                       }
                     },
                   ),
@@ -261,11 +267,11 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerOpenFab(BuildContext context) async {
-    context.read<FabStateCubit>().setFeedFabOpen(true);
+    context.read<ShellChromeCubit>().setFeedFabOpen(true);
   }
 
   Future<void> triggerDismissRead(BuildContext context) async {
-    context.read<FeedUiCubit>().dismissRead();
+    await _resolveActionController(context)?.dismissRead();
   }
 
   Future<void> triggerChangeSort(BuildContext context) async {
@@ -290,7 +296,7 @@ class FeedFAB extends StatelessWidget {
   }
 
   Future<void> triggerScrollToTop(BuildContext context) async {
-    context.read<FeedUiCubit>().scrollToTop();
+    await _resolveActionController(context)?.scrollToTop();
   }
 
   Future<void> triggerNewPost(BuildContext context, {bool isPostingLocked = false}) async {

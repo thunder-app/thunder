@@ -51,6 +51,21 @@ class PostCard extends StatefulWidget {
   /// The callback function when the user taps on a post.
   final Function() onTap;
 
+  /// Optional feed type override for contexts without a FeedBloc.
+  final FeedType? feedType;
+
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
+  /// Optional callback for replacing a post in the current list.
+  final void Function(ThunderPost post)? onPostUpdated;
+
+  /// Optional callback for dismissing a hidden post from view.
+  final void Function(int postId)? onDismissHiddenPost;
+
+  /// Optional callback for dismissing blocked content from view.
+  final void Function({int? userId, int? communityId})? onDismissBlocked;
+
   const PostCard({
     super.key,
     required this.post,
@@ -64,6 +79,11 @@ class PostCard extends StatefulWidget {
     required this.indicateRead,
     required this.isLastTapped,
     this.disableSwiping = false,
+    this.feedType,
+    this.feedListType,
+    this.onPostUpdated,
+    this.onDismissHiddenPost,
+    this.onDismissBlocked,
   });
 
   @override
@@ -176,7 +196,8 @@ class _PostCardState extends State<PostCard> {
       rightSecondaryPostGesture: rightSecondaryPostGesture,
       disableSwiping: widget.disableSwiping,
     );
-    final feedType = context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType);
+    final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
+    final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
     final postIsCompact = useCompactView ||
         (pinnedPostsUseCompactView && (widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity))) ||
         (linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
@@ -185,6 +206,8 @@ class _PostCardState extends State<PostCard> {
     Widget child = postIsCompact
         ? PostCardViewCompact(
             post: widget.post,
+            feedType: feedType,
+            feedListType: widget.feedListType,
             creator: widget.post.creator!,
             community: widget.post.community!,
             indicateRead: widget.indicateRead,
@@ -197,6 +220,8 @@ class _PostCardState extends State<PostCard> {
           )
         : PostCardViewComfortable(
             post: widget.post,
+            feedType: feedType,
+            feedListType: widget.feedListType,
             hideThumbnails: hideThumbnails,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
@@ -213,6 +238,10 @@ class _PostCardState extends State<PostCard> {
             },
             onVoteAction: widget.onVoteAction,
             onSaveAction: widget.onSaveAction,
+            onPostUpdated: widget.onPostUpdated,
+            onDismissHiddenPost: widget.onDismissHiddenPost,
+            onDismissBlocked: widget.onDismissBlocked,
+            onMarkPostRead: () => widget.onReadAction(true),
           );
 
     // Wrap the post card in an InkWell to handle taps and long presses
@@ -230,19 +259,37 @@ class _PostCardState extends State<PostCard> {
               return;
             }
             if (post != null) {
-              context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+              if (widget.onPostUpdated != null) {
+                widget.onPostUpdated!(post);
+              } else if (hasFeedBloc) {
+                context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+              }
             }
 
             if (postAction == PostAction.hide) {
-              context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
+              if (widget.onDismissHiddenPost != null) {
+                widget.onDismissHiddenPost!(post!.id);
+              } else if (hasFeedBloc) {
+                context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
+              } else {
+                FeedActionScope.maybeOf(context)?.dismissHiddenPost(post!.id);
+              }
             }
 
             if (userAction == UserAction.block) {
-              context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
+              if (widget.onDismissBlocked != null) {
+                widget.onDismissBlocked!(userId: post!.creator!.id);
+              } else {
+                FeedActionScope.maybeOf(context)?.dismissBlocked(userId: post!.creator!.id);
+              }
             }
 
             if (communityAction == CommunityAction.block) {
-              context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
+              if (widget.onDismissBlocked != null) {
+                widget.onDismissBlocked!(communityId: post!.community!.id);
+              } else {
+                FeedActionScope.maybeOf(context)?.dismissBlocked(communityId: post!.community!.id);
+              }
             }
           },
         ),
@@ -329,7 +376,7 @@ class PostCardActionBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final tabletMode = context.select<ThunderBloc, bool>((bloc) => bloc.state.tabletMode);
+    final tabletMode = context.select<ThunderCubit, bool>((bloc) => bloc.state.tabletMode);
     final leftPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryPostGesture);
     final rightPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryPostGesture);
 

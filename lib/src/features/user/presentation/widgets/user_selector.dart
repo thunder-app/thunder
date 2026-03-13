@@ -4,8 +4,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/search/search.dart';
-
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
@@ -15,31 +14,8 @@ import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 /// This widget provides a method for switching between different user accounts and ensures that the
 /// target community, post, or comment is federated to the new account's instance before allowing
 /// the switch. If the content cannot be resolved on the new instance, the switch is blocked.
-///
-/// **Usage Examples:**
-///
-/// For creating a post in a community:
-/// ```dart
-/// UserSelector(
-///   account: currentAccount,
-///   onUserChanged: (account) => handleAccountChange(account),
-///   communityActorId: community.actorId,
-///   onCommunityChanged: (community) => handleCommunityChange(community),
-/// )
-/// ```
-///
-/// For creating a comment on a post:
-/// ```dart
-/// UserSelector(
-///   account: currentAccount,
-///   onUserChanged: (account) => handleAccountChange(account),
-///   postActorId: post.actorId,
-///   onPostChanged: (post) => handlePostChange(post),
-/// )
-/// ```
 class UserSelector extends StatefulWidget {
-  /// The currently selected account.
-  /// This is the account that will be displayed in the selector.
+  /// The currently selected account. This is the account that will be displayed in the selector.
   final Account account;
 
   /// Callback invoked when the user successfully switches to a different account.
@@ -120,6 +96,9 @@ class UserSelector extends StatefulWidget {
   /// Defaults to `true`.
   final bool enableAccountSwitching;
 
+  /// Optional resolver used to re-resolve route content for the selected account.
+  final FeatureAccountContentResolver? contentResolver;
+
   const UserSelector({
     super.key,
     required this.account,
@@ -131,6 +110,7 @@ class UserSelector extends StatefulWidget {
     this.parentCommentActorId,
     this.onParentCommentChanged,
     this.enableAccountSwitching = true,
+    this.contentResolver,
   });
 
   @override
@@ -147,20 +127,21 @@ class _UserSelectorState extends State<UserSelector> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadUserData(widget.account));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _load(widget.account));
   }
 
   @override
   void didUpdateWidget(UserSelector oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.account.id != widget.account.id) {
-      _loadUserData(widget.account);
+      _load(widget.account);
     }
   }
 
   /// Loads user data for the specified account
-  Future<void> _loadUserData(Account? account) async {
+  Future<void> _load(Account? account) async {
     if (_isLoading) return;
+
     setState(() => _isLoading = true);
 
     try {
@@ -212,106 +193,59 @@ class _UserSelectorState extends State<UserSelector> {
 
     final resolvedItems = await _performAccountSwitch(newAccount);
     if (resolvedItems != null) {
-      await _loadUserData(newAccount);
+      await _load(newAccount);
       _invokeCallbacks(newAccount, resolvedItems);
     }
   }
 
   /// Performs federation checks and resolves content on the new account's instance
-  Future<Map<String, dynamic>?> _performAccountSwitch(Account newAccount) async {
+  Future<FeatureAccountResolvedContent?> _performAccountSwitch(Account newAccount) async {
     final l10n = GlobalContext.l10n;
 
     try {
-      ThunderCommunity? community;
-      ThunderPost? post;
-      ThunderComment? parentComment;
+      final resolvedContent = await (widget.contentResolver ?? FeatureAccountContentResolver()).resolve(
+        account: newAccount,
+        request: FeatureAccountResolutionRequest(
+          communityActorId: widget.communityActorId,
+          postActorId: widget.postActorId,
+          parentCommentActorId: widget.parentCommentActorId,
+        ),
+      );
 
-      // Resolve community if needed
-      if (widget.communityActorId?.isNotEmpty == true) {
-        community = await _resolveCommunity(newAccount, widget.communityActorId!);
-        if (community == null) {
-          showSnackbar(l10n.unableToFindCommunityOnInstance);
-          return null;
-        }
+      if (widget.communityActorId?.isNotEmpty == true && resolvedContent.community == null) {
+        showSnackbar(l10n.unableToFindCommunityOnInstance);
+        return null;
       }
 
-      // Resolve post if needed
-      if (widget.postActorId?.isNotEmpty == true) {
-        post = await _resolvePost(newAccount, widget.postActorId!);
-        if (post == null) {
-          showSnackbar(l10n.accountSwitchPostNotFound(newAccount.instance));
-          return null;
-        }
+      if (widget.postActorId?.isNotEmpty == true && resolvedContent.post == null) {
+        showSnackbar(l10n.accountSwitchPostNotFound(newAccount.instance));
+        return null;
       }
 
-      // Resolve parent comment if needed
-      if (widget.parentCommentActorId?.isNotEmpty == true) {
-        parentComment = await _resolveParentComment(newAccount, widget.parentCommentActorId!);
-        if (parentComment == null) {
-          showSnackbar(l10n.accountSwitchParentCommentNotFound(newAccount.instance));
-          return null;
-        }
+      if (widget.parentCommentActorId?.isNotEmpty == true && resolvedContent.parentComment == null) {
+        showSnackbar(l10n.accountSwitchParentCommentNotFound(newAccount.instance));
+        return null;
       }
 
-      return {
-        'community': community,
-        'post': post,
-        'parentComment': parentComment,
-      };
+      return resolvedContent;
     } catch (e) {
       showSnackbar(e.toString());
       return null;
     }
   }
 
-  /// Resolves a community on the new account's instance
-  Future<ThunderCommunity?> _resolveCommunity(Account account, String actorId) async {
-    try {
-      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response.community;
-    } catch (e) {
-      debugPrint('Failed to resolve community: $e');
-      return null;
-    }
-  }
-
-  /// Resolves a post on the new account's instance
-  Future<ThunderPost?> _resolvePost(Account account, String actorId) async {
-    try {
-      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      if (response.post == null) return null;
-
-      final parsedPosts = await parsePosts([response.post!]);
-      return parsedPosts.isNotEmpty ? parsedPosts.first : null;
-    } catch (e) {
-      debugPrint('Failed to resolve post: $e');
-      return null;
-    }
-  }
-
-  /// Resolves a parent comment on the new account's instance
-  Future<ThunderComment?> _resolveParentComment(Account account, String actorId) async {
-    try {
-      final response = await SearchRepositoryImpl(account: account).resolve(query: actorId);
-      return response.comment;
-    } catch (e) {
-      debugPrint('Failed to resolve parent comment: $e');
-      return null;
-    }
-  }
-
   /// Invokes the appropriate callbacks after a successful account switch
-  void _invokeCallbacks(Account newAccount, Map<String, dynamic> resolvedItems) {
+  void _invokeCallbacks(Account newAccount, FeatureAccountResolvedContent resolvedItems) {
     widget.onUserChanged?.call(newAccount);
 
     if (widget.communityActorId != null) {
-      widget.onCommunityChanged?.call(resolvedItems['community']);
+      widget.onCommunityChanged?.call(resolvedItems.community);
     }
-    if (widget.postActorId != null && resolvedItems['post'] != null) {
-      widget.onPostChanged?.call(resolvedItems['post'] as ThunderPost);
+    if (widget.postActorId != null && resolvedItems.post != null) {
+      widget.onPostChanged?.call(resolvedItems.post!);
     }
-    if (widget.parentCommentActorId != null && resolvedItems['parentComment'] != null) {
-      widget.onParentCommentChanged?.call(resolvedItems['parentComment'] as ThunderComment);
+    if (widget.parentCommentActorId != null && resolvedItems.parentComment != null) {
+      widget.onParentCommentChanged?.call(resolvedItems.parentComment!);
     }
   }
 
@@ -377,29 +311,31 @@ class _UserProfileSelectorState extends State<_UserProfileSelector> {
     final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(l10n.account(2), style: theme.textTheme.titleLarge),
-        ),
-        _accounts.isEmpty
-            ? Center(child: Text(l10n.noAccountsAdded))
-            : ListView.builder(
-                shrinkWrap: true,
-                itemCount: _accounts.length,
-                itemBuilder: (context, index) {
-                  final account = _accounts[index];
-                  return ListTile(
-                    title: Text(account.username ?? '-', style: theme.textTheme.titleMedium),
-                    subtitle: Text(account.instance),
-                    onTap: () => Navigator.of(context).pop(account),
-                  );
-                },
-              ),
-      ],
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(l10n.account(2), style: theme.textTheme.titleLarge),
+          ),
+          _accounts.isEmpty
+              ? Center(child: Text(l10n.noAccountsAdded))
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _accounts.length,
+                  itemBuilder: (context, index) {
+                    final account = _accounts[index];
+                    return ListTile(
+                      title: Text(account.username ?? '-', style: theme.textTheme.titleMedium),
+                      subtitle: Text(account.instance),
+                      onTap: () => Navigator.of(context).pop(account),
+                    );
+                  },
+                ),
+        ],
+      ),
     );
   }
 }

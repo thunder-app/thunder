@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/search/search.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/app/shell/navigation/loading_page.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart' as instance_discovery;
@@ -42,7 +40,7 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
     return null;
   }
 
-  final account = context.read<ProfileBloc>().state.account;
+  final account = resolveEffectiveAccount(context);
   final postId = int.tryParse(parsed.value);
 
   if (postId == null) {
@@ -71,7 +69,7 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
     return null;
   }
 
-  final account = context.read<ProfileBloc>().state.account;
+  final account = resolveEffectiveAccount(context);
   final commentId = int.tryParse(parsed.value);
 
   if (commentId == null) {

@@ -162,7 +162,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<FabPreferencesCubit>().reload();
     }
   }

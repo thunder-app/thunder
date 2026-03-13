@@ -34,7 +34,6 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 3);
-    context.read<UserSettingsBloc>().add(const GetUserBlocksEvent());
   }
 
   @override
@@ -43,7 +42,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     super.dispose();
   }
 
-  List<Widget> getPersonBlocks(BuildContext context, UserSettingsState state, List<ThunderUser> persons) {
+  List<Widget> getPersonBlocks(BuildContext context, UserBlocksState state, List<ThunderUser> persons) {
     final l10n = AppLocalizations.of(context)!;
 
     return persons.map((person) {
@@ -66,7 +65,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             useDisplayName: false,
           ),
           leading: UserAvatar(user: person),
-          trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == person.id
+          trailing: state.status == UserBlocksStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -77,7 +76,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: person.id)),
+                  onPressed: () => context.read<UserBlocksCubit>().unblockPerson(personId: person.id),
                 ),
           onTap: () {
             navigateToFeedPage(context, feedType: FeedType.user, username: "${person.name}@${fetchInstanceNameFromUrl(person.actorId)}");
@@ -87,7 +86,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getCommunityBlocks(BuildContext context, UserSettingsState state, List<ThunderCommunity> communities) {
+  List<Widget> getCommunityBlocks(BuildContext context, UserBlocksState state, List<ThunderCommunity> communities) {
     final l10n = AppLocalizations.of(context)!;
 
     return communities.map((community) {
@@ -110,7 +109,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             useDisplayName: false,
           ),
           leading: CommunityAvatar(community: community, radius: 16.0),
-          trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == community.id
+          trailing: state.status == UserBlocksStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -121,7 +120,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: community.id)),
+                  onPressed: () => context.read<UserBlocksCubit>().unblockCommunity(communityId: community.id),
                 ),
           onTap: () {
             navigateToFeedPage(context, feedType: FeedType.community, communityName: "${community.name}@${fetchInstanceNameFromUrl(community.actorId)}");
@@ -131,7 +130,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
     }).toList();
   }
 
-  List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Map<String, dynamic>> instances) {
+  List<Widget> getInstanceBlocks(BuildContext context, UserBlocksState state, List<Map<String, dynamic>> instances) {
     final l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
@@ -155,7 +154,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               ),
             ),
           ),
-          trailing: state.status == UserSettingsStatus.blocking && state.instanceBeingBlocked == instance['id']
+          trailing: state.status == UserBlocksStatus.blocking && state.instanceBeingBlocked == instance['id']
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: SizedBox(
@@ -166,7 +165,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                  onPressed: () => context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance['id'])),
+                  onPressed: () => context.read<UserBlocksCubit>().unblockInstance(instanceId: instance['id']),
                 ),
           onTap: () {
             navigateToInstancePage(context, instanceHost: instance['domain'], instanceId: instance['id']);
@@ -190,7 +189,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 title: l10n.blockUser,
                 account: context.read<ProfileBloc>().state.account,
                 onUserSelected: (user) {
-                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: user.id, unblock: false));
+                  context.read<UserBlocksCubit>().unblockPerson(personId: user.id, unblock: false);
                 },
               );
               break;
@@ -200,7 +199,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
                 title: l10n.blockCommunity,
                 account: context.read<ProfileBloc>().state.account,
                 onCommunitySelected: (ThunderCommunity community) {
-                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: community.id, unblock: false));
+                  context.read<UserBlocksCubit>().unblockCommunity(communityId: community.id, unblock: false);
                 },
               );
               break;
@@ -208,8 +207,9 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
               showInstanceInputDialog(
                 context,
                 title: l10n.blockInstance,
+                account: context.read<ProfileBloc>().state.account,
                 onInstanceSelected: (instanceWithFederationState) {
-                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instanceWithFederationState.id!, unblock: false));
+                  context.read<UserBlocksCubit>().unblockInstance(instanceId: instanceWithFederationState.id!, unblock: false);
                 },
               );
               break;
@@ -219,31 +219,31 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
         },
         child: const Icon(Icons.add_rounded),
       ),
-      body: BlocConsumer<UserSettingsBloc, UserSettingsState>(
+      body: BlocConsumer<UserBlocksCubit, UserBlocksState>(
         listener: (context, state) {
           bool isBlock = (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0);
 
-          if (state.status == UserSettingsStatus.failure && !isBlock) {
+          if (state.status == UserBlocksStatus.failure && !isBlock) {
             return showSnackbar(state.errorMessage ?? l10n.unexpectedError);
           }
 
-          if (state.status == UserSettingsStatus.failure) {
+          if (state.status == UserBlocksStatus.failure) {
             showSnackbar(l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage));
-          } else if (state.status == UserSettingsStatus.failedRevert) {
+          } else if (state.status == UserBlocksStatus.failedRevert) {
             showSnackbar(l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
-          } else if (state.status == UserSettingsStatus.revert) {
+          } else if (state.status == UserBlocksStatus.revert) {
             showSnackbar(l10n.successfullyBlocked);
-          } else if (state.status == UserSettingsStatus.successBlock) {
+          } else if (state.status == UserBlocksStatus.successBlock) {
             showSnackbar(
               l10n.successfullyUnblocked,
               trailingIcon: Icons.undo_rounded,
               trailingAction: () {
                 if (state.personBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
+                  context.read<UserBlocksCubit>().unblockPerson(personId: state.personBeingBlocked, unblock: false);
                 } else if (state.communityBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
+                  context.read<UserBlocksCubit>().unblockCommunity(communityId: state.communityBeingBlocked, unblock: false);
                 } else if (state.instanceBeingBlocked != 0) {
-                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
+                  context.read<UserBlocksCubit>().unblockInstance(instanceId: state.instanceBeingBlocked, unblock: false);
                 }
               },
             );
@@ -305,7 +305,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
 /// This class creates a widget which displays a list of items. If no items are available, it displays a message.
 class UserSettingBlockList extends StatelessWidget {
   /// The status of the bloc
-  final UserSettingsStatus status;
+  final UserBlocksStatus status;
 
   /// The text to display if no items are available
   final String? emptyText;
@@ -324,7 +324,7 @@ class UserSettingBlockList extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (status == UserSettingsStatus.initial) {
+    if (status == UserBlocksStatus.initial || status == UserBlocksStatus.loading) {
       return Container(
         margin: const EdgeInsets.all(10.0),
         child: const Center(child: CircularProgressIndicator()),

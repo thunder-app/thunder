@@ -42,7 +42,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
     }
   }
 

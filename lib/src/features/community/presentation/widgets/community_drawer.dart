@@ -34,6 +34,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
     context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
     context.read<ProfileBloc>().add(const FetchProfileFavorites());
+    context.read<AnonymousSubscriptionsCubit>().loadSubscribedCommunities();
   }
 
   @override
@@ -46,8 +47,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
     final feedCubit = context.read<FeedPreferencesCubit>();
 
-    AnonymousSubscriptionsBloc subscriptionsBloc = context.watch<AnonymousSubscriptionsBloc>();
-    subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+    final subscriptionsCubit = context.watch<AnonymousSubscriptionsCubit>();
 
     bool isLoggedIn = context.watch<ProfileBloc>().state.isLoggedIn;
 
@@ -60,7 +60,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
       subscriptions = filteredSubscriptions;
     } else {
-      subscriptions = subscriptionsBloc.state.subscriptions;
+      subscriptions = subscriptionsCubit.state.subscriptions;
     }
 
     return Drawer(

@@ -1,5 +1,5 @@
+import 'package:thunder/src/app/state/app_bootstrap_cubit/app_bootstrap_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/app/wiring/fetch_active_account_provider.dart';
 import 'package:thunder/src/app/wiring/nodeinfo_platform_detection_service.dart';
 import 'package:thunder/src/app/state/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
@@ -15,13 +15,19 @@ import 'package:thunder/src/features/moderator/api.dart';
 import 'package:thunder/src/features/notification/api.dart';
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/features/search/api.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 
-ThunderBloc createThunderBloc() {
-  return ThunderBloc(
-    preferencesStore: const UserPreferencesStore(),
+AppBootstrapCubit createAppBootstrapCubit() {
+  return AppBootstrapCubit(
     versionChecker: const GithubVersionChecker(),
+  );
+}
+
+ThunderCubit createThunderCubit() {
+  return ThunderCubit(
+    preferencesStore: const UserPreferencesStore(),
   );
 }
 
@@ -45,9 +51,17 @@ ProfileBloc createProfileBloc(Account account) {
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     userRepositoryFactory: (account) => UserRepositoryImpl(account: account),
     platformDetectionService: const NodeInfoPlatformDetectionService(),
-    activeAccountProvider: const FetchActiveAccountProvider(),
     localizationService: const GlobalContextLocalizationService(),
-    preferencesStore: const UserPreferencesStore(),
+  );
+}
+
+SessionBloc createSessionBloc() {
+  return SessionBloc(
+    sessionRepository: const PersistentSessionRepository(),
+    accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
+    instanceRepositoryFactory: (account) => InstanceRepositoryImpl(account: account),
+    platformDetectionService: const NodeInfoPlatformDetectionService(),
+    localizationService: const GlobalContextLocalizationService(),
   );
 }
 
@@ -144,21 +158,37 @@ CreateCommentCubit createCreateCommentCubit(Account account) {
   );
 }
 
-UserSettingsBloc createUserSettingsBloc(Account account) {
-  return UserSettingsBloc(
+AccountSettingsCubit createAccountSettingsCubit(Account account, {ThunderSiteResponse? initialSiteResponse}) {
+  return AccountSettingsCubit(
+    account: account,
+    accountRepository: AccountRepositoryImpl(account: account),
+    localizationService: const GlobalContextLocalizationService(),
+    initialSiteResponse: initialSiteResponse,
+  );
+}
+
+UserBlocksCubit createUserBlocksCubit(Account account) {
+  return UserBlocksCubit(
     account: account,
     instanceRepository: InstanceRepositoryImpl(account: account),
-    searchRepository: SearchRepositoryImpl(account: account),
     communityRepository: CommunityRepositoryImpl(account: account),
-    accountRepository: AccountRepositoryImpl(account: account),
     userRepository: UserRepositoryImpl(account: account),
-    activeAccountProvider: const FetchActiveAccountProvider(),
     localizationService: const GlobalContextLocalizationService(),
   );
 }
 
-ReportBloc createReportBloc() {
+UserMediaCubit createUserMediaCubit(Account account) {
+  return UserMediaCubit(
+    account: account,
+    accountRepository: AccountRepositoryImpl(account: account),
+    searchRepository: SearchRepositoryImpl(account: account),
+    localizationService: const GlobalContextLocalizationService(),
+  );
+}
+
+ReportBloc createReportBloc(Account account) {
   return ReportBloc(
+    account: account,
     localizationService: const GlobalContextLocalizationService(),
   );
 }

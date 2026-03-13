@@ -7,7 +7,10 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+include:
+  - package:flutter_lints/flutter.yaml
+  - package:bloc_lint/recommended.yaml
+
 analyzer:
   errors:
     use_build_context_synchronously: ignore

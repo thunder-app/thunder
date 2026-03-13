@@ -1487,6 +1487,168 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
   }
 }
 
+class $SessionStateTableTable extends SessionStateTable with TableInfo<$SessionStateTableTable, SessionStateTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SessionStateTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _singletonMeta = const VerificationMeta('singleton');
+  @override
+  late final GeneratedColumn<int> singleton = GeneratedColumn<int>('singleton', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0));
+  static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>('account_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES accounts (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [singleton, accountId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'session_state';
+  @override
+  VerificationContext validateIntegrity(Insertable<SessionStateTableData> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('singleton')) {
+      context.handle(_singletonMeta, singleton.isAcceptableOrUnknown(data['singleton']!, _singletonMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta, accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {singleton};
+  @override
+  SessionStateTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SessionStateTableData(
+      singleton: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}singleton'])!,
+      accountId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}account_id']),
+    );
+  }
+
+  @override
+  $SessionStateTableTable createAlias(String alias) {
+    return $SessionStateTableTable(attachedDatabase, alias);
+  }
+}
+
+class SessionStateTableData extends DataClass implements Insertable<SessionStateTableData> {
+  final int singleton;
+  final int? accountId;
+  const SessionStateTableData({required this.singleton, this.accountId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['singleton'] = Variable<int>(singleton);
+    if (!nullToAbsent || accountId != null) {
+      map['account_id'] = Variable<int>(accountId);
+    }
+    return map;
+  }
+
+  SessionStateTableCompanion toCompanion(bool nullToAbsent) {
+    return SessionStateTableCompanion(
+      singleton: Value(singleton),
+      accountId: accountId == null && nullToAbsent ? const Value.absent() : Value(accountId),
+    );
+  }
+
+  factory SessionStateTableData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SessionStateTableData(
+      singleton: serializer.fromJson<int>(json['singleton']),
+      accountId: serializer.fromJson<int?>(json['accountId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'singleton': serializer.toJson<int>(singleton),
+      'accountId': serializer.toJson<int?>(accountId),
+    };
+  }
+
+  SessionStateTableData copyWith({int? singleton, Value<int?> accountId = const Value.absent()}) => SessionStateTableData(
+        singleton: singleton ?? this.singleton,
+        accountId: accountId.present ? accountId.value : this.accountId,
+      );
+  SessionStateTableData copyWithCompanion(SessionStateTableCompanion data) {
+    return SessionStateTableData(
+      singleton: data.singleton.present ? data.singleton.value : this.singleton,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionStateTableData(')
+          ..write('singleton: $singleton, ')
+          ..write('accountId: $accountId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(singleton, accountId);
+  @override
+  bool operator ==(Object other) => identical(this, other) || (other is SessionStateTableData && other.singleton == this.singleton && other.accountId == this.accountId);
+}
+
+class SessionStateTableCompanion extends UpdateCompanion<SessionStateTableData> {
+  final Value<int> singleton;
+  final Value<int?> accountId;
+  const SessionStateTableCompanion({
+    this.singleton = const Value.absent(),
+    this.accountId = const Value.absent(),
+  });
+  SessionStateTableCompanion.insert({
+    this.singleton = const Value.absent(),
+    this.accountId = const Value.absent(),
+  });
+  static Insertable<SessionStateTableData> custom({
+    Expression<int>? singleton,
+    Expression<int>? accountId,
+  }) {
+    return RawValuesInsertable({
+      if (singleton != null) 'singleton': singleton,
+      if (accountId != null) 'account_id': accountId,
+    });
+  }
+
+  SessionStateTableCompanion copyWith({Value<int>? singleton, Value<int?>? accountId}) {
+    return SessionStateTableCompanion(
+      singleton: singleton ?? this.singleton,
+      accountId: accountId ?? this.accountId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (singleton.present) {
+      map['singleton'] = Variable<int>(singleton.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionStateTableCompanion(')
+          ..write('singleton: $singleton, ')
+          ..write('accountId: $accountId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1495,10 +1657,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalSubscriptionsTable localSubscriptions = $LocalSubscriptionsTable(this);
   late final $UserLabelsTable userLabels = $UserLabelsTable(this);
   late final $DraftsTable drafts = $DraftsTable(this);
+  late final $SessionStateTableTable sessionStateTable = $SessionStateTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts, sessionStateTable];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('accounts', limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('session_state', kind: UpdateKind.update),
+            ],
+          ),
+        ],
+      );
 }
 
 typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
@@ -1521,6 +1695,20 @@ typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
   Value<int> listIndex,
   Value<ThreadiversePlatform?> platform,
 });
+
+final class $$AccountsTableReferences extends BaseReferences<_$AppDatabase, $AccountsTable, Account> {
+  $$AccountsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SessionStateTableTable, List<SessionStateTableData>> _sessionStateTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.sessionStateTable, aliasName: $_aliasNameGenerator(db.accounts.id, db.sessionStateTable.accountId));
+
+  $$SessionStateTableTableProcessedTableManager get sessionStateTableRefs {
+    final manager = $$SessionStateTableTableTableManager($_db, $_db.sessionStateTable).filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_sessionStateTableRefsTable($_db));
+    return ProcessedTableManager(manager.$state.copyWith(prefetchedData: cache));
+  }
+}
 
 class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTable> {
   $$AccountsTableFilterComposer({
@@ -1546,6 +1734,22 @@ class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTab
 
   ColumnWithTypeConverterFilters<ThreadiversePlatform?, ThreadiversePlatform, String> get platform =>
       $composableBuilder(column: $table.platform, builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  Expression<bool> sessionStateTableRefs(Expression<bool> Function($$SessionStateTableTableFilterComposer f) f) {
+    final $$SessionStateTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.sessionStateTable,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableFilterComposer(
+              $db: $db,
+              $table: $db.sessionStateTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsTable> {
@@ -1596,10 +1800,26 @@ class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $Account
   GeneratedColumn<int> get listIndex => $composableBuilder(column: $table.listIndex, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<ThreadiversePlatform?, String> get platform => $composableBuilder(column: $table.platform, builder: (column) => column);
+
+  Expression<T> sessionStateTableRefs<T extends Object>(Expression<T> Function($$SessionStateTableTableAnnotationComposer a) f) {
+    final $$SessionStateTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.sessionStateTable,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.sessionStateTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $AccountsTable, Account, $$AccountsTableFilterComposer, $$AccountsTableOrderingComposer, $$AccountsTableAnnotationComposer,
-    $$AccountsTableCreateCompanionBuilder, $$AccountsTableUpdateCompanionBuilder, (Account, BaseReferences<_$AppDatabase, $AccountsTable, Account>), Account, PrefetchHooks Function()> {
+    $$AccountsTableCreateCompanionBuilder, $$AccountsTableUpdateCompanionBuilder, (Account, $$AccountsTableReferences), Account, PrefetchHooks Function({bool sessionStateTableRefs})> {
   $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
       : super(TableManagerState(
           db: db,
@@ -1647,8 +1867,25 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             listIndex: listIndex,
             platform: platform,
           ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$AccountsTableReferences(db, table, e))).toList(),
+          prefetchHooksCallback: ({sessionStateTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (sessionStateTableRefs) db.sessionStateTable],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (sessionStateTableRefs)
+                    await $_getPrefetchedData<Account, $AccountsTable, SessionStateTableData>(
+                        currentTable: table,
+                        referencedTable: $$AccountsTableReferences._sessionStateTableRefsTable(db),
+                        managerFromTypedResult: (p0) => $$AccountsTableReferences(db, table, p0).sessionStateTableRefs,
+                        referencedItemsForCurrentItem: (item, referencedItems) => referencedItems.where((e) => e.accountId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -1661,9 +1898,9 @@ typedef $$AccountsTableProcessedTableManager = ProcessedTableManager<
     $$AccountsTableAnnotationComposer,
     $$AccountsTableCreateCompanionBuilder,
     $$AccountsTableUpdateCompanionBuilder,
-    (Account, BaseReferences<_$AppDatabase, $AccountsTable, Account>),
+    (Account, $$AccountsTableReferences),
     Account,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool sessionStateTableRefs})>;
 typedef $$FavoritesTableCreateCompanionBuilder = FavoritesCompanion Function({
   Value<int> id,
   required int accountId,
@@ -2236,6 +2473,183 @@ class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsT
 
 typedef $$DraftsTableProcessedTableManager = ProcessedTableManager<_$AppDatabase, $DraftsTable, Draft, $$DraftsTableFilterComposer, $$DraftsTableOrderingComposer, $$DraftsTableAnnotationComposer,
     $$DraftsTableCreateCompanionBuilder, $$DraftsTableUpdateCompanionBuilder, (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>), Draft, PrefetchHooks Function()>;
+typedef $$SessionStateTableTableCreateCompanionBuilder = SessionStateTableCompanion Function({
+  Value<int> singleton,
+  Value<int?> accountId,
+});
+typedef $$SessionStateTableTableUpdateCompanionBuilder = SessionStateTableCompanion Function({
+  Value<int> singleton,
+  Value<int?> accountId,
+});
+
+final class $$SessionStateTableTableReferences extends BaseReferences<_$AppDatabase, $SessionStateTableTable, SessionStateTableData> {
+  $$SessionStateTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $AccountsTable _accountIdTable(_$AppDatabase db) => db.accounts.createAlias($_aliasNameGenerator(db.sessionStateTable.accountId, db.accounts.id));
+
+  $$AccountsTableProcessedTableManager? get accountId {
+    final $_column = $_itemColumn<int>('account_id');
+    if ($_column == null) return null;
+    final manager = $$AccountsTableTableManager($_db, $_db.accounts).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$SessionStateTableTableFilterComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
+  $$SessionStateTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => ColumnFilters(column));
+
+  $$AccountsTableFilterComposer get accountId {
+    final $$AccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SessionStateTableTableOrderingComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
+  $$SessionStateTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => ColumnOrderings(column));
+
+  $$AccountsTableOrderingComposer get accountId {
+    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SessionStateTableTableAnnotationComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
+  $$SessionStateTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => column);
+
+  $$AccountsTableAnnotationComposer get accountId {
+    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SessionStateTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SessionStateTableTable,
+    SessionStateTableData,
+    $$SessionStateTableTableFilterComposer,
+    $$SessionStateTableTableOrderingComposer,
+    $$SessionStateTableTableAnnotationComposer,
+    $$SessionStateTableTableCreateCompanionBuilder,
+    $$SessionStateTableTableUpdateCompanionBuilder,
+    (SessionStateTableData, $$SessionStateTableTableReferences),
+    SessionStateTableData,
+    PrefetchHooks Function({bool accountId})> {
+  $$SessionStateTableTableTableManager(_$AppDatabase db, $SessionStateTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$SessionStateTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$SessionStateTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$SessionStateTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> singleton = const Value.absent(),
+            Value<int?> accountId = const Value.absent(),
+          }) =>
+              SessionStateTableCompanion(
+            singleton: singleton,
+            accountId: accountId,
+          ),
+          createCompanionCallback: ({
+            Value<int> singleton = const Value.absent(),
+            Value<int?> accountId = const Value.absent(),
+          }) =>
+              SessionStateTableCompanion.insert(
+            singleton: singleton,
+            accountId: accountId,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$SessionStateTableTableReferences(db, table, e))).toList(),
+          prefetchHooksCallback: ({accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <T extends TableManagerState<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>>(state) {
+                if (accountId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.accountId,
+                    referencedTable: $$SessionStateTableTableReferences._accountIdTable(db),
+                    referencedColumn: $$SessionStateTableTableReferences._accountIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$SessionStateTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SessionStateTableTable,
+    SessionStateTableData,
+    $$SessionStateTableTableFilterComposer,
+    $$SessionStateTableTableOrderingComposer,
+    $$SessionStateTableTableAnnotationComposer,
+    $$SessionStateTableTableCreateCompanionBuilder,
+    $$SessionStateTableTableUpdateCompanionBuilder,
+    (SessionStateTableData, $$SessionStateTableTableReferences),
+    SessionStateTableData,
+    PrefetchHooks Function({bool accountId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2245,4 +2659,5 @@ class $AppDatabaseManager {
   $$LocalSubscriptionsTableTableManager get localSubscriptions => $$LocalSubscriptionsTableTableManager(_db, _db.localSubscriptions);
   $$UserLabelsTableTableManager get userLabels => $$UserLabelsTableTableManager(_db, _db.userLabels);
   $$DraftsTableTableManager get drafts => $$DraftsTableTableManager(_db, _db.drafts);
+  $$SessionStateTableTableTableManager get sessionStateTable => $$SessionStateTableTableTableManager(_db, _db.sessionStateTable);
 }

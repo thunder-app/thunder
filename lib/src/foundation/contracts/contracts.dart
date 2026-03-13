@@ -1,4 +1,3 @@
-export 'active_account_provider.dart';
 export 'account.dart';
 export 'connectivity_service.dart';
 export 'deep_link_service.dart';

@@ -14,6 +14,7 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 
 // Internal
 import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
@@ -21,7 +22,7 @@ import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/utils/check_github_update.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/app/shell/routing/deep_link.dart';
-import 'package:thunder/src/app/share/share_intent_handler.dart';
+import 'package:thunder/src/app/intent/share_intent_handler.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
@@ -35,12 +36,15 @@ import 'package:thunder/src/app/shell/widgets/bottom_nav_bar.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/search/search.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/shared/error_message.dart';
+import 'package:thunder/src/app/state/app_bootstrap_cubit/app_bootstrap_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 String? currentIntent;
+bool hasAttemptedDraftRestore = false;
 
 class Thunder extends StatefulWidget {
   final PageController pageController;
@@ -52,13 +56,14 @@ class Thunder extends StatefulWidget {
 }
 
 class _ThunderState extends State<Thunder> {
+  final FeedActionController _rootFeedActionController = FeedActionController();
+
   int selectedPageIndex = 0;
   int appExitCounter = 0;
 
   bool hasShownUpdateDialog = false;
   bool hasShownChangelogDialog = false;
   bool hasShownPageView = false;
-  bool hasAttemptedDraftRestore = false;
 
   bool _isFabOpen = false;
 
@@ -265,14 +270,14 @@ class _ThunderState extends State<Thunder> {
             return shouldListen;
           },
           listener: (context, state) {
-            final currentAccountId = context.read<ProfileBloc>().state.account.id;
+            final currentAccountId = context.read<SessionBloc>().state.activeAccount?.id;
             final notificationAccountId = state.accountId;
 
             // Check if we need to switch accounts first
             if (notificationAccountId != null && notificationAccountId != currentAccountId) {
               // Mark as pending navigation and switch accounts
               context.read<NotificationsCubit>().setPending();
-              context.read<ProfileBloc>().add(SwitchProfile(accountId: notificationAccountId, reload: true));
+              context.read<SessionBloc>().add(SessionSwitched(sessionKey: notificationAccountId));
               return;
             }
 
@@ -303,8 +308,14 @@ class _ThunderState extends State<Thunder> {
             }
           },
         ),
-        BlocListener<ThunderBloc, ThunderState>(
-          listenWhen: (previous, current) => previous.status != current.status && current.status == ThunderStatus.success,
+        BlocListener<AppBootstrapCubit, AppBootstrapState>(
+          listenWhen: (previous, current) => previous.status != current.status && current.status == AppBootstrapStatus.success,
+          listener: (context, state) {
+            context.read<ThunderCubit>().reload();
+          },
+        ),
+        BlocListener<ThunderCubit, ThunderState>(
+          listenWhen: (previous, current) => previous != current,
           listener: (context, state) {
             // Reload preference cubits when preferences change
             context.read<GesturePreferencesCubit>().reload();
@@ -316,21 +327,21 @@ class _ThunderState extends State<Thunder> {
           },
         ),
       ],
-      child: BlocBuilder<ThunderBloc, ThunderState>(
+      child: BlocBuilder<AppBootstrapCubit, AppBootstrapState>(
         buildWhen: (previous, current) => previous.status != current.status,
-        builder: (context, thunderBlocState) {
+        builder: (context, appBootstrapState) {
           reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
+          final thunderState = context.watch<ThunderCubit>().state;
 
-          switch (thunderBlocState.status) {
-            case ThunderStatus.initial:
-              context.read<ThunderBloc>().add(InitializeAppEvent());
+          switch (appBootstrapState.status) {
+            case AppBootstrapStatus.initial:
+              context.read<AppBootstrapCubit>().initialize();
               return Container();
-            case ThunderStatus.loading:
+            case AppBootstrapStatus.loading:
               return Container();
-            case ThunderStatus.refreshing:
-            case ThunderStatus.success:
+            case AppBootstrapStatus.success:
               // Update the variable so that it can be used in _handleBackButtonPress
-              _isFabOpen = context.read<FabStateCubit>().state.isFeedFabOpen;
+              _isFabOpen = context.read<ShellChromeCubit>().state.isFeedFabOpen;
 
               return Scaffold(
                 key: scaffoldStateKey,
@@ -347,31 +358,32 @@ class _ThunderState extends State<Thunder> {
                         opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 150),
                         curve: Curves.easeIn,
-                        child: IgnorePointer(ignoring: selectedPageIndex != 0, child: const FeedFAB()),
+                        child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB(actionController: _rootFeedActionController)),
                       )
                     : null,
                 floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
                 bottomNavigationBar: Builder(
                   builder: (context) {
                     final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
-                    final hideBottomBarOnScroll = context.read<ThunderBloc>().state.hideBottomBarOnScroll;
+                    final hideBottomBarOnScroll = thunderState.hideBottomBarOnScroll;
                     return AnimatedSize(
                       duration: Duration(milliseconds: reduceAnimations ? 0 : 200),
                       curve: Curves.easeInOut,
                       clipBehavior: Clip.hardEdge,
                       alignment: Alignment.topCenter,
                       child: SizedBox(
-                        height: (hideBottomBarOnScroll && !context.select<NavBarStateCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0 : null,
+                        height: (hideBottomBarOnScroll && !context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0 : null,
                         child: AnimatedOpacity(
                           duration: Duration(milliseconds: reduceAnimations ? 0 : 150),
                           curve: Curves.easeOut,
-                          opacity: (hideBottomBarOnScroll && !context.select<NavBarStateCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0.0 : 1.0,
+                          opacity: (hideBottomBarOnScroll && !context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0.0 : 1.0,
                           child: CustomBottomNavigationBar(
+                            feedActionController: _rootFeedActionController,
                             selectedPageIndex: selectedPageIndex,
                             onPageChange: (int index) {
                               // Reset bottom nav bar visibility when switching pages
-                              if (hideBottomBarOnScroll && !context.read<NavBarStateCubit>().state.isBottomNavBarVisible) {
-                                context.read<NavBarStateCubit>().setBottomNavBarVisible(true);
+                              if (hideBottomBarOnScroll && !context.read<ShellChromeCubit>().state.isBottomNavBarVisible) {
+                                context.read<ShellChromeCubit>().setBottomNavBarVisible(true);
                               }
                               setState(() {
                                 selectedPageIndex = index;
@@ -438,8 +450,8 @@ class _ThunderState extends State<Thunder> {
                       case ProfileStatus.success:
                         _restoreDraftSession(state);
 
-                        Version? version = thunderBlocState.version;
-                        bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                        Version? version = appBootstrapState.version;
+                        bool showInAppUpdateNotification = thunderState.showInAppUpdateNotification;
 
                         if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -465,7 +477,7 @@ class _ThunderState extends State<Thunder> {
                           // Immediately update the current version for next time.
                           prefs.setString('current_version', currentVersion);
 
-                          if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderBlocState.showUpdateChangelogs) {
+                          if (lastKnownVersion != null && lastKnownVersion != currentVersion && thunderState.showUpdateChangelogs) {
                             final String changelog = await fetchCurrentVersionChangelog();
 
                             if (context.mounted) {
@@ -546,6 +558,7 @@ class _ThunderState extends State<Thunder> {
                               builder: (context) {
                                 final feedCubit = context.read<FeedPreferencesCubit>();
                                 return FeedPage(
+                                  actionController: _rootFeedActionController,
                                   useGlobalFeedBloc: true,
                                   feedType: FeedType.general,
                                   feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? feedCubit.state.defaultFeedListType,
@@ -556,7 +569,7 @@ class _ThunderState extends State<Thunder> {
                                 );
                               },
                             ),
-                            const SearchPage(),
+                            SearchPage(account: state.account),
                             const AccountPage(),
                             const InboxPage(),
                             const SettingsPage(),
@@ -596,13 +609,13 @@ class _ThunderState extends State<Thunder> {
                   },
                 ),
               );
-            case ThunderStatus.failure:
+            case AppBootstrapStatus.failure:
               return ErrorMessage(
-                message: thunderBlocState.errorMessage,
+                message: appBootstrapState.errorMessage,
                 actions: [
                   (
                     text: AppLocalizations.of(context)!.refreshContent,
-                    action: () => context.read<ProfileBloc>().add(InitializeAuth()),
+                    action: () => context.read<AppBootstrapCubit>().initialize(),
                     loading: false,
                   ),
                 ],

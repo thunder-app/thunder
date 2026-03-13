@@ -65,6 +65,7 @@ enum CommunityPostAction {
 class CommunityPostActionBottomSheet extends StatefulWidget {
   const CommunityPostActionBottomSheet({
     super.key,
+    required this.context,
     required this.post,
     required this.account,
     required this.moderatedCommunities,
@@ -72,6 +73,9 @@ class CommunityPostActionBottomSheet extends StatefulWidget {
     required this.subscribedCommunities,
     required this.onAction,
   });
+
+  /// The post information
+  final BuildContext context;
 
   /// The post information
   final ThunderPost post;
@@ -103,7 +107,11 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
     switch (action) {
       case CommunityPostAction.viewCommunity:
         Navigator.of(context).pop();
-        navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.post.community!.id);
+        Future.microtask(() {
+          if (widget.context.mounted) {
+            navigateToFeedPage(widget.context, account: widget.account, feedType: FeedType.community, communityId: widget.post.community!.id);
+          }
+        });
         break;
       case CommunityPostAction.subscribeToCommunity:
         Navigator.of(context).pop();

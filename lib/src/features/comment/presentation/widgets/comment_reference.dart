@@ -6,6 +6,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
 
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
@@ -45,7 +46,7 @@ class CommentReference extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
-    final account = context.read<ProfileBloc>().state.account;
+    final account = resolveEffectiveAccount(context);
 
     assert(comment.creator != null && comment.community != null && comment.post != null, 'Comment must have creator, community, and post fields');
 

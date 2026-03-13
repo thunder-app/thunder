@@ -257,7 +257,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     }
 
     if (context.mounted) {
-      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+      context.read<ThunderCubit>().reload();
       context.read<FeedPreferencesCubit>().reload();
     }
   }
@@ -998,7 +998,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
                       if (context.mounted) {
                         _initPreferences();
-                        context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                        context.read<ThunderCubit>().reload();
                         context.read<FeedPreferencesCubit>().reload();
                       } else {
                         showSnackbar(l10n.settingsNotImportedSuccessfully);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
@@ -50,18 +51,27 @@ class _CommunityHeaderState extends State<CommunityHeader> {
 
     content = GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => showModalBottomSheet(
-        context: context,
-        showDragHandle: true,
-        enableDrag: true,
-        useSafeArea: true,
-        scrollControlDisabledMaxHeightRatio: 0.90,
-        builder: (context) => CommunityInformation(
-          community: widget.community,
-          instance: widget.instance,
-          moderators: widget.moderators,
-        ),
-      ),
+      onTap: () {
+        final account = resolveEffectiveAccount(context);
+
+        showModalBottomSheet(
+          context: context,
+          showDragHandle: true,
+          enableDrag: true,
+          useSafeArea: true,
+          scrollControlDisabledMaxHeightRatio: 0.90,
+          builder: (_) => wrapWithCapturedAccountContext(
+            context,
+            CommunityInformation(
+              launchContext: context,
+              account: account,
+              community: widget.community,
+              instance: widget.instance,
+              moderators: widget.moderators,
+            ),
+          ),
+        );
+      },
       child: _CommunityHeaderWithBanner(community: widget.community, child: content),
     );
 

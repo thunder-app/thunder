@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/settings/api.dart';
@@ -66,7 +67,7 @@ void showLoadingPage(BuildContext context) {
       canSwipe: false,
       builder: (context) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: context.read<ThunderBloc>()),
+          BlocProvider.value(value: context.read<ThunderCubit>()),
         ],
         child: PopScope(
           onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop,

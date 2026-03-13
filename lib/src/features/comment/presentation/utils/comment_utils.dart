@@ -180,10 +180,10 @@ Future<ThunderComment?> onCommentAction(BuildContext context, Account account, C
       await repository.report(comment.id, data?['reason']);
       break;
     case CommentAction.reply:
-      updatedComment = await navigateToCreateCommentPage(context, parentComment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
+      updatedComment = await navigateToCreateCommentPage(context, account: account, parentComment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
       break;
     case CommentAction.edit:
-      updatedComment = await navigateToCreateCommentPage(context, comment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
+      updatedComment = await navigateToCreateCommentPage(context, account: account, comment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
       break;
     case CommentAction.remove:
       // TODO: Handle this case.

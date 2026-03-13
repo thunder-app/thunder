@@ -19,6 +19,12 @@ class PostCardViewComfortable extends StatelessWidget {
   /// The post to display.
   final ThunderPost post;
 
+  /// Optional feed type override for contexts without a FeedBloc.
+  final FeedType? feedType;
+
+  /// Optional feed list type override for contexts without a FeedBloc.
+  final FeedListType? feedListType;
+
   /// Whether to hide thumbnails.
   final bool hideThumbnails;
 
@@ -58,9 +64,23 @@ class PostCardViewComfortable extends StatelessWidget {
   /// The function to handle save actions.
   final Function(bool) onSaveAction;
 
+  /// Optional callback for replacing a post in the current list.
+  final void Function(ThunderPost post)? onPostUpdated;
+
+  /// Optional callback for dismissing a hidden post from view.
+  final void Function(int postId)? onDismissHiddenPost;
+
+  /// Optional callback for dismissing blocked content from view.
+  final void Function({int? userId, int? communityId})? onDismissBlocked;
+
+  /// Optional callback for marking a post as read from media interactions.
+  final Future<void> Function()? onMarkPostRead;
+
   const PostCardViewComfortable({
     super.key,
     required this.post,
+    this.feedType,
+    this.feedListType,
     required this.hideThumbnails,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
@@ -74,6 +94,10 @@ class PostCardViewComfortable extends StatelessWidget {
     this.navigateToPost,
     required this.onVoteAction,
     required this.onSaveAction,
+    this.onPostUpdated,
+    this.onDismissHiddenPost,
+    this.onDismissBlocked,
+    this.onMarkPostRead,
   });
 
   /// Returns the color of the container based on the current theme and whether the post is dimmed or not.
@@ -91,17 +115,28 @@ class PostCardViewComfortable extends StatelessWidget {
 
   void onPostActionBottomSheetPressed(BuildContext context, ThunderPost post) {
     HapticFeedback.mediumImpact();
+    final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
 
     showPostActionBottomModalSheet(
       context,
       post,
       onAction: ({postAction, userAction, communityAction, post}) {
         if (postAction == null && userAction == null && communityAction == null) return;
-        if (post != null) context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+        if (post != null) {
+          if (onPostUpdated != null) {
+            onPostUpdated!(post);
+          } else if (hasFeedBloc) {
+            context.read<FeedBloc>().add(FeedItemUpdatedEvent(post: post));
+          }
+        }
 
         switch (postAction) {
           case PostAction.hide:
-            context.read<FeedUiCubit>().dismissHiddenPost(post!.id);
+            if (onDismissHiddenPost != null) {
+              onDismissHiddenPost!(post!.id);
+            } else {
+              FeedActionScope.maybeOf(context)?.dismissHiddenPost(post!.id);
+            }
             break;
           default:
             break;
@@ -109,7 +144,11 @@ class PostCardViewComfortable extends StatelessWidget {
 
         switch (userAction) {
           case UserAction.block:
-            context.read<FeedUiCubit>().dismissBlocked(userId: post!.creator!.id);
+            if (onDismissBlocked != null) {
+              onDismissBlocked!(userId: post!.creator!.id);
+            } else {
+              FeedActionScope.maybeOf(context)?.dismissBlocked(userId: post!.creator!.id);
+            }
             break;
           default:
             break;
@@ -117,7 +156,11 @@ class PostCardViewComfortable extends StatelessWidget {
 
         switch (communityAction) {
           case CommunityAction.block:
-            context.read<FeedUiCubit>().dismissBlocked(communityId: post!.community!.id);
+            if (onDismissBlocked != null) {
+              onDismissBlocked!(communityId: post!.community!.id);
+            } else {
+              FeedActionScope.maybeOf(context)?.dismissBlocked(communityId: post!.community!.id);
+            }
             break;
           default:
             break;
@@ -164,6 +207,7 @@ class PostCardViewComfortable extends StatelessWidget {
         isUserLoggedIn: isUserLoggedIn,
         navigateToPost: navigateToPost,
         read: dim,
+        onMarkPostRead: onMarkPostRead,
       );
     }
 
@@ -171,6 +215,8 @@ class PostCardViewComfortable extends StatelessWidget {
       user: post.creator!,
       community: post.community!,
       dim: dim,
+      feedType: feedType,
+      feedListType: feedListType,
     );
 
     final edgesPadding = const EdgeInsets.symmetric(horizontal: 12.0);
