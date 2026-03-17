@@ -3,7 +3,7 @@ import 'dart:io';
 
 // Flutter
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BottomNavigationBar;
 import 'package:flutter/services.dart';
 
 // Packages
@@ -377,7 +377,7 @@ class _ThunderState extends State<Thunder> {
                           duration: Duration(milliseconds: reduceAnimations ? 0 : 150),
                           curve: Curves.easeOut,
                           opacity: (hideBottomBarOnScroll && !context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isBottomNavBarVisible)) ? 0.0 : 1.0,
-                          child: CustomBottomNavigationBar(
+                          child: BottomNavigationBar(
                             feedActionController: _rootFeedActionController,
                             selectedPageIndex: selectedPageIndex,
                             onPageChange: (int index) {
