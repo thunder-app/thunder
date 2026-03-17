@@ -74,6 +74,7 @@ class BottomNavigationBar extends StatelessWidget {
     return ThunderBottomNavigationBar(
       selectedIndex: selectedPageIndex,
       labelBehavior: showNavigationLabels ? NavigationDestinationLabelBehavior.alwaysShow : NavigationDestinationLabelBehavior.alwaysHide,
+      longPressTimeout: const Duration(milliseconds: 300),
       onHorizontalSwipeRight: enableDrawerGestures
           ? () {
               if (context.mounted) Scaffold.of(context).openDrawer();
