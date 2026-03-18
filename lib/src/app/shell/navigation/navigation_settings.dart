@@ -4,14 +4,6 @@ part of 'navigation_utils.dart';
 ///
 /// Additionally, the [settingToHighlight] parameter can be used to highlight a specific setting when the page is opened.
 void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSettings? settingToHighlight}) {
-  final routeScope = resolveAccountAwareRouteScope(context, useActiveAccount: true, includeThunderCubit: true);
-  final account = routeScope.account;
-
-  final gestureCubit = context.read<GesturePreferencesCubit>();
-  final themeCubit = context.read<ThemePreferencesCubit>();
-  final reduceAnimations = themeCubit.state.reduceAnimations;
-  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
-
   String pageToNav = {
         LocalSettingsCategories.posts: SETTINGS_APPEARANCE_POSTS_PAGE,
         LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
@@ -32,6 +24,36 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         LocalSettingsCategories.appearance: SETTINGS_APPEARANCE_PAGE,
       }[setting.category] ??
       SETTINGS_GENERAL_PAGE;
+
+  final usesEffectiveAccount = {
+    SETTINGS_ACCOUNT_PAGE,
+    SETTINGS_ACCOUNT_LANGUAGES_PAGE,
+    SETTINGS_ACCOUNT_BLOCKLIST_PAGE,
+    SETTINGS_ACCOUNT_MEDIA_PAGE,
+    SETTINGS_USER_LABELS_PAGE,
+  }.contains(pageToNav);
+
+  final routeScope = resolveAccountAwareRouteScope(
+    context,
+    useActiveAccount: !usesEffectiveAccount,
+    includeThunderCubit: true,
+  );
+
+  final account = routeScope.account;
+
+  FeatureAccountCubit? inheritedFeatureAccountCubit;
+  if (usesEffectiveAccount) {
+    try {
+      inheritedFeatureAccountCubit = context.read<FeatureAccountCubit>();
+    } catch (_) {
+      inheritedFeatureAccountCubit = null;
+    }
+  }
+
+  final gestureCubit = context.read<GesturePreferencesCubit>();
+  final themeCubit = context.read<ThemePreferencesCubit>();
+  final reduceAnimations = themeCubit.state.reduceAnimations;
+  final enableFullScreenSwipeNavigationGesture = gestureCubit.state.enableFullScreenSwipeNavigationGesture;
 
   if (pageToNav == SETTINGS_ABOUT_PAGE) {
     Navigator.of(context).push(
@@ -82,13 +104,19 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
       ),
     );
   } else {
-    final needsAccountSettingsCubit = pageToNav == SETTINGS_ACCOUNT_PAGE || pageToNav == SETTINGS_ACCOUNT_LANGUAGES_PAGE;
-    final hasAccountSettingsCubit = needsAccountSettingsCubit && context.findAncestorWidgetOfExactType<BlocProvider<AccountSettingsCubit>>() != null;
-    final accountSettingsCubit = !needsAccountSettingsCubit
-        ? null
-        : hasAccountSettingsCubit
-            ? context.read<AccountSettingsCubit>()
-            : createAccountSettingsCubit(account, initialSiteResponse: routeScope.profileBloc?.state.siteResponse);
+    final needsAccountSettingsCubit = pageToNav == SETTINGS_ACCOUNT_LANGUAGES_PAGE;
+    AccountSettingsCubit? inheritedAccountSettingsCubit;
+
+    if (needsAccountSettingsCubit) {
+      try {
+        inheritedAccountSettingsCubit = context.read<AccountSettingsCubit>();
+      } catch (_) {
+        inheritedAccountSettingsCubit = null;
+      }
+    }
+
+    final accountSettingsCubit =
+        !needsAccountSettingsCubit ? null : inheritedAccountSettingsCubit ?? createAccountSettingsCubit(account, initialSiteResponse: routeScope.profileBloc?.state.siteResponse);
 
     Navigator.of(context).push(
       SwipeablePageRoute(
@@ -98,8 +126,9 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         builder: (context) => MultiBlocProvider(
           providers: routeScope.providers(
             provideThunderCubit: true,
-            provideFeatureAccountCubit: pageToNav != SETTINGS_ACCOUNT_LANGUAGES_PAGE,
+            provideFeatureAccountCubit: inheritedFeatureAccountCubit == null,
             extraProviders: [
+              if (inheritedFeatureAccountCubit != null) BlocProvider<FeatureAccountCubit>.value(value: inheritedFeatureAccountCubit),
               if (accountSettingsCubit != null) BlocProvider<AccountSettingsCubit>.value(value: accountSettingsCubit),
             ],
           ),

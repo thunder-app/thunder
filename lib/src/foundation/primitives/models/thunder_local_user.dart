@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 
-import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
+import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 
 class ThunderLocalUser {
   /// The local user's email.
@@ -9,6 +9,9 @@ class ThunderLocalUser {
 
   /// Whether to show NSFW content.
   final bool showNsfw;
+
+  /// Whether to show NSFL content.
+  final bool? showNsfl;
 
   /// The local user's default sort type.
   final PostSortType? defaultSortType;
@@ -28,6 +31,7 @@ class ThunderLocalUser {
   ThunderLocalUser({
     this.email,
     required this.showNsfw,
+    this.showNsfl,
     this.defaultSortType,
     this.defaultListingType,
     required this.showScores,
@@ -38,6 +42,7 @@ class ThunderLocalUser {
   ThunderLocalUser copyWith({
     String? email,
     bool? showNsfw,
+    bool? showNsfl,
     PostSortType? defaultSortType,
     FeedListType? defaultListingType,
     bool? showScores,
@@ -47,6 +52,7 @@ class ThunderLocalUser {
     return ThunderLocalUser(
       email: email ?? this.email,
       showNsfw: showNsfw ?? this.showNsfw,
+      showNsfl: showNsfl ?? this.showNsfl,
       defaultSortType: defaultSortType ?? this.defaultSortType,
       defaultListingType: defaultListingType ?? this.defaultListingType,
       showScores: showScores ?? this.showScores,
@@ -59,6 +65,7 @@ class ThunderLocalUser {
     return ThunderLocalUser(
       email: localUser['email'],
       showNsfw: localUser['show_nsfw'],
+      showNsfl: null,
       defaultSortType: localUser['default_sort_type'] != null ? PostSortType.values.firstWhereOrNull((e) => e.value == localUser['default_sort_type']) : null,
       defaultListingType: localUser['default_listing_type'] != null ? FeedListType.values.firstWhereOrNull((e) => e.value == localUser['default_listing_type']) : null,
       showScores: localUser['show_scores'],
@@ -71,6 +78,7 @@ class ThunderLocalUser {
     return ThunderLocalUser(
       // email:localUser['email'],
       showNsfw: localUser['show_nsfw'],
+      showNsfl: localUser['show_nsfl'],
       defaultSortType: localUser['default_sort_type'] != null ? PostSortType.values.firstWhereOrNull((e) => e.value == localUser['default_sort_type']) : null,
       defaultListingType: localUser['default_listing_type'] != null ? FeedListType.values.firstWhereOrNull((e) => e.value == localUser['default_listing_type']) : null,
       showScores: localUser['show_scores'],

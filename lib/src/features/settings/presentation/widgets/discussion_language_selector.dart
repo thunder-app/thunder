@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
 
 class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});
@@ -24,90 +24,91 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocConsumer<AccountSettingsCubit, AccountSettingsState>(
-      listener: (context, state) {
-        if (state.status == AccountSettingsStatus.failure) {
-          showSnackbar(state.errorMessage ?? l10n.unexpectedError);
-        } else if (state.status == AccountSettingsStatus.success) {
-          context.read<ProfileBloc>().add(FetchProfileSettings());
-        }
-      },
-      builder: (context, state) {
-        final languages = state.siteResponse?.allLanguages ?? const <ThunderLanguage>[];
-        final selectedLanguages = state.siteResponse?.myUser?.discussionLanguages ?? [];
-        final discussionLanguages = selectedLanguages.map((id) => languages.firstWhere((language) => language.id == id)).toList();
+    return AccountSettingsListener(
+      child: BlocBuilder<AccountSettingsCubit, AccountSettingsState>(
+        builder: (context, state) {
+          final updating = state.status == AccountSettingsStatus.updating;
 
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => showLanguageInputDialog(
-              context,
-              title: l10n.addDiscussionLanguage,
-              account: context.read<ProfileBloc>().state.account,
-              excludedLanguageIds: [-1],
-              suggestions: languages,
-              onLanguageSelected: (language) {
-                List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
-                context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
-              },
+          final languages = state.siteResponse?.allLanguages ?? const <ThunderLanguage>[];
+          final selectedLanguages = state.siteResponse?.myUser?.discussionLanguages ?? [];
+          final discussionLanguages = selectedLanguages.map((id) => languages.firstWhere((language) => language.id == id)).toList();
+
+          return Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: updating
+                  ? null
+                  : () => showLanguageInputDialog(
+                        context,
+                        title: l10n.addDiscussionLanguage,
+                        account: resolveEffectiveAccount(context),
+                        excludedLanguageIds: [-1],
+                        suggestions: languages,
+                        onLanguageSelected: (language) {
+                          List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
+                          context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
+                        },
+                      ),
+              child: const Icon(Icons.add_rounded),
             ),
-            child: const Icon(Icons.add_rounded),
-          ),
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                floating: true,
-                centerTitle: false,
-                toolbarHeight: APP_BAR_HEIGHT,
-                scrolledUnderElevation: 0.0,
-                title: Text(l10n.discussionLanguages),
-              ),
-              if (discussionLanguages.isEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
-                    child: Text(
-                      l10n.noDiscussionLanguages,
-                      style: TextStyle(color: theme.hintColor),
+            body: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  floating: true,
+                  centerTitle: false,
+                  toolbarHeight: APP_BAR_HEIGHT,
+                  scrolledUnderElevation: 0.0,
+                  title: Text(l10n.discussionLanguages),
+                ),
+                if (discussionLanguages.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
+                      child: Text(
+                        l10n.noDiscussionLanguages,
+                        style: TextStyle(color: theme.hintColor),
+                      ),
+                    ),
+                  ),
+                SliverList.builder(
+                  itemCount: discussionLanguages.length,
+                  itemBuilder: (context, index) => ListTile(
+                    contentPadding: const EdgeInsetsDirectional.only(start: 20.0, end: 12.0),
+                    title: Text(discussionLanguages[index].name, overflow: TextOverflow.ellipsis),
+                    trailing: IconButton(
+                      icon: Icon(Icons.clear, semanticLabel: l10n.remove),
+                      onPressed: updating
+                          ? null
+                          : () {
+                              // Warn user against removing 'Undetermined' language when other discussion languages are selected.
+                              // This filters out most content. If no discussion languages are selected, all content is displayed.
+                              if (discussionLanguages[index].id == 0 && discussionLanguages.length > 1) {
+                                showThunderDialog(
+                                  context: context,
+                                  title: l10n.warning,
+                                  contentText: l10n.deselectUndeterminedWarning,
+                                  primaryButtonText: l10n.remove,
+                                  onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                                    final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
+                                    context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  secondaryButtonText: l10n.cancel,
+                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                                );
+                              } else {
+                                final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
+                                context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
+                              }
+                            },
                     ),
                   ),
                 ),
-              SliverList.builder(
-                itemCount: discussionLanguages.length,
-                itemBuilder: (context, index) => ListTile(
-                  contentPadding: const EdgeInsetsDirectional.only(start: 20.0, end: 12.0),
-                  title: Text(discussionLanguages[index].name, overflow: TextOverflow.ellipsis),
-                  trailing: IconButton(
-                    icon: Icon(Icons.clear, semanticLabel: l10n.remove),
-                    onPressed: () {
-                      // Warn user against removing 'Undetermined' language when other discussion languages are selected.
-                      // This filters out most content. If no discussion languages are selected, all content is displayed.
-                      if (discussionLanguages[index].id == 0 && discussionLanguages.length > 1) {
-                        showThunderDialog(
-                          context: context,
-                          title: l10n.warning,
-                          contentText: l10n.deselectUndeterminedWarning,
-                          primaryButtonText: l10n.remove,
-                          onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                            final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                            context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
-                            Navigator.of(dialogContext).pop();
-                          },
-                          secondaryButtonText: l10n.cancel,
-                          onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                        );
-                      } else {
-                        final updatedDiscussionLanguages = discussionLanguages.where((element) => element != discussionLanguages[index]).toList();
-                        context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

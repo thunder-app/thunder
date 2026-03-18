@@ -7,6 +7,7 @@ export 'presentation/pages/media_management_page.dart';
 export 'presentation/pages/user_settings_block_page.dart';
 export 'presentation/pages/user_settings_page.dart';
 export 'presentation/widgets/user_action_bottom_sheet.dart';
+export 'presentation/widgets/account_settings_listener.dart';
 export 'presentation/widgets/user_header/user_header.dart';
 export 'presentation/widgets/user_header/user_header_actions.dart';
 export 'presentation/widgets/user_indicator.dart';

@@ -7,6 +7,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/user/presentation/widgets/account_picker_sheet.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
 /// A widget that displays the currently selected user account with the ability to switch between accounts.
@@ -181,10 +182,9 @@ class _UserSelectorState extends State<UserSelector> {
   Future<void> _switchProfile() async {
     if (!widget.enableAccountSwitching) return;
 
-    final newAccount = await showModalBottomSheet<Account>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => _UserProfileSelector(widget.account),
+    final newAccount = await showAccountPickerSheet(
+      context,
+      currentAccount: widget.account,
     );
 
     if (newAccount == null || !mounted || widget.account.id == newAccount.id) {
@@ -266,75 +266,6 @@ class _UserSelectorState extends State<UserSelector> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Modal bottom sheet widget for selecting user accounts
-class _UserProfileSelector extends StatefulWidget {
-  /// The current account
-  final Account account;
-
-  const _UserProfileSelector(this.account);
-
-  @override
-  State<_UserProfileSelector> createState() => _UserProfileSelectorState();
-}
-
-class _UserProfileSelectorState extends State<_UserProfileSelector> {
-  /// The list of available user accounts
-  List<Account> _accounts = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAccounts());
-  }
-
-  /// Loads all available user accounts
-  Future<void> _loadAccounts() async {
-    try {
-      final accounts = await Account.accounts().then((accounts) => accounts.where((account) => account.id != widget.account.id).toList());
-
-      if (!mounted) return;
-      setState(() => _accounts = accounts);
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _accounts = []);
-      debugPrint('Failed to load accounts: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = GlobalContext.l10n;
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text(l10n.account(2), style: theme.textTheme.titleLarge),
-          ),
-          _accounts.isEmpty
-              ? Center(child: Text(l10n.noAccountsAdded))
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _accounts.length,
-                  itemBuilder: (context, index) {
-                    final account = _accounts[index];
-                    return ListTile(
-                      title: Text(account.username ?? '-', style: theme.textTheme.titleMedium),
-                      subtitle: Text(account.instance),
-                      onTap: () => Navigator.of(context).pop(account),
-                    );
-                  },
-                ),
-        ],
       ),
     );
   }

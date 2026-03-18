@@ -15,6 +15,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// Base class for Lemmy API clients, containing shared parsing helpers.
 /// Endpoint implementations live in version-specific clients.
@@ -430,20 +431,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   // =============================================================
 
   @override
-  Future<void> saveUserSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  }) async {
+  Future<void> saveUserSettings(AccountSettingsUpdate update) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 

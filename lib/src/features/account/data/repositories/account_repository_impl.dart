@@ -58,37 +58,11 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<void> saveSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  }) async {
+  Future<void> saveSettings(AccountSettingsUpdate update) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    await _api.saveUserSettings(
-      bio: bio,
-      email: email,
-      matrixUserId: matrixUserId,
-      displayName: displayName,
-      defaultFeedListType: defaultFeedListType,
-      defaultPostSortType: defaultPostSortType,
-      showNsfw: showNsfw,
-      showReadPosts: showReadPosts,
-      showScores: showScores,
-      botAccount: botAccount,
-      showBotAccounts: showBotAccounts,
-      discussionLanguages: discussionLanguages,
-    );
+    await _api.saveUserSettings(update);
   }
 
   @override

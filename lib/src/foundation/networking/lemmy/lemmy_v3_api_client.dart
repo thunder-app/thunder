@@ -22,6 +22,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// Lemmy API client for version 0.19.x (v3 API).
 ///
@@ -757,33 +758,16 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   // =============================================================
 
   @override
-  Future<void> saveUserSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  }) async {
+  Future<void> saveUserSettings(AccountSettingsUpdate update) async {
     await request(HttpMethod.put, '$basePath/user/save_user_settings', {
-      'bio': bio,
-      'email': email,
-      'matrix_user_id': matrixUserId,
-      'display_name': displayName,
-      'default_listing_type': defaultFeedListType?.value,
-      'default_sort_type': defaultPostSortType?.value,
-      'show_nsfw': showNsfw,
-      'show_read_posts': showReadPosts,
-      'show_scores': showScores,
-      'bot_account': botAccount,
-      'show_bot_accounts': showBotAccounts,
-      'discussion_languages': discussionLanguages,
+      'display_name': update.displayName,
+      'bio': update.bio,
+      'default_listing_type': update.defaultFeedListType?.value,
+      'default_sort_type': update.defaultPostSortType?.value,
+      'show_nsfw': update.showNsfw,
+      'show_read_posts': update.showReadPosts,
+      'show_bot_accounts': update.showBotAccounts,
+      'discussion_languages': update.discussionLanguages,
     });
   }
 

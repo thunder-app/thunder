@@ -21,6 +21,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// PieFed API client for the `/api/alpha` endpoints.
 class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
@@ -1168,24 +1169,14 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  Future<void> saveUserSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  }) async {
+  Future<void> saveUserSettings(AccountSettingsUpdate update) async {
     await request(HttpMethod.put, '$basePath/user/save_user_settings', {
-      'bio': bio,
-      'show_nsfw': showNsfw,
-      'show_read_posts': showReadPosts,
+      'bio': update.bio,
+      'default_sort_type': update.defaultPostSortType?.value,
+      'bot_visibility': update.showBotAccounts == null ? null : (update.showBotAccounts! ? 'Show' : 'Hide'),
+      'show_nsfw': update.showNsfw,
+      'show_nsfl': update.showNsfl,
+      'show_read_posts': update.showReadPosts,
     });
   }
 

@@ -76,7 +76,7 @@ class ThunderSiteResponse {
       version: response['version'],
       myUser: myUser != null ? ThunderMyUser.fromPiefedMyUser(myUser) : null,
       allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromPiefedLanguage(l)).toList(),
-      discussionLanguages: discussionLanguages?.cast<int>(),
+      discussionLanguages: discussionLanguages?.map<int>((language) => language['id'] as int).toList(),
       // taglines: taglines.map<ThunderTagline>((t) => ThunderTagline.fromPiefedTagline(t)).toList(),
     );
   }

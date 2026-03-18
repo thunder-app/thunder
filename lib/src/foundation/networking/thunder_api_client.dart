@@ -14,6 +14,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// Response from getting a single post.
 typedef GetPostResponse = ({
@@ -374,20 +375,7 @@ abstract class ThunderApiClient {
   // =============================================================
 
   /// Save user settings.
-  Future<void> saveUserSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  });
+  Future<void> saveUserSettings(AccountSettingsUpdate update);
 
   /// Import settings from a backup.
   Future<bool> importSettings(String settings);

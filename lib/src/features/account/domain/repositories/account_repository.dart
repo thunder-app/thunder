@@ -1,4 +1,5 @@
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 import 'package:thunder/src/features/account/domain/models/account_media.dart';
 
 //// Interface for an account repository
@@ -13,20 +14,7 @@ abstract class AccountRepository {
   Future<AccountMedia> media({int? page, int? limit});
 
   /// Saves the user's settings.
-  Future<void> saveSettings({
-    String? bio,
-    String? email,
-    String? matrixUserId,
-    String? displayName,
-    FeedListType? defaultFeedListType,
-    PostSortType? defaultPostSortType,
-    bool? showNsfw,
-    bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
-    bool? showBotAccounts,
-    List<int>? discussionLanguages,
-  });
+  Future<void> saveSettings(AccountSettingsUpdate update);
 
   /// Imports the settings to the user's profile.
   Future<bool> importSettings(String settings);

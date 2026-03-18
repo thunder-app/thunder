@@ -85,17 +85,16 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
   Future<void> updateSettings({
     String? displayName,
     String? bio,
-    String? email,
-    String? matrixUserId,
     FeedListType? defaultFeedListType,
     PostSortType? defaultPostSortType,
     bool? showNsfw,
+    bool? showNsfl,
     bool? showReadPosts,
-    bool? showScores,
-    bool? botAccount,
     bool? showBotAccounts,
     List<int>? discussionLanguages,
   }) async {
+    if (state.status == AccountSettingsStatus.updating) return;
+
     final originalSiteResponse = state.siteResponse;
 
     try {
@@ -117,47 +116,49 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
         ));
       }
 
-      final localUser = originalSiteResponse!.myUser!.localUserView.localUser.copyWith(
-        email: email ?? originalSiteResponse.myUser!.localUserView.localUser.email,
-        showReadPosts: showReadPosts ?? originalSiteResponse.myUser!.localUserView.localUser.showReadPosts,
-        showScores: showScores ?? originalSiteResponse.myUser!.localUserView.localUser.showScores,
-        showBotAccounts: showBotAccounts ?? originalSiteResponse.myUser!.localUserView.localUser.showBotAccounts,
-        showNsfw: showNsfw ?? originalSiteResponse.myUser!.localUserView.localUser.showNsfw,
-        defaultListingType: defaultFeedListType ?? originalSiteResponse.myUser!.localUserView.localUser.defaultListingType,
-        defaultSortType: defaultPostSortType ?? originalSiteResponse.myUser!.localUserView.localUser.defaultSortType,
+      final myUser = originalSiteResponse!.myUser!;
+
+      final localUser = myUser.localUserView.localUser.copyWith(
+        showNsfw: showNsfw ?? myUser.localUserView.localUser.showNsfw,
+        showNsfl: showNsfl ?? myUser.localUserView.localUser.showNsfl,
+        showReadPosts: showReadPosts ?? myUser.localUserView.localUser.showReadPosts,
+        showBotAccounts: showBotAccounts ?? myUser.localUserView.localUser.showBotAccounts,
+        defaultListingType: defaultFeedListType ?? myUser.localUserView.localUser.defaultListingType,
+        defaultSortType: defaultPostSortType ?? myUser.localUserView.localUser.defaultSortType,
       );
 
       final updatedSiteResponse = originalSiteResponse.copyWith(
-        myUser: originalSiteResponse.myUser!.copyWith(
-          localUserView: originalSiteResponse.myUser!.localUserView.copyWith(
-            person: originalSiteResponse.myUser!.localUserView.person.copyWith(
-              botAccount: botAccount ?? originalSiteResponse.myUser!.localUserView.person.botAccount,
-              bio: bio ?? originalSiteResponse.myUser!.localUserView.person.bio,
-              displayName: displayName ?? originalSiteResponse.myUser!.localUserView.person.displayName,
-              matrixUserId: matrixUserId ?? originalSiteResponse.myUser!.localUserView.person.matrixUserId,
+        myUser: myUser.copyWith(
+          localUserView: myUser.localUserView.copyWith(
+            person: myUser.localUserView.person.copyWith(
+              bio: bio ?? myUser.localUserView.person.bio,
+              displayName: displayName ?? myUser.localUserView.person.displayName,
             ),
             localUser: localUser,
           ),
-          discussionLanguages: discussionLanguages ?? originalSiteResponse.myUser!.discussionLanguages,
+          discussionLanguages: discussionLanguages ?? myUser.discussionLanguages,
         ),
       );
 
-      emit(state.copyWith(status: AccountSettingsStatus.ready, siteResponse: updatedSiteResponse, errorMessage: '', errorReason: null));
-      emit(state.copyWith(status: AccountSettingsStatus.updating, errorMessage: '', errorReason: null));
+      emit(state.copyWith(
+        status: AccountSettingsStatus.updating,
+        siteResponse: updatedSiteResponse,
+        errorMessage: '',
+        errorReason: null,
+      ));
 
       await accountRepository.saveSettings(
-        bio: bio,
-        email: email,
-        matrixUserId: matrixUserId,
-        displayName: displayName,
-        defaultFeedListType: defaultFeedListType,
-        defaultPostSortType: defaultPostSortType,
-        showNsfw: showNsfw,
-        showReadPosts: showReadPosts,
-        showScores: showScores,
-        botAccount: botAccount,
-        showBotAccounts: showBotAccounts,
-        discussionLanguages: discussionLanguages,
+        AccountSettingsUpdate(
+          displayName: displayName,
+          bio: bio,
+          defaultFeedListType: defaultFeedListType,
+          defaultPostSortType: defaultPostSortType,
+          showNsfw: showNsfw,
+          showNsfl: showNsfl,
+          showReadPosts: showReadPosts,
+          showBotAccounts: showBotAccounts,
+          discussionLanguages: discussionLanguages,
+        ),
       );
 
       emit(state.copyWith(status: AccountSettingsStatus.success, errorMessage: '', errorReason: null));

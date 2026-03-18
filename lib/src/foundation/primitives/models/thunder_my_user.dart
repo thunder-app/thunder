@@ -133,6 +133,7 @@ class ThunderMyUser {
     final follows = myUser['follows'];
     final moderates = myUser['moderates'];
     final communityBlocks = myUser['community_blocks'];
+    final discussionLanguages = myUser['discussion_languages'];
     final instanceBlocks = myUser['instance_blocks'];
     final personBlocks = myUser['person_blocks'];
     final localUserView = myUser['local_user_view'];
@@ -144,6 +145,7 @@ class ThunderMyUser {
       communityBlocks: communityBlocks.map<ThunderCommunity>((b) => ThunderCommunity.fromPiefedCommunity(b['community'])).toList(),
       instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((b) => ThunderInstanceBlock.fromPiefedBlock(b)).toList(),
       personBlocks: personBlocks.map<ThunderUser>((b) => ThunderUser.fromPiefedUser(b['target'])).toList(),
+      discussionLanguages: discussionLanguages?.map<int>((language) => language['id'] as int).toList(),
     );
   }
 }
