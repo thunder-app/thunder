@@ -308,14 +308,15 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
   }
 
   Offset _anchoredOffsetForScale({
-    required Offset anchor,
+    required Offset baseAnchor,
+    required Offset targetAnchor,
     required Offset baseOffset,
     required double baseScale,
     required double targetScale,
   }) {
     final viewportCenter = _viewportSize.center(Offset.zero);
-    final contentPoint = (anchor - viewportCenter - baseOffset) / baseScale;
-    final targetOffset = anchor - viewportCenter - contentPoint * targetScale;
+    final contentPoint = (baseAnchor - viewportCenter - baseOffset) / baseScale;
+    final targetOffset = targetAnchor - viewportCenter - contentPoint * targetScale;
 
     return _clampOffset(targetOffset, _baseContentSize, targetScale);
   }
@@ -332,6 +333,10 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
   }
 
   double _nextDoubleTapScale() {
+    if (_scale >= widget.maxScale - _gestureEpsilon) {
+      return widget.minScale;
+    }
+
     for (final scale in widget.doubleTapScales) {
       if (_scale < scale - _gestureEpsilon) {
         return scale.clamp(widget.minScale, widget.maxScale);
@@ -346,7 +351,8 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     final targetOffset = targetScale <= widget.minScale + _gestureEpsilon
         ? Offset.zero
         : _anchoredOffsetForScale(
-            anchor: anchor,
+            baseAnchor: anchor,
+            targetAnchor: anchor,
             baseOffset: _offset,
             baseScale: _scale,
             targetScale: targetScale,
@@ -376,7 +382,8 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     final targetOffset = targetScale <= widget.minScale + _gestureEpsilon
         ? Offset.zero
         : _anchoredOffsetForScale(
-            anchor: anchor,
+            baseAnchor: anchor,
+            targetAnchor: anchor,
             baseOffset: _doubleTapBaseOffset,
             baseScale: _doubleTapBaseScale,
             targetScale: targetScale,
@@ -526,7 +533,8 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
       final nextOffset = nextScale <= widget.minScale + _gestureEpsilon
           ? Offset.zero
           : _anchoredOffsetForScale(
-              anchor: focalPoint,
+              baseAnchor: gestureStartFocalPoint,
+              targetAnchor: focalPoint,
               baseOffset: _gestureStartOffset,
               baseScale: _gestureStartScale,
               targetScale: nextScale,

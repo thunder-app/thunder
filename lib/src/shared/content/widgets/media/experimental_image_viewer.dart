@@ -324,14 +324,7 @@ class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
                       opacity: _isChromeVisible ? 1 : 0,
                       child: IgnorePointer(
                         ignoring: !_isChromeVisible,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.black54, Colors.transparent],
-                            ),
-                          ),
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           child: Row(
                             children: [
@@ -370,14 +363,7 @@ class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
                       opacity: _isChromeVisible ? 1 : 0,
                       child: IgnorePointer(
                         ignoring: !_isChromeVisible,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, Colors.black54],
-                            ),
-                          ),
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
