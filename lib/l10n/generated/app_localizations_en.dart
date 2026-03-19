@@ -3224,6 +3224,9 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get about => 'About';
 
   @override
+  String get accept => 'Accept';
+
+  @override
   String get accessibility => 'Accessibility';
 
   @override
@@ -3243,13 +3246,50 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   }
 
   @override
+  String accountBirthday(Object additionalInfo) {
+    return 'Account Birthday $additionalInfo';
+  }
+
+  @override
+  String get accountSettingOverrideWarning =>
+      'Your account settings override the following settings';
+
+  @override
   String get accountSettings => 'Account Settings';
+
+  @override
+  String accountSettingsExportedSuccessfully(Object savedFilePath) {
+    return 'Lemmy account settings exported successfully to $savedFilePath!';
+  }
+
+  @override
+  String get accountSettingsImportedSuccessfully =>
+      'Lemmy account settings imported successfully!';
+
+  @override
+  String accountSwitchParentCommentNotFound(Object instance) {
+    return 'The selected comment was not found on \'$instance\'';
+  }
+
+  @override
+  String accountSwitchPostNotFound(Object instance) {
+    return 'The selected post was not found on \'$instance\'';
+  }
+
+  @override
+  String get actionColors => 'Action Colours';
+
+  @override
+  String get actionColorsRedirect => 'Looking to customise colours?';
 
   @override
   String get actions => 'Actions';
 
   @override
   String get active => 'Active';
+
+  @override
+  String get activity => 'Activity';
 
   @override
   String get add => 'Add';
@@ -3264,16 +3304,47 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get addAnonymousInstance => 'Add Anonymous Instance';
 
   @override
+  String get addAsCommunityModerator => 'Add as Community Mod';
+
+  @override
+  String get addDiscussionLanguage => 'Add Language';
+
+  @override
   String get addKeywordFilter => 'Add Keyword';
+
+  @override
+  String get addOriginalPostBody => 'Add original post body?';
 
   @override
   String get addToFavorites => 'Add to favourites';
 
   @override
+  String get addUserLabel => 'Add User Label';
+
+  @override
   String get addedCommunityToSubscriptions => 'Subscribed to community';
 
   @override
+  String get addedInstanceMod => 'Added Instance Mod';
+
+  @override
+  String get addedModToCommunity => 'Added Mod to Community';
+
+  @override
+  String addedUserAsCommunityModerator(Object username) {
+    return 'Added $username as community mod';
+  }
+
+  @override
+  String get admin => 'Admin';
+
+  @override
   String get advanced => 'Advanced';
+
+  @override
+  String ago(Object time) {
+    return '$time ago';
+  }
 
   @override
   String get all => 'All';
@@ -3288,6 +3359,15 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get alreadyPostedTo => 'Already posted to';
 
   @override
+  String get altText => 'Alt Text / Image Description';
+
+  @override
+  String get alternateSources => 'Alternate Sources';
+
+  @override
+  String get always => 'Always';
+
+  @override
   String andXMore(Object count) {
     return 'and $count more';
   }
@@ -3299,16 +3379,42 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get anonymous => 'Anonymous';
 
   @override
+  String get anonymousInstances => 'Anonymous Instances';
+
+  @override
   String get appLanguage => 'App Language';
 
   @override
   String get appearance => 'Appearance';
 
   @override
+  String get applePushNotificationService => 'Apple Push Notification Service';
+
+  @override
   String get applied => 'Applied';
 
   @override
   String get apply => 'Apply';
+
+  @override
+  String areNotificationsAllowedBySystem(Object yesOrNo) {
+    return 'Notifications are allowed by the system: $yesOrNo';
+  }
+
+  @override
+  String averageComments(Object x) {
+    return '$x comments/month';
+  }
+
+  @override
+  String averageContributions(Object x) {
+    return '$x contributions/month';
+  }
+
+  @override
+  String averagePosts(Object x) {
+    return '$x posts/month';
+  }
 
   @override
   String get back => 'Back';
@@ -3324,16 +3430,43 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
       'Notification checks will consume additional battery.';
 
   @override
+  String get ban => 'Ban';
+
+  @override
+  String get banFromCommunity => 'Ban from Community';
+
+  @override
+  String get bannedUser => 'Banned User';
+
+  @override
+  String get bannedUserFromCommunity => 'Banned User from Community';
+
+  @override
   String get base => 'Base';
+
+  @override
+  String get block => 'Block';
 
   @override
   String get blockCommunity => 'Block Community';
 
   @override
+  String get blockCommunityInstance => 'Block Community Instance';
+
+  @override
   String get blockInstance => 'Block Instance';
 
   @override
+  String get blockManagement => 'Manage blocks';
+
+  @override
+  String get blockSettingLabel => 'User/Community/Instance Blocks';
+
+  @override
   String get blockUser => 'Block User';
+
+  @override
+  String get blockUserInstance => 'Block User Instance';
 
   @override
   String get blockedCommunities => 'Blocked Communities';
@@ -3343,6 +3476,27 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
 
   @override
   String get blockedUsers => 'Blocked Users';
+
+  @override
+  String get blue => 'Blue';
+
+  @override
+  String get bold => 'Bold';
+
+  @override
+  String get boldCommunityName => 'Bold Community Name';
+
+  @override
+  String get boldInstanceName => 'Bold Instance Name';
+
+  @override
+  String get boldUserName => 'Bold User Name';
+
+  @override
+  String get bot => 'Bot';
+
+  @override
+  String get browserMode => 'Link handling';
 
   @override
   String browsingAnonymously(Object instance) {
@@ -3362,6 +3516,9 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get cantBlockYourself => 'You can\'t block yourself.';
 
   @override
+  String get cardPostCardMetadataItems => 'Card View Metadata';
+
+  @override
   String get cardView => 'Card View';
 
   @override
@@ -3371,12 +3528,28 @@ class AppLocalizationsEnAu extends AppLocalizationsEn {
   String get cardViewSettings => 'Card View Settings';
 
   @override
+  String get changeAccountSettingsFor => 'Change account settings for';
+
+  @override
+  String get changeNotificationSettings => 'Change notification settings...';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get changePasswordWarning =>
+      'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
+
+  @override
   String get changeSort => 'Change Sorting Options';
 
   @override
   String clearCache(Object cacheSize) {
     return 'Clear Cache ($cacheSize)';
   }
+
+  @override
+  String get clearCacheLabel => 'Clear Cache';
 
   @override
   String get clearDatabase => 'Clear Database';
@@ -4607,6 +4780,13 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get imageDimensionTimeout => 'Image Dimension Timeout';
 
   @override
+  String get imagePeekDuration => 'Image Peek Duration';
+
+  @override
+  String get imagePeekDurationDescription =>
+      'Duration of long press before image peek is triggered';
+
+  @override
   String get importDatabase => 'Import Database';
 
   @override
@@ -4777,6 +4957,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get linkHandlingInAppShort => 'In-app';
 
   @override
+  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+
+  @override
   String get linksBehaviourSettings => 'Links';
 
   @override
@@ -4871,6 +5054,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get me => 'Me';
+
+  @override
+  String get media => 'Media';
 
   @override
   String get medium => 'Medium';
@@ -5230,6 +5416,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get pinnedPostToCommunity => 'Pinned post to community';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
 
   @override
   String get placeholderText =>
@@ -5912,6 +6101,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String get showPostAuthorSubtitle =>
       'Post author is always shown in community feeds';
+
+  @override
+  String get showPostCommunityFirst => 'Show Community and Author First';
 
   @override
   String get showPostCommunityIcons => 'Show Community Icons';

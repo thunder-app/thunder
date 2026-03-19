@@ -123,7 +123,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String addedUserAsCommunityModerator(Object username) {
-    return 'Added $username as community moderator';
+    return '$username ajouté comme modérateur de la communauté';
   }
 
   @override
@@ -223,7 +223,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Notez que les vérifications de notification consomment plus de batterie';
 
   @override
-  String get ban => 'Ban';
+  String get ban => 'Bannir';
 
   @override
   String get banFromCommunity => 'Bannir de la communauté';
@@ -238,7 +238,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get base => 'Base';
 
   @override
-  String get block => 'Block';
+  String get block => 'Bloquer';
 
   @override
   String get blockCommunity => 'Bloquer la communauté';
@@ -432,7 +432,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get comment => 'Commentaire';
 
   @override
-  String get commentActions => 'Comment Actions';
+  String get commentActions => 'Actions des commentaires';
 
   @override
   String get commentBehaviourSettings => 'Commentaires';
@@ -478,7 +478,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get community => 'Communauté';
 
   @override
-  String get communityActions => 'Community Actions';
+  String get communityActions => 'Actions de communauté';
 
   @override
   String communityEntry(Object community) {
@@ -660,7 +660,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'Publication croisé avec : $postUrl';
+    return 'Publication croisé depuis: $postUrl';
   }
 
   @override
@@ -689,27 +689,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get databaseExportWarning =>
-      'The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?';
+      'La base de données peut contenir des informations sensibles en relation avec votre compte Lemmy. Si vous l\'exportez, vous ne devriez pas la partager avec quiconque. Voulez-vous continuer ?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
-    return 'The database was successfully exported to \'$savedFilePath\'';
+    return 'La base de données a été exportée avec succès vers \'$savedFilePath\'';
   }
 
   @override
   String get databaseImportedSuccessfully =>
-      'The database was imported successfully!';
+      'La base de données a été importée avec succès !';
 
   @override
   String get databaseNotExportedSuccessfully =>
-      'The database was not exported successfully or the operation was canceled.';
+      'La base de données n\'a pas été exportée avec succès ou l\'opération a été annulée.';
 
   @override
   String get databaseNotImportedSuccessfully =>
-      'The database was not imported successfully, or the operation was canceled.';
+      'La base de données n\'a pas été importée avec succès, ou l\'opération a été annulée.';
 
   @override
-  String get dateFormat => 'Date Format';
+  String get dateFormat => 'Format de date';
 
   @override
   String get debug => 'Déboguer';
@@ -720,13 +720,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get debugNotificationsDescription =>
-      'Use the following options to troubleshoot issues related to notifications.';
+      'Utiliser les options suivantes afin de résoudre les problèmes liés aux notifications.';
 
   @override
-  String get decline => 'Decline';
+  String get decline => 'Refuser';
 
   @override
-  String get defaultColor => 'Default';
+  String get defaultColor => 'Par défaut';
 
   @override
   String get defaultCommentSortType =>
@@ -749,14 +749,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pour supprimer définitivement votre compte, vous serez redirigé vers votre site d\'instance. \n\nÊtes-vous sûr de vouloir continuer ?';
 
   @override
-  String get deleteComment => 'Delete Comment';
+  String get deleteComment => 'Supprimer le commentaire';
 
   @override
   String get deleteImageConfirmMessage =>
-      'Are you sure you want to delete this image?';
+      'Êtes-vous sûr de vouloir supprimer cette image ?';
 
   @override
-  String get deleteImageConfirmTitle => 'Delete?';
+  String get deleteImageConfirmTitle => 'Supprimer ?';
 
   @override
   String get deleteLocalDatabase => 'Supprimer la base de donnée locale';
@@ -773,26 +773,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette opération effacera toutes vos préférences d\'utilisateur et tous les paramètres de Thunder.\n\nVoulez-vous continuer ?';
 
   @override
-  String get deletePost => 'Delete Post';
+  String get deletePost => 'Supprimer le poste';
 
   @override
   String get deleteUserLabelConfirmation =>
-      'Are you sure you want to delete the label?';
+      'Êtes-vous sûr de vouloir supprimer cette étiquette ?';
 
   @override
-  String get deleted => 'Deleted';
+  String get deleted => 'Supprimé(e)';
 
   @override
-  String get deletedByCreator => 'deleted by creator';
+  String get deletedByCreator => 'Supprimé par le créateur';
 
   @override
-  String get deletedByModerator => 'deleted by moderator';
+  String get deletedByModerator => 'Supprimé par le modérateur';
 
   @override
-  String get deletedComment => 'Deleted comment';
+  String get deletedComment => 'Commentaire supprimé';
 
   @override
-  String get deletedPost => 'Deleted post';
+  String get deletedPost => 'Poste supprimé';
 
   @override
   String get deselectUndeterminedWarning =>
@@ -800,27 +800,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String detailedReason(Object reason) {
-    return 'Reason: $reason';
+    return 'Raison : $reason';
   }
 
   @override
-  String get dimReadPosts => 'Les publications lues seront grisées';
+  String get dimReadPosts => 'Griser les publications lues.';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Désactiver';
 
   @override
-  String get disablePushNotifications => 'Disable Push Notifications';
+  String get disablePushNotifications => 'Désactiver les notifications';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'Désactivé(e)';
 
   @override
-  String get discussionLanguages => 'Discussion Languages';
+  String get discussionLanguages => 'Langues de discussion';
 
   @override
   String get discussionLanguagesTooltip =>
-      'Content is filtered to the selected languages.';
+      'Le contenu est filtré à la langue sélectionnée.';
 
   @override
   String get dismissRead => 'Rejeter la lecture';

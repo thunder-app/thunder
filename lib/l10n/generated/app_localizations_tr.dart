@@ -29,7 +29,7 @@ class AppLocalizationsTr extends AppLocalizations {
       other: 'Hesap',
       one: 'Hesap',
     );
-    return '$_temp0';
+    return '$_temp0 ';
   }
 
   @override
@@ -55,12 +55,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return 'Seçilen yorum \'$instance\' üzerinde bulunamadı. Önceki hesaba geri dönülüyor.';
+    return 'Seçilen yorum \'$instance\' üzerinde bulunamadı.';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'Seçilen gönderi \'$instance\' üzerinde bulunamadı. Önceki hesaba geri dönülüyor.';
+    return 'Seçilen gönderi \'$instance\' üzerinde bulunamadı.';
   }
 
   @override
@@ -119,7 +119,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String addedUserAsCommunityModerator(Object username) {
-    return 'Added $username as community moderator';
+    return '$username topluluk moderatörü olarak eklendi';
   }
 
   @override
@@ -218,7 +218,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bildirim kontrollerinin ek pil tüketeceğini unutmayın';
 
   @override
-  String get ban => 'Ban';
+  String get ban => 'Yasakla';
 
   @override
   String get banFromCommunity => 'Topluluktan Yasakla';
@@ -420,7 +420,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get comment => 'Yorum';
 
   @override
-  String get commentActions => 'Comment Actions';
+  String get commentActions => 'Yorum İşlemleri';
 
   @override
   String get commentBehaviourSettings => 'Yorumlar';
@@ -645,7 +645,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String crossPostedFrom(Object postUrl) {
-    return 'şuradan çapraz gönderildi:  $postUrl';
+    return 'şuradan çapraz gönderildi: $postUrl';
   }
 
   @override
@@ -773,10 +773,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deletedByModerator => 'moderatör tarafından silindi';
 
   @override
-  String get deletedComment => 'Deleted comment';
+  String get deletedComment => 'Silinmiş yorum';
 
   @override
-  String get deletedPost => 'Deleted post';
+  String get deletedPost => 'Silinmiş gönderi';
 
   @override
   String get deselectUndeterminedWarning =>
@@ -1000,7 +1000,7 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String failedToCommunicateWithThunderNotificationServer(
       Object serverAddress) {
-    return '\'$serverAddress\' adresindeki Thunder bildirim sunucusuyla iletişim kurulamadı';
+    return '$serverAddress adresindeki Thunder bildirim sunucusuyla iletişim kurulamadı.';
   }
 
   @override
@@ -1086,7 +1086,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Soldan sağa hareketler devre dışı bırakıldığında geri gitmek için herhangi bir yere kaydırın';
 
   @override
-  String get fullscreen => 'Fullscreen';
+  String get fullscreen => 'Tam ekran';
 
   @override
   String get fullscreenSwipeGestures => 'Tam Ekran Kaydırma Hareketleri';
@@ -1127,7 +1127,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hide => 'Gizle';
 
   @override
-  String get hideBottomBarOnScroll => 'Hide Bottom Bar on Scroll';
+  String get hideBottomBarOnScroll => 'Kaydırma sırasında alt çubuğu gizle';
 
   @override
   String get hideColor => 'Gizleme Rengi';
@@ -1177,11 +1177,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get imageDimensionTimeout => 'Resim Boyutu Zaman Aşımı';
 
   @override
-  String get imagePeekDuration => 'Image Peek Duration';
+  String get imagePeekDuration => 'Görüntü önizleme süresi';
 
   @override
   String get imagePeekDurationDescription =>
-      'Duration of long press before image peek is triggered';
+      'Görüntü önizlemeyi tetiklemek için uzun basma süresi';
 
   @override
   String get importDatabase => 'Veritabanını İçe Aktar';
@@ -1353,7 +1353,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get linkHandlingInAppShort => 'Uygulama içi';
 
   @override
-  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+  String get linkPostsUseCompactView => 'Kompakt bağlantı gönderilerini göster';
 
   @override
   String get linksBehaviourSettings => 'Bağlantılar';
@@ -1453,7 +1453,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get me => 'Ben';
 
   @override
-  String get media => 'Media';
+  String get media => 'Ortam';
 
   @override
   String get medium => 'Orta';
@@ -1691,7 +1691,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance geçerli bir Lemmy sunucusu gibi görünmüyor';
+    return '$instance geçerli bir örnek gibi görünmüyor';
   }
 
   @override
@@ -1812,10 +1812,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pinned => 'Sabitlenmiş';
 
   @override
-  String get pinnedPostToCommunity => 'Pinned post to community';
+  String get pinnedPostToCommunity => 'Gönderi topluluğa sabitlendi';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostsUseCompactView =>
+      'Kompakt sabitlenmiş gönderileri göster';
 
   @override
   String get placeholderText =>
@@ -2020,7 +2021,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removePost => 'Gönderiyi Kaldır';
 
   @override
-  String get removeUserData => 'Remove user data';
+  String get removeUserData => 'Kullanıcısı verisini kaldır';
 
   @override
   String get removed => 'Kaldırıldı';
@@ -2046,7 +2047,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String removedUserAsCommunityModerator(Object username) {
-    return 'Removed $username as community moderator';
+    return '$username topluluk moderatörlüğünden kaldırıldı';
   }
 
   @override
@@ -2096,10 +2097,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get reportPost => 'Gönderiyi Şikayet Et';
 
   @override
-  String get reportedComment => 'Reported comment';
+  String get reportedComment => 'Yorum şikayet edildi';
 
   @override
-  String get reportedPost => 'Reported post';
+  String get reportedPost => 'Gönderi şikayet edildi';
 
   @override
   String get reporter => 'Şikayet Eden:';
@@ -2132,7 +2133,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get restorePost => 'Gönderiyi Geri Yükle';
 
   @override
-  String get restoredComment => 'Geri Yüklenmiş Yorum';
+  String get restoredComment => 'Yorum geri yüklendi';
 
   @override
   String get restoredCommentFromDraft => 'Taslaktan yorum geri yüklendi';
@@ -2501,7 +2502,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Gönderi yazarı topluluk akışlarında her zaman gösterilir';
 
   @override
-  String get showPostCommunityFirst => 'Show Community and Author First';
+  String get showPostCommunityFirst => 'Topluluğu ve yazarı önce göster';
 
   @override
   String get showPostCommunityIcons => 'Topluluk Simgelerini Göster';
@@ -2894,7 +2895,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return 'Kullanıcının Topluluktan Yasağı Kaldırıldı';
+    return '$username kullanıcısının topluluk yasağı kaldırıldı';
   }
 
   @override
@@ -2963,7 +2964,8 @@ class AppLocalizationsTr extends AppLocalizations {
       'Gönderiyi Topluluktan Sabitlemeyi Kaldır';
 
   @override
-  String get unpinnedPostFromCommunity => 'Unpinned post from community';
+  String get unpinnedPostFromCommunity =>
+      'Topluluktaki sabitlenmiş gönderinin sabitlemesi kaldırıldı';
 
   @override
   String get unreachable => 'Ulaşılamıyor';

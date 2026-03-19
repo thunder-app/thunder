@@ -3256,7 +3256,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String accountBirthday(Object additionalInfo) {
-    return 'Aniversário da Conta $additionalInfo';
+    return 'Aniversário da conta $additionalInfo';
   }
 
   @override
@@ -3264,7 +3264,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Suas configurações de conta sobrescrevem as configurações a seguir';
 
   @override
-  String get accountSettings => 'Configurações da Conta';
+  String get accountSettings => 'Configurações da conta';
 
   @override
   String accountSettingsExportedSuccessfully(Object savedFilePath) {
@@ -3286,7 +3286,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get actionColors => 'Cores de Ações';
+  String get actionColors => 'Cores de ações';
 
   @override
   String get actionColorsRedirect => 'Querendo customizar cores?';
@@ -3304,23 +3304,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get add => 'Adicionar';
 
   @override
-  String get addAccount => 'Adicionar Conta';
+  String get addAccount => 'Adicionar conta';
 
   @override
   String get addAccountToSeeProfile => 'Faça login para ver sua conta.';
 
   @override
-  String get addAnonymousInstance => 'Adicionar Instância Anônima';
+  String get addAnonymousInstance => 'Adicionar instância anônima';
 
   @override
   String get addAsCommunityModerator =>
-      'Adicionar como Moderador de Comunidade';
+      'Adicionar como moderador de comunidade';
 
   @override
-  String get addDiscussionLanguage => 'Adicionar Idioma';
+  String get addDiscussionLanguage => 'Adicionar idioma';
 
   @override
-  String get addKeywordFilter => 'Adicionar Palavra-chave';
+  String get addKeywordFilter => 'Adicionar palavra-chave';
 
   @override
   String get addOriginalPostBody => 'Adicionar o corpo da postagem original?';
@@ -3329,16 +3329,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get addToFavorites => 'Adicionar aos favoritos';
 
   @override
-  String get addUserLabel => 'Adicionar Etiqueta de Usuário';
+  String get addUserLabel => 'Adicionar rótulo de usuário';
 
   @override
   String get addedCommunityToSubscriptions => 'Inscrito na comunidade';
 
   @override
-  String get addedInstanceMod => 'Adicionou Mod de Instância';
+  String get addedInstanceMod => 'Adicionou mod de instância';
 
   @override
-  String get addedModToCommunity => 'Moderador Adicionado à Comunidade';
+  String get addedModToCommunity => 'Moderador adicionado à comunidade';
 
   @override
   String addedUserAsCommunityModerator(Object username) {
@@ -3360,7 +3360,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get all => 'Todos';
 
   @override
-  String get allPosts => 'Todas as Postagens';
+  String get allPosts => 'Todas as postagens';
 
   @override
   String get allowOpenSupportedLinks =>
@@ -3370,10 +3370,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get alreadyPostedTo => 'Já postado em';
 
   @override
-  String get altText => 'Texto Alt';
+  String get altText => 'Texto alt';
 
   @override
-  String get alternateSources => 'Fontes Alternativas';
+  String get alternateSources => 'Fontes alternativas';
 
   @override
   String get always => 'Sempre';
@@ -3390,17 +3390,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get anonymous => 'Anônimo';
 
   @override
-  String get anonymousInstances => 'Instâncias Anônimas';
+  String get anonymousInstances => 'Instâncias anônimas';
 
   @override
-  String get appLanguage => 'Idioma do Aplicativo';
+  String get appLanguage => 'Idioma do aplicativo';
 
   @override
   String get appearance => 'Aparência';
 
   @override
   String get applePushNotificationService =>
-      'Serviço de Notificações Push da Apple';
+      'Serviço de notificações push da Apple';
 
   @override
   String get applied => 'Aplicado';
@@ -3435,7 +3435,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get backButton => 'Botão de voltar';
 
   @override
-  String get backToTop => 'Voltar Ao Topo';
+  String get backToTop => 'Voltar ao topo';
 
   @override
   String get backgroundCheckWarning =>
@@ -3445,13 +3445,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get ban => 'Banir';
 
   @override
-  String get banFromCommunity => 'Banir da Comunidade';
+  String get banFromCommunity => 'Banir da comunidade';
 
   @override
-  String get bannedUser => 'Usuário Banido';
+  String get bannedUser => 'Usuário banido';
 
   @override
-  String get bannedUserFromCommunity => 'Baniu Usuário da Comunidade';
+  String get bannedUserFromCommunity => 'Baniu usuário da comunidade';
 
   @override
   String get base => 'Base';
@@ -3460,35 +3460,35 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get block => 'Bloquear';
 
   @override
-  String get blockCommunity => 'Bloquear Comunidade';
+  String get blockCommunity => 'Bloquear comunidade';
 
   @override
-  String get blockCommunityInstance => 'Bloquear Instância da Comunidade';
+  String get blockCommunityInstance => 'Bloquear instância da comunidade';
 
   @override
-  String get blockInstance => 'Bloquear Instância';
+  String get blockInstance => 'Bloquear instância';
 
   @override
-  String get blockManagement => 'Gerenciamento de Bloqueios';
+  String get blockManagement => 'Gerenciamento de bloqueios';
 
   @override
   String get blockSettingLabel =>
-      'Bloqueios de Usuários/Comunidades/Instâncias';
+      'Bloqueios de usuários/comunidades/instâncias';
 
   @override
-  String get blockUser => 'Bloquear Usuário';
+  String get blockUser => 'Bloquear usuário';
 
   @override
-  String get blockUserInstance => 'Bloquear Instância do Usuário';
+  String get blockUserInstance => 'Bloquear instância do usuário';
 
   @override
-  String get blockedCommunities => 'Comunidades Bloqueadas';
+  String get blockedCommunities => 'Comunidades bloqueadas';
 
   @override
-  String get blockedInstances => 'Instâncias Bloqueadas';
+  String get blockedInstances => 'Instâncias bloqueadas';
 
   @override
-  String get blockedUsers => 'Usuários Bloqueados';
+  String get blockedUsers => 'Usuários bloqueados';
 
   @override
   String get blue => 'Azul';
@@ -3497,13 +3497,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get bold => 'Negrito';
 
   @override
-  String get boldCommunityName => 'Nome da Comunidade em Negrito';
+  String get boldCommunityName => 'Nome da comunidade em negrito';
 
   @override
-  String get boldInstanceName => 'Nome da Instância em Negrito';
+  String get boldInstanceName => 'Nome da instância em negrito';
 
   @override
-  String get boldUserName => 'Nome do Usuário em Negrito';
+  String get boldUserName => 'Nome do usuário em negrito';
 
   @override
   String get bot => 'Robô';
@@ -3531,17 +3531,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get cantBlockYourself => 'Você não pode bloquear a si mesmo.';
 
   @override
-  String get cardPostCardMetadataItems => 'Metadados da Visualização em Cartão';
+  String get cardPostCardMetadataItems => 'Metadados da visualização em cartão';
 
   @override
-  String get cardView => 'Visualização em Cartão';
+  String get cardView => 'Visualização em cartão';
 
   @override
   String get cardViewDescription =>
       'Ative a visualização em cartão para ajustar as configurações';
 
   @override
-  String get cardViewSettings => 'Configurações da Visualização em Cartão';
+  String get cardViewSettings => 'Configurações da visualização em cartão';
 
   @override
   String get changeAccountSettingsFor => 'Mudar configurações de conta para';
@@ -3551,31 +3551,31 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Mudar configurações de notificação.';
 
   @override
-  String get changePassword => 'Mudar Senha';
+  String get changePassword => 'Mudar senha';
 
   @override
   String get changePasswordWarning =>
       'Para mudar sua senha, você será redirecionado(a) ao site da sua instância.\n\nTem certeza que deseja continuar?';
 
   @override
-  String get changeSort => 'Alterar Ordenação';
+  String get changeSort => 'Alterar ordenação';
 
   @override
   String clearCache(Object cacheSize) {
-    return 'Limpar Cache ($cacheSize)';
+    return 'Limpar cache ($cacheSize)';
   }
 
   @override
-  String get clearCacheLabel => 'Limpar Cache';
+  String get clearCacheLabel => 'Limpar cache';
 
   @override
-  String get clearDatabase => 'Limpar Banco de Dados';
+  String get clearDatabase => 'Limpar banco de dados';
 
   @override
-  String get clearPreferences => 'Limpar Preferências';
+  String get clearPreferences => 'Limpar preferências';
 
   @override
-  String get clearSearch => 'Limpar Pesquisa';
+  String get clearSearch => 'Limpar pesquisa';
 
   @override
   String get clearedCache => 'Cache limpado com sucesso.';
@@ -3595,51 +3595,52 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get collapse => 'Colapsar';
 
   @override
-  String get collapseCommentPreview => 'Colapsar Prévia de Comentário';
+  String get collapseCommentPreview =>
+      'Recolher pré-visualização do comentário';
 
   @override
-  String get collapseInformation => 'Colapsar Informação';
+  String get collapseInformation => 'Recolher informação';
 
   @override
   String get collapseParentCommentBodyOnGesture =>
-      'Ocultar Comentário Pai quando Recolhido';
+      'Ocultar comentário pai quando recolhido';
 
   @override
-  String get collapsePost => 'Colapsar post';
+  String get collapsePost => 'Recolher postagem';
 
   @override
-  String get collapsePostPreview => 'Recolher Pré-visualização da Postagem';
+  String get collapsePostPreview => 'Recolher pré-visualização da postagem';
 
   @override
-  String get collapseSpoiler => 'Recolher Spoiler';
+  String get collapseSpoiler => 'Recolher spoiler';
 
   @override
   String get color => 'Cor';
 
   @override
-  String get colorizeCommunityName => 'Colorir Nome da Comunidade';
+  String get colorizeCommunityName => 'Colorir nome da comunidade';
 
   @override
-  String get colorizeInstanceName => 'Colorir Nome da Instância';
+  String get colorizeInstanceName => 'Colorir nome da instância';
 
   @override
-  String get colorizeUserName => 'Colorir Nome de Usuário';
+  String get colorizeUserName => 'Colorir nome de usuário';
 
   @override
   String get colors => 'Cores';
 
   @override
-  String get combineCommentScores => 'Combinar Pontuações dos Comentários';
+  String get combineCommentScores => 'Combinar pontuações dos comentários';
 
   @override
-  String get combineCommentScoresLabel => 'Combinar Pontuações dos Comentários';
+  String get combineCommentScoresLabel => 'Combinar pontuações dos comentários';
 
   @override
-  String get combineNavAndFab => 'Combinar FAB e Botões de Navegação';
+  String get combineNavAndFab => 'Combinar FAB e botões de navegação';
 
   @override
   String get combineNavAndFabDescription =>
-      'O Botão de Ação Flutuante (FAB) será exibido entre os botões de navegação.';
+      'O botão de ação flutuante (FAB) será exibido entre os botões de navegação.';
 
   @override
   String get comfortable => 'Confortável';
@@ -3648,17 +3649,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get comment => 'Comentário';
 
   @override
-  String get commentActions => 'Ações de Comentário';
+  String get commentActions => 'Ações de comentário';
 
   @override
   String get commentBehaviourSettings => 'Comentários';
 
   @override
-  String get commentFontScale => 'Escala da Fonte do Conteúdo do Comentário';
+  String get commentFontScale => 'Escala da fonte do conteúdo do comentário';
 
   @override
   String get commentPreview =>
-      'Mostrar prévia dos comentários com as configurações aplicadas';
+      'Mostrar pré-visualização dos comentários com as configurações aplicadas';
 
   @override
   String get commentReported => 'O comentário foi marcado para revisão.';
@@ -3667,16 +3668,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get commentSavedAsDraft => 'Comentário salvo como rascunho';
 
   @override
-  String get commentShowUserAvatar => 'Mostrar Avatar do Usuário';
+  String get commentShowUserAvatar => 'Mostrar avatar do usuário';
 
   @override
-  String get commentShowUserInstance => 'Exibir Instância do Usuário';
+  String get commentShowUserInstance => 'Exibir instância do usuário';
 
   @override
-  String get commentSortType => 'Tipo de Ordenação dos Comentários';
+  String get commentSortType => 'Tipo de ordenação dos comentários';
 
   @override
-  String get commentSwipeActions => 'Ações de Deslizar no Comentário';
+  String get commentSwipeActions => 'Ações de deslizar no comentário';
 
   @override
   String get commentSwipeGesturesHint =>
@@ -3692,7 +3693,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get community => 'Comunidade';
 
   @override
-  String get communityActions => 'Ações da Comunidade';
+  String get communityActions => 'Ações da comunidade';
 
   @override
   String communityEntry(Object community) {
@@ -3700,33 +3701,33 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get communityFormat => 'Formato da Comunidade';
+  String get communityFormat => 'Formato da comunidade';
 
   @override
-  String get communityNameColor => 'Cor do Nome da Comunidade';
+  String get communityNameColor => 'Cor do nome da comunidade';
 
   @override
-  String get communityNameThickness => 'Espessura do Nome da Comunidade';
+  String get communityNameThickness => 'Espessura do nome da comunidade';
 
   @override
-  String get communityStyle => 'Estilo da Comunidade';
+  String get communityStyle => 'Estilo da comunidade';
 
   @override
   String get compact => 'Compacto';
 
   @override
   String get compactPostCardMetadataItems =>
-      'Visualização Compacta dos Metadados';
+      'Visualização compacta dos metadados';
 
   @override
-  String get compactView => 'Visualização Compacta';
+  String get compactView => 'Visualização compacta';
 
   @override
   String get compactViewDescription =>
       'Ativar a visualização compacta para ajustar as configurações';
 
   @override
-  String get compactViewSettings => 'Configurações da Visualização Compacta';
+  String get compactViewSettings => 'Configurações da visualização compacta';
 
   @override
   String get condensed => 'Condensado';
@@ -3757,7 +3758,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get confirmUnsubscription =>
-      'Tem certeza de que deseja cancelar a subscrição?';
+      'Tem certeza de que deseja cancelar a inscrição?';
 
   @override
   String connectedToUnifiedPushDistributorApp(Object app) {
@@ -3765,10 +3766,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get contentManagement => 'Gerenciamento de Conteúdo';
+  String get contentManagement => 'Gerenciamento de conteúdo';
 
   @override
-  String get contentWarning => 'Aviso de Conteúdo';
+  String get contentWarning => 'Aviso de conteúdo';
 
   @override
   String get controversial => 'Controverso';
@@ -3780,13 +3781,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get copy => 'Copiar';
 
   @override
-  String get copyComment => 'Copiar Comentário';
+  String get copyComment => 'Copiar comentário';
 
   @override
   String get copySelected => 'Copiar selecionado';
 
   @override
-  String get copyText => 'Copiar Texto';
+  String get copyText => 'Copiar texto';
 
   @override
   String get couldNotDetermineCommentDelete =>
@@ -3806,22 +3807,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String countComments(Object count) {
-    return '$count Comentários';
+    return '$count comentários';
   }
 
   @override
   String countLocalSubscribers(Object count) {
-    return '$count Assinantes Locais';
+    return '$count assinantes locais';
   }
 
   @override
   String countPosts(Object count) {
-    return '$count Postagens';
+    return '$count postagens';
   }
 
   @override
   String countSubscribers(Object count) {
-    return '$count Assinantes';
+    return '$count assinantes';
   }
 
   @override
@@ -3850,16 +3851,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get createAccount => 'Criar Conta';
+  String get createAccount => 'Criar conta';
 
   @override
-  String get createComment => 'Criar Comentário';
+  String get createComment => 'Criar comentário';
 
   @override
   String get createNewCrossPost => 'Criar nova postagem cruzada';
 
   @override
-  String get createPost => 'Criar Postagem';
+  String get createPost => 'Criar postagem';
 
   @override
   String created(Object date) {
@@ -3867,7 +3868,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get createdToday => 'Criado Hoje';
+  String get createdToday => 'Criado hoje';
 
   @override
   String get creator => 'Criador';
@@ -3896,7 +3897,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Personalizar ações de deslizar (toque para alterar)';
 
   @override
-  String get dangerZone => 'Zona de Perigo';
+  String get dangerZone => 'Zona de perigo';
 
   @override
   String get dark => 'Escuro';
@@ -3923,7 +3924,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'O banco de dados não foi importado com sucesso ou a operação foi cancelada.';
 
   @override
-  String get dateFormat => 'Formato de Data';
+  String get dateFormat => 'Formato de data';
 
   @override
   String get debug => 'Depuração';
@@ -3944,26 +3945,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get defaultCommentSortType =>
-      'Tipo de Ordenação Padrão dos Comentários';
+      'Tipo de ordenação padrão dos comentários';
 
   @override
-  String get defaultFeedSortType => 'Tipo de Ordenação Padrão do Feed';
+  String get defaultFeedSortType => 'Tipo de ordenação padrão do feed';
 
   @override
-  String get defaultFeedType => 'Tipo Padrão do Feed';
+  String get defaultFeedType => 'Tipo padrão do feed';
 
   @override
   String get delete => 'Excluir';
 
   @override
-  String get deleteAccount => 'Excluir Conta';
+  String get deleteAccount => 'Excluir conta';
 
   @override
   String get deleteAccountDescription =>
       'Para excluir permanentemente sua conta, você será redirecionado para o site da sua instância.\n\nTem certeza de que deseja continuar?';
 
   @override
-  String get deleteComment => 'Excluir Comentário';
+  String get deleteComment => 'Excluir comentário';
 
   @override
   String get deleteImageConfirmMessage =>
@@ -3973,21 +3974,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get deleteImageConfirmTitle => 'Excluir?';
 
   @override
-  String get deleteLocalDatabase => 'Excluir Banco de Dados Local';
+  String get deleteLocalDatabase => 'Excluir banco de dados local';
 
   @override
   String get deleteLocalDatabaseDescription =>
       'Esta ação removerá o banco de dados local e você será desconectado de todas as suas contas.\n\nTem certeza de que deseja continuar?';
 
   @override
-  String get deleteLocalPreferences => 'Excluir Preferências Locais';
+  String get deleteLocalPreferences => 'Excluir preferências locais';
 
   @override
   String get deleteLocalPreferencesDescription =>
       'Isso limpará todas as suas preferências e configurações de usuário no Thunder.\n\nDeseja continuar?';
 
   @override
-  String get deletePost => 'Excluir Postagem';
+  String get deletePost => 'Excluir postagem';
 
   @override
   String get deleteUserLabelConfirmation =>
@@ -4018,38 +4019,38 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get dimReadPosts => 'Escurecer Postagens Lidas';
+  String get dimReadPosts => 'Escurecer postagens lidas';
 
   @override
   String get disable => 'Desativar';
 
   @override
-  String get disablePushNotifications => 'Desativar Notificações Push';
+  String get disablePushNotifications => 'Desativar notificações push';
 
   @override
   String get disabled => 'Desativado';
 
   @override
-  String get discussionLanguages => 'Idiomas de Discussão';
+  String get discussionLanguages => 'Idiomas de discussão';
 
   @override
   String get discussionLanguagesTooltip =>
       'O conteúdo é filtrado para os idiomas selecionados.';
 
   @override
-  String get dismissRead => 'Descartar Lidas';
+  String get dismissRead => 'Descartar lidas';
 
   @override
-  String get displayName => 'Nome de Exibição';
+  String get displayName => 'Nome de exibição';
 
   @override
-  String get displayUserScore => 'Exibir Pontuações dos Usuários (Karma).';
+  String get displayUserScore => 'Exibir pontuações dos usuários (karma).';
 
   @override
-  String get dividerAppearance => 'Aparência do Divisor';
+  String get dividerAppearance => 'Aparência do divisor';
 
   @override
-  String get doNotShowAgain => 'Não Mostrar Novamente';
+  String get doNotShowAgain => 'Não mostrar novamente';
 
   @override
   String get doNotSupportMultipleUnifiedPushApps =>
@@ -4062,10 +4063,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get downvote => 'Dar voto negativo';
 
   @override
-  String get downvoteColor => 'Cor de Votos Negativos';
+  String get downvoteColor => 'Cor de votos negativos';
 
   @override
-  String get downvoted => 'Voto Negativo';
+  String get downvoted => 'Voto negativo';
 
   @override
   String get downvotesDisabled =>
@@ -4075,10 +4076,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get edit => 'Editar';
 
   @override
-  String get editComment => 'Editar Comentário';
+  String get editComment => 'Editar comentário';
 
   @override
-  String get editPost => 'Editar Postagem';
+  String get editPost => 'Editar postagem';
 
   @override
   String get email => 'E-mail';
@@ -4087,40 +4088,40 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get empty => 'Vazio';
 
   @override
-  String get emptyInbox => 'Caixa de Entrada Vazia';
+  String get emptyInbox => 'Caixa de entrada vazia';
 
   @override
   String get emptyUri =>
       'O link está vazio. Forneça um link dinâmico válido para continuar.';
 
   @override
-  String get enableCommentNavigation => 'Ativar Navegação nos Comentários';
+  String get enableCommentNavigation => 'Ativar navegação nos comentários';
 
   @override
   String get enableExperimentalFeatures => 'Ativar recursos experimentais';
 
   @override
-  String get enableFeedFab => 'Ativar Botão Flutuante nos Feeds';
+  String get enableFeedFab => 'Ativar botão flutuante nos feeds';
 
   @override
-  String get enableFloatingButtonOnFeeds => 'Ativar Botão Flutuante Nos Feeds';
+  String get enableFloatingButtonOnFeeds => 'Ativar botão flutuante nos feeds';
 
   @override
   String get enableFloatingButtonOnPosts =>
-      'Ativar Botão Flutuante Nas Postagens';
+      'Ativar botão flutuante nas postagens';
 
   @override
   String get enableInboxNotifications =>
-      'Ativar Notificações da Caixa de Entrada';
+      'Ativar notificações da caixa de entrada';
 
   @override
-  String get enablePostFab => 'Ativar Botão Flutuante nas Postagens';
+  String get enablePostFab => 'Ativar botão flutuante nas postagens';
 
   @override
   String get endOfComments => 'Fim dos comentários';
 
   @override
-  String get endSearch => 'Encerrar Pesquisa';
+  String get endSearch => 'Encerrar pesquisa';
 
   @override
   String errorDeletingImage(Object error) {
@@ -4174,10 +4175,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get expand => 'Expandir';
 
   @override
-  String get expandCommentPreview => 'Expandir Pré-visualização do Comentário';
+  String get expandCommentPreview => 'Expandir pré-visualização do comentário';
 
   @override
-  String get expandInformation => 'Expandir Informação';
+  String get expandInformation => 'Expandir informação';
 
   @override
   String get expandOptions => 'Expandir opções';
@@ -4186,16 +4187,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get expandPost => 'Expandir postagem';
 
   @override
-  String get expandPostPreview => 'Expandir Pré-visualização da Postagem';
+  String get expandPostPreview => 'Expandir pré-visualização da postagem';
 
   @override
-  String get expandSpoiler => 'Expandir Spoiler';
+  String get expandSpoiler => 'Expandir spoiler';
 
   @override
   String get expanded => 'Expandido';
 
   @override
-  String get experimentalFeatures => 'Recursos Experimentais';
+  String get experimentalFeatures => 'Recursos experimentais';
 
   @override
   String get experimentalFeaturesDescription =>
@@ -4205,11 +4206,11 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get exploreInstance => 'Explorar instância';
 
   @override
-  String get exportDatabase => 'Exportar Banco de Dados';
+  String get exportDatabase => 'Exportar banco de dados';
 
   @override
   String get exportDatabaseSubtitle =>
-      'O banco de dados contém informações sobre contas, favoritos, assinaturas anônimas e rótulos de usuários.';
+      'O banco de dados contém informações sobre contas, favoritos, inscrições anônimas e rótulos de usuários.';
 
   @override
   String get exportLemmyAccountSettingsDescription =>
@@ -4220,7 +4221,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'As configurações incluem todas as preferências que você configurou no Thunder.';
 
   @override
-  String get extraLarge => 'Extra Grande';
+  String get extraLarge => 'Extra grande';
 
   @override
   String failedToBlock(Object errorMessage) {
@@ -4261,7 +4262,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get favorites => 'Favoritos';
 
   @override
-  String get featuredPost => 'Postagem em Destaque';
+  String get featuredPost => 'Postagem em destaque';
 
   @override
   String get feed => 'Feed';
@@ -4270,10 +4271,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get feedBehaviourSettings => 'Feed';
 
   @override
-  String get feedSettings => 'Configurações de Feed';
+  String get feedSettings => 'Configurações de feed';
 
   @override
-  String get feedTypeAndSorts => 'Tipo e Ordenação Padrão de Feed';
+  String get feedTypeAndSorts => 'Tipo e ordenação padrão de feed';
 
   @override
   String get fetchAccountError => 'Não foi possível determinar a conta';
@@ -4287,7 +4288,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get filters => 'Filtros';
 
   @override
-  String get floatingActionButton => 'Botão de Ação Flutuante';
+  String get floatingActionButton => 'Botão de ação flutuante';
 
   @override
   String get floatingActionButtonInformation =>
@@ -4319,25 +4320,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get fullscreen => 'Tela cheia';
 
   @override
-  String get fullscreenSwipeGestures => 'Gestos de Deslizar em Tela Cheia';
+  String get fullscreenSwipeGestures => 'Gestos de deslizar em tela cheia';
 
   @override
   String get general => 'Geral';
 
   @override
-  String get generalSettings => 'Configurações Gerais';
+  String get generalSettings => 'Configurações gerais';
 
   @override
   String get gestures => 'Gestos';
 
   @override
-  String get gettingStarted => 'Como Começar';
+  String get gettingStarted => 'Como começar';
 
   @override
   String get green => 'Verde';
 
   @override
-  String get guestModeFeedSettings => 'Configurações do Feed do Modo Convidado';
+  String get guestModeFeedSettings => 'Configurações do feed do modo convidado';
 
   @override
   String get guestModeFeedSettingsLabel =>
@@ -4348,7 +4349,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Está tendo problemas com notificações?';
 
   @override
-  String get hidCommunity => 'Comunidade Oculta';
+  String get hidCommunity => 'Comunidade oculta';
 
   @override
   String get hidden => 'Oculto';
@@ -4357,37 +4358,37 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get hide => 'Ocultar';
 
   @override
-  String get hideBottomBarOnScroll => 'Ocultar Barra Inferior ao Rolar';
+  String get hideBottomBarOnScroll => 'Ocultar barra inferior ao rolar';
 
   @override
-  String get hideColor => 'Ocultar Cor';
+  String get hideColor => 'Ocultar cor';
 
   @override
-  String get hideNsfwPostsFromFeed => 'Ocultar Postagens NSFW do Feed';
+  String get hideNsfwPostsFromFeed => 'Ocultar postagens NSFW do feed';
 
   @override
-  String get hideNsfwPreviews => 'Desfocar Pré-visualizações NSFW';
+  String get hideNsfwPreviews => 'Desfocar pré-visualizações NSFW';
 
   @override
-  String get hidePassword => 'Ocultar Senha';
+  String get hidePassword => 'Ocultar senha';
 
   @override
-  String get hideThumbnails => 'Ocultar Miniaturas';
+  String get hideThumbnails => 'Ocultar miniaturas';
 
   @override
-  String get hideTopBarOnScroll => 'Ocultar Barra Superior ao Rolar';
+  String get hideTopBarOnScroll => 'Ocultar barra superior ao rolar';
 
   @override
-  String get hostInstance => 'Instância de Hospedagem';
+  String get hostInstance => 'Instância de hospedagem';
 
   @override
-  String get hot => 'Em Destaque';
+  String get hot => 'Em alta';
 
   @override
   String get image => 'Imagem';
 
   @override
-  String get imageCachingMode => 'Modo de Cache de Imagens';
+  String get imageCachingMode => 'Modo de cache de imagens';
 
   @override
   String get imageCachingModeAggressive =>
@@ -4404,36 +4405,43 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get imageCachingModeRelaxedShort => 'Relaxado';
 
   @override
-  String get imageDimensionTimeout => 'Tempo Limite de Dimensão da Imagem';
+  String get imageDimensionTimeout => 'Tempo limite de dimensão da imagem';
 
   @override
-  String get importDatabase => 'Importar Banco de Dados';
+  String get imagePeekDuration => 'Duração da pré-visualização da imagem';
+
+  @override
+  String get imagePeekDurationDescription =>
+      'Duração do toque longo antes que a pré-visualização da imagem seja acionada';
+
+  @override
+  String get importDatabase => 'Importar banco de dados';
 
   @override
   String get importExportDatabase =>
-      'Importar/Exportar o Banco de Dados do Thunder';
+      'Importar/exportar o banco de dados do Thunder';
 
   @override
   String get importExportLemmyAccountSettings =>
-      'Importar/Exportar as Configurações das Contas Lemmy';
+      'Importar/exportar as configurações das contas Lemmy';
 
   @override
   String get importExportLemmyAccountSettingsSubtitle =>
       'Inclui comunidades inscritas, listas de bloqueio e preferências da conta';
 
   @override
-  String get importExportSettings => 'Importar/Exportar Configurações';
+  String get importExportSettings => 'Importar/exportar configurações';
 
   @override
   String get importExportThunderSettings =>
-      'Importar/Exportar Configurações do Thunder';
+      'Importar/exportar configurações do Thunder';
 
   @override
   String get importLemmyAccountSettingsDescription =>
       'Importar configurações da conta Lemmy';
 
   @override
-  String get importSettings => 'Importar Configurações';
+  String get importSettings => 'Importar configurações';
 
   @override
   String inReplyTo(Object post, Object community) {
@@ -4447,22 +4455,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get inbox => 'Entrada';
 
   @override
-  String get includeCommunity => 'Incluir Comunidade';
+  String get includeCommunity => 'Incluir comunidade';
 
   @override
-  String get includeExternalLink => 'Incluir Link Externo';
+  String get includeExternalLink => 'Incluir link externo';
 
   @override
-  String get includeImage => 'Incluir Imagem';
+  String get includeImage => 'Incluir imagem';
 
   @override
-  String get includePostLink => 'Incluir Link da Postagem';
+  String get includePostLink => 'Incluir link da postagem';
 
   @override
-  String get includeText => 'Incluir Texto';
+  String get includeText => 'Incluir texto';
 
   @override
-  String get includeTitle => 'Incluir Título';
+  String get includeTitle => 'Incluir título';
 
   @override
   String get information => 'Informação';
@@ -4480,7 +4488,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get instanceActions => 'Ações da Instância';
+  String get instanceActions => 'Ações da instância';
 
   @override
   String instanceEntry(Object username) {
@@ -4493,10 +4501,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get instanceNameColor => 'Cor do Nome da Instância';
+  String get instanceNameColor => 'Cor do nome da instância';
 
   @override
-  String get instanceNameThickness => 'Espessura do Noma da Instância';
+  String get instanceNameThickness => 'Espessura do noma da instância';
 
   @override
   String get instances => 'Instâncias';
@@ -4518,7 +4526,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Filtra postagens que contenham quaisquer palavras-chave no título, corpo ou URL';
 
   @override
-  String get keywordFilters => 'Filtros de Palavras-chave';
+  String get keywordFilters => 'Filtros de palavras-chave';
 
   @override
   String get label => 'Rótulo';
@@ -4537,10 +4545,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get large => 'Grande';
 
   @override
-  String get leftLongSwipe => 'Deslize Longo para a Esquerda';
+  String get leftLongSwipe => 'Deslize longo para a esquerda';
 
   @override
-  String get leftShortSwipe => 'Deslize Curto para a Esquerda';
+  String get leftShortSwipe => 'Deslize curto para a esquerda';
 
   @override
   String get light => 'Claro';
@@ -4558,7 +4566,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get linkActions => 'Ações de Link';
+  String get linkActions => 'Ações de link';
 
   @override
   String get linkHandlingCustomTabs =>
@@ -4581,6 +4589,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get linkHandlingInAppShort => 'No aplicativo';
 
   @override
+  String get linkPostsUseCompactView => 'Mostrar postagens de link compactas';
+
+  @override
   String get linksBehaviourSettings => 'Links';
 
   @override
@@ -4600,22 +4611,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get local => 'Local';
 
   @override
-  String get localNotifications => 'Notificações Locais';
+  String get localNotifications => 'Notificações locais';
 
   @override
-  String get localOnly => 'Somente Local';
+  String get localOnly => 'Somente local';
 
   @override
-  String get localPosts => 'Postagens Locais';
+  String get localPosts => 'Postagens locais';
 
   @override
-  String get lockPost => 'Trancar Postagem';
+  String get lockPost => 'Trancar postagem';
 
   @override
   String get locked => 'Trancado';
 
   @override
-  String get lockedPost => 'Postagem Trancada';
+  String get lockedPost => 'Postagem trancada';
 
   @override
   String get logOut => 'Sair';
@@ -4650,10 +4661,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'O link que você forneceu está em um formato não compatível. Certifique-se de que seja um link válido.';
 
   @override
-  String get manageAccounts => 'Gerenciar Contas';
+  String get manageAccounts => 'Gerenciar contas';
 
   @override
-  String get manageMedia => 'Gerenciar Mídia';
+  String get manageMedia => 'Gerenciar mídia';
 
   @override
   String get markAllAsRead => 'Marcar tudo como lido';
@@ -4663,19 +4674,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get markPostAsReadOnMediaView =>
-      'Marcar Como Lido Após Visualizar Mídia';
+      'Marcar como lido após visualizar a mídia';
 
   @override
-  String get markPostAsReadOnScroll => 'Marcar Como Lido Ao Rolar';
+  String get markPostAsReadOnScroll => 'Marcar como lido ao rolar';
 
   @override
-  String get markReadColor => 'Cor da Marcação Lido/Não Lido';
+  String get markReadColor => 'Cor da marcação lido/não lido';
 
   @override
   String get matrixUser => 'Usuário Matrix';
 
   @override
   String get me => 'Eu';
+
+  @override
+  String get media => 'Mídia';
 
   @override
   String get medium => 'Médio';
@@ -4708,43 +4722,43 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get metadataFontScale => 'Escala da Fonte de Metadados';
+  String get metadataFontScale => 'Escala da fonte de metadados';
 
   @override
   String get missingErrorMessage => 'Nenhuma mensagem de erro disponível';
 
   @override
-  String get modAdd => 'Adicionar/Remover Moderadores da Instância';
+  String get modAdd => 'Adicionar/remover moderadores da instância';
 
   @override
-  String get modAddCommunity => 'Adicionar/Remover Moderados a/de Comunidades';
+  String get modAddCommunity => 'Adicionar/remover moderados de comunidades';
 
   @override
-  String get modBan => 'Banir/Desbanir Usuários da Instância';
+  String get modBan => 'Banir/desbanir usuários da instância';
 
   @override
-  String get modBanFromCommunity => 'Banir/Desbanir Usuários das Comunidades';
+  String get modBanFromCommunity => 'Banir/desbanir usuários das comunidades';
 
   @override
-  String get modFeaturePost => 'Marcar Postagens Em Destaque/Não Em Destaque';
+  String get modFeaturePost => 'Marcar postagens em destaque/não em destaque';
 
   @override
-  String get modLockPost => 'Trancar/Destrancar Postagens';
+  String get modLockPost => 'Trancar/destrancar postagens';
 
   @override
-  String get modRemoveComment => 'Remover/Restaurar Comentários';
+  String get modRemoveComment => 'Remover/restaurar comentários';
 
   @override
-  String get modRemoveCommunity => 'Remover/Restaurar Comunidades';
+  String get modRemoveCommunity => 'Remover/restaurar comunidades';
 
   @override
-  String get modRemovePost => 'Remover/Restaurar Postagens';
+  String get modRemovePost => 'Remover/restaurar postagens';
 
   @override
-  String get modTransferCommunity => 'Transferência de Comunidades';
+  String get modTransferCommunity => 'Transferência de comunidades';
 
   @override
-  String get moderatedCommunities => 'Comunidades Moderadas';
+  String get moderatedCommunities => 'Comunidades moderadas';
 
   @override
   String get moderates => 'Moderando';
@@ -4762,13 +4776,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get moderatorActions => 'Ações de Moderador';
+  String get moderatorActions => 'Ações de moderador';
 
   @override
-  String get modlog => 'Registro do Moderador';
+  String get modlog => 'Registro da moderação';
 
   @override
-  String get mostComments => 'Mais Comentários';
+  String get mostComments => 'Mais comentários';
 
   @override
   String get mustBeLoggedIn => 'Você precisa estar logado';
@@ -4785,10 +4799,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get navbarDoubleTapGestures =>
-      'Gestos de Toque Duplo na Barra de Navegação';
+      'Gestos de toque duplo na barra de navegação';
 
   @override
-  String get navbarSwipeGestures => 'Gestos de Deslizar na Barra de Navegação';
+  String get navbarSwipeGestures => 'Gestos de deslizar na barra de navegação';
 
   @override
   String get navigateDown => 'Próximo comentário';
@@ -4801,20 +4815,20 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get nestedCommentIndicatorColor =>
-      'Cor do Indicador de Comentário Aninhado';
+      'Cor do indicador de comentário aninhado';
 
   @override
   String get nestedCommentIndicatorStyle =>
-      'Estilo do Indicador de Comentário Aninhado';
+      'Estilo do indicador de comentário aninhado';
 
   @override
   String get never => 'Nunca';
 
   @override
-  String get newComments => 'Novos Comentários';
+  String get newComments => 'Novos comentários';
 
   @override
-  String get newPost => 'Nova Postagem';
+  String get newPost => 'Nova postagem';
 
   @override
   String get new_ => 'Novo';
@@ -4894,7 +4908,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get noResultsFound => 'Nenhum resultado encontrado.';
 
   @override
-  String get noSubscriptions => 'Nenhuma Assinatura';
+  String get noSubscriptions => 'Sem inscrições';
 
   @override
   String get noUserBlocks => 'Nenhum usuário bloqueado.';
@@ -4987,28 +5001,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get openByDefault => 'Abrir por padrão';
 
   @override
-  String get openInBrowser => 'Abrir no Navegador';
+  String get openInBrowser => 'Abrir no navegador';
 
   @override
-  String get openInstance => 'Abrir Instância';
+  String get openInstance => 'Abrir instância';
 
   @override
-  String get openLinksInExternalBrowser => 'Abrir Links no Navegador Externo';
+  String get openLinksInExternalBrowser => 'Abrir links no navegador externo';
 
   @override
-  String get openLinksInReaderMode => 'Abrir Links no Modo Leitor';
+  String get openLinksInReaderMode => 'Abrir links no modo leitor';
 
   @override
-  String get openSettings => 'Abrir Configurações';
+  String get openSettings => 'Abrir configurações';
 
   @override
   String get orange => 'Laranja';
 
   @override
-  String get originalPoster => 'Postador Original';
+  String get originalPoster => 'Postador original';
 
   @override
-  String get overview => 'Visão Geral';
+  String get overview => 'Visão geral';
 
   @override
   String get password => 'Senha';
@@ -5030,16 +5044,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'O Thunder requer algumas permissões para salvar esta imagem, que foram negadas.';
 
   @override
-  String get pinPostToCommunity => 'Fixar Postagem na Comunidade';
+  String get pinPostToCommunity => 'Fixar postagem na comunidade';
 
   @override
-  String get pinToCommunity => 'Fixar na Comunidade';
+  String get pinToCommunity => 'Fixar na comunidade';
 
   @override
   String get pinned => 'Fixado';
 
   @override
   String get pinnedPostToCommunity => 'Postagem fixada na comunidade';
+
+  @override
+  String get pinnedPostsUseCompactView => 'Mostrar postagens fixadas compactas';
 
   @override
   String get placeholderText =>
@@ -5049,32 +5066,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get post => 'Postagem';
 
   @override
-  String get postActions => 'Ações de Postagem';
+  String get postActions => 'Ações de postagem';
 
   @override
   String get postBehaviourSettings => 'Postagens';
 
   @override
-  String get postBody => 'Corpo de Postagem';
+  String get postBody => 'Corpo de postagem';
 
   @override
-  String get postBodySettings => 'Configurações do Corpo de Postagem';
+  String get postBodySettings => 'Configurações do corpo de postagem';
 
   @override
   String get postBodySettingsDescription =>
       'Estas configurações afetam a exibição do corpo da postagem';
 
   @override
-  String get postBodyShowCommunityInstance => 'Exibir Instância da Comunidade';
+  String get postBodyShowCommunityInstance => 'Exibir instância da comunidade';
 
   @override
-  String get postBodyShowUserInstance => 'Mostrar Instância do Usuário';
+  String get postBodyShowUserInstance => 'Exibir instância do usuário';
 
   @override
-  String get postBodyViewType => 'Tipo da Visualização do Corpo da Postagem';
+  String get postBodyViewType => 'Tipo da visualização do corpo da postagem';
 
   @override
-  String get postContentFontScale => 'Escala da Fonte de Conteúdo de Postagens';
+  String get postContentFontScale => 'Escala da fonte de conteúdo de postagens';
 
   @override
   String get postCreatedSuccessfully => 'Postagem criada com sucesso!';
@@ -5097,10 +5114,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get postSavedAsDraft => 'Postagem salva como rascunho';
 
   @override
-  String get postShowUserInstance => 'Mostrar Instância do Usuário';
+  String get postShowUserInstance => 'Exibir instância do usuário';
 
   @override
-  String get postSwipeActions => 'Ações de Deslizar na Postagem';
+  String get postSwipeActions => 'Ações de deslizar na postagem';
 
   @override
   String get postSwipeGesturesHint =>
@@ -5110,10 +5127,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get postTitle => 'Título';
 
   @override
-  String get postTitleFontScale => 'Escala da Fonte de Título de Postagens';
+  String get postTitleFontScale => 'Escala da fonte de título de postagens';
 
   @override
-  String get postTogglePreview => 'Alternar Pré-visualização';
+  String get postTogglePreview => 'Alternar pré-visualização';
 
   @override
   String get postURL => 'URL';
@@ -5122,7 +5139,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get postUploadImageError => 'Não foi possível fazer upload da imagem';
 
   @override
-  String get postViewType => 'Tipo da Visualização de Postagens';
+  String get postViewType => 'Tipo da visualização de postagens';
 
   @override
   String get posts => 'Postagens';
@@ -5136,7 +5153,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get profileBio => 'Biografia no Perfil';
+  String get profileBio => 'Biografia no perfil';
 
   @override
   String get profiles => 'Perfis';
@@ -5145,32 +5162,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get public => 'Público';
 
   @override
-  String get pureBlack => 'Preto Puro';
+  String get pureBlack => 'Preto puro';
 
   @override
-  String get purgedComment => 'Comentário Eliminado';
+  String get purgedComment => 'Comentário eliminado';
 
   @override
-  String get purgedCommunity => 'Comunidade Eliminada';
+  String get purgedCommunity => 'Comunidade eliminada';
 
   @override
-  String get purgedPerson => 'Pessoa Eliminada';
+  String get purgedPerson => 'Pessoa eliminada';
 
   @override
-  String get purgedPost => 'Postagem Eliminada';
+  String get purgedPost => 'Postagem eliminada';
 
   @override
   String get purple => 'Roxo';
 
   @override
-  String get pushNotification => 'Notificações Push';
+  String get pushNotification => 'Notificações push';
 
   @override
   String get pushNotificationDescription =>
       'Se ativado, o Thunder enviará seu(s) token(s) JWT ao servidor para verificar se há novas notificações. \n\n **OBSERVAÇÃO:** Isso só entrará em vigor na próxima vez que o aplicativo for iniciado.';
 
   @override
-  String get pushNotificationServer => 'Servidor de Notificações Push';
+  String get pushNotificationServer => 'Servidor de notificações push';
 
   @override
   String get pushNotificationServerDescription =>
@@ -5187,7 +5204,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get read => 'Lido';
 
   @override
-  String get readAll => 'Ler Tudo';
+  String get readAll => 'Ler tudo';
 
   @override
   String get readerMode => 'Modo leitor';
@@ -5199,7 +5216,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get red => 'Vermelho';
 
   @override
-  String get reduceAnimations => 'Reduzir Animações';
+  String get reduceAnimations => 'Reduzir animações';
 
   @override
   String get reducesAnimations => 'Reduze as animações usadas no Thunder';
@@ -5208,23 +5225,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get refresh => 'Atualizar';
 
   @override
-  String get refreshContent => 'Atualizar Conteúdo';
+  String get refreshContent => 'Atualizar conteúdo';
 
   @override
-  String get removalReason => 'Motivo da Remoção';
+  String get removalReason => 'Motivo da remoção';
 
   @override
   String get remove => 'Remover';
 
   @override
-  String get removeAccount => 'Remover Conta';
+  String get removeAccount => 'Remover conta';
 
   @override
   String get removeAsCommunityModerator =>
-      'Remover como Moderador de Comunidade';
+      'Remover como moderador de comunidade';
 
   @override
-  String get removeComment => 'Remover Comentário';
+  String get removeComment => 'Remover comentário';
 
   @override
   String get removeFromFavorites => 'Remover dos favoritos';
@@ -5238,10 +5255,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get removeKeywordFilter => 'Remover Palavra-chave';
+  String get removeKeywordFilter => 'Remover palavra-chave';
 
   @override
-  String get removePost => 'Remover Postagem';
+  String get removePost => 'Remover postagem';
 
   @override
   String get removeUserData => 'Remover dados do usuário';
@@ -5250,23 +5267,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get removed => 'Removido';
 
   @override
-  String get removedComment => 'Comentário Removido';
+  String get removedComment => 'Comentário removido';
 
   @override
-  String get removedCommunity => 'Comunidade Removida';
+  String get removedCommunity => 'Comunidade removida';
 
   @override
   String get removedCommunityFromSubscriptions =>
       'Cancelou a inscrição da comunidade';
 
   @override
-  String get removedInstanceMod => 'Moderador da Instância Removido';
+  String get removedInstanceMod => 'Moderador da instância removido';
 
   @override
-  String get removedModFromCommunity => 'Moderador Removido da Comunidade';
+  String get removedModFromCommunity => 'Moderador removido da comunidade';
 
   @override
-  String get removedPost => 'Postagem Removida';
+  String get removedPost => 'Postagem removida';
 
   @override
   String removedUserAsCommunityModerator(Object username) {
@@ -5289,14 +5306,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get replyColor => 'Cor de Resposta';
+  String get replyColor => 'Cor de resposta';
 
   @override
   String get replyNotSupported =>
       'Atualmente, ainda não é possível responder a partir desta visualização';
 
   @override
-  String get replyToPost => 'Responder à Postagem';
+  String get replyToPost => 'Responder à postagem';
 
   @override
   String replyingTo(Object author) {
@@ -5316,16 +5333,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get reportComment => 'Relatar Comentário';
+  String get reportComment => 'Denunciar comentário';
 
   @override
-  String get reportPost => 'Relatar Postagem';
+  String get reportPost => 'Denunciar postagem';
 
   @override
-  String get reportedComment => 'Relatar comentário';
+  String get reportedComment => 'Comentário denunciado';
 
   @override
-  String get reportedPost => 'Relatar postagem';
+  String get reportedPost => 'Postagem denunciada';
 
   @override
   String get reporter => 'Relator:';
@@ -5344,19 +5361,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get resetPostPreferences => 'Reiniciar as preferências de postagens';
 
   @override
-  String get resetPreferences => 'Reiniciar Preferências';
+  String get resetPreferences => 'Reiniciar preferências';
 
   @override
-  String get resetPreferencesAndData => 'Reiniciar Preferências e Dados';
+  String get resetPreferencesAndData => 'Reiniciar preferências e dados';
 
   @override
   String get restore => 'Restaurar';
 
   @override
-  String get restoreComment => 'Restaurar Comentário';
+  String get restoreComment => 'Restaurar comentário';
 
   @override
-  String get restorePost => 'Restaurar Postagem';
+  String get restorePost => 'Restaurar postagem';
 
   @override
   String get restoredComment => 'Comentário restaurado';
@@ -5365,10 +5382,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get restoredCommentFromDraft => 'Comentário restaurado do rascunho';
 
   @override
-  String get restoredCommunity => 'Comunidade Restaurada';
+  String get restoredCommunity => 'Comunidade restaurada';
 
   @override
-  String get restoredPost => 'Postagem Restaurada';
+  String get restoredPost => 'Postagem restaurada';
 
   @override
   String get restoredPostFromDraft => 'Postagem restaurada do rascunho';
@@ -5377,19 +5394,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get retry => 'Retentar';
 
   @override
-  String get rightLongSwipe => 'Deslize Longo para a Direita';
+  String get rightLongSwipe => 'Deslize longo para a direita';
 
   @override
-  String get rightShortSwipe => 'Deslize Curto para a Direita';
+  String get rightShortSwipe => 'Deslize curto para a direita';
 
   @override
   String get save => 'Salvar';
 
   @override
-  String get saveColor => 'Salvar Cor';
+  String get saveColor => 'Salvar cor';
 
   @override
-  String get saveSettings => 'Salvar Configurações';
+  String get saveSettings => 'Salvar configurações';
 
   @override
   String get saved => 'Salvo';
@@ -5399,10 +5416,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get scrapeMissingLinkPreviews =>
-      'Obter Pré-visualizações de Links Ausentes';
+      'Obter pré-visualizações de links ausentes';
 
   @override
-  String get screenReaderProfile => 'Perfil do Leitor de Tela';
+  String get screenReaderProfile => 'Perfil do leitor de tela';
 
   @override
   String get screenReaderProfileDescription =>
@@ -5418,7 +5435,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get searchByUrl => 'Pesquisar por URL';
 
   @override
-  String get searchComments => 'Pesquisar Comentários';
+  String get searchComments => 'Pesquisar comentários';
 
   @override
   String searchCommentsFederatedWith(Object instance) {
@@ -5441,7 +5458,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get searchPostSearchType => 'Selecionar Tipo de Pesquisa de Postagens';
+  String get searchPostSearchType => 'Selecionar tipo de pesquisa de postagens';
 
   @override
   String searchPostsFederatedWith(Object instance) {
@@ -5471,16 +5488,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get selectCommunity => 'Selecione uma comunidade (obrigatório)';
 
   @override
-  String get selectFeedType => 'Selecionar Tipo de Feed';
+  String get selectFeedType => 'Selecionar tipo de feed';
 
   @override
-  String get selectLanguage => 'Selecionar Idioma';
+  String get selectLanguage => 'Selecionar idioma';
 
   @override
-  String get selectSearchType => 'Selecionar Tipo de Pesquisa';
+  String get selectSearchType => 'Selecionar tipo de pesquisa';
 
   @override
-  String get selectText => 'Selecionar Texto';
+  String get selectText => 'Selecionar texto';
 
   @override
   String get sendBackgroundTestLocalNotification =>
@@ -5511,7 +5528,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get setAction => 'Definir Ação';
+  String get setAction => 'Definir ação';
 
   @override
   String get setLongPress => 'Definir como ação de toque longo';
@@ -5553,7 +5570,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'As configurações não foram importadas com sucesso ou a operação foi cancelada.';
 
   @override
-  String get settingsPage => 'Página das Configurações';
+  String get settingsPage => 'Página das configurações';
 
   @override
   String get settingsPageAbout => 'Sobre';
@@ -5565,13 +5582,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsPageAccount => 'Conta';
 
   @override
-  String get settingsPageAccountBlocks => 'Listas de Bloqueios';
+  String get settingsPageAccountBlocks => 'Listas de bloqueios';
 
   @override
-  String get settingsPageAccountLanguages => 'Idiomas de Discussão';
+  String get settingsPageAccountLanguages => 'Idiomas de discussão';
 
   @override
-  String get settingsPageAccountMedia => 'Gerenciar Mídia';
+  String get settingsPageAccountMedia => 'Gerenciar mídia';
 
   @override
   String get settingsPageAppearance => 'Aparência';
@@ -5592,7 +5609,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsPageFilters => 'Filtros';
 
   @override
-  String get settingsPageFloatingActionButton => 'Botão de Ação Flutuante';
+  String get settingsPageFloatingActionButton => 'Botão de ação flutuante';
 
   @override
   String get settingsPageGeneral => 'Geral';
@@ -5601,7 +5618,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsPageGestures => 'Gestos';
 
   @override
-  String get settingsPageUserLabels => 'Rótulos de Usuário';
+  String get settingsPageUserLabels => 'Rótulos de usuário';
 
   @override
   String get settingsPageVideo => 'Vídeo';
@@ -5610,97 +5627,97 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get share => 'Compartilhar';
 
   @override
-  String get shareComment => 'Compartilhar Link do Comentário';
+  String get shareComment => 'Compartilhar link do comentário';
 
   @override
   String get shareCommentLocal =>
-      'Compartilhar Link do Comentário (Minha Instância)';
+      'Compartilhar link do comentário (minha instância)';
 
   @override
-  String get shareCommunity => 'Compartilhar Comunidade';
+  String get shareCommunity => 'Compartilhar comunidade';
 
   @override
-  String get shareCommunityLink => 'Compartilhar Link da Comunidade';
+  String get shareCommunityLink => 'Compartilhar link da comunidade';
 
   @override
   String get shareCommunityLinkLocal =>
-      'Compartilhar Link da Comunidade (Minha Instância)';
+      'Compartilhar link da comunidade (minha instância)';
 
   @override
-  String get shareImage => 'Compartilhar Imagem';
+  String get shareImage => 'Compartilhar imagem';
 
   @override
-  String get shareLemmyLink => 'Compartilhar Link do Lemmy';
+  String get shareLemmyLink => 'Compartilhar link do Lemmy';
 
   @override
-  String get shareLink => 'Compartilhar Link Externo';
+  String get shareLink => 'Compartilhar link externo';
 
   @override
-  String get shareMedia => 'Compartilhar Mídia';
+  String get shareMedia => 'Compartilhar mídia';
 
   @override
-  String get shareMediaLink => 'Compartilhar Link da Mídia';
+  String get shareMediaLink => 'Compartilhar link da mídia';
 
   @override
-  String get shareOriginalLink => 'Compartilhar Link Original';
+  String get shareOriginalLink => 'Compartilhar link original';
 
   @override
-  String get sharePost => 'Compartilhar Link da Postagem';
+  String get sharePost => 'Compartilhar link da postagem';
 
   @override
   String get sharePostLocal =>
-      'Compartilhar Link da Postagem (Minha Instância)';
+      'Compartilhar link da postagem (minha instância)';
 
   @override
-  String get shareThumbnail => 'Compartilhar Miniatura';
+  String get shareThumbnail => 'Compartilhar miniatura';
 
   @override
-  String get shareThumbnailAsImage => 'Compartilhar Miniatura Como Imagem';
+  String get shareThumbnailAsImage => 'Compartilhar miniatura como imagem';
 
   @override
-  String get shareUser => 'Compartilhar Usuário';
+  String get shareUser => 'Compartilhar usuário';
 
   @override
-  String get shareUserLink => 'Compartilhar Link do Usuário';
+  String get shareUserLink => 'Compartilhar link do usuário';
 
   @override
   String get shareUserLinkLocal =>
-      'Compartilhar Link do Usuário (Minha Instância)';
+      'Compartilhar link do usuário (minha instância)';
 
   @override
   String get showAll => 'Mostrar tudo';
 
   @override
-  String get showBotAccounts => 'Mostrar Contas de Robô';
+  String get showBotAccounts => 'Mostrar contas de robô';
 
   @override
   String get showCommentActionButtons =>
-      'Mostrar Botões de Ações de Comentários';
+      'Mostrar botões de ações de comentários';
 
   @override
   String get showCommunityDisplayNames =>
-      'Mostrar Nomes de Exibição de Comunidades';
+      'Mostrar nomes de exibição de comunidades';
 
   @override
-  String get showCrossPosts => 'Mostrar Postagens Cruzadas';
+  String get showCrossPosts => 'Mostrar postagens cruzadas';
 
   @override
-  String get showEdgeToEdgeImages => 'Mostrar Imagens de Borda a Borda';
+  String get showEdgeToEdgeImages => 'Mostrar imagens de borda a borda';
 
   @override
   String get showExpandedTaglines => 'Mostrar linhas de etiquetas expandidas';
 
   @override
-  String get showFullDate => 'Mostrar Data Completa';
+  String get showFullDate => 'Mostrar data completa';
 
   @override
-  String get showFullDateDescription => 'Mostrar Data Completa nas Postagens';
+  String get showFullDateDescription => 'Mostrar data completa nas postagens';
 
   @override
-  String get showFullHeightImages => 'Mostrar Imagens em Altura Total';
+  String get showFullHeightImages => 'Mostrar imagens em altura total';
 
   @override
-  String get showHiddenPosts => 'Mostrar Postagens Ocultas';
+  String get showHiddenPosts => 'Mostrar postagens ocultas';
 
   @override
   String get showInAppUpdateNotifications =>
@@ -5713,83 +5730,86 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get showMore => 'Mostrar mais';
 
   @override
-  String get showNavigationLabels => 'Mostrar Rótulos de Navegação';
+  String get showNavigationLabels => 'Mostrar rótulos de navegação';
 
   @override
   String get showNavigationLabelsDescription =>
       'Definir se os rótulos devem ser exibidos abaixo dos botões de navegação inferiores';
 
   @override
-  String get showNsfwContent => 'Mostrar Conteúdo NSFW';
+  String get showNsfwContent => 'Mostrar conteúdo NSFW';
 
   @override
   String get showOwnContent => 'Mostrar conteúdo próprio';
 
   @override
-  String get showPassword => 'Mostrar Senha';
+  String get showPassword => 'Mostrar senha';
 
   @override
-  String get showPostAuthor => 'Mostrar Autor de Postagem';
+  String get showPostAuthor => 'Mostrar autor de postagem';
 
   @override
   String get showPostAuthorSubtitle =>
       'O autor da postagem é sempre exibido nos feeds da comunidade';
 
   @override
-  String get showPostCommunityIcons => 'Mostrar Ícones das Comunidades';
+  String get showPostCommunityFirst => 'Mostrar comunidade e autor primeiro';
 
   @override
-  String get showPostSaveAction => 'Mostrar Botão Salvar';
+  String get showPostCommunityIcons => 'Mostrar ícones das comunidades';
 
   @override
-  String get showPostTextContentPreview => 'Mostrar Pré-visualização de Texto';
+  String get showPostSaveAction => 'Mostrar botão salvar';
 
   @override
-  String get showPostTitleFirst => 'Mostrar Título Primeiro';
+  String get showPostTextContentPreview => 'Mostrar pré-visualização de texto';
 
   @override
-  String get showPostVoteActions => 'Mostrar Botões para Votar';
+  String get showPostTitleFirst => 'Mostrar título primeiro';
 
   @override
-  String get showReadPosts => 'Mostrar Postagens Lidas';
+  String get showPostVoteActions => 'Mostrar botões para votar';
+
+  @override
+  String get showReadPosts => 'Mostrar postagens lidas';
 
   @override
   String get showSavedContent => 'Mostrar conteúdo salvo';
 
   @override
-  String get showScoreCounters => 'Exibir Pontuações dos Usuários';
+  String get showScoreCounters => 'Exibir pontuações dos usuários';
 
   @override
-  String get showScores => 'Exibir Pontuações das Postagens/dos Comentários';
+  String get showScores => 'Exibir pontuações das postagens/dos comentários';
 
   @override
-  String get showTextPostIndicator => 'Mostrar Indicador de Postagem de Texto';
+  String get showTextPostIndicator => 'Mostrar indicador de postagem de texto';
 
   @override
-  String get showThumbnailPreviewOnRight => 'Mostrar Miniaturas à Direita';
+  String get showThumbnailPreviewOnRight => 'Mostrar miniaturas à direita';
 
   @override
   String get showUnreadOnly => 'Mostrar somente não lidas';
 
   @override
   String get showUpdateChangelogs =>
-      'Mostrar Registros de Alterações para Atualizações';
+      'Mostrar registros de alterações para atualizações';
 
   @override
   String get showUpdateChangelogsSubtitle =>
       'Exibir uma lista de alterações após uma atualização';
 
   @override
-  String get showUserAvatar => 'Mostrar Avatar de Usuário';
+  String get showUserAvatar => 'Mostrar avatar de usuário';
 
   @override
-  String get showUserDisplayNames => 'Mostrar Nomes de Exibição dos Usuários';
+  String get showUserDisplayNames => 'Mostrar nomes de exibição dos usuários';
 
   @override
-  String get showUserInstance => 'Mostrar Instância de Usuário';
+  String get showUserInstance => 'Mostrar instância de usuário';
 
   @override
-  String get sidebar => 'Barra Lateral';
+  String get sidebar => 'Barra lateral';
 
   @override
   String get sidebarBottomNavDoubleTapDescription =>
@@ -5806,13 +5826,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get somethingWentWrong => 'Opa, algo deu errado!';
 
   @override
-  String get sortBy => 'Ordenar Por';
+  String get sortBy => 'Ordenar por';
 
   @override
-  String get sortByTop => 'Ordenar por Melhores';
+  String get sortByTop => 'Ordenar por melhores';
 
   @override
-  String get sortOptions => 'Opções de Ordenação';
+  String get sortOptions => 'Opções de ordenação';
 
   @override
   String get spoiler => 'Spoiler';
@@ -5830,19 +5850,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get submit => 'Enviar';
 
   @override
-  String get subscribe => 'Assinar';
+  String get subscribe => 'Inscrever-se';
 
   @override
-  String get subscribeToCommunity => 'Assinar a Comunidade';
+  String get subscribeToCommunity => 'Inscrever-se na comunidade';
 
   @override
-  String get subscribed => 'Assinado';
+  String get subscribed => 'Inscrito';
 
   @override
-  String get subscriptionRequestSent => 'Pedido de assinatura enviado';
+  String get subscriptionRequestSent => 'Pedido de inscrição enviado';
 
   @override
-  String get subscriptions => 'Assinaturas';
+  String get subscriptions => 'Inscrições';
 
   @override
   String successfullyBannedUser(Object username) {
@@ -5895,20 +5915,20 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get system => 'Sistema';
 
   @override
-  String get systemDarkMode => 'Preto Puro';
+  String get systemDarkMode => 'Preto puro';
 
   @override
   String get systemDarkModeDescription =>
       'Ativar tema preto puro para o modo escuro';
 
   @override
-  String get tabletMode => 'Modo Tablet (visualização em 2 colunas)';
+  String get tabletMode => 'Modo tablet (visualização em 2 colunas)';
 
   @override
   String get tapToExit => 'Pressione voltar novamente para sair';
 
   @override
-  String get tappableAuthorCommunity => 'Autores & Comunidades Tocáveis';
+  String get tappableAuthorCommunity => 'Autores e comunidades tocáveis';
 
   @override
   String get teal => 'Azul-petróleo';
@@ -5925,22 +5945,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get text => 'Texto';
 
   @override
-  String get textActions => 'Ações de Texto';
+  String get textActions => 'Ações de texto';
 
   @override
   String get theme => 'Tema';
 
   @override
-  String get themeAccentColor => 'Cores de Destaque';
+  String get themeAccentColor => 'Cores de destaque';
 
   @override
-  String get themePrimary => 'Tema Primário';
+  String get themePrimary => 'Tema primário';
 
   @override
-  String get themeSecondary => 'Tema Secundário';
+  String get themeSecondary => 'Tema secundário';
 
   @override
-  String get themeTertiary => 'Tema Terciário';
+  String get themeTertiary => 'Tema terciário';
 
   @override
   String get theming => 'Temas';
@@ -5949,10 +5969,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get thickness => 'Espessura';
 
   @override
-  String get thisAccount => 'Esta Conta';
+  String get thisAccount => 'Esta conta';
 
   @override
-  String get thumbnailUrl => 'URL da Miniatura';
+  String get thumbnailUrl => 'URL da miniatura';
 
   @override
   String thunderHasBeenUpdated(Object version) {
@@ -5961,7 +5981,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String thunderNotificationServer(Object server) {
-    return 'Servidor de Notificações do Thunder: $server';
+    return 'Servidor de notificações do Thunder: $server';
   }
 
   @override
@@ -5989,7 +6009,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Erro: Tempo limite ao tentar votar na postagem.';
 
   @override
-  String get toggelRead => 'Alternar Status de Leitura';
+  String get toggelRead => 'Alternar status de leitura';
 
   @override
   String get top => 'Melhores';
@@ -5998,57 +6018,57 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get topAll => 'Melhores te todos os tempos';
 
   @override
-  String get topDay => 'Melhores Hoje';
+  String get topDay => 'Melhores hoje';
 
   @override
-  String get topHour => 'Melhores na Última Hora';
+  String get topHour => 'Melhores na última hora';
 
   @override
-  String get topMonth => 'Melhores Mês';
+  String get topMonth => 'Melhores mês';
 
   @override
-  String get topNineMonths => 'Melhores nos Últimos 9 Meses';
+  String get topNineMonths => 'Melhores nos últimos 9 meses';
 
   @override
-  String get topSixHour => 'Melhores nas Últimas 6 Horas';
+  String get topSixHour => 'Melhores nas últimas 6 horas';
 
   @override
-  String get topSixMonths => 'Melhores nos Últimos 6 Meses';
+  String get topSixMonths => 'Melhores nos últimos 6 meses';
 
   @override
-  String get topThreeMonths => 'Melhores nos Últimos 3 Meses';
+  String get topThreeMonths => 'Melhores nos últimos 3 meses';
 
   @override
-  String get topTwelveHour => 'Melhores nas Últimas 12 Horas';
+  String get topTwelveHour => 'Melhores nas últimas 12 horas';
 
   @override
-  String get topWeek => 'Melhores Semana';
+  String get topWeek => 'Melhores semana';
 
   @override
-  String get topYear => 'Melhores Ano';
+  String get topYear => 'Melhores ano';
 
   @override
   String totalComments(Object x) {
-    return '$x Comentários';
+    return '$x comentários';
   }
 
   @override
   String totalPosts(Object x) {
-    return '$x Postagens';
+    return '$x postagens';
   }
 
   @override
   String get totp => 'TOTP (opcional)';
 
   @override
-  String get transferredModToCommunity => 'Comunidade Transferida';
+  String get transferredModToCommunity => 'Comunidade transferida';
 
   @override
   String get translationsMayNotBeComplete =>
       'Observe que as traduções podem não estar completas';
 
   @override
-  String get trendingCommunities => 'Comunidades em Destaque';
+  String get trendingCommunities => 'Comunidades em destaque';
 
   @override
   String get trySearchingFor => 'Tente pesquisar por…';
@@ -6120,55 +6140,55 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get unbanFromCommunity => 'Desbanir da Comunidade';
+  String get unbanFromCommunity => 'Desbanir da comunidade';
 
   @override
-  String get unbannedUser => 'Usuário Desbanido';
+  String get unbannedUser => 'Usuário desbanido';
 
   @override
   String unbannedUserFromCommunity(Object username) {
-    return '$username desbanido(a) da Comunidade';
+    return '$username desbanido(a) da comunidade';
   }
 
   @override
   String get unblock => 'Desbloquear';
 
   @override
-  String get unblockCommunity => 'Desbloquear Comunidade';
+  String get unblockCommunity => 'Desbloquear comunidade';
 
   @override
-  String get unblockCommunityInstance => 'Desbloquear Instância da Comunidade';
+  String get unblockCommunityInstance => 'Desbloquear instância da comunidade';
 
   @override
-  String get unblockInstance => 'Desbloquear Instância';
+  String get unblockInstance => 'Desbloquear instância';
 
   @override
-  String get unblockUser => 'Desbloquear Usuário';
+  String get unblockUser => 'Desbloquear usuário';
 
   @override
-  String get unblockUserInstance => 'Desbloquear Instância do Usuário';
+  String get unblockUserInstance => 'Desbloquear instância do usuário';
 
   @override
-  String get understandEnable => 'Eu Entendo, Ative';
+  String get understandEnable => 'Eu entendo, ative';
 
   @override
-  String get unexpectedError => 'Erro Inesperado';
+  String get unexpectedError => 'Erro inesperado';
 
   @override
   String get unfavorite => 'Desfavoritar';
 
   @override
-  String get unfeaturedPost => 'Postagem Marcada como Não Em Destaque';
+  String get unfeaturedPost => 'Postagem marcada como não em destaque';
 
   @override
-  String get unhidCommunity => 'Comunidade Desocultada';
+  String get unhidCommunity => 'Comunidade desocultada';
 
   @override
   String get unhide => 'Desocultar';
 
   @override
   String unifiedPushDistributorApp(Object app, Object count) {
-    return 'Aplicativo Distribuidor UnifiedPush: $app ($count disponíveis)';
+    return 'Aplicativo distribuidor UnifiedPush: $app ($count disponíveis)';
   }
 
   @override
@@ -6183,16 +6203,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get unifiedpush => 'UnifiedPush';
 
   @override
-  String get unlockPost => 'Destrancar Postagem';
+  String get unlockPost => 'Destrancar postagem';
 
   @override
-  String get unlockedPost => 'Postagem Destrancada';
+  String get unlockedPost => 'Postagem destrancada';
 
   @override
-  String get unpinFromCommunity => 'Desfixar da Comunidade';
+  String get unpinFromCommunity => 'Desfixar da comunidade';
 
   @override
-  String get unpinPostFromCommunity => 'Desfixar Postagem da Comunidade';
+  String get unpinPostFromCommunity => 'Desfixar postagem da comunidade';
 
   @override
   String get unpinnedPostFromCommunity => 'Postagem desfixada da comunidade';
@@ -6204,16 +6224,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get unresolved => 'Não resolvido';
 
   @override
-  String get unsubscribe => 'Cancelar assinatura';
+  String get unsubscribe => 'Cancelar inscrição';
 
   @override
-  String get unsubscribeFromCommunity => 'Cancelar assinatura da Comunidade';
+  String get unsubscribeFromCommunity => 'Cancelar inscrição da comunidade';
 
   @override
-  String get unsubscribePending => 'Cancelar assinatura (assinatura pendente)';
+  String get unsubscribePending => 'Cancelar inscrição (inscrição pendente)';
 
   @override
-  String get unsubscribed => 'Assinatura cancelada';
+  String get unsubscribed => 'Inscrição cancelada';
 
   @override
   String updateReleased(Object version) {
@@ -6235,7 +6255,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get upvoteColor => 'Cor de voto positivo';
 
   @override
-  String get upvoted => 'Voto Positivo';
+  String get upvoted => 'Voto positivo';
 
   @override
   String get uriNotSupported => 'Este tipo de link não é suportado no momento.';
@@ -6245,10 +6265,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get useAdvancedShareSheet =>
-      'Usar o Painel de Compartilhamento Avançado';
+      'Usar o painel de compartilhamento avançado';
 
   @override
-  String get useApplePushNotifications => 'Usar Notificações APN';
+  String get useApplePushNotifications => 'Usar notificações APN';
 
   @override
   String get useApplePushNotificationsDescription =>
@@ -6259,21 +6279,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Ative para postagens pequenas, desative para grandes.';
 
   @override
-  String get useLocalNotifications => 'Usar Notificações Locais (Experimental)';
+  String get useLocalNotifications => 'Usar notificações locais (experimental)';
 
   @override
   String get useLocalNotificationsDescription =>
       'Verifica periodicamente se há notificações em segundo plano';
 
   @override
-  String get useMaterialYouTheme => 'Usar Tema Material You';
+  String get useMaterialYouTheme => 'Usar tema Material You';
 
   @override
   String get useMaterialYouThemeDescription =>
       'Substitui o tema personalizado selecionado';
 
   @override
-  String get useProfilePictureForDrawer => 'Usar Foto de Perfil para Gaveta';
+  String get useProfilePictureForDrawer => 'Usar foto de perfil para gaveta';
 
   @override
   String get useProfilePictureForDrawerSubtitle =>
@@ -6285,7 +6305,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get useUnifiedPushNotifications => 'Usar Notificações UnifiedPush';
+  String get useUnifiedPushNotifications => 'Usar notificações UnifiedPush';
 
   @override
   String get useUnifiedPushNotificationsDescription =>
@@ -6295,7 +6315,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get user => 'Usuário';
 
   @override
-  String get userActions => 'Ações de Usuário';
+  String get userActions => 'Ações de usuário';
 
   @override
   String userEntry(Object username) {
@@ -6303,36 +6323,36 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get userFormat => 'Formato do Usuário';
+  String get userFormat => 'Formato do usuário';
 
   @override
   String get userLabelHint => 'Este é o meu usuário favorito';
 
   @override
-  String get userLabels => 'Rótulos de Usuário';
+  String get userLabels => 'Rótulos de usuário';
 
   @override
   String get userLabelsSettingsPageDescription =>
       'Você pode adicionar, modificar ou remover rótulos associados aos usuários.';
 
   @override
-  String get userNameColor => 'Cor do Nome de Usuário';
+  String get userNameColor => 'Cor do nome de usuário';
 
   @override
-  String get userNameThickness => 'Espessura do Nome de Usuário';
+  String get userNameThickness => 'Espessura do nome de usuário';
 
   @override
   String get userNotLoggedIn => 'Usuário não logado';
 
   @override
-  String get userProfiles => 'Perfis de Usuário';
+  String get userProfiles => 'Perfis de usuário';
 
   @override
   String get userSettingDescription =>
       'Estas configurações são sincronizadas com sua conta Lemmy e são aplicadas apenas por conta.';
 
   @override
-  String get userStyle => 'Estilo de Usuário';
+  String get userStyle => 'Estilo de usuário';
 
   @override
   String get username => 'Nome de usuário';
@@ -6353,19 +6373,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get video => 'Vídeo';
 
   @override
-  String get videoAutoFullscreen => 'Tela Cheia Automática';
+  String get videoAutoFullscreen => 'Tela cheia automática';
 
   @override
-  String get videoAutoLoop => 'Vídeo em Loop';
+  String get videoAutoLoop => 'Vídeo em loop';
 
   @override
-  String get videoAutoMute => 'Silenciar Vídeos';
+  String get videoAutoMute => 'Silenciar vídeos';
 
   @override
-  String get videoAutoPlay => 'Reprodução Automática de Vídeo';
+  String get videoAutoPlay => 'Reprodução automática de vídeos';
 
   @override
-  String get videoDefaultPlaybackSpeed => 'Velocidade de Reprodução Padrão';
+  String get videoDefaultPlaybackSpeed => 'Velocidade de reprodução padrão';
 
   @override
   String get videoLinkHandlingExternal =>
@@ -6375,19 +6395,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get videoPlayerInApp => 'Use o reprodutor integrado do Thunder';
 
   @override
-  String get videoPlayerMode => 'Modo de Reprodutor';
+  String get videoPlayerMode => 'Modo de reprodutor';
 
   @override
-  String get viewAll => 'Ver Tudo';
+  String get viewAll => 'Ver tudo';
 
   @override
   String get viewAllComments => 'Ver todos os comentários';
 
   @override
-  String get viewCommentSource => 'Ver Fonte do Comentário';
+  String get viewCommentSource => 'Ver fonte do comentário';
 
   @override
-  String get viewModlog => 'Ver Registro do Moderador';
+  String get viewModlog => 'Ver registro de moderação';
 
   @override
   String get viewOriginal => 'Ver original';
@@ -6410,19 +6430,19 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get visitCommunity => 'Visitar Comunidade';
+  String get visitCommunity => 'Visitar comunidade';
 
   @override
-  String get visitCommunityInstance => 'Visitar Instância da Comunidade';
+  String get visitCommunityInstance => 'Visitar instância da comunidade';
 
   @override
-  String get visitInstance => 'Visitar Instância';
+  String get visitInstance => 'Visitar instância';
 
   @override
-  String get visitUserInstance => 'Visitar Instância do Usuário';
+  String get visitUserInstance => 'Visitar instância do usuário';
 
   @override
-  String get visitUserProfile => 'Visitar Perfil do Usuário';
+  String get visitUserProfile => 'Visitar perfil do usuário';
 
   @override
   String get warning => 'Aviso';

@@ -4,246 +4,247 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for Swedish (`sv`).
-class AppLocalizationsSv extends AppLocalizations {
-  AppLocalizationsSv([String locale = 'sv']) : super(locale);
+/// The translations for Pushto Pashto (`ps`).
+class AppLocalizationsPs extends AppLocalizations {
+  AppLocalizationsPs([String locale = 'ps']) : super(locale);
 
   @override
-  String get about => 'Om';
+  String get about => 'په اړه';
 
   @override
-  String get accept => 'Acceptera';
+  String get accept => 'منل';
 
   @override
-  String get accessibility => 'Tillgänglighet';
+  String get accessibility => 'لاسرسی';
 
   @override
   String get accessibilityProfilesDescription =>
-      'Tillgänglighetsprofiler gör det möjligt att tillämpa flera inställningar samtidigt för att tillgodose ett specifikt tillgänglighetskrav.';
+      'د لاسرسي وړ پېژنيالونه تاسو ته اجازه درکوي چې په يو ځل څو اوڼنې پلې کړئ؛ ترڅو د لاسرسي ځانگړې اړتيا پوره کړي.';
 
   @override
   String account(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Konton',
-      one: 'Konto',
-      zero: 'Konto',
+      other: 'گڼونونه',
+      one: 'Account',
+      zero: 'گڼون',
     );
     return '$_temp0 ';
   }
 
   @override
   String accountBirthday(Object additionalInfo) {
-    return 'Account Birthday $additionalInfo';
+    return 'گڼون زېږون ورځ $additionalInfo';
   }
 
   @override
   String get accountSettingOverrideWarning =>
-      'Dina kontoinställningar åsidosätter följande inställningar';
+      'ستاسو د گڼون اوڼنې لاندې اوڼنې له پامه غورځوي';
 
   @override
-  String get accountSettings => 'Kontoinställningar';
+  String get accountSettings => 'گڼون اوڼنې';
 
   @override
   String accountSettingsExportedSuccessfully(Object savedFilePath) {
-    return 'Lemmy-kontoinställningar har exporterats till $savedFilePath!';
+    return 'د لېمي گڼون د اوڼنو بهرلېږنه په برياليتوب سره $savedFilePath ته وشوه!';
   }
 
   @override
   String get accountSettingsImportedSuccessfully =>
-      'Lemmy-kontoinställningar har importerats!';
+      'لېمي گڼون اوڼنې په برياليتوب سره راولېږدول شوې!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return 'Den valda kommentaren hittades inte på \'$instance\'';
+    return 'غوره شوې څرگندونه په \'$instance\' کې ونه موندل شوه';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'Det valda inlägget hittades inte på \'$instance\'';
+    return 'غوره شوی پوسټ په \'$instance\' کې ونه موندل شو';
   }
 
   @override
-  String get actionColors => 'Åtgärdsfärger';
+  String get actionColors => 'چارو رنگونه';
 
   @override
-  String get actionColorsRedirect => 'Looking to customize colors?';
+  String get actionColorsRedirect => 'غواړئ رنگونه دوديز کړئ؟';
 
   @override
-  String get actions => 'Aktioner';
+  String get actions => 'چارې';
 
   @override
-  String get active => 'Aktiva';
+  String get active => 'کارنده';
 
   @override
-  String get activity => 'Activity';
+  String get activity => 'چاره';
 
   @override
-  String get add => 'Lägg till';
+  String get add => 'ورگډول';
 
   @override
-  String get addAccount => 'Lägg till Konto';
+  String get addAccount => 'گڼون ورگډول';
 
   @override
   String get addAccountToSeeProfile =>
-      'Lägg till ett konto för att se din profil.';
+      'د خپل گڼون ليدلو لپاره غونډال ته ننوځئ.';
 
   @override
-  String get addAnonymousInstance => 'Lägg till Anonym Instans';
+  String get addAnonymousInstance => 'بې نومه بېلگه ورگډول';
 
   @override
-  String get addAsCommunityModerator => 'Add as Community Moderator';
+  String get addAsCommunityModerator => 'د ټولنې د مدير په توگه ورگډول';
 
   @override
-  String get addDiscussionLanguage => 'Add Language';
+  String get addDiscussionLanguage => 'ژبه ورگډول';
 
   @override
-  String get addKeywordFilter => 'Add Keyword';
+  String get addKeywordFilter => 'ليکدړه ورگډول';
 
   @override
-  String get addOriginalPostBody => 'Add original post body?';
+  String get addOriginalPostBody => 'د ار پوسټ بدنه ورگډه کړي؟';
 
   @override
-  String get addToFavorites => 'Add to favorites';
+  String get addToFavorites => 'خواپورو ته ورگډول';
 
   @override
-  String get addUserLabel => 'Add User Label';
+  String get addUserLabel => 'کارن نښکه ورگډول';
 
   @override
-  String get addedCommunityToSubscriptions => 'Subscribed to community';
+  String get addedCommunityToSubscriptions => 'ټولنه کې گډون کول';
 
   @override
-  String get addedInstanceMod => 'Added Instance Mod';
+  String get addedInstanceMod => 'د بېلگې مدير ورگډ شو';
 
   @override
-  String get addedModToCommunity => 'Added Mod to Community';
+  String get addedModToCommunity => 'مدير په ټولنه کې ورگډ شو';
 
   @override
   String addedUserAsCommunityModerator(Object username) {
-    return 'Added $username as community moderator';
+    return '$username د ټولنې د مدير په توگه ورگډ شو';
   }
 
   @override
-  String get admin => 'Admin';
+  String get admin => 'پازوال';
 
   @override
-  String get advanced => 'Advanced';
+  String get advanced => 'پرمختللی';
 
   @override
   String ago(Object time) {
-    return '$time ago';
+    return '$time دمخه';
   }
 
   @override
-  String get all => 'All';
+  String get all => 'ټول';
 
   @override
-  String get allPosts => 'Alla Inlägg';
+  String get allPosts => 'ټولو پوسټونه';
 
   @override
-  String get allowOpenSupportedLinks => 'Allow app to open supported links.';
+  String get allowOpenSupportedLinks =>
+      'کاريال ته د ملاتړ شوو تړونو د پرانېستلو اجازه ورکول.';
 
   @override
-  String get alreadyPostedTo => 'Redan inlagd till';
+  String get alreadyPostedTo => 'واردمخه پوسټ شوی په';
 
   @override
-  String get altText => 'Alt Text';
+  String get altText => 'سپيناو ليک';
 
   @override
-  String get alternateSources => 'Alternate Sources';
+  String get alternateSources => 'بديلې سرچينې';
 
   @override
-  String get always => 'Always';
+  String get always => 'تل';
 
   @override
   String andXMore(Object count) {
-    return 'och $count till';
+    return 'او $count نور';
   }
 
   @override
-  String get animations => 'Animations';
+  String get animations => 'ځوندتياوې';
 
   @override
-  String get anonymous => 'Anonym';
+  String get anonymous => 'ورک‌نومی';
 
   @override
-  String get anonymousInstances => 'Anonymous Instances';
+  String get anonymousInstances => 'ورک‌نومې بېلگه';
 
   @override
-  String get appLanguage => 'App Language';
+  String get appLanguage => 'کاريال ژبه';
 
   @override
-  String get appearance => 'Appearance';
+  String get appearance => 'ونگبڼه';
 
   @override
-  String get applePushNotificationService => 'Apple Push Notification Service';
+  String get applePushNotificationService => 'اپل د ټېله کولو خبرتيا چوپړ';
 
   @override
-  String get applied => 'Applied';
+  String get applied => 'پلی شوی';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'پلي کو ل';
 
   @override
   String areNotificationsAllowedBySystem(Object yesOrNo) {
-    return 'Notifications are allowed by system: $yesOrNo';
+    return 'خبرتياوو ته د غونډال له خوا اجازه ورکړل شوې: $yesOrNo';
   }
 
   @override
   String averageComments(Object x) {
-    return '$x comments/month';
+    return '$x څرگندونې/مياشت';
   }
 
   @override
   String averageContributions(Object x) {
-    return '$x contributions/month';
+    return '$x ونډې/مياشت';
   }
 
   @override
   String averagePosts(Object x) {
-    return '$x posts/month';
+    return '$x پوسټونه/مياشت';
   }
 
   @override
-  String get back => 'Tillbaka';
+  String get back => 'شا ته';
 
   @override
-  String get backButton => 'Back button';
+  String get backButton => 'شا تڼۍ';
 
   @override
-  String get backToTop => 'Tillbaka Upp';
+  String get backToTop => 'بېرته سر ته';
 
   @override
   String get backgroundCheckWarning =>
-      'Note that notification checks will consume additional battery';
+      'په ياد ولرئ چې د خبرتياوو سم‌کتنه به زياتي بېټرۍ هم ولگوئ';
 
   @override
-  String get ban => 'Ban';
+  String get ban => 'بنديز لگول';
 
   @override
-  String get banFromCommunity => 'Ban from Community';
+  String get banFromCommunity => 'له ټولنې ويستل';
 
   @override
-  String get bannedUser => 'Banned User';
+  String get bannedUser => 'بنديز لگېدلی کارن';
 
   @override
-  String get bannedUserFromCommunity => 'Banned User from Community';
+  String get bannedUserFromCommunity => 'له ټولنې ويستل شوی کارن';
 
   @override
-  String get base => 'Base';
+  String get base => 'اډانه';
 
   @override
-  String get block => 'Block';
+  String get block => 'بنديز لگول';
 
   @override
-  String get blockCommunity => 'Blockera community';
+  String get blockCommunity => 'Block Community';
 
   @override
   String get blockCommunityInstance => 'Block Community Instance';
 
   @override
-  String get blockInstance => 'Blockera instans';
+  String get blockInstance => 'Block Instance';
 
   @override
   String get blockManagement => 'Block Management';
@@ -252,213 +253,212 @@ class AppLocalizationsSv extends AppLocalizations {
   String get blockSettingLabel => 'User/Community/Instance Blocks';
 
   @override
-  String get blockUser => 'Blockera användare';
+  String get blockUser => 'Block User';
 
   @override
   String get blockUserInstance => 'Block User Instance';
 
   @override
-  String get blockedCommunities => 'Blockerade Gemenskaper';
+  String get blockedCommunities => 'بنديز لگول';
 
   @override
-  String get blockedInstances => 'Blockerade Instanser';
+  String get blockedInstances => 'په بېلگه بنديز لگول';
 
   @override
-  String get blockedUsers => 'Blockerade Användare';
+  String get blockedUsers => 'بنديز لگېدلي کارنان';
 
   @override
-  String get blue => 'Blå';
+  String get blue => 'شين';
 
   @override
-  String get bold => 'Fet';
+  String get bold => 'زغرد';
 
   @override
-  String get boldCommunityName => 'Bold Community Name';
+  String get boldCommunityName => 'ټولنې نوم زغرد';
 
   @override
-  String get boldInstanceName => 'Bold Instance Name';
+  String get boldInstanceName => 'بېلگې نوم زغر';
 
   @override
-  String get boldUserName => 'Bold User Name';
+  String get boldUserName => 'کارن نوم زغر';
 
   @override
-  String get bot => 'Bot';
+  String get bot => 'روباټ';
 
   @override
-  String get browserMode => 'Link handling';
+  String get browserMode => 'تړونی سمبالول';
 
   @override
   String browsingAnonymously(Object instance) {
-    return 'Du bläddrar nu i $instance anonymt.';
+    return 'تاسو وسمهال په ورکنومي ډول $instance پلټئ.';
   }
 
   @override
-  String get cancel => 'Avbryt';
+  String get cancel => 'ناگارل';
 
   @override
   String get cannotReportOwnComment =>
-      'You may not submit a report for your own comment.';
+      'تاسو شايد د خپلې څرگندونې لپاره راپور ونه سپارئ.';
 
   @override
-  String get cantBlockAdmin => 'You may not block an instance administrator.';
+  String get cantBlockAdmin => 'تاسو د بېلگې پازوال باندې بنديز نشئ لگولی.';
 
   @override
-  String get cantBlockYourself => 'Du kan inte blockera dig själv.';
+  String get cantBlockYourself => 'په خپل ځان بنديز نشئ لگولی.';
 
   @override
-  String get cardPostCardMetadataItems => 'Card View Metadata';
+  String get cardPostCardMetadataItems => 'کارت کتنې گڼ‌اومتوک';
 
   @override
-  String get cardView => 'Card View';
+  String get cardView => 'کارت کتنه';
 
   @override
-  String get cardViewDescription => 'Enable card view to adjust settings';
+  String get cardViewDescription => 'د اوڼنو برابرولو لپاره کارت کتنه چارن کړئ';
 
   @override
-  String get cardViewSettings => 'Card View Settings';
+  String get cardViewSettings => 'کارت کتنې اوڼنې';
 
   @override
-  String get changeAccountSettingsFor => 'Change account settings for';
+  String get changeAccountSettingsFor => 'د گڼون اوڼنې بدلول لپاره د';
 
   @override
-  String get changeNotificationSettings => 'Change notification settings...';
+  String get changeNotificationSettings => 'خبرتياوو اوڼنې بدلول...';
 
   @override
-  String get changePassword => 'Change Password';
+  String get changePassword => 'پټنوم بدلول';
 
   @override
   String get changePasswordWarning =>
-      'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
+      'پټنوم بدلولو لپاره به تاسو د بېلگې وېبځي ته مخگرځ شئ.\n\nايا ډاډه ياست چې دوام ورکړئ؟';
 
   @override
-  String get changeSort => 'Ändra Sortering';
+  String get changeSort => 'اوډل بدلول';
 
   @override
   String clearCache(Object cacheSize) {
-    return 'Clear Cache ($cacheSize)';
+    return 'نيونگه سپاکول ($cacheSize)';
   }
 
   @override
-  String get clearCacheLabel => 'Clear Cache';
+  String get clearCacheLabel => 'نيونگه سپاکول';
 
   @override
-  String get clearDatabase => 'Clear Database';
+  String get clearDatabase => 'اومتوک‌اډانه سپاکول';
 
   @override
-  String get clearPreferences => 'Clear Preferences';
+  String get clearPreferences => 'غوره‌توبونه سپاکول';
 
   @override
-  String get clearSearch => 'Rensa sökning';
+  String get clearSearch => 'پلټل سپاکول';
 
   @override
-  String get clearedCache => 'Cleared cache successfully.';
+  String get clearedCache => 'نيونگه په برياليتوب سره سپا شوه.';
 
   @override
   String get clearedDatabase =>
-      'Local database cleared. Restart Thunder for new changes to take effect.';
+      'ځايي اومتوک اډانه سپا شوه. د نوو بدلونونو پلې کېدو لپاره تندر له سره پيل کړئ.';
 
   @override
-  String get clearedUserPreferences => 'Cleared all user preferences';
+  String get clearedUserPreferences => 'د ټولو کارنانو غوره‌توبونه سپا شول';
 
   @override
-  String get close => 'Stäng';
+  String get close => 'تړل';
 
   @override
-  String get collapse => 'Collapse';
+  String get collapse => 'پرځول';
 
   @override
-  String get collapseCommentPreview => 'Collapse Comment Preview';
+  String get collapseCommentPreview => 'څرگندونې مخکتنه پرځول';
 
   @override
-  String get collapseInformation => 'Collapse Information';
+  String get collapseInformation => 'مالومات پرځول';
 
   @override
   String get collapseParentCommentBodyOnGesture =>
-      'Hide Parent Comment when Collapsed';
+      'د غځېدلو پرمهال لويې څرگندونې پټول';
 
   @override
-  String get collapsePost => 'Collapse post';
+  String get collapsePost => 'غځېدلی پوسټ';
 
   @override
-  String get collapsePostPreview => 'Collapse Post Preview';
+  String get collapsePostPreview => 'غځېدلي پوسټ مخکتنه';
 
   @override
-  String get collapseSpoiler => 'Collapse Spoiler';
+  String get collapseSpoiler => 'ورانکاري غځول';
 
   @override
-  String get color => 'Färg';
+  String get color => 'رنگ';
 
   @override
-  String get colorizeCommunityName => 'Colorize Community Name';
+  String get colorizeCommunityName => 'ټولنې نوم رنگول';
 
   @override
-  String get colorizeInstanceName => 'Colorize Instance Name';
+  String get colorizeInstanceName => 'بېلگې نوم رنگول';
 
   @override
-  String get colorizeUserName => 'Colorize User Name';
+  String get colorizeUserName => 'کارن نوم رنگول';
 
   @override
-  String get colors => 'Colors';
+  String get colors => 'رنگونه';
 
   @override
-  String get combineCommentScores => 'Combine Comment Scores';
+  String get combineCommentScores => 'څرگندونې نومرې يوځای‌کول';
 
   @override
-  String get combineCommentScoresLabel => 'Combine Comment Scores';
+  String get combineCommentScoresLabel => 'څرگندونې نومرې يوځای‌کول';
 
   @override
-  String get combineNavAndFab => 'Combine FAB and Navigation Buttons';
+  String get combineNavAndFab => 'اېف‌‌ای‌بي او گرځښت تڼۍ يوځای‌کول';
 
   @override
   String get combineNavAndFabDescription =>
-      'Floating Action Button will be shown between navigation buttons.';
+      'لامبو وهلو چارې تڼۍ به د گرځښت تڼيو ترمنځ وښودل شي.';
 
   @override
-  String get comfortable => 'Comfortable';
+  String get comfortable => 'هوسا';
 
   @override
-  String get comment => 'Comment';
+  String get comment => 'څرگندونه';
 
   @override
-  String get commentActions => 'Comment Actions';
+  String get commentActions => 'څرگندونې چارې';
 
   @override
-  String get commentBehaviourSettings => 'Comments';
+  String get commentBehaviourSettings => 'څرگندونې';
 
   @override
-  String get commentFontScale => 'Comment Content Font Scale';
+  String get commentFontScale => 'د څرگندونې د منځپانگې ليکبڼې کچه';
 
   @override
-  String get commentPreview =>
-      'Show a preview of the comments with the given settings';
+  String get commentPreview => 'د ورکړل شوو اوڼنو سره د څرگندونې مخکتنه ښودل';
 
   @override
-  String get commentReported => 'The comment has been marked for review.';
+  String get commentReported => 'څرگندونه د بياکتنې لپاره نښه شوې ده.';
 
   @override
-  String get commentSavedAsDraft => 'Kommentar sparad som utkast';
+  String get commentSavedAsDraft => 'څرگندونه د گارليک په توگه خوندي شوه';
 
   @override
-  String get commentShowUserAvatar => 'Show User Avatar';
+  String get commentShowUserAvatar => 'کارن ځان‌بڼه ښودل';
 
   @override
-  String get commentShowUserInstance => 'Show User Instance';
+  String get commentShowUserInstance => 'کارن بېلگه ښودل';
 
   @override
-  String get commentSortType => 'Comment Sort Type';
+  String get commentSortType => 'څرگندونې اوډون ډول';
 
   @override
-  String get commentSwipeActions => 'Comment Swipe Actions';
+  String get commentSwipeActions => 'څرگندونې وار چارې';
 
   @override
   String get commentSwipeGesturesHint =>
       'Looking to use buttons instead? Enable them in the comments section in general settings.';
 
   @override
-  String get comments => 'Kommentarer';
+  String get comments => 'Comments';
 
   @override
-  String get communities => 'Gemenskaper';
+  String get communities => 'Communities';
 
   @override
   String get community => 'Community';
@@ -502,7 +502,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get condensed => 'Condensed';
 
   @override
-  String get confirm => 'Bekräfta';
+  String get confirm => 'Confirm';
 
   @override
   String get confirmLogOutBody => 'Are you sure you want to log out?';
@@ -590,7 +590,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String countSubscribers(Object count) {
-    return '$count prenumeranter';
+    return '$count Subscribers';
   }
 
   @override
@@ -619,16 +619,16 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Skapa Konto';
+  String get createAccount => 'Create Account';
 
   @override
   String get createComment => 'Create Comment';
 
   @override
-  String get createNewCrossPost => 'Skapa ett nytt tvärinlägg';
+  String get createNewCrossPost => 'Create new cross-post';
 
   @override
-  String get createPost => 'Skapa Inlägg';
+  String get createPost => 'Create Post';
 
   @override
   String created(Object date) {
@@ -647,7 +647,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get crossPostedTo => 'Tvärinlägg till';
+  String get crossPostedTo => 'Cross-posted to';
 
   @override
   String get currentLongPress => 'Currently set as long press';
@@ -804,7 +804,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Content is filtered to the selected languages.';
 
   @override
-  String get dismissRead => 'Avfärda Lästa';
+  String get dismissRead => 'Dismiss Read';
 
   @override
   String get displayName => 'Display Name';
@@ -850,7 +850,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get email => 'Email';
 
   @override
-  String get empty => 'Tom';
+  String get empty => 'Empty';
 
   @override
   String get emptyInbox => 'Empty Inbox';
@@ -1027,7 +1027,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get featuredPost => 'Featured Post';
 
   @override
-  String get feed => 'Flöde';
+  String get feed => 'Feed';
 
   @override
   String get feedBehaviourSettings => 'Feed';
@@ -1094,7 +1094,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get gestures => 'Gestures';
 
   @override
-  String get gettingStarted => 'Kom Igång';
+  String get gettingStarted => 'Getting Started';
 
   @override
   String get green => 'Green';
@@ -1132,7 +1132,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get hideNsfwPreviews => 'Blur NSFW Previews';
 
   @override
-  String get hidePassword => 'Dölj Lösenord';
+  String get hidePassword => 'Hide Password';
 
   @override
   String get hideThumbnails => 'Hide Thumbnails';
@@ -1144,7 +1144,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get hostInstance => 'Host Instance';
 
   @override
-  String get hot => 'Heta';
+  String get hot => 'Hot';
 
   @override
   String get image => 'Image';
@@ -1237,7 +1237,14 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String instance(num count) {
-    return 'Instans';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Instances',
+      one: 'Instance',
+      zero: 'Instance',
+    );
+    return '$_temp0 ';
   }
 
   @override
@@ -1250,7 +1257,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String instanceHasAlreadyBenAdded(Object instance) {
-    return '$instance har redan blivit tillagd.';
+    return '$instance has already been added.';
   }
 
   @override
@@ -1264,7 +1271,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get internetOrInstanceIssues =>
-      'Det kan vara problem med din internetanslutning, eller så är din instans inte tillgänglig.';
+      'You may not be connected to the Internet, or your instance may be currently unavailable.';
 
   @override
   String get invalidUrl => 'Invalid URL format';
@@ -1347,12 +1354,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String loadMorePlural(Object count) {
-    return 'Ladda in $count svar till…';
+    return 'Load $count more replies…';
   }
 
   @override
   String loadMoreSingular(Object count) {
-    return 'Ladda in $count svar till…';
+    return 'Load $count more reply…';
   }
 
   @override
@@ -1368,7 +1375,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get localOnly => 'Local Only';
 
   @override
-  String get localPosts => 'Lokala Inlägg';
+  String get localPosts => 'Local Posts';
 
   @override
   String get lockPost => 'Lock Post';
@@ -1380,10 +1387,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get lockedPost => 'Locked Post';
 
   @override
-  String get logOut => 'Logga ut';
+  String get logOut => 'Log out';
 
   @override
-  String get login => 'Logga in';
+  String get login => 'Log in';
 
   @override
   String get loginAttemptCanceled => 'Login attempt canceled.';
@@ -1412,7 +1419,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'The link you provided is in an unsupported format. Please make sure it\'s a valid link.';
 
   @override
-  String get manageAccounts => 'Hantera Konton';
+  String get manageAccounts => 'Manage Accounts';
 
   @override
   String get manageMedia => 'Manage Media';
@@ -1475,7 +1482,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get metadataFontScale => 'Metadata Font Scale';
 
   @override
-  String get missingErrorMessage => 'Inget felmeddelande';
+  String get missingErrorMessage => 'No error message available';
 
   @override
   String get modAdd => 'Add/Remove Instance Moderators';
@@ -1532,7 +1539,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get modlog => 'Modlog';
 
   @override
-  String get mostComments => 'Mest Kommenterat';
+  String get mostComments => 'Most Comments';
 
   @override
   String get mustBeLoggedIn => 'You need to be logged in';
@@ -1556,7 +1563,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get navigateDown => 'Next comment';
 
   @override
-  String get navigateUp => 'Föregående kommentar';
+  String get navigateUp => 'Previous comment';
 
   @override
   String get navigation => 'Navigation';
@@ -1571,13 +1578,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get never => 'Never';
 
   @override
-  String get newComments => 'Nya Kommentarer';
+  String get newComments => 'New Comments';
 
   @override
   String get newPost => 'New Post';
 
   @override
-  String get new_ => 'Nya';
+  String get new_ => 'New';
 
   @override
   String get no => 'No';
@@ -1589,13 +1596,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noAnonymousInstances => 'No anonymous instances have been added';
 
   @override
-  String get noCommentsFound => 'Inga kommentarer hittades';
+  String get noCommentsFound => 'No comments found';
 
   @override
-  String get noCommunitiesFound => 'Inga gemenskaper hittades';
+  String get noCommunitiesFound => 'No communities found';
 
   @override
-  String get noCommunityBlocks => 'Inga blockerade gemenskaper.';
+  String get noCommunityBlocks => 'No blocked communities';
 
   @override
   String get noCompatibleAppFound => 'No compatible app found';
@@ -1616,7 +1623,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noImages => 'It looks like you have not uploaded any images.';
 
   @override
-  String get noInstanceBlocks => 'Inga blockerade instanser.';
+  String get noInstanceBlocks => 'No blocked instances.';
 
   @override
   String get noItems => 'No items';
@@ -1637,7 +1644,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noMessages => 'No messages';
 
   @override
-  String get noPostsFound => 'Inga inlägg hittades';
+  String get noPostsFound => 'No posts found.';
 
   @override
   String get noProfileBioSet => 'No profile bio set';
@@ -1656,13 +1663,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noSubscriptions => 'No Subscriptions';
 
   @override
-  String get noUserBlocks => 'Inga blockerade användare.';
+  String get noUserBlocks => 'No blocked users.';
 
   @override
   String get noUserLabels => 'You have not created any user labels yet';
 
   @override
-  String get noUsersFound => 'Inga användare hittades';
+  String get noUsersFound => 'No users found.';
 
   @override
   String get noVisibleComments =>
@@ -1676,11 +1683,11 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String notValidLemmyInstance(Object instance) {
-    return '$instance verkar ej vara en giltig Lemmy-instans.';
+    return '$instance does not appear to be a valid instance';
   }
 
   @override
-  String get notValidUrl => 'Inte en giltig URL';
+  String get notValidUrl => 'Not a valid URL';
 
   @override
   String get nothingToShare => 'Nothing to share';
@@ -1724,7 +1731,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get old => 'Äldst';
+  String get old => 'Old';
 
   @override
   String get on => 'on';
@@ -1734,10 +1741,10 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get onlyModsCanPostInCommunity =>
-      'Endast en moderator kan skapa inlägg i denna gemenskap';
+      'Only moderators may post in this community';
 
   @override
-  String get open => 'Öppna';
+  String get open => 'Open';
 
   @override
   String get openAccountSwitcher => 'Open account switcher';
@@ -1749,7 +1756,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get openInBrowser => 'Open in Browser';
 
   @override
-  String get openInstance => 'Öppna Instans';
+  String get openInstance => 'Open Instance';
 
   @override
   String get openLinksInExternalBrowser => 'Open Links in External Browser';
@@ -1767,10 +1774,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get originalPoster => 'Original Poster';
 
   @override
-  String get overview => 'Överblick';
+  String get overview => 'Overview';
 
   @override
-  String get password => 'Lösenord';
+  String get password => 'Password';
 
   @override
   String get pending => 'Pending';
@@ -1817,7 +1824,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get postBehaviourSettings => 'Posts';
 
   @override
-  String get postBody => 'Brödtext';
+  String get postBody => 'Post Body';
 
   @override
   String get postBodySettings => 'Post Body Settings';
@@ -1849,14 +1856,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'You can customize the metadata information by dragging and dropping the desired information';
 
   @override
-  String get postNSFW => 'Markera som NSFW';
+  String get postNSFW => 'Mark as NSFW';
 
   @override
   String get postPreview =>
       'Show a preview of the post with the given settings';
 
   @override
-  String get postSavedAsDraft => 'Inlägg sparad som utkast';
+  String get postSavedAsDraft => 'Post saved as draft';
 
   @override
   String get postShowUserInstance => 'Show User Instance';
@@ -1869,25 +1876,25 @@ class AppLocalizationsSv extends AppLocalizations {
       'Looking to use buttons instead? Change what buttons appear on post cards in general settings.';
 
   @override
-  String get postTitle => 'Tittel';
+  String get postTitle => 'Title';
 
   @override
   String get postTitleFontScale => 'Post Title Font Scale';
 
   @override
-  String get postTogglePreview => 'Förhandsvisning';
+  String get postTogglePreview => 'Toggle Preview';
 
   @override
   String get postURL => 'URL';
 
   @override
-  String get postUploadImageError => 'Kunde inte ladda upp bild';
+  String get postUploadImageError => 'Could not upload image';
 
   @override
   String get postViewType => 'Post View Type';
 
   @override
-  String get posts => 'Inlägg';
+  String get posts => 'Posts';
 
   @override
   String get preview => 'Preview';
@@ -1901,7 +1908,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileBio => 'Profile Bio';
 
   @override
-  String get profiles => 'Profiler';
+  String get profiles => 'Profiles';
 
   @override
   String get public => 'Public';
@@ -1967,19 +1974,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get reducesAnimations => 'Reduces the animations used within Thunder';
 
   @override
-  String get refresh => 'Uppdatera';
+  String get refresh => 'Refresh';
 
   @override
-  String get refreshContent => 'Uppdatera Innehåll';
+  String get refreshContent => 'Refresh Content';
 
   @override
   String get removalReason => 'Removal Reason';
 
   @override
-  String get remove => 'ta bort';
+  String get remove => 'Remove';
 
   @override
-  String get removeAccount => 'Ta Bort Konto';
+  String get removeAccount => 'Remove Account';
 
   @override
   String get removeAsCommunityModerator => 'Remove as Community Moderator';
@@ -1991,7 +1998,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get removeFromFavorites => 'Remove from favorites';
 
   @override
-  String get removeInstance => 'Ta bort instans';
+  String get removeInstance => 'Remove instance';
 
   @override
   String removeKeyword(Object keyword) {
@@ -2056,7 +2063,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Replying from this view is currently not supported yet';
 
   @override
-  String get replyToPost => 'Svara på Inlägg';
+  String get replyToPost => 'Reply to Post';
 
   @override
   String replyingTo(Object author) {
@@ -2121,7 +2128,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get restoredComment => 'Restored comment';
 
   @override
-  String get restoredCommentFromDraft => 'Kommentar återställd från utkast';
+  String get restoredCommentFromDraft => 'Restored comment from draft';
 
   @override
   String get restoredCommunity => 'Restored Community';
@@ -2130,7 +2137,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get restoredPost => 'Restored Post';
 
   @override
-  String get restoredPostFromDraft => 'Inlägg återställt från utkast';
+  String get restoredPostFromDraft => 'Restored post from draft';
 
   @override
   String get retry => 'Retry';
@@ -2142,7 +2149,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get rightShortSwipe => 'Right Short Swipe';
 
   @override
-  String get save => 'Spara';
+  String get save => 'Save';
 
   @override
   String get saveColor => 'Save Color';
@@ -2151,7 +2158,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get saveSettings => 'Save Settings';
 
   @override
-  String get saved => 'Sparat';
+  String get saved => 'Saved';
 
   @override
   String get scaled => 'Scaled';
@@ -2167,30 +2174,30 @@ class AppLocalizationsSv extends AppLocalizations {
       'Optimizes Thunder for screen readers by reducing overall elements and removing potentially conflicting gestures.';
 
   @override
-  String get search => 'Sök';
+  String get search => 'Search';
 
   @override
-  String get searchByText => 'Sök med text';
+  String get searchByText => 'Search by text';
 
   @override
-  String get searchByUrl => 'Sök med URL';
+  String get searchByUrl => 'Search by URL';
 
   @override
   String get searchComments => 'Search Comments';
 
   @override
   String searchCommentsFederatedWith(Object instance) {
-    return 'Sök kommentarer federerade till $instance';
+    return 'Search for comments federated with $instance';
   }
 
   @override
   String searchCommunitiesFederatedWith(Object instance) {
-    return 'Sök efter communities federerade med $instance';
+    return 'Search for communities federated with $instance';
   }
 
   @override
   String searchInstance(Object instance) {
-    return 'Sök $instance';
+    return 'Search $instance';
   }
 
   @override
@@ -2199,11 +2206,11 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get searchPostSearchType => 'Välj Inlägg Söktyp';
+  String get searchPostSearchType => 'Select Post Search Type';
 
   @override
   String searchPostsFederatedWith(Object instance) {
-    return 'Sök inlägg federerade till $instance';
+    return 'Search for posts federated with $instance';
   }
 
   @override
@@ -2211,7 +2218,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String searchUsersFederatedWith(Object instance) {
-    return 'Sök användare som är federerade med $instance';
+    return 'Search for users federated with $instance';
   }
 
   @override
@@ -2224,16 +2231,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get selectAll => 'Select all';
 
   @override
-  String get selectCommunity => 'Välj Gemenskap';
+  String get selectCommunity => 'Select a community (required)';
 
   @override
-  String get selectFeedType => 'Välj Flödtyp';
+  String get selectFeedType => 'Select Feed Type';
 
   @override
   String get selectLanguage => 'Select Language';
 
   @override
-  String get selectSearchType => 'Välj Söktyp';
+  String get selectSearchType => 'Select Search Type';
 
   @override
   String get selectText => 'Select Text';
@@ -2270,10 +2277,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setAction => 'Set Action';
 
   @override
-  String get setLongPress => 'Ställ in för lång vidrörelse';
+  String get setLongPress => 'Set as long-press action';
 
   @override
-  String get setShortPress => 'Ställ in för kort vidrörelse';
+  String get setShortPress => 'Set as short-press action';
 
   @override
   String get settingOverrideLabel =>
@@ -2285,7 +2292,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Inställningar';
+  String get settings => 'Settings';
 
   @override
   String settingsExportedSuccessfully(Object savedFilePath) {
@@ -2476,7 +2483,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get showOwnContent => 'Show own content';
 
   @override
-  String get showPassword => 'Visa Lösenord';
+  String get showPassword => 'Show Password';
 
   @override
   String get showPostAuthor => 'Show Post Author';
@@ -2555,16 +2562,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get small => 'Small';
 
   @override
-  String get somethingWentWrong => 'oj något gick fel';
+  String get somethingWentWrong => 'Oops, something went wrong!';
 
   @override
-  String get sortBy => 'Sortera Enligt';
+  String get sortBy => 'Sort By';
 
   @override
   String get sortByTop => 'Sort by Top';
 
   @override
-  String get sortOptions => 'Sorteringsinställningar';
+  String get sortOptions => 'Sort Options';
 
   @override
   String get spoiler => 'Spoiler';
@@ -2582,19 +2589,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get submit => 'Submit';
 
   @override
-  String get subscribe => 'Prenumerera';
+  String get subscribe => 'Subscribe';
 
   @override
   String get subscribeToCommunity => 'Subscribe to Community';
 
   @override
-  String get subscribed => 'Prenumererad';
+  String get subscribed => 'Subscribed';
 
   @override
   String get subscriptionRequestSent => 'Subscription request sent';
 
   @override
-  String get subscriptions => 'Prenumererade';
+  String get subscriptions => 'Subscriptions';
 
   @override
   String successfullyBannedUser(Object username) {
@@ -2657,7 +2664,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get tabletMode => 'Tablet Mode (2-column view)';
 
   @override
-  String get tapToExit => 'Tryck tillbaka två gånger för att stänga';
+  String get tapToExit => 'Press back again to exit';
 
   @override
   String get tappableAuthorCommunity => 'Tappable Authors & Communities';
@@ -2721,7 +2728,8 @@ class AppLocalizationsSv extends AppLocalizations {
       'Error: Timeout when attempting to fetch comments';
 
   @override
-  String get timeoutErrorMessage => 'Förfrågan nådde maxtiden.';
+  String get timeoutErrorMessage =>
+      'There was a timeout waiting for a response.';
 
   @override
   String get timeoutSaveComment =>
@@ -2743,25 +2751,25 @@ class AppLocalizationsSv extends AppLocalizations {
   String get toggelRead => 'Toggle Read';
 
   @override
-  String get top => 'Bästa';
+  String get top => 'Top';
 
   @override
-  String get topAll => 'Bäst genom tiderna';
+  String get topAll => 'Top of all time';
 
   @override
-  String get topDay => 'Bäst Idag';
+  String get topDay => 'Top Today';
 
   @override
-  String get topHour => 'Bäst under Senaste Timme';
+  String get topHour => 'Top in Past Hour';
 
   @override
-  String get topMonth => 'Bäst denna Månad';
+  String get topMonth => 'Top Month';
 
   @override
   String get topNineMonths => 'Top in Past 9 Months';
 
   @override
-  String get topSixHour => 'Bästa under Senaste 6 Timmarna';
+  String get topSixHour => 'Top in Past 6 Hours';
 
   @override
   String get topSixMonths => 'Top in Past 6 Months';
@@ -2770,13 +2778,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get topThreeMonths => 'Top in Past 3 Months';
 
   @override
-  String get topTwelveHour => 'Bästa under Senaste 12 Timmarna';
+  String get topTwelveHour => 'Top in Past 12 Hours';
 
   @override
-  String get topWeek => 'Bäst denna Vecka';
+  String get topWeek => 'Top Week';
 
   @override
-  String get topYear => 'Bäst detta År';
+  String get topYear => 'Top Year';
 
   @override
   String totalComments(Object x) {
@@ -2789,7 +2797,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get totp => 'TOTP (valfri)';
+  String get totp => 'TOTP (optional)';
 
   @override
   String get transferredModToCommunity => 'Transferred Community';
@@ -2799,13 +2807,13 @@ class AppLocalizationsSv extends AppLocalizations {
       'Please note that the translations may not be complete';
 
   @override
-  String get trendingCommunities => 'Trendiga Gemenskaper';
+  String get trendingCommunities => 'Trending Communities';
 
   @override
   String get trySearchingFor => 'Try searching for...';
 
   @override
-  String get unableToFindCommunity => 'Kunde inte hitta gemenskap';
+  String get unableToFindCommunity => 'Unable to find community';
 
   @override
   String unableToFindCommunityName(Object communityName) {
@@ -2817,7 +2825,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Unable to find the selected community on the selected user\'s instance.';
 
   @override
-  String get unableToFindInstance => 'Kan ej hitta instans';
+  String get unableToFindInstance => 'Unable to find instance';
 
   @override
   String get unableToFindLanguage => 'Unable to find language';
@@ -2826,7 +2834,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get unableToFindPost => 'Unable to find post';
 
   @override
-  String get unableToFindUser => 'Kan ej hitta användaren';
+  String get unableToFindUser => 'Unable to find user';
 
   @override
   String unableToFindUserName(Object username) {
@@ -2843,7 +2851,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String unableToLoadInstance(Object instance) {
-    return 'Kunde ej ladda $instance';
+    return 'Unable to load $instance';
   }
 
   @override
@@ -2851,7 +2859,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String unableToLoadPostsFrominstance(Object instance) {
-    return 'Kunde ej ladda inlägg från $instance';
+    return 'Unable to load posts from $instance';
   }
 
   @override
@@ -2955,20 +2963,20 @@ class AppLocalizationsSv extends AppLocalizations {
   String get unresolved => 'Unresolved';
 
   @override
-  String get unsubscribe => 'Säg Upp';
+  String get unsubscribe => 'Unsubscribe';
 
   @override
   String get unsubscribeFromCommunity => 'Unsubscribe from Community';
 
   @override
-  String get unsubscribePending => 'Säg upp (prenumeration i väntan)';
+  String get unsubscribePending => 'Unsubscribe (subscription pending)';
 
   @override
-  String get unsubscribed => 'Prenumeration Uppsagd';
+  String get unsubscribed => 'Unsubscribed';
 
   @override
   String updateReleased(Object version) {
-    return 'Updatering tillgänglig: $version';
+    return 'Update released: $version';
   }
 
   @override
@@ -3085,13 +3093,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get userStyle => 'User Style';
 
   @override
-  String get username => 'Användarnamn';
+  String get username => 'Username';
 
   @override
   String get usernameFormattingRedirect => 'Looking for username formatting?';
 
   @override
-  String get users => 'Användare';
+  String get users => 'Users';
 
   @override
   String versionNumber(Object version) {
@@ -3147,7 +3155,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get viewPostSource => 'View post source';
 
   @override
-  String get viewSource => 'Visa källa';
+  String get viewSource => 'View source';
 
   @override
   String get viewingAll => 'Viewing all';
@@ -3203,8 +3211,8 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get yes => 'Ja';
+  String get yes => 'Yes';
 
   @override
-  String get youMustSelectAJsonFile => 'Du måste välja en .json-fil.';
+  String get youMustSelectAJsonFile => 'You must select a .json file.';
 }

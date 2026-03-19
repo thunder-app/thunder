@@ -11,6 +11,7 @@ release
 .flutter-plugins-dependencies
 
 # AI
+.agents
 .cursor
 .claude
 .github/instructions

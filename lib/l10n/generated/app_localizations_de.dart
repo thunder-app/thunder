@@ -93,7 +93,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addAnonymousInstance => 'Anonyme Instanz hinzufügen';
 
   @override
-  String get addAsCommunityModerator => 'Als Community Moderator hinzufügen';
+  String get addAsCommunityModerator => 'Als Community-Moderator hinzufügen';
 
   @override
   String get addDiscussionLanguage => 'Sprache hinzufügen';
@@ -1186,11 +1186,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imageDimensionTimeout => 'Zeitüberschreitung Bild Abmessungen';
 
   @override
-  String get imagePeekDuration => 'Image Peek Duration';
+  String get imagePeekDuration => 'Bildvorschau-Dauer';
 
   @override
   String get imagePeekDurationDescription =>
-      'Duration of long press before image peek is triggered';
+      'Dauer des langen Drückens, bevor die Bildvorschau ausgelöst wird';
 
   @override
   String get importDatabase => 'Datenbank importieren';
@@ -1366,7 +1366,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get linkHandlingInAppShort => 'In-App';
 
   @override
-  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+  String get linkPostsUseCompactView => 'Kompakte Link-Posts anzeigen';
 
   @override
   String get linksBehaviourSettings => 'Links';
@@ -1466,7 +1466,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get me => 'Ich';
 
   @override
-  String get media => 'Media';
+  String get media => 'Medien';
 
   @override
   String get medium => 'Mittel';
@@ -1838,7 +1838,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pinnedPostToCommunity => 'Post an Community angeheftet';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostsUseCompactView => 'Kompakte angepinnte Posts anzeigen';
 
   @override
   String get placeholderText =>
@@ -2529,7 +2529,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der Autor eines Posts wird immer in den Community Feeds angezeigt';
 
   @override
-  String get showPostCommunityFirst => 'Show Community and Author First';
+  String get showPostCommunityFirst => 'Community und Autor zuerst anzeigen';
 
   @override
   String get showPostCommunityIcons => 'Community-Symbole anzeigen';
