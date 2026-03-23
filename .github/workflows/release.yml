@@ -11,6 +11,9 @@ on:
         description: Is this a dry run (do not generate draft release)?
         default: true
 
+permissions:
+  contents: write
+
 jobs:
   build_android:
     runs-on: ubuntu-latest
