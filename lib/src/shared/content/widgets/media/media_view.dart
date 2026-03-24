@@ -156,10 +156,18 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     handleVideoLink(context, url: url);
   }
 
+  String? get _resolvedImageUrl => widget.media.imageUrl ?? widget.media.mediaUrl ?? widget.media.originalUrl ?? widget.media.thumbnailUrl;
+
+  String? get _resolvedPreviewUrl => widget.media.thumbnailUrl ?? widget.media.imageUrl ?? widget.media.mediaUrl ?? widget.media.originalUrl;
+
   /// Overlays the image as an ImageViewer.
   void showImage() {
     _markPostAsRead();
-    _openImage(url: widget.media.imageUrl);
+
+    final url = _resolvedImageUrl;
+    if (url != null) {
+      _openImage(url: url);
+    }
   }
 
   double getMinHeight() {
@@ -209,6 +217,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
     final imageUrlCandidate = widget.media.imageUrl ?? widget.media.mediaUrl ?? widget.media.originalUrl;
     final isImage = isImageUrl(imageUrlCandidate ?? '');
+    final previewUrl = _resolvedPreviewUrl;
 
     // If hiding thumbnails is enabled or if the media has no image URL,
     // display a link preview instead in comfortable mode.
@@ -317,7 +326,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                           opacity: _overlayAnimationController,
                           child: buildImageViewerWidget(
                             context,
-                            url: widget.media.thumbnailUrl ?? widget.media.mediaUrl,
+                            url: previewUrl,
                             postId: widget.postId,
                             navigateToPost: widget.navigateToPost,
                             isPeek: true,
@@ -338,6 +347,19 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
           },
         ),
       );
+    }
+
+    if (widget.media.mediaType == MediaType.image && previewUrl == null) {
+      if (widget.media.originalUrl != null) {
+        return LinkInformation(
+          viewMode: widget.viewMode,
+          url: widget.media.originalUrl,
+          mediaType: widget.media.mediaType,
+          showEdgeToEdgeImages: widget.edgeToEdgeImages,
+        );
+      }
+
+      return const SizedBox.shrink();
     }
 
     if (widget.media.mediaType == MediaType.video) {
@@ -406,7 +428,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
             alignment: Alignment.center,
             children: [
               ImagePreview(
-                url: widget.media.thumbnailUrl ?? widget.media.imageUrl ?? widget.media.originalUrl!,
+                url: previewUrl!,
                 contentType: widget.media.contentType,
                 width: width,
                 height: height,

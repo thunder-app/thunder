@@ -18,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_dimension_parser/image_dimension_parser.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/utils/media_url_utils.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/shared/content/widgets/media/experimental_image_viewer.dart';
 import 'package:thunder/src/shared/content/widgets/media/image_viewer.dart';
@@ -25,62 +26,16 @@ import 'package:thunder/src/shared/content/widgets/media/image_viewer.dart';
 final Map<String, Size> _imageDimensionsCache = <String, Size>{};
 
 /// Given a URL, returns the original URL if it is a proxy URL.
-String fetchProxyImageUrl(String url) {
-  String currentUrl = url;
-
-  while (true) {
-    Uri uri;
-
-    try {
-      uri = Uri.parse(currentUrl);
-    } catch (e) {
-      return currentUrl;
-    }
-
-    if (isImageProxyUrl(currentUrl)) {
-      Uri? parsedUri = Uri.tryParse(uri.queryParameters['url'] ?? '');
-
-      if (parsedUri != null) {
-        currentUrl = parsedUri.toString();
-        continue;
-      }
-    }
-
-    return currentUrl;
-  }
-}
+String fetchProxyImageUrl(String url) => resolveProxyImageUrl(url);
 
 /// Checks if the given URL is an image proxy URL.
 bool isImageProxyUrl(String url) {
-  try {
-    final uri = Uri.parse(url);
-    return uri.path.contains('/image_proxy') && uri.queryParameters.containsKey('url');
-  } catch (e) {
-    return false;
-  }
+  return isImageProxyUrlResolved(url);
 }
 
 /// Determines if the given URL is an image URL.
 bool isImageUrl(String url) {
-  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.avif', '@jpeg'];
-
-  if (isImageProxyUrl(url)) return true;
-
-  Uri uri;
-
-  try {
-    uri = Uri.parse(url);
-  } catch (e) {
-    return false;
-  }
-
-  for (final extension in imageExtensions) {
-    if (uri.path.toLowerCase().endsWith(extension)) {
-      return true;
-    }
-  }
-
-  return false;
+  return isSupportedImageUrl(url);
 }
 
 /// Determines if the given URL is an SVG.

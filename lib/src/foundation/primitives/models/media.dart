@@ -1,4 +1,5 @@
 import 'package:thunder/src/foundation/primitives/enums/media_type.dart';
+import 'package:thunder/src/foundation/utils/media_url_utils.dart';
 
 /// The Media class represents information for a given media source.
 class Media {
@@ -40,7 +41,7 @@ class Media {
   String? contentType;
 
   /// Gets the full-size image URL, if any
-  String? get imageUrl => _isImageUrl(mediaUrl ?? '') ? mediaUrl : thumbnailUrl;
+  String? get imageUrl => isSupportedImageUrl(mediaUrl ?? '') ? mediaUrl : thumbnailUrl;
 
   @override
   String toString() {
@@ -57,25 +58,4 @@ class Media {
       }
       ''';
   }
-}
-
-bool _isImageUrl(String url) {
-  final imageExtensions = <String>[
-    '.png',
-    '.jpg',
-    '.jpeg',
-    '.gif',
-    '.bmp',
-    '.webp',
-    '.avif',
-    '@jpeg',
-  ];
-
-  if (url.contains('/image_proxy')) return true;
-
-  final uri = Uri.tryParse(url);
-  if (uri == null) return false;
-
-  final path = uri.path.toLowerCase();
-  return imageExtensions.any(path.endsWith);
 }
