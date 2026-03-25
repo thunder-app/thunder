@@ -100,7 +100,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
 
   // Set the proper alt text for the media
   if (media.mediaType == MediaType.text) {
-    media.altText = post.body;
+    media.altText = post.body ?? post.name;
   } else if (media.mediaType == MediaType.image) {
     media.altText = post.altText;
   }
