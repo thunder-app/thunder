@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
@@ -21,6 +22,7 @@ import 'package:thunder/packages/ui/ui.dart' show ListPickerItem;
 
 /// The main search page that handles search functionality.
 class SearchPage extends StatefulWidget {
+  /// The account for which the search is being performed.
   final Account account;
 
   /// Limits the search to a specific community.
@@ -58,13 +60,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     // Initialize community-scoped search defaults.
     if (widget.community != null) {
       final community = widget.community!;
-      context.read<SearchBloc>().add(
-            SearchFiltersUpdated(
-              searchType: MetaSearchType.posts,
-              communityFilter: community.id,
-              communityFilterName: community.name,
-            ),
-          );
+      context.read<SearchBloc>().add(SearchFiltersUpdated(searchType: MetaSearchType.posts, communityFilter: community.id, communityFilterName: community.name));
+
       WidgetsBinding.instance.addPostFrameCallback((_) => searchTextFieldFocus.requestFocus());
     }
 
@@ -86,10 +83,51 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void initializePreferences() {
     final prefs = UserPreferences.instance.preferences;
 
-    final sortType = SearchSortType.values.byName(prefs.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
-    final sortTypeItem = allSearchSortTypeItems.firstWhere((item) => item.payload == sortType);
+    final sortType = _resolveInitialSearchSortType(prefs);
+    final sortTypeItem = _resolveSearchSortItem(sortType);
 
     context.read<SearchBloc>().add(SearchFiltersUpdated(sortType: sortType, sortTypeIcon: sortTypeItem.icon, sortTypeLabel: sortTypeItem.label));
+  }
+
+  SearchSortType _resolveInitialSearchSortType(SharedPreferences prefs) {
+    final storedSortTypeName = prefs.getString("search_default_sort_type");
+
+    for (final sortType in SearchSortType.values) {
+      if (sortType.name == storedSortTypeName) {
+        return sortType;
+      }
+    }
+
+    if (storedSortTypeName != null && storedSortTypeName != DEFAULT_SEARCH_SORT_TYPE.name) {
+      prefs.setString("search_default_sort_type", DEFAULT_SEARCH_SORT_TYPE.name);
+    }
+
+    return DEFAULT_SEARCH_SORT_TYPE;
+  }
+
+  List<ListPickerItem<SearchSortType>> _searchSortItems() {
+    return [
+      ...getDefaultSearchSortTypeItems(account: widget.account),
+      ...getTopSearchSortTypeItems(account: widget.account),
+    ];
+  }
+
+  ListPickerItem<SearchSortType> _resolveSearchSortItem(SearchSortType sortType) {
+    final items = _searchSortItems();
+
+    final defaultItem = items.firstWhere(
+      (item) => item.payload == DEFAULT_SEARCH_SORT_TYPE,
+      orElse: () => ListPickerItem(
+        payload: DEFAULT_SEARCH_SORT_TYPE,
+        icon: Icons.military_tech,
+        label: GlobalContext.l10n.topYear,
+      ),
+    );
+
+    return items.firstWhere(
+      (item) => item.payload == sortType,
+      orElse: () => defaultItem,
+    );
   }
 
   FutureOr<bool> onBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
