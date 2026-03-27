@@ -14,8 +14,7 @@ List<String> parsePiefedTags(dynamic value) {
     Iterable() => _normalizePiefedTags(
         value.map((tag) => switch (tag) {
               String() => tag,
-              Map() =>
-                (tag['name'] ?? tag['tag'] ?? tag['title'] ?? '').toString(),
+              Map() => (tag['name'] ?? tag['tag'] ?? tag['title'] ?? '').toString(),
               _ => '',
             }),
       ),
@@ -31,8 +30,7 @@ List<String> normalizePiefedTags(Iterable<String>? tags) {
   return _normalizePiefedTags(tags);
 }
 
-String encodePiefedTags(Iterable<String>? tags) =>
-    normalizePiefedTags(tags).join(', ');
+String encodePiefedTags(Iterable<String>? tags) => normalizePiefedTags(tags).join(', ');
 
 List<int> normalizePiefedFlairIds(Iterable<int>? flairIds) {
   if (flairIds == null) {
@@ -51,10 +49,7 @@ List<String>? resolveSubmittedPiefedTags(
     return normalizedTags.isEmpty ? null : normalizedTags;
   }
 
-  return const ListEquality<String>()
-          .equals(normalizedTags, normalizePiefedTags(originalTags))
-      ? null
-      : normalizedTags;
+  return const ListEquality<String>().equals(normalizedTags, normalizePiefedTags(originalTags)) ? null : normalizedTags;
 }
 
 List<int>? resolveSubmittedPiefedFlairIds(
@@ -66,10 +61,7 @@ List<int>? resolveSubmittedPiefedFlairIds(
     return normalizedFlairIds.isEmpty ? null : normalizedFlairIds;
   }
 
-  return const SetEquality<int>().equals(normalizedFlairIds.toSet(),
-          normalizePiefedFlairIds(originalFlairIds).toSet())
-      ? null
-      : normalizedFlairIds;
+  return const SetEquality<int>().equals(normalizedFlairIds.toSet(), normalizePiefedFlairIds(originalFlairIds).toSet()) ? null : normalizedFlairIds;
 }
 
 List<int> retainValidPiefedFlairSelection({
