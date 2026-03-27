@@ -198,6 +198,7 @@ class _PostCardState extends State<PostCard> {
     );
     final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
     final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
+    final flairs = feedType == FeedType.community ? widget.post.flairs : const <ThunderFlair>[];
     final postIsCompact = useCompactView ||
         (pinnedPostsUseCompactView && (widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity))) ||
         (linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
@@ -208,6 +209,7 @@ class _PostCardState extends State<PostCard> {
             post: widget.post,
             feedType: feedType,
             feedListType: widget.feedListType,
+            flairs: flairs,
             creator: widget.post.creator!,
             community: widget.post.community!,
             indicateRead: widget.indicateRead,
@@ -222,6 +224,7 @@ class _PostCardState extends State<PostCard> {
             post: widget.post,
             feedType: feedType,
             feedListType: widget.feedListType,
+            flairs: flairs,
             hideThumbnails: hideThumbnails,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,

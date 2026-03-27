@@ -9,6 +9,7 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
+import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
@@ -18,6 +19,7 @@ import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
@@ -181,12 +183,51 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
+  Future<ThunderPost> createPostWithMetadata({
+    required String title,
+    required int communityId,
+    String? url,
+    String? contents,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) async {
+    ThunderPost post = await createPost(
+      title: title,
+      communityId: communityId,
+      url: url,
+      contents: contents,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+      altText: altText,
+    );
+
+    return _applyPostMetadata(
+      post: post,
+      title: title,
+      url: url,
+      contents: contents,
+      altText: altText,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+      tags: tags,
+      flairIds: flairIds,
+    );
+  }
+
+  @override
   Future<ThunderPost> editPost({
     required int postId,
     required String title,
     String? url,
     String? contents,
     String? altText,
+    String? tags,
     bool? nsfw,
     int? languageId,
     String? customThumbnail,
@@ -197,10 +238,49 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'url': url,
       'body': contents,
       'alt_text': altText,
+      'tags': tags,
       'nsfw': nsfw,
       'language_id': languageId,
     });
     return ThunderPost.fromPiefedPostView(json['post_view']);
+  }
+
+  @override
+  Future<ThunderPost> editPostWithMetadata({
+    required int postId,
+    required String title,
+    String? url,
+    String? contents,
+    String? altText,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) async {
+    ThunderPost post = await editPost(
+      postId: postId,
+      title: title,
+      url: url,
+      contents: contents,
+      altText: altText,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+    );
+
+    return _applyPostMetadata(
+      post: post,
+      title: title,
+      url: url,
+      contents: contents,
+      altText: altText,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+      tags: tags,
+      flairIds: flairIds,
+    );
   }
 
   @override
@@ -342,11 +422,12 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   /// Assign flair to a post.
-  Future<Map<String, dynamic>> setPostFlair({required int postId, List<int>? flairIdList}) async {
-    return await request(HttpMethod.post, '$basePath/post/assign_flair', {
+  Future<ThunderPost> setPostFlair({required int postId, List<int>? flairIds}) async {
+    final json = await request(HttpMethod.post, '$basePath/post/assign_flair', {
       'post_id': postId,
-      'flair_id_list': flairIdList,
+      'flair_id_list': flairIds,
     });
+    return ThunderPost.fromPiefedPostView(json);
   }
 
   /// Subscribe or unsubscribe from a post.
@@ -639,7 +720,46 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       site: json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
       moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList(),
       discussionLanguages: (json['discussion_languages'] as List?)?.cast<int>() ?? [],
+      flairs: ThunderFlair.parsePiefedList(json['community_view']?['flair_list']),
     );
+  }
+
+  Future<ThunderPost> _applyPostMetadata({
+    required ThunderPost post,
+    required String title,
+    String? url,
+    String? contents,
+    String? altText,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) async {
+    ThunderPost updatedPost = post;
+
+    if (tags != null) {
+      updatedPost = await editPost(
+        postId: post.id,
+        title: title,
+        url: url,
+        contents: contents,
+        altText: altText,
+        tags: encodePiefedTags(tags),
+        nsfw: nsfw,
+        languageId: languageId,
+        customThumbnail: customThumbnail,
+      );
+    }
+
+    if (flairIds != null) {
+      updatedPost = await setPostFlair(
+        postId: post.id,
+        flairIds: normalizePiefedFlairIds(flairIds),
+      );
+    }
+
+    return updatedPost;
   }
 
   @override

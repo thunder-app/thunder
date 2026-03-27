@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/foundation/primitives/enums/subscription_status.dart';
+import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/media.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
@@ -128,6 +130,12 @@ class ThunderPost extends Equatable {
   /// The media associated with the post
   final List<Media> media;
 
+  /// Tags returned by PieFed.
+  final List<String> tags;
+
+  /// Flair metadata returned by PieFed.
+  final List<ThunderFlair> flairs;
+
   const ThunderPost({
     required this.id,
     required this.name,
@@ -168,6 +176,8 @@ class ThunderPost extends Equatable {
     this.myVote,
     this.unreadComments,
     this.media = const [],
+    this.tags = const [],
+    this.flairs = const [],
     this.textPreview,
   });
 
@@ -212,6 +222,8 @@ class ThunderPost extends Equatable {
         myVote,
         unreadComments,
         media,
+        tags,
+        flairs,
         textPreview,
       ];
 
@@ -255,6 +267,8 @@ class ThunderPost extends Equatable {
     int? myVote,
     int? unreadComments,
     List<Media>? media,
+    List<String>? tags,
+    List<ThunderFlair>? flairs,
     String? textPreview,
   }) {
     return ThunderPost(
@@ -297,6 +311,8 @@ class ThunderPost extends Equatable {
       myVote: myVote ?? this.myVote,
       unreadComments: unreadComments ?? this.unreadComments,
       media: media ?? this.media,
+      tags: tags ?? this.tags,
+      flairs: flairs ?? this.flairs,
       textPreview: textPreview ?? this.textPreview,
     );
   }
@@ -406,6 +422,8 @@ class ThunderPost extends Equatable {
       featuredCommunity: post['sticky'],
       featuredLocal: false, // Not available in PieFed
       altText: post['alt_text'],
+      tags: parsePiefedTags(post['tags']),
+      flairs: ThunderFlair.parsePiefedList(postView['flair_list']),
       creator: ThunderUser.fromPiefedUser(creator),
       community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
       imageDetails: post['image_details'],
@@ -449,6 +467,8 @@ class ThunderPost extends Equatable {
       featuredCommunity: post['sticky'],
       featuredLocal: false, // Not available in PieFed
       altText: post['alt_text'],
+      tags: parsePiefedTags(post['tags']),
+      flairs: ThunderFlair.parsePiefedList(post['flair_list']),
       media: media,
     );
   }

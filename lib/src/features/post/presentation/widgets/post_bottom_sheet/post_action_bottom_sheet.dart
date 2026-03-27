@@ -238,7 +238,19 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
               if (currentPage == GeneralPostAction.general)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                  child: LanguagePostCardMetaData(languageId: widget.post.languageId, account: account),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LanguagePostCardMetaData(languageId: widget.post.languageId, account: account),
+                      if (widget.post.flairs.isNotEmpty || widget.post.tags.isNotEmpty) ...[
+                        const SizedBox(height: 8.0),
+                        if (widget.post.flairs.isNotEmpty) PostFlairTags(flairs: widget.post.flairs),
+                        if (widget.post.flairs.isNotEmpty && widget.post.tags.isNotEmpty) const SizedBox(height: 8.0),
+                        if (widget.post.tags.isNotEmpty) PostFlairTags(tags: widget.post.tags),
+                      ],
+                    ],
+                  ),
                 ),
               const SizedBox(height: 16.0),
               actions,

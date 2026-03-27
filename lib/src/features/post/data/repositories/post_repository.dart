@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 
@@ -40,6 +40,8 @@ abstract class PostRepository {
     String? url,
     String? customThumbnail,
     String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
     bool? nsfw,
     int? postIdBeingEdited,
     int? languageId,
@@ -188,6 +190,8 @@ class PostRepositoryImpl implements PostRepository {
     String? url,
     String? customThumbnail,
     String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
     bool? nsfw,
     int? postIdBeingEdited,
     int? languageId,
@@ -198,24 +202,28 @@ class PostRepositoryImpl implements PostRepository {
     ThunderPost response;
 
     if (postIdBeingEdited != null) {
-      response = await _api.editPost(
+      response = await _api.editPostWithMetadata(
         postId: postIdBeingEdited,
         title: name,
         contents: body,
         url: url?.isEmpty == true ? null : url,
         customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
         altText: altText?.isEmpty == true ? null : altText,
+        tags: tags,
+        flairIds: flairIds,
         nsfw: nsfw,
         languageId: languageId,
       );
     } else {
-      response = await _api.createPost(
+      response = await _api.createPostWithMetadata(
         communityId: communityId,
         title: name,
         contents: body,
         url: url?.isEmpty == true ? null : url,
         customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
         altText: altText?.isEmpty == true ? null : altText,
+        tags: tags,
+        flairIds: flairIds,
         nsfw: nsfw,
         languageId: languageId,
       );

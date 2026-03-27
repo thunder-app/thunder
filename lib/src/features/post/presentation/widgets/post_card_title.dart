@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/post/post.dart';
 
 /// Creates the title of a post card. This includes the post title and any status icons.
 class PostCardTitle extends StatelessWidget {
@@ -32,6 +32,9 @@ class PostCardTitle extends StatelessWidget {
   /// Determines whether the title should be dimmed or not. This is usually to indicate when a post has been read.
   final bool dim;
 
+  /// PieFed flair metadata attached to the post.
+  final List<ThunderFlair> flairs;
+
   const PostCardTitle({
     super.key,
     required this.title,
@@ -42,6 +45,7 @@ class PostCardTitle extends StatelessWidget {
     this.deleted = false,
     this.removed = false,
     this.dim = false,
+    this.flairs = const [],
   });
 
   Color? _getDimmedColor(Color? color) => color?.withValues(alpha: 0.55);
@@ -70,21 +74,31 @@ class PostCardTitle extends StatelessWidget {
 
     final statuses = PostStatusIcon(hidden: hidden, locked: locked, saved: saved, pinned: pinned, deleted: deleted, removed: removed, dim: dim);
 
-    return Text.rich(
-      TextSpan(
-        children: [
-          WidgetSpan(child: statuses),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text.rich(
           TextSpan(
-            text: title,
-            style: textStyle?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: fontSize,
-              color: _getTitleColor(theme),
-            ),
+            children: [
+              WidgetSpan(child: statuses),
+              TextSpan(
+                text: title,
+                style: textStyle?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: fontSize,
+                  color: _getTitleColor(theme),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      textScaler: TextScaler.noScaling,
+          textScaler: TextScaler.noScaling,
+        ),
+        if (flairs.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: PostFlairTags(flairs: flairs, dim: dim),
+          ),
+      ],
     );
   }
 }

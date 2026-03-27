@@ -13,6 +13,7 @@ import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/features/post/presentation/widgets/post_flair_tags.dart';
 
 /// Displays the title and related information for a given post.
 ///
@@ -109,10 +110,20 @@ class PostBodyTitle extends StatelessWidget {
     final theme = Theme.of(context);
     final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
 
-    return ScalableText(
-      post.name,
-      textScaleFactor: titleFontSizeScale.textScaleFactor,
-      style: theme.textTheme.titleMedium,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ScalableText(
+          post.name,
+          textScaleFactor: titleFontSizeScale.textScaleFactor,
+          style: theme.textTheme.titleMedium,
+        ),
+        if (post.flairs.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: PostFlairTags(flairs: post.flairs),
+          ),
+      ],
     );
   }
 

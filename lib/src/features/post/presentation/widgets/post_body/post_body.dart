@@ -206,6 +206,19 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       );
     }
 
+    if (post.tags.isNotEmpty) {
+      children.add(
+        Expandable(
+          controller: expandableController,
+          collapsed: const SizedBox.shrink(),
+          expanded: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: PostFlairTags(tags: post.tags),
+          ),
+        ),
+      );
+    }
+
     children.add(
       PostBodyMetadata(
         languageId: post.languageId,

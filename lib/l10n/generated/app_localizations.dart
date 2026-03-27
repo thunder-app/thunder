@@ -3420,6 +3420,30 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get postTitle;
 
+  /// Label for post tags
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get postTags;
+
+  /// Helper text for comma-separated post tags
+  ///
+  /// In en, this message translates to:
+  /// **'Separate tags with commas'**
+  String get postTagsHelperText;
+
+  /// Label for post flair selection
+  ///
+  /// In en, this message translates to:
+  /// **'Flairs'**
+  String get postFlairs;
+
+  /// Helper text when no post flairs are available
+  ///
+  /// In en, this message translates to:
+  /// **'No flair options available for this community'**
+  String get postFlairsUnavailable;
+
   /// Setting for post title font scale
   ///
   /// In en, this message translates to:

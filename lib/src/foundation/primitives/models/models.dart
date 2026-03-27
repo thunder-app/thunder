@@ -1,9 +1,11 @@
 export 'media.dart';
 export 'modlog_event_item.dart';
 export 'parsed_link.dart';
+export 'piefed_post_metadata.dart';
 export 'thunder_comment.dart';
 export 'thunder_comment_report.dart';
 export 'thunder_community.dart';
+export 'thunder_flair.dart';
 export 'thunder_instance_info.dart';
 export 'thunder_language.dart';
 export 'thunder_local_user.dart';

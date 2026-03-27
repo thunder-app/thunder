@@ -25,6 +25,9 @@ class PostCardViewComfortable extends StatelessWidget {
   /// Optional feed list type override for contexts without a FeedBloc.
   final FeedListType? feedListType;
 
+  /// Flairs to render with the title.
+  final List<ThunderFlair> flairs;
+
   /// Whether to hide thumbnails.
   final bool hideThumbnails;
 
@@ -81,6 +84,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.post,
     this.feedType,
     this.feedListType,
+    this.flairs = const [],
     required this.hideThumbnails,
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
@@ -232,6 +236,7 @@ class PostCardViewComfortable extends StatelessWidget {
         deleted: post.deleted,
         removed: post.removed,
         dim: dim,
+        flairs: flairs,
       ),
     );
 

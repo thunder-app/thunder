@@ -1916,6 +1916,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get postTitle => 'Título';
 
   @override
+  String get postTags => 'Tags';
+
+  @override
+  String get postTagsHelperText => 'Separate tags with commas';
+
+  @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postTitleFontScale =>
       'Tamaño de la fuente del título de la publicación';
 

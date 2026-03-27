@@ -1913,6 +1913,19 @@ class AppLocalizationsTa extends AppLocalizations {
   String get postTitle => 'தலைப்பு';
 
   @override
+  String get postTags => 'Tags';
+
+  @override
+  String get postTagsHelperText => 'Separate tags with commas';
+
+  @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postTitleFontScale => 'தலைப்பு எழுத்துரு அளவை இடுங்கள்';
 
   @override

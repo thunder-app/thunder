@@ -32,6 +32,9 @@ class PostCardViewCompact extends StatelessWidget {
   /// Optional feed list type override for contexts without a FeedBloc.
   final FeedListType? feedListType;
 
+  /// Flairs to render with the title.
+  final List<ThunderFlair> flairs;
+
   /// Determines whether the media thumbnails should be shown or not.
   final bool showMedia;
 
@@ -47,6 +50,7 @@ class PostCardViewCompact extends StatelessWidget {
     this.indicateRead,
     this.feedType,
     this.feedListType,
+    this.flairs = const [],
     this.showMedia = true,
     required this.isLastTapped,
   });
@@ -115,6 +119,7 @@ class PostCardViewCompact extends StatelessWidget {
                   deleted: post.deleted,
                   removed: post.removed,
                   dim: dim,
+                  flairs: flairs,
                 ),
                 if (!showCommunityFirst) postCardAuthor,
                 PostCardMetadata(

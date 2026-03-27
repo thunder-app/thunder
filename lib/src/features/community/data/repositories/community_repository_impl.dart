@@ -60,6 +60,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
       site: response.site,
       moderators: response.moderators,
       discussionLanguages: response.discussionLanguages,
+      flairs: response.flairs,
     );
   }
 

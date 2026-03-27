@@ -2165,6 +2165,22 @@
   "@postSwipeGesturesHint": {},
   "postTitle": "Title",
   "@postTitle": {},
+  "postTags": "Tags",
+  "@postTags": {
+    "description": "Label for post tags"
+  },
+  "postTagsHelperText": "Separate tags with commas",
+  "@postTagsHelperText": {
+    "description": "Helper text for comma-separated post tags"
+  },
+  "postFlairs": "Flairs",
+  "@postFlairs": {
+    "description": "Label for post flair selection"
+  },
+  "postFlairsUnavailable": "No flair options available for this community",
+  "@postFlairsUnavailable": {
+    "description": "Helper text when no post flairs are available"
+  },
   "postTitleFontScale": "Post Title Font Scale",
   "@postTitleFontScale": {
     "description": "Setting for post title font scale"

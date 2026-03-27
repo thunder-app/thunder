@@ -20,6 +20,7 @@ import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
@@ -196,6 +197,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     String? url,
     String? contents,
     String? altText,
+    String? tags,
     bool? nsfw,
     int? languageId,
     String? customThumbnail,
@@ -475,6 +477,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       site: json['site'] != null ? ThunderSite.fromLemmySite(json['site']) : null,
       moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList(),
       discussionLanguages: (json['discussion_languages'] as List).cast<int>(),
+      flairs: const <ThunderFlair>[],
     );
   }
 

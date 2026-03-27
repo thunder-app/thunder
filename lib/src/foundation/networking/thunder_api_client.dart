@@ -12,6 +12,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site_response.d
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
@@ -41,6 +42,7 @@ typedef GetCommunityResponse = ({
   ThunderSite? site,
   List<ThunderUser> moderators,
   List<int> discussionLanguages,
+  List<ThunderFlair> flairs,
 });
 
 /// Response from getting a user.
@@ -143,10 +145,64 @@ abstract class ThunderApiClient {
     String? url,
     String? contents,
     String? altText,
+    String? tags,
     bool? nsfw,
     int? languageId,
     String? customThumbnail,
   });
+
+  /// Create a new post and apply any platform-specific metadata.
+  Future<ThunderPost> createPostWithMetadata({
+    required String title,
+    required int communityId,
+    String? url,
+    String? contents,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) async {
+    return createPost(
+      title: title,
+      communityId: communityId,
+      url: url,
+      contents: contents,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+      altText: altText,
+    );
+  }
+
+  /// Edit an existing post and apply any platform-specific metadata.
+  ///
+  /// For metadata lists, `null` leaves existing values unchanged, an empty list clears them,
+  /// and a non-empty list applies the supplied values.
+  Future<ThunderPost> editPostWithMetadata({
+    required int postId,
+    required String title,
+    String? url,
+    String? contents,
+    String? altText,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) async {
+    return editPost(
+      postId: postId,
+      title: title,
+      url: url,
+      contents: contents,
+      altText: altText,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+    );
+  }
 
   /// Vote on a post.
   Future<ThunderPost> votePost({required int postId, required int score});

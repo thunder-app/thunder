@@ -1886,6 +1886,19 @@ class AppLocalizationsSk extends AppLocalizations {
   String get postTitle => 'Nadpis';
 
   @override
+  String get postTags => 'Tags';
+
+  @override
+  String get postTagsHelperText => 'Separate tags with commas';
+
+  @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postTitleFontScale => 'Mierka písma nadpisu';
 
   @override

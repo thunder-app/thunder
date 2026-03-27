@@ -2,6 +2,7 @@ export 'post_bottom_sheet/community_post_action_bottom_sheet.dart';
 export 'post_bottom_sheet/general_post_action_bottom_sheet.dart';
 export 'post_bottom_sheet/post_action_bottom_sheet.dart';
 export 'post_card_title.dart';
+export 'post_flair_tags.dart';
 export 'post_page_app_bar.dart';
 export 'post_bottom_sheet/post_post_action_bottom_sheet.dart';
 export 'post_status_icon.dart';

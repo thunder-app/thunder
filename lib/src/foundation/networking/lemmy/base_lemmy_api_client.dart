@@ -119,11 +119,62 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     String? url,
     String? contents,
     String? altText,
+    String? tags,
     bool? nsfw,
     int? languageId,
     String? customThumbnail,
   }) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
+  }
+
+  @override
+  Future<ThunderPost> createPostWithMetadata({
+    required String title,
+    required int communityId,
+    String? url,
+    String? contents,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) {
+    return createPost(
+      title: title,
+      communityId: communityId,
+      url: url,
+      contents: contents,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+      altText: altText,
+    );
+  }
+
+  @override
+  Future<ThunderPost> editPostWithMetadata({
+    required int postId,
+    required String title,
+    String? url,
+    String? contents,
+    String? altText,
+    bool? nsfw,
+    int? languageId,
+    String? customThumbnail,
+    List<String>? tags,
+    List<int>? flairIds,
+  }) {
+    return editPost(
+      postId: postId,
+      title: title,
+      url: url,
+      contents: contents,
+      altText: altText,
+      nsfw: nsfw,
+      languageId: languageId,
+      customThumbnail: customThumbnail,
+    );
   }
 
   @override
