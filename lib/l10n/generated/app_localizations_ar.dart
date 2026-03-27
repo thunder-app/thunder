@@ -1840,6 +1840,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get postCreatedSuccessfully => 'Post created successfully!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Post locked. No replies allowed.';
 
   @override
@@ -1867,20 +1874,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'Looking to use buttons instead? Change what buttons appear on post cards in general settings.';
 
   @override
-  String get postTitle => 'Title';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Title';
 
   @override
   String get postTitleFontScale => 'Post Title Font Scale';

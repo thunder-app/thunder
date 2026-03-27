@@ -2139,6 +2139,14 @@
   "@postCreatedSuccessfully": {
     "description": "Notifying the user that their post was created successfully"
   },
+  "postFlairs": "Flairs",
+  "@postFlairs": {
+    "description": "Label for post flair selection"
+  },
+  "postFlairsUnavailable": "No flair options available for this community",
+  "@postFlairsUnavailable": {
+    "description": "Helper text when no post flairs are available"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postMetadataInstructions": "You can customize the metadata information by dragging and dropping the desired information",
@@ -2163,8 +2171,6 @@
   },
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
   "@postSwipeGesturesHint": {},
-  "postTitle": "Title",
-  "@postTitle": {},
   "postTags": "Tags",
   "@postTags": {
     "description": "Label for post tags"
@@ -2173,14 +2179,8 @@
   "@postTagsHelperText": {
     "description": "Helper text for comma-separated post tags"
   },
-  "postFlairs": "Flairs",
-  "@postFlairs": {
-    "description": "Label for post flair selection"
-  },
-  "postFlairsUnavailable": "No flair options available for this community",
-  "@postFlairsUnavailable": {
-    "description": "Helper text when no post flairs are available"
-  },
+  "postTitle": "Title",
+  "@postTitle": {},
   "postTitleFontScale": "Post Title Font Scale",
   "@postTitleFontScale": {
     "description": "Setting for post title font scale"

@@ -1846,6 +1846,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get postCreatedSuccessfully => 'Post created successfully!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Пост заблокирован. Ответы не допускаются.';
 
   @override
@@ -1873,20 +1880,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Хотите вместо этого использовать кнопки? Измените, какие кнопки отображаются на открытках, в общих настройках.';
 
   @override
-  String get postTitle => 'Название';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Название';
 
   @override
   String get postTitleFontScale => 'Post Title Font Scale';

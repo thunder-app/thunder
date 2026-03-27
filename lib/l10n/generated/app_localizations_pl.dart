@@ -1856,6 +1856,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get postCreatedSuccessfully => 'Utworzono wpis!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Wpis zablokowany. Nie można odpowiedzieć.';
 
   @override
@@ -1882,20 +1889,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wolisz używać przycisków? Zmień jakie przyciski będą widoczne na karcie wpisu w ustawieniach generalnych.';
 
   @override
-  String get postTitle => 'Tytuł';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Tytuł';
 
   @override
   String get postTitleFontScale => 'Skala Czcionki Tytułu Wpisu';

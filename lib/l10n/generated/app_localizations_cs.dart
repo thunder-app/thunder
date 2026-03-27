@@ -1854,6 +1854,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get postCreatedSuccessfully => 'Příspěvek úspěšně vytvořen!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Příspěvek zamčen. Odpovědi nejsou povoleny.';
 
   @override
@@ -1880,20 +1887,13 @@ class AppLocalizationsCs extends AppLocalizations {
       'Chcete spíš používat tlačítka? Změňte, jaká tlačítka se zobrazují na příspěvkových kartách v základním nastavení.';
 
   @override
-  String get postTitle => 'Nadpis';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Nadpis';
 
   @override
   String get postTitleFontScale => 'Velikost Fontu u Nadpisu Příspěvku';

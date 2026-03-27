@@ -1857,6 +1857,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get postCreatedSuccessfully => 'Gönderi başarıyla oluşturuldu!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Gönderi kilitli. Yanıtlara izin verilmiyor.';
 
   @override
@@ -1884,20 +1891,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bunun yerine düğmeleri mi kullanmak istiyorsunuz? Genel ayarlarda gönderi kartlarında hangi düğmelerin görüneceğini değiştirin.';
 
   @override
-  String get postTitle => 'Başlık';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Başlık';
 
   @override
   String get postTitleFontScale => 'Gönderi Başlığı Yazı Tipi Ölçeği';

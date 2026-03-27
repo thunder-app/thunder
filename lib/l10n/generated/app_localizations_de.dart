@@ -1879,6 +1879,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get postCreatedSuccessfully => 'Post erfolgreich erstellt!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Post gesperrt. Keine Antworten erlaubt.';
 
   @override
@@ -1906,20 +1913,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Möchtest du stattdessen Buttons verwenden? Ändere in den allgemeinen Einstellungen, welche Buttons auf den Karten erscheinen.';
 
   @override
-  String get postTitle => 'Titel';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Titel';
 
   @override
   String get postTitleFontScale => 'Posttitel Schriftgröße';

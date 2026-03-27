@@ -3366,6 +3366,18 @@ abstract class AppLocalizations {
   /// **'Post created successfully!'**
   String get postCreatedSuccessfully;
 
+  /// Label for post flair selection
+  ///
+  /// In en, this message translates to:
+  /// **'Flairs'**
+  String get postFlairs;
+
+  /// Helper text when no post flairs are available
+  ///
+  /// In en, this message translates to:
+  /// **'No flair options available for this community'**
+  String get postFlairsUnavailable;
+
   /// No description provided for @postLocked.
   ///
   /// In en, this message translates to:
@@ -3414,12 +3426,6 @@ abstract class AppLocalizations {
   /// **'Looking to use buttons instead? Change what buttons appear on post cards in general settings.'**
   String get postSwipeGesturesHint;
 
-  /// No description provided for @postTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Title'**
-  String get postTitle;
-
   /// Label for post tags
   ///
   /// In en, this message translates to:
@@ -3432,17 +3438,11 @@ abstract class AppLocalizations {
   /// **'Separate tags with commas'**
   String get postTagsHelperText;
 
-  /// Label for post flair selection
+  /// No description provided for @postTitle.
   ///
   /// In en, this message translates to:
-  /// **'Flairs'**
-  String get postFlairs;
-
-  /// Helper text when no post flairs are available
-  ///
-  /// In en, this message translates to:
-  /// **'No flair options available for this community'**
-  String get postFlairsUnavailable;
+  /// **'Title'**
+  String get postTitle;
 
   /// Setting for post title font scale
   ///

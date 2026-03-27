@@ -1886,6 +1886,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get postCreatedSuccessfully => '¡Publicación creada exitosamente!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Tema bloqueado. No se permiten respuestas.';
 
   @override
@@ -1913,20 +1920,13 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Quieres utilizar los botones? Cambia los botones que aparecen en los temas en los ajustes generales.';
 
   @override
-  String get postTitle => 'Título';
-
-  @override
   String get postTags => 'Tags';
 
   @override
   String get postTagsHelperText => 'Separate tags with commas';
 
   @override
-  String get postFlairs => 'Flairs';
-
-  @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postTitle => 'Título';
 
   @override
   String get postTitleFontScale =>
