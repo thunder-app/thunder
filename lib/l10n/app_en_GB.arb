@@ -2953,5 +2953,21 @@
     "showPostCommunityFirst": "Show Community and Author First",
     "@showPostCommunityFirst": {
         "description": "Toggle to show community and author first."
+    },
+    "postTagsHelperText": "Separate tags with commas",
+    "@postTagsHelperText": {
+        "description": "Helper text for comma-separated post tags"
+    },
+    "postFlairs": "Flairs",
+    "@postFlairs": {
+        "description": "Label for post flair selection"
+    },
+    "postFlairsUnavailable": "No flair options available for this community",
+    "@postFlairsUnavailable": {
+        "description": "Helper text when no post flairs are available"
+    },
+    "postTags": "Tags",
+    "@postTags": {
+        "description": "Label for post tags"
     }
 }
