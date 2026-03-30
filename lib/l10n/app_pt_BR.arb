@@ -3513,5 +3513,21 @@
     "showPostCommunityFirst": "Mostrar comunidade e autor primeiro",
     "@showPostCommunityFirst": {
         "description": "Toggle to show community and author first."
+    },
+    "postTags": "Etiquetas",
+    "@postTags": {
+        "description": "Label for post tags"
+    },
+    "postTagsHelperText": "Separe as etiquetas com vírgulas",
+    "@postTagsHelperText": {
+        "description": "Helper text for comma-separated post tags"
+    },
+    "postFlairs": "Enfeites",
+    "@postFlairs": {
+        "description": "Label for post flair selection"
+    },
+    "postFlairsUnavailable": "Nenhuma opção de enfeite disponível nesta comunidade",
+    "@postFlairsUnavailable": {
+        "description": "Helper text when no post flairs are available"
     }
 }
