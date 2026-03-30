@@ -2953,5 +2953,21 @@
     "unpinnedPostFromCommunity": "Topluluktaki sabitlenmiş gönderinin sabitlemesi kaldırıldı",
     "@unpinnedPostFromCommunity": {
         "description": "Message shown when a post is unpinned from a community"
+    },
+    "postFlairs": "Rozet",
+    "@postFlairs": {
+        "description": "Label for post flair selection"
+    },
+    "postFlairsUnavailable": "Bu topluluk için bir rozet seçeneği yok",
+    "@postFlairsUnavailable": {
+        "description": "Helper text when no post flairs are available"
+    },
+    "postTags": "Etiketler",
+    "@postTags": {
+        "description": "Label for post tags"
+    },
+    "postTagsHelperText": "Etiketleri virgül ile ayır",
+    "@postTagsHelperText": {
+        "description": "Helper text for comma-separated post tags"
     }
 }
