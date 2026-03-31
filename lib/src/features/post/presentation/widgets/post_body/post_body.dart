@@ -92,7 +92,9 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _updateIsOwnPost();
+    if (widget.showQuickPostActionBar) {
+      _updateIsOwnPost();
+    }
   }
 
   @override
@@ -102,7 +104,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       _initializeData();
     }
 
-    if (oldWidget.post.creator?.id != widget.post.creator?.id) {
+    if (widget.showQuickPostActionBar && (!oldWidget.showQuickPostActionBar || oldWidget.post.creator?.id != widget.post.creator?.id)) {
       _updateIsOwnPost();
     }
   }

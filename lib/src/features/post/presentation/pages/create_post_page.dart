@@ -1,92 +1,33 @@
-// Dart imports
 import 'dart:async';
 import 'dart:io';
 
-// Flutter imports
 import 'package:flutter/material.dart';
 
-// Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:markdown_editor/markdown_editor.dart';
 
-// Project imports
-import 'package:thunder/src/features/community/data/repositories/community_repository_impl.dart';
-import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/l10n/generated/app_localizations.dart';
+import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/features/session/session.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
-import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/shared/language_selector.dart';
-import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
-import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/theme/color_utils.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/community_selector.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_additional_settings_page.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_bottom_bar.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_editor_section.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_metadata_row.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_title_field.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/create_post_url_field.dart';
+import 'package:thunder/src/features/session/session.dart';
+import 'package:thunder/src/features/user/presentation/widgets/user_selector.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/content/utils/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
-
-enum _PiefedMetadataStatus {
-  initial,
-  unsupported,
-  empty,
-  loading,
-  loaded,
-  error,
-}
+import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
+import 'package:thunder/src/shared/language_selector.dart';
 
 class CreatePostPage extends StatefulWidget {
-  /// The account to use for composing this post.
-  final Account? account;
-
-  /// The community ID to create the post in
-  final int? communityId;
-
-  /// The community to create the post in
-  final ThunderCommunity? community;
-
-  /// Whether or not to pre-populate the post with the [title], [text], [image], [url], [customThumbnail], and/or [altText]
-  final bool? prePopulated;
-
-  /// Used to pre-populate the post title
-  final String? title;
-
-  /// Used to pre-populate the post body
-  final String? text;
-
-  /// Used to pre-populate the image of the post
-  final File? image;
-
-  /// Used to pre-populate the shared link for the post
-  final String? url;
-
-  /// Used to pre-populate the custom thumbnail for the post
-  final String? customThumbnail;
-
-  /// Alternative text for the image
-  final String? altText;
-
-  /// [post] is passed in when editing an existing post
-  final ThunderPost? post;
-
-  /// Whether or not this post is a cross post
-  final bool isCrossPost;
-
-  /// Callback function that is triggered whenever the post is successfully created or updated
-  final Function(ThunderPost post, bool userChanged)? onPostSuccess;
-
   const CreatePostPage({
     super.key,
     this.account,
@@ -102,61 +43,62 @@ class CreatePostPage extends StatefulWidget {
     this.post,
     this.isCrossPost = false,
     this.onPostSuccess,
+    this.showMediaPreview = true,
+    this.showAdditionalSettingsButton = true,
   });
+
+  /// The account of the user creating the post.
+  final Account? account;
+
+  /// The id of the community to create the post in.
+  final int? communityId;
+
+  /// The community to create the post in.
+  final ThunderCommunity? community;
+
+  /// Whether the post is pre-populated.
+  final bool? prePopulated;
+
+  /// The title of the post.
+  final String? title;
+
+  /// The text of the post.
+  final String? text;
+
+  /// The image to upload with the post.
+  final File? image;
+
+  /// The url of the post.
+  final String? url;
+
+  /// The custom thumbnail of the post.
+  final String? customThumbnail;
+
+  /// The alternate text of the post.
+  final String? altText;
+
+  /// The post to edit.
+  final ThunderPost? post;
+
+  /// Whether the post is a cross post.
+  final bool isCrossPost;
+
+  /// Callback function that is triggered whenever the post is successfully created or updated.
+  final Function(ThunderPost post, bool userChanged)? onPostSuccess;
+
+  /// Whether to show the media preview.
+  final bool showMediaPreview;
+
+  /// Whether to show the additional settings button.
+  final bool showAdditionalSettingsButton;
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObserver {
-  final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
+  late final CreatePostCubit _createPostCubit;
 
-  /// Whether to save this post as a draft
-  bool saveDraft = true;
-
-  /// Debounces writes while the user is typing
-  Timer? _draftDebounceTimer;
-
-  /// Whether or not to show the preview for the post from the raw markdown
-  bool showPreview = false;
-
-  /// Keeps the last known state of the keyboard. This is used to re-open the keyboard when the preview is dismissed
-  bool wasKeyboardVisible = false;
-
-  /// Whether or not the submit button is disabled
-  bool isSubmitButtonDisabled = true;
-
-  /// Whether or not the post is marked as NSFW
-  bool isNSFW = false;
-
-  /// The shared link for the post. This is used to determine any cross posts
-  String url = "";
-
-  /// The custom thumbnail for this post.
-  String? customThumbnail;
-
-  /// Alternative text for the image
-  String? altText;
-
-  /// The error message for the shared link if available
-  String? urlError;
-
-  /// The error message for the custom thumbnail if available
-  String? customThumbnailError;
-
-  /// The id of the community that the post will be created in
-  int? communityId;
-
-  /// The language ID for the post
-  int? languageId;
-
-  /// The community associated with the post. This is used to display the community information
-  ThunderCommunity? community;
-
-  /// A list of cross posts for the given post. This is determined by the URL parameter
-  List<ThunderPost> crossPosts = [];
-
-  /// The corresponding controllers for the title, body and url text fields
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
@@ -164,120 +106,57 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
   final TextEditingController _altTextTextController = TextEditingController();
   final TextEditingController _tagsTextController = TextEditingController();
 
-  /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
+  final KeyboardVisibilityController _keyboardVisibilityController = KeyboardVisibilityController();
 
-  /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
-  final keyboardVisibilityController = KeyboardVisibilityController();
-
-  bool userChanged = false;
-
-  /// The id of the account for which the draft is being saved. This is used to determine which draft to restore when the page is opened.
-  String? _draftAccountId;
-
-  _PiefedMetadataStatus _piefedMetadataStatus = _PiefedMetadataStatus.initial;
-  List<ThunderFlair> _availablePiefedFlairs = const [];
-  List<int> _selectedPiefedFlairIds = const [];
-  int _piefedMetadataRequestId = 0;
+  bool _showPreview = false;
+  bool _wasKeyboardVisible = false;
+  bool _syncingControllers = false;
+  int _lastHandledDraftNoticeId = 0;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+    _createPostCubit = context.read<CreatePostCubit>();
 
-    _draftAccountId = widget.account?.id ?? context.read<FeatureAccountCubit>().state.effectiveAccount.id;
+    _initControllers();
+    _bindControllerListeners();
 
-    communityId = widget.communityId;
+    unawaited(
+      _createPostCubit.initialize(
+        communityId: widget.communityId,
+        community: widget.community,
+        post: widget.post,
+        prePopulated: widget.prePopulated ?? false,
+        title: widget.title,
+        text: widget.text,
+        url: widget.url,
+        customThumbnail: widget.customThumbnail,
+        altText: widget.altText,
+        isCrossPost: widget.isCrossPost,
+      ),
+    );
 
-    if (widget.community != null) {
-      community = widget.community;
-      communityId ??= widget.community?.id;
+    if (widget.prePopulated == true && widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final l10n = GlobalContext.l10n;
+        showSnackbar(
+          l10n.addOriginalPostBody,
+          duration: const Duration(seconds: 10),
+          trailingIcon: Icons.add_rounded,
+          trailingIconColor: Theme.of(context).colorScheme.secondary,
+          trailingAction: () => _bodyTextController.text = widget.text ?? '',
+        );
+      });
     }
 
-    _hydratePiefedMetadataFromPost();
-
-    unawaited(_refreshPiefedMetadata());
-
-    // Set up any text controller listeners
-    _titleTextController.addListener(() {
-      _validateSubmission();
-      _onDraftInputChanged();
-    });
-
-    _urlTextController.addListener(() {
-      url = _urlTextController.text;
-      _validateSubmission();
-      debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
-      _onDraftInputChanged();
-    });
-
-    _customThumbnailTextController.addListener(() {
-      customThumbnail = _customThumbnailTextController.text;
-      _validateSubmission();
-      debounce(const Duration(milliseconds: 1000), _updatePreview, [customThumbnail]);
-      _onDraftInputChanged();
-    });
-
-    _altTextTextController.addListener(() {
-      altText = _altTextTextController.text;
-      _validateSubmission();
-      debounce(const Duration(milliseconds: 1000), _updatePreview, [altText]);
-      _onDraftInputChanged();
-    });
-
-    _bodyTextController.addListener(() {
-      _onDraftInputChanged();
-    });
-
-    // Logic for pre-populating the post with the given fields
-    if (widget.prePopulated == true) {
-      _titleTextController.text = widget.title ?? '';
-      _urlTextController.text = widget.url ?? '';
-      _customThumbnailTextController.text = widget.customThumbnail ?? '';
-      _altTextTextController.text = widget.altText ?? '';
-      _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
-
-      // If the post is a cross-post, then prompt the user if they want to add the original post body
-      if (widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          final l10n = GlobalContext.l10n;
-
-          showSnackbar(
-            l10n.addOriginalPostBody,
-            duration: const Duration(seconds: 10),
-            trailingIcon: Icons.add_rounded,
-            trailingIconColor: Theme.of(context).colorScheme.secondary,
-            trailingAction: () => _bodyTextController.text = widget.text ?? '',
-          );
-        });
-      } else {
-        _bodyTextController.text = widget.text ?? '';
-      }
-
-      if (widget.image != null) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (context.mounted) {
-            context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
-          }
-        });
-      }
-    } else {
-      // Logic for pre-populating the post with the [postView] for edits
-      if (widget.post != null) {
-        _titleTextController.text = widget.post!.name;
-        _urlTextController.text = widget.post!.url ?? '';
-        _customThumbnailTextController.text = widget.post!.thumbnailUrl ?? '';
-        _altTextTextController.text = widget.post!.altText ?? '';
-        _tagsTextController.text = encodePiefedTags(widget.post!.tags);
-        _bodyTextController.text = widget.post!.body ?? '';
-        isNSFW = widget.post!.nsfw;
-        languageId = widget.post!.languageId;
-      }
-
-      // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        _restoreExistingDraft();
+    if (widget.image != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<CreatePostCubit>().uploadImages([widget.image!.path], isPostImage: true);
+        }
       });
     }
   }
@@ -285,13 +164,17 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-
     FocusManager.instance.primaryFocus?.unfocus();
 
-    _draftDebounceTimer?.cancel();
-
-    _persistOrDeleteDraft(showSaveDraftSnackbar: true);
-    unawaited(_draftRepository.clearActiveDraft());
+    final cubit = _createPostCubit;
+    unawaited(
+      cubit.persistDraftNow().then((result) {
+        if (result == DraftPersistenceResult.saved && GlobalContext.scaffoldMessengerKey.currentState != null) {
+          showSnackbar(GlobalContext.l10n.postSavedAsDraft);
+        }
+      }),
+    );
+    unawaited(cubit.clearActiveDraft());
 
     _bodyTextController.dispose();
     _titleTextController.dispose();
@@ -307,322 +190,150 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
-      _persistOrDeleteDraft();
+      unawaited(_createPostCubit.handleAppLifecyclePause());
     }
   }
 
-  /// Attempts to restore an existing draft of a post
-  void _restoreExistingDraft() async {
-    final draftContext = _draftContext;
-
-    final draft = await restoreDraft(
-      repository: _draftRepository,
-      context: draftContext,
-    );
-
-    if (draft != null) {
-      _titleTextController.text = draft.title ?? '';
-      _urlTextController.text = draft.url ?? '';
-      _customThumbnailTextController.text = draft.customThumbnail ?? '';
-      _altTextTextController.text = draft.altText ?? '';
-      _bodyTextController.text = draft.body ?? '';
-
-      setState(() {
-        isNSFW = draft.nsfw;
-        languageId = draft.languageId;
-      });
-    }
-
-    if (context.mounted && draft?.isPostNotEmpty == true && postDraftDiffersFromEdit(draft!, widget.post)) {
-      showSnackbar(
-        AppLocalizations.of(context)!.restoredPostFromDraft,
-        trailingIcon: Icons.delete_forever_rounded,
-        trailingIconColor: Theme.of(context).colorScheme.errorContainer,
-        trailingAction: () {
-          unawaited(_draftRepository.deleteDraft(draftContext.draftType, draftContext.existingId, draftContext.replyId));
-          _titleTextController.text = widget.post?.name ?? '';
-          _urlTextController.text = widget.post?.url ?? '';
-          _customThumbnailTextController.text = widget.post?.thumbnailUrl ?? '';
-          _altTextTextController.text = widget.post?.altText ?? '';
-          _tagsTextController.text = encodePiefedTags(widget.post?.tags);
-          _bodyTextController.text = widget.post?.body ?? '';
-
-          setState(() {
-            isNSFW = widget.post?.nsfw ?? false;
-            languageId = widget.post?.languageId;
-          });
-
-          _hydratePiefedMetadataFromPost();
-        },
-      );
-    }
-  }
-
-  void _hydratePiefedMetadataFromPost() {
-    _availablePiefedFlairs = widget.post?.flairs ?? const <ThunderFlair>[];
-    _selectedPiefedFlairIds = normalizePiefedFlairIds(widget.post?.flairs.map((flair) => flair.id));
-    _piefedMetadataStatus = _availablePiefedFlairs.isEmpty ? _PiefedMetadataStatus.empty : _PiefedMetadataStatus.loaded;
-  }
-
-  void _resetPiefedMetadata({
-    required _PiefedMetadataStatus status,
-    bool clearSelection = true,
-  }) {
-    if (!mounted) {
-      _piefedMetadataStatus = status;
-      _availablePiefedFlairs = const [];
-      if (clearSelection) {
-        _selectedPiefedFlairIds = const [];
-      }
+  /// Initializes the controllers with the data from the widget.
+  void _initControllers() {
+    if (widget.post != null) {
+      _titleTextController.text = widget.post!.name;
+      _urlTextController.text = widget.post!.url ?? '';
+      _customThumbnailTextController.text = widget.post!.thumbnailUrl ?? '';
+      _altTextTextController.text = widget.post!.altText ?? '';
+      _tagsTextController.text = encodePiefedTags(widget.post!.tags);
+      _bodyTextController.text = widget.post!.body ?? '';
       return;
     }
 
-    setState(() {
-      _piefedMetadataStatus = status;
-      _availablePiefedFlairs = const [];
-      if (clearSelection) {
-        _selectedPiefedFlairIds = const [];
-      }
+    if (widget.prePopulated == true) {
+      _titleTextController.text = widget.title ?? '';
+      _urlTextController.text = widget.url ?? '';
+      _customThumbnailTextController.text = widget.customThumbnail ?? '';
+      _altTextTextController.text = widget.altText ?? '';
+      _bodyTextController.text = widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost ? '' : widget.text ?? '';
+    }
+  }
+
+  /// Binds the controllers to the cubit logic.
+  void _bindControllerListeners() {
+    _titleTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateTitle(_titleTextController.text);
+    });
+    _bodyTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateBody(_bodyTextController.text);
+    });
+    _urlTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateUrl(_urlTextController.text);
+    });
+    _customThumbnailTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateCustomThumbnail(_customThumbnailTextController.text);
+    });
+    _altTextTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateAltText(_altTextTextController.text);
+    });
+    _tagsTextController.addListener(() {
+      if (_syncingControllers) return;
+      _createPostCubit.updateTags(_tagsTextController.text);
     });
   }
 
-  Future<void> _refreshPiefedMetadata() async {
-    final account = context.read<FeatureAccountCubit>().state.effectiveAccount;
-
-    if (account.platform != ThreadiversePlatform.piefed) {
-      _resetPiefedMetadata(status: _PiefedMetadataStatus.unsupported);
-      return;
-    }
-
-    if (communityId == null) {
-      _resetPiefedMetadata(status: _PiefedMetadataStatus.empty);
-      return;
-    }
-
-    final requestId = ++_piefedMetadataRequestId;
-
-    if (mounted) {
-      setState(() {
-        _piefedMetadataStatus = _PiefedMetadataStatus.loading;
-      });
-    } else {
-      _piefedMetadataStatus = _PiefedMetadataStatus.loading;
-    }
-
-    try {
-      final details = await CommunityRepositoryImpl(account: account).getCommunity(
-        id: communityId,
-      );
-
-      if (!mounted || requestId != _piefedMetadataRequestId || communityId != details.community.id) {
-        return;
-      }
-
-      setState(() {
-        community = details.community;
-        _availablePiefedFlairs = details.flairs;
-        _selectedPiefedFlairIds = retainValidPiefedFlairSelection(
-          selectedFlairIds: _selectedPiefedFlairIds,
-          availableFlairIds: details.flairs.map((flair) => flair.id),
-          clearWhenUnavailable: true,
-        );
-        _piefedMetadataStatus = details.flairs.isEmpty ? _PiefedMetadataStatus.empty : _PiefedMetadataStatus.loaded;
-      });
-    } catch (_) {
-      if (!mounted || requestId != _piefedMetadataRequestId) {
-        return;
-      }
-
-      setState(() {
-        _piefedMetadataStatus = _PiefedMetadataStatus.error;
-        _availablePiefedFlairs = const [];
-      });
-    }
-  }
-
-  DraftContext get _draftContext => resolvePostDraftContext(
-        editingPostId: widget.post?.id,
-        communityId: communityId,
-      );
-
-  Draft _buildDraft() => buildPostDraft(
-        context: _draftContext,
-        accountId: _draftAccountId,
-        title: _titleTextController.text,
-        url: _urlTextController.text,
-        customThumbnail: _customThumbnailTextController.text,
-        altText: _altTextTextController.text,
-        nsfw: isNSFW,
-        languageId: languageId,
-        body: _bodyTextController.text,
-      );
-
-  bool get _isPiefedComposer => context.read<FeatureAccountCubit>().state.effectiveAccount.platform == ThreadiversePlatform.piefed;
-
-  List<String>? _submissionTags() {
-    if (!_isPiefedComposer) {
-      return null;
-    }
-
-    return resolveSubmittedPiefedTags(
-      _tagsTextController.text,
-      originalTags: widget.post?.tags,
-    );
-  }
-
-  List<int>? _submissionFlairIds() {
-    if (!_isPiefedComposer) {
-      return null;
-    }
-
-    return resolveSubmittedPiefedFlairIds(
-      _selectedPiefedFlairIds,
-      originalFlairIds: widget.post?.flairs.map((flair) => flair.id),
-    );
-  }
-
-  bool get _hasSelectablePiefedFlairs => _availablePiefedFlairs.isNotEmpty;
-
-  String? get _piefedFlairHelperText => switch (_piefedMetadataStatus) {
-        _PiefedMetadataStatus.loading => GlobalContext.l10n.loading,
-        _PiefedMetadataStatus.empty || _PiefedMetadataStatus.error => GlobalContext.l10n.postFlairsUnavailable,
-        _ => null,
-      };
-
-  List<ThunderFlair> get _selectedPiefedFlairs => _availablePiefedFlairs.where((flair) => _selectedPiefedFlairIds.contains(flair.id)).toList();
-
-  Widget? get _piefedFlairSuffixIcon => switch (_piefedMetadataStatus) {
-        _PiefedMetadataStatus.loading => const Padding(
-            padding: EdgeInsets.all(12.0),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-        _ when _hasSelectablePiefedFlairs => const Icon(Icons.arrow_drop_down_rounded),
-        _ => null,
-      };
-
-  void _resetPiefedMetadataForContextChange() {
-    _resetPiefedMetadata(
-      status: _isPiefedComposer ? _PiefedMetadataStatus.empty : _PiefedMetadataStatus.unsupported,
-    );
-  }
-
-  Future<void> _selectPostFlairs() async {
-    if (_availablePiefedFlairs.isEmpty) {
-      return;
-    }
-
-    final selectedFlairIds = await showModalBottomSheet<List<int>>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        final workingSelection = _selectedPiefedFlairIds.toSet();
-
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          for (final flair in _availablePiefedFlairs)
-                            CheckboxListTile(
-                              value: workingSelection.contains(flair.id),
-                              title: Text(flair.title),
-                              onChanged: (selected) {
-                                setModalState(() {
-                                  if (selected == true) {
-                                    workingSelection.add(flair.id);
-                                  } else {
-                                    workingSelection.remove(flair.id);
-                                  }
-                                });
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(const <int>[]),
-                            child: Text(MaterialLocalizations.of(context).clearButtonTooltip),
-                          ),
-                          const Spacer(),
-                          FilledButton(
-                            onPressed: () => Navigator.of(context).pop(workingSelection.toList()),
-                            child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    if (selectedFlairIds == null || !mounted) {
-      return;
-    }
-
-    setState(() {
-      _selectedPiefedFlairIds = normalizePiefedFlairIds(selectedFlairIds);
-    });
-  }
-
-  void _onDraftInputChanged() {
-    _draftDebounceTimer?.cancel();
-    _draftDebounceTimer = Timer(const Duration(milliseconds: 800), _persistOrDeleteDraft);
-  }
-
-  void _persistOrDeleteDraft({bool showSaveDraftSnackbar = false}) {
-    final draft = _buildDraft();
-
-    unawaited(
-      persistDraft(
-        repository: _draftRepository,
-        context: _draftContext,
-        draft: draft,
-        save: saveDraft,
-        differsFromEdit: postDraftDiffersFromEdit(draft, widget.post),
-        hasContent: draft.isPostNotEmpty,
-      ).then((result) {
-        if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
-          showSnackbar(GlobalContext.l10n.postSavedAsDraft);
-        }
-      }),
-    );
-  }
-
-  /// Attempts to get the suggested title for a given link
   Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
-    link ??= widget.url;
+    final resolvedLink = link ?? widget.url;
 
-    if (link?.isNotEmpty == true) {
+    if (resolvedLink?.isNotEmpty == true) {
       try {
-        final WebInfo info = await LinkPreview.scrapeFromURL(link!);
-        if (updateTitleField) _titleTextController.text = info.title;
+        final WebInfo info = await LinkPreview.scrapeFromURL(resolvedLink!);
+        if (updateTitleField) {
+          _titleTextController.text = info.title;
+        }
         return info.title;
-      } catch (e) {
-        // It's ok if we can't scrape. The user will just have to supply the title themselves.
+      } catch (_) {
+        return null;
       }
     }
 
     return null;
+  }
+
+  void _handleCreatePostStateChange(BuildContext context, CreatePostState state) {
+    _syncControllersWithState(state);
+
+    if (state.restoredDraftAvailable && state.restoredDraftNoticeId != _lastHandledDraftNoticeId) {
+      _lastHandledDraftNoticeId = state.restoredDraftNoticeId;
+
+      showSnackbar(
+        GlobalContext.l10n.restoredPostFromDraft,
+        trailingIcon: Icons.delete_forever_rounded,
+        trailingIconColor: Theme.of(context).colorScheme.errorContainer,
+        trailingAction: () => context.read<CreatePostCubit>().discardRestoredDraft(),
+      );
+    }
+
+    if (state.status == CreatePostStatus.success && state.post != null) {
+      widget.onPostSuccess?.call(state.post!, state.userChanged);
+      Navigator.of(context).pop();
+      return;
+    }
+
+    if (state.status == CreatePostStatus.error && state.message != null) {
+      showSnackbar(state.message!);
+      context.read<CreatePostCubit>().clearMessage();
+      return;
+    }
+
+    switch (state.status) {
+      case CreatePostStatus.imageUploadSuccess:
+        final markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+        if (markdownImages.isEmpty) {
+          return;
+        }
+
+        final selection = _bodyTextController.selection;
+        final insertIndex = selection.isValid ? selection.end : _bodyTextController.text.length;
+        _bodyTextController.text = _bodyTextController.text.replaceRange(insertIndex, insertIndex, markdownImages);
+        _bodyTextController.selection = TextSelection.collapsed(offset: insertIndex + markdownImages.length);
+        break;
+      case CreatePostStatus.imageUploadFailure:
+      case CreatePostStatus.postImageUploadFailure:
+        showSnackbar(
+          GlobalContext.l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
+          leadingIcon: Icons.warning_rounded,
+          leadingIconColor: Theme.of(context).colorScheme.errorContainer,
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _syncControllersWithState(CreatePostState state) {
+    _syncingControllers = true;
+    _setControllerText(_titleTextController, state.title);
+    _setControllerText(_bodyTextController, state.body);
+    _setControllerText(_urlTextController, state.url);
+    _setControllerText(_customThumbnailTextController, state.customThumbnail);
+    _setControllerText(_altTextTextController, state.altText);
+    _setControllerText(_tagsTextController, state.tags);
+    _syncingControllers = false;
+  }
+
+  void _setControllerText(TextEditingController controller, String value) {
+    if (controller.text == value) {
+      return;
+    }
+
+    final selectionOffset = controller.selection.isValid ? controller.selection.baseOffset.clamp(0, value.length) : value.length;
+    controller.value = controller.value.copyWith(
+      text: value,
+      selection: TextSelection.collapsed(offset: selectionOffset),
+      composing: TextRange.empty,
+    );
   }
 
   @override
@@ -630,617 +341,210 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     final l10n = GlobalContext.l10n;
     final theme = Theme.of(context);
 
-    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
-
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
-      child: BlocConsumer<FeatureAccountCubit, FeatureAccountState>(
-        listener: (context, featureAccountState) {
-          _draftAccountId = featureAccountState.effectiveAccount.id;
-          _resetPiefedMetadataForContextChange();
-          context.read<CreatePostCubit>().switchAccount(featureAccountState.effectiveAccount);
-          unawaited(_refreshPiefedMetadata());
-        },
-        builder: (context, featureAccountState) {
-          final account = featureAccountState.effectiveAccount;
-
-          return BlocConsumer<CreatePostCubit, CreatePostState>(
-            listener: (context, state) {
-              if (state.status == CreatePostStatus.success && state.post != null) {
-                widget.onPostSuccess?.call(state.post!, userChanged);
-                Navigator.of(context).pop();
-              }
-
-              if (state.status == CreatePostStatus.error && state.message != null) {
-                showSnackbar(state.message!);
-                context.read<CreatePostCubit>().clearMessage();
-              }
-
-              switch (state.status) {
-                case CreatePostStatus.imageUploadSuccess:
-                  String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
-                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
-                  break;
-                case CreatePostStatus.postImageUploadSuccess:
-                  _urlTextController.text = state.imageUrls?.first ?? '';
-                  break;
-                case CreatePostStatus.imageUploadFailure:
-                case CreatePostStatus.postImageUploadFailure:
-                  showSnackbar(
-                    l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
-                    leadingIcon: Icons.warning_rounded,
-                    leadingIconColor: theme.colorScheme.errorContainer,
-                  );
-                default:
-                  break;
-              }
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<FeatureAccountCubit, FeatureAccountState>(
+            listenWhen: (previous, current) => previous.effectiveAccount.id != current.effectiveAccount.id,
+            listener: (context, featureAccountState) {
+              context.read<CreatePostCubit>().switchAccount(featureAccountState.effectiveAccount);
             },
-            builder: (context, state) {
-              return GestureDetector(
-                onTap: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
-                    centerTitle: false,
-                  ),
-                  body: SafeArea(
-                    bottom: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  CommunitySelector(
-                                    account: account,
-                                    community: community,
-                                    onCommunitySelected: (ThunderCommunity c) {
-                                      setState(() {
-                                        communityId = c.id;
-                                        community = c;
-                                      });
-                                      _resetPiefedMetadata(status: _PiefedMetadataStatus.empty);
-                                      unawaited(_refreshPiefedMetadata());
-                                      _onDraftInputChanged();
-                                      _validateSubmission();
-                                    },
-                                  ),
-                                  const SizedBox(height: 4.0),
-                                  UserSelector(
-                                    account: account,
-                                    communityActorId: community?.actorId,
-                                    onCommunityChanged: (community) {
-                                      setState(() {
-                                        communityId = community?.id;
-                                        this.community = community;
-                                      });
+          ),
+          BlocListener<CreatePostCubit, CreatePostState>(
+            listener: _handleCreatePostStateChange,
+          ),
+        ],
+        child: BlocBuilder<FeatureAccountCubit, FeatureAccountState>(
+          builder: (context, featureAccountState) {
+            final account = featureAccountState.effectiveAccount;
 
-                                      _resetPiefedMetadata(status: _PiefedMetadataStatus.empty);
-                                      unawaited(_refreshPiefedMetadata());
-                                      _onDraftInputChanged();
-                                      _validateSubmission();
-                                    },
-                                    onUserChanged: (account) {
-                                      setState(() {
-                                        userChanged = featureAccountState.effectiveAccount.id != account.id;
-                                        _draftAccountId = account.id;
-                                      });
-
-                                      context.read<FeatureAccountCubit>().setOverride(account);
-                                      _onDraftInputChanged();
-                                    },
-                                    enableAccountSwitching: widget.post == null,
-                                  ),
-                                  const SizedBox(height: 12.0),
-                                  TypeAheadField<String>(
-                                    controller: _titleTextController,
-                                    suggestionsCallback: (String pattern) async {
-                                      if (pattern.isEmpty) {
-                                        String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
-                                        if (linkTitle?.isNotEmpty == true) {
-                                          return [linkTitle!];
+            return BlocBuilder<CreatePostCubit, CreatePostState>(
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    appBar: AppBar(
+                      title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
+                      centerTitle: false,
+                      actions: widget.showAdditionalSettingsButton
+                          ? [
+                              IconButton(
+                                key: const Key('create-post-additional-settings-button'),
+                                onPressed: () => _openAdditionalSettingsPage(context),
+                                icon: const Icon(Icons.tune_rounded),
+                                tooltip: l10n.advanced,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    body: SafeArea(
+                      bottom: false,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    CommunitySelector(
+                                      account: account,
+                                      community: state.community,
+                                      onCommunitySelected: (community) => context.read<CreatePostCubit>().updateCommunity(community),
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    UserSelector(
+                                      account: account,
+                                      communityActorId: state.community?.actorId,
+                                      onCommunityChanged: (community) => context.read<CreatePostCubit>().updateCommunity(community),
+                                      onUserChanged: (account) => context.read<FeatureAccountCubit>().setOverride(account),
+                                      enableAccountSwitching: widget.post == null,
+                                    ),
+                                    const SizedBox(height: 12.0),
+                                    CreatePostTitleField(
+                                      controller: _titleTextController,
+                                      onSuggestFromLink: () => _getDataFromLink(
+                                        link: _urlTextController.text,
+                                        updateTitleField: false,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    CreatePostUrlField(
+                                      controller: _urlTextController,
+                                      state: state,
+                                      onUploadPostImageRequested: () async {
+                                        if (state.status == CreatePostStatus.postImageUploadInProgress) {
+                                          return;
                                         }
-                                      }
-                                      return [];
-                                    },
-                                    itemBuilder: (BuildContext context, String itemData) {
-                                      return ListTile(
-                                        title: Text(itemData),
-                                        subtitle: Text(l10n.suggestedTitle),
-                                      );
-                                    },
-                                    onSelected: (String suggestion) {
-                                      _titleTextController.text = suggestion;
-                                    },
-                                    builder: (context, controller, focusNode) => TextField(
-                                      controller: controller,
-                                      focusNode: focusNode,
-                                      decoration: InputDecoration(
-                                        labelText: l10n.postTitle,
-                                        helperText: l10n.requiredField,
-                                        isDense: true,
-                                        border: const OutlineInputBorder(),
-                                        contentPadding: const EdgeInsets.all(13),
-                                      ),
-                                    ),
-                                    hideOnEmpty: true,
-                                    hideOnLoading: true,
-                                    hideOnError: true,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextFormField(
-                                    controller: _urlTextController,
-                                    decoration: InputDecoration(
-                                      labelText: l10n.postURL,
-                                      errorText: urlError,
-                                      isDense: true,
-                                      border: const OutlineInputBorder(),
-                                      contentPadding: const EdgeInsets.all(13),
-                                      suffixIcon: IconButton(
-                                        onPressed: () async {
-                                          if (state.status == CreatePostStatus.postImageUploadInProgress) {
-                                            return;
-                                          }
 
-                                          List<String> imagesPath = await selectImagesToUpload();
-                                          if (context.mounted) {
-                                            context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
-                                          }
-                                        },
-                                        icon: state.status == CreatePostStatus.postImageUploadInProgress
-                                            ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: Center(
-                                                  child: SizedBox(
-                                                    width: 18,
-                                                    height: 18,
-                                                    child: CircularProgressIndicator(),
-                                                  ),
-                                                ),
-                                              )
-                                            : Icon(Icons.image, semanticLabel: l10n.uploadImage),
-                                      ),
+                                        final imagesPath = await selectImagesToUpload();
+                                        if (mounted) {
+                                          context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
+                                        }
+                                      },
                                     ),
-                                  ),
-                                  if (!isImageUrl(_urlTextController.text)) ...[
-                                    const SizedBox(height: 10),
-                                    TextFormField(
-                                      controller: _customThumbnailTextController,
-                                      decoration: InputDecoration(
-                                        labelText: l10n.thumbnailUrl,
-                                        errorText: customThumbnailError,
-                                        isDense: true,
-                                        border: const OutlineInputBorder(),
-                                        contentPadding: const EdgeInsets.all(13),
-                                      ),
-                                    ),
-                                  ],
-                                  if (isImageUrl(_urlTextController.text)) ...[
-                                    const SizedBox(height: 10),
-                                    TextFormField(
-                                      controller: _altTextTextController,
-                                      decoration: InputDecoration(
-                                        labelText: l10n.altText,
-                                        isDense: true,
-                                        border: const OutlineInputBorder(),
-                                        contentPadding: const EdgeInsets.all(13),
-                                      ),
-                                    ),
-                                  ],
-                                  if (_isPiefedComposer) ...[
-                                    const SizedBox(height: 10),
-                                    TextFormField(
-                                      controller: _tagsTextController,
-                                      decoration: InputDecoration(
-                                        labelText: l10n.postTags,
-                                        helperText: l10n.postTagsHelperText,
-                                        isDense: true,
-                                        border: const OutlineInputBorder(),
-                                        contentPadding: const EdgeInsets.all(13),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    InkWell(
-                                      onTap: _hasSelectablePiefedFlairs ? _selectPostFlairs : null,
-                                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                                      child: InputDecorator(
+                                    if (isImageUrl(state.url)) ...[
+                                      const SizedBox(height: 10),
+                                      TextFormField(
+                                        key: const Key('create-post-alt-text-field'),
+                                        controller: _altTextTextController,
                                         decoration: InputDecoration(
-                                          labelText: l10n.postFlairs,
-                                          helperText: _piefedFlairHelperText,
+                                          labelText: l10n.altText,
                                           isDense: true,
                                           border: const OutlineInputBorder(),
                                           contentPadding: const EdgeInsets.all(13),
-                                          suffixIcon: _piefedFlairSuffixIcon,
                                         ),
-                                        child: _selectedPiefedFlairIds.isEmpty
-                                            ? Text(
-                                                _hasSelectablePiefedFlairs ? l10n.postFlairs : l10n.postFlairsUnavailable,
-                                                style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-                                              )
-                                            : Wrap(
-                                                spacing: 8,
-                                                runSpacing: 8,
-                                                children: _selectedPiefedFlairs.map((flair) => Chip(label: Text(flair.title))).toList(),
-                                              ),
-                                      ),
-                                    ),
-                                  ],
-                                  SizedBox(height: url.isNotEmpty ? 10 : 5),
-                                  Visibility(
-                                    visible: url.isNotEmpty,
-                                    child: MediaView(
-                                      showFullHeightImages: false,
-                                      edgeToEdgeImages: false,
-                                      viewMode: ViewMode.comfortable,
-                                      markPostReadOnMediaView: false,
-                                      isUserLoggedIn: true,
-                                      media: Media(
-                                        originalUrl: url,
-                                        mediaUrl: isImageUrl(url)
-                                            ? url
-                                            : customThumbnail?.isNotEmpty == true && isImageUrl(customThumbnail!)
-                                                ? customThumbnail
-                                                : null,
-                                        nsfw: isNSFW,
-                                        mediaType: MediaType.link,
-                                      ),
-                                    ),
-                                  ),
-                                  if (crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
-                                  Visibility(
-                                    visible: url.isNotEmpty && crossPosts.isNotEmpty,
-                                    child: CrossPosts(
-                                      crossPosts: crossPosts,
-                                      isNewPost: true,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      ConstrainedBox(
-                                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
-                                        child: LanguageSelector(
-                                          account: account,
-                                          languageId: languageId,
-                                          onLanguageSelected: (ThunderLanguage? language) {
-                                            setState(() => languageId = language?.id);
-                                            _onDraftInputChanged();
-                                          },
-                                        ),
-                                      ),
-                                      Wrap(
-                                        crossAxisAlignment: WrapCrossAlignment.center,
-                                        children: [
-                                          Text(l10n.nsfw),
-                                          const SizedBox(width: 4.0),
-                                          Switch(
-                                            value: isNSFW,
-                                            onChanged: (bool value) {
-                                              setState(() => isNSFW = value);
-                                              _onDraftInputChanged();
-                                            },
-                                          ),
-                                        ],
                                       ),
                                     ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  AnimatedCrossFade(
-                                    firstChild: Container(
-                                      margin: const EdgeInsets.only(top: 8.0),
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        color: getBackgroundColor(context),
-                                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                    SizedBox(height: state.url.isNotEmpty ? 10 : 5),
+                                    if (state.url.isNotEmpty && widget.showMediaPreview)
+                                      MediaView(
+                                        showFullHeightImages: false,
+                                        edgeToEdgeImages: false,
+                                        viewMode: ViewMode.comfortable,
+                                        markPostReadOnMediaView: false,
+                                        isUserLoggedIn: true,
+                                        media: Media(
+                                          originalUrl: state.url,
+                                          mediaUrl: isImageUrl(state.url)
+                                              ? state.url
+                                              : state.customThumbnail.isNotEmpty && isImageUrl(state.customThumbnail)
+                                                  ? state.customThumbnail
+                                                  : null,
+                                          nsfw: state.isNsfw,
+                                          mediaType: MediaType.link,
+                                        ),
                                       ),
-                                      child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true, nsfw: isNSFW && hideNsfwPreviews),
+                                    if (state.crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
+                                    if (state.url.isNotEmpty && state.crossPosts.isNotEmpty && widget.post == null)
+                                      CrossPosts(
+                                        crossPosts: state.crossPosts,
+                                        isNewPost: true,
+                                      ),
+                                    const SizedBox(height: 10),
+                                    CreatePostMetadataRow(
+                                      languageSelector: LanguageSelector(
+                                        account: account,
+                                        languageId: state.languageId,
+                                        onLanguageSelected: (language) => context.read<CreatePostCubit>().updateLanguage(language?.id),
+                                      ),
+                                      nsfw: state.isNsfw,
+                                      onNsfwChanged: (value) => context.read<CreatePostCubit>().updateNsfw(value),
                                     ),
-                                    secondChild: MarkdownTextInputField(
+                                    const SizedBox(height: 10),
+                                    CreatePostEditorSection(
+                                      body: state.body,
                                       controller: _bodyTextController,
                                       focusNode: _bodyFocusNode,
-                                      label: l10n.postBody,
-                                      minLines: 8,
-                                      maxLines: null,
-                                      textStyle: theme.textTheme.bodyLarge,
-                                      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                                      showPreview: _showPreview,
+                                      nsfw: state.isNsfw,
                                     ),
-                                    crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                    duration: const Duration(milliseconds: 120),
-                                    excludeBottomFocus: false,
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const Divider(height: 1),
-                        Container(
-                          color: theme.cardColor,
-                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: MarkdownToolbar(
-                                  controller: _bodyTextController,
-                                  focusNode: _bodyFocusNode,
-                                  actions: const [
-                                    MarkdownType.image,
-                                    MarkdownType.link,
-                                    MarkdownType.bold,
-                                    MarkdownType.italic,
-                                    MarkdownType.blockquote,
-                                    MarkdownType.strikethrough,
-                                    MarkdownType.title,
-                                    MarkdownType.list,
-                                    MarkdownType.separator,
-                                    MarkdownType.code,
-                                    MarkdownType.spoiler,
-                                    MarkdownType.username,
-                                    MarkdownType.community,
-                                  ],
-                                  customTapActions: {
-                                    MarkdownType.username: () {
-                                      showUserInputDialog(
-                                        context,
-                                        title: l10n.username,
-                                        account: account,
-                                        onUserSelected: (ThunderUser user) {
-                                          _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                            _bodyTextController.selection.end,
-                                            _bodyTextController.selection.end,
-                                            '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
-                                          );
-                                        },
-                                      );
-                                    },
-                                    MarkdownType.community: () {
-                                      showCommunityInputDialog(
-                                        context,
-                                        title: l10n.community,
-                                        account: account,
-                                        onCommunitySelected: (community) {
-                                          _bodyTextController.text = _bodyTextController.text
-                                              .replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
-                                        },
-                                      );
-                                    },
-                                  },
-                                  imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
-                                  customImageButtonAction: () async {
-                                    if (state.status == CreatePostStatus.imageUploadInProgress) {
-                                      return;
-                                    }
+                          const Divider(height: 1),
+                          CreatePostBottomBar(
+                            account: account,
+                            state: state,
+                            bodyController: _bodyTextController,
+                            bodyFocusNode: _bodyFocusNode,
+                            post: widget.post,
+                            showPreview: _showPreview,
+                            onTogglePreview: _togglePreview,
+                            onUploadBodyImages: () async {
+                              if (state.status == CreatePostStatus.imageUploadInProgress) {
+                                return;
+                              }
 
-                                    List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                    if (context.mounted) {
-                                      context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
-                                    }
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
-                                child: IconButton(
-                                  onPressed: () {
-                                    if (!showPreview) {
-                                      setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                      FocusManager.instance.primaryFocus?.unfocus();
-                                    }
-
-                                    setState(() => showPreview = !showPreview);
-                                    if (!showPreview && wasKeyboardVisible) {
-                                      _bodyFocusNode.requestFocus();
-                                    }
-                                  },
-                                  icon: Icon(
-                                    showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                                    color: theme.colorScheme.onSecondary,
-                                    semanticLabel: l10n.postTogglePreview,
-                                  ),
-                                  style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
-                                child: SizedBox(
-                                  width: 60,
-                                  child: IconButton(
-                                    onPressed: isSubmitButtonDisabled || state.status == CreatePostStatus.submitting ? null : () => _onCreatePost(context),
-                                    icon: state.status == CreatePostStatus.submitting
-                                        ? const SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : Icon(
-                                            widget.post != null ? Icons.edit_rounded : Icons.send_rounded,
-                                            color: theme.colorScheme.onSecondary,
-                                            semanticLabel: widget.post != null ? l10n.editPost : l10n.createPost,
-                                          ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: theme.colorScheme.secondary,
-                                      disabledBackgroundColor: getBackgroundColor(context),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                              final imagesPath = await selectImagesToUpload(allowMultiple: true);
+                              if (mounted) {
+                                context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                              }
+                            },
                           ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).padding.bottom,
-                          color: theme.cardColor,
-                        ),
-                      ],
+                          Container(
+                            height: MediaQuery.of(context).padding.bottom,
+                            color: theme.cardColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
-  void _updatePreview(String text) async {
-    if (url != text) return;
+  void _togglePreview() {
+    if (!_showPreview) {
+      setState(() => _wasKeyboardVisible = _keyboardVisibilityController.isVisible);
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
 
-    try {
-      // Fetch cross-posts
-      final response = await SearchRepositoryImpl(account: context.read<FeatureAccountCubit>().state.effectiveAccount).search(
-        query: url,
-        type: MetaSearchType.url,
-        sort: SearchSortType.topAll,
-        listingType: FeedListType.all,
-        limit: 20,
-      );
-
-      setState(() => crossPosts = response.posts);
-    } catch (e) {
-      // Ignore
+    setState(() => _showPreview = !_showPreview);
+    if (!_showPreview && _wasKeyboardVisible) {
+      _bodyFocusNode.requestFocus();
     }
   }
 
-  void _validateSubmission() {
-    final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
-    final Uri? parsedCustomThumbnail = Uri.tryParse(_customThumbnailTextController.text);
-
-    if (isSubmitButtonDisabled) {
-      // It's disabled, check if we can enable it.
-      if (_titleTextController.text.isNotEmpty && parsedUrl != null && parsedCustomThumbnail != null && communityId != null) {
-        setState(() {
-          isSubmitButtonDisabled = false;
-          urlError = null;
-          customThumbnailError = null;
-        });
-      }
-    } else {
-      // It's enabled, check if we need to disable it.
-      if (_titleTextController.text.isEmpty || parsedUrl == null || parsedCustomThumbnail == null || communityId == null) {
-        setState(() {
-          isSubmitButtonDisabled = true;
-          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
-          customThumbnailError = parsedCustomThumbnail == null ? AppLocalizations.of(context)!.notValidUrl : null;
-        });
-      }
-    }
-  }
-
-  void _onCreatePost(BuildContext context) {
-    saveDraft = false;
-
-    final flairIdList = _submissionFlairIds();
-
-    context.read<CreatePostCubit>().createOrEditPost(
-          communityId: communityId!,
-          name: _titleTextController.text,
-          body: _bodyTextController.text,
-          nsfw: isNSFW,
-          url: url,
-          customThumbnail: customThumbnail,
-          altText: altText,
-          tags: _submissionTags(),
-          flairIds: flairIdList,
-          postIdBeingEdited: widget.post?.id,
-          languageId: languageId,
-        );
-  }
-}
-
-/// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
-///
-/// Passing in a [community] will set the initial state of the widget to display that given community.
-/// A callback function [onCommunitySelected] will be triggered whenever a new community is selected from the dropdown.
-class CommunitySelector extends StatefulWidget {
-  const CommunitySelector({
-    super.key,
-    required this.account,
-    this.community,
-    required this.onCommunitySelected,
-  });
-
-  /// The account to use for the post
-  final Account account;
-
-  /// The initial community to be passed in
-  final ThunderCommunity? community;
-
-  /// A callback function to trigger whenever a community is selected from the dropdown
-  final Function(ThunderCommunity) onCommunitySelected;
-
-  @override
-  State<CommunitySelector> createState() => _CommunitySelectorState();
-}
-
-class _CommunitySelectorState extends State<CommunitySelector> {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return Transform.translate(
-      offset: const Offset(-8, 0),
-      child: InkWell(
-        onTap: () {
-          showCommunityInputDialog(
-            context,
-            title: l10n.community,
-            account: widget.account,
-            onCommunitySelected: widget.onCommunitySelected,
-          );
-        },
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                spacing: 12.0,
-                children: [
-                  if (widget.community != null) CommunityAvatar(community: widget.community!, radius: 16),
-                  widget.community != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${widget.community!.title} '),
-                            CommunityFullNameWidget(
-                              name: widget.community!.name,
-                              displayName: widget.community!.title,
-                              instance: fetchInstanceNameFromUrl(widget.community!.actorId),
-                              // Override because we have the display name right above.
-                              useDisplayName: false,
-                            ),
-                          ],
-                        )
-                      : SizedBox(
-                          height: 39,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              l10n.selectCommunity,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontStyle: FontStyle.italic,
-                                color: theme.colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ),
-                ],
-              ),
-              const Icon(Icons.chevron_right_rounded),
-            ],
+  Future<void> _openAdditionalSettingsPage(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => BlocProvider<CreatePostCubit>.value(
+          value: _createPostCubit,
+          child: CreatePostAdditionalSettingsPage(
+            customThumbnailController: _customThumbnailTextController,
+            tagsController: _tagsTextController,
           ),
         ),
       ),

@@ -65,10 +65,7 @@ class PostBodyTitle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitleText(context),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: PostBodyAuthorCommunityMetadata(post: post),
-                ),
+                _buildAuthorCommunityAndFlairs(),
               ],
             ),
           ),
@@ -92,10 +89,7 @@ class PostBodyTitle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitleText(context),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: PostBodyAuthorCommunityMetadata(post: post),
-                ),
+                _buildAuthorCommunityAndFlairs(),
               ],
             ),
           ),
@@ -118,12 +112,24 @@ class PostBodyTitle extends StatelessWidget {
           textScaleFactor: titleFontSizeScale.textScaleFactor,
           style: theme.textTheme.titleMedium,
         ),
-        if (post.flairs.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: PostFlairTags(flairs: post.flairs),
-          ),
       ],
+    );
+  }
+
+  Widget _buildAuthorCommunityAndFlairs() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PostBodyAuthorCommunityMetadata(post: post),
+          if (post.flairs.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: PostFlairTags(flairs: post.flairs),
+            ),
+        ],
+      ),
     );
   }
 

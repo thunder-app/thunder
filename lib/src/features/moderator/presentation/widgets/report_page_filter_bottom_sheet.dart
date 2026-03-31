@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/post/presentation/widgets/create_post/community_selector.dart';
 
 enum ReportResolveStatus { unresolved, all }
 
