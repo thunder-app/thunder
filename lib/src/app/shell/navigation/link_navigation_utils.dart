@@ -15,14 +15,14 @@ import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/app/shell/navigation/loading_page.dart';
-import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
+import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/shared/media/widgets/video_player.dart';
+import 'package:thunder/src/shared/media/video_player.dart';
 import 'package:thunder/src/features/user/api.dart';
 
 void _openLink(BuildContext context, {required String url, bool isVideo = false}) async {

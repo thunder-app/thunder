@@ -10,8 +10,8 @@ import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText, ThunderIconLabel;
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';

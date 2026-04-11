@@ -16,7 +16,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';

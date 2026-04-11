@@ -23,8 +23,8 @@ import 'package:thunder/src/features/session/session.dart';
 import 'package:thunder/src/features/user/presentation/widgets/user_selector.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/content/utils/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
-import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
+import 'package:thunder/src/shared/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
+import 'package:thunder/src/shared/media/media_view.dart';
 import 'package:thunder/src/shared/language_selector.dart';
 
 class CreatePostPage extends StatefulWidget {

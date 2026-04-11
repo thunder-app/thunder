@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/comment/api.dart';

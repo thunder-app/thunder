@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/shared/content/widgets/media/image_preview.dart';
+import 'package:thunder/src/shared/media/image_preview.dart';
 import 'package:thunder/packages/ui/ui.dart' show ThunderIconLabel;
 
 /// A widget that displays a community's header information and related actions.

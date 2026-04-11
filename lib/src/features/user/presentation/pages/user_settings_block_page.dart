@@ -10,9 +10,9 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';

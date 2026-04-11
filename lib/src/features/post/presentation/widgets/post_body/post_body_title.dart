@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/widgets/chips/community_chip.dart';
-import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
-import 'package:thunder/src/shared/content/widgets/media/compact_thumbnail_preview.dart';
+import 'package:thunder/src/shared/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/chips/community_chip.dart';
+import 'package:thunder/src/shared/chips/user_chip.dart';
+import 'package:thunder/src/shared/media/compact_thumbnail_preview.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
@@ -208,7 +208,6 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
     }
 
     final postBodyShowUserInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowUserInstance);
-    final postBodyShowCommunityInstance = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.postBodyShowCommunityInstance);
 
     return Wrap(
       spacing: 6.0,
@@ -216,7 +215,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
       children: [
         UserChip(
           user: creator,
-          personAvatar: UserAvatar(user: creator, radius: 8, thumbnailSize: 20, format: 'png'),
+          avatar: UserAvatar(user: creator, radius: 8, thumbnailSize: 20, format: 'png'),
           userGroups: userGroups,
           includeInstance: postBodyShowUserInstance,
         ),
@@ -225,14 +224,7 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
           size: 22,
           color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
         ),
-        CommunityChip(
-          communityId: community.id,
-          communityAvatar: CommunityAvatar(community: community, radius: 8, thumbnailSize: 20, format: 'png'),
-          communityName: community.name,
-          communityTitle: community.title,
-          communityUrl: community.actorId,
-          includeInstance: postBodyShowCommunityInstance,
-        )
+        CommunityChip(community: community)
       ],
     );
   }

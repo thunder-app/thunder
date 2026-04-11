@@ -10,7 +10,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 
-import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
+import 'package:thunder/src/shared/media/media_utils.dart';
 
 class ShareImagePreview extends StatefulWidget {
   final String? url;

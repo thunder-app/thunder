@@ -5,7 +5,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
+import 'package:thunder/src/shared/text/selectable_text_modal.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';

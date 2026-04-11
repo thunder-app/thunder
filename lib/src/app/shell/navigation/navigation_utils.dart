@@ -29,7 +29,7 @@ import 'package:thunder/src/app/shell/navigation/loading_page.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
-import 'package:thunder/src/shared/widgets/webview.dart';
+import 'package:thunder/src/shared/webview/webview.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/notification/presentation/pages/notifications_page.dart';
 import 'package:thunder/src/features/user/user.dart';

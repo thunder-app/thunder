@@ -11,7 +11,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';

@@ -10,7 +10,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/shared/links/widgets/link_bottom_sheet.dart';
+import 'package:thunder/src/shared/links/link_bottom_sheet.dart';
 import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, ThunderPopupMenuItem;
 
 /// Holds the app bar for the post page.

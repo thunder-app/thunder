@@ -6,7 +6,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/src/features/feed/api.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 
 class CreatePostEditorSection extends StatelessWidget {

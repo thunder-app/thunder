@@ -7,7 +7,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';

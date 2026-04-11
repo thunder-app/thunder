@@ -13,7 +13,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/session/api.dart';
 
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;

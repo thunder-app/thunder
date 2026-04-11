@@ -11,14 +11,14 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/shared/content/utils/media/media_utils.dart';
+import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 
 class MediaManagementPage extends StatelessWidget {

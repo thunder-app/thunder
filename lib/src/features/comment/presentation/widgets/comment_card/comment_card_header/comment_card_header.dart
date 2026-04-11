@@ -8,8 +8,8 @@ import 'package:thunder/src/features/comment/presentation/widgets/comment_card/c
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_reply_count.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_score.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/user_avatar.dart';
-import 'package:thunder/src/shared/widgets/chips/user_chip.dart';
+import 'package:thunder/src/shared/avatars/user_avatar.dart';
+import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
@@ -57,7 +57,7 @@ class CommentCardHeader extends StatelessWidget {
                   children: [
                     UserChip(
                       user: comment.creator!,
-                      personAvatar: UserAvatar(user: comment.creator!, radius: 10, thumbnailSize: 20, format: 'png'),
+                      avatar: UserAvatar(user: comment.creator!, radius: 10, thumbnailSize: 20, format: 'png'),
                       userGroups: userGroups,
                       includeInstance: commentShowUserInstance,
                       ignorePointerEvents: hidden && collapseParentCommentOnGesture,

@@ -9,8 +9,8 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/community_avatar.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart';
+import 'package:thunder/src/shared/avatars/community_avatar.dart';
+import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';

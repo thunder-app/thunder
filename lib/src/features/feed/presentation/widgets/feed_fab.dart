@@ -13,7 +13,7 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/shared/gesture_fab.dart';
+import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;

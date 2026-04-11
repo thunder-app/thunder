@@ -14,9 +14,9 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/shared/gesture_fab.dart';
+import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 
-import 'package:thunder/src/shared/widgets/comment_navigator_fab.dart';
+import 'package:thunder/src/shared/fabs/comment_navigator_fab.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderTypeaheadDialog;
 
 /// The FAB for the post page.

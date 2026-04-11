@@ -15,7 +15,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/shared/identity/widgets/full_name_widgets.dart' show CommunityFullNameWidget, UserFullNameWidget;
+import 'package:thunder/src/shared/name/full_name_widgets.dart' show CommunityFullNameWidget, UserFullNameWidget;
 
 String _generateSampleUserFullName(FullNameSeparator separator, bool useDisplayName) => generateUserFullName(
       null,

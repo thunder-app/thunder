@@ -19,7 +19,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
-import 'package:thunder/src/shared/widgets/text/selectable_text_modal.dart';
+import 'package:thunder/src/shared/text/selectable_text_modal.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;

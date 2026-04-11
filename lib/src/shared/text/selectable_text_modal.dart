@@ -1,0 +1,173 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
+import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/src/features/settings/api.dart';
+import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
+
+void showSelectableTextModal(BuildContext context, {String? title, required String text}) {
+  final l10n = GlobalContext.l10n;
+  final theme = Theme.of(context);
+
+  final themePreferences = context.read<ThemePreferencesCubit>().state;
+  final contentFontSizeScale = themePreferences.contentFontSizeScale;
+  final titleFontSizeScale = themePreferences.titleFontSizeScale;
+
+  final textScrollController = ScrollController();
+  final actionsScrollController = ScrollController();
+  final focusNode = FocusNode();
+  final selectableRegionKey = GlobalKey();
+
+  bool isAnythingSelected = false;
+
+  final chipColor = theme.colorScheme.primaryContainer.withValues(alpha: 0.25);
+
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (context) {
+      bool viewSource = false;
+      bool copySuccess = false;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return FractionallySizedBox(
+            heightFactor: 0.6,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                FadingEdgeScrollView.fromSingleChildScrollView(
+                  gradientFractionOnStart: 0.1,
+                  gradientFractionOnEnd: 0.1,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: actionsScrollController,
+                    child: Row(
+                      spacing: 10.0,
+                      children: [
+                        ThunderActionChip(
+                          backgroundColor: viewSource ? chipColor : null,
+                          trailingIcon: viewSource ? Icons.close_rounded : null,
+                          onPressed: () => setState(() => viewSource = !viewSource),
+                          label: l10n.viewSource,
+                        ),
+                        ThunderActionChip(
+                          onPressed: () => (selectableRegionKey.currentState as SelectableRegionState).selectAll(),
+                          label: l10n.selectAll,
+                        ),
+                        ThunderActionChip(
+                          backgroundColor: copySuccess ? chipColor : null,
+                          trailingIcon: copySuccess ? Icons.check_rounded : null,
+                          onPressed: isAnythingSelected
+                              ? () async {
+                                  (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
+                                  setState(() => copySuccess = true);
+                                  await Future.delayed(const Duration(seconds: 2));
+                                  setState(() => copySuccess = false);
+                                }
+                              : null,
+                          label: l10n.copySelected,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                    child: FadingEdgeScrollView.fromSingleChildScrollView(
+                      gradientFractionOnStart: 0.1,
+                      gradientFractionOnEnd: 0.1,
+                      child: SingleChildScrollView(
+                        controller: textScrollController,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SelectableRegion(
+                              onSelectionChanged: (value) {
+                                setState(() => isAnythingSelected = value != null);
+                              },
+                              key: selectableRegionKey,
+                              focusNode: focusNode,
+                              // Note: material/cupertinoTextSelectionHandleControls will be deprecated eventually,
+                              // but is still required in order to also use contextMenuBuilder.
+                              // See https://github.com/flutter/flutter/issues/122421 for more info.
+                              selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
+                              contextMenuBuilder: (context, selectableRegionState) {
+                                // While this isn't strictly needed right now, it's here so that when we upgrade the Flutter version, we'll get "Share" for free.
+                                // This comment canbe deleted at that time.
+                                return AdaptiveTextSelectionToolbar.buttonItems(
+                                  buttonItems: selectableRegionState.contextMenuButtonItems,
+                                  anchors: selectableRegionState.contextMenuAnchors,
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  if (title?.isNotEmpty == true) ...[
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        title!,
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * titleFontSizeScale.textScaleFactor),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: viewSource
+                                        ? ScalableText(
+                                            text,
+                                            style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                                            textScaleFactor: contentFontSizeScale.textScaleFactor,
+                                          )
+                                        : CommonMarkdownBody(
+                                            body: text,
+                                            isComment: true,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(l10n.close),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}

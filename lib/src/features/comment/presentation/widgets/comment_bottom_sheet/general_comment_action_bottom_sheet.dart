@@ -8,7 +8,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/shared/full_name_copy_utils.dart';
+import 'package:thunder/src/shared/name/full_name_copy_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, MultiPickerItem, PickerItemData;
 
 /// Defines the general actions that can be taken on a comment

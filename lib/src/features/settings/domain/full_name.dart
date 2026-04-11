@@ -3,10 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/shared/identity/models/name_style.dart' show FullNameSeparator;
-import 'package:thunder/src/shared/identity/utils/name_formatting.dart' show formatCommunityFullNamePrefix, formatCommunityFullNameSuffix, formatUserFullNamePrefix, formatUserFullNameSuffix;
+import 'package:thunder/src/shared/name/name_style.dart' show FullNameSeparator;
+import 'package:thunder/src/shared/name/name_formatting.dart' show formatCommunityFullNamePrefix, formatCommunityFullNameSuffix, formatUserFullNamePrefix, formatUserFullNameSuffix;
 
-export 'package:thunder/src/shared/identity/models/name_style.dart' show FullNameSeparator, NameColor, NameThickness;
+export 'package:thunder/src/shared/name/name_style.dart' show FullNameSeparator, NameColor, NameThickness;
 
 /// --- USERS ---
 

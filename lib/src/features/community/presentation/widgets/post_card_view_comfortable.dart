@@ -9,7 +9,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/shared/content/widgets/media/media_view.dart';
+import 'package:thunder/src/shared/media/media_view.dart';
 import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';

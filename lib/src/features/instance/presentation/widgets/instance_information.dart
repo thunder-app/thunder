@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/content/widgets/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/identity/widgets/avatars/instance_avatar.dart';
+import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
+import 'package:thunder/src/shared/avatars/instance_avatar.dart';
 import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
 
 /// A widget that displays information about a given instance.
