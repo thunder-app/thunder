@@ -30,11 +30,11 @@
     "@accountSettingsImportedSuccessfully": {
         "description": "Hesap ayarları başarıyla içe aktarıldığında kullanıcıya gösterilen mesaj"
     },
-    "accountSwitchParentCommentNotFound": "Seçilen yorum '{instance}' üzerinde bulunamadı.",
+    "accountSwitchParentCommentNotFound": "Seçilen yorum '{instance}' üzerinde bulunamadı",
     "@accountSwitchParentCommentNotFound": {
         "description": "Yanıtlanacak yorum çözümlenemediğinde gösterilen hata mesajı"
     },
-    "accountSwitchPostNotFound": "Seçilen gönderi '{instance}' üzerinde bulunamadı.",
+    "accountSwitchPostNotFound": "Seçilen gönderi '{instance}' üzerinde bulunamadı",
     "@accountSwitchPostNotFound": {
         "description": "Yanıtlanacak gönderi çözümlenemediğinde gösterilen hata mesajı"
     },
