@@ -744,6 +744,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get deleteComment => 'கருத்தை நீக்கு';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'இந்த படத்தை நீக்க விரும்புகிறீர்களா?';
 
@@ -848,6 +852,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get downvotesDisabled =>
       'இந்த நிகழ்வில் டவுன்வோட்டுகள் அணைக்கப்படுகின்றன.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'தொகு';
@@ -1632,6 +1639,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get noCommunityBlocks => 'தடுக்கப்பட்ட சமூகங்கள் இல்லை';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'இணக்கமான பயன்பாடு எதுவும் கிடைக்கவில்லை';
 
   @override
@@ -1640,6 +1650,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'காட்சி பெயர் தொகுப்பு இல்லை';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'மின்னஞ்சல் தொகுப்பு இல்லை';
@@ -2110,6 +2123,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'இந்த பார்வையில் இருந்து பதிலளிப்பது தற்போது ஆதரிக்கப்படவில்லை';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'இடுகைக்கு பதில்';
@@ -3031,6 +3047,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get unsubscribed => 'குழுவிலகப்பட்டது';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

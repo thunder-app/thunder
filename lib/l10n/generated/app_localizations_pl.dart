@@ -740,6 +740,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get deleteComment => 'Delete Comment';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Are you sure you want to delete this image?';
 
@@ -843,6 +847,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get downvotesDisabled => 'Głosy w dół są wyłączone w tej instancji.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Edytuj';
@@ -1611,6 +1618,9 @@ class AppLocalizationsPl extends AppLocalizations {
       'It looks like you have not blocked any communities.';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -1618,6 +1628,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -2081,6 +2094,9 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Odpowiadanie z poziomu tego widoku nie jest jeszcze obsługiwane';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Odpowiedz na Post';
@@ -2988,6 +3004,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Odsubskrybowano';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

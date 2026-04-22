@@ -737,6 +737,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get deleteComment => 'Delete Comment';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Are you sure you want to delete this image?';
 
@@ -840,6 +844,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get downvotesDisabled => 'Downvotes sú v tejto inštancii vypnuté.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Upraviť';
@@ -1613,6 +1620,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get noCommunityBlocks => 'Žiadne zablokované komunity.';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -1620,6 +1630,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -2081,6 +2094,9 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Odpovedanie z tohto zobrazenia v súčasnosti ešte nie je podporované';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Odpovedať na príspevok';
@@ -2987,6 +3003,12 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Odber zrušený';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

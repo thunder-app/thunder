@@ -9,13 +9,19 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 
-class DraftContext {
-  const DraftContext({
-    required this.draftType,
-    this.existingId,
-    this.replyId,
-  });
+enum DraftPersistenceResult {
+  saved,
+  deleted,
+  skipped,
+}
 
+enum DraftOpenResult {
+  opened,
+  retryableFailure,
+  abandoned,
+}
+
+class DraftContext {
   /// The type of draft
   final DraftType draftType;
 
@@ -25,52 +31,24 @@ class DraftContext {
   /// The reply id, if we're replying to a post or comment
   final int? replyId;
 
+  const DraftContext({required this.draftType, this.existingId, this.replyId});
+
   bool get hasRequiredReplyTarget => !draftType.isCommentCreate || replyId != null;
 }
 
-enum DraftPersistenceResult {
-  saved,
-  deleted,
-  skipped,
-}
-
-class ActiveDraftRestoreData {
-  const ActiveDraftRestoreData({
-    required this.draft,
-    required this.account,
-  });
-
-  final Draft draft;
-  final Account account;
-}
-
-DraftContext resolvePostDraftContext({
-  required int? editingPostId,
-  required int? communityId,
-}) {
+/// Resolves the post draft context
+DraftContext resolvePostDraftContext({required int? editingPostId, required int? communityId}) {
   if (editingPostId != null) {
-    return DraftContext(
-      draftType: DraftType.postEdit,
-      existingId: editingPostId,
-    );
+    return DraftContext(draftType: DraftType.postEdit, existingId: editingPostId);
   }
 
-  return DraftContext(
-    draftType: DraftType.postCreate,
-    replyId: communityId,
-  );
+  return DraftContext(draftType: DraftType.postCreate, replyId: communityId);
 }
 
-DraftContext resolveCommentDraftContext({
-  required int? editingCommentId,
-  required int? postId,
-  required int? parentCommentId,
-}) {
+/// Resolves the comment draft context
+DraftContext resolveCommentDraftContext({required int? editingCommentId, required int? postId, required int? parentCommentId}) {
   if (editingCommentId != null) {
-    return DraftContext(
-      draftType: DraftType.commentEdit,
-      existingId: editingCommentId,
-    );
+    return DraftContext(draftType: DraftType.commentEdit, existingId: editingCommentId);
   }
 
   return DraftContext(
@@ -79,9 +57,9 @@ DraftContext resolveCommentDraftContext({
   );
 }
 
+/// Builds a post draft
 Draft buildPostDraft({
   required DraftContext context,
-  required String? accountId,
   required String title,
   required String url,
   required String customThumbnail,
@@ -95,7 +73,6 @@ Draft buildPostDraft({
     draftType: context.draftType,
     existingId: context.existingId,
     replyId: context.replyId,
-    accountId: accountId,
     title: title,
     url: url,
     customThumbnail: customThumbnail,
@@ -106,34 +83,25 @@ Draft buildPostDraft({
   );
 }
 
-Draft buildCommentDraft({
-  required DraftContext context,
-  required String? accountId,
-  required int? languageId,
-  required String body,
-}) {
+/// Builds a comment draft
+Draft buildCommentDraft({required DraftContext context, required int? languageId, required String body}) {
   return Draft(
     id: '',
     draftType: context.draftType,
     existingId: context.existingId,
     replyId: context.replyId,
-    accountId: accountId,
     languageId: languageId,
     body: body,
   );
 }
 
-Future<Draft?> restoreDraft({
-  required DraftRepository repository,
-  required DraftContext context,
-}) async {
-  if (!context.hasRequiredReplyTarget) {
-    return null;
-  }
-
+/// Restores the draft
+Future<Draft?> restoreDraft({required DraftRepository repository, required DraftContext context}) async {
+  if (!context.hasRequiredReplyTarget) return null;
   return repository.fetchDraft(context.draftType, context.existingId, context.replyId);
 }
 
+/// Persists the draft
 Future<DraftPersistenceResult> persistDraft({
   required DraftRepository repository,
   required DraftContext context,
@@ -142,9 +110,7 @@ Future<DraftPersistenceResult> persistDraft({
   required bool differsFromEdit,
   required bool hasContent,
 }) async {
-  if (!context.hasRequiredReplyTarget) {
-    return DraftPersistenceResult.skipped;
-  }
+  if (!context.hasRequiredReplyTarget) return DraftPersistenceResult.skipped;
 
   if (hasContent && save && differsFromEdit) {
     await repository.upsertDraft(draft, active: true);
@@ -155,55 +121,140 @@ Future<DraftPersistenceResult> persistDraft({
   return DraftPersistenceResult.deleted;
 }
 
+/// Checks if the draft differs from the original post
 bool postDraftDiffersFromEdit(Draft draft, ThunderPost? post) {
-  if (post == null) {
-    return true;
-  }
+  if (post == null) return true;
 
-  return draft.title != post.name ||
-      draft.url != (post.url ?? '') ||
-      draft.customThumbnail != (post.thumbnailUrl ?? '') ||
-      draft.altText != (post.altText ?? '') ||
-      draft.nsfw != post.nsfw ||
-      draft.languageId != post.languageId ||
-      draft.body != (post.body ?? '');
+  final isTitleDifferent = draft.title != post.name;
+  final isUrlDifferent = draft.url != post.url;
+  final isCustomThumbnailDifferent = draft.customThumbnail != post.thumbnailUrl;
+  final isAltTextDifferent = draft.altText != post.altText;
+  final isNsfwDifferent = draft.nsfw != post.nsfw;
+  final isLanguageIdDifferent = draft.languageId != post.languageId;
+  final isBodyDifferent = draft.body != post.body;
+
+  return isTitleDifferent || isUrlDifferent || isCustomThumbnailDifferent || isAltTextDifferent || isNsfwDifferent || isLanguageIdDifferent || isBodyDifferent;
 }
 
+/// Checks if the draft differs from the original comment
 bool commentDraftDiffersFromEdit(Draft draft, ThunderComment? comment) {
-  if (comment == null) {
-    return true;
-  }
+  if (comment == null) return true;
 
-  return draft.body != comment.content || draft.languageId != comment.languageId;
+  final isBodyDifferent = draft.body != comment.content;
+  final isLanguageIdDifferent = draft.languageId != comment.languageId;
+
+  return isBodyDifferent || isLanguageIdDifferent;
 }
 
-Future<ActiveDraftRestoreData?> resolveActiveDraftRestoreData({
+/// Opens the draft session
+Future<DraftOpenResult> openDraftSession({
   required DraftRepository repository,
+  required Draft draft,
   required Account account,
+  required Future<void> Function(Account account, int? communityId, ThunderCommunity? community) onPostCreateRestore,
+  required Future<void> Function(Account account, ThunderPost post) onPostEditRestore,
+  required Future<void> Function(Account account, ThunderPost post) onCommentCreateFromPostRestore,
+  required Future<void> Function(Account account, ThunderComment comment) onCommentCreateFromCommentRestore,
+  required Future<void> Function(Account account, ThunderComment comment) onCommentEditRestore,
 }) async {
-  final activeDraft = await repository.fetchActiveDraft();
-  if (activeDraft == null || !activeDraft.hasRestorableContent) {
-    if (activeDraft != null) {
-      await repository.clearActiveDraft();
+  try {
+    switch (draft.draftType) {
+      case DraftType.postCreate:
+      case DraftType.postCreateGeneral:
+        ThunderCommunity? community;
+
+        if (draft.replyId != null) {
+          try {
+            final details = await CommunityRepositoryImpl(account: account).getCommunity(id: draft.replyId);
+            community = details.community;
+          } catch (_) {
+            community = null;
+          }
+        }
+
+        await onPostCreateRestore(account, draft.replyId, community);
+        return DraftOpenResult.opened;
+
+      case DraftType.postEdit:
+        if (draft.existingId == null) {
+          await repository.clearActiveDraft();
+          return DraftOpenResult.abandoned;
+        }
+
+        final response = await PostRepositoryImpl(account: account).getPost(draft.existingId!);
+        final post = response?['post'];
+
+        if (post is! ThunderPost) {
+          return DraftOpenResult.abandoned;
+        }
+
+        await onPostEditRestore(account, post);
+        return DraftOpenResult.opened;
+
+      case DraftType.commentCreateFromPost:
+        if (draft.replyId == null) {
+          await repository.clearActiveDraft();
+          return DraftOpenResult.abandoned;
+        }
+
+        final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+        final post = response?['post'];
+
+        if (post is! ThunderPost) {
+          return DraftOpenResult.abandoned;
+        }
+
+        await onCommentCreateFromPostRestore(account, post);
+        return DraftOpenResult.opened;
+
+      case DraftType.commentCreateFromComment:
+        if (draft.replyId == null) {
+          await repository.clearActiveDraft();
+          return DraftOpenResult.abandoned;
+        }
+
+        final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+        await onCommentCreateFromCommentRestore(account, comment);
+        return DraftOpenResult.opened;
+
+      case DraftType.commentEdit:
+        if (draft.existingId == null) {
+          await repository.clearActiveDraft();
+          return DraftOpenResult.abandoned;
+        }
+
+        final comment = await CommentRepositoryImpl(account: account).getComment(draft.existingId!);
+        await onCommentEditRestore(account, comment);
+        return DraftOpenResult.opened;
+
+      case DraftType.commentCreate:
+        if (draft.replyId == null) {
+          await repository.clearActiveDraft();
+          return DraftOpenResult.abandoned;
+        }
+
+        try {
+          final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+          await onCommentCreateFromCommentRestore(account, comment);
+        } catch (_) {
+          final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+          final post = response?['post'];
+
+          if (post is! ThunderPost) {
+            return DraftOpenResult.abandoned;
+          }
+
+          await onCommentCreateFromPostRestore(account, post);
+        }
+        return DraftOpenResult.opened;
     }
-
-    return null;
+  } catch (_) {
+    // If anything fails, leave the active marker to allow a future recovery attempt.
+    return DraftOpenResult.retryableFailure;
   }
-
-  Account restoreAccount = account;
-  if (activeDraft.accountId?.isNotEmpty == true) {
-    final account = await Account.fetchAccount(activeDraft.accountId!);
-    if (account != null) {
-      restoreAccount = account;
-    }
-  }
-
-  return ActiveDraftRestoreData(
-    draft: activeDraft,
-    account: restoreAccount,
-  );
 }
 
+/// Restores the active draft session
 Future<void> restoreActiveDraftSession({
   required DraftRepository repository,
   required Account account,
@@ -213,110 +264,26 @@ Future<void> restoreActiveDraftSession({
   required Future<void> Function(Account account, ThunderComment comment) onCommentCreateFromCommentRestore,
   required Future<void> Function(Account account, ThunderComment comment) onCommentEditRestore,
 }) async {
-  final restoreData = await resolveActiveDraftRestoreData(
-    repository: repository,
-    account: account,
-  );
+  final draft = await repository.fetchActiveDraft();
+  if (draft == null) return;
 
-  if (restoreData == null) {
+  if (!draft.hasRestorableContent) {
+    await repository.clearActiveDraft();
     return;
   }
 
-  final activeDraft = restoreData.draft;
-  final restoreAccount = restoreData.account;
+  final result = await openDraftSession(
+    repository: repository,
+    draft: draft,
+    account: account,
+    onPostCreateRestore: onPostCreateRestore,
+    onPostEditRestore: onPostEditRestore,
+    onCommentCreateFromPostRestore: onCommentCreateFromPostRestore,
+    onCommentCreateFromCommentRestore: onCommentCreateFromCommentRestore,
+    onCommentEditRestore: onCommentEditRestore,
+  );
 
-  try {
-    switch (activeDraft.draftType) {
-      case DraftType.postCreate:
-      case DraftType.postCreateGeneral:
-        ThunderCommunity? community;
-
-        if (activeDraft.replyId != null) {
-          try {
-            final details = await CommunityRepositoryImpl(account: restoreAccount).getCommunity(id: activeDraft.replyId);
-            community = details.community;
-          } catch (_) {
-            community = null;
-          }
-        }
-
-        await onPostCreateRestore(restoreAccount, activeDraft.replyId, community);
-        break;
-
-      case DraftType.postEdit:
-        if (activeDraft.existingId == null) {
-          await repository.clearActiveDraft();
-          return;
-        }
-
-        final response = await PostRepositoryImpl(account: restoreAccount).getPost(activeDraft.existingId!);
-        final post = response?['post'];
-
-        if (post is! ThunderPost) {
-          return;
-        }
-
-        await onPostEditRestore(restoreAccount, post);
-        break;
-
-      case DraftType.commentCreateFromPost:
-        if (activeDraft.replyId == null) {
-          await repository.clearActiveDraft();
-          return;
-        }
-
-        final response = await PostRepositoryImpl(account: restoreAccount).getPost(activeDraft.replyId!);
-        final post = response?['post'];
-
-        if (post is! ThunderPost) {
-          return;
-        }
-
-        await onCommentCreateFromPostRestore(restoreAccount, post);
-        break;
-
-      case DraftType.commentCreateFromComment:
-        if (activeDraft.replyId == null) {
-          await repository.clearActiveDraft();
-          return;
-        }
-
-        final comment = await CommentRepositoryImpl(account: restoreAccount).getComment(activeDraft.replyId!);
-        await onCommentCreateFromCommentRestore(restoreAccount, comment);
-        break;
-
-      case DraftType.commentEdit:
-        if (activeDraft.existingId == null) {
-          await repository.clearActiveDraft();
-          return;
-        }
-
-        final comment = await CommentRepositoryImpl(account: restoreAccount).getComment(activeDraft.existingId!);
-        await onCommentEditRestore(restoreAccount, comment);
-        break;
-
-      case DraftType.commentCreate:
-        if (activeDraft.replyId == null) {
-          await repository.clearActiveDraft();
-          return;
-        }
-
-        try {
-          final comment = await CommentRepositoryImpl(account: restoreAccount).getComment(activeDraft.replyId!);
-          await onCommentCreateFromCommentRestore(restoreAccount, comment);
-        } catch (_) {
-          final response = await PostRepositoryImpl(account: restoreAccount).getPost(activeDraft.replyId!);
-          final post = response?['post'];
-
-          if (post is! ThunderPost) {
-            return;
-          }
-
-          await onCommentCreateFromPostRestore(restoreAccount, post);
-        }
-        break;
-    }
-  } catch (_) {
-    // If anything fails, leave the active marker to allow a future recovery attempt.
+  if (result == DraftOpenResult.abandoned) {
+    await repository.clearActiveDraft();
   }
 }

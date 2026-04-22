@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/community_chip.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';

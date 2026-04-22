@@ -52,6 +52,7 @@ const String SETTINGS_ACCOUNT_LANGUAGES_PAGE = '/settings/account/languages';
 const String SETTINGS_ACCOUNT_BLOCKLIST_PAGE = '/settings/account/blocklist';
 const String SETTINGS_ACCOUNT_MEDIA_PAGE = '/settings/account/media';
 const String SETTINGS_USER_LABELS_PAGE = '/settings/user_labels';
+const String SETTINGS_DRAFTS_PAGE = '/settings/drafts';
 const String SETTINGS_ABOUT_PAGE = '/settings/about';
 const String SETTINGS_DEBUG_PAGE = '/settings/debug';
 const String SETTINGS_APPEARANCE_POSTS_PAGE = '/settings/appearance/posts';

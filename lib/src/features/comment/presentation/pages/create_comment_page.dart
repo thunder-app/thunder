@@ -96,9 +96,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
   /// Whether the user was temporarily changed to create the comment
   bool userChanged = false;
 
-  /// The id of the account for which the draft is being saved. This is used to determine which draft to restore when the page is opened.
-  String? _draftAccountId;
-
   /// The ID of the post we're responding to
   int? postId;
 
@@ -119,8 +116,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-
-    _draftAccountId = widget.account?.id ?? context.read<FeatureAccountCubit>().state.effectiveAccount.id;
 
     post = widget.post;
     parentComment = widget.parentComment;
@@ -158,8 +153,12 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
 
     _draftDebounceTimer?.cancel();
 
-    _persistOrDeleteDraft(showSaveDraftSnackbar: true);
-    unawaited(_draftRepository.clearActiveDraft());
+    final draftContext = _draftContext;
+
+    unawaited(() async {
+      await _persistOrDeleteDraft(showSaveDraftSnackbar: true);
+      await _draftRepository.clearActiveDraftByIdentity(draftContext.draftType, draftContext.existingId, draftContext.replyId);
+    }());
 
     _bodyTextController.dispose();
     _bodyFocusNode.dispose();
@@ -170,7 +169,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
-      _persistOrDeleteDraft();
+      unawaited(_persistOrDeleteDraft());
     }
   }
 
@@ -178,10 +177,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
   void _restoreExistingDraft() async {
     final draftContext = _draftContext;
 
-    final draft = await restoreDraft(
-      repository: _draftRepository,
-      context: draftContext,
-    );
+    final draft = await restoreDraft(repository: _draftRepository, context: draftContext);
+    if (!mounted) return;
 
     if (draft != null) {
       _bodyTextController.text = draft.body ?? '';
@@ -193,16 +190,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     if (context.mounted && draft?.isCommentNotEmpty == true) {
       // We need to wait until the keyboard is visible before showing the snackbar
       Future.delayed(const Duration(milliseconds: 1000), () {
+        if (!mounted) return;
+
         showSnackbar(
           AppLocalizations.of(context)!.restoredCommentFromDraft,
           trailingIcon: Icons.delete_forever_rounded,
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
           trailingAction: () {
             unawaited(_draftRepository.deleteDraft(draftContext.draftType, draftContext.existingId, draftContext.replyId));
+
             _bodyTextController.text = widget.comment?.content ?? '';
-            setState(() {
-              languageId = widget.comment?.languageId;
-            });
+
+            setState(() => languageId = widget.comment?.languageId);
           },
           closable: true,
         );
@@ -218,33 +217,34 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
 
   Draft _buildDraft() => buildCommentDraft(
         context: _draftContext,
-        accountId: _draftAccountId,
         languageId: languageId,
         body: _bodyTextController.text,
       );
 
   void _onDraftInputChanged() {
     _draftDebounceTimer?.cancel();
-    _draftDebounceTimer = Timer(const Duration(milliseconds: 800), _persistOrDeleteDraft);
+    _draftDebounceTimer = Timer(const Duration(milliseconds: 800), () {
+      unawaited(_persistOrDeleteDraft());
+    });
   }
 
-  void _persistOrDeleteDraft({bool showSaveDraftSnackbar = false}) {
+  Future<DraftPersistenceResult> _persistOrDeleteDraft({bool showSaveDraftSnackbar = false}) async {
     final draft = _buildDraft();
 
-    unawaited(
-      persistDraft(
-        repository: _draftRepository,
-        context: _draftContext,
-        draft: draft,
-        save: saveDraft,
-        differsFromEdit: commentDraftDiffersFromEdit(draft, widget.comment),
-        hasContent: draft.isCommentNotEmpty,
-      ).then((result) {
-        if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
-          showSnackbar(GlobalContext.l10n.commentSavedAsDraft);
-        }
-      }),
+    final result = await persistDraft(
+      repository: _draftRepository,
+      context: _draftContext,
+      draft: draft,
+      save: saveDraft,
+      differsFromEdit: commentDraftDiffersFromEdit(draft, widget.comment),
+      hasContent: draft.isCommentNotEmpty,
     );
+
+    if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
+      showSnackbar(GlobalContext.l10n.commentSavedAsDraft);
+    }
+
+    return result;
   }
 
   @override
@@ -255,10 +255,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: BlocConsumer<FeatureAccountCubit, FeatureAccountState>(
-        listener: (context, featureAccountState) {
-          _draftAccountId = featureAccountState.effectiveAccount.id;
-          context.read<CreateCommentCubit>().switchAccount(featureAccountState.effectiveAccount);
-        },
+        listener: (context, featureAccountState) => context.read<CreateCommentCubit>().switchAccount(featureAccountState.effectiveAccount),
         builder: (context, featureAccountState) {
           final account = featureAccountState.effectiveAccount;
 
@@ -376,7 +373,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                         onUserChanged: (account) {
                                           setState(() {
                                             userChanged = featureAccountState.effectiveAccount.id != account.id;
-                                            _draftAccountId = account.id;
                                           });
 
                                           context.read<FeatureAccountCubit>().setOverride(account);

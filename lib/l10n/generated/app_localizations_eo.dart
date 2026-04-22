@@ -728,6 +728,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get deleteComment => 'Delete Comment';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Are you sure you want to delete this image?';
 
@@ -832,6 +836,9 @@ class AppLocalizationsEo extends AppLocalizations {
   @override
   String get downvotesDisabled =>
       'Subenvoĉdonoj estas malŝaltitaj en ĉi tiu instanco.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Redakti';
@@ -1594,6 +1601,9 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noCommunityBlocks => 'Neniuj baritaj komunumoj.';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -1601,6 +1611,9 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -2062,6 +2075,9 @@ class AppLocalizationsEo extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Respondi el ĉi tiu vido estas nuntempe ankoraŭ ne subtenata';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Respondi al Afiŝo';
@@ -2966,6 +2982,12 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Malabonita';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

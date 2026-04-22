@@ -752,6 +752,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deleteComment => 'Supprimer le commentaire';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Êtes-vous sûr de vouloir supprimer cette image ?';
 
@@ -857,6 +861,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get downvotesDisabled =>
       'Les votes négatifs sont désactivés sur cette instance.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Éditer';
@@ -1630,6 +1637,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noCommunityBlocks => 'Aucune communautés bloquées';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -1637,6 +1647,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -2101,6 +2114,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Répondre depuis cette page n\'est actuellement pas supporté';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Répondre à la publication';
@@ -3014,6 +3030,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Désabonné';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

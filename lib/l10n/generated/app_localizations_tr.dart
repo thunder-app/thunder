@@ -736,6 +736,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deleteComment => 'Yorumu Sil';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Bu resmi silmek istediğinizden emin misiniz?';
 
@@ -839,6 +843,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get downvotesDisabled => 'Bu sunucuda eksi oylar kapalı.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Düzenle';
@@ -1613,6 +1620,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noCommunityBlocks => 'Engellenen topluluk yok';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'Uyumlu uygulama bulunamadı';
 
   @override
@@ -1620,6 +1630,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'Görünen ad ayarlanmamış';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'E-posta ayarlanmamış';
@@ -2083,6 +2096,9 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Bu görünümden yanıtlamak şu anda desteklenmiyor';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Gönderiye Yanıtla';
@@ -2997,6 +3013,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Abonelikten Çıkıldı';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

@@ -863,6 +863,10 @@
   "@deleteComment": {
     "description": "Action for deleting a comment"
   },
+  "deleteDraftConfirmation": "Are you sure you want to delete this draft?",
+  "@deleteDraftConfirmation": {
+    "description": "Confirmation message for deleting a draft"
+  },
   "deleteImageConfirmMessage": "Are you sure you want to delete this image?",
   "@deleteImageConfirmMessage": {
     "description": "Confirmation messages for deleting an image"
@@ -986,6 +990,10 @@
   },
   "downvotesDisabled": "Downvotes are turned off on this instance.",
   "@downvotesDisabled": {},
+  "drafts": "Drafts",
+  "@drafts": {
+    "description": "Heading for drafts settings"
+  },
   "edit": "Edit",
   "@edit": {},
   "editComment": "Edit Comment",
@@ -1868,6 +1876,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities",
   "@noCommunityBlocks": {},
+  "noCommunitySelected": "No community selected",
+  "@noCommunitySelected": {
+    "description": "Fallback subtitle when a draft has no selected community"
+  },
   "noCompatibleAppFound": "No compatible app found",
   "@noCompatibleAppFound": {
     "description": "Tell the user we didn't find a compatible UnifiedPush app"
@@ -1879,6 +1891,10 @@
   "noDisplayNameSet": "No display name set",
   "@noDisplayNameSet": {
     "description": "Message for no display name set"
+  },
+  "noDrafts": "You do not have any drafts yet",
+  "@noDrafts": {
+    "description": "Placeholder message for empty draft list"
   },
   "noEmailSet": "No email set",
   "@noEmailSet": {
@@ -2389,6 +2405,10 @@
   },
   "replyNotSupported": "Replying from this view is currently not supported yet",
   "@replyNotSupported": {},
+  "replyToComment": "Reply to Comment",
+  "@replyToComment": {
+    "description": "Label used for comment drafts replying to another comment"
+  },
   "replyToPost": "Reply to Post",
   "@replyToPost": {},
   "replyingTo": "Replying to {author}",
@@ -3490,6 +3510,14 @@
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",
   "@unsubscribed": {},
+  "untitledCommentDraft": "Untitled comment draft",
+  "@untitledCommentDraft": {
+    "description": "Fallback title for comment drafts without body text"
+  },
+  "untitledPostDraft": "Untitled post draft",
+  "@untitledPostDraft": {
+    "description": "Fallback title for post drafts without a title"
+  },
   "updateReleased": "Update released: {version}",
   "@updateReleased": {
     "description": "Message shown to the user when a new update is released",

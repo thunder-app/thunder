@@ -727,6 +727,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get deleteComment => 'Delete Comment';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Are you sure you want to delete this image?';
 
@@ -830,6 +834,9 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get downvotesDisabled => 'Nedstemmer er avskrudd på denne instansen.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Rediger';
@@ -1586,6 +1593,9 @@ class AppLocalizationsNb extends AppLocalizations {
       'Det ser ut til at du ikke har blokkert noen gemenskaper.';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -1593,6 +1603,9 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -2056,6 +2069,9 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get replyNotSupported =>
       'Besvaring fra denne visningen støttes ikke enda';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Besvar innlegg';
@@ -2967,6 +2983,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get unsubscribed => 'Abonnement opphevet';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {

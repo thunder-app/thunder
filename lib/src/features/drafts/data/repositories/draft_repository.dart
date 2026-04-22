@@ -10,6 +10,9 @@ abstract class DraftRepository {
   /// Upsert a draft into the database.
   Future<Draft?> upsertDraft(Draft draft, {bool active = false});
 
+  /// Fetch all drafts from the database.
+  Future<List<Draft>> fetchAllDrafts();
+
   /// Fetch a draft from the database.
   Future<Draft?> fetchDraft(DraftType draftType, int? existingId, int? replyId);
 
@@ -21,6 +24,9 @@ abstract class DraftRepository {
 
   /// Clear the active draft from the database by identity.
   Future<void> clearActiveDraftByIdentity(DraftType draftType, int? existingId, int? replyId);
+
+  /// Marks the selected draft as the only active draft.
+  Future<void> setActiveDraftById(String id);
 
   /// Delete a draft from the database.
   Future<void> deleteDraft(DraftType draftType, int? existingId, int? replyId);
@@ -141,6 +147,23 @@ class DraftRepositoryImpl implements DraftRepository {
   }
 
   @override
+  Future<List<Draft>> fetchAllDrafts() async {
+    try {
+      final drafts = await (_database.select(_database.drafts)
+            ..orderBy([
+              (t) => OrderingTerm(expression: t.active, mode: OrderingMode.desc),
+              (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
+            ]))
+          .get();
+
+      return drafts.map(_toDraft).where((draft) => draft.hasRestorableContent).toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      return const <Draft>[];
+    }
+  }
+
+  @override
   Future<Draft?> fetchActiveDraft() async {
     try {
       final drafts = await (_database.select(_database.drafts)..where((t) => t.active.equals(true))).get();
@@ -175,6 +198,21 @@ class DraftRepositoryImpl implements DraftRepository {
             ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
             ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
           .write(const DraftsCompanion(active: Value(false)));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  @override
+  Future<void> setActiveDraftById(String id) async {
+    try {
+      final parsedId = int.tryParse(id);
+      if (parsedId == null) return;
+
+      await _database.transaction(() async {
+        await clearActiveDraft();
+        await (_database.update(_database.drafts)..where((t) => t.id.equals(parsedId))).write(const DraftsCompanion(active: Value(true)));
+      });
     } catch (e) {
       debugPrint(e.toString());
     }

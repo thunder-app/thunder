@@ -168,13 +168,15 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
     final cubit = _createPostCubit;
     unawaited(
-      cubit.persistDraftNow().then((result) {
+      () async {
+        final result = await cubit.persistDraftNow();
+        await cubit.clearActiveDraft();
+
         if (result == DraftPersistenceResult.saved && GlobalContext.scaffoldMessengerKey.currentState != null) {
           showSnackbar(GlobalContext.l10n.postSavedAsDraft);
         }
-      }),
+      }(),
     );
-    unawaited(cubit.clearActiveDraft());
 
     _bodyTextController.dispose();
     _titleTextController.dispose();

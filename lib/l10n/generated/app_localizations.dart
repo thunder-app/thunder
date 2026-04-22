@@ -1410,6 +1410,12 @@ abstract class AppLocalizations {
   /// **'Delete Comment'**
   String get deleteComment;
 
+  /// Confirmation message for deleting a draft
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this draft?'**
+  String get deleteDraftConfirmation;
+
   /// Confirmation messages for deleting an image
   ///
   /// In en, this message translates to:
@@ -1601,6 +1607,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Downvotes are turned off on this instance.'**
   String get downvotesDisabled;
+
+  /// Heading for drafts settings
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts'**
+  String get drafts;
 
   /// No description provided for @edit.
   ///
@@ -2922,6 +2934,12 @@ abstract class AppLocalizations {
   /// **'No blocked communities'**
   String get noCommunityBlocks;
 
+  /// Fallback subtitle when a draft has no selected community
+  ///
+  /// In en, this message translates to:
+  /// **'No community selected'**
+  String get noCommunitySelected;
+
   /// Tell the user we didn't find a compatible UnifiedPush app
   ///
   /// In en, this message translates to:
@@ -2939,6 +2957,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No display name set'**
   String get noDisplayNameSet;
+
+  /// Placeholder message for empty draft list
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have any drafts yet'**
+  String get noDrafts;
 
   /// Message for no email set
   ///
@@ -3773,6 +3797,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Replying from this view is currently not supported yet'**
   String get replyNotSupported;
+
+  /// Label used for comment drafts replying to another comment
+  ///
+  /// In en, this message translates to:
+  /// **'Reply to Comment'**
+  String get replyToComment;
 
   /// No description provided for @replyToPost.
   ///
@@ -5399,6 +5429,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unsubscribed'**
   String get unsubscribed;
+
+  /// Fallback title for comment drafts without body text
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled comment draft'**
+  String get untitledCommentDraft;
+
+  /// Fallback title for post drafts without a title
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled post draft'**
+  String get untitledPostDraft;
 
   /// Message shown to the user when a new update is released
   ///

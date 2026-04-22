@@ -3,6 +3,7 @@ export 'accessibility_settings_page.dart';
 export 'appearance/appearance_settings_page.dart';
 export 'appearance/comment_appearance_settings_page.dart';
 export 'debug_settings_page.dart';
+export 'drafts_settings_page.dart';
 export 'behavior/fab_settings_page.dart';
 export 'behavior/filter_settings_page.dart';
 export 'behavior/general_settings_page.dart';

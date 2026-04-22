@@ -258,7 +258,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   Future<void> clearActiveDraft() async {
-    await _draftRepository.clearActiveDraft();
+    await _draftRepository.clearActiveDraftByIdentity(_draftContext.draftType, _draftContext.existingId, _draftContext.replyId);
   }
 
   Future<void> discardRestoredDraft() async {
@@ -440,7 +440,6 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
   Draft _buildDraft() => buildPostDraft(
         context: _draftContext,
-        accountId: account.id,
         title: state.title,
         url: state.url,
         customThumbnail: state.customThumbnail,
