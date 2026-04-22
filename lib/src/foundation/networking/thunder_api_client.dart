@@ -5,6 +5,7 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
@@ -125,6 +126,9 @@ abstract class ThunderApiClient {
     bool? showHidden,
     bool? showSaved,
   });
+
+  /// Fetch server-side metadata for an external URL.
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url});
 
   /// Create a new post.
   Future<ThunderPost> createPost({

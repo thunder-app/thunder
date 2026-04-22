@@ -5,6 +5,7 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
@@ -96,6 +97,11 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool? showSaved,
   }) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
+  }
+
+  @override
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    return null;
   }
 
   @override

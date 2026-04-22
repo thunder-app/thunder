@@ -10,6 +10,7 @@ import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
 import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
@@ -448,10 +449,16 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   /// Get site metadata for a URL.
-  Future<Map<String, dynamic>> getSiteMetadata({String? url}) async {
-    return await request(HttpMethod.get, '$basePath/post/site_metadata', {
+  @override
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
       'url': url,
     });
+
+    final metadata = response['metadata'];
+    if (metadata is! Map<String, dynamic>) return null;
+
+    return ThunderLinkMetadata.fromPiefedSiteMetadata(metadata, url: url);
   }
 
   @override

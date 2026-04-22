@@ -13,8 +13,6 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
-  - flutter_keyboard_visibility (0.0.1):
-    - Flutter
   - flutter_sharing_intent (1.0.1):
     - Flutter
   - OrderedSet (6.0.3)
@@ -27,7 +25,6 @@ DEPENDENCIES:
   - flutter_file_dialog (from `.symlinks/plugins/flutter_file_dialog/ios`)
   - flutter_icmp_ping (from `.symlinks/plugins/flutter_icmp_ping/ios`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
-  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_sharing_intent (from `.symlinks/plugins/flutter_sharing_intent/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
@@ -46,8 +43,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_icmp_ping/ios"
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
-  flutter_keyboard_visibility:
-    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_sharing_intent:
     :path: ".symlinks/plugins/flutter_sharing_intent/ios"
   permission_handler_apple:
@@ -59,7 +54,6 @@ SPEC CHECKSUMS:
   flutter_file_dialog: ca8d7fbd1772d4f0c2777b4ab20a7787ef4e7dd8
   flutter_icmp_ping: 47c1df3440c18ddd39fc457e607bb3b42d4a339f
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
-  flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_sharing_intent: 0c1e53949f09fa8df8ac2268505687bde8ff264c
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d

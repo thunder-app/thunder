@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:link_preview_generator/link_preview_generator.dart';
+import 'package:keyboard_detection/keyboard_detection.dart';
 
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/features/account/account.dart';
@@ -25,6 +24,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
 import 'package:thunder/src/shared/media/media_view.dart';
+import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 import 'package:thunder/src/shared/language_selector.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -107,7 +107,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
   final TextEditingController _tagsTextController = TextEditingController();
 
   final FocusNode _bodyFocusNode = FocusNode();
-  final KeyboardVisibilityController _keyboardVisibilityController = KeyboardVisibilityController();
+  final KeyboardDetectionController _keyboardDetectionController = KeyboardDetectionController();
 
   bool _showPreview = false;
   bool _wasKeyboardVisible = false;
@@ -245,16 +245,19 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     });
   }
 
-  Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
+  Future<String?> _getDataFromLink({required Account account, String? link, bool updateTitleField = true}) async {
     final resolvedLink = link ?? widget.url;
 
     if (resolvedLink?.isNotEmpty == true) {
       try {
-        final WebInfo info = await LinkPreview.scrapeFromURL(resolvedLink!);
-        if (updateTitleField) {
-          _titleTextController.text = info.title;
+        final metadata = await LinkMetadataRepositoryImpl(account: account).getLinkMetadata(url: resolvedLink!);
+        final title = metadata?.title;
+
+        if (updateTitleField && title != null && mounted) {
+          _titleTextController.text = title;
         }
-        return info.title;
+
+        return title;
       } catch (_) {
         return null;
       }
@@ -365,156 +368,160 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
               builder: (context, state) {
                 return GestureDetector(
                   onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    appBar: AppBar(
-                      title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
-                      centerTitle: false,
-                      actions: widget.showAdditionalSettingsButton
-                          ? [
-                              IconButton(
-                                key: const Key('create-post-additional-settings-button'),
-                                onPressed: () => _openAdditionalSettingsPage(context),
-                                icon: const Icon(Icons.tune_rounded),
-                                tooltip: l10n.advanced,
-                              ),
-                            ]
-                          : null,
-                    ),
-                    body: SafeArea(
-                      bottom: false,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    CommunitySelector(
-                                      account: account,
-                                      community: state.community,
-                                      onCommunitySelected: (community) => context.read<CreatePostCubit>().updateCommunity(community),
-                                    ),
-                                    const SizedBox(height: 4.0),
-                                    UserSelector(
-                                      account: account,
-                                      communityActorId: state.community?.actorId,
-                                      onCommunityChanged: (community) => context.read<CreatePostCubit>().updateCommunity(community),
-                                      onUserChanged: (account) => context.read<FeatureAccountCubit>().setOverride(account),
-                                      enableAccountSwitching: widget.post == null,
-                                    ),
-                                    const SizedBox(height: 12.0),
-                                    CreatePostTitleField(
-                                      controller: _titleTextController,
-                                      onSuggestFromLink: () => _getDataFromLink(
-                                        link: _urlTextController.text,
-                                        updateTitleField: false,
+                  child: KeyboardDetection(
+                    controller: _keyboardDetectionController,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      appBar: AppBar(
+                        title: Text(widget.post != null ? l10n.editPost : l10n.createPost),
+                        centerTitle: false,
+                        actions: widget.showAdditionalSettingsButton
+                            ? [
+                                IconButton(
+                                  key: const Key('create-post-additional-settings-button'),
+                                  onPressed: () => _openAdditionalSettingsPage(context),
+                                  icon: const Icon(Icons.tune_rounded),
+                                  tooltip: l10n.advanced,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      body: SafeArea(
+                        bottom: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      CommunitySelector(
+                                        account: account,
+                                        community: state.community,
+                                        onCommunitySelected: (community) => context.read<CreatePostCubit>().updateCommunity(community),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    CreatePostUrlField(
-                                      controller: _urlTextController,
-                                      state: state,
-                                      onUploadPostImageRequested: () async {
-                                        if (state.status == CreatePostStatus.postImageUploadInProgress) {
-                                          return;
-                                        }
-
-                                        final imagesPath = await selectImagesToUpload();
-                                        if (mounted) {
-                                          context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
-                                        }
-                                      },
-                                    ),
-                                    if (isImageUrl(state.url)) ...[
-                                      const SizedBox(height: 10),
-                                      TextFormField(
-                                        key: const Key('create-post-alt-text-field'),
-                                        controller: _altTextTextController,
-                                        decoration: InputDecoration(
-                                          labelText: l10n.altText,
-                                          isDense: true,
-                                          border: const OutlineInputBorder(),
-                                          contentPadding: const EdgeInsets.all(13),
+                                      const SizedBox(height: 4.0),
+                                      UserSelector(
+                                        account: account,
+                                        communityActorId: state.community?.actorId,
+                                        onCommunityChanged: (community) => context.read<CreatePostCubit>().updateCommunity(community),
+                                        onUserChanged: (account) => context.read<FeatureAccountCubit>().setOverride(account),
+                                        enableAccountSwitching: widget.post == null,
+                                      ),
+                                      const SizedBox(height: 12.0),
+                                      CreatePostTitleField(
+                                        controller: _titleTextController,
+                                        onSuggestFromLink: () => _getDataFromLink(
+                                          account: account,
+                                          link: _urlTextController.text,
+                                          updateTitleField: false,
                                         ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      CreatePostUrlField(
+                                        controller: _urlTextController,
+                                        state: state,
+                                        onUploadPostImageRequested: () async {
+                                          if (state.status == CreatePostStatus.postImageUploadInProgress) {
+                                            return;
+                                          }
+
+                                          final imagesPath = await selectImagesToUpload();
+                                          if (mounted) {
+                                            context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: true);
+                                          }
+                                        },
+                                      ),
+                                      if (isImageUrl(state.url)) ...[
+                                        const SizedBox(height: 10),
+                                        TextFormField(
+                                          key: const Key('create-post-alt-text-field'),
+                                          controller: _altTextTextController,
+                                          decoration: InputDecoration(
+                                            labelText: l10n.altText,
+                                            isDense: true,
+                                            border: const OutlineInputBorder(),
+                                            contentPadding: const EdgeInsets.all(13),
+                                          ),
+                                        ),
+                                      ],
+                                      SizedBox(height: state.url.isNotEmpty ? 10 : 5),
+                                      if (state.url.isNotEmpty && widget.showMediaPreview)
+                                        MediaView(
+                                          showFullHeightImages: false,
+                                          edgeToEdgeImages: false,
+                                          viewMode: ViewMode.comfortable,
+                                          markPostReadOnMediaView: false,
+                                          isUserLoggedIn: true,
+                                          media: Media(
+                                            originalUrl: state.url,
+                                            mediaUrl: isImageUrl(state.url)
+                                                ? state.url
+                                                : state.customThumbnail.isNotEmpty && isImageUrl(state.customThumbnail)
+                                                    ? state.customThumbnail
+                                                    : null,
+                                            nsfw: state.isNsfw,
+                                            mediaType: MediaType.link,
+                                          ),
+                                        ),
+                                      if (state.crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
+                                      if (state.url.isNotEmpty && state.crossPosts.isNotEmpty && widget.post == null)
+                                        CrossPosts(
+                                          crossPosts: state.crossPosts,
+                                          isNewPost: true,
+                                        ),
+                                      const SizedBox(height: 10),
+                                      CreatePostMetadataRow(
+                                        languageSelector: LanguageSelector(
+                                          account: account,
+                                          languageId: state.languageId,
+                                          onLanguageSelected: (language) => context.read<CreatePostCubit>().updateLanguage(language?.id),
+                                        ),
+                                        nsfw: state.isNsfw,
+                                        onNsfwChanged: (value) => context.read<CreatePostCubit>().updateNsfw(value),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      CreatePostEditorSection(
+                                        body: state.body,
+                                        controller: _bodyTextController,
+                                        focusNode: _bodyFocusNode,
+                                        showPreview: _showPreview,
+                                        nsfw: state.isNsfw,
                                       ),
                                     ],
-                                    SizedBox(height: state.url.isNotEmpty ? 10 : 5),
-                                    if (state.url.isNotEmpty && widget.showMediaPreview)
-                                      MediaView(
-                                        showFullHeightImages: false,
-                                        edgeToEdgeImages: false,
-                                        viewMode: ViewMode.comfortable,
-                                        markPostReadOnMediaView: false,
-                                        isUserLoggedIn: true,
-                                        media: Media(
-                                          originalUrl: state.url,
-                                          mediaUrl: isImageUrl(state.url)
-                                              ? state.url
-                                              : state.customThumbnail.isNotEmpty && isImageUrl(state.customThumbnail)
-                                                  ? state.customThumbnail
-                                                  : null,
-                                          nsfw: state.isNsfw,
-                                          mediaType: MediaType.link,
-                                        ),
-                                      ),
-                                    if (state.crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
-                                    if (state.url.isNotEmpty && state.crossPosts.isNotEmpty && widget.post == null)
-                                      CrossPosts(
-                                        crossPosts: state.crossPosts,
-                                        isNewPost: true,
-                                      ),
-                                    const SizedBox(height: 10),
-                                    CreatePostMetadataRow(
-                                      languageSelector: LanguageSelector(
-                                        account: account,
-                                        languageId: state.languageId,
-                                        onLanguageSelected: (language) => context.read<CreatePostCubit>().updateLanguage(language?.id),
-                                      ),
-                                      nsfw: state.isNsfw,
-                                      onNsfwChanged: (value) => context.read<CreatePostCubit>().updateNsfw(value),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    CreatePostEditorSection(
-                                      body: state.body,
-                                      controller: _bodyTextController,
-                                      focusNode: _bodyFocusNode,
-                                      showPreview: _showPreview,
-                                      nsfw: state.isNsfw,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const Divider(height: 1),
-                          CreatePostBottomBar(
-                            account: account,
-                            state: state,
-                            bodyController: _bodyTextController,
-                            bodyFocusNode: _bodyFocusNode,
-                            post: widget.post,
-                            showPreview: _showPreview,
-                            onTogglePreview: _togglePreview,
-                            onUploadBodyImages: () async {
-                              if (state.status == CreatePostStatus.imageUploadInProgress) {
-                                return;
-                              }
+                            const Divider(height: 1),
+                            CreatePostBottomBar(
+                              account: account,
+                              state: state,
+                              bodyController: _bodyTextController,
+                              bodyFocusNode: _bodyFocusNode,
+                              post: widget.post,
+                              showPreview: _showPreview,
+                              onTogglePreview: _togglePreview,
+                              onUploadBodyImages: () async {
+                                if (state.status == CreatePostStatus.imageUploadInProgress) {
+                                  return;
+                                }
 
-                              final imagesPath = await selectImagesToUpload(allowMultiple: true);
-                              if (mounted) {
-                                context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
-                              }
-                            },
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).padding.bottom,
-                            color: theme.cardColor,
-                          ),
-                        ],
+                                final imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                if (mounted) {
+                                  context.read<CreatePostCubit>().uploadImages(imagesPath, isPostImage: false);
+                                }
+                              },
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).padding.bottom,
+                              color: theme.cardColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -529,7 +536,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
 
   void _togglePreview() {
     if (!_showPreview) {
-      setState(() => _wasKeyboardVisible = _keyboardVisibilityController.isVisible);
+      setState(() => _wasKeyboardVisible = _keyboardDetectionController.stateAsBool(true) ?? false);
       FocusManager.instance.primaryFocus?.unfocus();
     }
 

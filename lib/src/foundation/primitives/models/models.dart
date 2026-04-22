@@ -8,6 +8,7 @@ export 'thunder_community.dart';
 export 'thunder_flair.dart';
 export 'thunder_instance_info.dart';
 export 'thunder_language.dart';
+export 'thunder_link_metadata.dart';
 export 'thunder_local_user.dart';
 export 'thunder_my_user.dart';
 export 'thunder_post.dart';

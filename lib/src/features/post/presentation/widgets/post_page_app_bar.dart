@@ -264,6 +264,7 @@ class PostAppBarActions extends StatelessWidget {
                       state.post!.media.first.originalUrl!,
                       state.post!.media.first.originalUrl!,
                       initialPage: LinkBottomSheetPage.alternateLinks,
+                      preferredImageUrl: state.post!.thumbnailUrl ?? state.post!.media.first.thumbnailUrl,
                     );
                   },
                   icon: Icons.link_rounded,

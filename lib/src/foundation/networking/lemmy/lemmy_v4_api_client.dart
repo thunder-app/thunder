@@ -1,7 +1,9 @@
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
+import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/base_lemmy_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 
@@ -75,6 +77,18 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   ThunderSiteResponse parseSiteResponse(Map<String, dynamic> json) {
     // TODO: Replace with ThunderSiteResponse.fromLemmyV4SiteResponse when v4 schema differs
     return ThunderSiteResponse.fromLemmySiteResponse(json);
+  }
+
+  @override
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
+      'url': url,
+    });
+
+    final metadata = response['metadata'];
+    if (metadata is! Map<String, dynamic>) return null;
+
+    return ThunderLinkMetadata.fromLemmySiteMetadata(metadata, url: url);
   }
 
   // =============================================================

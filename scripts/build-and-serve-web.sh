@@ -10,5 +10,5 @@ cd "${SCRIPT_DIR}/.."
 
 flutter pub get
 flutter gen-l10n
-flutter build web
+flutter build web --wasm
 python3 "${SCRIPT_DIR}/serve-web.py" --port "${PORT}"

@@ -137,7 +137,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
   void _openLinkLongPress(String text, String? url) {
     if (url != null) {
-      handleLinkLongPress(context, text, url);
+      handleLinkLongPress(context, text, url, preferredImageUrl: widget.media.thumbnailUrl);
     }
   }
 

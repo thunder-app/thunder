@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:keyboard_detection/keyboard_detection.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
@@ -87,8 +87,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
   /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
 
-  /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
-  final keyboardVisibilityController = KeyboardVisibilityController();
+  /// Tracks keyboard visibility during preview toggles.
+  final KeyboardDetectionController _keyboardDetectionController = KeyboardDetectionController();
 
   /// Whether to view source for posts or comments
   bool viewSource = false;
@@ -287,274 +287,277 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                 onTap: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    title: Text(widget.comment != null ? l10n.editComment : l10n.createComment),
-                    toolbarHeight: APP_BAR_HEIGHT,
-                    centerTitle: false,
-                  ),
-                  body: SafeArea(
-                    bottom: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                if (post != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
-                                    child: Container(
-                                      padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
-                                      decoration: BoxDecoration(
-                                        color: getBackgroundColor(context),
-                                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                      ),
-                                      child: PostBody(
-                                        post: post!,
-                                        crossPosts: const [],
-                                        viewSource: viewSource,
-                                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-                                        showQuickPostActionBar: false,
-                                        selectable: true,
-                                        showReplyEditorButtons: true,
-                                        onSelectionChanged: (selection) => replyViewSelection = selection,
-                                      ),
-                                    ),
-                                  ),
-                                if (parentComment != null) ...[
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: getBackgroundColor(context),
-                                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                      ),
-                                      child: CommentContent(
-                                        account: account,
-                                        comment: parentComment!,
-                                        hidden: false,
-                                        viewSource: viewSource,
-                                        onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-                                        selectable: true,
-                                        showReplyEditorButtons: true,
-                                        onSelectionChanged: (selection) => replyViewSelection = selection,
+                child: KeyboardDetection(
+                  controller: _keyboardDetectionController,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    appBar: AppBar(
+                      title: Text(widget.comment != null ? l10n.editComment : l10n.createComment),
+                      toolbarHeight: APP_BAR_HEIGHT,
+                      centerTitle: false,
+                    ),
+                    body: SafeArea(
+                      bottom: false,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  if (post != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
+                                        decoration: BoxDecoration(
+                                          color: getBackgroundColor(context),
+                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                        ),
+                                        child: PostBody(
+                                          post: post!,
+                                          crossPosts: const [],
+                                          viewSource: viewSource,
+                                          onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                          showQuickPostActionBar: false,
+                                          selectable: true,
+                                          showReplyEditorButtons: true,
+                                          onSelectionChanged: (selection) => replyViewSelection = selection,
+                                        ),
                                       ),
                                     ),
+                                  if (parentComment != null) ...[
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: getBackgroundColor(context),
+                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                        ),
+                                        child: CommentContent(
+                                          account: account,
+                                          comment: parentComment!,
+                                          hidden: false,
+                                          viewSource: viewSource,
+                                          onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+                                          selectable: true,
+                                          showReplyEditorButtons: true,
+                                          onSelectionChanged: (selection) => replyViewSelection = selection,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 16.0),
+                                        child: UserSelector(
+                                          account: account,
+                                          postActorId: post?.apId,
+                                          onPostChanged: (ThunderPost post) {
+                                            setState(() {
+                                              this.post = post;
+                                              postId = post.id;
+                                            });
+                                            _onDraftInputChanged();
+                                          },
+                                          parentCommentActorId: parentComment?.apId,
+                                          onParentCommentChanged: (ThunderComment parentComment) {
+                                            setState(() {
+                                              this.parentComment = parentComment;
+                                              postId = parentComment.postId;
+                                              parentCommentId = parentComment.id;
+                                            });
+                                            _onDraftInputChanged();
+                                          },
+                                          onUserChanged: (account) {
+                                            setState(() {
+                                              userChanged = featureAccountState.effectiveAccount.id != account.id;
+                                            });
+
+                                            context.read<FeatureAccountCubit>().setOverride(account);
+                                            _onDraftInputChanged();
+                                          },
+                                          enableAccountSwitching: widget.comment == null,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: LanguageSelector(
+                                          account: account,
+                                          languageId: languageId,
+                                          onLanguageSelected: (ThunderLanguage? language) {
+                                            setState(() => languageId = language?.id);
+                                            _onDraftInputChanged();
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      AnimatedCrossFade(
+                                        firstChild: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.all(8.0),
+                                            decoration: BoxDecoration(
+                                              color: getBackgroundColor(context),
+                                              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                            ),
+                                            child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
+                                          ),
+                                        ),
+                                        secondChild: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                          child: MarkdownTextInputField(
+                                            controller: _bodyTextController,
+                                            focusNode: _bodyFocusNode,
+                                            label: l10n.comment,
+                                            minLines: 8,
+                                            maxLines: null,
+                                            textStyle: theme.textTheme.bodyLarge,
+                                            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                                          ),
+                                        ),
+                                        crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                        duration: const Duration(milliseconds: 120),
+                                        excludeBottomFocus: false,
+                                      )
+                                    ],
                                   ),
                                 ],
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 16.0),
-                                      child: UserSelector(
-                                        account: account,
-                                        postActorId: post?.apId,
-                                        onPostChanged: (ThunderPost post) {
-                                          setState(() {
-                                            this.post = post;
-                                            postId = post.id;
-                                          });
-                                          _onDraftInputChanged();
+                              ),
+                            ),
+                          ),
+                          const Divider(height: 1),
+                          Container(
+                            color: theme.cardColor,
+                            margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: IgnorePointer(
+                                    ignoring: showPreview,
+                                    child: MarkdownToolbar(
+                                      controller: _bodyTextController,
+                                      focusNode: _bodyFocusNode,
+                                      actions: const [
+                                        MarkdownType.image,
+                                        MarkdownType.link,
+                                        MarkdownType.bold,
+                                        MarkdownType.italic,
+                                        MarkdownType.blockquote,
+                                        MarkdownType.strikethrough,
+                                        MarkdownType.title,
+                                        MarkdownType.list,
+                                        MarkdownType.separator,
+                                        MarkdownType.code,
+                                        MarkdownType.spoiler,
+                                        MarkdownType.username,
+                                        MarkdownType.community,
+                                      ],
+                                      customTapActions: {
+                                        MarkdownType.username: () {
+                                          showUserInputDialog(
+                                            context,
+                                            title: l10n.username,
+                                            account: account,
+                                            onUserSelected: (ThunderUser user) {
+                                              _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                                _bodyTextController.selection.end,
+                                                _bodyTextController.selection.end,
+                                                '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
+                                              );
+                                            },
+                                          );
                                         },
-                                        parentCommentActorId: parentComment?.apId,
-                                        onParentCommentChanged: (ThunderComment parentComment) {
-                                          setState(() {
-                                            this.parentComment = parentComment;
-                                            postId = parentComment.postId;
-                                            parentCommentId = parentComment.id;
-                                          });
-                                          _onDraftInputChanged();
+                                        MarkdownType.community: () {
+                                          showCommunityInputDialog(
+                                            context,
+                                            title: l10n.community,
+                                            account: account,
+                                            onCommunitySelected: (ThunderCommunity community) {
+                                              _bodyTextController.text = _bodyTextController.text.replaceRange(
+                                                _bodyTextController.selection.end,
+                                                _bodyTextController.selection.end,
+                                                '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}',
+                                              );
+                                            },
+                                          );
                                         },
-                                        onUserChanged: (account) {
-                                          setState(() {
-                                            userChanged = featureAccountState.effectiveAccount.id != account.id;
-                                          });
+                                      },
+                                      imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
+                                      customImageButtonAction: () async {
+                                        if (state.status == CreateCommentStatus.imageUploadInProgress) {
+                                          return;
+                                        }
 
-                                          context.read<FeatureAccountCubit>().setOverride(account);
-                                          _onDraftInputChanged();
-                                        },
-                                        enableAccountSwitching: widget.comment == null,
+                                        List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
+                                        if (context.mounted) {
+                                          context.read<CreateCommentCubit>().uploadImages(imagesPath);
+                                        }
+                                      },
+                                      getAlternativeSelection: () => replyViewSelection,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      if (!showPreview) {
+                                        setState(() => wasKeyboardVisible = _keyboardDetectionController.stateAsBool(true) ?? false);
+                                        FocusManager.instance.primaryFocus?.unfocus();
+                                      }
+
+                                      setState(() => showPreview = !showPreview);
+                                      if (!showPreview && wasKeyboardVisible) {
+                                        _bodyFocusNode.requestFocus();
+                                      }
+                                    },
+                                    icon: Icon(
+                                      showPreview ? Icons.visibility_off_rounded : Icons.visibility,
+                                      color: theme.colorScheme.onSecondary,
+                                      semanticLabel: l10n.postTogglePreview,
+                                    ),
+                                    style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
+                                  child: SizedBox(
+                                    width: 60,
+                                    child: IconButton(
+                                      onPressed: isSubmitButtonDisabled || state.status == CreateCommentStatus.submitting ? null : () => _onCreateComment(context),
+                                      icon: state.status == CreateCommentStatus.submitting
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            )
+                                          : Icon(
+                                              widget.comment != null ? Icons.edit_rounded : Icons.send_rounded,
+                                              color: theme.colorScheme.onSecondary,
+                                              semanticLabel: widget.comment != null ? l10n.editComment : l10n.createComment,
+                                            ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: theme.colorScheme.secondary,
+                                        disabledBackgroundColor: getBackgroundColor(context),
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                      child: LanguageSelector(
-                                        account: account,
-                                        languageId: languageId,
-                                        onLanguageSelected: (ThunderLanguage? language) {
-                                          setState(() => languageId = language?.id);
-                                          _onDraftInputChanged();
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    AnimatedCrossFade(
-                                      firstChild: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(8.0),
-                                          decoration: BoxDecoration(
-                                            color: getBackgroundColor(context),
-                                            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                          ),
-                                          child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
-                                        ),
-                                      ),
-                                      secondChild: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: MarkdownTextInputField(
-                                          controller: _bodyTextController,
-                                          focusNode: _bodyFocusNode,
-                                          label: l10n.comment,
-                                          minLines: 8,
-                                          maxLines: null,
-                                          textStyle: theme.textTheme.bodyLarge,
-                                          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-                                        ),
-                                      ),
-                                      crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                      duration: const Duration(milliseconds: 120),
-                                      excludeBottomFocus: false,
-                                    )
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        const Divider(height: 1),
-                        Container(
-                          color: theme.cardColor,
-                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: IgnorePointer(
-                                  ignoring: showPreview,
-                                  child: MarkdownToolbar(
-                                    controller: _bodyTextController,
-                                    focusNode: _bodyFocusNode,
-                                    actions: const [
-                                      MarkdownType.image,
-                                      MarkdownType.link,
-                                      MarkdownType.bold,
-                                      MarkdownType.italic,
-                                      MarkdownType.blockquote,
-                                      MarkdownType.strikethrough,
-                                      MarkdownType.title,
-                                      MarkdownType.list,
-                                      MarkdownType.separator,
-                                      MarkdownType.code,
-                                      MarkdownType.spoiler,
-                                      MarkdownType.username,
-                                      MarkdownType.community,
-                                    ],
-                                    customTapActions: {
-                                      MarkdownType.username: () {
-                                        showUserInputDialog(
-                                          context,
-                                          title: l10n.username,
-                                          account: account,
-                                          onUserSelected: (ThunderUser user) {
-                                            _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                              _bodyTextController.selection.end,
-                                              _bodyTextController.selection.end,
-                                              '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
-                                            );
-                                          },
-                                        );
-                                      },
-                                      MarkdownType.community: () {
-                                        showCommunityInputDialog(
-                                          context,
-                                          title: l10n.community,
-                                          account: account,
-                                          onCommunitySelected: (ThunderCommunity community) {
-                                            _bodyTextController.text = _bodyTextController.text.replaceRange(
-                                              _bodyTextController.selection.end,
-                                              _bodyTextController.selection.end,
-                                              '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}',
-                                            );
-                                          },
-                                        );
-                                      },
-                                    },
-                                    imageIsLoading: state.status == CreateCommentStatus.imageUploadInProgress,
-                                    customImageButtonAction: () async {
-                                      if (state.status == CreateCommentStatus.imageUploadInProgress) {
-                                        return;
-                                      }
-
-                                      List<String> imagesPath = await selectImagesToUpload(allowMultiple: true);
-                                      if (context.mounted) {
-                                        context.read<CreateCommentCubit>().uploadImages(imagesPath);
-                                      }
-                                    },
-                                    getAlternativeSelection: () => replyViewSelection,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
-                                child: IconButton(
-                                  onPressed: () {
-                                    if (!showPreview) {
-                                      setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
-                                      FocusManager.instance.primaryFocus?.unfocus();
-                                    }
-
-                                    setState(() => showPreview = !showPreview);
-                                    if (!showPreview && wasKeyboardVisible) {
-                                      _bodyFocusNode.requestFocus();
-                                    }
-                                  },
-                                  icon: Icon(
-                                    showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                                    color: theme.colorScheme.onSecondary,
-                                    semanticLabel: l10n.postTogglePreview,
-                                  ),
-                                  style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 2.0, right: 8.0),
-                                child: SizedBox(
-                                  width: 60,
-                                  child: IconButton(
-                                    onPressed: isSubmitButtonDisabled || state.status == CreateCommentStatus.submitting ? null : () => _onCreateComment(context),
-                                    icon: state.status == CreateCommentStatus.submitting
-                                        ? const SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : Icon(
-                                            widget.comment != null ? Icons.edit_rounded : Icons.send_rounded,
-                                            color: theme.colorScheme.onSecondary,
-                                            semanticLabel: widget.comment != null ? l10n.editComment : l10n.createComment,
-                                          ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: theme.colorScheme.secondary,
-                                      disabledBackgroundColor: getBackgroundColor(context),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Container(
+                            height: MediaQuery.of(context).padding.bottom,
+                            color: theme.cardColor,
                           ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).padding.bottom,
-                          color: theme.cardColor,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

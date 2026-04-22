@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/features/session/presentation/utils/effective_account_context.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
+import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Handles the long press on a link by showing a bottom sheet with the link details.
@@ -14,6 +18,7 @@ void handleLinkLongPress(
   String text,
   String? url, {
   LinkBottomSheetPage initialPage = LinkBottomSheetPage.general,
+  String? preferredImageUrl,
   void Function(String)? customNavigation,
 }) {
   HapticFeedback.mediumImpact();
@@ -26,6 +31,7 @@ void handleLinkLongPress(
       text: text,
       url: url,
       initialPage: initialPage,
+      preferredImageUrl: preferredImageUrl,
       customNavigation: customNavigation,
     ),
   );
@@ -51,11 +57,15 @@ class LinkBottomSheet extends StatefulWidget {
   /// The function to call when the user wants to navigate to a custom URL
   final void Function(String)? customNavigation;
 
+  /// The preferred image URL to display before falling back to fetched metadata.
+  final String? preferredImageUrl;
+
   const LinkBottomSheet({
     super.key,
     required this.text,
     required this.url,
     this.initialPage = LinkBottomSheetPage.general,
+    this.preferredImageUrl,
     this.customNavigation,
   });
 
@@ -65,13 +75,180 @@ class LinkBottomSheet extends StatefulWidget {
 
 class _LinkBottomSheetState extends State<LinkBottomSheet> {
   LinkBottomSheetPage? page;
+  Future<ThunderLinkMetadata?>? _linkMetadataFuture;
+  String? _linkMetadataUrl;
+  String? _linkMetadataAccountKey;
+
+  Account? _resolveMetadataAccount(BuildContext context) {
+    try {
+      return resolveEffectiveAccount(context);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _ensureLinkMetadataFuture(Account? account) {
+    final url = widget.url?.trim();
+
+    if (account == null || url == null || !url.toLowerCase().startsWith('http')) {
+      _linkMetadataFuture = null;
+      _linkMetadataUrl = url;
+      _linkMetadataAccountKey = null;
+      return;
+    }
+
+    final accountKey = '${account.id}:${account.instance}:${account.platform}';
+
+    if (_linkMetadataFuture != null && _linkMetadataUrl == url && _linkMetadataAccountKey == accountKey) {
+      return;
+    }
+
+    _linkMetadataUrl = url;
+    _linkMetadataAccountKey = accountKey;
+    _linkMetadataFuture = LinkMetadataRepositoryImpl(account: account).getLinkMetadata(url: url);
+  }
+
+  Widget _buildLinkMetadataPreviewSection(ThemeData theme) {
+    final metadataFuture = _linkMetadataFuture;
+    final preferredImageUrl = widget.preferredImageUrl;
+
+    if (metadataFuture == null && preferredImageUrl == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (metadataFuture == null) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.dividerColor.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: CachedNetworkImage(
+                imageUrl: preferredImageUrl!,
+                width: double.infinity,
+                height: 160,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const SizedBox(
+                  height: 160,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      );
+    }
+
+    return FutureBuilder<ThunderLinkMetadata?>(
+      future: metadataFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Container(
+                  height: 96,
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          );
+        }
+
+        final metadata = snapshot.data;
+        final hasMetadataContent = metadata?.hasContent ?? false;
+        if (!hasMetadataContent && preferredImageUrl == null) {
+          return const SizedBox.shrink();
+        }
+
+        final title = metadata?.title;
+        final description = metadata?.description;
+        final imageUrl = preferredImageUrl ?? metadata?.imageUrl;
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.dividerColor.withValues(alpha: 0.25),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (imageUrl != null)
+                      CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        width: double.infinity,
+                        height: 160,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const SizedBox(
+                          height: 160,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => const SizedBox.shrink(),
+                      ),
+                    if (title != null || description != null)
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (title != null)
+                              Text(
+                                title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleMedium,
+                              ),
+                            if (title != null && description != null) const SizedBox(height: 6),
+                            if (description != null)
+                              Text(
+                                description,
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    bool isValidUrl = widget.url?.startsWith('http') ?? false;
+    final normalizedUrl = widget.url?.trim();
+    final isValidUrl = normalizedUrl?.toLowerCase().startsWith('http') ?? false;
+    final resolvedUrl = normalizedUrl?.isNotEmpty == true ? normalizedUrl! : widget.text;
+    final metadataAccount = isValidUrl ? _resolveMetadataAccount(context) : null;
+
+    _ensureLinkMetadataFuture(metadataAccount);
 
     return SingleChildScrollView(
       child: AnimatedSize(
@@ -81,6 +258,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
@@ -116,23 +294,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
               ),
               const SizedBox(height: 10),
               if (isValidUrl && (page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
-                Padding(
-                  padding: const EdgeInsets.only(left: 24, right: 24),
-                  child: LinkPreviewGenerator(
-                    link: widget.url!,
-                    placeholderWidget: const CircularProgressIndicator(),
-                    linkPreviewStyle: LinkPreviewStyle.large,
-                    cacheDuration: Duration.zero,
-                    onTap: null,
-                    bodyTextOverflow: TextOverflow.fade,
-                    graphicFit: BoxFit.scaleDown,
-                    removeElevation: true,
-                    backgroundColor: theme.dividerColor.withValues(alpha: 0.25),
-                    borderRadius: 10,
-                    useDefaultOnTap: false,
-                  ),
-                ),
-                const SizedBox(height: 10),
+                _buildLinkMetadataPreviewSection(theme),
               ],
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
@@ -143,7 +305,11 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(5),
-                    child: Text(widget.url!),
+                    child: Text(
+                      resolvedUrl.characters.join('\u200B'), // Add a zero-width space to allow the text to wrap at any character
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),

@@ -9,6 +9,7 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
@@ -1265,10 +1266,16 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     });
   }
 
-  Future<Map<String, dynamic>> getSiteMetadata({required String url}) async {
-    return await request(HttpMethod.get, '$basePath/post/site_metadata', {
+  @override
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
       'url': url,
     });
+
+    final metadata = response['metadata'];
+    if (metadata is! Map<String, dynamic>) return null;
+
+    return ThunderLinkMetadata.fromLemmySiteMetadata(metadata, url: url);
   }
 
   // Private messages
