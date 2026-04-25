@@ -2969,5 +2969,33 @@
     "postTagsHelperText": "Etiketleri virgül ile ayır",
     "@postTagsHelperText": {
         "description": "Helper text for comma-separated post tags"
+    },
+    "deleteDraftConfirmation": "Bu taslağı silmek istediğinize emin misiniz?",
+    "@deleteDraftConfirmation": {
+        "description": "Confirmation message for deleting a draft"
+    },
+    "drafts": "Taslaklar",
+    "@drafts": {
+        "description": "Heading for drafts settings"
+    },
+    "noCommunitySelected": "Bir topluluk seçilmedi",
+    "@noCommunitySelected": {
+        "description": "Fallback subtitle when a draft has no selected community"
+    },
+    "noDrafts": "Henüz bir taslağınız yok",
+    "@noDrafts": {
+        "description": "Placeholder message for empty draft list"
+    },
+    "replyToComment": "Yoruma Yanıt Ver",
+    "@replyToComment": {
+        "description": "Label used for comment drafts replying to another comment"
+    },
+    "untitledCommentDraft": "İsimsiz yorum taslağı",
+    "@untitledCommentDraft": {
+        "description": "Fallback title for comment drafts without body text"
+    },
+    "untitledPostDraft": "İsimsiz gönderi taslağı",
+    "@untitledPostDraft": {
+        "description": "Fallback title for post drafts without a title"
     }
 }
