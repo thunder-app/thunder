@@ -2969,5 +2969,33 @@
     "postTags": "Tags",
     "@postTags": {
         "description": "Label for post tags"
+    },
+    "untitledPostDraft": "Untitled post draft",
+    "@untitledPostDraft": {
+        "description": "Fallback title for post drafts without a title"
+    },
+    "deleteDraftConfirmation": "Are you sure you want to delete this draft?",
+    "@deleteDraftConfirmation": {
+        "description": "Confirmation message for deleting a draft"
+    },
+    "drafts": "Drafts",
+    "@drafts": {
+        "description": "Heading for drafts settings"
+    },
+    "noCommunitySelected": "No community selected",
+    "@noCommunitySelected": {
+        "description": "Fallback subtitle when a draft has no selected community"
+    },
+    "noDrafts": "You do not have any drafts yet",
+    "@noDrafts": {
+        "description": "Placeholder message for empty draft list"
+    },
+    "untitledCommentDraft": "Untitled comment draft",
+    "@untitledCommentDraft": {
+        "description": "Fallback title for comment drafts without body text"
+    },
+    "replyToComment": "Reply to Comment",
+    "@replyToComment": {
+        "description": "Label used for comment drafts replying to another comment"
     }
 }
