@@ -3529,5 +3529,33 @@
     "postFlairsUnavailable": "Nenhuma opção de enfeite disponível nesta comunidade",
     "@postFlairsUnavailable": {
         "description": "Helper text when no post flairs are available"
+    },
+    "deleteDraftConfirmation": "Tem certeza de que deseja excluir este rascunho?",
+    "@deleteDraftConfirmation": {
+        "description": "Confirmation message for deleting a draft"
+    },
+    "drafts": "Rascunhos",
+    "@drafts": {
+        "description": "Heading for drafts settings"
+    },
+    "noCommunitySelected": "Nenhuma comunidade selecionada",
+    "@noCommunitySelected": {
+        "description": "Fallback subtitle when a draft has no selected community"
+    },
+    "noDrafts": "Você ainda não tem nenhum rascunho",
+    "@noDrafts": {
+        "description": "Placeholder message for empty draft list"
+    },
+    "replyToComment": "Responder ao comentário",
+    "@replyToComment": {
+        "description": "Label used for comment drafts replying to another comment"
+    },
+    "untitledCommentDraft": "Rascunho de comentário sem título",
+    "@untitledCommentDraft": {
+        "description": "Fallback title for comment drafts without body text"
+    },
+    "untitledPostDraft": "Rascunho de postagem sem título",
+    "@untitledPostDraft": {
+        "description": "Fallback title for post drafts without a title"
     }
 }
