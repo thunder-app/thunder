@@ -20,6 +20,7 @@ import 'package:thunder/src/features/search/api.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
+import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 
 AppBootstrapCubit createAppBootstrapCubit() {
   return AppBootstrapCubit(
@@ -149,6 +150,7 @@ CreatePostCubit createCreatePostCubit(Account account) {
     accountRepository: (account) => AccountRepositoryImpl(account: account),
     communityRepository: (account) => CommunityRepositoryImpl(account: account),
     searchRepository: (account) => SearchRepositoryImpl(account: account),
+    linkMetadataRepository: (account) => LinkMetadataRepositoryImpl(account: account),
     draftRepository: DraftRepositoryImpl(database: database),
     localizationService: const GlobalContextLocalizationService(),
   );

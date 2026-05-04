@@ -24,7 +24,6 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
 import 'package:thunder/src/shared/media/media_view.dart';
-import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 import 'package:thunder/src/shared/language_selector.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -245,27 +244,6 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     });
   }
 
-  Future<String?> _getDataFromLink({required Account account, String? link, bool updateTitleField = true}) async {
-    final resolvedLink = link ?? widget.url;
-
-    if (resolvedLink?.isNotEmpty == true) {
-      try {
-        final metadata = await LinkMetadataRepositoryImpl(account: account).getLinkMetadata(url: resolvedLink!);
-        final title = metadata?.title;
-
-        if (updateTitleField && title != null && mounted) {
-          _titleTextController.text = title;
-        }
-
-        return title;
-      } catch (_) {
-        return null;
-      }
-    }
-
-    return null;
-  }
-
   void _handleCreatePostStateChange(BuildContext context, CreatePostState state) {
     _syncControllersWithState(state);
 
@@ -414,11 +392,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                       const SizedBox(height: 12.0),
                                       CreatePostTitleField(
                                         controller: _titleTextController,
-                                        onSuggestFromLink: () => _getDataFromLink(
-                                          account: account,
-                                          link: _urlTextController.text,
-                                          updateTitleField: false,
-                                        ),
+                                        suggestedLinkTitle: state.suggestedLinkTitle,
                                       ),
                                       const SizedBox(height: 10),
                                       CreatePostUrlField(

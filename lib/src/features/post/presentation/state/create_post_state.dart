@@ -46,6 +46,7 @@ class CreatePostState extends Equatable {
     this.customThumbnail = '',
     this.altText = '',
     this.tags = '',
+    this.suggestedLinkTitle,
     this.urlError,
     this.customThumbnailError,
     this.communityId,
@@ -95,6 +96,9 @@ class CreatePostState extends Equatable {
 
   /// The tags of the post.
   final String tags;
+
+  /// A suggested title derived from the current post URL.
+  final String? suggestedLinkTitle;
 
   /// The error reason for the url field.
   final String? urlError;
@@ -162,6 +166,7 @@ class CreatePostState extends Equatable {
     Object? customThumbnail = _createPostStateUnset,
     Object? altText = _createPostStateUnset,
     Object? tags = _createPostStateUnset,
+    Object? suggestedLinkTitle = _createPostStateUnset,
     Object? urlError = _createPostStateUnset,
     Object? customThumbnailError = _createPostStateUnset,
     Object? communityId = _createPostStateUnset,
@@ -190,6 +195,7 @@ class CreatePostState extends Equatable {
       customThumbnail: identical(customThumbnail, _createPostStateUnset) ? this.customThumbnail : customThumbnail as String,
       altText: identical(altText, _createPostStateUnset) ? this.altText : altText as String,
       tags: identical(tags, _createPostStateUnset) ? this.tags : tags as String,
+      suggestedLinkTitle: identical(suggestedLinkTitle, _createPostStateUnset) ? this.suggestedLinkTitle : suggestedLinkTitle as String?,
       urlError: identical(urlError, _createPostStateUnset) ? this.urlError : urlError as String?,
       customThumbnailError: identical(customThumbnailError, _createPostStateUnset) ? this.customThumbnailError : customThumbnailError as String?,
       communityId: identical(communityId, _createPostStateUnset) ? this.communityId : communityId as int?,
@@ -221,6 +227,7 @@ class CreatePostState extends Equatable {
         customThumbnail,
         altText,
         tags,
+        suggestedLinkTitle,
         urlError,
         customThumbnailError,
         communityId,

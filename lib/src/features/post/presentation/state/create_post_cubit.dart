@@ -14,6 +14,7 @@ import 'package:thunder/src/features/post/data/repositories/post_repository.dart
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 
 part 'create_post_state.dart';
 
@@ -30,6 +31,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   final AccountRepository Function(Account) _accountRepository;
   final CommunityRepository Function(Account) _communityRepository;
   final SearchRepository Function(Account) _searchRepository;
+  final LinkMetadataRepository Function(Account) _linkMetadataRepository;
   final DraftRepository _draftRepository;
   final LocalizationService _localizationService;
   final String _initialAccountId;
@@ -40,12 +42,14 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     required AccountRepository Function(Account) accountRepository,
     required CommunityRepository Function(Account) communityRepository,
     required SearchRepository Function(Account) searchRepository,
+    required LinkMetadataRepository Function(Account) linkMetadataRepository,
     required DraftRepository draftRepository,
     required LocalizationService localizationService,
   })  : _postRepository = postRepository,
         _accountRepository = accountRepository,
         _communityRepository = communityRepository,
         _searchRepository = searchRepository,
+        _linkMetadataRepository = linkMetadataRepository,
         _draftRepository = draftRepository,
         _localizationService = localizationService,
         _initialAccountId = account.id,
@@ -55,11 +59,13 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
   Timer? _draftDebounceTimer;
   Timer? _crossPostsDebounceTimer;
+  Timer? _linkTitleDebounceTimer;
 
   ThunderPost? _editingPost;
   late CreatePostState _initialState;
   int _piefedMetadataRequestId = 0;
   int _crossPostsRequestId = 0;
+  int _linkTitleRequestId = 0;
   bool _saveDraft = true;
 
   /// Loads initial route arguments, optionally restores a draft, and refreshes metadata.
@@ -95,6 +101,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         customThumbnail: post?.thumbnailUrl ?? (prePopulated ? customThumbnail ?? '' : ''),
         altText: post?.altText ?? (prePopulated ? altText ?? '' : ''),
         tags: post != null ? encodePiefedTags(post.tags) : '',
+        suggestedLinkTitle: null,
         communityId: resolvedCommunityId,
         community: resolvedCommunity,
         languageId: post?.languageId,
@@ -119,6 +126,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
     await _refreshPiefedMetadata();
     _scheduleCrossPostsLookup(state.url, immediate: state.url.isNotEmpty);
+    _scheduleLinkTitleLookup(state.url, immediate: state.url.isNotEmpty);
   }
 
   Future<void> clearMessage() async {
@@ -143,10 +151,12 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       piefedMetadataStatus: _piefedResetStatus,
       availablePiefedFlairs: const <ThunderFlair>[],
       selectedPiefedFlairIds: const <int>[],
+      suggestedLinkTitle: null,
     )));
 
     _scheduleDraftPersistence();
     await _refreshPiefedMetadata();
+    _scheduleLinkTitleLookup(state.url, immediate: state.url.isNotEmpty);
   }
 
   void updateTitle(String value) {
@@ -168,11 +178,13 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
     emit(_validateState(state.copyWith(
       url: value,
+      suggestedLinkTitle: null,
       crossPosts: value.isEmpty ? const <ThunderPost>[] : state.crossPosts,
       crossPostsStatus: value.isEmpty ? CreatePostCrossPostsStatus.initial : CreatePostCrossPostsStatus.loading,
     )));
 
     _scheduleCrossPostsLookup(value);
+    _scheduleLinkTitleLookup(value);
     _scheduleDraftPersistence();
   }
 
@@ -274,6 +286,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(resetState);
     await _refreshPiefedMetadata();
     _scheduleCrossPostsLookup(resetState.url, immediate: resetState.url.isNotEmpty);
+    _scheduleLinkTitleLookup(resetState.url, immediate: resetState.url.isNotEmpty);
   }
 
   Future<void> uploadImages(List<String> imageFiles, {bool isPostImage = false}) async {
@@ -313,12 +326,14 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         message: null,
         errorReason: null,
         url: isPostImage && urls.isNotEmpty ? urls.first : state.url,
+        suggestedLinkTitle: isPostImage && urls.isNotEmpty ? null : state.suggestedLinkTitle,
       ));
 
       emit(nextState);
 
       if (isPostImage && urls.isNotEmpty) {
         _scheduleCrossPostsLookup(urls.first, immediate: true);
+        _scheduleLinkTitleLookup(urls.first, immediate: true);
         _scheduleDraftPersistence();
       }
     } catch (e) {
@@ -380,6 +395,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   Future<void> close() async {
     _draftDebounceTimer?.cancel();
     _crossPostsDebounceTimer?.cancel();
+    _linkTitleDebounceTimer?.cancel();
+    _linkTitleRequestId++;
     await super.close();
   }
 
@@ -475,6 +492,43 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     _crossPostsDebounceTimer = Timer(const Duration(milliseconds: 1000), () {
       unawaited(_refreshCrossPosts(url));
     });
+  }
+
+  void _scheduleLinkTitleLookup(String url, {bool immediate = false}) {
+    _linkTitleDebounceTimer?.cancel();
+
+    final requestId = ++_linkTitleRequestId;
+    final trimmedUrl = url.trim();
+
+    if (!_canLookupLinkTitle(trimmedUrl)) return;
+
+    if (immediate) {
+      unawaited(_refreshLinkTitle(trimmedUrl, requestId));
+      return;
+    }
+
+    _linkTitleDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+      unawaited(_refreshLinkTitle(trimmedUrl, requestId));
+    });
+  }
+
+  bool _canLookupLinkTitle(String url) {
+    if (url.isEmpty || account.anonymous) return false;
+    return _validateOptionalUrl(url, '') == null;
+  }
+
+  Future<void> _refreshLinkTitle(String url, int requestId) async {
+    try {
+      final metadata = await _linkMetadataRepository(account).getLinkMetadata(url: url);
+      if (isClosed || requestId != _linkTitleRequestId || state.url.trim() != url) return;
+
+      final title = metadata?.title?.trim();
+      emit(state.copyWith(suggestedLinkTitle: title?.isNotEmpty == true ? title : null));
+    } catch (_) {
+      if (isClosed || requestId != _linkTitleRequestId || state.url.trim() != url) return;
+
+      emit(state.copyWith(suggestedLinkTitle: null));
+    }
   }
 
   Future<void> _refreshCrossPosts(String url) async {
