@@ -10,13 +10,13 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
 
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart' show ThunderMultiActionDismissible, ThunderSwipeAction, showSnackbar;
 
+/// Interactive feed card for a post.
 class PostCard extends StatefulWidget {
   /// The associated post information to display in the card.
   final ThunderPost post;
@@ -270,13 +270,8 @@ class _PostCardState extends State<PostCard> {
             }
 
             if (postAction == PostAction.hide) {
-              if (widget.onDismissHiddenPost != null) {
-                widget.onDismissHiddenPost!(post!.id);
-              } else if (hasFeedBloc) {
-                context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post!.id));
-              } else {
-                FeedActionScope.maybeOf(context)?.dismissHiddenPost(post!.id);
-              }
+              final dismissHiddenPost = widget.onDismissHiddenPost ?? FeedActionScope.maybeOf(context)?.dismissHiddenPost;
+              dismissHiddenPost?.call(post!.id);
             }
 
             if (userAction == UserAction.block) {
@@ -341,61 +336,6 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [child, const FeedCardDivider()],
-      ),
-    );
-  }
-}
-
-/// Determines the appropriate color and icon for the post background swipe action
-class PostCardActionBackground extends StatelessWidget {
-  const PostCardActionBackground({
-    super.key,
-    this.swipeAction,
-    required this.firstActionThreshold,
-    required this.dismissThreshold,
-    required this.read,
-    required this.hidden,
-    required this.dismissDirection,
-  });
-
-  /// The [SwipeAction] to be performed
-  final SwipeAction? swipeAction;
-
-  /// The threshold at which the first action should be triggered
-  final double firstActionThreshold;
-
-  /// The current threshold of the swipe action
-  final double dismissThreshold;
-
-  /// Whether the post is read
-  final bool read;
-
-  /// Whether the post is hidden
-  final bool hidden;
-
-  /// The direction of the swipe action
-  final DismissDirection dismissDirection;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final tabletMode = context.select<ThunderCubit, bool>((bloc) => bloc.state.tabletMode);
-    final leftPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryPostGesture);
-    final rightPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryPostGesture);
-
-    final alignment = dismissDirection == DismissDirection.startToEnd ? Alignment.centerLeft : Alignment.centerRight;
-    final defaultColor = dismissDirection == DismissDirection.startToEnd ? leftPrimaryPostGesture.getColor(context) : rightPrimaryPostGesture.getColor(context);
-
-    final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
-    final computedWidth = width * (tabletMode ? 0.5 : 1) * dismissThreshold;
-
-    return AnimatedContainer(
-      alignment: alignment,
-      duration: const Duration(milliseconds: 200),
-      color: backgroundColor,
-      child: SizedBox(
-        width: computedWidth,
-        child: swipeAction != null ? Icon(swipeAction!.getIcon(read: read, hidden: hidden)) : const SizedBox.shrink(),
       ),
     );
   }

@@ -26,6 +26,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
+/// Coordinates feed fetching, pagination, and local feed item mutations.
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final Account account;
 
@@ -49,6 +50,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     on<FeedFetchedEvent>(
       _onFeedFetched,
       transformer: restartable(),
+    );
+
+    /// Handles fetching the next page for the currently loaded feed.
+    on<FeedPaginatedEvent>(
+      _onFeedPaginated,
+      transformer: droppable(),
     );
 
     /// Handles changing the sort type of the feed
@@ -100,12 +107,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles hiding posts from the feed. This will remove any posts from the feed for the given post ids
   Future<void> _onFeedHidePostsFromView(FeedHidePostsFromViewEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.fetching));
+    if (event.postIds.isEmpty) return;
 
     final posts = hidePostsByIds(
       posts: state.posts,
       postIds: event.postIds.toSet(),
     );
+
+    if (posts.length == state.posts.length) return;
 
     emit(state.copyWith(
       status: FeedStatus.success,
@@ -126,7 +135,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   /// Handles post related actions on a given item within the feed
   Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
     assert(!(event.post == null && event.postId == null && event.postIds == null));
-    emit(state.copyWith(status: FeedStatus.fetching));
 
     switch (event.postAction) {
       case PostAction.vote:
@@ -210,7 +218,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.read(post.id, value);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = replaceAt(source: state.posts, index: existingPostIndex, value: post);
@@ -249,7 +257,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
             List<int> failed = await postRepository.readMultiple(postIds, value);
             if (failed.isEmpty) {
-              return emit(state.copyWith(status: FeedStatus.success));
+              return;
             }
 
             // Restore the original post contents if not successful
@@ -289,7 +297,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.hide(post.id, value);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = replaceAt(source: state.posts, index: existingPostIndex, value: post);
@@ -321,7 +329,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.delete(post.id, value);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = replaceAt(source: state.posts, index: existingPostIndex, value: post);
@@ -346,7 +354,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
         try {
           await postRepository.report(post.id, value);
-          return emit(state.copyWith(status: FeedStatus.success));
+          return;
         } catch (e) {
           return emit(state.copyWith(status: FeedStatus.failure));
         }
@@ -371,7 +379,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.lock(post.id, value);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = replaceAt(source: state.posts, index: existingPostIndex, value: post);
@@ -403,7 +411,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.pinCommunity(post.id, value);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = replaceAt(source: state.posts, index: existingPostIndex, value: post);
@@ -437,7 +445,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
 
           bool success = await postRepository.remove(post.id, remove, reason);
-          if (success) return emit(state.copyWith(status: FeedStatus.success));
+          if (success) return;
 
           // Restore the original post contents if not successful
           List<ThunderPost> restoredPosts = List.from(state.posts);
@@ -459,19 +467,30 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
     // TODO: Add support for updating comments (for user profile)
     List<ThunderPost> updatedPosts = List.from(state.posts);
+
+    bool foundPost = false;
+
     for (final (index, post) in state.posts.indexed) {
       if (post.id == event.post.id) {
         final preserveMedia = event.post.media.isEmpty && post.media.isNotEmpty;
-        updatedPosts[index] = preserveMedia ? event.post.copyWith(media: post.media) : event.post;
+        final updatedPost = preserveMedia ? event.post.copyWith(media: post.media) : event.post;
+        if (updatedPost == post) return;
+
+        updatedPosts[index] = updatedPost;
+        foundPost = true;
+        break;
       }
     }
+
+    if (!foundPost) return;
 
     emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts));
   }
 
   /// Handles updating information about a community
   Future<void> _onFeedCommunityUpdated(FeedCommunityUpdatedEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.fetching));
+    if (event.community == state.community) return;
+
     emit(state.copyWith(status: FeedStatus.success, community: event.community));
   }
 
@@ -661,62 +680,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ));
       }
 
-      // If the feed is already being fetched but it is not a reset, then just wait
-      // If the cursor is null, then we are at the end of the feed so we don't need to fetch any more
-      if (state.status == FeedStatus.fetching || state.cursor == null) return;
-
-      // Handle fetching the next page of the feed
-      emit(state.copyWith(status: FeedStatus.fetching));
-
-      List<ThunderPost> posts = List.from(state.posts);
-      List<ThunderComment> comments = List.from(state.comments);
-
-      FeedResult feedItemResult = await fetchFeedItems(
-        account: account,
-        cursor: state.cursor,
-        feedListType: state.feedListType,
-        postSortType: state.postSortType,
-        communityId: state.communityId,
-        communityName: state.communityName,
-        userId: state.userId,
-        username: state.username,
-        feedTypeSubview: event.feedTypeSubview,
-        showHidden: state.showHidden,
-        showSaved: state.showSaved,
-      );
-
-      // Extract information from the response
-      List<ThunderPost> newPosts = feedItemResult.posts;
-      List<ThunderComment> newComments = feedItemResult.comments;
-      bool hasReachedPostsEnd = feedItemResult.hasReachedPostsEnd;
-      bool hasReachedCommentsEnd = feedItemResult.hasReachedCommentsEnd;
-      String? cursor = feedItemResult.cursor;
-
-      Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
-      List<ThunderPost> filteredPosts = [];
-
-      // Ensure we don't add existing posts to view
-      for (ThunderPost post in newPosts) {
-        int id = post.id;
-        if (!newInsertedPostIds.contains(id)) {
-          newInsertedPostIds.add(id);
-          filteredPosts.add(post);
-        }
-      }
-
-      posts.addAll(filteredPosts);
-      comments.addAll(newComments);
-
-      return emit(state.copyWith(
-        status: FeedStatus.success,
-        insertedPostIds: newInsertedPostIds.toList(),
-        posts: posts,
-        comments: comments,
-        hasReachedPostsEnd: hasReachedPostsEnd,
-        hasReachedCommentsEnd: hasReachedCommentsEnd,
-        cursor: cursor,
-        errorReason: null,
-      ));
+      return _fetchNextFeedPage(event.feedTypeSubview, emit);
     } catch (e) {
       debugPrint('Error fetching feed: $e');
       final message = getExceptionErrorMessage(e);
@@ -729,6 +693,72 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ),
       ));
     }
+  }
+
+  /// Fetches the next page for the current feed state.
+  Future<void> _onFeedPaginated(FeedPaginatedEvent event, Emitter<FeedState> emit) async {
+    try {
+      return _fetchNextFeedPage(event.feedTypeSubview, emit);
+    } catch (e) {
+      debugPrint('Error fetching feed page: $e');
+      final message = getExceptionErrorMessage(e);
+      return emit(state.copyWith(
+        status: FeedStatus.failure,
+        message: message,
+        errorReason: AppErrorReason.unexpected(
+          message: message,
+          details: e.toString(),
+        ),
+      ));
+    }
+  }
+
+  Future<void> _fetchNextFeedPage(FeedTypeSubview feedTypeSubview, Emitter<FeedState> emit) async {
+    // If the feed is already being fetched, just wait for that request to finish.
+    // If the cursor is null, then we are at the end of the feed.
+    if (state.status == FeedStatus.fetching || state.cursor == null) return;
+
+    emit(state.copyWith(status: FeedStatus.fetching));
+
+    final posts = List<ThunderPost>.from(state.posts);
+    final comments = List<ThunderComment>.from(state.comments);
+
+    final feedItemResult = await fetchFeedItems(
+      account: account,
+      cursor: state.cursor,
+      feedListType: state.feedListType,
+      postSortType: state.postSortType,
+      communityId: state.communityId,
+      communityName: state.communityName,
+      userId: state.userId,
+      username: state.username,
+      feedTypeSubview: feedTypeSubview,
+      showHidden: state.showHidden,
+      showSaved: state.showSaved,
+    );
+
+    final newInsertedPostIds = Set<int>.from(state.insertedPostIds);
+    final filteredPosts = <ThunderPost>[];
+
+    for (final post in feedItemResult.posts) {
+      if (newInsertedPostIds.add(post.id)) {
+        filteredPosts.add(post);
+      }
+    }
+
+    posts.addAll(filteredPosts);
+    comments.addAll(feedItemResult.comments);
+
+    return emit(state.copyWith(
+      status: FeedStatus.success,
+      insertedPostIds: newInsertedPostIds.toList(),
+      posts: posts,
+      comments: comments,
+      hasReachedPostsEnd: feedItemResult.hasReachedPostsEnd,
+      hasReachedCommentsEnd: feedItemResult.hasReachedCommentsEnd,
+      cursor: feedItemResult.cursor,
+      errorReason: null,
+    ));
   }
 
   /// This function is used to create a post. We can pass in a communityId directly to determine the community to post to.

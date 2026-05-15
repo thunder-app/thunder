@@ -11,6 +11,7 @@ import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
+import 'package:thunder/src/features/feed/presentation/widgets/feed_fab_action_config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/fabs/gesture_fab.dart';
@@ -18,6 +19,7 @@ import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
+/// Floating action button menu for feed-level actions.
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag, this.actionController});
 
@@ -34,70 +36,30 @@ class FeedFAB extends StatelessWidget {
     final feedFabSinglePressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabSinglePressAction);
     final feedFabLongPressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabLongPressAction);
     final isFabSummoned = context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isFeedFabSummoned);
-    final FeedState feedState = context.watch<FeedBloc>().state;
-    final ProfileState profileState = context.read<ProfileBloc>().state;
+    final feedState = context.select<FeedBloc, ({FeedStatus status, FeedType? feedType, ThunderCommunity? community})>(
+      (bloc) => (
+        status: bloc.state.status,
+        feedType: bloc.state.feedType,
+        community: bloc.state.community,
+      ),
+    );
+    final profileState = context.select<ProfileBloc, ({bool isLoggedIn, List<ThunderCommunity> moderates})>(
+      (bloc) => (
+        isLoggedIn: bloc.state.isLoggedIn,
+        moderates: bloc.state.moderates,
+      ),
+    );
 
-    // A list of actions that are not supported through the general feed
-    List<FeedFabAction> unsupportedGeneralFeedFabActions = [];
-
-    // A list of actions that are not supported through the navigated community feed
-    List<FeedFabAction> unsupportedNavigatedCommunityFeedFabActions = [
-      FeedFabAction.subscriptions,
-    ];
-
-    // A list of actions that are not supported through the navigated user feed
-    List<FeedFabAction> unsupportedNavigatedUserFeedFabActions = [
-      FeedFabAction.subscriptions,
-      FeedFabAction.newPost,
-      FeedFabAction.dismissRead,
-    ];
-
-    FeedFabAction singlePressAction = feedFabSinglePressAction;
-    FeedFabAction longPressAction = feedFabLongPressAction;
-
-    // Check to see if we are in the general feeds
-    bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
-    bool isCommunityFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.community;
-    bool isUserFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.user;
-    bool isNavigatedFeed = Navigator.canPop(context);
-
-    bool isPostLocked = false;
-
-    if (profileState.isLoggedIn && isCommunityFeed) {
-      final community = feedState.community;
-
-      if (community!.postingRestrictedToMods && !profileState.moderates.any((c) => c.id == community.id)) {
-        isPostLocked = true;
-      }
-    }
-
-    List<FeedFabAction> disabledActions = [];
-
-    if (isGeneralFeed) {
-      disabledActions = unsupportedGeneralFeedFabActions;
-    } else if (isCommunityFeed && isNavigatedFeed) {
-      disabledActions = unsupportedNavigatedCommunityFeedFabActions;
-    } else if (isUserFeed && isNavigatedFeed) {
-      disabledActions = unsupportedNavigatedUserFeedFabActions;
-    }
-
-    // Check single-press action
-    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(singlePressAction)) {
-      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    }
-
-    // Check long-press action
-    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    } else if (isUserFeed && unsupportedNavigatedUserFeedFabActions.contains(longPressAction)) {
-      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
-    }
+    final config = resolveFeedFabActionConfig(
+      preferredSinglePressAction: feedFabSinglePressAction,
+      preferredLongPressAction: feedFabLongPressAction,
+      status: feedState.status,
+      feedType: feedState.feedType,
+      community: feedState.community,
+      isLoggedIn: profileState.isLoggedIn,
+      moderates: profileState.moderates,
+      isNavigatedFeed: Navigator.canPop(context),
+    );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -113,16 +75,16 @@ class FeedFAB extends StatelessWidget {
           ? GestureFab(
               heroTag: heroTag,
               distance: 60,
-              fabBackgroundColor: (singlePressAction == FeedFabAction.newPost && isPostLocked) ? theme.colorScheme.errorContainer : null,
+              fabBackgroundColor: (config.singlePressAction == FeedFabAction.newPost && config.isPostLocked) ? theme.colorScheme.errorContainer : null,
               icon: Icon(
-                (singlePressAction == FeedFabAction.newPost && isPostLocked) ? Icons.lock : singlePressAction.icon,
-                semanticLabel: singlePressAction.title,
+                (config.singlePressAction == FeedFabAction.newPost && config.isPostLocked) ? Icons.lock : config.singlePressAction.icon,
+                semanticLabel: config.singlePressAction.title,
                 size: 35,
               ),
               onPressed: () {
                 HapticFeedback.lightImpact();
 
-                switch (singlePressAction) {
+                switch (config.singlePressAction) {
                   case FeedFabAction.openFab:
                     triggerOpenFab(context);
                     break;
@@ -142,14 +104,14 @@ class FeedFAB extends StatelessWidget {
                     triggerScrollToTop(context);
                     break;
                   case FeedFabAction.newPost:
-                    triggerNewPost(context, isPostingLocked: isPostLocked);
+                    triggerNewPost(context, isPostingLocked: config.isPostLocked);
                     break;
                 }
               },
               onLongPress: () {
                 HapticFeedback.mediumImpact();
 
-                switch (longPressAction) {
+                switch (config.longPressAction) {
                   case FeedFabAction.openFab:
                     triggerOpenFab(context);
                     break;
@@ -169,12 +131,12 @@ class FeedFAB extends StatelessWidget {
                     triggerScrollToTop(context);
                     break;
                   case FeedFabAction.newPost:
-                    triggerNewPost(context, isPostingLocked: isPostLocked);
+                    triggerNewPost(context, isPostingLocked: config.isPostLocked);
                     break;
                 }
               },
               fabType: FabType.feed,
-              children: getEnabledActions(context, isPostingLocked: isPostLocked, disabledActions: disabledActions),
+              children: getEnabledActions(context, isPostingLocked: config.isPostLocked, disabledActions: config.disabledActions),
             )
           : Stack(
               // This creates an invisible touch target to summon the FAB

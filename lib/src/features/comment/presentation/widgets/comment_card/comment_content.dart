@@ -82,6 +82,13 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
   final _selectableRegionFocusNode = FocusNode();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    _selectableRegionFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 

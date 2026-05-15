@@ -1,30 +1,22 @@
-// Flutter imports
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// Package imports
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Project imports
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart';
-import 'package:thunder/src/shared/media/media_view.dart';
+import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_content_section.dart';
+import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_flair_section.dart';
+import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_media_section.dart';
 import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
 
 /// A widget that displays the body of a post. This includes the title, body, media, and metadata.
 ///
@@ -120,9 +112,14 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  void dispose() {
+    expandableController.dispose();
+    _selectableRegionFocusNode.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
     final showCrossPosts = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showCrossPosts);
     final postBodyViewType = context.select<FeedPreferencesCubit, PostBodyViewType>((cubit) => cubit.state.postBodyViewType);
@@ -143,80 +140,43 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       ),
     ];
 
-    if (postBodyViewType != PostBodyViewType.condensed && media != null && media.mediaType != MediaType.text) {
+    if (media != null) {
       children.add(
-        Expandable(
+        PostBodyMediaSection(
           controller: expandableController,
-          collapsed: SizedBox.shrink(),
-          expanded: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-            child: MediaView(
-              viewMode: ViewMode.comfortable,
-              media: media,
-              postId: post.id,
-              showFullHeightImages: true,
-              allowUnconstrainedImageHeight: true,
-              hideNsfwPreviews: hideNsfwPreviews,
-            ),
-          ),
+          post: post,
+          media: media,
+          hideNsfwPreviews: hideNsfwPreviews,
+          postBodyViewType: postBodyViewType,
         ),
       );
     }
 
     if (post.body?.isNotEmpty == true) {
       children.add(
-        Expandable(
+        PostBodyContentSection(
           controller: expandableController,
-          collapsed: PostBodyPreview(
-            post: post,
-            viewSource: widget.viewSource,
-            gradientBackgroundColor: widget.showReplyEditorButtons ? getBackgroundColor(context) : null,
-            onTap: () {
-              expandableController.toggle();
-              setState(() {});
-            },
-          ),
-          expanded: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: ConditionalParentWidget(
-              condition: widget.selectable,
-              parentBuilder: (child) {
-                return SelectableRegion(
-                  focusNode: _selectableRegionFocusNode,
-                  // See comments on [SelectableTextModal] regarding the next two properties
-                  selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
-                  contextMenuBuilder: (context, selectableRegionState) {
-                    return AdaptiveTextSelectionToolbar.buttonItems(
-                      buttonItems: selectableRegionState.contextMenuButtonItems,
-                      anchors: selectableRegionState.contextMenuAnchors,
-                    );
-                  },
-                  onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
-                  child: child,
-                );
-              },
-              child: widget.viewSource
-                  ? ScalableText(
-                      post.body ?? '',
-                      style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                      textScaleFactor: contentFontSizeScale.textScaleFactor,
-                    )
-                  : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews),
-            ),
-          ),
+          post: post,
+          viewSource: widget.viewSource,
+          selectable: widget.selectable,
+          showReplyEditorButtons: widget.showReplyEditorButtons,
+          hideNsfwPreviews: hideNsfwPreviews,
+          contentFontSizeScale: contentFontSizeScale,
+          focusNode: _selectableRegionFocusNode,
+          onSelectionChanged: widget.onSelectionChanged,
+          onExpand: () {
+            expandableController.toggle();
+            setState(() {});
+          },
         ),
       );
     }
 
     if (post.tags.isNotEmpty) {
       children.add(
-        Expandable(
+        PostBodyFlairSection(
           controller: expandableController,
-          collapsed: const SizedBox.shrink(),
-          expanded: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: PostFlairTags(tags: post.tags),
-          ),
+          post: post,
         ),
       );
     }

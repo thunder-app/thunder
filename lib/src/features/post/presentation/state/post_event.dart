@@ -65,6 +65,24 @@ class GetPostCommentsEvent extends PostEvent {
   List<Object?> get props => [postId, commentParentId, reset, commentSortType];
 }
 
+/// Requests the next root-level comment page for the loaded post.
+///
+/// This is separated from [GetPostCommentsEvent] so pagination can be dropped
+/// while full comment resets remain restartable.
+class GetPostCommentsPageEvent extends PostEvent {
+  const GetPostCommentsPageEvent();
+}
+
+/// Requests additional replies for a loaded comment subtree.
+class GetPostCommentRepliesEvent extends PostEvent {
+  final int commentParentId;
+
+  const GetPostCommentRepliesEvent({required this.commentParentId});
+
+  @override
+  List<Object?> get props => [commentParentId];
+}
+
 class VotePostEvent extends PostEvent {
   final int postId;
   final int score;

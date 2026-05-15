@@ -4,6 +4,7 @@ const _feedStateUnset = Object();
 
 enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity, failureLoadingUser }
 
+/// Immutable state for feed metadata, visible items, and pagination flags.
 final class FeedState extends Equatable {
   const FeedState({
     this.status = FeedStatus.initial,

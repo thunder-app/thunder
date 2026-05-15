@@ -30,7 +30,7 @@ class PostState extends Equatable {
     this.commentSortType,
     this.selectedCommentPath,
     this.moddingCommentId = -1,
-    this.collapsedComments = const [],
+    this.collapsedComments = const <int>{},
   });
 
   /// The current status of the post
@@ -64,8 +64,8 @@ class PostState extends Equatable {
   final String? errorMessage;
   final AppErrorReason? errorReason;
 
-  /// Keeps track of which comments should be collapsed. When a comment is collapsed, its child comments are hidden.
-  final List<int> collapsedComments;
+  /// Comment ids whose descendants should be hidden in the comments list.
+  final Set<int> collapsedComments;
 
   PostState copyWith({
     PostStatus? status,
@@ -85,7 +85,7 @@ class PostState extends Equatable {
     Object? commentSortType = _postStateUnset,
     Object? selectedCommentPath = _postStateUnset,
     int? moddingCommentId,
-    List<int>? collapsedComments,
+    Set<int>? collapsedComments,
   }) {
     return PostState(
       status: status ?? this.status,

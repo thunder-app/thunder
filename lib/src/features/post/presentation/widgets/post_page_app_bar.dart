@@ -57,14 +57,14 @@ class PostPageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<ThunderCubit>().state;
+    final hideTopBarOnScroll = context.select<ThunderCubit, bool>((cubit) => cubit.state.hideTopBarOnScroll);
 
     return SliverAppBar(
-      pinned: !state.hideTopBarOnScroll,
+      pinned: !hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
       toolbarHeight: APP_BAR_HEIGHT,
-      surfaceTintColor: state.hideTopBarOnScroll ? Colors.transparent : null,
+      surfaceTintColor: hideTopBarOnScroll ? Colors.transparent : null,
       title: const PostAppBarTitle(),
       actions: [
         PostAppBarActions(
@@ -83,15 +83,10 @@ class PostPageAppBar extends StatelessWidget {
   }
 }
 
-/// The title of the app bar. This shows the sort type of the comments
-class PostAppBarTitle extends StatefulWidget {
+/// Title for the post page app bar, including the active comment sort.
+class PostAppBarTitle extends StatelessWidget {
   const PostAppBarTitle({super.key});
 
-  @override
-  State<PostAppBarTitle> createState() => _PostAppBarTitleState();
-}
-
-class _PostAppBarTitleState extends State<PostAppBarTitle> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -179,7 +174,9 @@ class PostAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<PostBloc>().state;
+    final state = context.select<PostBloc, ({ThunderPost? post, CommentSortType? commentSortType})>(
+      (bloc) => (post: bloc.state.post, commentSortType: bloc.state.commentSortType),
+    );
 
     return Row(
       children: [
@@ -279,7 +276,9 @@ class PostAppBarActions extends StatelessWidget {
 }
 
 (String, IconData?) getCommentSort(BuildContext context) {
-  final state = context.watch<PostBloc>().state;
+  final state = context.select<PostBloc, ({PostStatus status, CommentSortType? commentSortType})>(
+    (bloc) => (status: bloc.state.status, commentSortType: bloc.state.commentSortType),
+  );
 
   if (state.status == PostStatus.initial) {
     return ('', null);

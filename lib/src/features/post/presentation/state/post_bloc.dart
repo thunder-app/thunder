@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+
 import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
@@ -34,14 +36,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   })  : _preferencesStore = preferencesStore,
         _localizationService = localizationService,
         super(PostState()) {
-    on<GetPostEvent>(_getPostEvent);
-    on<GetPostCommentsEvent>(_getPostCommentsEvent);
+    on<GetPostEvent>(_getPostEvent, transformer: restartable());
+    on<GetPostCommentsEvent>(_getPostCommentsEvent, transformer: restartable());
+    on<GetPostCommentsPageEvent>(_getPostCommentsPageEvent, transformer: droppable());
+    on<GetPostCommentRepliesEvent>(_getPostCommentRepliesEvent, transformer: droppable());
     on<ReportCommentEvent>(_reportCommentEvent);
     on<VotePostEvent>(_votePostEvent);
     on<SavePostEvent>(_savePostEvent);
-    on<CommentActionEvent>(_commentActionEvent);
-    on<CommentItemUpdatedEvent>(_commentItemUpdatedEvent);
-    on<CommentItemInsertedEvent>(_commentItemInsertedEvent);
+    on<CommentActionEvent>(_commentActionEvent, transformer: sequential());
+    on<CommentItemUpdatedEvent>(_commentItemUpdatedEvent, transformer: sequential());
+    on<CommentItemInsertedEvent>(_commentItemInsertedEvent, transformer: sequential());
     on<UpdateCollapsedComment>(_onUpdateCollapsedComment);
     on<PostUpdatedEvent>(_onPostUpdated);
   }
@@ -139,20 +143,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
 
     try {
-      // Optimistically update the post
       ThunderPost updatedPost = optimisticallyVotePost(originalPost, event.score);
 
-      // Immediately set the status with optimistic update
-      emit(state.copyWith(status: PostStatus.success, post: updatedPost));
-      emit(state.copyWith(status: PostStatus.refreshing));
+      if (updatedPost != state.post) {
+        emit(state.copyWith(status: PostStatus.success, post: updatedPost, errorReason: null));
+      }
 
       updatedPost = await postRepository.vote(originalPost, event.score);
 
-      return emit(state.copyWith(
-        status: PostStatus.success,
-        post: updatedPost,
-        errorReason: null,
-      ));
+      if (updatedPost != state.post) {
+        return emit(state.copyWith(
+          status: PostStatus.success,
+          post: updatedPost,
+          errorReason: null,
+        ));
+      }
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
@@ -181,20 +186,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
 
     try {
-      // Optimistically update the post
       ThunderPost updatedPost = optimisticallySavePost(originalPost, event.save);
 
-      // Immediately set the status with optimistic update
-      emit(state.copyWith(status: PostStatus.success, post: updatedPost));
-      emit(state.copyWith(status: PostStatus.refreshing));
+      if (updatedPost != state.post) {
+        emit(state.copyWith(status: PostStatus.success, post: updatedPost, errorReason: null));
+      }
 
       updatedPost = await postRepository.save(originalPost, event.save);
 
-      return emit(state.copyWith(
-        status: PostStatus.success,
-        post: updatedPost,
-        errorReason: null,
-      ));
+      if (updatedPost != state.post) {
+        return emit(state.copyWith(
+          status: PostStatus.success,
+          post: updatedPost,
+          errorReason: null,
+        ));
+      }
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
@@ -211,14 +217,38 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
+    return _fetchPostComments(
+      emit,
+      commentParentId: event.commentParentId,
+      reset: event.reset,
+      commentSortType: event.commentSortType,
+    );
+  }
+
+  /// Event to fetch the next root-level comment page from a post.
+  Future<void> _getPostCommentsPageEvent(GetPostCommentsPageEvent event, emit) async {
+    return _fetchPostComments(emit);
+  }
+
+  /// Event to fetch additional replies for an expanded comment.
+  Future<void> _getPostCommentRepliesEvent(GetPostCommentRepliesEvent event, emit) async {
+    return _fetchPostComments(emit, commentParentId: event.commentParentId);
+  }
+
+  Future<void> _fetchPostComments(
+    Emitter<PostState> emit, {
+    int? commentParentId,
+    bool reset = false,
+    CommentSortType? commentSortType,
+  }) async {
     final platform = account.platform ?? ThreadiversePlatform.lemmy;
-    final isReplyFetch = event.commentParentId != null;
+    final isReplyFetch = commentParentId != null;
 
     final defaultCommentSortType = CommentSortType.values.byName(_preferencesStore.getLocalSetting(LocalSettings.defaultCommentSortType)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
-    final commentSortType = event.commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
+    final selectedCommentSortType = commentSortType ?? (state.commentSortType ?? defaultCommentSortType);
 
     try {
-      if (event.reset) {
+      if (reset) {
         emit(state.copyWith(
           status: PostStatus.refreshing,
           comments: const [],
@@ -228,14 +258,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           commentCursor: null,
           commentCount: 0,
           hasReachedCommentEnd: false,
-          commentSortType: commentSortType,
+          commentSortType: selectedCommentSortType,
         ));
 
         final response = await commentRepository.getComments(
           communityId: state.post?.community?.id,
-          parentId: event.commentParentId,
+          parentId: commentParentId,
           postId: state.post!.id,
-          commentSortType: commentSortType,
+          commentSortType: selectedCommentSortType,
           limit: COMMENT_LIMIT,
           maxDepth: COMMENT_MAX_DEPTH,
           page: platform == ThreadiversePlatform.lemmy ? 1 : null,
@@ -259,7 +289,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             commentCount: listing.api.length,
             // If we're intentionally loading a single comment thread, prevent root-level auto pagination.
             hasReachedCommentEnd: isReplyFetch || nextPage == null,
-            commentSortType: commentSortType,
+            commentSortType: selectedCommentSortType,
             errorReason: null,
           ),
         );
@@ -278,17 +308,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       final response = await commentRepository.getComments(
         communityId: state.post?.community?.id,
         postId: state.post!.id,
-        parentId: event.commentParentId,
-        commentSortType: commentSortType,
+        parentId: commentParentId,
+        commentSortType: selectedCommentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
         page: platform == ThreadiversePlatform.lemmy
-            ? event.commentParentId == null
+            ? commentParentId == null
                 ? state.commentPage
                 : null
             : null,
         cursor: platform == ThreadiversePlatform.piefed
-            ? event.commentParentId == null
+            ? commentParentId == null
                 ? state.commentCursor
                 : null
             : null,
@@ -299,8 +329,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       final int? nextPageNumber = nextPage != null ? int.tryParse(nextPage) : null;
 
       // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it, so we should display an error
-      if (event.commentParentId != null) {
-        final anyDirectChildren = containsDirectReplyToParent(comments, event.commentParentId!);
+      if (commentParentId != null) {
+        final anyDirectChildren = containsDirectReplyToParent(comments, commentParentId);
         if (!anyDirectChildren) {
           throw Exception(_localizationService.l10n.unableToLoadReplies);
         }
@@ -311,7 +341,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(
         state.copyWith(
           status: PostStatus.success,
-          commentSortType: commentSortType,
+          commentSortType: selectedCommentSortType,
           comments: listing.comments,
           commentNodes: listing.tree,
           commentResponseMap: listing.api,
@@ -346,7 +376,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Handles comment related actions on a given item within the post
   Future<void> _commentActionEvent(CommentActionEvent event, Emitter<PostState> emit) async {
-    emit(state.copyWith(status: PostStatus.refreshing));
     final originalCommentTree = state.commentNodes;
     if (originalCommentTree == null) {
       return emit(state.copyWith(
@@ -357,8 +386,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
 
-    final updatedCommentTree = clone(originalCommentTree);
-    CommentNode? existingCommentNode = updatedCommentTree.search(event.commentId);
+    final existingCommentNode = originalCommentTree.search(event.commentId);
     if (existingCommentNode == null) {
       return emit(state.copyWith(
         status: PostStatus.failure,
@@ -380,16 +408,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             ));
           }
           final value = (event.actionInput as VoteCommentActionInput).score;
-          CommentNode newCommentNode = CommentNode(comment: optimisticallyVoteComment(existingCommentNode.comment!, value), replies: existingCommentNode.replies);
-          existingCommentNode.insert(newCommentNode);
+          final updatedComment = optimisticallyVoteComment(existingCommentNode.comment!, value);
+          final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
+          final updatedComments = updatedCommentTree.flatten();
 
-          // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
-          emit(state.copyWith(status: PostStatus.refreshing, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
+          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
-          await commentRepository.vote(existingCommentNode.comment!, value);
-
-          return emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten(), errorReason: null));
+          final repositoryComment = await commentRepository.vote(existingCommentNode.comment!, value);
+          if (repositoryComment != updatedComment) {
+            final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
+            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+          }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
@@ -414,16 +443,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             ));
           }
           final value = (event.actionInput as SaveCommentActionInput).save;
-          CommentNode newCommentNode = CommentNode(comment: optimisticallySaveComment(existingCommentNode.comment!, value), replies: existingCommentNode.replies);
-          existingCommentNode.insert(newCommentNode);
+          final updatedComment = optimisticallySaveComment(existingCommentNode.comment!, value);
+          final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
+          final updatedComments = updatedCommentTree.flatten();
 
-          // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
-          emit(state.copyWith(status: PostStatus.refreshing, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
+          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
-          await commentRepository.save(existingCommentNode.comment!, value);
-
-          return emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten(), errorReason: null));
+          final repositoryComment = await commentRepository.save(existingCommentNode.comment!, value);
+          if (repositoryComment != updatedComment) {
+            final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
+            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+          }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
@@ -448,16 +478,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             ));
           }
           final value = (event.actionInput as DeleteCommentActionInput).delete;
-          CommentNode newCommentNode = CommentNode(comment: optimisticallyDeleteComment(existingCommentNode.comment!, value), replies: existingCommentNode.replies);
-          existingCommentNode.insert(newCommentNode);
+          final updatedComment = optimisticallyDeleteComment(existingCommentNode.comment!, value);
+          final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
+          final updatedComments = updatedCommentTree.flatten();
 
-          // Immediately set the status, and continue
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
-          emit(state.copyWith(status: PostStatus.refreshing, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten()));
+          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
-          await commentRepository.delete(existingCommentNode.comment!, value);
-
-          return emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedCommentTree.flatten(), errorReason: null));
+          final repositoryComment = await commentRepository.delete(existingCommentNode.comment!, value);
+          if (repositoryComment != updatedComment) {
+            final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
+            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+          }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
@@ -491,8 +522,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         ),
       ));
     }
-    emit(state.copyWith(status: PostStatus.refreshing));
-
     final currentCommentTree = state.commentNodes;
     if (currentCommentTree == null) {
       return emit(state.copyWith(
@@ -503,8 +532,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
 
-    final updatedCommentTree = clone(currentCommentTree);
-    final existingCommentNode = updatedCommentTree.search(event.comment.id);
+    final existingCommentNode = currentCommentTree.search(event.comment.id);
     if (existingCommentNode == null) {
       return emit(state.copyWith(
         status: PostStatus.failure,
@@ -514,12 +542,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
 
-    existingCommentNode.insert(CommentNode(comment: event.comment, replies: existingCommentNode.replies));
+    if (existingCommentNode.comment == event.comment && state.moddingCommentId == -1 && state.errorReason == null) {
+      return;
+    }
+
+    final updatedCommentTree = replaceComment(currentCommentTree, event.comment);
+    final updatedComments = updatedCommentTree.flatten();
 
     return emit(state.copyWith(
       status: PostStatus.success,
       commentNodes: updatedCommentTree,
-      comments: updatedCommentTree.flatten(),
+      comments: updatedComments,
       moddingCommentId: -1,
       errorReason: null,
     ));
@@ -535,7 +568,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         ),
       ));
     }
-    emit(state.copyWith(status: PostStatus.refreshing));
 
     final updatedCommentTree = clone(currentCommentTree);
 
@@ -549,11 +581,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
 
     parentNode.insert(CommentNode(comment: event.comment, replies: []));
+    final updatedComments = updatedCommentTree.flatten();
 
     return emit(state.copyWith(
       status: PostStatus.success,
       commentNodes: updatedCommentTree,
-      comments: updatedCommentTree.flatten(),
+      comments: updatedComments,
       moddingCommentId: -1,
       errorReason: null,
     ));
@@ -561,10 +594,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
     try {
-      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId));
+      emit(state.copyWith(moddingCommentId: event.commentId, errorReason: null));
       await commentRepository.report(event.commentId, event.message);
       return emit(state.copyWith(
-        status: PostStatus.success,
         moddingCommentId: -1,
         errorReason: null,
       ));
@@ -588,6 +620,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       commentId: event.commentId,
       collapsed: event.collapsed,
     );
+    if (collapsedComments == state.collapsedComments && state.errorReason == null) {
+      return;
+    }
+
     return emit(state.copyWith(
       status: state.status,
       collapsedComments: collapsedComments,

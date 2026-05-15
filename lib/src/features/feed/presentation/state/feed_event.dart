@@ -160,6 +160,20 @@ final class FeedFetchedEvent extends FeedEvent {
   List<Object?> get props => [feedType, feedTypeSubview, feedListType, postSortType, communityId, communityName, userId, username, reset, showHidden, showSaved];
 }
 
+/// Requests the next page for the currently loaded feed.
+///
+/// This is separate from [FeedFetchedEvent] so page fetches can be droppable
+/// while reset/refresh fetches remain restartable.
+final class FeedPaginatedEvent extends FeedEvent {
+  /// The active user-profile subview to paginate.
+  final FeedTypeSubview feedTypeSubview;
+
+  const FeedPaginatedEvent({this.feedTypeSubview = FeedTypeSubview.post});
+
+  @override
+  List<Object?> get props => [feedTypeSubview];
+}
+
 final class FeedChangePostSortTypeEvent extends FeedEvent {
   final PostSortType postSortType;
 

@@ -20,7 +20,7 @@ import 'package:thunder/src/shared/fabs/comment_navigator_fab.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderTypeaheadDialog;
 
 /// The FAB for the post page.
-class PostPageFAB extends StatefulWidget {
+class PostPageFAB extends StatelessWidget {
   /// The post information - used for various actions.
   final ThunderPost post;
 
@@ -34,16 +34,6 @@ class PostPageFAB extends StatefulWidget {
   final ScrollController scrollController;
 
   const PostPageFAB({super.key, required this.post, required this.comments, required this.scrollController, required this.listController});
-
-  @override
-  State<PostPageFAB> createState() => _PostPageFABState();
-}
-
-class _PostPageFABState extends State<PostPageFAB> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void showSortBottomSheet(BuildContext context) {
     final l10n = GlobalContext.l10n;
@@ -60,7 +50,7 @@ class _PostPageFABState extends State<PostPageFAB> {
         account: account,
         title: l10n.sortOptions,
         onSelect: (selected) async {
-          await widget.scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
+          await scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized);
           if (context.mounted) {
             context.read<PostBloc>().add(GetPostCommentsEvent(commentSortType: selected.payload, reset: true));
           }
@@ -172,10 +162,10 @@ class _PostPageFABState extends State<PostPageFAB> {
                 alignment: Alignment.bottomCenter,
                 child: CommentNavigatorFab(
                   initialIndex: 0,
-                  maxIndex: widget.listController.isAttached ? widget.listController.numberOfItems - 1 : 0,
-                  scrollController: widget.scrollController,
-                  listController: widget.listController,
-                  comments: widget.comments,
+                  maxIndex: listController.isAttached ? listController.numberOfItems - 1 : 0,
+                  scrollController: scrollController,
+                  listController: listController,
+                  comments: comments,
                   statusBarHeight: hideTopBarOnScroll ? statusBarHeight : 0,
                 ),
               ),
@@ -191,8 +181,8 @@ class _PostPageFABState extends State<PostPageFAB> {
                       centered: combineNavAndFab,
                       distance: combineNavAndFab ? 45 : 60,
                       icon: Icon(
-                        isSearchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: widget.post.locked),
-                        semanticLabel: isSearchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: widget.post.locked),
+                        isSearchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.locked),
+                        semanticLabel: isSearchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.locked),
                         size: 35,
                       ),
                       onPressed: isSearchInProgress
@@ -201,15 +191,15 @@ class _PostPageFABState extends State<PostPageFAB> {
                             }
                           : () => singlePressAction.execute(
                               context: context,
-                              post: widget.post,
-                              postId: widget.post.id,
+                              post: post,
+                              postId: post.id,
                               highlightedCommentId: highlightedCommentId,
                               selectedCommentPath: selectedCommentPath,
                               override: singlePressAction == PostFabAction.backToTop
                                   ? () => {
-                                        widget.listController.animateToItem(
+                                        listController.animateToItem(
                                           index: 0,
-                                          scrollController: widget.scrollController,
+                                          scrollController: scrollController,
                                           alignment: 0,
                                           duration: (estimatedDistance) => const Duration(milliseconds: 250),
                                           curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
@@ -218,20 +208,20 @@ class _PostPageFABState extends State<PostPageFAB> {
                                   : singlePressAction == PostFabAction.changeSort
                                       ? () => showSortBottomSheet(context)
                                       : singlePressAction == PostFabAction.replyToPost
-                                          ? () => replyToPost(context, widget.post, postLocked: widget.post.locked)
+                                          ? () => replyToPost(context, post, postLocked: post.locked)
                                           : singlePressAction == PostFabAction.search
                                               ? () => startCommentSearch(context)
                                               : null),
                       onLongPress: () => longPressAction.execute(
                           context: context,
-                          post: widget.post,
-                          postId: widget.post.id,
+                          post: post,
+                          postId: post.id,
                           selectedCommentPath: selectedCommentPath,
                           override: longPressAction == PostFabAction.backToTop
                               ? () => {
-                                    widget.listController.animateToItem(
+                                    listController.animateToItem(
                                       index: 0,
-                                      scrollController: widget.scrollController,
+                                      scrollController: scrollController,
                                       alignment: 0,
                                       duration: (estimatedDistance) => const Duration(milliseconds: 250),
                                       curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
@@ -240,7 +230,7 @@ class _PostPageFABState extends State<PostPageFAB> {
                               : longPressAction == PostFabAction.changeSort
                                   ? () => showSortBottomSheet(context)
                                   : longPressAction == PostFabAction.replyToPost
-                                      ? () => replyToPost(context, widget.post, postLocked: widget.post.locked)
+                                      ? () => replyToPost(context, post, postLocked: post.locked)
                                       : null),
                       fabType: FabType.post,
                       children: [
@@ -256,13 +246,13 @@ class _PostPageFABState extends State<PostPageFAB> {
                                 // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
                                 PostFabAction.refresh.execute(
                                   context: context,
-                                  postId: widget.post.id,
+                                  postId: post.id,
                                   selectedCommentPath: selectedCommentPath,
                                 );
                               } else {
                                 PostFabAction.refresh.execute(
                                   context: context,
-                                  postId: widget.post.id,
+                                  postId: post.id,
                                 );
                               }
                             },
@@ -276,11 +266,11 @@ class _PostPageFABState extends State<PostPageFAB> {
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               PostFabAction.replyToPost.execute(
-                                override: () => replyToPost(context, widget.post, postLocked: widget.post.locked),
+                                override: () => replyToPost(context, post, postLocked: post.locked),
                               );
                             },
                             title: PostFabAction.replyToPost.getTitle(context),
-                            icon: Icon(widget.post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
+                            icon: Icon(post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
                           ),
                         if (postFabEnableChangeSort)
                           ActionButton(
@@ -298,8 +288,7 @@ class _PostPageFABState extends State<PostPageFAB> {
                             fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
-                              PostFabAction.backToTop
-                                  .execute(override: () => {widget.scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
+                              PostFabAction.backToTop.execute(override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
                             },
                             title: PostFabAction.backToTop.getTitle(context),
                             icon: Icon(PostFabAction.backToTop.getIcon()),

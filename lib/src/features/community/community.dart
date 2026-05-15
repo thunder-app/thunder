@@ -9,6 +9,7 @@ export 'presentation/widgets/community_header/community_header_actions.dart';
 export 'presentation/widgets/community_information.dart';
 export 'presentation/widgets/community_list_entry.dart';
 export 'presentation/widgets/post_card.dart';
+export 'presentation/widgets/post_card_action_background.dart';
 export 'presentation/widgets/post_card_actions.dart';
 export 'presentation/widgets/post_card_metadata.dart';
 export 'presentation/widgets/post_card_view_comfortable.dart';

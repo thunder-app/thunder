@@ -2,17 +2,10 @@
 .idea
 .DS_Store
 
-# Build artifacts
+# Build Artifacts
 build
 release
 
-# Flutter/Dart
+# Flutter
 .dart_tool
 .flutter-plugins-dependencies
-
-# AI
-.agents
-.cursor
-.claude
-.github/instructions
-.github/copilot-instructions.md

@@ -1,18 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/features/feed/api.dart';
+import 'package:thunder/src/features/feed/presentation/widgets/feed_post_card_list_item.dart';
+import 'package:thunder/src/features/feed/presentation/widgets/feed_read_tracking_controller.dart';
 
 /// Widget representing the list of posts on the feed.
 class FeedPostCardList extends StatefulWidget {
@@ -22,8 +19,8 @@ class FeedPostCardList extends StatefulWidget {
   /// Determines whether to mark posts as read on scroll
   final bool markPostReadOnScroll;
 
-  /// The list of posts that have been queued for removal using the dismiss read action
-  final List<int>? queuedForRemoval;
+  /// The set of post ids that have been queued for removal using a dismiss action.
+  final Set<int>? queuedForRemoval;
 
   /// The list of posts to show on the feed
   final List<ThunderPost> posts;
@@ -93,32 +90,14 @@ class FeedPostCardList extends StatefulWidget {
 }
 
 class _FeedPostCardListState extends State<FeedPostCardList> {
-  /// The index of the last tapped post.
-  /// This is used to calculate the read status of posts in the range [0, lastTappedIndex]
-  int lastTappedIndex = -1;
-
-  /// The index of the last processed post for read status.
-  int lastProcessedIndex = -1;
-
-  /// Whether the user is scrolling down or not. The logic for determining read posts will
-  /// only be applied when the user is scrolling down
-  bool isScrollingDown = false;
-
-  /// List of post ids to queue for being marked as read.
-  Set<int> markReadPostIds = <int>{};
-
-  /// List of post ids that have already previously been detected as read
-  Set<int> readPostIds = <int>{};
-
-  /// Timer for debouncing the read action
-  Timer? debounceTimer;
+  final FeedReadTrackingController _readTrackingController = FeedReadTrackingController();
 
   /// The ID of the last post that the user tapped or navigated into
   int? lastTappedPost;
 
   @override
   void dispose() {
-    debounceTimer?.cancel();
+    _readTrackingController.dispose();
     super.dispose();
   }
 
@@ -131,137 +110,46 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
     FeedListType? feedListType,
     bool isUserLoggedIn = false,
   }) {
-    Widget child = PostCard(
+    return FeedPostCardListItem(
       post: post,
+      index: index,
       feedType: feedType,
       feedListType: feedListType,
-      onVoteAction: (int voteType) async {
-        if (widget.onVoteAction != null) {
-          await widget.onVoteAction!(post, voteType);
-          return;
-        }
-
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.vote, actionInput: VotePostInput(voteType)));
-      },
-      onSaveAction: (bool saved) async {
-        if (widget.onSaveAction != null) {
-          await widget.onSaveAction!(post, saved);
-          return;
-        }
-
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.save, actionInput: SavePostInput(saved)));
-      },
-      onReadAction: (bool read) async {
-        if (widget.onReadAction != null) {
-          await widget.onReadAction!(post, read);
-          return;
-        }
-
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.read, actionInput: ReadPostInput(read)));
-      },
-      onHideAction: (bool hide) async {
-        if (widget.onHideAction != null) {
-          await widget.onHideAction!(post, hide);
-          widget.onDismissHiddenPost?.call(post.id);
-          return;
-        }
-
-        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: post.id, postAction: PostAction.hide, actionInput: HidePostInput(hide)));
-        context.read<FeedBloc>().add(FeedDismissHiddenPostEvent(postId: post.id));
-      },
-      onDownAction: () {
-        if (lastTappedIndex != index) lastTappedIndex = index;
-      },
-      onUpAction: (double verticalDragDistance) {
-        bool updatedIsScrollingDown = verticalDragDistance < 0;
-
-        if (isScrollingDown != updatedIsScrollingDown) {
-          isScrollingDown = updatedIsScrollingDown;
-        }
-      },
-      onTap: () {
+      indicateRead: dim,
+      disableSwiping: widget.disableSwiping,
+      markPostReadOnScroll: widget.markPostReadOnScroll,
+      isUserLoggedIn: isUserLoggedIn,
+      isLastTapped: lastTappedPost == post.id,
+      isQueuedForRemoval: widget.queuedForRemoval?.contains(post.id) == true,
+      onPostPressed: () => _readTrackingController.updateLastTappedIndex(index),
+      onPostDragEnded: _readTrackingController.updateScrollDirection,
+      onPostTapped: () {
         if (lastTappedPost != post.id) setState(() => lastTappedPost = post.id);
       },
-      indicateRead: dim,
-      isLastTapped: lastTappedPost == post.id,
-      disableSwiping: widget.disableSwiping,
+      onPostNoLongerVisible: () => _readTrackingController.queueReadBatch(
+        index: index,
+        posts: widget.posts,
+        onBatchReady: _markPostsRead,
+      ),
+      onVoteAction: widget.onVoteAction,
+      onSaveAction: widget.onSaveAction,
+      onReadAction: widget.onReadAction,
+      onHideAction: widget.onHideAction,
       onPostUpdated: widget.onPostUpdated,
       onDismissHiddenPost: widget.onDismissHiddenPost,
       onDismissBlocked: widget.onDismissBlocked,
     );
+  }
 
-    // Apply VisibilityDetector if [markPostReadOnScroll] is enabled
-    if (isUserLoggedIn && widget.markPostReadOnScroll) {
-      child = VisibilityDetector(
-        key: Key(post.apId),
-        onVisibilityChanged: (info) {
-          if (!isScrollingDown) return;
+  void _markPostsRead(List<int> postIds) {
+    if (postIds.isEmpty) return;
 
-          if (index <= lastTappedIndex && info.visibleFraction == 0) {
-            // Debounce the read action to account for quick scrolling. This reduces the number of times the read action is triggered
-            debounceTimer?.cancel();
-
-            debounceTimer = Timer(const Duration(milliseconds: 500), () {
-              // TODO: Improve logic here so that we don't have to iterate through all posts if possible.
-              int startIndex = index;
-              int endIndex = lastProcessedIndex > 0 ? lastProcessedIndex : 0;
-
-              for (int i = startIndex; i >= endIndex; i--) {
-                final post = widget.posts[i];
-
-                // If we already checked this post's read status, or we already marked it as read, skip it
-                if (readPostIds.contains(post.id) || markReadPostIds.contains(post.id)) continue;
-
-                // Otherwise, check the post read status. If it's unread, queue it for marking as read
-                if (post.read == false) markReadPostIds.add(post.id);
-                readPostIds.add(post.id);
-              }
-
-              // Update the last processed index
-              if (index > lastProcessedIndex) lastProcessedIndex = index;
-
-              if (markReadPostIds.isNotEmpty) {
-                if (widget.onMultiReadAction != null) {
-                  widget.onMultiReadAction!([...markReadPostIds], true);
-                } else {
-                  context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: [...markReadPostIds], postAction: PostAction.multiRead, actionInput: const MultiReadPostInput(true)));
-                }
-                readPostIds.addAll(markReadPostIds); // Add all post ids that were queued to prevent them from being queued again
-                markReadPostIds = <int>{}; // Reset the list of post ids to mark as read
-              }
-            });
-          }
-        },
-        child: child,
-      );
+    if (widget.onMultiReadAction != null) {
+      widget.onMultiReadAction!(postIds, true);
+      return;
     }
 
-    // Only apply dismissal animation when the post is queued for removal
-    final isQueuedForRemoval = widget.queuedForRemoval?.contains(post.id) == true;
-
-    if (isQueuedForRemoval) {
-      return TweenAnimationBuilder<double>(
-        duration: const Duration(milliseconds: 300),
-        tween: Tween<double>(begin: 1.0, end: 0.0),
-        builder: (context, value, animatedChild) {
-          return ClipRect(
-            child: Align(
-              alignment: Alignment.topCenter,
-              heightFactor: value,
-              child: Opacity(
-                opacity: value,
-                child: Transform.translate(
-                  offset: Offset((1 - value) * 100, 0),
-                  child: child,
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    }
-
-    return child;
+    context.read<FeedBloc>().add(FeedItemActionedEvent(postIds: postIds, postAction: PostAction.multiRead, actionInput: const MultiReadPostInput(true)));
   }
 
   @override

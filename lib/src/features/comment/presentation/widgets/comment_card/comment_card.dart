@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_replies_loader.dart';
+import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_surface.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderMultiActionDismissible, ThunderSwipeAction;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a given comment.
 ///
@@ -71,31 +71,19 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
-  /// The internal comment. This is updated whenever the comment is updated.
-  late ThunderComment comment;
-
-  /// Whether the comment is owned by the current user
-  late bool isOwnComment;
-
   /// Whether we should display the comment's raw markdown source
   bool viewSource = false;
 
   /// Whether the comment is being dragged.
   bool _dragged = false;
 
-  @override
-  void initState() {
-    super.initState();
-
-    comment = widget.comment;
-    isOwnComment = comment.creatorId == widget.account.userId;
-  }
+  bool get _isOwnComment => widget.comment.creatorId == widget.account.userId;
 
   /// Maps a [SwipeAction] to a [CommentAction] and performs the action
   ///
   /// If [resolve] is true, the [SwipeAction.reply] will be resolved to [SwipeAction.edit] if the comment is owned by the current user.
   Future<void> _onAction(SwipeAction action, {bool resolve = true}) async {
-    final resolvedSwipeAction = (action == SwipeAction.reply && isOwnComment && resolve) ? SwipeAction.edit : action;
+    final resolvedSwipeAction = (action == SwipeAction.reply && _isOwnComment && resolve) ? SwipeAction.edit : action;
 
     final commentAction = switch (resolvedSwipeAction) {
       SwipeAction.upvote => CommentAction.vote,
@@ -112,7 +100,7 @@ class _CommentCardState extends State<CommentCard> {
       context,
       widget.account,
       commentAction,
-      comment,
+      widget.comment,
       {
         'voteType': resolvedSwipeAction == SwipeAction.upvote
             ? 1
@@ -127,7 +115,6 @@ class _CommentCardState extends State<CommentCard> {
       return;
     } else if (updatedComment != null) {
       widget.onCommentUpdated?.call(updatedComment);
-      setState(() => comment = updatedComment);
     }
   }
 
@@ -136,15 +123,16 @@ class _CommentCardState extends State<CommentCard> {
 
     showCommentActionBottomModalSheet(
       context,
-      comment,
+      widget.comment,
       isShowingSource: viewSource,
       onAction: ({commentAction, communityAction, userAction, comment}) async {
         if (comment != null) {
           widget.onCommentUpdated?.call(comment);
-          setState(() => this.comment = comment);
         }
 
-        if (commentAction == CommentAction.viewSource) return setState(() => viewSource = !viewSource);
+        if (commentAction == CommentAction.viewSource) {
+          return setState(() => viewSource = !viewSource);
+        }
 
         // TODO: Move these into the comment bottom sheet logic
         if (commentAction == CommentAction.reply || commentAction == CommentAction.edit) {
@@ -168,11 +156,6 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final nestedCommentIndicatorStyle = context.select<CommentPreferencesCubit, NestedCommentIndicatorStyle>((cubit) => cubit.state.nestedCommentIndicatorStyle);
-    final nestedCommentIndicatorColor = context.select<CommentPreferencesCubit, NestedCommentIndicatorColor>((cubit) => cubit.state.nestedCommentIndicatorColor);
-
     final showCommentButtonActions = context.select<CommentPreferencesCubit, bool>((cubit) => cubit.state.showCommentButtonActions);
     final enableCommentGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.enableCommentGestures);
     final leftPrimaryCommentGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryCommentGesture);
@@ -186,44 +169,25 @@ class _CommentCardState extends State<CommentCard> {
 
     final currentSwipeDirection = determineCommentSwipeDirection(!widget.account.anonymous, enableCommentGestures, leftActions, rightActions);
 
-    Widget child = Material(
-      color: widget.highlight ? theme.highlightColor : null,
-      child: Container(
-        decoration: _dragged ? null : CommentDepthIndicatorDecoration(context, level: widget.level, style: nestedCommentIndicatorStyle, scheme: nestedCommentIndicatorColor),
-        child: InkWell(
-          onTap: () => widget.onCollapse?.call(comment.id, !widget.collapsed),
-          onLongPress: _onLongPress,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommentContent(
-                account: widget.account,
-                level: widget.level,
-                comment: comment,
-                hidden: widget.collapsed,
-                viewSource: viewSource,
-                onViewSourceToggled: () => setState(() => viewSource = !viewSource),
-              ),
-              if (showCommentButtonActions && !widget.account.anonymous && !widget.collapsed)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0, top: 6.0, right: 4.0),
-                  child: CommentCardButtonActions(
-                    account: widget.account,
-                    comment: comment,
-                    isOwnComment: isOwnComment,
-                    onAction: (action) => _onAction(action),
-                    onBottomSheetOpen: _onLongPress,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
+    Widget child = CommentCardSurface(
+      account: widget.account,
+      comment: widget.comment,
+      level: widget.level,
+      collapsed: widget.collapsed,
+      highlighted: widget.highlight,
+      dragged: _dragged,
+      viewSource: viewSource,
+      showActions: showCommentButtonActions && !widget.account.anonymous && !widget.collapsed,
+      isOwnComment: _isOwnComment,
+      onCollapse: () => widget.onCollapse?.call(widget.comment.id, !widget.collapsed),
+      onLongPress: _onLongPress,
+      onViewSourceToggled: () => setState(() => viewSource = !viewSource),
+      onAction: _onAction,
     );
 
     if (currentSwipeDirection != DismissDirection.none) {
       child = ThunderMultiActionDismissible<SwipeAction>(
-        key: ObjectKey(comment.id),
+        key: ObjectKey(widget.comment.id),
         direction: currentSwipeDirection,
         leftActions: leftActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(), color: (context) => action.getColor(context))).toList(),
         rightActions: rightActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(), color: (context) => action.getColor(context))).toList(),
@@ -235,7 +199,7 @@ class _CommentCardState extends State<CommentCard> {
         },
         onAction: (action) => _onAction(action.value),
         backgroundBuilder: (context, dismissDirection, progress, action) => CommentCardBackground(
-          swipeAction: action?.value == SwipeAction.reply && isOwnComment ? SwipeAction.edit : action?.value,
+          swipeAction: action?.value == SwipeAction.reply && _isOwnComment ? SwipeAction.edit : action?.value,
           dismissThreshold: progress,
           firstActionThreshold: actionThresholds.first,
           dismissDirection: dismissDirection,
@@ -252,18 +216,13 @@ class _CommentCardState extends State<CommentCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           child,
-          if (widget.replies == 0 && comment.childCount! > 0 && !widget.hideReplyCount)
-            AnimatedCrossFade(
-              duration: Duration(milliseconds: 350),
-              sizeCurve: Curves.easeInOutCubicEmphasized,
-              firstChild: SizedBox(width: MediaQuery.sizeOf(context).width),
-              secondChild: AdditionalCommentCard(
-                depth: widget.level,
-                replies: comment.childCount!,
-                onTap: () => context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: comment.id)),
-              ),
-              crossFadeState: widget.collapsed ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-            )
+          CommentCardRepliesLoader(
+            comment: widget.comment,
+            level: widget.level,
+            replies: widget.replies,
+            collapsed: widget.collapsed,
+            hideReplyCount: widget.hideReplyCount,
+          ),
         ],
       ),
       crossFadeState: widget.hidden ? CrossFadeState.showFirst : CrossFadeState.showSecond,
