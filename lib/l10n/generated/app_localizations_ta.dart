@@ -803,6 +803,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get dimReadPosts => 'மங்கலான இடுகைகள்';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'முடக்கு';
 
   @override
@@ -2308,10 +2311,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get selectLanguage => 'மொழியைத் தேர்ந்தெடுக்கவும்';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'தேடல் வகையைத் தேர்ந்தெடுக்கவும்';
 
   @override
   String get selectText => 'உரையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

@@ -796,6 +796,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get dimReadPosts => 'Stmaviť prečítané príspevky';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Zakázať';
 
   @override
@@ -2269,10 +2272,16 @@ class AppLocalizationsSk extends AppLocalizations {
   String get selectLanguage => 'Vybrať jazyk';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Vybrať typ vyhľadávania';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

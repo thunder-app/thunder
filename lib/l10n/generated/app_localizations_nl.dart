@@ -797,6 +797,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dimReadPosts => 'Gelezen berichten dimmen';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Uitschakelen';
 
   @override
@@ -2291,10 +2294,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get selectLanguage => 'Taal selecteren';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Selecteer zoektype';
 
   @override
   String get selectText => 'Tekst selecteren';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

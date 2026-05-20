@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
@@ -10,6 +13,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// A widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 class UserListEntry extends StatelessWidget {
@@ -23,6 +27,13 @@ class UserListEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = GlobalContext.l10n;
+
+    final isLoggedIn = context.select<ProfileBloc, bool>((bloc) => bloc.state.isLoggedIn);
+    final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+
+    final canMessage = isLoggedIn && account.userId != user.id;
+
     return Tooltip(
       excludeFromSemantics: true,
       message: '${user.displayNameOrName}\n${generateUserFullName(
@@ -48,6 +59,12 @@ class UserListEntry extends StatelessWidget {
             ),
           ],
         ),
+        trailing: canMessage
+            ? IconButton(
+                icon: Icon(Icons.mail_rounded, semanticLabel: l10n.message(0), size: 20.0),
+                onPressed: () => navigateToCreatePrivateMessagePage(context, account: account, recipient: user),
+              )
+            : null,
         onTap: () async {
           int? userId = user.id;
 

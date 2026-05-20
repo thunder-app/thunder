@@ -1512,6 +1512,12 @@ abstract class AppLocalizations {
   /// **'Dim Read Posts'**
   String get dimReadPosts;
 
+  /// Title for the private message compose page
+  ///
+  /// In en, this message translates to:
+  /// **'Direct message'**
+  String get directMessage;
+
   /// Action for disabling something
   ///
   /// In en, this message translates to:
@@ -4110,6 +4116,12 @@ abstract class AppLocalizations {
   /// **'Select Language'**
   String get selectLanguage;
 
+  /// Prompt to choose a private message recipient
+  ///
+  /// In en, this message translates to:
+  /// **'Select recipient'**
+  String get selectRecipient;
+
   /// No description provided for @selectSearchType.
   ///
   /// In en, this message translates to:
@@ -4121,6 +4133,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Text'**
   String get selectText;
+
+  /// Action to send content
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
 
   /// The option to send a background notification for testing
   ///

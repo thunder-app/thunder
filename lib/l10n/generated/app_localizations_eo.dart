@@ -787,6 +787,9 @@ class AppLocalizationsEo extends AppLocalizations {
   String get dimReadPosts => 'Legitaj afiŝoj estos grizitaj';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Malebligi';
 
   @override
@@ -2250,10 +2253,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get selectLanguage => 'Elekti lingvon';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Elekti Serĉan Tipon';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

@@ -788,6 +788,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dimReadPosts => 'Luetut postaukset näkyvät tummennettuina';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Disable';
 
   @override
@@ -2254,10 +2257,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get selectLanguage => 'Valitse kieli';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Valitse Hakulaji';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

@@ -1233,6 +1233,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   /// Create a private message.
+  @override
   Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
     final json = await request(HttpMethod.post, '$basePath/private_message', {
       'recipient_id': recipientId,
@@ -1269,8 +1270,9 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   /// Get private message conversation.
+  @override
   Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
-    int? personId,
+    required int personId,
     int? conversationId,
     int? page,
     int? limit,
@@ -1470,6 +1472,9 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
     return ThunderPrivateMessage(
       id: privateMessage['id'],
+      creatorId: privateMessage['creator_id'],
+      recipientId: privateMessage['recipient_id'],
+      conversationId: privateMessageView['conversation_id'],
       content: privateMessage['content'],
       deleted: privateMessage['deleted'],
       read: privateMessage['read'],

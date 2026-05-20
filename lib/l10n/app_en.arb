@@ -934,6 +934,10 @@
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
+  "directMessage": "Direct message",
+  "@directMessage": {
+    "description": "Title for the private message compose page"
+  },
   "disable": "Disable",
   "@disable": {
     "description": "Action for disabling something"
@@ -2613,11 +2617,19 @@
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
+  "selectRecipient": "Select recipient",
+  "@selectRecipient": {
+    "description": "Prompt to choose a private message recipient"
+  },
   "selectSearchType": "Select Search Type",
   "@selectSearchType": {},
   "selectText": "Select Text",
   "@selectText": {
     "description": "Post and comment action for selecting text"
+  },
+  "send": "Send",
+  "@send": {
+    "description": "Action to send content"
   },
   "sendBackgroundTestLocalNotification": "Send background test local notification",
   "@sendBackgroundTestLocalNotification": {

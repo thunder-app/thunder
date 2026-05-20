@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
@@ -86,11 +87,28 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
     );
   }
 
+  Future<void> _openPrivateMessageComposer() async {
+    final account = context.read<InboxBloc>().account;
+    final message = await navigateToCreatePrivateMessagePage(context, account: account);
+    if (!mounted || message == null) return;
+
+    final inboxBloc = context.read<InboxBloc>();
+    if (inboxBloc.account.id != account.id) return;
+
+    inboxBloc.add(InboxPrivateMessageSentEvent(message));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
     return Scaffold(
+      floatingActionButton: inboxType == InboxType.messages
+          ? FloatingActionButton(
+              onPressed: _openPrivateMessageComposer,
+              child: Icon(Icons.mail_rounded, semanticLabel: l10n.directMessage),
+            )
+          : null,
       body: BlocConsumer<InboxBloc, InboxState>(
         listener: (context, state) {
           if (state.status == InboxStatus.initial || state.status == InboxStatus.loading || state.status == InboxStatus.empty) {
@@ -171,6 +189,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                     bottom: TabBar(
                       controller: tabController,
                       onTap: (index) {
+                        setState(() {});
                         context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll));
                       },
                       tabs: [

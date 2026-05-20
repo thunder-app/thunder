@@ -796,6 +796,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get dimReadPosts => 'Ztmavit Přečtené Příspěvky';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Zrušit';
 
   @override
@@ -2266,10 +2269,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get selectLanguage => 'Vybrat Jazyk';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Vybrat Typ Vyhledávání';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

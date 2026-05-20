@@ -795,6 +795,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dimReadPosts => 'Okunmuş Gönderileri Soluklaştır';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Devre Dışı Bırak';
 
   @override
@@ -2277,10 +2280,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get selectLanguage => 'Dil Seç';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Arama Türünü Seç';
 
   @override
   String get selectText => 'Metni Seç';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

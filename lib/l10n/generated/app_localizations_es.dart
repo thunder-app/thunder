@@ -807,6 +807,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dimReadPosts => 'Publicaciones de lectura oscura';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Desactivar';
 
   @override
@@ -2314,10 +2317,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get selectLanguage => 'Selecciona el idioma';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Seleccione el tipo de la búsqueda';
 
   @override
   String get selectText => 'Seleccionar el texto';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

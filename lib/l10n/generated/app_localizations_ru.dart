@@ -801,6 +801,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Прочитанные сообщения будут выделены серым цветом';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Отключить';
 
   @override
@@ -2268,10 +2271,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get selectLanguage => 'Выберите язык';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Выберите тип поиска';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

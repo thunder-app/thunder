@@ -475,12 +475,50 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool unread = false,
     int? creatorId,
   }) async {
-    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
+    final json = await request(HttpMethod.get, '$basePath/private_message/list', {
+      'page': page,
+      'limit': limit,
+      'unread_only': unread,
+      'creator_id': creatorId,
+    });
+    return (json['private_messages'] as List).map<ThunderPrivateMessage>((pm) => ThunderPrivateMessage.fromLemmyPrivateMessageView(pm)).toList();
   }
 
   @override
   Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
-    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
+    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
+      'private_message_id': messageId,
+      'read': read,
+    });
+  }
+
+  @override
+  Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
+    final json = await request(HttpMethod.post, '$basePath/private_message', {
+      'recipient_id': recipientId,
+      'content': content,
+    });
+    return ThunderPrivateMessage.fromLemmyPrivateMessageView(json['private_message_view']);
+  }
+
+  @override
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
+    required int personId,
+    int? conversationId,
+    int? page,
+    int? limit,
+  }) async {
+    final messages = await getPrivateMessages(page: page, limit: limit);
+    final currentUserId = account.userId;
+
+    return messages.where((message) {
+      final creatorMatches = message.creatorId == personId;
+      final recipientMatches = message.recipientId == personId;
+      final sentByCurrentUser = currentUserId != null && message.creatorId == currentUserId;
+      final receivedByCurrentUser = currentUserId != null && message.recipientId == currentUserId;
+
+      return (creatorMatches && receivedByCurrentUser) || (recipientMatches && sentByCurrentUser);
+    }).toList();
   }
 
   // =============================================================

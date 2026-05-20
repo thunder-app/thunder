@@ -16,6 +16,7 @@ import 'package:thunder/src/features/instance/api.dart';
 import 'package:thunder/src/features/moderator/api.dart';
 import 'package:thunder/src/features/notification/api.dart';
 import 'package:thunder/src/features/post/api.dart';
+import 'package:thunder/src/features/private_message/api.dart';
 import 'package:thunder/src/features/search/api.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/api.dart';
@@ -162,6 +163,30 @@ CreateCommentCubit createCreateCommentCubit(Account account) {
     commentRepositoryFactory: (account) => CommentRepositoryImpl(account: account),
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     localizationService: const GlobalContextLocalizationService(),
+  );
+}
+
+CreatePrivateMessageCubit createCreatePrivateMessageCubit(Account account) {
+  return CreatePrivateMessageCubit(
+    account: account,
+    privateMessageRepository: (account) => PrivateMessageRepositoryImpl(account: account),
+    searchRepository: (account) => SearchRepositoryImpl(account: account),
+    localizationService: const GlobalContextLocalizationService(),
+  );
+}
+
+PrivateMessageThreadCubit createPrivateMessageThreadCubit(
+  Account account, {
+  required ThunderUser participant,
+  List<ThunderPrivateMessage> initialMessages = const <ThunderPrivateMessage>[],
+  int? conversationId,
+}) {
+  return PrivateMessageThreadCubit(
+    account: account,
+    participant: participant,
+    repository: PrivateMessageRepositoryImpl(account: account),
+    initialMessages: initialMessages,
+    conversationId: conversationId,
   );
 }
 

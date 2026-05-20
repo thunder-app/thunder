@@ -97,4 +97,26 @@ class InboxItemActionEvent extends InboxEvent {
   List<Object?> get props => [action, commentReplyId, personMentionId, privateMessageId, actionInput];
 }
 
+/// Adds or updates a sent private message in the current inbox state.
+class InboxPrivateMessageSentEvent extends InboxEvent {
+  const InboxPrivateMessageSentEvent(this.privateMessage);
+
+  /// The private message returned by the compose flow.
+  final ThunderPrivateMessage privateMessage;
+
+  @override
+  List<Object?> get props => [privateMessage];
+}
+
+/// Reconciles the inbox with the latest local state for an opened thread.
+class InboxPrivateMessageThreadUpdatedEvent extends InboxEvent {
+  const InboxPrivateMessageThreadUpdatedEvent(this.privateMessages);
+
+  /// Messages returned by the direct-message thread route.
+  final List<ThunderPrivateMessage> privateMessages;
+
+  @override
+  List<Object?> get props => [privateMessages];
+}
+
 class MarkAllAsReadEvent extends InboxEvent {}

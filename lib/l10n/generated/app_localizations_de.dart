@@ -801,6 +801,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dimReadPosts => 'Gelesene Posts ausgrauen';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Deaktivieren';
 
   @override
@@ -2304,10 +2307,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectLanguage => 'Sprache auswählen';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Suchart auswählen';
 
   @override
   String get selectText => 'Text auswählen';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

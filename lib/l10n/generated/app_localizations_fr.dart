@@ -811,6 +811,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dimReadPosts => 'Griser les publications lues.';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Désactiver';
 
   @override
@@ -2295,10 +2298,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectLanguage => 'Sélectionner la langue';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Sélectionner le type de recherche';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

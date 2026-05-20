@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -117,6 +118,7 @@ class _ActionChipsList extends StatelessWidget {
         if (isOwnProfile) _SavedActionChip(),
         _SortActionChip(),
         if (!isOwnProfile) _LabelActionChip(user: user),
+        if (isLoggedIn && !isOwnProfile) _MessageActionChip(user: user),
         if (isLoggedIn && !isOwnProfile && user.isAdmin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
@@ -174,6 +176,28 @@ class _SavedActionChipState extends State<_SavedActionChip> {
                 showSaved: showSaved,
               ),
             );
+      },
+    );
+  }
+}
+
+class _MessageActionChip extends StatelessWidget {
+  const _MessageActionChip({required this.user});
+
+  /// User to display actions for
+  final ThunderUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = GlobalContext.l10n;
+    final account = context.read<ProfileBloc>().state.account;
+
+    return ThunderActionChip(
+      icon: Icons.mail_rounded,
+      label: l10n.message(0),
+      onPressed: () {
+        HapticFeedback.mediumImpact();
+        navigateToCreatePrivateMessagePage(context, account: account, recipient: user);
       },
     );
   }

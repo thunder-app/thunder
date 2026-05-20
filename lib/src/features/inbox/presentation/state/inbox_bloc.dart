@@ -9,6 +9,7 @@ import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/features/private_message/domain/utils/private_message_thread_utils.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';
@@ -54,7 +55,43 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   void _init() {
     on<GetInboxEvent>(_getInboxEvent, transformer: restartable());
     on<InboxItemActionEvent>(_inboxItemActionEvent);
+    on<InboxPrivateMessageSentEvent>(_privateMessageSent);
+    on<InboxPrivateMessageThreadUpdatedEvent>(_privateMessageThreadUpdated);
     on<MarkAllAsReadEvent>(_markAllAsRead);
+  }
+
+  void _privateMessageSent(InboxPrivateMessageSentEvent event, Emitter<InboxState> emit) {
+    _upsertPrivateMessages([event.privateMessage], emit);
+  }
+
+  void _privateMessageThreadUpdated(InboxPrivateMessageThreadUpdatedEvent event, Emitter<InboxState> emit) {
+    _upsertPrivateMessages(event.privateMessages, emit);
+  }
+
+  void _upsertPrivateMessages(List<ThunderPrivateMessage> privateMessages, Emitter<InboxState> emit) {
+    if (privateMessages.isEmpty) return;
+
+    final updatedIds = privateMessages.map((privateMessage) => privateMessage.id).toSet();
+    final previousThreadUnreadCount = _privateMessageUnreadCount(state.privateMessages.where((privateMessage) => updatedIds.contains(privateMessage.id)));
+    final nextThreadUnreadCount = _privateMessageUnreadCount(privateMessages);
+    final unreadDelta = nextThreadUnreadCount - previousThreadUnreadCount;
+    final updatedPrivateMessages = [
+      ...privateMessages,
+      ...state.privateMessages.where((privateMessage) => !updatedIds.contains(privateMessage.id)),
+    ]..sort((a, b) => b.published.compareTo(a.published));
+
+    emit(state.copyWith(
+      status: InboxStatus.success,
+      privateMessages: cleanDeletedMessages(updatedPrivateMessages),
+      totalUnreadCount: (state.totalUnreadCount + unreadDelta).clamp(0, 1 << 31),
+      messagesUnreadCount: (state.messagesUnreadCount + unreadDelta).clamp(0, 1 << 31),
+      errorMessage: null,
+      errorReason: null,
+    ));
+  }
+
+  int _privateMessageUnreadCount(Iterable<ThunderPrivateMessage> privateMessages) {
+    return privateMessages.where((privateMessage) => !privateMessage.read && isIncomingPrivateMessage(privateMessage, account)).length;
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -108,7 +145,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             break;
           case InboxType.messages:
             privateMessagesResponse = await notificationRepository.messages(
-              unread: !event.showAll,
+              unread: false,
               limit: limit,
               page: 1,
             );
@@ -129,7 +166,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             );
 
             privateMessagesResponse = await notificationRepository.messages(
-              unread: !event.showAll,
+              unread: false,
               limit: limit,
               page: 1,
             );
@@ -194,7 +231,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         case InboxType.messages:
           if (state.hasReachedInboxPrivateMessageEnd) return;
           privateMessagesResponse = await notificationRepository.messages(
-            unread: state.showUnreadOnly,
+            unread: false,
             limit: limit,
             page: state.inboxPrivateMessagePage,
           );
@@ -341,11 +378,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               updatedMentions.removeAt(existingMentionIndex);
             }
           } else if (existingPrivateMessageView != null && existingPrivateMessageIndex != -1) {
-            if (!state.showUnreadOnly) {
-              updatedPrivateMessages[existingPrivateMessageIndex] = existingPrivateMessageView.copyWith(read: value);
-            } else if (value) {
-              updatedPrivateMessages.removeAt(existingPrivateMessageIndex);
-            }
+            updatedPrivateMessages[existingPrivateMessageIndex] = existingPrivateMessageView.copyWith(read: value);
           }
 
           if (existingCommentReplyView != null) {
@@ -571,7 +604,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         status: InboxStatus.success,
         replies: state.showUnreadOnly ? [] : updatedReplies,
         mentions: state.showUnreadOnly ? [] : updatedMentions,
-        privateMessages: state.showUnreadOnly ? [] : updatedPrivateMessages,
+        privateMessages: updatedPrivateMessages,
         totalUnreadCount: 0,
         repliesUnreadCount: 0,
         mentionsUnreadCount: 0,

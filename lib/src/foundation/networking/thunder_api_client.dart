@@ -430,6 +430,20 @@ abstract class ThunderApiClient {
   /// Mark a private message as read.
   Future<void> markPrivateMessageAsRead({required int messageId, required bool read});
 
+  /// Create a private message.
+  Future<ThunderPrivateMessage> createPrivateMessage({
+    required int recipientId,
+    required String content,
+  });
+
+  /// Get private messages for a conversation with a user.
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
+    required int personId,
+    int? conversationId,
+    int? page,
+    int? limit,
+  });
+
   // =============================================================
   // Account Settings
   // =============================================================

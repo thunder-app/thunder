@@ -1279,6 +1279,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   }
 
   // Private messages
+  @override
   Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
     final json = await request(HttpMethod.post, '$basePath/private_message', {
       'recipient_id': recipientId,

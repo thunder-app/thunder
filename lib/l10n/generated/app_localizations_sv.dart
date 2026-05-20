@@ -792,6 +792,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dimReadPosts => 'Dim Read Posts';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Disable';
 
   @override
@@ -2262,10 +2265,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get selectLanguage => 'Select Language';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Välj Söktyp';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

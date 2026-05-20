@@ -799,6 +799,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dimReadPosts => 'Przyciemnij Przeczytane Wpisy';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Wyłącz';
 
   @override
@@ -2269,10 +2272,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get selectLanguage => 'Wybierz język';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Wybierz Typ Wyszukiwania';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>

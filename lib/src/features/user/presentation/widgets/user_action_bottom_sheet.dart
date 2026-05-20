@@ -7,6 +7,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
@@ -22,6 +23,11 @@ enum UserBottomSheetAction {
   ),
   blockUser(
     icon: Icons.block_rounded,
+    permissionType: PermissionType.user,
+    requiresAuthentication: true,
+  ),
+  messageUser(
+    icon: Icons.mail_rounded,
     permissionType: PermissionType.user,
     requiresAuthentication: true,
   ),
@@ -59,6 +65,7 @@ enum UserBottomSheetAction {
   String get name => switch (this) {
         UserBottomSheetAction.viewProfile => GlobalContext.l10n.visitUserProfile,
         UserBottomSheetAction.blockUser => GlobalContext.l10n.blockUser,
+        UserBottomSheetAction.messageUser => GlobalContext.l10n.message(0),
         UserBottomSheetAction.unblockUser => GlobalContext.l10n.unblockUser,
         UserBottomSheetAction.addUserLabel => GlobalContext.l10n.addUserLabel,
         UserBottomSheetAction.banUserFromCommunity => GlobalContext.l10n.banFromCommunity,
@@ -146,6 +153,14 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         await userRepository.block(widget.user.id, true);
         showSnackbar(l10n.successfullyBlockedUser(widget.user.displayNameOrName));
         widget.onAction(UserAction.block, null);
+        break;
+      case UserBottomSheetAction.messageUser:
+        Navigator.of(context).pop();
+        Future.microtask(() {
+          if (widget.context.mounted) {
+            navigateToCreatePrivateMessagePage(widget.context, account: widget.account, recipient: widget.user);
+          }
+        });
         break;
       case UserBottomSheetAction.unblockUser:
         Navigator.of(context).pop();
@@ -266,7 +281,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();
     } else {
       if (widget.account.username == widget.user.name && widget.account.instance == fetchInstanceNameFromUrl(widget.user.actorId)) {
-        userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser).toList();
+        userActions = userActions.where((action) => action != UserBottomSheetAction.blockUser && action != UserBottomSheetAction.unblockUser && action != UserBottomSheetAction.messageUser).toList();
         moderatorActions = moderatorActions.where((action) => action != UserBottomSheetAction.addUserAsCommunityModerator && action != UserBottomSheetAction.removeUserAsCommunityModerator).toList();
       }
 
