@@ -4,27 +4,18 @@
         "description": "About settings category."
     },
     "accessibility": "Toegankelĳkheid",
-    "@accessibility": {},
     "actions": "Acties",
-    "@actions": {},
     "admin": "Administrator",
     "@admin": {
         "description": "Role name for admin"
     },
     "all": "Alles",
-    "@all": {},
     "always": "Altĳd",
-    "@always": {},
     "animations": "Animaties",
-    "@animations": {},
     "anonymous": "Anoniem",
-    "@anonymous": {},
     "applied": "Toegepast",
-    "@applied": {},
     "apply": "Toepassen",
-    "@apply": {},
     "back": "Terug",
-    "@back": {},
     "base": "Basis",
     "@base": {
         "description": "Description for base font scale"
@@ -34,7 +25,6 @@
         "description": "The color blue"
     },
     "close": "Sluiten",
-    "@close": {},
     "collapse": "Inklappen",
     "@collapse": {
         "description": "Action to collapse something"
@@ -52,17 +42,13 @@
         "description": "Describes a comfortable visual density"
     },
     "comment": "Opmerking",
-    "@comment": {},
     "commentBehaviourSettings": "Opmerkingen",
     "@commentBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
     },
     "comments": "Opmerkingen",
-    "@comments": {},
     "communities": "Gemeen­schappen",
-    "@communities": {},
     "community": "Gemeen­schap",
-    "@community": {},
     "advanced": "Geavanceerd",
     "@advanced": {
         "description": "Heading for advanced settings"
@@ -72,15 +58,12 @@
         "description": "The ability to accept an option"
     },
     "active": "Actief",
-    "@active": {},
     "add": "Toe­voegen",
-    "@add": {},
     "bold": "Vetgedrukt",
     "@bold": {
         "description": "Bold name thickness/weight"
     },
     "cancel": "Annuleren",
-    "@cancel": {},
     "bot": "Bot",
     "@bot": {
         "description": "Label for a bot user."
@@ -98,7 +81,6 @@
         "description": "User descriptor for accounts created on today's date"
     },
     "accountSettings": "Account­instellingen",
-    "@accountSettings": {},
     "actionColors": "Actie­kleuren",
     "@actionColors": {
         "description": "Setting heading for action colors"
@@ -108,19 +90,14 @@
         "description": "Action for adding a user label"
     },
     "addedCommunityToSubscriptions": "Geabonneerd op gemeenschap",
-    "@addedCommunityToSubscriptions": {},
     "allPosts": "Alle berichten",
-    "@allPosts": {},
     "appLanguage": "App-taal",
     "@appLanguage": {
         "description": "Language selection in settings."
     },
     "backButton": "Terug­knop",
-    "@backButton": {},
     "backToTop": "Terug naar boven",
-    "@backToTop": {},
     "blockInstance": "Instantie blokkeren",
-    "@blockInstance": {},
     "changePassword": "Wachtwoord wĳzigen",
     "@changePassword": {
         "description": "Label for action to change password"
@@ -138,17 +115,13 @@
         "description": "Label for the card view option in Setting -> Appearance -> Posts"
     },
     "unsubscribed": "Uitgeschreven",
-    "@unsubscribed": {},
     "url": "URL",
-    "@url": {},
     "user": "Gebruiker",
     "@user": {
         "description": "Role name for user"
     },
     "username": "Gebruikers­naam",
-    "@username": {},
     "users": "Gebruikers",
-    "@users": {},
     "video": "Video",
     "@video": {
         "description": "String for video "
@@ -162,7 +135,6 @@
         "description": "A positive status"
     },
     "addAccount": "Account toevoegen",
-    "@addAccount": {},
     "alternateSources": "Alternatieve bronnen",
     "@alternateSources": {
         "description": "Action for viewing a link from alternate sources"
@@ -176,7 +148,6 @@
         "description": "Title of Appearance in Settings -> Appearance"
     },
     "blockCommunity": "Gemeenschap blokkeren",
-    "@blockCommunity": {},
     "blockManagement": "Blokkade­beheer",
     "@blockManagement": {
         "description": "Setting for user, community, and instance block settings"
@@ -186,19 +157,14 @@
         "description": "Setting for user, community, and instance block settings"
     },
     "blockUser": "Gebruiker blokkeren",
-    "@blockUser": {},
     "blockedCommunities": "Geblokkeerde gemeenschappen",
-    "@blockedCommunities": {},
     "blockedInstances": "Geblokkeerde instanties",
-    "@blockedInstances": {},
     "blockedUsers": "Geblokkeerde gebruikers",
-    "@blockedUsers": {},
     "browserMode": "Koppelings­verwerking",
     "@browserMode": {
         "description": "Title for link handling setting (called browserMode internally)"
     },
     "changeSort": "Sortering wĳzigen",
-    "@changeSort": {},
     "clearCacheLabel": "Cache wissen",
     "@clearCacheLabel": {
         "description": "Label for action to clear cache in the dialog"
@@ -212,15 +178,12 @@
         "description": "Label for action to clear local user preferences in the dialog"
     },
     "clearSearch": "Zoek­opdrachten wissen",
-    "@clearSearch": {},
     "confirm": "Bevestigen",
     "@confirm": {
         "description": "Label for the confirm action in the dialog"
     },
     "controversial": "Controversieel",
-    "@controversial": {},
     "copy": "Kopiëren",
-    "@copy": {},
     "dark": "Donker",
     "@dark": {
         "description": "Describes using the dark theme"
@@ -230,11 +193,8 @@
         "description": "Default setting value (e.g., color)"
     },
     "delete": "Verwĳderen",
-    "@delete": {},
     "edit": "Bewerken",
-    "@edit": {},
     "empty": "Leeg",
-    "@empty": {},
     "expand": "Uitvouwen",
     "@expand": {
         "description": "Action to expand something"
@@ -256,11 +216,8 @@
         "description": "General settings category."
     },
     "gestures": "Gebaren",
-    "@gestures": {},
     "hot": "Populair",
-    "@hot": {},
     "image": "Afbeelding",
-    "@image": {},
     "imageCachingModeAggressiveShort": "Agressief",
     "@imageCachingModeAggressiveShort": {
         "description": "Short description for aggressive image caching mode"
@@ -270,7 +227,6 @@
         "description": "Short description for relaxed image caching mode"
     },
     "inbox": "Postvak IN",
-    "@inbox": {},
     "information": "Informatie",
     "@information": {
         "description": "Information heading - used in the FAB settings page"
@@ -332,7 +288,6 @@
         "description": "The color orange"
     },
     "overview": "Overzicht",
-    "@overview": {},
     "pending": "In behandeling",
     "@pending": {
         "description": "Describes the subscription status for 'Pending'"
@@ -342,15 +297,10 @@
         "description": "Describes a single post"
     },
     "postTitle": "Titel",
-    "@postTitle": {},
     "postURL": "URL",
-    "@postURL": {},
     "posts": "Berichten",
-    "@posts": {},
     "preview": "Voor­vertoning",
-    "@preview": {},
     "profiles": "Profielen",
-    "@profiles": {},
     "public": "Openbaar",
     "@public": {
         "description": "Public community visibility"
@@ -376,23 +326,14 @@
         "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
     },
     "restore": "Herstellen",
-    "@restore": {},
     "retry": "Opnieuw proberen",
-    "@retry": {},
     "save": "Opslaan",
-    "@save": {},
     "saved": "Opgeslagen",
-    "@saved": {},
     "scaled": "Geschaald",
-    "@scaled": {},
     "search": "Zoeken",
-    "@search": {},
     "settings": "Instellingen",
-    "@settings": {},
     "share": "Delen",
-    "@share": {},
     "sidebar": "Zĳbalk",
-    "@sidebar": {},
     "small": "Klein",
     "@small": {
         "description": "Description for small font scale"
@@ -414,17 +355,11 @@
         "description": "Status of the action"
     },
     "submit": "Indienen",
-    "@submit": {},
     "subscribe": "Abonneren",
-    "@subscribe": {},
     "subscribed": "Geabonneerd",
-    "@subscribed": {},
     "subscriptions": "Abonnementen",
-    "@subscriptions": {},
     "successfullyBlocked": "Geblokkeerd.",
-    "@successfullyBlocked": {},
     "successfullyUnblocked": "Gedeblokkeerd.",
-    "@successfullyUnblocked": {},
     "system": "Systeem",
     "@system": {
         "description": "Describes using the system settings for theme"
@@ -434,7 +369,6 @@
         "description": "The color teal"
     },
     "text": "Tekst",
-    "@text": {},
     "theme": "Thema",
     "@theme": {
         "description": "Setting for theme"
@@ -448,7 +382,6 @@
         "description": "Describes a thickness (e.g., divider)"
     },
     "top": "Beste",
-    "@top": {},
     "unifiedpush": "UnifiedPush",
     "@unifiedpush": {
         "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
@@ -462,7 +395,6 @@
         "description": "The action to hide a post"
     },
     "open": "Openen",
-    "@open": {},
     "linkHandlingExternalShort": "Extern",
     "@linkHandlingExternalShort": {
         "description": "Short description for external link handling"
@@ -480,15 +412,12 @@
         "description": "Label for email input"
     },
     "navigation": "Navigatie",
-    "@navigation": {},
     "on": "aan",
-    "@on": {},
     "disable": "Uitschakelen",
     "@disable": {
         "description": "Action for disabling something"
     },
     "feed": "Feed",
-    "@feed": {},
     "nsfw": "NSFW",
     "@nsfw": {
         "description": "Short description for NSFW label"
@@ -502,7 +431,6 @@
         "description": "Expanded post body view type"
     },
     "new_": "Nieuw",
-    "@new_": {},
     "feedBehaviourSettings": "Feed",
     "@feedBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
@@ -520,15 +448,12 @@
         "description": "Describes the state of something that is disabled"
     },
     "never": "Nooit",
-    "@never": {},
     "postBehaviourSettings": "Berichten",
     "@postBehaviourSettings": {
         "description": "Subcategory in Setting -> General"
     },
     "refresh": "Vernieuwen",
-    "@refresh": {},
     "local": "Lokaal",
-    "@local": {},
     "none": "Geen",
     "@none": {
         "description": "Describes the notification type when push notifications are disabled"
@@ -558,25 +483,19 @@
         "description": "Subcategory in Setting -> General"
     },
     "old": "Oud",
-    "@old": {},
     "off": "uit",
-    "@off": {},
     "offline": "offline",
     "@offline": {
         "description": "Describes a service that is unavailable"
     },
     "ok": "Oké",
-    "@ok": {},
     "password": "Wacht­woord",
-    "@password": {},
     "unsubscribe": "Uitschrĳven",
-    "@unsubscribe": {},
     "addDiscussionLanguage": "Taal toevoegen",
     "@addDiscussionLanguage": {
         "description": "Hint for text field to add language"
     },
     "remove": "Verwĳderen",
-    "@remove": {},
     "upvote": "Upvoten",
     "@upvote": {
         "description": "Action for upvoting a post/comment"
@@ -618,7 +537,6 @@
         "description": "Describes the action to collapse information - used in FAB settings"
     },
     "collapsePost": "Bericht inklappen",
-    "@collapsePost": {},
     "collapseSpoiler": "Spoiler inklappen",
     "@collapseSpoiler": {
         "description": "Label for collapsing spoiler"
@@ -664,7 +582,6 @@
         "description": "Action for copying selected text"
     },
     "copyText": "Tekst kopiëren",
-    "@copyText": {},
     "countComments": "{count} opmerkingen",
     "@countComments": {
         "description": "Number of comments"
@@ -678,11 +595,8 @@
         "description": "Number of users active in the last month"
     },
     "createComment": "Opmerking plaatsen",
-    "@createComment": {},
     "createPost": "Bericht plaatsen",
-    "@createPost": {},
     "crossPostedTo": "Gekruisplaatst naar",
-    "@crossPostedTo": {},
     "dangerZone": "Gevaren­zone",
     "@dangerZone": {
         "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
@@ -708,7 +622,6 @@
         "description": "Only load posts and communities in your language(s)"
     },
     "dismissRead": "Gelezen items afwĳzen",
-    "@dismissRead": {},
     "dividerAppearance": "Verdeler­weergave",
     "@dividerAppearance": {
         "description": "Divider appearance category"
@@ -718,13 +631,9 @@
         "description": "Name of downvote color setting"
     },
     "editComment": "Opmerking bewerken",
-    "@editComment": {},
     "emptyInbox": "Postvak IN legen",
-    "@emptyInbox": {},
     "endSearch": "Stoppen met zoeken",
-    "@endSearch": {},
     "expandOptions": "Opties uitvouwen",
-    "@expandOptions": {},
     "experimentalFeatures": "Experimentele functies",
     "@experimentalFeatures": {
         "description": "Name of setting for experimental features"
@@ -758,7 +667,6 @@
         "description": "Number of posts"
     },
     "createAccount": "Account aan­maken",
-    "@createAccount": {},
     "displayName": "Weergave­naam",
     "@displayName": {
         "description": "Label for display name"
@@ -792,7 +700,6 @@
         "description": "Title when editing a post."
     },
     "expandPost": "Bericht uitvouwen",
-    "@expandPost": {},
     "expandSpoiler": "Spoiler uitvouwen",
     "@expandSpoiler": {
         "description": "Label for expanding spoiler"
@@ -802,13 +709,11 @@
         "description": "Confirmation title message for deleting an image"
     },
     "hidePassword": "Wachtwoord verbergen",
-    "@hidePassword": {},
     "hideThumbnails": "Miniaturen verbergen",
     "@hideThumbnails": {
         "description": "Option to hide thumbnails in feed"
     },
     "includeImage": "Afbeelding bĳvoegen",
-    "@includeImage": {},
     "lockPost": "Bericht vergrendelen",
     "@lockPost": {
         "description": "Action for locking a post (moderator action)"
@@ -818,7 +723,6 @@
         "description": "Describes the notification type for Local Notifications"
     },
     "localPosts": "Lokale berichten",
-    "@localPosts": {},
     "noItems": "Geen items",
     "@noItems": {
         "description": "Generic text when there are no items"
@@ -832,7 +736,6 @@
         "description": "Describes a given set of actions that can be performed on a post"
     },
     "gettingStarted": "Aan de slag",
-    "@gettingStarted": {},
     "hideColor": "Kleur verbergen",
     "@hideColor": {
         "description": "Name of the hide color setting"
@@ -842,27 +745,18 @@
         "description": "Category for settings related to import and export."
     },
     "includeCommunity": "Gemeen­schap bĳvoegen",
-    "@includeCommunity": {},
     "includeText": "Tekst bĳvoegen",
-    "@includeText": {},
     "includeTitle": "Titel bĳvoegen",
-    "@includeTitle": {},
     "localOnly": "Enkel lokaal",
     "@localOnly": {
         "description": "Local community visibility"
     },
     "loginSucceeded": "Ingelogd.",
-    "@loginSucceeded": {},
     "manageAccounts": "Accounts beheren",
-    "@manageAccounts": {},
     "mostComments": "Meeste opmerkingen",
-    "@mostComments": {},
     "navigateDown": "Volgende opmerking",
-    "@navigateDown": {},
     "navigateUp": "Vorige opmerking",
-    "@navigateUp": {},
     "newComments": "Nieuwe opmerkingen",
-    "@newComments": {},
     "newPost": "Nieuw bericht",
     "@newPost": {
         "description": "Setting for new post"
@@ -872,7 +766,6 @@
         "description": "Message for no subscriptions on the drawer"
     },
     "onWifi": "Op wifi",
-    "@onWifi": {},
     "openSettings": "Instellingen openen",
     "@openSettings": {
         "description": "Prompt for the user to open system settings"
@@ -882,7 +775,6 @@
         "description": "Placeholder text for loading"
     },
     "logOut": "Uitloggen",
-    "@logOut": {},
     "hidCommunity": "Heeft gemeen­schap verborgen",
     "@hidCommunity": {
         "description": "Short decription for moderator action to hide a community"
@@ -900,11 +792,8 @@
         "description": "Subcategory in Settings -> Filters"
     },
     "linkActions": "Link­acties",
-    "@linkActions": {},
     "openInstance": "Instantie openen",
-    "@openInstance": {},
     "postTogglePreview": "Voor­vertoning omschakelen",
-    "@postTogglePreview": {},
     "profileBio": "Profiel­biografie",
     "@profileBio": {
         "description": "Setting for profile bio"
@@ -914,7 +803,6 @@
         "description": "Toggle to reduce animations."
     },
     "refreshContent": "Inhoud verversen",
-    "@refreshContent": {},
     "noMentions": "Geen vermeldingen",
     "@noMentions": {
         "description": "Label for when there are no person mentions in the list"
@@ -940,7 +828,6 @@
         "description": "Short description for custom tabs link handling"
     },
     "login": "Inloggen",
-    "@login": {},
     "matrixUser": "Matrix­gebruiker",
     "@matrixUser": {
         "description": "Label for Matrix user id"
@@ -962,7 +849,6 @@
         "description": "Label for when there are no messages in the inbox"
     },
     "postBody": "Bericht­inhoud",
-    "@postBody": {},
     "pureBlack": "Puur zwart",
     "@pureBlack": {
         "description": "Describes using the pure black theme"
@@ -972,15 +858,12 @@
         "description": "Setting for push notifications"
     },
     "removeAccount": "Account verwĳderen",
-    "@removeAccount": {},
     "originalPoster": "Originele plaatser",
     "@originalPoster": {
         "description": "Label for the original poster."
     },
     "removeInstance": "Instantie verwĳderen",
-    "@removeInstance": {},
     "resetPreferences": "Voorkeuren resetten",
-    "@resetPreferences": {},
     "restorePost": "Bericht herstellen",
     "@restorePost": {
         "description": "Action to restore a post (moderator action)"
@@ -998,7 +881,6 @@
         "description": "Heading for sharing a community"
     },
     "sortBy": "Sorteren op",
-    "@sortBy": {},
     "themeAccentColor": "Accent­kleuren",
     "@themeAccentColor": {
         "description": "Setting for theme accent color"
@@ -1032,7 +914,6 @@
         "description": "The total score of post or comment"
     },
     "xUpvotes": "{x} upvotes",
-    "@xUpvotes": {},
     "manageMedia": "Media beheren",
     "@manageMedia": {
         "description": "Setting name and page title for media management"
@@ -1054,7 +935,6 @@
         "description": "Short decription for moderator action to remove a post"
     },
     "reportComment": "Opmerking rapporteren",
-    "@reportComment": {},
     "reportPost": "Bericht rapporteren",
     "@reportPost": {
         "description": "Action to report a post (moderator action)"
@@ -1064,21 +944,17 @@
         "description": "Short decription for moderator action to restore a comment"
     },
     "searchTerm": "Zoek­term",
-    "@searchTerm": {},
     "shareImage": "Afbeelding delen",
     "@shareImage": {
         "description": "Action for sharing an image"
     },
     "showMore": "Meer tonen",
-    "@showMore": {},
     "showPassword": "Wacht­woord tonen",
-    "@showPassword": {},
     "successfullyBannedUser": "{username} verbannen",
     "@successfullyBannedUser": {
         "description": "Notification for successfully banning a user"
     },
     "successfullyBlockedCommunity": "{communityName} geblokkeerd",
-    "@successfullyBlockedCommunity": {},
     "successfullyBlockedUser": "{username} geblokkeerd",
     "@successfullyBlockedUser": {
         "description": "Notification for successfully blocking a user"
@@ -1092,11 +968,8 @@
         "description": "Notification for successfully unblocking a user"
     },
     "topWeek": "Beste afgelopen week",
-    "@topWeek": {},
     "topYear": "Beste afgelopen jaar",
-    "@topYear": {},
     "trendingCommunities": "Trending gemeen­schappen",
-    "@trendingCommunities": {},
     "unblockCommunity": "Blokkering van gemeen­schap opheffen",
     "@unblockCommunity": {
         "description": "Action to unblock a community"
@@ -1114,9 +987,7 @@
         "description": "Action for viewing original text (as opposed to raw markdown)"
     },
     "visitCommunity": "Gemeenschap bezoeken",
-    "@visitCommunity": {},
     "uploadImage": "Afbeelding uploaden",
-    "@uploadImage": {},
     "upvoteColor": "Upvote-kleur",
     "@upvoteColor": {
         "description": "Name of upvote color setting"
@@ -1162,15 +1033,12 @@
         "description": "Option to always autoplay videos"
     },
     "addAnonymousInstance": "Anonieme instantie toevoegen",
-    "@addAnonymousInstance": {},
     "addedInstanceMod": "Instantie­moderator toegevoegd",
     "@addedInstanceMod": {
         "description": "Short decription for moderator action to add a mod to an instance"
     },
     "andXMore": "en nog {count}",
-    "@andXMore": {},
     "alreadyPostedTo": "Al geplaatst in",
-    "@alreadyPostedTo": {},
     "banFromCommunity": "Verbannen van gemeen­schap",
     "@banFromCommunity": {
         "description": "Moderator action to ban a user from a community"
@@ -1216,9 +1084,7 @@
         "description": "Action to save the application settings."
     },
     "searchComments": "Opmerkingen zoeken",
-    "@searchComments": {},
     "searchInstance": "{instance} doorzoeken",
-    "@searchInstance": {},
     "selectAll": "Alles selecteren",
     "@selectAll": {
         "description": "Action for selecting all text"
@@ -1232,11 +1098,8 @@
         "description": "Heading for sharing a user"
     },
     "showAll": "Alles tonen",
-    "@showAll": {},
     "showLess": "Minder tonen",
-    "@showLess": {},
     "successfullyUnblockedCommunity": "Blokkering van {communityName} opgeheven",
-    "@successfullyUnblockedCommunity": {},
     "suggestedTitle": "Voor­gestelde titel",
     "@suggestedTitle": {
         "description": "Suggested title for the post."
@@ -1266,23 +1129,18 @@
         "description": "Post field for adding a custom thumbnail to the post"
     },
     "toggelRead": "Gelezen omschakelen",
-    "@toggelRead": {},
     "topDay": "Beste vandaag",
-    "@topDay": {},
     "topMonth": "Beste afgelopen maand",
-    "@topMonth": {},
     "unbannedUser": "Verbanning van gebruiker opgeheven",
     "@unbannedUser": {
         "description": "Short decription for moderator action to unban a user"
     },
     "unexpectedError": "Onverwachte fout",
-    "@unexpectedError": {},
     "unlockPost": "Bericht ontgrendelen",
     "@unlockPost": {
         "description": "Action for unlocking a post (moderator action)"
     },
     "totp": "TOTP (optioneel)",
-    "@totp": {},
     "cardPostCardMetadataItems": "Meta­gegevens in kaart­weergave",
     "@cardPostCardMetadataItems": {
         "description": "Name of setting for card post card metadata items"
@@ -1292,7 +1150,6 @@
         "description": "Short decription for moderator action to transfer a community"
     },
     "sortOptions": "Sorteer­instellingen",
-    "@sortOptions": {},
     "successfullyUnbannedUser": "Verbanning van {username} opgeheven",
     "@successfullyUnbannedUser": {
         "description": "Notification for successfully unbanning a user"
@@ -1314,9 +1171,7 @@
         "description": "Action for deleting a comment"
     },
     "xDownvotes": "{x} downvotes",
-    "@xDownvotes": {},
     "readAll": "Alles lezen",
-    "@readAll": {},
     "readerMode": "Lezer­modus",
     "@readerMode": {
         "description": "Menu item for toggling reader mode"
@@ -1342,7 +1197,6 @@
         "description": "Post and comment action for selecting text"
     },
     "shareMedia": "Media delen",
-    "@shareMedia": {},
     "unblockUser": "Blokkering van gebruiker opheffen",
     "@unblockUser": {
         "description": "Action to unblock a user"
@@ -1352,7 +1206,6 @@
         "description": "Short decription for moderator action to unlock a post"
     },
     "visitInstance": "Instantie bezoeken",
-    "@visitInstance": {},
     "viewAll": "Alles bekĳken",
     "@viewAll": {
         "description": "A title for viewing all of something (e.g., instances)"
@@ -1362,7 +1215,6 @@
         "description": "Message shown to user when account settings are imported successfully"
     },
     "accessibilityProfilesDescription": "Met toegankelĳkheids­profielen kunt u meerdere instellingen tegelĳk toepassen om aan een specifieke toegankelĳkheids­vereiste te voldoen.",
-    "@accessibilityProfilesDescription": {},
     "accountSettingOverrideWarning": "Uw account­instellingen hebben voorrang op de volgende instellingen",
     "@accountSettingOverrideWarning": {
         "description": "Warning for account settings override"
@@ -1460,7 +1312,6 @@
         "description": "Action for unblocking an item"
     },
     "endOfComments": "Einde van de opmerkingen",
-    "@endOfComments": {},
     "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     "@placeholderText": {
         "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
@@ -1470,9 +1321,7 @@
         "description": "Setting for choosing push notification server"
     },
     "reachedTheBottom": "Geen items meer om te laden",
-    "@reachedTheBottom": {},
     "reducesAnimations": "Vermindert de animaties die in Thunder worden gebruikt",
-    "@reducesAnimations": {},
     "pinned": "Vastgepind",
     "@pinned": {
         "description": "Status to indicate that an item has been pinned"
@@ -1490,11 +1339,8 @@
         "description": "Action for hiding something permanently"
     },
     "searchPostSearchType": "Selecteer zoektype voor berichten",
-    "@searchPostSearchType": {},
     "selectSearchType": "Selecteer zoektype",
-    "@selectSearchType": {},
     "noInstanceBlocks": "Er zĳn geen geblokkeerde instanties.",
-    "@noInstanceBlocks": {},
     "noProfileBioSet": "Geen profiel­biografie ingesteld",
     "@noProfileBioSet": {
         "description": "Message for no profile bio set"
@@ -1524,9 +1370,7 @@
         "description": "Toggle to hide NSFW posts from the feed."
     },
     "noPostsFound": "Er zĳn geen berichten gevonden.",
-    "@noPostsFound": {},
     "postSavedAsDraft": "Bericht opgeslagen als concept",
-    "@postSavedAsDraft": {},
     "postShowUserInstance": "Gebruikers­instantie tonen",
     "@postShowUserInstance": {
         "description": "Whether to show the user instance for post listings"
@@ -1576,15 +1420,10 @@
         "description": "An account descriptor representing how old an account is"
     },
     "reply": "{count, plural, one {Reactie} other {Reacties}}",
-    "@reply": {},
     "unableToLoadReplies": "Kan niet meer reacties laden.",
-    "@unableToLoadReplies": {},
     "loadMorePlural": "Nog {count} reacties laden…",
-    "@loadMorePlural": {},
     "message": "{count, plural, one {Bericht} other {Berichten}}",
-    "@message": {},
     "mention": "{count, plural, one {Vermelding} other {Vermeldingen}}",
-    "@mention": {},
     "markAllAsRead": "Alles als gelezen markeren",
     "@markAllAsRead": {
         "description": "The mark all as read action"
@@ -1626,7 +1465,6 @@
         "description": "Settings toggle to display user instance alongside their display name in comments"
     },
     "downvotesDisabled": "Downvotes zĳn uitgeschakeld op deze instantie.",
-    "@downvotesDisabled": {},
     "errorNoActiveInstance": "Geen actieve instantie gevonden",
     "@errorNoActiveInstance": {
         "description": "Error message for no active instance found"
@@ -1636,7 +1474,6 @@
         "description": "Heading for an instance"
     },
     "instanceHasAlreadyBenAdded": "{instance} is al toegevoegd.",
-    "@instanceHasAlreadyBenAdded": {},
     "instanceNameColor": "Kleur van instantie­naam",
     "@instanceNameColor": {
         "description": "Setting for instance name color"
@@ -1654,9 +1491,7 @@
         "description": "Action for viewing a post as a different account"
     },
     "createNewCrossPost": "Nieuw kruis­bericht maken",
-    "@createNewCrossPost": {},
     "visitUserProfile": "Gebruikers­profiel bezoeken",
-    "@visitUserProfile": {},
     "visitUserInstance": "Gebruikers­instantie bezoeken",
     "@visitUserInstance": {
         "description": "Action to visit the instance of a user"
@@ -1670,7 +1505,6 @@
         "description": "Menu item for viewing a comment's source"
     },
     "viewAllComments": "Alle opmerkingen tonen",
-    "@viewAllComments": {},
     "videoDefaultPlaybackSpeed": "Standaard­afspeelsnelheid",
     "@videoDefaultPlaybackSpeed": {
         "description": "Option to select the default video playback Speed"
@@ -1680,7 +1514,6 @@
         "description": "Floating Action Button settings category."
     },
     "tapToExit": "Ga nogmaals terug om af te sluiten",
-    "@tapToExit": {},
     "accountSwitchPostNotFound": "Het geselecteerde bericht is niet gevonden op ‘{instance}’",
     "@accountSwitchPostNotFound": {
         "description": "Error message for when we couldn't resolve post to reply to",
@@ -1695,7 +1528,6 @@
         "description": "Redirect hint to action colors"
     },
     "addAccountToSeeProfile": "Log in om uw account te bekĳken.",
-    "@addAccountToSeeProfile": {},
     "addAsCommunityModerator": "Toevoegen als gemeenschaps­moderator",
     "@addAsCommunityModerator": {
         "description": "Moderator action to add a user as community moderator"
@@ -1756,11 +1588,8 @@
         }
     },
     "cannotReportOwnComment": "U kunt uw eigen opmerking niet rapporteren.",
-    "@cannotReportOwnComment": {},
     "cantBlockAdmin": "U kunt een instantie­beheerder niet blokkeren.",
-    "@cantBlockAdmin": {},
     "cantBlockYourself": "U kunt zichzelf niet blokkeren.",
-    "@cantBlockYourself": {},
     "cardViewDescription": "Schakel kaart­weergave in om instellingen aan te passen",
     "@cardViewDescription": {
         "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
@@ -1795,9 +1624,7 @@
         "description": "Message indicating that cache was cleared successfully"
     },
     "clearedDatabase": "Lokale database gewist. Start Thunder opnieuw op om de nieuwe wĳzigingen door te voeren.",
-    "@clearedDatabase": {},
     "clearedUserPreferences": "Alle gebruikers­voorkeuren gewist",
-    "@clearedUserPreferences": {},
     "collapseParentCommentBodyOnGesture": "Boven­liggende opmerking verbergen wanneer ingeklapt",
     "@collapseParentCommentBodyOnGesture": {
         "description": "Toggle to collapse parent comment body on gesture."
@@ -1827,9 +1654,7 @@
         "description": "Label for setting to combine comment scores"
     },
     "combineNavAndFab": "Zwevende actie­knop en navigatie­knoppen combineren",
-    "@combineNavAndFab": {},
     "combineNavAndFabDescription": "Zwevende actie­knop wordt getoond tussen de navigatie­knoppen.",
-    "@combineNavAndFabDescription": {},
     "commentFontScale": "Lettertype­schaal van opmerkings­inhoud",
     "@commentFontScale": {
         "description": "Setting for comment font scale"
@@ -1839,17 +1664,13 @@
         "description": "Description for the comment preview in Setting -> Appearance -> Comments"
     },
     "commentReported": "De opmerking is gemarkeerd voor beoordeling.",
-    "@commentReported": {},
     "commentSavedAsDraft": "Opmerking opgeslagen als concept",
-    "@commentSavedAsDraft": {},
     "commentSortType": "Sorteer­type voor opmerkingen",
-    "@commentSortType": {},
     "commentSwipeActions": "Veeg­acties voor opmerkingen",
     "@commentSwipeActions": {
         "description": "Setting for comment swipe actions"
     },
     "commentSwipeGesturesHint": "Wilt u liever knoppen gebruiken? Schakel ze in onder opmerkingen van de algemene instellingen.",
-    "@commentSwipeGesturesHint": {},
     "communityNameColor": "Kleur van gemeenschaps­naam",
     "@communityNameColor": {
         "description": "Setting for community name color"
@@ -1932,7 +1753,6 @@
         }
     },
     "copiedToClipboard": "Gekopieerd naar klembord",
-    "@copiedToClipboard": {},
     "countLocalSubscribers": "{count} lokale abonnees",
     "@countLocalSubscribers": {
         "description": "Number of local subscribers",
@@ -2074,9 +1894,7 @@
         "description": "Overall name of setting for importing or exporting the db (for searching)"
     },
     "includeExternalLink": "Externe link opnemen",
-    "@includeExternalLink": {},
     "includePostLink": "Bericht­link opnemen",
-    "@includePostLink": {},
     "leftLongSwipe": "Lange veeg naar links",
     "@leftLongSwipe": {
         "description": "Setting for left long swipe"
@@ -2098,17 +1916,13 @@
         "description": "Setting for metadata font scale"
     },
     "couldNotDetermineCommentDelete": "Fout: Kon het bericht om de opmerking te verwĳderen niet bepalen.",
-    "@couldNotDetermineCommentDelete": {},
     "couldNotDeterminePostComment": "Fout: Kon het bericht om de opmerking bij te plaatsen niet bepalen.",
-    "@couldNotDeterminePostComment": {},
     "couldntCreateReport": "Uw opmerkings­rapport kon op dit moment niet worden verzonden. Probeer het later opnieuw",
-    "@couldntCreateReport": {},
     "couldntFindPost": "Het opgevraagde bericht kan niet worden geladen. Het is mogelijk verwĳderd.",
     "@couldntFindPost": {
         "description": "Error message for when we can't load a post."
     },
     "currentLongPress": "Momenteel ingesteld als lang indrukken",
-    "@currentLongPress": {},
     "currentNotificationsMode": "Huidige meldings­modus: {mode}",
     "@currentNotificationsMode": {
         "description": "A status indicator for the current notifications mode",
@@ -2119,9 +1933,7 @@
         }
     },
     "currentSinglePress": "Momenteel ingesteld als één keer drukken",
-    "@currentSinglePress": {},
     "customizeSwipeActions": "Veeg­acties aan­passen (druk om te wĳzigen)",
-    "@customizeSwipeActions": {},
     "databaseExportWarning": "De data­base kan gevoelige informatie bevatten met betrekking tot uw Lemmy-account. Als u deze exporteert, deel deze dan met niemand. Wilt u doorgaan?",
     "@databaseExportWarning": {
         "description": "Message shown to the user when exporting the db"
@@ -2167,9 +1979,7 @@
         "description": "Option to show bot accounts."
     },
     "noCommunityBlocks": "Geen geblokkeerde gemeen­schappen",
-    "@noCommunityBlocks": {},
     "noUserBlocks": "Geen geblokkeerde gebruikers.",
-    "@noUserBlocks": {},
     "exportLemmyAccountSettingsDescription": "Lemmy-account­instellingen exporteren",
     "@exportLemmyAccountSettingsDescription": {
         "description": "Description for setting related to Lemmy account settings export"
@@ -2187,7 +1997,6 @@
         "description": "Subtitle for Lemmy account settings import/export section"
     },
     "languageFilters": "Op zoek naar taal­filters?",
-    "@languageFilters": {},
     "lookingForAccountSpecificFeedSettings": "Op zoek naar account­specifieke feed­instellingen?",
     "@lookingForAccountSpecificFeedSettings": {
         "description": "Helper setting which navigates to account page"
@@ -2222,9 +2031,7 @@
         "description": "Setting for navbar swipe gestures"
     },
     "noCommentsFound": "Geen opmerkingen gevonden",
-    "@noCommentsFound": {},
     "noCommunitiesFound": "Geen gemeenschappen gevonden",
-    "@noCommunitiesFound": {},
     "noEmailSet": "Geen e-mail ingesteld",
     "@noEmailSet": {
         "description": "Message for no email set"
@@ -2234,19 +2041,14 @@
         "description": "Message for no favorited communities on the drawer"
     },
     "noResultsFound": "Geen resultaten gevonden.",
-    "@noResultsFound": {},
     "noUsersFound": "Geen gebruikers gevonden.",
-    "@noUsersFound": {},
     "nothingToShare": "Niets om te delen",
-    "@nothingToShare": {},
     "openAccountSwitcher": "Account­wisselaar openen",
-    "@openAccountSwitcher": {},
     "openByDefault": "Standaard openen",
     "@openByDefault": {
         "description": "Indicating the default behavior of opening links."
     },
     "openInBrowser": "Openen in browser",
-    "@openInBrowser": {},
     "pinToCommunity": "Vastpinnen in gemeenschap",
     "@pinToCommunity": {
         "description": "Setting for pinning a post to a community (moderator action)"
@@ -2292,9 +2094,7 @@
         "description": "Confirmation message for deleting a label"
     },
     "deselectUndeterminedWarning": "Als u ‘Onbepaald’ deselecteert, zult u de meeste inhoud niet zien.",
-    "@deselectUndeterminedWarning": {},
     "discussionLanguagesTooltip": "Inhoud wordt gefilterd op de geselecteerde talen.",
-    "@discussionLanguagesTooltip": {},
     "displayUserScore": "Gebruikers­scores (karma) weergeven.",
     "@displayUserScore": {
         "description": "Option for displaying user scores or karma."
@@ -2304,7 +2104,6 @@
         "description": "Tell the user we don't currently support multiple UnifiedPush apps"
     },
     "downloadingMedia": "Bezig met downloaden van media om te delen…",
-    "@downloadingMedia": {},
     "emptyUri": "De koppeling is leeg. Geef een geldige dynamische koppeling op om door te gaan.",
     "@emptyUri": {
         "description": "Error message for empty link."
@@ -2436,7 +2235,6 @@
         "description": "Subcategory in Setting -> General"
     },
     "fetchAccountError": "Kon account niet bepalen",
-    "@fetchAccountError": {},
     "floatingActionButtonInformation": "Thunder heeft een volledig aanpasbare zwevende actie­knop die een aantal gebaren ondersteunt.\n- Veeg omhoog om extra acties weer te geven\n- Veeg omlaag/omhoog om de zwevende actie­knop te verbergen of weer te geven\n\nHoud één van onderstaande acties lang ingedrukt om de hoofd- en secundaire acties aan te passen.",
     "@floatingActionButtonInformation": {
         "description": "Description of the FAB in the settings page"
@@ -2454,7 +2252,6 @@
         "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
     },
     "fullScreenNavigationSwipeDescription": "Veeg ergens om terug te gaan als links-naar-rechts-gebaren zĳn uitgeschakeld",
-    "@fullScreenNavigationSwipeDescription": {},
     "guestModeFeedSettings": "Feed-instellingen voor gastmodus",
     "@guestModeFeedSettings": {
         "description": "Feed settings for guest accounts"
@@ -2496,7 +2293,6 @@
         }
     },
     "internetOrInstanceIssues": "U bent mogelijk niet verbonden met het internet of uw instantie is momenteel niet beschikbaar.",
-    "@internetOrInstanceIssues": {},
     "invalidUrl": "Ongeldige URL-indeling",
     "@invalidUrl": {
         "description": "Error message for invalid URL format"
@@ -2549,9 +2345,7 @@
         }
     },
     "loginToPerformAction": "U dient ingelogd te zĳn om deze taak uit te voeren.",
-    "@loginToPerformAction": {},
     "loginToSeeInbox": "Log in om uw postvak IN te bekijken",
-    "@loginToSeeInbox": {},
     "malformedUri": "De opgegeven koppeling heeft een niet-ondersteunde indeling. Zorg ervoor dat het een geldige koppeling is.",
     "@malformedUri": {
         "description": "Error related to unsupported link format."
@@ -2565,7 +2359,6 @@
         "description": "Toggle to mark posts as read as you scroll past them in the feed."
     },
     "missingErrorMessage": "Geen foutmelding beschikbaar",
-    "@missingErrorMessage": {},
     "modAddCommunity": "Moderators toevoegen aan/verwĳderen uit gemeen­schappen",
     "@modAddCommunity": {
         "description": "Description for modlog filter for actions that add moderators to communities"
@@ -2584,11 +2377,8 @@
         }
     },
     "mustBeLoggedIn": "U dient ingelogd te zĳn",
-    "@mustBeLoggedIn": {},
     "mustBeLoggedInComment": "U dient ingelogd te zĳn om een opmerking te plaatsen",
-    "@mustBeLoggedInComment": {},
     "mustBeLoggedInPost": "U dient ingelogd te zĳn om een bericht te plaatsen",
-    "@mustBeLoggedInPost": {},
     "navbarDoubleTapGestures": "Dubbel-tik-gebaren voor navigatie­balk",
     "@navbarDoubleTapGestures": {
         "description": "Setting for navbar double tap gestures"
@@ -2651,7 +2441,6 @@
         }
     },
     "notValidUrl": "Geen geldige URL",
-    "@notValidUrl": {},
     "notifications": "{count, plural, one {Melding} other {Meldingen}}",
     "@notifications": {
         "description": "Message formatting for notifications count.",
@@ -2674,7 +2463,6 @@
         "description": "Warning for NSFW posts"
     },
     "onlyModsCanPostInCommunity": "Alleen moderators mogen berichten plaatsen in deze gemeenschap",
-    "@onlyModsCanPostInCommunity": {},
     "openLinksInExternalBrowser": "Koppelingen openen in externe browser",
     "@openLinksInExternalBrowser": {
         "description": "Toggle to open links in an external browser."
@@ -2733,25 +2521,21 @@
         "description": "Notifying the user that their post was created successfully"
     },
     "postLocked": "Bericht vergrendeld. Geen reacties toegestaan.",
-    "@postLocked": {},
     "postMetadataInstructions": "U kunt de metadata-informatie aanpassen door de gewenste informatie te slepen en neer te zetten",
     "@postMetadataInstructions": {
         "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
     },
     "postNSFW": "Markeren als NSFW",
-    "@postNSFW": {},
     "postPreview": "Toon een voorbeeld van het bericht met de opgegeven instellingen",
     "@postPreview": {
         "description": "Description for the post preview in Setting -> Appearance -> Posts"
     },
     "postSwipeGesturesHint": "Wilt u liever knoppen gebruiken? Wĳzig welke knoppen worden weergegeven op berichtkaarten in de algemene instellingen.",
-    "@postSwipeGesturesHint": {},
     "postTitleFontScale": "Letter­grootte van bericht­titel",
     "@postTitleFontScale": {
         "description": "Setting for post title font scale"
     },
     "postUploadImageError": "Kon afbeelding niet uploaden",
-    "@postUploadImageError": {},
     "postViewType": "Weergavetype voor berichten",
     "@postViewType": {
         "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
@@ -2790,7 +2574,6 @@
         "description": "Description for removing user data when banning user"
     },
     "removedCommunityFromSubscriptions": "Deabonneren van gemeenschap",
-    "@removedCommunityFromSubscriptions": {},
     "removedInstanceMod": "Instantie­moderator verwĳderd",
     "@removedInstanceMod": {
         "description": "Short decription for moderator action to remove a mod from an instance"
@@ -2809,9 +2592,7 @@
         }
     },
     "replyNotSupported": "Reageren vanuit deze weergave wordt momenteel nog niet ondersteund",
-    "@replyNotSupported": {},
     "replyToPost": "Reageren op bericht",
-    "@replyToPost": {},
     "replyingTo": "Reageren op {author}",
     "@replyingTo": {
         "description": "Describes the author of the post that is being replied to",
@@ -2843,9 +2624,7 @@
         "description": "Debug setting header for resetting all user preferences and data."
     },
     "restoredCommentFromDraft": "Opmerking hersteld uit concept",
-    "@restoredCommentFromDraft": {},
     "restoredPostFromDraft": "Bericht hersteld uit concept",
-    "@restoredPostFromDraft": {},
     "rightLongSwipe": "Lange veeg naar rechts",
     "@rightLongSwipe": {
         "description": "Setting for right long swipe"
@@ -2859,13 +2638,9 @@
         "description": "Toggle to scrape missing external link previews."
     },
     "screenReaderProfile": "Schermlezerprofiel",
-    "@screenReaderProfile": {},
     "screenReaderProfileDescription": "Optimaliseert Thunder voor schermlezers door het aantal elementen te verminderen en mogelijk conflicterende gebaren te verwĳderen.",
-    "@screenReaderProfileDescription": {},
     "searchByText": "Zoeken op tekst",
-    "@searchByText": {},
     "searchByUrl": "Zoeken op URL",
-    "@searchByUrl": {},
     "searchCommentsFederatedWith": "Zoeken naar opmerkingen gefedereerd met {instance}",
     "@searchCommentsFederatedWith": {
         "description": "Placeholder text for searching for comments",
@@ -2885,7 +2660,6 @@
         }
     },
     "selectFeedType": "Feed­type selecteren",
-    "@selectFeedType": {},
     "shareComment": "Opmerkings­koppeling delen",
     "@shareComment": {
         "description": "Menu item for sharing a comment"
@@ -2899,7 +2673,6 @@
         "description": "Menu item for sharing a Lemmy link"
     },
     "shareLink": "Externe koppeling delen",
-    "@shareLink": {},
     "shareMediaLink": "Media­koppeling delen",
     "@shareMediaLink": {
         "description": "Action for sharing the link to the media associated with a post"
@@ -2909,7 +2682,6 @@
         "description": "Action for sharing the original link associated with a post"
     },
     "sharePost": "Bericht­koppeling delen",
-    "@sharePost": {},
     "shareUserLink": "Gebruikers­koppeling delen",
     "@shareUserLink": {
         "description": "Menu item for sharing a user"
@@ -2950,7 +2722,6 @@
         "description": "Heading for account selector when posting"
     },
     "selectCommunity": "Selecteer een gemeen­schap (vereist)",
-    "@selectCommunity": {},
     "showExpandedTaglines": "Uitgebreide tag­regels weergeven",
     "@showExpandedTaglines": {
         "description": "Toggle that shows the full expanded tagline in the feed page"
@@ -3012,7 +2783,6 @@
         "description": "Toggle to show user instance."
     },
     "sortByTop": "Sorteren op beste",
-    "@sortByTop": {},
     "subscribeToCommunity": "Abonneren op gemeen­schap",
     "@subscribeToCommunity": {
         "description": "Action for subscribing to a community"
@@ -3038,7 +2808,6 @@
         "description": "Description to Open video with an external application"
     },
     "userNotLoggedIn": "Gebruiker is niet ingelogd",
-    "@userNotLoggedIn": {},
     "userNameThickness": "Dikte van gebruikers­naam",
     "@userNameThickness": {
         "description": "Setting for user name thickness"
@@ -3072,7 +2841,6 @@
         "description": "Warning for sensitive content (e.g., from modlog)"
     },
     "sentRequestForTestNotification": "Verzoek voor testmelding verzonden.",
-    "@sentRequestForTestNotification": {},
     "serverErrorComments": "Er is een serverfout opgetreden bĳ het ophalen van meer opmerkingen: {message}",
     "@serverErrorComments": {
         "description": "Error message for when we fail to fetch more comments",
@@ -3083,9 +2851,7 @@
         }
     },
     "setLongPress": "Instellen als actie voor lang indrukken",
-    "@setLongPress": {},
     "setShortPress": "Instellen als actie voor één keer drukken",
-    "@setShortPress": {},
     "settingTypeNotSupported": "Instellingen van het type {settingType} worden nog niet ondersteund.",
     "@settingTypeNotSupported": {
         "description": "Error message for when a setting type is not supported",
@@ -3185,11 +2951,8 @@
         "description": "Toggle to show user display names."
     },
     "sidebarBottomNavDoubleTapDescription": "Dubbeltik op onderbalk om zĳbalk te openen",
-    "@sidebarBottomNavDoubleTapDescription": {},
     "sidebarBottomNavSwipeDescription": "Veeg over onderbalk om zĳbalk te openen",
-    "@sidebarBottomNavSwipeDescription": {},
     "somethingWentWrong": "Oeps, er is iets misgegaan!",
-    "@somethingWentWrong": {},
     "switchedAccount": "Overgeschakeld naar {username}",
     "@switchedAccount": {
         "description": "Message shown to the user when Thunder automatically switches accounts",
@@ -3230,27 +2993,18 @@
         }
     },
     "timeoutComments": "Fout: time-out bĳ het ophalen van opmerkingen",
-    "@timeoutComments": {},
     "timeoutErrorMessage": "Er is een time-out opgetreden bĳ het wachten op een reactie.",
-    "@timeoutErrorMessage": {},
     "timeoutSaveComment": "Fout: time-out bĳ het opslaan van een opmerking",
-    "@timeoutSaveComment": {},
     "timeoutSavingPost": "Fout: time-out bĳ het opslaan van bericht.",
-    "@timeoutSavingPost": {},
     "timeoutUpvoteComment": "Fout: time-out bĳ het stemmen op opmerking",
-    "@timeoutUpvoteComment": {},
     "timeoutVotingPost": "Fout: time-out bĳ het stemmen op bericht.",
-    "@timeoutVotingPost": {},
     "topAll": "Beste aller tĳden",
-    "@topAll": {},
     "topHour": "Beste afgelopen uur",
-    "@topHour": {},
     "topNineMonths": "Beste afgelopen 9 maanden",
     "@topNineMonths": {
         "description": "Sort mode for top in past 9 months"
     },
     "topSixHour": "Beste afgelopen 6 uur",
-    "@topSixHour": {},
     "topSixMonths": "Beste afgelopen 6 maanden",
     "@topSixMonths": {
         "description": "Sort mode for top in past 6 months"
@@ -3260,13 +3014,11 @@
         "description": "Sort mode for top in past 3 months"
     },
     "topTwelveHour": "Beste afgelopen 12 uur",
-    "@topTwelveHour": {},
     "translationsMayNotBeComplete": "Houd er rekening mee dat de vertalingen mogelijk niet volledig zĳn",
     "@translationsMayNotBeComplete": {
         "description": "Warning that translations may not be complete when selecting a language in the settings"
     },
     "unableToFindCommunity": "Kan gemeenschap niet vinden",
-    "@unableToFindCommunity": {},
     "unableToFindCommunityName": "Kan gemeenschap '{communityName}' niet vinden",
     "@unableToFindCommunityName": {
         "description": "Error message for when we are unable to find a community, including the name",
@@ -3281,7 +3033,6 @@
         "description": "An error message for when we can't find a community on an instance"
     },
     "unableToFindInstance": "Kan instantie niet vinden",
-    "@unableToFindInstance": {},
     "unableToFindLanguage": "Kan taal niet vinden",
     "@unableToFindLanguage": {
         "description": "Error message when language cannot be found."
@@ -3291,7 +3042,6 @@
         "description": "Error message when we are unable to find a post"
     },
     "unableToFindUser": "Kan gebruiker niet vinden",
-    "@unableToFindUser": {},
     "unableToFindUserName": "Kan gebruiker '{username}' niet vinden",
     "@unableToFindUserName": {
         "description": "Error message when we are unable to find a user",
@@ -3412,7 +3162,6 @@
         "description": "Action for unsubscribing from a community"
     },
     "unsubscribePending": "Uitschrĳven (abonnement in behandeling)",
-    "@unsubscribePending": {},
     "updateReleased": "Update uitgebracht: {version}",
     "@updateReleased": {
         "description": "Message shown to the user when a new update is released",
@@ -3507,5 +3256,69 @@
     "useProfilePictureForDrawerSubtitle": "Toont de profiel­afbeelding van de gebruiker in plaats van het menu-pictogram wanneer u bent ingelogd",
     "@useProfilePictureForDrawerSubtitle": {
         "description": "Setting subtitle for using the profile picture for the drawer"
+    },
+    "deleteDraftConfirmation": "Weet u zeker dat u dit concept wilt verwijderen?",
+    "@deleteDraftConfirmation": {
+        "description": "Confirmation message for deleting a draft"
+    },
+    "directMessage": "Privé­bericht",
+    "@directMessage": {
+        "description": "Title for the private message compose page"
+    },
+    "drafts": "Concepten",
+    "@drafts": {
+        "description": "Heading for drafts settings"
+    },
+    "imagePeekDurationDescription": "Hoe lang moet er worden ingedrukt voordat een voor­vertoning van de afbeelding wordt geactiveerd",
+    "@imagePeekDurationDescription": {
+        "description": "Description for image peek duration setting"
+    },
+    "imagePeekDuration": "Indruk­duur afbeeldings­voorvertoning",
+    "@imagePeekDuration": {
+        "description": "Setting for image peek duration"
+    },
+    "linkPostsUseCompactView": "Compacte link­berichten",
+    "@linkPostsUseCompactView": {
+        "description": "Toggle to use compact view for link posts."
+    },
+    "media": "Media",
+    "@media": {
+        "description": "Describes a piece of media content (e.g., image, video)"
+    },
+    "noCommunitySelected": "Geen gemeen­schap geselecteerd",
+    "@noCommunitySelected": {
+        "description": "Fallback subtitle when a draft has no selected community"
+    },
+    "noDrafts": "U heeft nog geen concepten",
+    "@noDrafts": {
+        "description": "Placeholder message for empty draft list"
+    },
+    "pinnedPostsUseCompactView": "Compacte vast­gezette berichten",
+    "@pinnedPostsUseCompactView": {
+        "description": "Toggle to use compact view for pinned posts."
+    },
+    "postTags": "Labels",
+    "@postTags": {
+        "description": "Label for post tags"
+    },
+    "postTagsHelperText": "Scheid labels met komma's",
+    "@postTagsHelperText": {
+        "description": "Helper text for comma-separated post tags"
+    },
+    "replyToComment": "Reactie op opmerking",
+    "@replyToComment": {
+        "description": "Label used for comment drafts replying to another comment"
+    },
+    "selectRecipient": "Selecteer ontvanger",
+    "@selectRecipient": {
+        "description": "Prompt to choose a private message recipient"
+    },
+    "send": "Verzenden",
+    "@send": {
+        "description": "Action to send content"
+    },
+    "showPostCommunityFirst": "Gemeen­schap en auteur eerst weer­geven",
+    "@showPostCommunityFirst": {
+        "description": "Toggle to show community and author first."
     }
 }
