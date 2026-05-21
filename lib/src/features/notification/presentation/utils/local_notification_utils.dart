@@ -282,7 +282,7 @@ Future<void> _showMessageNotifications({
 
 /// This method handles "headless" callbacks (i.e., whent the app is not running)
 @pragma('vm:entry-point')
-void backgroundFetchHeadlessTask(HeadlessTask task) async {
+void backgroundFetchHeadlessTask(HeadlessEvent task) async {
   if (task.timeout) return BackgroundFetch.finish(task.taskId);
 
   // Ensure Flutter bindings are initialized for background isolate
@@ -306,7 +306,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
 /// This method handles "headless" callbacks for testing
 @pragma('vm:entry-point')
-void backgroundTestFetchHeadlessTask(HeadlessTask task) async {
+void backgroundTestFetchHeadlessTask(HeadlessEvent task) async {
   if (task.timeout) return BackgroundFetch.finish(task.taskId);
 
   await showTestAndroidNotification();

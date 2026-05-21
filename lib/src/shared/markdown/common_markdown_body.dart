@@ -99,12 +99,12 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
     };
   }
 
-  double _getTextScaleFactor() {
-    final baseScale = MediaQuery.textScalerOf(context).scale(1.0);
+  TextScaler _getTextScaler() {
+    final baseScaler = MediaQuery.textScalerOf(context);
     final resolvedCommentTextScaleFactor = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.commentFontSizeScale).textScaleFactor;
     final resolvedContentTextScaleFactor = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.contentFontSizeScale).textScaleFactor;
     final fontScale = widget.isComment == true ? resolvedCommentTextScaleFactor : resolvedContentTextScaleFactor;
-    return baseScale * fontScale;
+    return TextScaler.linear(baseScaler.scale(fontScale));
   }
 
   @override
@@ -142,7 +142,7 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
           onLongPressLink: (text, url, title) {
             if (url != null) handleLinkLongPress(navigationContext, text, url);
           },
-          styleSheet: styleSheet.copyWith(textScaleFactor: _getTextScaleFactor()),
+          styleSheet: styleSheet.copyWith(textScaler: _getTextScaler()),
         ),
       ),
     );

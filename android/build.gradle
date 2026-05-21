@@ -16,6 +16,57 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 
+subprojects { subproject ->
+    def configureJavaJvmTarget = {
+        if (subproject.plugins.hasPlugin("com.android.application") || subproject.plugins.hasPlugin("com.android.library")) {
+            subproject.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+
+        subproject.tasks.withType(JavaCompile).configureEach {
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
+        }
+    }
+
+    def configureKotlinJvmTarget = {
+        subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            if (subproject.name == "flutter_avif_android") {
+                exclude("**/FlutterAvifPlugin.kt")
+            }
+
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_17.toString()
+            }
+        }
+    }
+
+    plugins.withId("com.android.application") {
+        configureJavaJvmTarget()
+    }
+
+    plugins.withId("com.android.library") {
+        configureJavaJvmTarget()
+    }
+
+    plugins.withId("org.jetbrains.kotlin.android") {
+        configureKotlinJvmTarget()
+    }
+
+    plugins.withId("kotlin-android") {
+        configureKotlinJvmTarget()
+    }
+
+    afterEvaluate {
+        configureJavaJvmTarget()
+        configureKotlinJvmTarget()
+    }
+}
+
 subprojects {
     project.evaluationDependsOn(':app')
 }

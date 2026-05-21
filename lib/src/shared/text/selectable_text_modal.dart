@@ -69,7 +69,9 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                           trailingIcon: copySuccess ? Icons.check_rounded : null,
                           onPressed: isAnythingSelected
                               ? () async {
-                                  (selectableRegionKey.currentState as SelectableRegionState).copySelection(SelectionChangedCause.tap);
+                                  final regionState = selectableRegionKey.currentState as SelectableRegionState;
+                                  final copyItem = regionState.contextMenuButtonItems.where((item) => item.type == ContextMenuButtonType.copy).firstOrNull;
+                                  copyItem?.onPressed?.call();
                                   setState(() => copySuccess = true);
                                   await Future.delayed(const Duration(seconds: 2));
                                   setState(() => copySuccess = false);

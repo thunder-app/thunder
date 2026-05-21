@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
@@ -58,7 +59,7 @@ class PostPageScrollBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       controller: scrollController,
-      cacheExtent: 1000,
+      scrollCacheExtent: ScrollCacheExtent.pixels(1000),
       slivers: [
         PostPageAppBar(
           key: appBarKey,

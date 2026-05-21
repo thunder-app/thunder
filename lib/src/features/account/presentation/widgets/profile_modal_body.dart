@@ -59,9 +59,10 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
   Widget build(BuildContext context) {
     return Navigator(
       key: ProfileModalBody.shellNavigatorKey,
-      onPopPage: (route, result) => false,
+      onDidRemovePage: (_) {},
       pages: [
         MaterialPage(
+          canPop: false,
           child: ProfileSelect(
             pushRegister: pushRegister,
             showLogoutDialog: widget.showLogoutDialog,
@@ -206,11 +207,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
               SliverReorderableList(
                 onReorderStart: (index) => setState(() => accountBeingReorderedIndex = index),
                 onReorderEnd: (index) => setState(() => accountBeingReorderedIndex = null),
-                onReorder: (int oldIndex, int newIndex) {
+                onReorderItem: (int oldIndex, int newIndex) {
                   setState(() {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
                     final AccountExtended item = accounts!.removeAt(oldIndex);
                     accounts!.insert(newIndex, item);
                   });
@@ -452,11 +450,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 SliverReorderableList(
                   onReorderStart: (index) => setState(() => anonymousInstanceBeingReorderedIndex = index),
                   onReorderEnd: (index) => setState(() => anonymousInstanceBeingReorderedIndex = null),
-                  onReorder: (int oldIndex, int newIndex) {
+                  onReorderItem: (int oldIndex, int newIndex) {
                     setState(() {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
                       final AnonymousInstanceExtended item = anonymousInstances!.removeAt(oldIndex);
                       anonymousInstances!.insert(newIndex, item);
                     });
