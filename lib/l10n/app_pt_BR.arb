@@ -3557,5 +3557,17 @@
     "untitledPostDraft": "Rascunho de postagem sem título",
     "@untitledPostDraft": {
         "description": "Fallback title for post drafts without a title"
+    },
+    "directMessage": "Mensagem direta",
+    "@directMessage": {
+        "description": "Title for the private message compose page"
+    },
+    "selectRecipient": "Selecionar destinatário",
+    "@selectRecipient": {
+        "description": "Prompt to choose a private message recipient"
+    },
+    "send": "Enviar",
+    "@send": {
+        "description": "Action to send content"
     }
 }
