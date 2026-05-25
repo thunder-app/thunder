@@ -2997,5 +2997,17 @@
     "replyToComment": "Reply to Comment",
     "@replyToComment": {
         "description": "Label used for comment drafts replying to another comment"
+    },
+    "send": "Send",
+    "@send": {
+        "description": "Action to send content"
+    },
+    "directMessage": "Direct message",
+    "@directMessage": {
+        "description": "Title for the private message compose page"
+    },
+    "selectRecipient": "Select recipient",
+    "@selectRecipient": {
+        "description": "Prompt to choose a private message recipient"
     }
 }
