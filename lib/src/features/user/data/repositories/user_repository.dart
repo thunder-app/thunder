@@ -15,6 +15,7 @@ abstract class UserRepository {
     String? username,
     PostSortType? sort,
     int? page,
+    String? cursor,
     int? limit,
     bool? saved,
     bool? includeContent,
@@ -43,6 +44,7 @@ class UserRepositoryImpl implements UserRepository {
     String? username,
     PostSortType? sort,
     int? page,
+    String? cursor,
     int? limit,
     bool? saved,
     bool? includeContent,
@@ -52,6 +54,7 @@ class UserRepositoryImpl implements UserRepository {
       username: username,
       sort: sort,
       page: page,
+      cursor: cursor,
       limit: limit,
       saved: saved,
       includeContent: includeContent,
@@ -63,6 +66,7 @@ class UserRepositoryImpl implements UserRepository {
       'posts': response.posts,
       'comments': response.comments,
       'moderates': response.moderates,
+      'next_page': response.nextPage,
     };
   }
 

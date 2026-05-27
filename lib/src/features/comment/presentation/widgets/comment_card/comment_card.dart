@@ -134,7 +134,6 @@ class _CommentCardState extends State<CommentCard> {
           return setState(() => viewSource = !viewSource);
         }
 
-        // TODO: Move these into the comment bottom sheet logic
         if (commentAction == CommentAction.reply || commentAction == CommentAction.edit) {
           switch (commentAction) {
             case CommentAction.reply:

@@ -35,4 +35,30 @@ class PlatformVersionCache {
     _cache[url] = Version.parse(version);
     if (debug) debugPrint('PlatformVersionCache: Cached platform version for $url: $version');
   }
+
+  /// Safely stores the platform version for the given [url].
+  ///
+  /// Returns false when the URL or version is missing or cannot be parsed.
+  bool trySet(String? url, String? version) {
+    if (url == null || url.isEmpty || version == null || version.isEmpty) {
+      return false;
+    }
+
+    try {
+      set(url, version);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Clears one cached version, or the whole cache when [url] is omitted.
+  void clear([String? url]) {
+    if (url == null) {
+      _cache.clear();
+      return;
+    }
+
+    _cache.remove(url);
+  }
 }

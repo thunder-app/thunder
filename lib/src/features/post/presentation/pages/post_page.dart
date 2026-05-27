@@ -104,7 +104,7 @@ class _PostPageState extends State<PostPage> {
   /// Starts the initial post fetch once the bloc is available.
   void _loadInitialPost() {
     final bloc = context.read<PostBloc>();
-    if (bloc.state.status != PostStatus.initial) return;
+    if (bloc.state.status != PostPageStatus.initial) return;
 
     bloc.add(
       GetPostEvent(
@@ -121,7 +121,7 @@ class _PostPageState extends State<PostPage> {
     final state = context.read<PostBloc>().state;
     final isPastThreshold = scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7;
 
-    if (isPastThreshold && state.status == PostStatus.success && !state.hasReachedCommentEnd) {
+    if (isPastThreshold && state.status == PostPageStatus.success && !state.hasReachedCommentEnd) {
       context.read<PostBloc>().add(const GetPostCommentsPageEvent());
     }
 
@@ -149,7 +149,7 @@ class _PostPageState extends State<PostPage> {
     setState(() => _blockedCommunityIds = blockedCommunityIds);
 
     final state = context.read<PostBloc>().state;
-    if (state.status == PostStatus.success && state.post != null && state.hasReachedCommentEnd) {
+    if (state.status == PostPageStatus.success && state.post != null && state.hasReachedCommentEnd) {
       _maybeShowBlockedCommunityMessage(state.post!);
     }
   }
@@ -180,16 +180,16 @@ class _PostPageState extends State<PostPage> {
       return;
     }
 
-    if (state.status == PostStatus.success && state.post != null && _lastNotifiedPost != state.post) {
+    if (state.status == PostPageStatus.success && state.post != null && _lastNotifiedPost != state.post) {
       widget.onPostUpdated?.call(state.post!);
       _lastNotifiedPost = state.post;
     }
 
-    if (state.status == PostStatus.success && state.post != null && state.hasReachedCommentEnd) {
+    if (state.status == PostPageStatus.success && state.post != null && state.hasReachedCommentEnd) {
       _maybeShowBlockedCommunityMessage(state.post!);
     }
 
-    if (state.status == PostStatus.failure) {
+    if (state.status == PostPageStatus.failure) {
       showSnackbar(state.errorMessage ?? l10n.missingErrorMessage);
     }
 

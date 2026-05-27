@@ -52,7 +52,6 @@ class BottomNavigationBar extends StatelessWidget {
       onPageChange(index);
     }
 
-    // TODO: Change this from integer to enum or some other type
     if (index == 3) {
       context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
     }

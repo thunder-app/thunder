@@ -1,38 +1,37 @@
+import 'package:thunder/src/foundation/primitives/models/notification_ref.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 
-/// Cross-platform representation of a Lemmy or PieFed private message.
 class ThunderPrivateMessage {
-  /// The private message's ID.
+  /// The private message id on its home instance.
   final int id;
 
-  /// The message creator's user ID.
+  /// ID of the sender, when provided.
   final int? creatorId;
 
-  /// The message recipient's user ID.
+  /// ID of the recipient, when provided.
   final int? recipientId;
 
-  /// The conversation ID for platforms that expose one.
+  /// Platform conversation ID, when supported.
   final int? conversationId;
 
-  /// The private message's content.
+  /// Markdown message content.
   final String content;
 
-  /// The private message's deleted status.
+  /// Whether the message was deleted.
   final bool deleted;
 
-  /// The private message's read status.
-  final bool read;
-
-  /// The private message's published date.
+  /// When the message was sent.
   final DateTime published;
 
-  /// The private message's recipient.
+  /// Recipient details, when they were included with the response.
   final ThunderUser? recipient;
 
-  /// The private message's creator.
+  /// Sender details, when they were included with the response.
   final ThunderUser? creator;
 
-  /// Creates a private-message model.
+  /// Inbox details used for read state.
+  final NotificationRef? notification;
+
   ThunderPrivateMessage({
     required this.id,
     this.creatorId,
@@ -40,13 +39,12 @@ class ThunderPrivateMessage {
     this.conversationId,
     required this.content,
     required this.deleted,
-    required this.read,
     required this.published,
     this.recipient,
     this.creator,
+    this.notification,
   });
 
-  /// Creates a copy with updated fields.
   ThunderPrivateMessage copyWith({
     int? id,
     int? creatorId,
@@ -54,10 +52,10 @@ class ThunderPrivateMessage {
     int? conversationId,
     String? content,
     bool? deleted,
-    bool? read,
     DateTime? published,
     ThunderUser? recipient,
     ThunderUser? creator,
+    NotificationRef? notification,
   }) {
     return ThunderPrivateMessage(
       id: id ?? this.id,
@@ -66,43 +64,10 @@ class ThunderPrivateMessage {
       conversationId: conversationId ?? this.conversationId,
       content: content ?? this.content,
       deleted: deleted ?? this.deleted,
-      read: read ?? this.read,
       published: published ?? this.published,
       recipient: recipient ?? this.recipient,
       creator: creator ?? this.creator,
-    );
-  }
-
-  /// Parses a Lemmy private-message payload without associated user data.
-  factory ThunderPrivateMessage.fromLemmyPrivateMessage(Map<String, dynamic> privateMessage) {
-    return ThunderPrivateMessage(
-      id: privateMessage['id'],
-      creatorId: privateMessage['creator_id'],
-      recipientId: privateMessage['recipient_id'],
-      content: privateMessage['content'],
-      deleted: privateMessage['deleted'],
-      read: privateMessage['read'],
-      published: DateTime.parse(privateMessage['published']),
-    );
-  }
-
-  /// Parses a Lemmy private-message view with creator and recipient data.
-  factory ThunderPrivateMessage.fromLemmyPrivateMessageView(Map<String, dynamic> privateMessageView) {
-    final privateMessage = privateMessageView['private_message'];
-    final recipient = privateMessageView['recipient'];
-    final creator = privateMessageView['creator'];
-
-    return ThunderPrivateMessage(
-      id: privateMessage['id'],
-      creatorId: privateMessage['creator_id'],
-      recipientId: privateMessage['recipient_id'],
-      conversationId: privateMessageView['conversation_id'],
-      content: privateMessage['content'],
-      deleted: privateMessage['deleted'],
-      read: privateMessage['read'],
-      published: DateTime.parse(privateMessage['published']),
-      recipient: recipient != null ? ThunderUser.fromLemmyUser(recipient) : null,
-      creator: creator != null ? ThunderUser.fromLemmyUser(creator) : null,
+      notification: notification ?? this.notification,
     );
   }
 }

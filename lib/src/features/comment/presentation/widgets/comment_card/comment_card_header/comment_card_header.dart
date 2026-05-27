@@ -64,15 +64,16 @@ class CommentCardHeader extends StatelessWidget {
                       opacity: 1.0,
                       constraints: constraints,
                     ),
-                    CommentCardHeaderScore(account: account, score: comment.score!, upvotes: comment.upvotes!, downvotes: comment.downvotes!, voteType: comment.myVote),
+                    CommentCardHeaderScore(
+                        account: account, score: comment.counts.score!, upvotes: comment.counts.upvotes!, downvotes: comment.counts.downvotes!, voteType: comment.context.vote.score),
                   ],
                 ),
                 Row(
                   spacing: 8.0,
-                  children: hidden && (comment.childCount ?? 0) > 0
-                      ? [CommentCardHeaderReplyCount(replies: comment.childCount!, hidden: hidden)]
+                  children: hidden && (comment.counts.childCount ?? 0) > 0
+                      ? [CommentCardHeaderReplyCount(replies: comment.counts.childCount!, hidden: hidden)]
                       : [
-                          if (comment.saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
+                          if (comment.context.saved == true) Icon(Icons.star_rounded, color: saveColor.color, size: 19.0),
                           if (comment.updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
                           CommentCardHeaderDate(created: comment.published, updated: comment.updated),
                         ],

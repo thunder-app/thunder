@@ -1,139 +1,80 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/foundation/primitives/enums/subscription_status.dart';
-import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/media.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/foundation/primitives/models/vote_state.dart';
 
 class ThunderPost extends Equatable {
-  /// The post's ID
+  /// The post id on its home instance.
   final int id;
 
-  /// The post's name
+  /// Post title.
   final String name;
 
-  /// The post's URL
+  /// Optional external URL attached to the post.
   final String? url;
 
-  /// The post's body
+  /// Optional Markdown body.
   final String? body;
 
-  /// The post's creator ID
+  /// ID of the post creator.
   final int creatorId;
 
-  /// The post's community ID
+  /// ID of the community containing the post.
   final int communityId;
 
-  /// Whether the post is removed
-  final bool removed;
-
-  /// Whether the post is locked
-  final bool locked;
-
-  /// The post's published date
+  /// When the post was created.
   final DateTime published;
 
-  /// The post's updated date
+  /// When the post was last edited, when available.
   final DateTime? updated;
 
-  /// Whether the post is deleted
-  final bool deleted;
-
-  /// Whether the post is NSFW
-  final bool nsfw;
-
-  /// The post's thumbnail URL
+  /// Thumbnail URL provided by the instance, when available.
   final String? thumbnailUrl;
 
-  /// The post's AP ID
+  /// Canonical ActivityPub URL for the post.
   final String apId;
 
-  /// Whether the post is local
-  final bool local;
-
-  /// The post's embed video URL
+  /// Optional embedded video URL.
   final String? embedVideoUrl;
 
-  /// The post's language ID
+  /// Language selected for the post.
   final int languageId;
 
-  /// Whether the post is featured in the community
-  final bool featuredCommunity;
-
-  /// Whether the post is featured on the instance
-  final bool featuredLocal;
-
-  /// The post's alternate text
+  /// Alternative text for post media.
   final String? altText;
 
-  /// The post's text preview.
-  ///
-  /// This field is not returned by the API, but is computed locally during post parsing.
+  /// Short text preview used by compact surfaces.
   final String? textPreview;
 
-  /// The post's creator
+  /// Creator details, when they were included with the response.
   final ThunderUser? creator;
 
-  /// The post's community
+  /// Community details, when they were included with the response.
   final ThunderCommunity? community;
 
-  /// The post's image details
+  /// Extra image details used by media helpers.
   final Map<String, dynamic>? imageDetails;
 
-  /// Whether the post's creator is banned from the community
-  final bool? creatorBannedFromCommunity;
+  /// What has happened to the post itself, such as deletion or locking.
+  final PostStatus status;
 
-  /// Whether the post's creator is a moderator of the community
-  final bool? creatorIsModerator;
+  /// Scores and comment counts for the post.
+  final PostCounts counts;
 
-  /// Whether the post's creator is an admin of the instance
-  final bool? creatorIsAdmin;
+  /// How the signed-in account relates to this post.
+  final PostContext context;
 
-  /// The number of comments on the post
-  final int? comments;
-
-  /// The score of the post
-  final int? score;
-
-  /// The number of upvotes on the post
-  final int? upvotes;
-
-  /// The number of downvotes on the post
-  final int? downvotes;
-
-  /// The time of the newest comment on the post
-  final DateTime? newestCommentTime;
-
-  /// The subscribed status of the post
-  final SubscriptionStatus? subscribed;
-
-  /// Whether the post is saved
-  final bool? saved;
-
-  /// Whether the post is read
-  final bool? read;
-
-  /// Whether the post is hidden
-  final bool? hidden;
-
-  /// Whether the post's creator is blocked
-  final bool? creatorBlocked;
-
-  /// The vote status of the post
-  final int? myVote;
-
-  /// The number of unread comments on the post
-  final int? unreadComments;
-
-  /// The media associated with the post
+  /// Media attachments found for the post.
   final List<Media> media;
 
-  /// Tags returned by PieFed.
+  /// Tags attached to the post, when the platform supports them.
   final List<String> tags;
 
-  /// Flair metadata returned by PieFed.
+  /// Flairs attached to the post, when the platform supports them.
   final List<ThunderFlair> flairs;
 
   const ThunderPost({
@@ -143,42 +84,23 @@ class ThunderPost extends Equatable {
     this.body,
     required this.creatorId,
     required this.communityId,
-    required this.removed,
-    required this.locked,
     required this.published,
     this.updated,
-    required this.deleted,
-    required this.nsfw,
     this.thumbnailUrl,
     required this.apId,
-    required this.local,
     this.embedVideoUrl,
     required this.languageId,
-    required this.featuredCommunity,
-    required this.featuredLocal,
     this.altText,
+    this.textPreview,
     this.creator,
     this.community,
     this.imageDetails,
-    this.creatorBannedFromCommunity,
-    this.creatorIsModerator,
-    this.creatorIsAdmin,
-    this.comments,
-    this.score,
-    this.upvotes,
-    this.downvotes,
-    this.newestCommentTime,
-    this.subscribed,
-    this.saved,
-    this.read,
-    this.hidden,
-    this.creatorBlocked,
-    this.myVote,
-    this.unreadComments,
+    required this.status,
+    this.counts = const PostCounts(),
+    this.context = const PostContext(),
     this.media = const [],
     this.tags = const [],
     this.flairs = const [],
-    this.textPreview,
   });
 
   @override
@@ -189,42 +111,23 @@ class ThunderPost extends Equatable {
         body,
         creatorId,
         communityId,
-        removed,
-        locked,
         published,
         updated,
-        deleted,
-        nsfw,
         thumbnailUrl,
         apId,
-        local,
         embedVideoUrl,
         languageId,
-        featuredCommunity,
-        featuredLocal,
         altText,
+        textPreview,
         creator,
         community,
         imageDetails,
-        creatorBannedFromCommunity,
-        creatorIsModerator,
-        creatorIsAdmin,
-        comments,
-        score,
-        upvotes,
-        downvotes,
-        newestCommentTime,
-        subscribed,
-        saved,
-        read,
-        hidden,
-        creatorBlocked,
-        myVote,
-        unreadComments,
+        status,
+        counts,
+        context,
         media,
         tags,
         flairs,
-        textPreview,
       ];
 
   ThunderPost copyWith({
@@ -234,42 +137,23 @@ class ThunderPost extends Equatable {
     String? body,
     int? creatorId,
     int? communityId,
-    bool? removed,
-    bool? locked,
     DateTime? published,
     DateTime? updated,
-    bool? deleted,
-    bool? nsfw,
     String? thumbnailUrl,
     String? apId,
-    bool? local,
     String? embedVideoUrl,
     int? languageId,
-    bool? featuredCommunity,
-    bool? featuredLocal,
     String? altText,
+    String? textPreview,
     ThunderUser? creator,
     ThunderCommunity? community,
     Map<String, dynamic>? imageDetails,
-    bool? creatorBannedFromCommunity,
-    bool? creatorIsModerator,
-    bool? creatorIsAdmin,
-    int? comments,
-    int? score,
-    int? upvotes,
-    int? downvotes,
-    DateTime? newestCommentTime,
-    SubscriptionStatus? subscribed,
-    bool? saved,
-    bool? read,
-    bool? hidden,
-    bool? creatorBlocked,
-    int? myVote,
-    int? unreadComments,
+    PostStatus? status,
+    PostCounts? counts,
+    PostContext? context,
     List<Media>? media,
     List<String>? tags,
     List<ThunderFlair>? flairs,
-    String? textPreview,
   }) {
     return ThunderPost(
       id: id ?? this.id,
@@ -278,198 +162,214 @@ class ThunderPost extends Equatable {
       body: body ?? this.body,
       creatorId: creatorId ?? this.creatorId,
       communityId: communityId ?? this.communityId,
-      removed: removed ?? this.removed,
-      locked: locked ?? this.locked,
       published: published ?? this.published,
       updated: updated ?? this.updated,
-      deleted: deleted ?? this.deleted,
-      nsfw: nsfw ?? this.nsfw,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       apId: apId ?? this.apId,
-      local: local ?? this.local,
       embedVideoUrl: embedVideoUrl ?? this.embedVideoUrl,
       languageId: languageId ?? this.languageId,
-      featuredCommunity: featuredCommunity ?? this.featuredCommunity,
-      featuredLocal: featuredLocal ?? this.featuredLocal,
       altText: altText ?? this.altText,
+      textPreview: textPreview ?? this.textPreview,
       creator: creator ?? this.creator,
       community: community ?? this.community,
       imageDetails: imageDetails ?? this.imageDetails,
-      creatorBannedFromCommunity: creatorBannedFromCommunity ?? this.creatorBannedFromCommunity,
-      creatorIsModerator: creatorIsModerator ?? this.creatorIsModerator,
-      creatorIsAdmin: creatorIsAdmin ?? this.creatorIsAdmin,
-      comments: comments ?? this.comments,
-      score: score ?? this.score,
-      upvotes: upvotes ?? this.upvotes,
-      downvotes: downvotes ?? this.downvotes,
-      newestCommentTime: newestCommentTime ?? this.newestCommentTime,
-      subscribed: subscribed ?? this.subscribed,
-      saved: saved ?? this.saved,
-      read: read ?? this.read,
-      hidden: hidden ?? this.hidden,
-      creatorBlocked: creatorBlocked ?? this.creatorBlocked,
-      myVote: myVote ?? this.myVote,
-      unreadComments: unreadComments ?? this.unreadComments,
+      status: status ?? this.status,
+      counts: counts ?? this.counts,
+      context: context ?? this.context,
       media: media ?? this.media,
       tags: tags ?? this.tags,
       flairs: flairs ?? this.flairs,
-      textPreview: textPreview ?? this.textPreview,
     );
   }
+}
 
-  factory ThunderPost.fromLemmyPost(Map<String, dynamic> post, {List<Media> media = const []}) {
-    return ThunderPost(
-      id: post['id'],
-      name: post['name'],
-      url: post['url'],
-      body: post['body'],
-      creatorId: post['creator_id'],
-      communityId: post['community_id'],
-      removed: post['removed'],
-      locked: post['locked'],
-      published: DateTime.parse(post['published']),
-      updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
-      deleted: post['deleted'],
-      nsfw: post['nsfw'],
-      thumbnailUrl: post['thumbnail_url'],
-      apId: post['ap_id'],
-      local: post['local'],
-      languageId: post['language_id'],
-      featuredCommunity: post['featured_community'],
-      featuredLocal: post['featured_local'],
-      altText: post['alt_text'],
-      media: media,
+class PostStatus extends Equatable {
+  /// Whether the creator deleted it.
+  final bool deleted;
+
+  /// Whether moderators removed it.
+  final bool removed;
+
+  /// Whether new comments are locked.
+  final bool locked;
+
+  /// Whether it is marked not safe for work.
+  final bool nsfw;
+
+  /// Whether it comes from the current instance.
+  final bool local;
+
+  /// Whether it is featured in its community.
+  final bool featuredCommunity;
+
+  /// Whether it is featured on the local instance.
+  final bool featuredLocal;
+
+  const PostStatus({
+    required this.deleted,
+    required this.removed,
+    required this.locked,
+    required this.nsfw,
+    required this.local,
+    required this.featuredCommunity,
+    required this.featuredLocal,
+  });
+
+  @override
+  List<Object?> get props => [deleted, removed, locked, nsfw, local, featuredCommunity, featuredLocal];
+
+  PostStatus copyWith({
+    bool? deleted,
+    bool? removed,
+    bool? locked,
+    bool? nsfw,
+    bool? local,
+    bool? featuredCommunity,
+    bool? featuredLocal,
+  }) {
+    return PostStatus(
+      deleted: deleted ?? this.deleted,
+      removed: removed ?? this.removed,
+      locked: locked ?? this.locked,
+      nsfw: nsfw ?? this.nsfw,
+      local: local ?? this.local,
+      featuredCommunity: featuredCommunity ?? this.featuredCommunity,
+      featuredLocal: featuredLocal ?? this.featuredLocal,
     );
   }
+}
 
-  factory ThunderPost.fromLemmyPostView(Map<String, dynamic> postView, {List<Media> media = const []}) {
-    final post = postView['post'];
-    final creator = postView['creator'];
-    final community = postView['community'];
-    final imageDetails = postView['image_details'];
-    final counts = postView['counts'];
+class PostCounts extends Equatable {
+  /// Net score, when available.
+  final int? score;
 
-    final subscribed = postView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postView['subscribed']) : null;
+  /// Number of upvotes, when available.
+  final int? upvotes;
 
-    return ThunderPost(
-      id: post['id'],
-      name: post['name'],
-      url: post['url'],
-      body: post['body'],
-      creatorId: post['creator_id'],
-      communityId: post['community_id'],
-      removed: post['removed'],
-      locked: post['locked'],
-      published: DateTime.parse(post['published']),
-      updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
-      deleted: post['deleted'],
-      nsfw: post['nsfw'],
-      thumbnailUrl: post['thumbnail_url'],
-      apId: post['ap_id'],
-      local: post['local'],
-      languageId: post['language_id'],
-      featuredCommunity: post['featured_community'],
-      featuredLocal: post['featured_local'],
-      altText: post['alt_text'],
-      creator: creator != null ? ThunderUser.fromLemmyUser(creator) : null,
-      community: community != null ? ThunderCommunity.fromLemmyCommunity(community, subscribed: subscribed) : null,
-      imageDetails: imageDetails,
-      creatorBannedFromCommunity: postView['creator_banned_from_community'],
-      creatorIsModerator: postView['creator_is_moderator'],
-      creatorIsAdmin: postView['creator_is_admin'],
-      comments: counts['comments'],
-      score: counts['score'],
-      upvotes: counts['upvotes'],
-      downvotes: counts['downvotes'],
-      newestCommentTime: counts['newest_comment_time'] != null ? DateTime.parse(counts['newest_comment_time']) : null,
-      subscribed: subscribed,
-      saved: postView['saved'],
-      read: postView['read'],
-      hidden: postView['hidden'],
-      creatorBlocked: postView['creator_blocked'],
-      myVote: postView['my_vote'],
-      unreadComments: postView['unread_comments'],
-      media: media,
+  /// Number of downvotes, when available.
+  final int? downvotes;
+
+  /// Number of comments.
+  final int? comments;
+
+  /// Number of unread comments for the signed-in account.
+  final int? unreadComments;
+
+  /// Time of the newest comment, when available.
+  final DateTime? newestCommentAt;
+
+  const PostCounts({
+    this.score,
+    this.upvotes,
+    this.downvotes,
+    this.comments,
+    this.unreadComments,
+    this.newestCommentAt,
+  });
+
+  @override
+  List<Object?> get props => [score, upvotes, downvotes, comments, unreadComments, newestCommentAt];
+
+  PostCounts copyWith({
+    int? score,
+    int? upvotes,
+    int? downvotes,
+    int? comments,
+    int? unreadComments,
+    DateTime? newestCommentAt,
+  }) {
+    return PostCounts(
+      score: score ?? this.score,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+      comments: comments ?? this.comments,
+      unreadComments: unreadComments ?? this.unreadComments,
+      newestCommentAt: newestCommentAt ?? this.newestCommentAt,
     );
   }
+}
 
-  factory ThunderPost.fromPiefedPostView(Map<String, dynamic> postView, {List<Media> media = const []}) {
-    final post = postView['post'];
-    final creator = postView['creator'];
-    final community = postView['community'];
-    final counts = postView['counts'];
+class PostContext extends Equatable {
+  /// Whether the signed-in account saved it.
+  final bool? saved;
 
-    final subscribed = postView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((e) => e.name == postView['subscribed']) : null;
+  /// Whether the signed-in account has read it.
+  final bool? read;
 
-    return ThunderPost(
-      id: post['id'],
-      name: post['title'],
-      url: post['url'],
-      body: post['body'],
-      creatorId: post['user_id'],
-      communityId: post['community_id'],
-      removed: post['removed'],
-      locked: post['locked'],
-      published: DateTime.parse(post['published']),
-      updated: post['edited_at'] != null ? DateTime.parse(post['edited_at']) : null,
-      deleted: post['deleted'],
-      nsfw: post['nsfw'],
-      // embedVideoUrl // Not available in PieFed
-      thumbnailUrl: post['thumbnail_url'],
-      apId: post['ap_id'],
-      local: post['local'],
-      languageId: post['language_id'],
-      featuredCommunity: post['sticky'],
-      featuredLocal: false, // Not available in PieFed
-      altText: post['alt_text'],
-      tags: parsePiefedTags(post['tags']),
-      flairs: ThunderFlair.parsePiefedList(postView['flair_list']),
-      creator: ThunderUser.fromPiefedUser(creator),
-      community: ThunderCommunity.fromPiefedCommunity(community, subscribed: subscribed),
-      imageDetails: post['image_details'],
-      creatorBannedFromCommunity: postView['creator_banned_from_community'],
-      creatorIsModerator: postView['creator_is_moderator'],
-      creatorIsAdmin: postView['creator_is_admin'],
-      comments: counts['comments'],
-      score: counts['score'],
-      upvotes: counts['upvotes'],
-      downvotes: counts['downvotes'],
-      newestCommentTime: counts['newest_comment_time'] != null ? DateTime.parse(counts['newest_comment_time']) : null,
-      subscribed: subscribed,
-      saved: postView['saved'],
-      read: postView['read'],
-      hidden: postView['hidden'],
-      // creatorBlocked // Not available in PieFed
-      myVote: postView['my_vote'],
-      unreadComments: postView['unread_comments'],
-      media: media,
-    );
-  }
+  /// Whether the signed-in account has hidden it.
+  final bool? hidden;
 
-  factory ThunderPost.fromPiefedPost(Map<String, dynamic> post, {List<Media> media = const []}) {
-    return ThunderPost(
-      id: post['id'],
-      name: post['title'],
-      url: post['url'],
-      body: post['body'],
-      creatorId: post['user_id'],
-      communityId: post['community_id'],
-      removed: post['removed'],
-      locked: post['locked'],
-      published: DateTime.parse(post['published']),
-      updated: post['updated'] != null ? DateTime.parse(post['updated']) : null,
-      deleted: post['deleted'],
-      nsfw: post['nsfw'],
-      thumbnailUrl: post['thumbnail_url'],
-      apId: post['ap_id'],
-      local: post['local'],
-      languageId: post['language_id'],
-      featuredCommunity: post['sticky'],
-      featuredLocal: false, // Not available in PieFed
-      altText: post['alt_text'],
-      tags: parsePiefedTags(post['tags']),
-      flairs: ThunderFlair.parsePiefedList(post['flair_list']),
-      media: media,
+  /// The signed-in account's vote.
+  final VoteState vote;
+
+  /// Subscription state for the post's community.
+  final SubscriptionStatus? subscribed;
+
+  /// Whether the signed-in account blocked the creator.
+  final bool? creatorBlocked;
+
+  /// Whether the creator is banned from the community.
+  final bool? creatorBannedFromCommunity;
+
+  /// Whether the creator moderates the community.
+  final bool? creatorIsModerator;
+
+  /// Whether the creator is an instance admin.
+  final bool? creatorIsAdmin;
+
+  /// Whether the signed-in account can moderate this post.
+  final bool? canModerate;
+
+  const PostContext({
+    this.saved,
+    this.read,
+    this.hidden,
+    this.vote = VoteState.none,
+    this.subscribed,
+    this.creatorBlocked,
+    this.creatorBannedFromCommunity,
+    this.creatorIsModerator,
+    this.creatorIsAdmin,
+    this.canModerate,
+  });
+
+  @override
+  List<Object?> get props => [
+        saved,
+        read,
+        hidden,
+        vote,
+        subscribed,
+        creatorBlocked,
+        creatorBannedFromCommunity,
+        creatorIsModerator,
+        creatorIsAdmin,
+        canModerate,
+      ];
+
+  PostContext copyWith({
+    bool? saved,
+    bool? read,
+    bool? hidden,
+    VoteState? vote,
+    SubscriptionStatus? subscribed,
+    bool? creatorBlocked,
+    bool? creatorBannedFromCommunity,
+    bool? creatorIsModerator,
+    bool? creatorIsAdmin,
+    bool? canModerate,
+  }) {
+    return PostContext(
+      saved: saved ?? this.saved,
+      read: read ?? this.read,
+      hidden: hidden ?? this.hidden,
+      vote: vote ?? this.vote,
+      subscribed: subscribed ?? this.subscribed,
+      creatorBlocked: creatorBlocked ?? this.creatorBlocked,
+      creatorBannedFromCommunity: creatorBannedFromCommunity ?? this.creatorBannedFromCommunity,
+      creatorIsModerator: creatorIsModerator ?? this.creatorIsModerator,
+      creatorIsAdmin: creatorIsAdmin ?? this.creatorIsAdmin,
+      canModerate: canModerate ?? this.canModerate,
     );
   }
 }

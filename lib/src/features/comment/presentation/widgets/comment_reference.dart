@@ -36,7 +36,7 @@ class CommentReference extends StatelessWidget {
   void _onTap(BuildContext context, Account account) {
     final l10n = GlobalContext.l10n;
 
-    if (comment.post?.deleted == true && comment.post?.creatorId != account.userId) {
+    if (comment.post?.status.deleted == true && comment.post?.creatorId != account.userId) {
       return showSnackbar(l10n.unableToLoadPost);
     }
 
@@ -54,8 +54,8 @@ class CommentReference extends StatelessWidget {
       label: """${l10n.inReplyTo(comment.community!.name, comment.post!.name)}\n
           ${fetchInstanceNameFromUrl(comment.community!.actorId)}\n
           ${comment.creator!.name}\n
-          ${comment.upvotes == 0 ? '' : l10n.xUpvotes(formatNumberToK(comment.upvotes!))}\n
-          ${comment.downvotes == 0 ? '' : l10n.xDownvotes(formatNumberToK(comment.downvotes!))}\n
+          ${comment.counts.upvotes == 0 ? '' : l10n.xUpvotes(formatNumberToK(comment.counts.upvotes!))}\n
+          ${comment.counts.downvotes == 0 ? '' : l10n.xDownvotes(formatNumberToK(comment.counts.downvotes!))}\n
           ${formatTimeToString(dateTime: (comment.updated ?? comment.published).toIso8601String())}\n
           ${cleanCommentContent(comment)}""",
       child: InkWell(
@@ -111,7 +111,7 @@ class _CommentReferenceHeader extends StatelessWidget {
                 Row(
                   spacing: 5.0,
                   children: [
-                    if (comment.post?.deleted ?? false) const Icon(Icons.delete_rounded, size: 15.0, color: Colors.red),
+                    if (comment.post?.status.deleted ?? false) const Icon(Icons.delete_rounded, size: 15.0, color: Colors.red),
                     Flexible(
                       child: ExcludeSemantics(
                         child: Text(

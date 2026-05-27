@@ -98,6 +98,10 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   return instance_discovery.getInstanceInfo(url, id: id, timeout: timeout);
 }
 
+String? normalizeInstanceHost(String? url) {
+  return instance_discovery.normalizeInstanceHost(url);
+}
+
 /// Determines the proper ThreadiversePlatform by fetching software information from nodeinfo.
 ///
 /// Given a URL, fetches the .well-known/nodeinfo endpoint and parses the JSON response

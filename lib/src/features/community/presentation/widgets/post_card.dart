@@ -146,10 +146,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _onAction(SwipeAction action) {
-    final int? myVote = widget.post.myVote;
-    final bool saved = widget.post.saved ?? false;
-    final bool read = widget.post.read ?? false;
-    final bool hidden = widget.post.hidden ?? false;
+    final int myVote = widget.post.context.vote.score;
+    final bool saved = widget.post.context.saved ?? false;
+    final bool read = widget.post.context.read ?? false;
+    final bool hidden = widget.post.context.hidden ?? false;
 
     triggerPostAction(
       context: context,
@@ -158,7 +158,7 @@ class _PostCardState extends State<PostCard> {
       onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
       onToggleReadAction: (int postId, bool newRead) => widget.onReadAction(newRead),
       onHideAction: (int postId, bool hide) => widget.onHideAction(hide),
-      voteType: myVote ?? 0,
+      voteType: myVote,
       saved: saved,
       read: read,
       hidden: hidden,
@@ -200,7 +200,7 @@ class _PostCardState extends State<PostCard> {
     final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
     final flairs = feedType == FeedType.community ? widget.post.flairs : const <ThunderFlair>[];
     final postIsCompact = useCompactView ||
-        (pinnedPostsUseCompactView && (widget.post.featuredLocal || (feedType == FeedType.community && widget.post.featuredCommunity))) ||
+        (pinnedPostsUseCompactView && (widget.post.status.featuredLocal || (feedType == FeedType.community && widget.post.status.featuredCommunity))) ||
         (linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
 
     // Determine which post card view to use based on the settings
@@ -296,8 +296,8 @@ class _PostCardState extends State<PostCard> {
     );
 
     if (currentSwipeDirection != DismissDirection.none) {
-      final read = widget.post.read ?? false;
-      final hidden = widget.post.hidden ?? false;
+      final read = widget.post.context.read ?? false;
+      final hidden = widget.post.context.hidden ?? false;
 
       final actionThresholds = [0.15, 0.35];
       final leftActions = [leftPrimaryPostGesture, leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();

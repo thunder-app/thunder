@@ -97,7 +97,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        if (!post.removed) {
+        if (!post.status.removed) {
           navigateToPost(context, postId: post.id);
         } else {
           showSnackbar(l10n.unableToFindPost);
@@ -365,7 +365,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        if (community != null && !community!.removed) {
+        if (community != null && !community!.status.removed) {
           navigateToFeedPage(context, feedType: FeedType.community, communityId: community!.id);
         } else {
           showSnackbar(l10n.unableToFindCommunity);

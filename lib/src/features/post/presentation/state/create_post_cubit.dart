@@ -105,7 +105,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         communityId: resolvedCommunityId,
         community: resolvedCommunity,
         languageId: post?.languageId,
-        isNsfw: post?.nsfw ?? false,
+        isNsfw: post?.status.nsfw ?? false,
         userChanged: account.id != _initialAccountId,
         isPiefedComposer: account.platform == ThreadiversePlatform.piefed,
         piefedMetadataStatus: _initialPiefedStatusFor(post),

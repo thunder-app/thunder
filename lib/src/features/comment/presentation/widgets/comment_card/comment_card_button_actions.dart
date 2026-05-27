@@ -73,7 +73,7 @@ class _CommentCardButtonActionsState extends State<CommentCardButtonActions> {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    final voteType = widget.comment.myVote ?? 0;
+    final voteType = widget.comment.context.vote.score;
     final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
     final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 

@@ -1,12 +1,13 @@
+import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 
-List<Map<String, dynamic>> removeImageByAlias({
-  required List<Map<String, dynamic>> images,
+List<AccountMediaItem> removeImageByAlias({
+  required List<AccountMediaItem> images,
   required String alias,
 }) {
-  final updated = List<Map<String, dynamic>>.from(images);
+  final updated = List<AccountMediaItem>.from(images);
   updated.removeWhere(
-    (localImageView) => localImageView['local_image']['pictrs_alias'] == alias,
+    (localImageView) => localImageView.alias == alias,
   );
   return updated;
 }

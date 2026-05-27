@@ -187,9 +187,9 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
   void determineUserGroups() {
     final account = resolveEffectiveAccount(context);
 
-    if (widget.post.creator?.botAccount == true) userGroups.add(UserType.bot);
-    if (widget.post.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
-    if (widget.post.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
+    if (widget.post.creator?.status.botAccount == true) userGroups.add(UserType.bot);
+    if (widget.post.context.creatorIsModerator ?? false) userGroups.add(UserType.moderator);
+    if (widget.post.context.creatorIsAdmin ?? false) userGroups.add(UserType.admin);
     if (widget.post.creator?.id == account.userId) userGroups.add(UserType.self);
     if (widget.post.creator?.published.month == DateTime.now().month && widget.post.creator?.published.day == DateTime.now().day) userGroups.add(UserType.birthday);
   }

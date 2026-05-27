@@ -66,11 +66,8 @@ final class ReportFeedChangeFilterTypeEvent extends ReportEvent {
 }
 
 final class ReportFeedItemActionedEvent extends ReportEvent {
-  /// This is the original PostReportView to perform the action upon. Only one of [postReportView] or [commentReportView] should be set
-  final ThunderPostReport? postReportView;
-
-  /// This is the original CommentReportView to perform the action upon. Only one of [postReportView] or [commentReportView] should be set
-  final ThunderCommentReport? commentReportView;
+  /// The report to perform the action upon.
+  final ThunderReport report;
 
   /// This indicates the relevant action to perform on the post/comment report
   final ReportAction reportAction;
@@ -79,14 +76,13 @@ final class ReportFeedItemActionedEvent extends ReportEvent {
   final ReportActionInput? actionInput;
 
   const ReportFeedItemActionedEvent({
-    this.postReportView,
-    this.commentReportView,
+    required this.report,
     required this.reportAction,
     this.actionInput,
   });
 
   @override
-  List<Object?> get props => [postReportView, commentReportView, reportAction, actionInput];
+  List<Object?> get props => [report, reportAction, actionInput];
 }
 
 /// Event for clearing the report feed snackbar message

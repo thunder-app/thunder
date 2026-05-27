@@ -3,19 +3,21 @@ import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_page.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
+import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// Base class for Lemmy API clients, containing shared parsing helpers.
@@ -229,9 +231,12 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   }
 
   @override
-  Future<List<ThunderPostReport>> getPostReports({
+  Future<ThunderPage<ThunderReport>> getReports({
+    ReportKind? kind,
     int? postId,
+    int? commentId,
     int page = 1,
+    String? cursor,
     int limit = 20,
     bool unresolved = false,
     int? communityId,
@@ -240,7 +245,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   }
 
   @override
-  Future<ThunderPostReport> resolvePostReport({required int reportId, required bool resolved}) async {
+  Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved}) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
@@ -306,22 +311,6 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
-  @override
-  Future<List<ThunderCommentReport>> getCommentReports({
-    int? commentId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
-    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
-  }
-
-  @override
-  Future<ThunderCommentReport> resolveCommentReport({required int reportId, required bool resolved}) async {
-    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
-  }
-
   // =============================================================
   // Communities
   // =============================================================
@@ -361,6 +350,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     String? username,
     PostSortType? sort,
     int? page,
+    String? cursor,
     int? limit,
     bool? saved,
     bool? includeContent,
@@ -475,30 +465,17 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
     bool unread = false,
     int? creatorId,
   }) async {
-    final json = await request(HttpMethod.get, '$basePath/private_message/list', {
-      'page': page,
-      'limit': limit,
-      'unread_only': unread,
-      'creator_id': creatorId,
-    });
-    return (json['private_messages'] as List).map<ThunderPrivateMessage>((pm) => ThunderPrivateMessage.fromLemmyPrivateMessageView(pm)).toList();
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
-  Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
-      'private_message_id': messageId,
-      'read': read,
-    });
+  Future<void> markPrivateMessageAsRead({required int notificationId, required bool read}) async {
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
   Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message', {
-      'recipient_id': recipientId,
-      'content': content,
-    });
-    return ThunderPrivateMessage.fromLemmyPrivateMessageView(json['private_message_view']);
+    throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
   @override
@@ -541,7 +518,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   }
 
   @override
-  Future<Map<String, dynamic>> media({int? page, int? limit}) async {
+  Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
@@ -571,7 +548,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
           dateTime: event['mod_remove_post']['when_'],
           moderator: event['moderator'] != null ? parseUser(event['moderator']) : null,
           reason: event['mod_remove_post']['reason'],
-          post: ThunderPost.fromLemmyPost(event['post']),
+          post: const LemmyV3PrimitiveMapper().post(event['post']),
           community: parseCommunity(event['community']),
           actioned: event['mod_remove_post']['removed'],
         );
@@ -580,7 +557,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
           type: type,
           dateTime: event['mod_lock_post']['when_'],
           moderator: event['moderator'] != null ? parseUser(event['moderator']) : null,
-          post: ThunderPost.fromLemmyPost(event['post']),
+          post: const LemmyV3PrimitiveMapper().post(event['post']),
           community: parseCommunity(event['community']),
           actioned: event['mod_lock_post']['locked'],
         );
@@ -589,7 +566,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
           type: type,
           dateTime: event['mod_feature_post']['when_'],
           moderator: event['moderator'] != null ? parseUser(event['moderator']) : null,
-          post: ThunderPost.fromLemmyPost(event['post']),
+          post: const LemmyV3PrimitiveMapper().post(event['post']),
           community: parseCommunity(event['community']),
           actioned: event['mod_feature_post']['featured'],
         );
@@ -600,8 +577,8 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
           moderator: event['moderator'] != null ? parseUser(event['moderator']) : null,
           reason: event['mod_remove_comment']['reason'],
           user: event['commenter'] != null ? parseUser(event['commenter']) : null,
-          post: ThunderPost.fromLemmyPost(event['post']),
-          comment: ThunderComment.fromLemmyComment(event['comment']),
+          post: const LemmyV3PrimitiveMapper().post(event['post']),
+          comment: const LemmyV3PrimitiveMapper().comment(event['comment']),
           community: parseCommunity(event['community']),
           actioned: event['mod_remove_comment']['removed'],
         );
@@ -729,7 +706,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   }
 
   @override
-  Future<void> deleteImage({required String file, required String token}) async {
+  Future<void> deleteImage({required String file, String? token}) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 

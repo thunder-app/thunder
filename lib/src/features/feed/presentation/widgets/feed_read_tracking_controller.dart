@@ -51,7 +51,7 @@ class FeedReadTrackingController {
         continue;
       }
 
-      if (post.read == false) {
+      if (post.context.read == false) {
         _queuedPostIds.add(post.id);
       }
       _processedPostIds.add(post.id);

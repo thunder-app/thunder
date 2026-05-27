@@ -11,7 +11,7 @@ abstract class AccountRepository {
   Future<List<ThunderCommunity>> subscriptions();
 
   /// Fetches the user's media.
-  Future<AccountMedia> media({int? page, int? limit});
+  Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit});
 
   /// Saves the user's settings.
   Future<void> saveSettings(AccountSettingsUpdate update);
@@ -26,5 +26,5 @@ abstract class AccountRepository {
   Future<String> uploadImage(String filePath);
 
   /// Delete an uploaded image.
-  Future<void> deleteImage({required String file, required String token});
+  Future<void> deleteImage({required String file, String? token});
 }

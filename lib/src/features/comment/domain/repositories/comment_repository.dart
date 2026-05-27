@@ -45,12 +45,6 @@ abstract class CommentRepository {
   /// Reports a comment
   Future<void> report(int commentId, String reason);
 
-  /// Get comment reports
-  Future<List<ThunderCommentReport>> getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId});
-
-  /// Resolve a comment report
-  Future<ThunderCommentReport> resolveCommentReport(int reportId, bool resolved);
-
   /// Creates a placeholder comment from the given parameters. This is mainly used to display a preview of the comment
   /// with the applied settings on Settings -> Appearance -> Comments page.
   Future<ThunderComment> createExample({

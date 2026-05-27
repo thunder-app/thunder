@@ -29,7 +29,7 @@ abstract class PrivateMessageRepository {
 
   /// Updates the read state for a private message.
   Future<void> markAsRead({
-    required int messageId,
+    required int notificationId,
     bool read,
   });
 }
@@ -92,10 +92,10 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
 
   @override
   Future<void> markAsRead({
-    required int messageId,
+    required int notificationId,
     bool read = true,
   }) async {
     _ensureLoggedIn();
-    await _api.markPrivateMessageAsRead(messageId: messageId, read: read);
+    await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
 }

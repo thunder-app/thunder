@@ -87,8 +87,8 @@ class CommunityStatsList extends StatelessWidget {
       children: [
         ...[
           SidebarStat(
-            icon: community.local ? Icons.house_rounded : Icons.language_rounded,
-            value: l10n.visibility(community.local ? l10n.localOnly : l10n.public),
+            icon: community.status.local ? Icons.house_rounded : Icons.language_rounded,
+            value: l10n.visibility(community.status.local ? l10n.localOnly : l10n.public),
           ),
           const SizedBox(height: 8.0),
         ],
@@ -99,37 +99,37 @@ class CommunityStatsList extends StatelessWidget {
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.people_rounded,
-          value: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.subscribers)),
+          value: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribers)),
         ),
-        if (community.subscribersLocal != null)
+        if (community.counts.subscribersLocal != null)
           SidebarStat(
             icon: Icons.people_rounded,
-            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.subscribersLocal)),
+            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribersLocal)),
           ),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.posts)),
+          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.counts.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.comments)),
+          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.counts.comments)),
         ),
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.calendar_month_rounded,
-          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.usersActiveHalfYear)),
+          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.counts.usersActiveHalfYear)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_month_rounded,
-          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.usersActiveMonth)),
+          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.counts.usersActiveMonth)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_week_rounded,
-          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.usersActiveWeek)),
+          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.counts.usersActiveWeek)),
         ),
         SidebarStat(
           icon: Icons.calendar_view_day_rounded,
-          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.usersActiveDay)),
+          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.counts.usersActiveDay)),
         ),
       ],
     );

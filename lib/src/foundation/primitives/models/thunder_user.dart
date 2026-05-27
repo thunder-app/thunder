@@ -1,86 +1,66 @@
 import 'package:equatable/equatable.dart';
 
 class ThunderUser extends Equatable {
-  /// The user's ID
+  /// The user id on their home instance.
   final int id;
 
-  /// The user's name
+  /// Username without the instance domain.
   final String name;
 
-  /// The user's display name
+  /// Optional display name chosen by the user.
   final String? displayName;
 
-  /// The user's display name or name
+  /// Display name when present, otherwise the username.
   String get displayNameOrName => displayName ?? name;
 
-  /// The user's avatar
+  /// User avatar URL.
   final String? avatar;
 
-  /// Whether the user is banned
-  final bool banned;
-
-  /// The user's created date
+  /// When the user was created.
   final DateTime published;
 
-  /// The user's updated date
+  /// When the user was last updated, when available.
   final DateTime? updated;
 
-  /// The user's actor ID
+  /// Canonical ActivityPub URL for the user.
   final String actorId;
 
-  /// The user's bio
+  /// User profile bio.
   final String? bio;
 
-  /// Whether the user is local
-  final bool local;
-
-  /// The user's banner
+  /// User banner URL.
   final String? banner;
 
-  /// Whether the user is deleted
-  final bool deleted;
-
-  /// The user's matrix user ID
+  /// Matrix user id linked to the account.
   final String? matrixUserId;
 
-  /// Whether the user is a bot
-  final bool botAccount;
-
-  /// The date and time that the user's ban expires
-  final DateTime? banExpires;
-
-  /// The user's instance ID
+  /// ID of the instance that hosts the user.
   final int instanceId;
 
-  /// The total number of posts that the user has made.
-  final int? posts;
+  /// What has happened to the user account itself.
+  final UserStatus status;
 
-  /// The total number of comments that the user has made.
-  final int? comments;
+  /// Post and comment counts for the user.
+  final UserCounts counts;
 
-  /// Whether the user is an admin.
-  final bool? isAdmin;
+  /// How the signed-in account relates to this user.
+  final UserContext context;
 
   const ThunderUser({
     required this.id,
     required this.name,
     this.displayName,
     this.avatar,
-    required this.banned,
     required this.published,
     this.updated,
     required this.actorId,
     this.bio,
-    required this.local,
     this.banner,
-    required this.deleted,
     this.matrixUserId,
-    required this.botAccount,
-    this.banExpires,
     required this.instanceId,
-    this.posts,
-    this.comments,
-    this.isAdmin,
+    required this.status,
+    this.counts = const UserCounts(),
+    this.context = const UserContext(),
   });
 
   @override
@@ -89,21 +69,16 @@ class ThunderUser extends Equatable {
         name,
         displayName,
         avatar,
-        banned,
         published,
         updated,
         actorId,
         bio,
-        local,
         banner,
-        deleted,
         matrixUserId,
-        botAccount,
-        banExpires,
         instanceId,
-        posts,
-        comments,
-        isAdmin,
+        status,
+        counts,
+        context,
       ];
 
   ThunderUser copyWith({
@@ -111,138 +86,89 @@ class ThunderUser extends Equatable {
     String? name,
     String? displayName,
     String? avatar,
-    bool? banned,
     DateTime? published,
     DateTime? updated,
     String? actorId,
     String? bio,
-    bool? local,
     String? banner,
-    bool? deleted,
     String? matrixUserId,
-    bool? botAccount,
-    DateTime? banExpires,
     int? instanceId,
-    int? posts,
-    int? comments,
-    bool? isAdmin,
+    UserStatus? status,
+    UserCounts? counts,
+    UserContext? context,
   }) {
     return ThunderUser(
       id: id ?? this.id,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       avatar: avatar ?? this.avatar,
-      banned: banned ?? this.banned,
       published: published ?? this.published,
       updated: updated ?? this.updated,
       actorId: actorId ?? this.actorId,
       bio: bio ?? this.bio,
-      local: local ?? this.local,
       banner: banner ?? this.banner,
-      deleted: deleted ?? this.deleted,
       matrixUserId: matrixUserId ?? this.matrixUserId,
-      botAccount: botAccount ?? this.botAccount,
-      banExpires: banExpires ?? this.banExpires,
       instanceId: instanceId ?? this.instanceId,
-      posts: posts ?? this.posts,
-      comments: comments ?? this.comments,
-      isAdmin: isAdmin ?? this.isAdmin,
+      status: status ?? this.status,
+      counts: counts ?? this.counts,
+      context: context ?? this.context,
     );
   }
+}
 
-  factory ThunderUser.fromLemmyUser(Map<String, dynamic> user) {
-    return ThunderUser(
-      id: user['id'],
-      name: user['name'],
-      displayName: user['display_name'],
-      avatar: user['avatar'],
-      banned: user['banned'],
-      published: DateTime.parse(user['published']),
-      updated: user['updated'] != null ? DateTime.parse(user['updated']) : null,
-      actorId: user['actor_id'],
-      bio: user['bio'],
-      local: user['local'],
-      banner: user['banner'],
-      deleted: user['deleted'],
-      matrixUserId: user['matrix_user_id'],
-      botAccount: user['bot_account'],
-      banExpires: user['ban_expires'] != null ? DateTime.parse(user['ban_expires']) : null,
-      instanceId: user['instance_id'],
-    );
-  }
+class UserStatus extends Equatable {
+  /// Whether the user is banned.
+  final bool banned;
 
-  factory ThunderUser.fromLemmyUserView(Map<String, dynamic> userView) {
-    final user = userView['person'];
-    final counts = userView['counts'];
+  /// Whether the user is local to the current instance.
+  final bool local;
 
-    return ThunderUser(
-      id: user['id'],
-      name: user['name'],
-      displayName: user['display_name'],
-      avatar: user['avatar'],
-      banned: user['banned'],
-      published: DateTime.parse(user['published']),
-      updated: user['updated'] != null ? DateTime.parse(user['updated']) : null,
-      actorId: user['actor_id'],
-      bio: user['bio'],
-      local: user['local'],
-      banner: user['banner'],
-      deleted: user['deleted'],
-      matrixUserId: user['matrix_user_id'],
-      botAccount: user['bot_account'],
-      banExpires: user['ban_expires'] != null ? DateTime.parse(user['ban_expires']) : null,
-      instanceId: user['instance_id'],
-      posts: counts['post_count'],
-      comments: counts['comment_count'],
-      isAdmin: userView['is_admin'],
-    );
-  }
+  /// Whether the account was deleted.
+  final bool deleted;
 
-  factory ThunderUser.fromPiefedUser(Map<String, dynamic> user) {
-    return ThunderUser(
-      id: user['id'],
-      name: user['user_name'],
-      displayName: user['title'],
-      avatar: user['avatar'],
-      banned: user['banned'],
-      published: DateTime.parse(user['published']),
-      // updated: // Not available in PieFed
-      actorId: user['actor_id'],
-      bio: user['about'],
-      local: user['local'],
-      banner: user['banner'],
-      deleted: user['deleted'],
-      // matrixUserId: // Not available in PieFed
-      botAccount: user['bot'],
-      // banExpires: // Not available in PieFed
-      instanceId: user['instance_id'],
-    );
-  }
+  /// Whether the account is marked as a bot.
+  final bool botAccount;
 
-  factory ThunderUser.fromPiefedUserView(Map<String, dynamic> userView) {
-    final user = userView['person'];
-    final counts = userView['counts'];
+  /// When the ban expires, when available.
+  final DateTime? banExpires;
 
-    return ThunderUser(
-      id: user['id'],
-      name: user['user_name'],
-      displayName: user['title'],
-      avatar: user['avatar'],
-      banned: user['banned'],
-      published: DateTime.parse(user['published']),
-      // updated: // Not available in PieFed
-      actorId: user['actor_id'],
-      bio: user['about'],
-      local: user['local'],
-      banner: user['banner'],
-      deleted: user['deleted'],
-      // matrixUserId: // Not available in PieFed
-      botAccount: user['bot'],
-      // banExpires: // Not available in PieFed
-      instanceId: user['instance_id'],
-      posts: counts['post_count'],
-      comments: counts['comment_count'],
-      isAdmin: userView['is_admin'],
-    );
-  }
+  const UserStatus({
+    required this.banned,
+    required this.local,
+    required this.deleted,
+    required this.botAccount,
+    this.banExpires,
+  });
+
+  @override
+  List<Object?> get props => [banned, local, deleted, botAccount, banExpires];
+}
+
+class UserCounts extends Equatable {
+  /// Number of posts created by the user.
+  final int? posts;
+
+  /// Number of comments created by the user.
+  final int? comments;
+
+  const UserCounts({this.posts, this.comments});
+
+  @override
+  List<Object?> get props => [posts, comments];
+}
+
+class UserContext extends Equatable {
+  /// Whether the user is an instance admin.
+  final bool? isAdmin;
+
+  /// Whether the signed-in account blocked this user.
+  final bool? blocked;
+
+  /// Private note the signed-in account added to this user.
+  final String? note;
+
+  const UserContext({this.isAdmin, this.blocked, this.note});
+
+  @override
+  List<Object?> get props => [isAdmin, blocked, note];
 }

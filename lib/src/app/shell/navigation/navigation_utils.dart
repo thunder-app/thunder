@@ -34,6 +34,7 @@ import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/notification/presentation/pages/notifications_page.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;

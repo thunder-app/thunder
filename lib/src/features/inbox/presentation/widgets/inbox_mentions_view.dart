@@ -45,20 +45,21 @@ class _InboxMentionsViewState extends State<InboxMentionsView> {
             itemCount: widget.mentions.length,
             itemBuilder: (context, index) {
               ThunderComment comment = widget.mentions[index];
-              assert(comment.read != null, 'Comment should have a read status');
+              assert(comment.notification != null, 'Comment should have notification metadata');
+              final notification = comment.notification!;
 
               return Column(
-                key: ValueKey<int>(comment.replyMentionId!),
+                key: ValueKey<int>(notification.id),
                 children: [
                   CommentReference(
                     comment: comment,
                     child: IconButton(
                       onPressed: () =>
-                          context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: comment.replyMentionId!, actionInput: ReadInboxActionInput(!comment.read!))),
+                          context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, personMentionId: notification.id, actionInput: ReadInboxActionInput(!notification.read))),
                       icon: Icon(
                         Icons.check,
                         semanticLabel: l10n.markAsRead,
-                        color: comment.read! ? Colors.green : null,
+                        color: notification.read ? Colors.green : null,
                       ),
                       visualDensity: VisualDensity.compact,
                     ),

@@ -30,8 +30,8 @@ List<ThunderPrivateMessage> markIncomingPrivateMessagesRead(
   Account account,
 ) {
   return messages.map((message) {
-    if (message.read || !isIncomingPrivateMessage(message, account)) return message;
-    return message.copyWith(read: true);
+    if ((message.notification?.read ?? false) || !isIncomingPrivateMessage(message, account)) return message;
+    return message.copyWith(notification: message.notification?.copyWith(read: true));
   }).toList();
 }
 
@@ -55,7 +55,7 @@ List<PrivateMessageThread> groupPrivateMessagesByParticipant(
   final threads = grouped.entries.map((entry) {
     final threadMessages = [...entry.value]..sort((a, b) => a.published.compareTo(b.published));
     final latest = threadMessages.last;
-    final unreadCount = threadMessages.where((message) => !message.read && isIncomingPrivateMessage(message, account)).length;
+    final unreadCount = threadMessages.where((message) => !(message.notification?.read ?? false) && isIncomingPrivateMessage(message, account)).length;
     final conversationId = threadMessages.firstWhereOrNull((message) => message.conversationId != null)?.conversationId;
 
     return PrivateMessageThread(

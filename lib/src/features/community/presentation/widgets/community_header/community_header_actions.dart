@@ -108,11 +108,13 @@ class _ActionChipsList extends StatelessWidget {
     final blocked = context.select<ProfileBloc, bool>((bloc) => bloc.state.siteResponse?.myUser?.communityBlocks.any((c) => c.id == community.id) ?? false);
     if (blocked) return [_BlockActionChip(community: community)];
 
+    final subscriptionStatus = community.context.subscribed ?? SubscriptionStatus.notSubscribed;
+
     return [
       _SubscriptionActionChip(community: community),
-      if (community.subscribed != SubscriptionStatus.notSubscribed) _FavoritesActionChip(community: community),
+      if (subscriptionStatus != SubscriptionStatus.notSubscribed) _FavoritesActionChip(community: community),
       _CreatePostActionChip(community: community),
-      if (community.subscribed == SubscriptionStatus.notSubscribed) _BlockActionChip(community: community),
+      if (subscriptionStatus == SubscriptionStatus.notSubscribed) _BlockActionChip(community: community),
     ];
   }
 }
@@ -172,14 +174,16 @@ class _SubscriptionActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subscriptionStatus = community.context.subscribed ?? SubscriptionStatus.notSubscribed;
+
     return ThunderActionChip(
-      icon: _getSubscriptionIcon(community.subscribed!),
-      label: _getSubscriptionLabel(community.subscribed!),
+      icon: _getSubscriptionIcon(subscriptionStatus),
+      label: _getSubscriptionLabel(subscriptionStatus),
       onPressed: () async {
         HapticFeedback.mediumImpact();
         final updatedCommunity = await handleSubscription(context, community);
 
-        if (community.subscribed != updatedCommunity?.subscribed) {
+        if (community.context.subscribed != updatedCommunity?.context.subscribed) {
           context.read<ProfileBloc>().add(FetchProfileSubscriptions());
         }
         if (updatedCommunity != null) {
@@ -253,7 +257,7 @@ class _FavoritesActionChip extends StatelessWidget {
     final favorited = favorites.any((c) => c.id == community.id);
 
     // Only show for subscribed communities
-    if (community.subscribed != SubscriptionStatus.subscribed) {
+    if (community.context.subscribed != SubscriptionStatus.subscribed) {
       return const SizedBox.shrink();
     }
 

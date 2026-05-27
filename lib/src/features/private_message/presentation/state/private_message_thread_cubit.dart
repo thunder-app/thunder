@@ -127,9 +127,13 @@ class PrivateMessageThreadCubit extends Cubit<PrivateMessageThreadState> {
 
   Future<void> _markIncomingMessagesRead(List<ThunderPrivateMessage> messages) async {
     for (final message in messages) {
-      if (message.read || !isIncomingPrivateMessage(message, account)) continue;
+      if ((message.notification?.read ?? false) || !isIncomingPrivateMessage(message, account)) continue;
+
+      final notificationId = message.notification?.id;
+      if (notificationId == null) continue;
+
       try {
-        await _repository.markAsRead(messageId: message.id);
+        await _repository.markAsRead(notificationId: notificationId);
       } catch (_) {
         // Keep the thread responsive; a later inbox refresh will reconcile failures.
       }

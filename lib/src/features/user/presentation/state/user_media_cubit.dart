@@ -36,7 +36,7 @@ class UserMediaState extends Equatable {
   final UserMediaStatus status;
   final String? errorMessage;
   final AppErrorReason? errorReason;
-  final List<Map<String, dynamic>>? images;
+  final List<AccountMediaItem>? images;
   final List<ThunderPost>? imageSearchPosts;
   final List<ThunderComment>? imageSearchComments;
 
@@ -52,7 +52,7 @@ class UserMediaState extends Equatable {
       status: status ?? this.status,
       errorMessage: identical(errorMessage, _userMediaUnset) ? this.errorMessage : errorMessage as String?,
       errorReason: identical(errorReason, _userMediaUnset) ? this.errorReason : errorReason as AppErrorReason?,
-      images: identical(images, _userMediaUnset) ? this.images : images as List<Map<String, dynamic>>?,
+      images: identical(images, _userMediaUnset) ? this.images : images as List<AccountMediaItem>?,
       imageSearchPosts: identical(imageSearchPosts, _userMediaUnset) ? this.imageSearchPosts : imageSearchPosts as List<ThunderPost>?,
       imageSearchComments: identical(imageSearchComments, _userMediaUnset) ? this.imageSearchComments : imageSearchComments as List<ThunderComment>?,
     );
@@ -77,13 +77,13 @@ class UserMediaCubit extends Cubit<UserMediaState> {
 
     try {
       int page = 1;
-      final images = <Map<String, dynamic>>[];
+      final images = <AccountMediaItem>[];
 
       while (true) {
         final response = await accountRepository.media(page: page);
-        if (response.isEmpty) break;
+        if (response.items.isEmpty) break;
 
-        images.addAll(response.images);
+        images.addAll(response.items);
         page++;
       }
 
@@ -94,7 +94,7 @@ class UserMediaCubit extends Cubit<UserMediaState> {
     }
   }
 
-  Future<void> deleteMedia({required String deleteToken, required String id}) async {
+  Future<void> deleteMedia({String? deleteToken, required String id}) async {
     emit(state.copyWith(status: UserMediaStatus.deleting, errorMessage: '', errorReason: null));
 
     try {

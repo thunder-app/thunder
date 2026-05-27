@@ -40,7 +40,7 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
   }
 
   final postFutures = resolvedPosts
-      .expand((post) => [if (!hideNsfwPosts || (!post.nsfw && hideNsfwPosts)) parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode)])
+      .expand((post) => [if (!hideNsfwPosts || (!post.status.nsfw && hideNsfwPosts)) parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode)])
       .toList();
   final parsedPosts = await Future.wait(postFutures);
   return parsedPosts;
@@ -96,7 +96,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
     mediaType = MediaType.text;
   }
 
-  Media media = Media(mediaType: mediaType, originalUrl: url, nsfw: post.nsfw);
+  Media media = Media(mediaType: mediaType, originalUrl: url, nsfw: post.status.nsfw);
 
   // Set the proper alt text for the media
   if (media.mediaType == MediaType.text) {

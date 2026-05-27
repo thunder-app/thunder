@@ -237,13 +237,13 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                   useDisplayName: false, // Override because we're showing display name above
                 ),
               ),
-              if (payload.subscribed != null && payload.subscribers != null) ...[
+              if (payload.context.subscribed != null && payload.counts.subscribers != null) ...[
                 Row(
                   children: [
                     Icon(Icons.people_rounded, size: 16.0),
                     SizedBox(width: 5.0),
-                    Text(formatNumberToK(payload.subscribers ?? -1)),
-                    Text(' · ${switch (payload.subscribed) {
+                    Text(formatNumberToK(payload.counts.subscribers ?? -1)),
+                    Text(' · ${switch (payload.context.subscribed) {
                       SubscriptionStatus.pending => l10n.pending,
                       SubscriptionStatus.subscribed => l10n.subscribed,
                       SubscriptionStatus.notSubscribed => '',

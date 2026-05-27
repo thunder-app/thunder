@@ -75,7 +75,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
 
     final favourited = context.select<ProfileBloc, bool>((bloc) => bloc.state.favorites.any((c) => c.actorId == community.actorId));
 
-    String subscriptionButtonLabel = switch (community.subscribed) {
+    String subscriptionButtonLabel = switch (community.context.subscribed) {
       SubscriptionStatus.notSubscribed => l10n.subscribe,
       SubscriptionStatus.pending => l10n.unsubscribePending,
       SubscriptionStatus.subscribed => l10n.unsubscribe,
@@ -105,10 +105,10 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
                 useDisplayName: false,
               ),
             ),
-            if (widget.community.subscribers != null) ...[
+            if (widget.community.counts.subscribers != null) ...[
               Text(
-                ' · ${formatLongNumber(widget.community.subscribers!)}',
-                semanticsLabel: l10n.countSubscribers(widget.community.subscribers!),
+                ' · ${formatLongNumber(widget.community.counts.subscribers!)}',
+                semanticsLabel: l10n.countSubscribers(widget.community.counts.subscribers!),
               ),
               const SizedBox(width: 4),
               const Icon(Icons.people_rounded, size: 16.0),
@@ -122,13 +122,13 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
         trailing: widget.resolutionAccount == null
             ? IconButton(
                 onPressed: () {
-                  onSubscribe(community.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
-                  showSnackbar(community.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                  onSubscribe(community.context.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
+                  showSnackbar(community.context.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                 },
                 icon: Semantics(
                   label: subscriptionButtonLabel,
                   child: Icon(
-                    switch (community.subscribed) {
+                    switch (community.context.subscribed) {
                       SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
                       SubscriptionStatus.pending => Icons.pending_outlined,
                       SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,

@@ -21,10 +21,10 @@ ThunderPrivateMessage cleanDeletedPrivateMessage(
 }
 
 ThunderComment cleanDeletedMention(ThunderComment mention) {
-  if (mention.removed) {
+  if (mention.status.removed) {
     return mention.copyWith(content: '_deleted by moderator_');
   }
-  if (mention.deleted) {
+  if (mention.status.deleted) {
     return mention.copyWith(content: '_deleted by creator_');
   }
   return mention;

@@ -116,7 +116,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       case CommunityPostAction.subscribeToCommunity:
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, true);
-        if (community.subscribed != SubscriptionStatus.notSubscribed) {
+        if (community.context.subscribed != SubscriptionStatus.notSubscribed) {
           showSnackbar('Subscribed to ${community.titleOrName}');
         }
         widget.onAction(CommunityAction.follow, community);
@@ -124,7 +124,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       case CommunityPostAction.unsubscribeFromCommunity:
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, false);
-        if (community.subscribed == SubscriptionStatus.notSubscribed) {
+        if (community.context.subscribed == SubscriptionStatus.notSubscribed) {
           showSnackbar('Unsubscribed from ${community.titleOrName}');
         }
         widget.onAction(CommunityAction.follow, community);
@@ -132,7 +132,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       case CommunityPostAction.blockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, true);
-        if (community.blocked == true) {
+        if (community.context.blocked == true) {
           showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
         }
         widget.onAction(CommunityAction.block, community);
@@ -140,7 +140,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       case CommunityPostAction.unblockCommunity:
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, false);
-        if (community.blocked == false) {
+        if (community.context.blocked == false) {
           showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
         }
         widget.onAction(CommunityAction.block, community);

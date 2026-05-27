@@ -98,7 +98,7 @@ class PostBodyContentSection extends StatelessWidget {
                   style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                   textScaleFactor: contentFontSizeScale.textScaleFactor,
                 )
-              : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews),
+              : CommonMarkdownBody(body: post.body ?? '', nsfw: post.status.nsfw && hideNsfwPreviews),
         ),
       ),
     );

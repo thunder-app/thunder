@@ -45,7 +45,7 @@ FeedFabActionConfig resolveFeedFabActionConfig({
     _ => const <FeedFabAction>[],
   };
 
-  final isPostLocked = isLoggedIn && isCommunityFeed && community != null && community.postingRestrictedToMods && !moderates.any((moderatedCommunity) => moderatedCommunity.id == community.id);
+  final isPostLocked = isLoggedIn && isCommunityFeed && community != null && community.status.postingRestrictedToMods && !moderates.any((moderatedCommunity) => moderatedCommunity.id == community.id);
 
   return FeedFabActionConfig(
     singlePressAction: disabledActions.contains(preferredSinglePressAction) ? FeedFabAction.openFab : preferredSinglePressAction,

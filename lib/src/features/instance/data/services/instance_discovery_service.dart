@@ -4,15 +4,26 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/instance/api.dart';
+
+typedef PlatformDetector = Future<Map<String, dynamic>?> Function(String instance, {Duration? timeout});
+typedef InstanceRepositoryFactory = InstanceRepository Function(Account account);
 
 /// Fetches the instance info for a given URL.
 ///
 /// This includes the instance name, version, icon, and user count.
 /// If the URL is invalid or the instance is unreachable, it returns a default [ThunderInstanceInfo] with success set to false.
-Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
-  if (url?.isEmpty ?? true) {
+Future<ThunderInstanceInfo> getInstanceInfo(
+  String? url, {
+  int? id,
+  Duration? timeout,
+  PlatformDetector? platformDetector,
+  InstanceRepositoryFactory? instanceRepositoryFactory,
+}) async {
+  final instanceHost = normalizeInstanceHost(url);
+  if (instanceHost == null) {
     return ThunderInstanceInfo(
       domain: '',
       name: '',
@@ -21,17 +32,28 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   }
 
   try {
-    final platformInfo = await detectPlatformFromNodeInfo(url!);
-    final platform = platformInfo?['platform'];
+    final detector = platformDetector ?? detectPlatformFromNodeInfo;
+    final repositoryFactory = instanceRepositoryFactory ?? _defaultInstanceRepositoryFactory;
+    final platformInfo = await detector(instanceHost, timeout: timeout);
+    final platform = platformInfo?['platform'] as ThreadiversePlatform?;
+    if (platform == null) {
+      return ThunderInstanceInfo(
+        domain: '',
+        name: '',
+        success: false,
+      );
+    }
 
-    final account = Account(instance: url, id: '', index: -1, platform: platform);
+    PlatformVersionCache().trySet(instanceHost, platformInfo?['version']?.toString());
 
-    final site = await InstanceRepositoryImpl(account: account).info().timeout(timeout ?? const Duration(seconds: 5));
+    final account = Account(instance: instanceHost, id: '', index: -1, platform: platform);
+
+    final site = await repositoryFactory(account).info().timeout(timeout ?? const Duration(seconds: 5));
     final instance = site.site;
 
     return ThunderInstanceInfo(
       id: id,
-      domain: _fetchInstanceNameFromUrl(instance.actorId) ?? '',
+      domain: normalizeInstanceHost(instance.actorId) ?? instanceHost,
       version: site.version,
       name: instance.name,
       icon: instance.icon,
@@ -51,6 +73,21 @@ Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? tim
   }
 }
 
+InstanceRepository _defaultInstanceRepositoryFactory(Account account) => InstanceRepositoryImpl(account: account);
+
+String? normalizeInstanceHost(String? url) {
+  final trimmed = url?.trim();
+  if (trimmed == null || trimmed.isEmpty) return null;
+
+  final lowerTrimmed = trimmed.toLowerCase();
+  final value = lowerTrimmed.startsWith('http://') || lowerTrimmed.startsWith('https://') ? trimmed : 'https://$trimmed';
+  final uri = Uri.tryParse(value);
+  final host = uri?.host.trim().toLowerCase();
+  if (host == null || host.isEmpty) return null;
+
+  return host;
+}
+
 /// Determines the proper ThreadiversePlatform by fetching software information from nodeinfo.
 ///
 /// Given a URL, fetches the .well-known/nodeinfo endpoint and parses the JSON response
@@ -61,12 +98,12 @@ Future<Map<String, dynamic>?> detectPlatformFromNodeInfo(String url, {Duration? 
   if (url.isEmpty) return null;
 
   try {
-    Uri uri;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      uri = Uri.parse('https://$url');
-    } else {
-      uri = Uri.parse(url);
-    }
+    final instanceHost = normalizeInstanceHost(url);
+    if (instanceHost == null) return null;
+
+    final rawUrl = url.trim().toLowerCase();
+    final scheme = rawUrl.startsWith('http://') ? 'http' : 'https';
+    final uri = Uri.parse('$scheme://$instanceHost');
 
     final nodeInfoUri = Uri(
       scheme: uri.scheme,
@@ -119,13 +156,4 @@ Future<Map<String, dynamic>?> detectPlatformFromNodeInfo(String url, {Duration? 
   } catch (e) {
     return null;
   }
-}
-
-String? _fetchInstanceNameFromUrl(String? url) {
-  if (url == null) {
-    return null;
-  }
-
-  final uri = Uri.parse(url);
-  return uri.host;
 }

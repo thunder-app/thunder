@@ -12,9 +12,9 @@ import 'package:thunder/src/features/account/account.dart';
 List<UserType> getCommentUserGroups(ThunderComment comment, Account account) {
   final groups = <UserType>[];
 
-  if (comment.creator?.botAccount == true) groups.add(UserType.bot);
-  if (comment.creatorIsModerator == true) groups.add(UserType.moderator);
-  if (comment.creatorIsAdmin == true) groups.add(UserType.admin);
+  if (comment.creator?.status.botAccount == true) groups.add(UserType.bot);
+  if (comment.context.creatorIsModerator == true) groups.add(UserType.moderator);
+  if (comment.context.creatorIsAdmin == true) groups.add(UserType.admin);
   if (comment.post?.creatorId == comment.creatorId) groups.add(UserType.op);
   if (comment.creatorId == account.userId) groups.add(UserType.self);
 

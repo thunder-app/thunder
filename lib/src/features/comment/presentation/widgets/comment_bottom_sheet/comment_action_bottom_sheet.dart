@@ -162,8 +162,8 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
           moderatedCommunities: moderatedCommunities,
           user: widget.comment.creator!,
           communityId: widget.comment.community!.id,
-          isUserCommunityModerator: widget.comment.creatorIsModerator,
-          isUserBannedFromCommunity: widget.comment.creatorBannedFromCommunity,
+          isUserCommunityModerator: widget.comment.context.creatorIsModerator,
+          isUserBannedFromCommunity: widget.comment.context.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
             ProfileSiteInfoCache.instance.markDirty(account);
             widget.onAction?.call(userAction: userAction, comment: widget.comment);

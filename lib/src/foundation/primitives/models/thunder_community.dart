@@ -3,114 +3,179 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/foundation/primitives/enums/subscription_status.dart';
 
 class ThunderCommunity extends Equatable {
-  /// The community's ID
+  /// The community id on its home instance.
   final int id;
 
-  /// The community's name
+  /// Community handle without the instance domain.
   final String name;
 
-  /// The community's title
+  /// Display title for the community.
   final String title;
 
-  /// Helper method to get the title or name of the community
+  /// Display title when present, otherwise the community handle.
   String get titleOrName => title.isNotEmpty ? title : name;
 
-  /// The community's description
+  /// Sidebar or description text.
   final String? description;
 
-  /// Whether the community is removed
-  final bool removed;
-
-  /// The community's created date
+  /// When the community was created.
   final DateTime published;
 
-  /// The community's updated date
+  /// When the community was last updated, when available.
   final DateTime? updated;
 
-  /// Whether the community is deleted
-  final bool deleted;
-
-  /// Whether the community is NSFW
-  final bool nsfw;
-
-  /// The community's actor ID
+  /// Canonical ActivityPub URL for the community.
   final String actorId;
 
-  /// Whether the community is local
-  final bool local;
-
-  /// The community's icon
+  /// Community icon URL.
   final String? icon;
 
-  /// The community's banner
+  /// Community banner URL.
   final String? banner;
 
-  /// Whether the community is hidden
-  final bool hidden;
-
-  /// Whether posting is restricted to mods
-  final bool postingRestrictedToMods;
-
-  /// The community's instance ID
+  /// ID of the instance that hosts it.
   final int instanceId;
 
-  /// The community's visibility
+  /// Visibility label used by the community's platform.
   final String visibility;
 
-  /// The community's subscription status
-  final SubscriptionStatus? subscribed;
+  /// What has happened to the community itself.
+  final CommunityStatus status;
 
-  /// Whether the community is blocked
-  final bool? blocked;
+  /// Subscriber, post, comment, and activity counts.
+  final CommunityCounts counts;
 
-  /// Whether the current user is banned from the community
-  final bool? bannedFromCommunity;
-
-  /// The number of total subscribers
-  final int? subscribers;
-
-  /// The number of local subscribers
-  final int? subscribersLocal;
-
-  /// The number of posts
-  final int? posts;
-
-  /// The number of comments
-  final int? comments;
-
-  /// The number of users active in the last day
-  final int? usersActiveDay;
-
-  /// The number of users active in the last week
-  final int? usersActiveWeek;
-
-  /// The number of users active in the last month
-  final int? usersActiveMonth;
-
-  /// The number of users active in the last half year
-  final int? usersActiveHalfYear;
+  /// How the signed-in account relates to this community.
+  final CommunityContext context;
 
   const ThunderCommunity({
     required this.id,
     required this.name,
     required this.title,
     this.description,
-    required this.removed,
     required this.published,
     this.updated,
-    required this.deleted,
-    required this.nsfw,
     required this.actorId,
-    required this.local,
     this.icon,
     this.banner,
-    required this.hidden,
-    required this.postingRestrictedToMods,
     required this.instanceId,
     required this.visibility,
-    this.subscribed,
-    this.blocked,
-    this.bannedFromCommunity,
+    required this.status,
+    this.counts = const CommunityCounts(),
+    this.context = const CommunityContext(),
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        title,
+        description,
+        published,
+        updated,
+        actorId,
+        icon,
+        banner,
+        instanceId,
+        visibility,
+        status,
+        counts,
+        context,
+      ];
+
+  ThunderCommunity copyWith({
+    int? id,
+    String? name,
+    String? title,
+    String? description,
+    DateTime? published,
+    DateTime? updated,
+    String? actorId,
+    String? icon,
+    String? banner,
+    int? instanceId,
+    String? visibility,
+    CommunityStatus? status,
+    CommunityCounts? counts,
+    CommunityContext? context,
+  }) {
+    return ThunderCommunity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      published: published ?? this.published,
+      updated: updated ?? this.updated,
+      actorId: actorId ?? this.actorId,
+      icon: icon ?? this.icon,
+      banner: banner ?? this.banner,
+      instanceId: instanceId ?? this.instanceId,
+      visibility: visibility ?? this.visibility,
+      status: status ?? this.status,
+      counts: counts ?? this.counts,
+      context: context ?? this.context,
+    );
+  }
+}
+
+class CommunityStatus extends Equatable {
+  /// Whether moderators removed it.
+  final bool removed;
+
+  /// Whether it was deleted.
+  final bool deleted;
+
+  /// Whether it is marked not safe for work.
+  final bool nsfw;
+
+  /// Whether it is local to the current instance.
+  final bool local;
+
+  /// Whether it is hidden from listings.
+  final bool hidden;
+
+  /// Whether only moderators can create posts.
+  final bool postingRestrictedToMods;
+
+  const CommunityStatus({
+    required this.removed,
+    required this.deleted,
+    required this.nsfw,
+    required this.local,
+    required this.hidden,
+    required this.postingRestrictedToMods,
+  });
+
+  @override
+  List<Object?> get props => [removed, deleted, nsfw, local, hidden, postingRestrictedToMods];
+}
+
+class CommunityCounts extends Equatable {
+  /// Total subscribers known by the instance.
+  final int? subscribers;
+
+  /// Subscribers local to the community's home instance.
+  final int? subscribersLocal;
+
+  /// Number of posts in the community.
+  final int? posts;
+
+  /// Number of comments in the community.
+  final int? comments;
+
+  /// Active users in the last day.
+  final int? usersActiveDay;
+
+  /// Active users in the last week.
+  final int? usersActiveWeek;
+
+  /// Active users in the last month.
+  final int? usersActiveMonth;
+
+  /// Active users in the last half year.
+  final int? usersActiveHalfYear;
+
+  const CommunityCounts({
     this.subscribers,
     this.subscribersLocal,
     this.posts,
@@ -122,155 +187,24 @@ class ThunderCommunity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        title,
-        description,
-        removed,
-        published,
-        updated,
-        deleted,
-        nsfw,
-        actorId,
-        local,
-        icon,
-        banner,
-        hidden,
-        postingRestrictedToMods,
-        instanceId,
-        visibility,
-        subscribed,
-        blocked,
-        bannedFromCommunity,
-        subscribers,
-        subscribersLocal,
-        posts,
-        comments,
-        usersActiveDay,
-        usersActiveWeek,
-        usersActiveMonth,
-        usersActiveHalfYear,
-      ];
+  List<Object?> get props => [subscribers, subscribersLocal, posts, comments, usersActiveDay, usersActiveWeek, usersActiveMonth, usersActiveHalfYear];
+}
 
-  factory ThunderCommunity.fromLemmyCommunity(Map<String, dynamic> community, {SubscriptionStatus? subscribed}) {
-    return ThunderCommunity(
-      id: community['id'],
-      name: community['name'],
-      title: community['title'],
-      description: community['description'],
-      removed: community['removed'],
-      published: community['published'] != null ? DateTime.parse(community['published']) : DateTime.now(),
-      updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
-      deleted: community['deleted'],
-      nsfw: community['nsfw'],
-      actorId: community['actor_id'],
-      local: community['local'],
-      icon: community['icon'],
-      banner: community['banner'],
-      hidden: community['hidden'],
-      postingRestrictedToMods: community['posting_restricted_to_mods'],
-      instanceId: community['instance_id'],
-      visibility: community['visibility'],
-      subscribed: subscribed,
-    );
-  }
+class CommunityContext extends Equatable {
+  /// Subscription state for the signed-in account.
+  final SubscriptionStatus? subscribed;
 
-  factory ThunderCommunity.fromLemmyCommunityView(Map<String, dynamic> communityView) {
-    final community = communityView['community'];
-    final counts = communityView['counts'];
+  /// Whether the signed-in account blocked it.
+  final bool? blocked;
 
-    return ThunderCommunity(
-      id: community['id'],
-      name: community['name'],
-      title: community['title'],
-      description: community['description'],
-      removed: community['removed'],
-      published: DateTime.parse(community['published']),
-      updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
-      deleted: community['deleted'],
-      nsfw: community['nsfw'],
-      actorId: community['actor_id'],
-      local: community['local'],
-      icon: community['icon'],
-      banner: community['banner'],
-      hidden: community['hidden'],
-      postingRestrictedToMods: community['posting_restricted_to_mods'],
-      instanceId: community['instance_id'],
-      visibility: community['visibility'],
-      subscribed: communityView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((status) => status.name == communityView['subscribed']) : null,
-      blocked: communityView['blocked'],
-      bannedFromCommunity: communityView['banned_from_community'],
-      subscribers: counts['subscribers'],
-      subscribersLocal: counts['subscribers_local'],
-      posts: counts['posts'],
-      comments: counts['comments'],
-      usersActiveDay: counts['users_active_day'],
-      usersActiveWeek: counts['users_active_week'],
-      usersActiveMonth: counts['users_active_month'],
-      usersActiveHalfYear: counts['users_active_half_year'],
-    );
-  }
+  /// Whether the signed-in account is banned from it.
+  final bool? bannedFromCommunity;
 
-  factory ThunderCommunity.fromPiefedCommunity(Map<String, dynamic> community, {SubscriptionStatus? subscribed}) {
-    return ThunderCommunity(
-      id: community['id'],
-      name: community['name'],
-      title: community['title'],
-      description: community['description'],
-      removed: community['removed'],
-      published: DateTime.parse(community['published']),
-      updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
-      deleted: community['deleted'],
-      nsfw: community['nsfw'],
-      actorId: community['actor_id'],
-      local: community['local'],
-      icon: community['icon'],
-      banner: community['banner'],
-      hidden: community['hidden'],
-      postingRestrictedToMods: community['restricted_to_mods'],
-      instanceId: community['instance_id'],
-      visibility: "Public", // Not available in PieFed
-      subscribed: subscribed,
-      bannedFromCommunity: community['banned'],
-    );
-  }
+  /// Whether the signed-in account can moderate it.
+  final bool? canModerate;
 
-  factory ThunderCommunity.fromPiefedCommunityView(Map<String, dynamic> communityView) {
-    final community = communityView['community'];
-    final counts = communityView['counts'];
+  const CommunityContext({this.subscribed, this.blocked, this.bannedFromCommunity, this.canModerate});
 
-    final subscribed = communityView['subscribed'] != null ? SubscriptionStatus.values.firstWhere((status) => status.name == communityView['subscribed']) : null;
-
-    return ThunderCommunity(
-      id: community['id'],
-      name: community['name'],
-      title: community['title'],
-      description: community['description'],
-      removed: community['removed'],
-      published: DateTime.parse(community['published']),
-      updated: community['updated'] != null ? DateTime.parse(community['updated']) : null,
-      deleted: community['deleted'],
-      nsfw: community['nsfw'],
-      actorId: community['actor_id'],
-      local: community['local'],
-      icon: community['icon'],
-      banner: community['banner'],
-      hidden: community['hidden'],
-      postingRestrictedToMods: community['restricted_to_mods'],
-      instanceId: community['instance_id'],
-      visibility: "Public", // Not available in PieFed
-      subscribed: subscribed,
-      bannedFromCommunity: community['banned'],
-      blocked: communityView['blocked'],
-      subscribers: counts['total_subscriptions_count'],
-      subscribersLocal: counts['subscriptions_count'],
-      posts: counts['post_count'],
-      comments: counts['post_reply_count'],
-      usersActiveDay: counts['active_daily'],
-      usersActiveWeek: counts['active_weekly'],
-      usersActiveMonth: counts['active_monthly'],
-      usersActiveHalfYear: counts['active_6monthly'],
-    );
-  }
+  @override
+  List<Object?> get props => [subscribed, blocked, bannedFromCommunity, canModerate];
 }

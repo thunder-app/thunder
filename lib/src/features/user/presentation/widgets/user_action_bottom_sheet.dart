@@ -179,7 +179,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       case UserBottomSheetAction.unbanUserFromCommunity:
         Navigator.of(context).pop();
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: false);
-        if (!user.banned) {
+        if (!user.status.banned) {
           showSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.banFromCommunity, null);
@@ -218,7 +218,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         final communityRepository = CommunityRepositoryImpl(account: widget.account);
 
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: true, reason: controller.text, removeData: removeData);
-        if (user.banned) {
+        if (user.status.banned) {
           showSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.banFromCommunity, null);

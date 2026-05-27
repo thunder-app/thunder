@@ -101,7 +101,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   CustomThemeType selectedTheme = CustomThemeType.deepBlue;
 
   // For now, we will use the pre-made themes provided by FlexScheme
-  // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
 
   List<ListPickerItem> customThemeOptions = [
     ListPickerItem(

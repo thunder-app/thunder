@@ -16,6 +16,7 @@ import 'package:markdown/markdown.dart';
 // Project imports
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
@@ -40,7 +41,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       bool removed = await deleteAccountFromNotificationServer();
       if (!removed) debugPrint("Failed to delete previous device token from server.");
 
-      // TODO: Select accounts to enable push notifications
       for (Account account in accounts) {
         bool success = await sendAuthTokenToNotificationServer(type: NotificationType.unifiedPush, token: endpoint.url, jwt: account.jwt!, instance: account.instance);
         if (!success) debugPrint("Failed to send device token to server for account ${account.id}. Skipping.");
@@ -96,7 +96,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           '${commentReplyView.postName} · ${generateCommunityFullName(
             null,
             commentReplyView.communityName,
-            commentReplyView.communityName, // TODO: Add Community Title to Server
+            commentReplyView.communityName,
             fetchInstanceNameFromUrl(commentReplyView.communityActorId),
             communitySeparator: communitySeparator,
             useDisplayName: useDisplayNamesForCommunities,
@@ -104,7 +104,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           contentTitle: generateUserFullName(
             null,
             commentReplyView.creatorName,
-            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            commentReplyView.creatorName,
             fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
@@ -112,7 +112,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           summaryText: generateUserFullName(
             null,
             commentReplyView.recipientName,
-            commentReplyView.recipientName, // TODO: Add Recipient Display Name to Server
+            commentReplyView.recipientName,
             fetchInstanceNameFromUrl(commentReplyView.recipientActorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
@@ -133,7 +133,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           title: generateUserFullName(
             null,
             commentReplyView.creatorName,
-            commentReplyView.creatorName, // TODO: Add Creator Display Name to Server
+            commentReplyView.creatorName,
             fetchInstanceNameFromUrl(commentReplyView.creatorActorId),
             userSeparator: userSeparator,
             useDisplayName: useDisplayNamesForUsers,
@@ -152,7 +152,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
 
       // Notification for a mention
       if (data.containsKey('mention')) {
-        ThunderComment comment = ThunderComment.fromLemmyCommentView(data['mention']);
+        ThunderComment comment = const LemmyV3PrimitiveMapper().commentView(data['mention']);
 
         final String commentContent = cleanCommentContent(comment);
         final String htmlComment = cleanImagesFromHtml(markdownToHtml(commentContent));
@@ -211,10 +211,6 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           ).toJson()),
           inboxType: NotificationInboxType.mention,
         );
-      }
-
-      if (data.containsKey('message')) {
-        // TODO: Show message
       }
     },
   );

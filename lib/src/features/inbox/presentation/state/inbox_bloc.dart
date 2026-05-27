@@ -91,7 +91,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   int _privateMessageUnreadCount(Iterable<ThunderPrivateMessage> privateMessages) {
-    return privateMessages.where((privateMessage) => !privateMessage.read && isIncomingPrivateMessage(privateMessage, account)).length;
+    return privateMessages.where((privateMessage) => !(privateMessage.notification?.read ?? false) && isIncomingPrivateMessage(privateMessage, account)).length;
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -299,7 +299,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     ThunderPrivateMessage? existingPrivateMessageView;
 
     if (event.commentReplyId != null && event.action == CommentAction.read) {
-      existingReplyIndex = state.replies.indexWhere((element) => element.replyMentionId == event.commentReplyId);
+      existingReplyIndex = state.replies.indexWhere((element) => element.notification?.id == event.commentReplyId);
       if (existingReplyIndex != -1) {
         existingCommentReplyView = state.replies[existingReplyIndex];
       }
@@ -311,7 +311,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     if (event.personMentionId != null && event.action == CommentAction.read) {
-      existingMentionIndex = state.mentions.indexWhere((element) => element.replyMentionId == event.personMentionId);
+      existingMentionIndex = state.mentions.indexWhere((element) => element.notification?.id == event.personMentionId);
       if (existingMentionIndex != -1) {
         existingPersonMentionView = state.mentions[existingMentionIndex];
       }
@@ -323,7 +323,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     if (event.privateMessageId != null) {
-      existingPrivateMessageIndex = state.privateMessages.indexWhere((element) => element.id == event.privateMessageId);
+      existingPrivateMessageIndex = state.privateMessages.indexWhere((element) => element.notification?.id == event.privateMessageId);
       if (existingPrivateMessageIndex != -1) {
         existingPrivateMessageView = state.privateMessages[existingPrivateMessageIndex];
       }
@@ -367,18 +367,18 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           // Optimistically remove the reply from the list or change the status (depending on whether we're showing all)
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
             if (!state.showUnreadOnly) {
-              updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(read: value);
+              updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(notification: existingCommentReplyView.notification?.copyWith(read: value));
             } else if (value) {
               updatedReplies.removeAt(existingReplyIndex);
             }
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
             if (!state.showUnreadOnly) {
-              updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(read: value);
+              updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(notification: existingPersonMentionView.notification?.copyWith(read: value));
             } else if (value) {
               updatedMentions.removeAt(existingMentionIndex);
             }
           } else if (existingPrivateMessageView != null && existingPrivateMessageIndex != -1) {
-            updatedPrivateMessages[existingPrivateMessageIndex] = existingPrivateMessageView.copyWith(read: value);
+            updatedPrivateMessages[existingPrivateMessageIndex] = existingPrivateMessageView.copyWith(notification: existingPrivateMessageView.notification?.copyWith(read: value));
           }
 
           if (existingCommentReplyView != null) {
@@ -393,7 +393,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             );
           } else if (existingPrivateMessageView != null) {
             await notificationRepository.markMessageAsRead(
-              messageId: event.privateMessageId!,
+              notificationId: event.privateMessageId!,
               read: value,
             );
           }
@@ -445,17 +445,21 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
             updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(
-              score: updatedComment.score,
-              upvotes: updatedComment.upvotes,
-              downvotes: updatedComment.downvotes,
-              myVote: updatedComment.myVote,
+              counts: existingCommentReplyView.counts.copyWith(
+                score: updatedComment.counts.score,
+                upvotes: updatedComment.counts.upvotes,
+                downvotes: updatedComment.counts.downvotes,
+              ),
+              context: existingCommentReplyView.context.copyWith(vote: updatedComment.context.vote),
             );
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
             updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(
-              score: updatedComment.score,
-              upvotes: updatedComment.upvotes,
-              downvotes: updatedComment.downvotes,
-              myVote: updatedComment.myVote,
+              counts: existingPersonMentionView.counts.copyWith(
+                score: updatedComment.counts.score,
+                upvotes: updatedComment.counts.upvotes,
+                downvotes: updatedComment.counts.downvotes,
+              ),
+              context: existingPersonMentionView.context.copyWith(vote: updatedComment.context.vote),
             );
           }
 
@@ -501,9 +505,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           ThunderComment updatedComment = optimisticallySaveComment(comment!, value);
 
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
-            updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(saved: updatedComment.saved!);
+            updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(context: existingCommentReplyView.context.copyWith(saved: updatedComment.context.saved!));
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
-            updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(saved: updatedComment.saved!);
+            updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(context: existingPersonMentionView.context.copyWith(saved: updatedComment.context.saved!));
           }
 
           // Immediately set the status, and continue
@@ -549,11 +553,11 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
             updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(
-              deleted: updatedComment.deleted,
+              status: existingCommentReplyView.status.copyWith(deleted: updatedComment.status.deleted),
             );
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
             updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(
-              deleted: updatedComment.deleted,
+              status: existingPersonMentionView.status.copyWith(deleted: updatedComment.status.deleted),
             );
           }
 
@@ -596,9 +600,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       await notificationRepository.markAllNotificationsAsRead();
 
       // Update all the replies, mentions, and messages to be read locally
-      List<ThunderComment> updatedReplies = state.replies.map((comment) => comment.copyWith(read: true)).toList();
-      List<ThunderComment> updatedMentions = state.mentions.map((comment) => comment.copyWith(read: true)).toList();
-      List<ThunderPrivateMessage> updatedPrivateMessages = state.privateMessages.map((privateMessage) => privateMessage.copyWith(read: true)).toList();
+      List<ThunderComment> updatedReplies = state.replies.map((comment) => comment.copyWith(notification: comment.notification?.copyWith(read: true))).toList();
+      List<ThunderComment> updatedMentions = state.mentions.map((comment) => comment.copyWith(notification: comment.notification?.copyWith(read: true))).toList();
+      List<ThunderPrivateMessage> updatedPrivateMessages =
+          state.privateMessages.map((privateMessage) => privateMessage.copyWith(notification: privateMessage.notification?.copyWith(read: true))).toList();
 
       return emit(state.copyWith(
         status: InboxStatus.success,

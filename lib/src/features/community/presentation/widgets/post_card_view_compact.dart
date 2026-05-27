@@ -80,7 +80,7 @@ class PostCardViewCompact extends StatelessWidget {
     final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
     final indicateRead = this.indicateRead ?? dimReadPostsSetting;
-    final dim = indicateRead && post.read == true;
+    final dim = indicateRead && post.context.read == true;
 
     final hasMedia = post.media.isNotEmpty;
     final isTextPost = hasMedia && post.media.first.mediaType == MediaType.text;
@@ -112,24 +112,24 @@ class PostCardViewCompact extends StatelessWidget {
                 if (showCommunityFirst) postCardAuthor,
                 PostCardTitle(
                   title: post.name,
-                  hidden: post.hidden ?? false,
-                  locked: post.locked,
-                  saved: post.saved ?? false,
-                  pinned: post.featuredCommunity || post.featuredLocal,
-                  deleted: post.deleted,
-                  removed: post.removed,
+                  hidden: post.context.hidden ?? false,
+                  locked: post.status.locked,
+                  saved: post.context.saved ?? false,
+                  pinned: post.status.featuredCommunity || post.status.featuredLocal,
+                  deleted: post.status.deleted,
+                  removed: post.status.removed,
                   dim: dim,
                   flairs: flairs,
                 ),
                 if (!showCommunityFirst) postCardAuthor,
                 PostCardMetadata(
                   postCardViewType: ViewMode.compact,
-                  score: post.score,
-                  upvoteCount: post.upvotes,
-                  downvoteCount: post.downvotes,
-                  voteType: post.myVote ?? 0,
-                  commentCount: post.comments,
-                  unreadCommentCount: post.unreadComments,
+                  score: post.counts.score,
+                  upvoteCount: post.counts.upvotes,
+                  downvoteCount: post.counts.downvotes,
+                  voteType: post.context.vote.score,
+                  commentCount: post.counts.comments,
+                  unreadCommentCount: post.counts.unreadComments,
                   dateTime: dateTime,
                   edited: edited,
                   url: post.media.firstOrNull?.mediaType == MediaType.image ? null : mediaUrl,

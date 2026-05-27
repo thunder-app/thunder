@@ -13,7 +13,6 @@ Color getBackgroundColor(BuildContext context) {
 
 /// Retrieves the color based on the depth of the comment in the comment tree
 Color getCommentLevelColor(BuildContext context, int level) {
-  // TODO: make this themeable
   List<Color> colors = [
     Colors.red.shade300,
     Colors.orange.shade300,

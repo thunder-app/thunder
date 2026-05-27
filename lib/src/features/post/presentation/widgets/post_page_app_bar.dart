@@ -239,7 +239,6 @@ class PostAppBarActions extends StatelessWidget {
                 icon: Icons.select_all_rounded,
                 title: l10n.selectText,
               ),
-              // TODO: Add this back once switching accounts is fixed
               // ThunderPopupMenuItem(
               //   onTap: () async {
               //     await temporarilySwitchAccount(
@@ -276,11 +275,11 @@ class PostAppBarActions extends StatelessWidget {
 }
 
 (String, IconData?) getCommentSort(BuildContext context) {
-  final state = context.select<PostBloc, ({PostStatus status, CommentSortType? commentSortType})>(
+  final state = context.select<PostBloc, ({PostPageStatus status, CommentSortType? commentSortType})>(
     (bloc) => (status: bloc.state.status, commentSortType: bloc.state.commentSortType),
   );
 
-  if (state.status == PostStatus.initial) {
+  if (state.status == PostPageStatus.initial) {
     return ('', null);
   }
 

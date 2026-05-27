@@ -52,14 +52,13 @@ class PostBodyPreview extends StatelessWidget {
       colors: [color.withValues(alpha: 0.0), color],
     );
 
-    /// TODO: combine logic with the post body
     final content = viewSource
         ? ScalableText(
             post.body ?? '',
             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
             textScaleFactor: contentFontSizeScale.textScaleFactor,
           )
-        : CommonMarkdownBody(body: post.body ?? '', nsfw: post.nsfw && hideNsfwPreviews);
+        : CommonMarkdownBody(body: post.body ?? '', nsfw: post.status.nsfw && hideNsfwPreviews);
 
     return LimitedBox(
       maxHeight: maxHeight,

@@ -57,7 +57,7 @@ Future<FeedResult> fetchFeedItems({
       int postResponseLength = responsePosts.length;
 
       // Remove deleted posts
-      responsePosts = responsePosts.where((post) => post.deleted == false).toList();
+      responsePosts = responsePosts.where((post) => post.status.deleted == false).toList();
 
       // Remove posts that contain any of the keywords in the title, body, or url
       responsePosts = responsePosts.where((post) {
@@ -92,9 +92,7 @@ Future<FeedResult> fetchFeedItems({
   }
 
   // Guarantee that we fetch at least x posts/comments (unless we reach the end of the feed)
-  // Note: User feed still uses page-based pagination via userRepository.getUser
   if (userId != null || username != null) {
-    // For user feeds, derive page from cursor or start at 1
     int currentPage = currentCursor != null ? int.tryParse(currentCursor) ?? 1 : 1;
 
     do {
@@ -105,6 +103,7 @@ Future<FeedResult> fetchFeedItems({
         username: username,
         sort: postSortType,
         page: currentPage,
+        cursor: currentCursor,
         saved: showSaved,
         includeContent: true,
       );
@@ -113,8 +112,8 @@ Future<FeedResult> fetchFeedItems({
       List<ThunderComment> responseComments = response['comments'];
 
       // Remove deleted posts and comments
-      responsePosts = responsePosts.where((post) => post.deleted == false).toList();
-      responseComments = responseComments.where((comment) => comment.deleted == false).toList();
+      responsePosts = responsePosts.where((post) => post.status.deleted == false).toList();
+      responseComments = responseComments.where((comment) => comment.status.deleted == false).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
       List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
@@ -123,11 +122,15 @@ Future<FeedResult> fetchFeedItems({
 
       if (responsePosts.isEmpty) hasReachedPostsEnd = true;
       if (responseComments.isEmpty) hasReachedCommentsEnd = true;
-      currentPage++;
-    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
 
-    // Update cursor to reflect the current page for user feeds
-    currentCursor = currentPage.toString();
+      currentCursor = response['next_page'];
+      currentPage = int.tryParse(currentCursor ?? '') ?? currentPage + 1;
+
+      if (currentCursor == null) {
+        hasReachedPostsEnd = true;
+        hasReachedCommentsEnd = true;
+      }
+    } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
   }
 
   return FeedResult(

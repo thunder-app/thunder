@@ -3,11 +3,11 @@ import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_page.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
@@ -16,28 +16,29 @@ import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart'
 import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
-/// Response from getting a single post.
+/// Result for a single post lookup.
 typedef GetPostResponse = ({
   ThunderPost post,
   List<ThunderUser> moderators,
   List<ThunderPost> crossPosts,
 });
 
-/// Response from getting a list of posts.
+/// Result for a post list.
 typedef GetPostsResponse = ({
   List<ThunderPost> posts,
   String? nextPage,
 });
 
-/// Response from getting a list of comments.
+/// Result for a comment list.
 typedef GetCommentsResponse = ({
   List<ThunderComment> comments,
   String? nextPage,
 });
 
-/// Response from getting a community.
+/// Result for a community lookup.
 typedef GetCommunityResponse = ({
   ThunderCommunity community,
   ThunderSite? site,
@@ -46,16 +47,17 @@ typedef GetCommunityResponse = ({
   List<ThunderFlair> flairs,
 });
 
-/// Response from getting a user.
+/// Result for a user lookup.
 typedef GetUserResponse = ({
   ThunderUser user,
   ThunderSite? site,
   List<ThunderPost> posts,
   List<ThunderComment> comments,
   List<ThunderCommunity> moderates,
+  String? nextPage,
 });
 
-/// Response from resolving an object.
+/// Result for resolving a link or handle.
 typedef ResolveResponse = ({
   ThunderCommunity? community,
   ThunderPost? post,
@@ -63,14 +65,14 @@ typedef ResolveResponse = ({
   ThunderUser? user,
 });
 
-/// Response from getting unread count.
+/// Unread inbox counts.
 typedef UnreadCountResponse = ({
   int replies,
   int mentions,
   int privateMessages,
 });
 
-/// Response from searching.
+/// Search results grouped by content type.
 typedef SearchResponse = ({
   MetaSearchType type,
   List<ThunderPost> posts,
@@ -79,15 +81,15 @@ typedef SearchResponse = ({
   List<ThunderUser> users,
 });
 
-/// Abstract interface defining all API operations.
+/// Shared contract for talking to Lemmy and PieFed.
 ///
-/// All platform-specific clients must implement this interface.
+/// Each platform client turns its own responses into the Thunder models used by the rest of the app.
 abstract class ThunderApiClient {
   // =============================================================
   // Platform Identification
   // =============================================================
 
-  /// The platform name (e.g., 'Lemmy', 'PieFed') for error messages and logging.
+  /// Platform name used in errors and logs.
   String get platformName;
 
   // =============================================================
@@ -99,7 +101,7 @@ abstract class ThunderApiClient {
   /// Returns the JWT token on success, or null if login failed.
   Future<String?> login({required String username, required String password, String? totp});
 
-  /// Get instance information and current user data (on specific API versions).
+  /// Get instance details and, when signed in, the current account details.
   Future<ThunderSiteResponse> site();
 
   // =============================================================
@@ -110,6 +112,8 @@ abstract class ThunderApiClient {
   Future<GetPostResponse> getPost(int postId, {int? commentId});
 
   /// Fetch a list of posts.
+  ///
+  /// Pass [cursor] from the previous response's `nextPage`, when loading more.
   Future<GetPostsResponse> getPosts({
     String? cursor,
     int? limit,
@@ -127,7 +131,7 @@ abstract class ThunderApiClient {
     bool? showSaved,
   });
 
-  /// Fetch server-side metadata for an external URL.
+  /// Fetch preview details for an external URL.
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url});
 
   /// Create a new post.
@@ -155,7 +159,7 @@ abstract class ThunderApiClient {
     String? customThumbnail,
   });
 
-  /// Create a new post and apply any platform-specific metadata.
+  /// Create a new post with any extra tags or flair the platform supports.
   Future<ThunderPost> createPostWithMetadata({
     required String title,
     required int communityId,
@@ -180,10 +184,9 @@ abstract class ThunderApiClient {
     );
   }
 
-  /// Edit an existing post and apply any platform-specific metadata.
+  /// Edit an existing post with any extra tags or flair the platform supports.
   ///
-  /// For metadata lists, `null` leaves existing values unchanged, an empty list clears them,
-  /// and a non-empty list applies the supplied values.
+  /// For lists, `null` keeps the existing values, an empty list clears them, and a non-empty list applies the new values.
   Future<ThunderPost> editPostWithMetadata({
     required int postId,
     required String title,
@@ -235,17 +238,22 @@ abstract class ThunderApiClient {
   /// Report a post.
   Future<void> reportPost({required int postId, required String reason});
 
-  /// Get post reports.
-  Future<List<ThunderPostReport>> getPostReports({
+  /// Get reports using Thunder's report model.
+  ///
+  /// Pass [cursor] from the previous page, when the platform provides one.
+  Future<ThunderPage<ThunderReport>> getReports({
+    ReportKind? kind,
     int? postId,
+    int? commentId,
     int page = 1,
+    String? cursor,
     int limit = 20,
     bool unresolved = false,
     int? communityId,
   });
 
-  /// Resolve a post report.
-  Future<ThunderPostReport> resolvePostReport({required int reportId, required bool resolved});
+  /// Mark a report of the given [kind] as resolved or unresolved.
+  Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved});
 
   // =============================================================
   // Comments
@@ -255,6 +263,8 @@ abstract class ThunderApiClient {
   Future<ThunderComment> getComment(int commentId);
 
   /// Fetch comments for a post.
+  ///
+  /// Pass [cursor] from the previous response's `nextPage`, when loading more.
   Future<GetCommentsResponse> getComments({
     required int postId,
     int? page,
@@ -293,18 +303,6 @@ abstract class ThunderApiClient {
   /// Report a comment.
   Future<void> reportComment({required int commentId, required String reason});
 
-  /// Get comment reports.
-  Future<List<ThunderCommentReport>> getCommentReports({
-    int? commentId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  });
-
-  /// Resolve a comment report.
-  Future<ThunderCommentReport> resolveCommentReport({required int reportId, required bool resolved});
-
   // =============================================================
   // Communities
   // =============================================================
@@ -331,11 +329,14 @@ abstract class ThunderApiClient {
   // =============================================================
 
   /// Fetch a user profile and their content.
+  ///
+  /// Pass [cursor] from the previous response's `nextPage`, when loading more.
   Future<GetUserResponse> getUser({
     int? userId,
     String? username,
     PostSortType? sort,
     int? page,
+    String? cursor,
     int? limit,
     bool? saved,
     bool? includeContent,
@@ -427,8 +428,10 @@ abstract class ThunderApiClient {
     int? creatorId,
   });
 
-  /// Mark a private message as read.
-  Future<void> markPrivateMessageAsRead({required int messageId, required bool read});
+  /// Mark a private-message notification as read.
+  ///
+  /// Use `ThunderPrivateMessage.notification?.id` here; that can be different rom the private message id.
+  Future<void> markPrivateMessageAsRead({required int notificationId, required bool read});
 
   /// Create a private message.
   Future<ThunderPrivateMessage> createPrivateMessage({
@@ -457,8 +460,8 @@ abstract class ThunderApiClient {
   /// Export settings.
   Future<dynamic> exportSettings();
 
-  /// Get user's uploaded media.
-  Future<Map<String, dynamic>> media({int? page, int? limit});
+  /// Get media uploaded by the signed-in account.
+  Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit});
 
   // =============================================================
   // Modlog
@@ -493,7 +496,7 @@ abstract class ThunderApiClient {
   Future<Map<String, dynamic>> uploadImage(String filePath);
 
   /// Delete an uploaded image.
-  Future<void> deleteImage({required String file, required String token});
+  Future<void> deleteImage({required String file, String? token});
 
   // =============================================================
   // Feature Flags

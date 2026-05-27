@@ -3,9 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/instance/instance.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/session/domain/repositories/session_repository.dart';
 
 part 'session_event.dart';
@@ -83,9 +85,10 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     emit(state.copyWith(mutationStatus: SessionMutationStatus.loading, lastMutation: () => SessionMutationType.authenticatedLogin, error: () => null));
 
     try {
-      final instanceUrl = event.instance.replaceAll('https://', '').trim();
+      final instanceUrl = normalizeInstanceHost(event.instance) ?? event.instance.replaceAll('https://', '').trim();
       final platformInfo = await _platformDetectionService.detectPlatform(instanceUrl) ?? {'platform': ThreadiversePlatform.lemmy};
       final platform = platformInfo['platform'] as ThreadiversePlatform;
+      PlatformVersionCache().trySet(instanceUrl, platformInfo['version']?.toString());
 
       var tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
       final jwt = await _accountRepositoryFactory(tempAccount).login(username: event.username, password: event.password, totp: event.totp);

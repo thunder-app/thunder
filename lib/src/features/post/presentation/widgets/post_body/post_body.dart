@@ -103,7 +103,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
 
   void _initializeData() {
     // Initialize sorted cross posts
-    sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.upvotes!.compareTo(a.upvotes!));
+    sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes!.compareTo(a.counts.upvotes!));
   }
 
   void _updateIsOwnPost() {
@@ -184,8 +184,8 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     children.add(
       PostBodyMetadata(
         languageId: post.languageId,
-        commentCount: post.comments,
-        unreadCommentCount: post.unreadComments,
+        commentCount: post.counts.comments,
+        unreadCommentCount: post.counts.unreadComments,
         dateTime: post.updated?.toIso8601String() ?? post.published.toIso8601String(),
         hasBeenEdited: post.updated != null,
         url: media?.mediaType != MediaType.image ? post.url : null,
@@ -200,11 +200,11 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       children.addAll([
         (showCrossPosts && sortedCrossPosts.isNotEmpty) ? SizedBox(height: 8.0) : Divider(),
         PostBodyActionsBar(
-          vote: post.myVote,
-          upvotes: post.upvotes,
-          downvotes: post.downvotes,
-          saved: post.saved ?? false,
-          locked: post.locked,
+          vote: post.context.vote.score,
+          upvotes: post.counts.upvotes,
+          downvotes: post.counts.downvotes,
+          saved: post.context.saved ?? false,
+          locked: post.status.locked,
           isOwnPost: isOwnPost,
           onVote: (int score) {
             HapticFeedback.mediumImpact();

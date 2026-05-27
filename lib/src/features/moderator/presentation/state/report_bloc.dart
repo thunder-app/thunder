@@ -4,6 +4,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 import 'package:thunder/src/features/moderator/moderator.dart';
 
@@ -75,11 +76,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         reportFeedType: ReportFeedType.post,
         showResolved: false,
         communityId: null,
-        postReports: [],
-        commentReports: [],
-        hasReachedPostReportsEnd: false,
-        hasReachedCommentReportsEnd: false,
+        reports: [],
+        hasReachedReportsEnd: false,
         currentPage: 1,
+        nextPage: null,
         message: null,
         errorReason: null,
       ),
@@ -103,22 +103,15 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       if (event.reset) {
         if (state.status != ReportStatus.initial) add(ResetReportEvent());
 
-        Map<String, dynamic> fetchReportsResult = await fetchReports(
+        final response = await fetchReports(
           account: account,
           page: 1,
           unresolved: !event.showResolved,
           communityId: event.communityId,
-          postId: null, // TODO: This is introduced in 0.19.4
-          commentId: null, // TODO: This is introduced in 0.19.4
+          postId: null,
+          commentId: null,
           reportFeedType: event.reportFeedType,
         );
-
-        // Extract information from the response
-        List<ThunderPostReport> postReportViews = fetchReportsResult['postReportViews'];
-        List<ThunderCommentReport> commentReportViews = fetchReportsResult['commentReportViews'];
-        bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
-        bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
-        int currentPage = fetchReportsResult['currentPage'];
 
         return emit(
           state.copyWith(
@@ -126,11 +119,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
             reportFeedType: event.reportFeedType,
             showResolved: event.showResolved,
             communityId: event.communityId,
-            postReports: postReportViews,
-            commentReports: commentReportViews,
-            hasReachedPostReportsEnd: hasReachedPostReportsEnd,
-            hasReachedCommentReportsEnd: hasReachedCommentReportsEnd,
-            currentPage: currentPage,
+            reports: response.items,
+            hasReachedReportsEnd: response.nextPage == null && response.items.length < 10,
+            currentPage: 2,
+            nextPage: response.nextPage,
             errorReason: null,
           ),
         );
@@ -138,9 +130,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
       if (shouldSkipPagination(
         isFetching: state.status == ReportStatus.fetching,
-        hasReachedPostReportsEnd: state.hasReachedPostReportsEnd,
-        hasReachedCommentReportsEnd: state.hasReachedCommentReportsEnd,
-        isPostFeed: event.reportFeedType == ReportFeedType.post,
+        hasReachedReportsEnd: state.hasReachedReportsEnd,
       )) {
         return;
       }
@@ -148,44 +138,30 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       // Handle fetching the next page of the feed
       emit(state.copyWith(status: ReportStatus.fetching));
 
-      List<ThunderPostReport> postReportViews = List.from(state.postReports);
-      List<ThunderCommentReport> commentReportViews = List.from(state.commentReports);
-
-      Map<String, dynamic> fetchReportsResult = await fetchReports(
+      final response = await fetchReports(
         account: account,
         page: state.currentPage,
+        cursor: state.nextPage,
         unresolved: !state.showResolved,
         communityId: state.communityId,
-        postId: null, // TODO: This is introduced in 0.19.4
-        commentId: null, // TODO: This is introduced in 0.19.4
+        postId: null,
+        commentId: null,
         reportFeedType: state.reportFeedType,
       );
 
-      // Extract information from the response
-      List<ThunderPostReport> newPostReportViews = fetchReportsResult['postReportViews'];
-      List<ThunderCommentReport> newCommentReportViews = fetchReportsResult['commentReportViews'];
-      bool hasReachedPostReportsEnd = fetchReportsResult['hasReachedPostReportsEnd'];
-      bool hasReachedCommentReportsEnd = fetchReportsResult['hasReachedCommentReportsEnd'];
-      int currentPage = fetchReportsResult['currentPage'];
-
-      postReportViews = appendPostReports(
-        current: postReportViews,
-        incoming: newPostReportViews,
-      );
-      commentReportViews = appendCommentReports(
-        current: commentReportViews,
-        incoming: newCommentReportViews,
+      final reports = appendReports(
+        current: state.reports,
+        incoming: response.items,
       );
 
       return emit(
         state.copyWith(
           status: ReportStatus.success,
           reportFeedType: event.reportFeedType,
-          postReports: postReportViews,
-          commentReports: commentReportViews,
-          hasReachedPostReportsEnd: hasReachedPostReportsEnd,
-          hasReachedCommentReportsEnd: hasReachedCommentReportsEnd,
-          currentPage: currentPage,
+          reports: reports,
+          hasReachedReportsEnd: response.nextPage == null && response.items.length < 10,
+          currentPage: state.currentPage + 1,
+          nextPage: response.nextPage,
           errorReason: null,
         ),
       );
@@ -204,11 +180,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   /// Handles related actions on a given item within the feed
   Future<void> _onReportFeedItemActioned(ReportFeedItemActionedEvent event, Emitter<ReportState> emit) async {
-    assert(!(event.postReportView == null && event.commentReportView == null));
     emit(state.copyWith(status: ReportStatus.fetching));
 
     switch (event.reportAction) {
-      case ReportAction.resolvePost:
+      case ReportAction.resolve:
         final input = event.actionInput;
         if (input is! ResolveReportActionInput) {
           final message = _localizationService.l10n.unableToResolveReport;
@@ -219,8 +194,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           ));
         }
         // Optimistically update the report
-        int existingPostReportViewIndex = state.postReports.indexWhere((ThunderPostReport postReportView) => postReportView.id == event.postReportView!.id);
-        if (existingPostReportViewIndex == -1) {
+        final existingReportIndex = state.reports.indexWhere((report) => report.kind == event.report.kind && report.id == event.report.id);
+        if (existingReportIndex == -1) {
           final message = _localizationService.l10n.unableToResolveReport;
           return emit(state.copyWith(
             status: ReportStatus.failure,
@@ -229,93 +204,27 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           ));
         }
 
-        ThunderPostReport postReportView = state.postReports[existingPostReportViewIndex];
-        final originalPostReports = List<ThunderPostReport>.from(state.postReports);
+        final report = state.reports[existingReportIndex];
+        final originalReports = List<ThunderReport>.from(state.reports);
         final value = input.resolved;
 
         try {
-          ThunderPostReport updatedPostReport = optimisticallyResolvePostReport(postReportView, value);
-          final optimisticPostReports = replaceAt(
-            source: state.postReports,
-            index: existingPostReportViewIndex,
-            value: updatedPostReport,
+          final updatedReport = optimisticallyResolveReport(report, value);
+          final optimisticReports = replaceAt(
+            source: state.reports,
+            index: existingReportIndex,
+            value: updatedReport,
           );
 
           // Emit the state to update UI immediately
-          emit(state.copyWith(status: ReportStatus.success, postReports: optimisticPostReports));
-          emit(state.copyWith(status: ReportStatus.fetching, postReports: optimisticPostReports));
+          emit(state.copyWith(status: ReportStatus.success, reports: optimisticReports));
+          emit(state.copyWith(status: ReportStatus.fetching, reports: optimisticReports));
 
-          bool success = await resolvePostReport(account, postReportView.id, value);
+          final success = await resolveReport(account, report, value);
           if (success) {
             return emit(state.copyWith(
               status: ReportStatus.success,
-              postReports: optimisticPostReports,
-              errorReason: null,
-            ));
-          }
-
-          final message = _localizationService.l10n.unableToResolveReport;
-          return emit(state.copyWith(
-            status: ReportStatus.failure,
-            postReports: originalPostReports,
-            message: message,
-            errorReason: AppErrorReason.actionFailed(message: message),
-          ));
-        } catch (e) {
-          final message = e.toString();
-          emit(state.copyWith(
-            status: ReportStatus.failure,
-            postReports: originalPostReports,
-            message: message,
-            errorReason: AppErrorReason.unexpected(
-              message: message,
-              details: e.toString(),
-            ),
-          ));
-        }
-      case ReportAction.resolveComment:
-        final input = event.actionInput;
-        if (input is! ResolveReportActionInput) {
-          final message = _localizationService.l10n.unableToResolveReport;
-          return emit(state.copyWith(
-            status: ReportStatus.failure,
-            message: message,
-            errorReason: AppErrorReason.validation(message: message),
-          ));
-        }
-        // Optimistically update the report
-        int existingCommentReportViewIndex = state.commentReports.indexWhere((ThunderCommentReport commentReportView) => commentReportView.id == event.commentReportView!.id);
-        if (existingCommentReportViewIndex == -1) {
-          final message = _localizationService.l10n.unableToResolveReport;
-          return emit(state.copyWith(
-            status: ReportStatus.failure,
-            message: message,
-            errorReason: AppErrorReason.actionFailed(message: message),
-          ));
-        }
-
-        ThunderCommentReport commentReportView = state.commentReports[existingCommentReportViewIndex];
-        ThunderCommentReport originalCommentReport = commentReportView;
-        final originalCommentReports = List<ThunderCommentReport>.from(state.commentReports);
-        final value = input.resolved;
-
-        try {
-          ThunderCommentReport updatedCommentReport = optimisticallyResolveCommentReport(commentReportView, value);
-          final optimisticCommentReports = replaceAt(
-            source: state.commentReports,
-            index: existingCommentReportViewIndex,
-            value: updatedCommentReport,
-          );
-
-          // Emit the state to update UI immediately
-          emit(state.copyWith(status: ReportStatus.success, commentReports: optimisticCommentReports));
-          emit(state.copyWith(status: ReportStatus.fetching, commentReports: optimisticCommentReports));
-
-          bool success = await resolveCommentReport(account, originalCommentReport.id, value);
-          if (success) {
-            return emit(state.copyWith(
-              status: ReportStatus.success,
-              commentReports: optimisticCommentReports,
+              reports: optimisticReports,
               errorReason: null,
             ));
           }
@@ -324,7 +233,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           return emit(
             state.copyWith(
               status: ReportStatus.failure,
-              commentReports: originalCommentReports,
+              reports: originalReports,
               message: message,
               errorReason: AppErrorReason.actionFailed(message: message),
             ),
@@ -333,7 +242,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           final message = e.toString();
           emit(state.copyWith(
             status: ReportStatus.failure,
-            commentReports: originalCommentReports,
+            reports: originalReports,
             message: message,
             errorReason: AppErrorReason.unexpected(
               message: message,

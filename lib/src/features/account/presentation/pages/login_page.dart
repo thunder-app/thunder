@@ -123,7 +123,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         BlocListener<SessionBloc, SessionState>(
           listenWhen: (previous, current) => previous.mutationStatus != current.mutationStatus,
           listener: (listenerContext, state) async {
-            if (state.lastMutation != SessionMutationType.authenticatedLogin) {
+            final expectedMutation = widget.anonymous ? SessionMutationType.addAnonymousSession : SessionMutationType.authenticatedLogin;
+            if (state.lastMutation != expectedMutation) {
               return;
             }
 
@@ -134,8 +135,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               showSnackbar(l10n.loginFailed(state.error ?? l10n.missingErrorMessage));
             } else if (state.mutationStatus == SessionMutationStatus.success) {
               setState(() => isLoading = false);
-              widget.popModal();
-              showSnackbar(l10n.loginSucceeded);
+              if (widget.anonymous) {
+                widget.popRegister();
+              } else {
+                widget.popModal();
+                showSnackbar(l10n.loginSucceeded);
+              }
             }
           },
         ),
@@ -206,7 +211,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     secondChild: Column(
                       spacing: 8.0,
                       children: [
-                        // TODO: Remove once PieFed support is stable
                         if (instanceInfo?.platform == ThreadiversePlatform.piefed) ...[
                           Text(
                             'PieFed support is currently in beta.\nNot all features are supported yet.',
@@ -445,24 +449,29 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     // Handle anonymous login
     if (widget.anonymous) {
+      final instanceHost = instanceInfo?.domain ?? normalizeInstanceHost(_instanceTextEditingController.text);
+      if (instanceHost == null) {
+        showSnackbar(l10n.notValidLemmyInstance(_instanceTextEditingController.text));
+        return;
+      }
+
       final anonymousInstances = await Account.anonymousInstances();
 
-      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == _instanceTextEditingController.text)) {
-        setState(() => instanceError = l10n.instanceHasAlreadyBenAdded(_instanceTextEditingController.text));
+      if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == instanceHost)) {
+        setState(() => instanceError = l10n.instanceHasAlreadyBenAdded(instanceHost));
         return;
       }
 
       context.read<SessionBloc>().add(AnonymousSessionAdded(
             account: Account(
               id: '',
-              instance: _instanceTextEditingController.text,
+              instance: instanceHost,
               index: -1,
               anonymous: true,
               platform: instanceInfo?.platform,
             ),
             activate: true,
           ));
-      widget.popRegister();
 
       return;
     }

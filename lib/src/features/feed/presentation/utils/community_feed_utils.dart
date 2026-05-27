@@ -68,7 +68,8 @@ List<ThunderCommunity>? prioritizeFavorites(List<ThunderCommunity>? communities,
 /// When subcribed, shows a confirmation dialog for unsubscription.
 Future<ThunderCommunity?> handleSubscription(BuildContext context, ThunderCommunity community) async {
   final l10n = GlobalContext.l10n;
-  final isSubscribed = community.subscribed != SubscriptionStatus.notSubscribed;
+  final subscriptionStatus = community.context.subscribed ?? SubscriptionStatus.notSubscribed;
+  final isSubscribed = subscriptionStatus != SubscriptionStatus.notSubscribed;
 
   if (isSubscribed) {
     bool shouldUnsubscribe = false;

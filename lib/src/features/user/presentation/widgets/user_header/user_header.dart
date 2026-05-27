@@ -169,11 +169,11 @@ class _UserStats extends StatelessWidget {
       children: [
         ThunderIconLabel(
           icon: Icon(Icons.wysiwyg_rounded, size: iconSize),
-          label: formatNumberToK(user.posts ?? 0),
+          label: formatNumberToK(user.counts.posts ?? 0),
         ),
         ThunderIconLabel(
           icon: Icon(Icons.chat_rounded, size: iconSize),
-          label: formatNumberToK(user.comments ?? 0),
+          label: formatNumberToK(user.counts.comments ?? 0),
         ),
       ],
     );

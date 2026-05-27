@@ -99,7 +99,7 @@ class ModlogEventItem {
     return switch (type) {
       ModlogActionType.modRemovePost => actioned ? Colors.red : Colors.green,
       ModlogActionType.modLockPost => actioned ? Colors.red : Colors.green,
-      ModlogActionType.modFeaturePost => post!.featuredCommunity ? Colors.green : Colors.red,
+      ModlogActionType.modFeaturePost => post!.status.featuredCommunity ? Colors.green : Colors.red,
       ModlogActionType.modRemoveComment => actioned ? Colors.red : Colors.green,
       ModlogActionType.modRemoveCommunity => actioned ? Colors.red : Colors.green,
       ModlogActionType.modBanFromCommunity => actioned ? Colors.red : Colors.green,

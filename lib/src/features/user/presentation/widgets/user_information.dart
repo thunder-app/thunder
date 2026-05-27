@@ -98,11 +98,11 @@ class UserStatsList extends StatelessWidget {
         const SizedBox(height: 8.0),
         SidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.posts)),
+          value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.counts.posts)),
         ),
         SidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.comments)),
+          value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.counts.comments)),
         ),
       ],
     );
@@ -123,20 +123,20 @@ class UserActivityList extends StatelessWidget {
     final accountAge = DateTime.now().difference(user.published);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
 
-    final totalContributions = ((user.posts ?? 0) + (user.comments ?? 0));
+    final totalContributions = ((user.counts.posts ?? 0) + (user.counts.comments ?? 0));
     final totalContributionsPerMonth = (totalContributions / (accountAgeMonths < 1 ? 1 : accountAgeMonths));
 
     int postsPerMonth;
     int commentsPerMonth;
 
-    if (user.posts != null && user.posts != 0) {
-      postsPerMonth = (user.posts! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
+    if (user.counts.posts != null && user.counts.posts != 0) {
+      postsPerMonth = (user.counts.posts! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
     } else {
       postsPerMonth = 0;
     }
 
-    if (user.comments != null && user.comments != 0) {
-      commentsPerMonth = (user.comments! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
+    if (user.counts.comments != null && user.counts.comments != 0) {
+      commentsPerMonth = (user.counts.comments! / (accountAgeMonths < 1 ? 1 : accountAgeMonths)).truncate();
     } else {
       commentsPerMonth = 0;
     }

@@ -238,7 +238,7 @@ class FeedDrawerItems extends StatelessWidget {
             },
           ).toList(),
         ),
-        if (profileState.moderates.isNotEmpty || profileState.user?.isAdmin == true)
+        if (profileState.moderates.isNotEmpty || profileState.user?.context.isAdmin == true)
           DrawerItem(
             label: l10n.report(2),
             onTap: () {

@@ -552,7 +552,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                 final creator = post.creator!;
                                 final community = post.community!;
                                 final postIsCompact =
-                                    useCompactView || (pinnedPostsUseCompactView && post.featuredCommunity) || (linkPostsUseCompactView && post.media.first.mediaType == MediaType.link);
+                                    useCompactView || (pinnedPostsUseCompactView && post.status.featuredCommunity) || (linkPostsUseCompactView && post.media.first.mediaType == MediaType.link);
 
                                 return Column(
                                   children: [

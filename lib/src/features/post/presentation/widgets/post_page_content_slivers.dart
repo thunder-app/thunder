@@ -45,14 +45,14 @@ class PostPageContentSlivers extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.status != current.status || previous.post != current.post || previous.crossPosts != current.crossPosts || previous.errorMessage != current.errorMessage,
       builder: (context, state) {
-        if (state.status == PostStatus.initial || state.status == PostStatus.loading) {
+        if (state.status == PostPageStatus.initial || state.status == PostPageStatus.loading) {
           return const SliverFillRemaining(
             hasScrollBody: false,
             child: Center(child: CircularProgressIndicator()),
           );
         }
 
-        if (state.status == PostStatus.failure) {
+        if (state.status == PostPageStatus.failure) {
           return SliverFillRemaining(
             hasScrollBody: false,
             child: PostPageError(onRetry: onRetry),

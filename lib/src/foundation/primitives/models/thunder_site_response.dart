@@ -58,7 +58,7 @@ class ThunderSiteResponse {
     return ThunderSiteResponse(
       site: ThunderSite.fromLemmySiteView(response['site_view']),
       version: response['version'],
-      myUser: myUser != null ? ThunderMyUser.fromLemmyMyUser(myUser) : null,
+      myUser: myUser != null ? ThunderMyUser.fromLemmyV3MyUser(myUser) : null,
       allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromLemmyLanguage(l)).toList(),
       discussionLanguages: discussionLanguages.cast<int>(),
       taglines: taglines.map<ThunderTagline>((t) => ThunderTagline.fromLemmyTagline(t)).toList(),
@@ -78,6 +78,24 @@ class ThunderSiteResponse {
       allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromPiefedLanguage(l)).toList(),
       discussionLanguages: discussionLanguages?.map<int>((language) => language['id'] as int).toList(),
       // taglines: taglines.map<ThunderTagline>((t) => ThunderTagline.fromPiefedTagline(t)).toList(),
+    );
+  }
+
+  factory ThunderSiteResponse.fromLemmyV4SiteAndAccount({
+    required Map<String, dynamic> siteResponse,
+    Map<String, dynamic>? accountResponse,
+  }) {
+    final allLanguages = siteResponse['all_languages'] ?? const [];
+    final discussionLanguages = siteResponse['discussion_languages'] ?? const [];
+    final taglines = siteResponse['taglines'] ?? const [];
+
+    return ThunderSiteResponse(
+      site: ThunderSite.fromLemmyV4SiteView(siteResponse['site_view']),
+      version: siteResponse['version'],
+      myUser: accountResponse != null ? ThunderMyUser.fromLemmyV4MyUser(accountResponse) : null,
+      allLanguages: allLanguages.map<ThunderLanguage>((l) => ThunderLanguage.fromLemmyLanguage(l)).toList(),
+      discussionLanguages: discussionLanguages.cast<int>(),
+      taglines: taglines.map<ThunderTagline>((t) => ThunderTagline.fromLemmyTagline(t)).toList(),
     );
   }
 }

@@ -26,7 +26,7 @@ class CommentCardRepliesLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (replies != 0 || (comment.childCount ?? 0) <= 0 || hideReplyCount) {
+    if (replies != 0 || (comment.counts.childCount ?? 0) <= 0 || hideReplyCount) {
       return const SizedBox.shrink();
     }
 
@@ -36,7 +36,7 @@ class CommentCardRepliesLoader extends StatelessWidget {
       firstChild: SizedBox(width: MediaQuery.sizeOf(context).width),
       secondChild: AdditionalCommentCard(
         depth: level,
-        replies: comment.childCount!,
+        replies: comment.counts.childCount!,
         onTap: () => context.read<PostBloc>().add(GetPostCommentRepliesEvent(commentParentId: comment.id)),
       ),
       crossFadeState: collapsed ? CrossFadeState.showFirst : CrossFadeState.showSecond,

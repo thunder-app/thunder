@@ -97,20 +97,7 @@ abstract class PostRepository {
   Future<bool> remove(int postId, bool remove, String reason);
 
   /// Reports a post
-  /// @TODO: Change the return type to an internal model
   Future<void> report(int postId, String reason);
-
-  /// Get post reports
-  Future<List<ThunderPostReport>> getPostReports({
-    int? postId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  });
-
-  /// Resolve a post report
-  Future<ThunderPostReport> resolvePostReport(int reportId, bool resolved);
 }
 
 /// Implementation of [PostRepository]
@@ -321,42 +308,6 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<List<ThunderPostReport>> getPostReports({
-    int? postId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    if (!_api.supportsPostReports) {
-      throw UnsupportedFeatureException('Post reports', platformName: _api.platformName);
-    }
-
-    return await _api.getPostReports(
-      postId: postId,
-      page: page,
-      limit: limit,
-      unresolved: unresolved,
-      communityId: communityId,
-    );
-  }
-
-  @override
-  Future<ThunderPostReport> resolvePostReport(int reportId, bool resolved) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    if (!_api.supportsPostReports) {
-      throw UnsupportedFeatureException('Post reports', platformName: _api.platformName);
-    }
-
-    return await _api.resolvePostReport(reportId: reportId, resolved: resolved);
-  }
-
-  @override
   Future<ThunderPost?> createExample({
     String? postTitle,
     String? postUrl,
@@ -385,54 +336,45 @@ class PostRepositoryImpl implements PostRepository {
       altText: postAltText,
       creatorId: 1,
       communityId: 1,
-      removed: false,
-      locked: locked ?? false,
       published: DateTime.now(),
-      deleted: false,
-      nsfw: nsfw ?? false,
       apId: '',
-      local: false,
       languageId: 0,
-      featuredCommunity: pinned ?? false,
-      featuredLocal: false,
+      status: PostStatus(
+        deleted: false,
+        removed: false,
+        locked: locked ?? false,
+        nsfw: nsfw ?? false,
+        local: false,
+        featuredCommunity: pinned ?? false,
+        featuredLocal: false,
+      ),
       creator: ThunderUser(
         id: 1,
         name: personName ?? 'Example Username',
         displayName: personDisplayName ?? 'Example Name',
-        banned: false,
         published: DateTime.now(),
         actorId: 'https://$personInstance/u/$personName',
-        local: false,
-        deleted: false,
-        botAccount: false,
         instanceId: 1,
+        status: const UserStatus(banned: false, local: false, deleted: false, botAccount: false),
       ),
       community: ThunderCommunity(
         id: 1,
         name: communityName ?? 'Example Community',
         title: '',
-        removed: false,
         published: DateTime.now(),
-        deleted: false,
-        nsfw: false,
         actorId: instanceUrl ?? 'https://thunder.lemmy',
-        local: false,
-        hidden: false,
-        postingRestrictedToMods: false,
         instanceId: 1,
         visibility: 'Public',
+        status: const CommunityStatus(removed: false, deleted: false, nsfw: false, local: false, hidden: false, postingRestrictedToMods: false),
       ),
-      creatorBannedFromCommunity: false,
-      comments: commentCount ?? 0,
-      score: scoreCount ?? 0,
-      upvotes: 0,
-      downvotes: 0,
-      newestCommentTime: DateTime.now(),
-      subscribed: SubscriptionStatus.notSubscribed,
-      saved: saved ?? false,
-      read: read ?? false,
-      creatorBlocked: false,
-      unreadComments: 0,
+      counts: PostCounts(comments: commentCount ?? 0, score: scoreCount ?? 0, upvotes: 0, downvotes: 0, newestCommentAt: DateTime.now(), unreadComments: 0),
+      context: PostContext(
+        creatorBannedFromCommunity: false,
+        subscribed: SubscriptionStatus.notSubscribed,
+        saved: saved ?? false,
+        read: read ?? false,
+        creatorBlocked: false,
+      ),
     );
 
     List<ThunderPost> posts = await parsePosts([post]);

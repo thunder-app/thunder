@@ -590,8 +590,8 @@ class CrossPostMetaData extends StatelessWidget {
       spacing: 6.0,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ScorePostCardMetaData(score: post.score, voteType: post.myVote, dim: true),
-        CommentCountPostCardMetaData(commentCount: post.comments, unreadCommentCount: post.unreadComments ?? 0, dim: true),
+        ScorePostCardMetaData(score: post.counts.score, voteType: post.context.vote.score, dim: true),
+        CommentCountPostCardMetaData(commentCount: post.counts.comments, unreadCommentCount: post.counts.unreadComments ?? 0, dim: true),
         DateTimePostCardMetaData(dateTime: post.published.toIso8601String(), edited: post.updated != null, dim: true),
       ],
     );
@@ -644,7 +644,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 communityName: community.name,
                 displayName: community.title,
                 actorId: community.actorId,
-                subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
+                subscribed: community.context.subscribed != SubscriptionStatus.notSubscribed,
                 dim: dim,
                 feedListType: feedListType,
               ),
@@ -661,7 +661,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
             communityName: community.name,
             displayName: community.title,
             actorId: community.actorId,
-            subscribed: community.subscribed != SubscriptionStatus.notSubscribed,
+            subscribed: community.context.subscribed != SubscriptionStatus.notSubscribed,
             dim: dim,
             feedListType: feedListType,
           )

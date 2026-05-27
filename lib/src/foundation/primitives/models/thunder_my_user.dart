@@ -1,6 +1,7 @@
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_local_user.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 
 class ThunderLocalUserView {
   /// The local user data.
@@ -24,17 +25,11 @@ class ThunderLocalUserView {
     );
   }
 
-  factory ThunderLocalUserView.fromLemmyLocalUserView(Map<String, dynamic> localUserView) {
-    return ThunderLocalUserView(
-      localUser: ThunderLocalUser.fromLemmyLocalUser(localUserView['local_user']),
-      person: ThunderUser.fromLemmyUser(localUserView['person']),
-    );
-  }
-
   factory ThunderLocalUserView.fromPiefedLocalUserView(Map<String, dynamic> localUserView) {
+    const mapper = PiefedPrimitiveMapper();
     return ThunderLocalUserView(
       localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user']),
-      person: ThunderUser.fromPiefedUser(localUserView['person']),
+      person: mapper.user(localUserView['person']),
     );
   }
 }
@@ -110,7 +105,7 @@ class ThunderMyUser {
     );
   }
 
-  factory ThunderMyUser.fromLemmyMyUser(Map<String, dynamic> myUser) {
+  factory ThunderMyUser.fromLemmyV3MyUser(Map<String, dynamic> myUser) {
     final follows = myUser['follows'];
     final moderates = myUser['moderates'];
     final communityBlocks = myUser['community_blocks'];
@@ -118,13 +113,34 @@ class ThunderMyUser {
     final personBlocks = myUser['person_blocks'];
     final discussionLanguages = myUser['discussion_languages'];
 
+    const mapper = LemmyV3PrimitiveMapper();
+
     return ThunderMyUser(
-      localUserView: ThunderLocalUserView.fromLemmyLocalUserView(myUser['local_user_view']),
-      follows: follows.map<ThunderCommunity>((cfv) => ThunderCommunity.fromLemmyCommunity(cfv['community'])).toList(),
-      moderates: moderates.map<ThunderCommunity>((cmv) => ThunderCommunity.fromLemmyCommunity(cmv['community'])).toList(),
-      communityBlocks: communityBlocks.map<ThunderCommunity>((cbv) => ThunderCommunity.fromLemmyCommunity(cbv['community'])).toList(),
+      localUserView: localUserViewFromLemmyV3(myUser['local_user_view']),
+      follows: follows.map<ThunderCommunity>((cfv) => mapper.community(cfv['community'])).toList(),
+      moderates: moderates.map<ThunderCommunity>((cmv) => mapper.community(cmv['community'])).toList(),
+      communityBlocks: communityBlocks.map<ThunderCommunity>((cbv) => mapper.community(cbv['community'])).toList(),
       instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((ibv) => ThunderInstanceBlock.fromLemmyBlock(ibv)).toList(),
-      personBlocks: personBlocks.map<ThunderUser>((pbv) => ThunderUser.fromLemmyUser(pbv['target'])).toList(),
+      personBlocks: personBlocks.map<ThunderUser>((pbv) => mapper.user(pbv['target'])).toList(),
+      discussionLanguages: discussionLanguages?.cast<int>(),
+    );
+  }
+
+  factory ThunderMyUser.fromLemmyV4MyUser(Map<String, dynamic> myUser) {
+    const mapper = LemmyV4PrimitiveMapper();
+    final follows = myUser['follows'] ?? const [];
+    final moderates = myUser['moderates'] ?? const [];
+    final communityBlocks = myUser['community_blocks'] ?? const [];
+    final personBlocks = myUser['person_blocks'] ?? const [];
+    final discussionLanguages = myUser['discussion_languages'];
+
+    return ThunderMyUser(
+      localUserView: localUserViewFromLemmyV4(myUser['local_user_view']),
+      follows: follows.map<ThunderCommunity>((cfv) => mapper.community(cfv['community'])).toList(),
+      moderates: moderates.map<ThunderCommunity>((cmv) => mapper.community(cmv['community'])).toList(),
+      communityBlocks: communityBlocks.map<ThunderCommunity>((cbv) => mapper.community(cbv['community'] ?? cbv)).toList(),
+      instanceBlocks: const [],
+      personBlocks: personBlocks.map<ThunderUser>((pbv) => mapper.user(pbv['target'] ?? pbv['person'] ?? pbv)).toList(),
       discussionLanguages: discussionLanguages?.cast<int>(),
     );
   }
@@ -138,13 +154,15 @@ class ThunderMyUser {
     final personBlocks = myUser['person_blocks'];
     final localUserView = myUser['local_user_view'];
 
+    const mapper = PiefedPrimitiveMapper();
+
     return ThunderMyUser(
       localUserView: ThunderLocalUserView.fromPiefedLocalUserView(localUserView),
-      follows: follows.map<ThunderCommunity>((f) => ThunderCommunity.fromPiefedCommunity(f['community'])).toList(),
-      moderates: moderates.map<ThunderCommunity>((m) => ThunderCommunity.fromPiefedCommunity(m['community'])).toList(),
-      communityBlocks: communityBlocks.map<ThunderCommunity>((b) => ThunderCommunity.fromPiefedCommunity(b['community'])).toList(),
+      follows: follows.map<ThunderCommunity>((f) => mapper.community(f['community'])).toList(),
+      moderates: moderates.map<ThunderCommunity>((m) => mapper.community(m['community'])).toList(),
+      communityBlocks: communityBlocks.map<ThunderCommunity>((b) => mapper.community(b['community'])).toList(),
       instanceBlocks: instanceBlocks.map<ThunderInstanceBlock>((b) => ThunderInstanceBlock.fromPiefedBlock(b)).toList(),
-      personBlocks: personBlocks.map<ThunderUser>((b) => ThunderUser.fromPiefedUser(b['target'])).toList(),
+      personBlocks: personBlocks.map<ThunderUser>((b) => mapper.user(b['target'])).toList(),
       discussionLanguages: discussionLanguages?.map<int>((language) => language['id'] as int).toList(),
     );
   }

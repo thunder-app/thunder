@@ -145,14 +145,14 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       case CommentBottomSheetAction.deleteComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, true);
-        if (updatedComment.deleted) showSnackbar(l10n.deletedComment);
-        widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: true));
+        if (updatedComment.status.deleted) showSnackbar(l10n.deletedComment);
+        widget.onAction(CommentAction.delete, widget.comment.copyWith(status: widget.comment.status.copyWith(deleted: true)));
         break;
       case CommentBottomSheetAction.restoreComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, false);
-        if (!updatedComment.deleted) showSnackbar(l10n.restoredComment);
-        widget.onAction(CommentAction.delete, widget.comment.copyWith(deleted: false));
+        if (!updatedComment.status.deleted) showSnackbar(l10n.restoredComment);
+        widget.onAction(CommentAction.delete, widget.comment.copyWith(status: widget.comment.status.copyWith(deleted: false)));
         break;
     }
   }
@@ -199,8 +199,8 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
 
     final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.comment.community?.actorId).isNotEmpty;
 
-    final isCommentDeleted = widget.comment.deleted;
-    final isCommentRemoved = widget.comment.removed;
+    final isCommentDeleted = widget.comment.status.deleted;
+    final isCommentRemoved = widget.comment.status.removed;
 
     if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();

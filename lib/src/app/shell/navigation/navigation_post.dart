@@ -80,7 +80,7 @@ Future<void> navigateToPost(
           highlightedCommentId: highlightedCommentId,
           onPostUpdated: (ThunderPost post) {
             // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
-            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(read: true)));
+            feedBloc?.add(FeedItemUpdatedEvent(post: post.copyWith(context: post.context.copyWith(read: true))));
           },
         ),
       );

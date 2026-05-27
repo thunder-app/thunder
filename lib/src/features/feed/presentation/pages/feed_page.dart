@@ -305,7 +305,7 @@ class _FeedViewState extends State<FeedView> {
   ///
   /// Once those posts are fully added, an event is triggered which filters those posts from the feed bloc state
   Future<void> dismissRead() async {
-    await _dismissMatchingPosts((post) => post.read == true);
+    await _dismissMatchingPosts((post) => post.context.read == true);
   }
 
   /// Animates blocked users or communities out of the feed before removal.

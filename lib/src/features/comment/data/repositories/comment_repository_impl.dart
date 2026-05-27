@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 
@@ -122,42 +121,6 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<List<ThunderCommentReport>> getCommentReports({
-    int? commentId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    if (!_api.supportsCommentReports) {
-      throw UnsupportedFeatureException('Comment reports', platformName: _api.platformName);
-    }
-
-    return await _api.getCommentReports(
-      commentId: commentId,
-      page: page,
-      limit: limit,
-      unresolved: unresolved,
-      communityId: communityId,
-    );
-  }
-
-  @override
-  Future<ThunderCommentReport> resolveCommentReport(int reportId, bool resolved) async {
-    final l10n = GlobalContext.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
-
-    if (!_api.supportsCommentReports) {
-      throw UnsupportedFeatureException('Comment reports', platformName: _api.platformName);
-    }
-
-    return await _api.resolveCommentReport(reportId: reportId, resolved: resolved);
-  }
-
-  @override
   Future<ThunderComment> createExample({
     int? id,
     String? path,
@@ -179,34 +142,27 @@ class CommentRepositoryImpl implements CommentRepository {
       creatorId: commentCreatorId ?? 1,
       postId: 1,
       content: commentContent ?? 'Example Comment',
-      removed: false,
       published: commentPublished ?? DateTime.now(),
-      deleted: false,
       apId: 'https://example.com/comment/$id',
-      local: false,
       path: path ?? '',
-      distinguished: false,
       languageId: 0,
-      score: commentScore ?? 0,
-      upvotes: commentUpvotes ?? 0,
-      downvotes: commentDownvotes ?? 0,
-      childCount: commentChildCount ?? 0,
-      creatorBannedFromCommunity: false,
-      bannedFromCommunity: false,
-      creatorIsModerator: false,
-      creatorIsAdmin: isPersonAdmin ?? false,
-      saved: saved ?? false,
+      status: const CommentStatus(deleted: false, removed: false, local: false, distinguished: false),
+      counts: CommentCounts(score: commentScore ?? 0, upvotes: commentUpvotes ?? 0, downvotes: commentDownvotes ?? 0, childCount: commentChildCount ?? 0),
+      context: CommentContext(
+        creatorBannedFromCommunity: false,
+        bannedFromCommunity: false,
+        creatorIsModerator: false,
+        creatorIsAdmin: isPersonAdmin ?? false,
+        saved: saved ?? false,
+      ),
       creator: ThunderUser(
         id: 1,
         name: personName ?? 'Example Username',
-        banned: false,
         published: DateTime.now(),
         actorId: 'https://example.com/user/$personName',
-        local: false,
-        deleted: false,
-        botAccount: isBotAccount ?? false,
         instanceId: 1,
         avatar: personAvatar,
+        status: UserStatus(banned: false, local: false, deleted: false, botAccount: isBotAccount ?? false),
       ),
     );
   }

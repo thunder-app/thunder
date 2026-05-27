@@ -186,7 +186,7 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final media = post.media.firstOrNull;
     final indicateRead = this.indicateRead ?? dimReadPosts;
-    final dim = indicateRead && post.read == true;
+    final dim = indicateRead && post.context.read == true;
     final textContent = post.body ?? "";
 
     final readColor = dim ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90);
@@ -229,12 +229,12 @@ class PostCardViewComfortable extends StatelessWidget {
       padding: edgesPadding,
       child: PostCardTitle(
         title: post.name,
-        hidden: post.hidden ?? false,
-        locked: post.locked,
-        saved: post.saved ?? false,
-        pinned: post.featuredCommunity || post.featuredLocal,
-        deleted: post.deleted,
-        removed: post.removed,
+        hidden: post.context.hidden ?? false,
+        locked: post.status.locked,
+        saved: post.context.saved ?? false,
+        pinned: post.status.featuredCommunity || post.status.featuredLocal,
+        deleted: post.status.deleted,
+        removed: post.status.removed,
         dim: dim,
         flairs: flairs,
       ),
@@ -265,7 +265,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: post.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
+                  color: post.context.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
                 ),
               ),
             ),
@@ -282,12 +282,12 @@ class PostCardViewComfortable extends StatelessWidget {
                       if (!showCommunityFirst) postCardAuthor,
                       PostCardMetadata(
                         postCardViewType: ViewMode.comfortable,
-                        score: post.score,
-                        upvoteCount: post.upvotes,
-                        downvoteCount: post.downvotes,
-                        voteType: post.myVote ?? 0,
-                        commentCount: post.comments,
-                        unreadCommentCount: post.unreadComments,
+                        score: post.counts.score,
+                        upvoteCount: post.counts.upvotes,
+                        downvoteCount: post.counts.downvotes,
+                        voteType: post.context.vote.score,
+                        commentCount: post.counts.comments,
+                        unreadCommentCount: post.counts.unreadComments,
                         dateTime: dateTime,
                         edited: edited,
                         url: media?.mediaType == MediaType.image ? null : media?.originalUrl,
@@ -302,7 +302,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () => onPostActionBottomSheetPressed(context, post),
                 ),
-                if (isUserLoggedIn) PostCardActions(voteType: post.myVote ?? 0, saved: post.saved ?? false, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
+                if (isUserLoggedIn) PostCardActions(voteType: post.context.vote.score, saved: post.context.saved ?? false, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
           )

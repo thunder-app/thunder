@@ -2,7 +2,7 @@ part of 'post_bloc.dart';
 
 const _postStateUnset = Object();
 
-enum PostStatus {
+enum PostPageStatus {
   initial,
   loading,
   refreshing,
@@ -14,7 +14,7 @@ enum PostStatus {
 
 class PostState extends Equatable {
   const PostState({
-    this.status = PostStatus.initial,
+    this.status = PostPageStatus.initial,
     this.post,
     this.comments = const [],
     this.commentNodes,
@@ -34,7 +34,7 @@ class PostState extends Equatable {
   });
 
   /// The current status of the post
-  final PostStatus status;
+  final PostPageStatus status;
 
   /// The sort type of the post comments
   final CommentSortType? commentSortType;
@@ -68,7 +68,7 @@ class PostState extends Equatable {
   final Set<int> collapsedComments;
 
   PostState copyWith({
-    PostStatus? status,
+    PostPageStatus? status,
     Object? post = _postStateUnset,
     List<CommentNode>? comments,
     Object? commentNodes = _postStateUnset,

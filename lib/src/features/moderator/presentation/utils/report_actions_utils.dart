@@ -1,12 +1,14 @@
-import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
-import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 /// Helper function which handles the logic of fetching post/comment reports
-Future<Map<String, dynamic>> fetchReports({
+Future<ThunderPage<ThunderReport>> fetchReports({
   required Account account,
   int page = 1,
+  String? cursor,
   int limit = 10,
   bool unresolved = false,
   int? communityId,
@@ -14,69 +16,36 @@ Future<Map<String, dynamic>> fetchReports({
   int? commentId,
   ReportFeedType reportFeedType = ReportFeedType.post,
 }) async {
-  bool hasReachedPostReportsEnd = false;
-  bool hasReachedCommentReportsEnd = false;
-
-  List<ThunderPostReport> postReportViews = [];
-  List<ThunderCommentReport> commentReportViews = [];
-
-  int currentPage = page;
-
-  // Guarantee that we fetch at least x post and comment reports (unless we reach the end of the feed)
-  do {
-    final postReports = await PostRepositoryImpl(account: account).getPostReports(
-      postId: postId,
-      page: currentPage,
-      limit: limit,
-      unresolved: unresolved,
-      communityId: communityId,
-    );
-
-    final listCommentReportsResponse = await CommentRepositoryImpl(account: account).getCommentReports(
-      commentId: commentId,
-      page: currentPage,
-      limit: limit,
-      unresolved: unresolved,
-      communityId: communityId,
-    );
-
-    postReportViews.addAll(postReports);
-    commentReportViews.addAll(listCommentReportsResponse);
-
-    if (postReports.isEmpty) hasReachedPostReportsEnd = true;
-    if (listCommentReportsResponse.isEmpty) hasReachedCommentReportsEnd = true;
-    currentPage++;
-  } while (reportFeedType == ReportFeedType.post ? (!hasReachedPostReportsEnd && postReportViews.length < limit) : (!hasReachedCommentReportsEnd && commentReportViews.length < limit));
-
-  return {
-    'postReportViews': postReportViews,
-    'commentReportViews': commentReportViews,
-    'hasReachedPostReportsEnd': hasReachedPostReportsEnd,
-    'hasReachedCommentReportsEnd': hasReachedCommentReportsEnd,
-    'currentPage': currentPage
+  final api = ApiClientFactory.create(account);
+  final kind = switch (reportFeedType) {
+    ReportFeedType.post => ReportKind.post,
+    ReportFeedType.comment => ReportKind.comment,
   };
+
+  if ((kind == ReportKind.post && !api.supportsPostReports) || (kind == ReportKind.comment && !api.supportsCommentReports)) {
+    throw UnsupportedFeatureException('${kind.name} reports', platformName: api.platformName);
+  }
+
+  return await api.getReports(
+    kind: kind,
+    postId: postId,
+    commentId: commentId,
+    page: page,
+    cursor: cursor,
+    limit: limit,
+    unresolved: unresolved,
+    communityId: communityId,
+  );
 }
 
 // Optimistically resolves a post report. This changes the value of the post report locally, without sending the network request
-ThunderPostReport optimisticallyResolvePostReport(ThunderPostReport postReport, bool resolved) {
-  return postReport.copyWith(resolved: resolved);
+ThunderReport optimisticallyResolveReport(ThunderReport report, bool resolved) {
+  return report.copyWith(resolved: resolved);
 }
 
-/// Logic to resolve a post report
-Future<bool> resolvePostReport(Account account, int postReportId, bool resolved) async {
-  final postReportResponse = await PostRepositoryImpl(account: account).resolvePostReport(postReportId, resolved);
+/// Logic to resolve a report
+Future<bool> resolveReport(Account account, ThunderReport report, bool resolved) async {
+  final response = await ApiClientFactory.create(account).resolveReport(reportId: report.id, kind: report.kind, resolved: resolved);
 
-  return postReportResponse.resolved == resolved;
-}
-
-// Optimistically resolves a comment report. This changes the value of the comment report locally, without sending the network request
-ThunderCommentReport optimisticallyResolveCommentReport(ThunderCommentReport commentReport, bool resolved) {
-  return commentReport.copyWith(resolved: resolved);
-}
-
-/// Logic to resolve a comment report
-Future<bool> resolveCommentReport(Account account, int commentReportId, bool resolved) async {
-  final commentReportResponse = await CommentRepositoryImpl(account: account).resolveCommentReport(commentReportId, resolved);
-
-  return commentReportResponse.resolved == resolved;
+  return response.resolved == resolved;
 }

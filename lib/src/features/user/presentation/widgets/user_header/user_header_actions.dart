@@ -119,7 +119,7 @@ class _ActionChipsList extends StatelessWidget {
         _SortActionChip(),
         if (!isOwnProfile) _LabelActionChip(user: user),
         if (isLoggedIn && !isOwnProfile) _MessageActionChip(user: user),
-        if (isLoggedIn && !isOwnProfile && user.isAdmin != true) _BlockActionChip(user: user),
+        if (isLoggedIn && !isOwnProfile && user.context.isAdmin != true) _BlockActionChip(user: user),
         _ShareActionChip(user: user),
       ],
     );

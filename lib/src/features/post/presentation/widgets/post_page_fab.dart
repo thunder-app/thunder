@@ -181,8 +181,8 @@ class PostPageFAB extends StatelessWidget {
                       centered: combineNavAndFab,
                       distance: combineNavAndFab ? 45 : 60,
                       icon: Icon(
-                        isSearchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.locked),
-                        semanticLabel: isSearchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.locked),
+                        isSearchInProgress ? Icons.youtube_searched_for_rounded : singlePressAction.getIcon(postLocked: post.status.locked),
+                        semanticLabel: isSearchInProgress ? l10n.search : singlePressAction.getTitle(context, postLocked: post.status.locked),
                         size: 35,
                       ),
                       onPressed: isSearchInProgress
@@ -208,7 +208,7 @@ class PostPageFAB extends StatelessWidget {
                                   : singlePressAction == PostFabAction.changeSort
                                       ? () => showSortBottomSheet(context)
                                       : singlePressAction == PostFabAction.replyToPost
-                                          ? () => replyToPost(context, post, postLocked: post.locked)
+                                          ? () => replyToPost(context, post, postLocked: post.status.locked)
                                           : singlePressAction == PostFabAction.search
                                               ? () => startCommentSearch(context)
                                               : null),
@@ -230,7 +230,7 @@ class PostPageFAB extends StatelessWidget {
                               : longPressAction == PostFabAction.changeSort
                                   ? () => showSortBottomSheet(context)
                                   : longPressAction == PostFabAction.replyToPost
-                                      ? () => replyToPost(context, post, postLocked: post.locked)
+                                      ? () => replyToPost(context, post, postLocked: post.status.locked)
                                       : null),
                       fabType: FabType.post,
                       children: [
@@ -266,11 +266,11 @@ class PostPageFAB extends StatelessWidget {
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               PostFabAction.replyToPost.execute(
-                                override: () => replyToPost(context, post, postLocked: post.locked),
+                                override: () => replyToPost(context, post, postLocked: post.status.locked),
                               );
                             },
                             title: PostFabAction.replyToPost.getTitle(context),
-                            icon: Icon(post.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
+                            icon: Icon(post.status.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
                           ),
                         if (postFabEnableChangeSort)
                           ActionButton(

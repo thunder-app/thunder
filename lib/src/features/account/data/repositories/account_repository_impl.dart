@@ -44,7 +44,7 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<AccountMedia> media({int? page, int? limit}) async {
+  Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
@@ -52,9 +52,7 @@ class AccountRepositoryImpl implements AccountRepository {
       throw UnsupportedFeatureException('Media management', platformName: _api.platformName);
     }
 
-    final response = await _api.media(page: page, limit: limit);
-    final images = (response['images'] as List<dynamic>? ?? []).whereType<Map<String, dynamic>>().toList();
-    return AccountMedia(images: images);
+    return await _api.media(page: page, limit: limit);
   }
 
   @override
@@ -100,6 +98,10 @@ class AccountRepositoryImpl implements AccountRepository {
       return response['url'] as String;
     }
 
+    if (response['image_url'] is String && (response['image_url'] as String).isNotEmpty) {
+      return response['image_url'] as String;
+    }
+
     if (response['files'] != null && (response['files'] as List).isNotEmpty) {
       final filename = response['files'][0]['file'];
       return "https://${account.instance}/pictrs/image/$filename";
@@ -112,7 +114,7 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<void> deleteImage({required String file, required String token}) async {
+  Future<void> deleteImage({required String file, String? token}) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 

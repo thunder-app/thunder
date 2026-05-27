@@ -126,7 +126,6 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
       } else if (!kIsWeb && Platform.isIOS) {
         IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
-        // TODO: Not sure if this is the right check for iOS.
         areNotificationsAllowed = (await iosFlutterLocalNotificationsPlugin?.checkPermissions())?.isEnabled ?? false;
       }
 

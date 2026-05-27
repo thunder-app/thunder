@@ -63,7 +63,6 @@ class _ReportFeedViewState extends State<ReportFeedView> {
   bool showResolved = false;
 
   /// List of tabs for the report page
-  /// TODO: Add support for private messages
   List<String> reportOptionTypes = [AppLocalizations.of(GlobalContext.context)!.posts, AppLocalizations.of(GlobalContext.context)!.comments];
 
   @override
@@ -162,6 +161,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           reportFeedType = ReportFeedType.comment;
                         }
                       });
+                      context.read<ReportBloc>().add(ReportFeedFetchedEvent(
+                            reportFeedType: index == 0 ? ReportFeedType.post : ReportFeedType.comment,
+                            showResolved: showResolved,
+                            communityId: context.read<ReportBloc>().state.communityId,
+                            reset: true,
+                          ));
                     },
                   ),
                 ),
@@ -189,6 +194,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                   bottom: false,
                   child: Builder(
                     builder: (BuildContext context) {
+                      final reports = state.reports.where((report) => report.kind == (reportFeedType == ReportFeedType.post ? ReportKind.post : ReportKind.comment)).toList();
                       return CustomScrollView(
                         key: PageStorageKey<String>(title),
                         slivers: <Widget>[
@@ -204,20 +210,22 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           if (reportFeedType == ReportFeedType.post)
                             SliverList.builder(
                               itemBuilder: (context, index) {
+                                final report = reports[index];
+                                final post = report.post!;
                                 return Column(
                                   children: [
                                     Wrap(
                                       spacing: 8.0,
                                       children: [
                                         InkWell(
-                                          onTap: () => navigateToPost(context, postId: state.postReports[index].post!.id),
+                                          onTap: () => navigateToPost(context, postId: post.id),
                                           child: Padding(
                                             padding: const EdgeInsets.only(top: 8.0),
                                             child: PostCardViewCompact(
                                               showMedia: false,
-                                              post: state.postReports[index].post!,
-                                              creator: state.postReports[index].creator!,
-                                              community: state.postReports[index].community!,
+                                              post: post,
+                                              creator: post.creator!,
+                                              community: post.community!,
                                               isLastTapped: false,
                                             ),
                                           ),
@@ -235,14 +243,14 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   InkWell(
                                                     borderRadius: BorderRadius.circular(6),
                                                     onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.postReports[index].creator!.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: report.creator!.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                          name: state.postReports[index].creator?.name ?? '',
-                                                          displayName: state.postReports[index].creator?.displayName ?? '',
-                                                          instance: fetchInstanceNameFromUrl(state.postReports[index].creator?.actorId ?? '')),
+                                                          name: report.creator?.name ?? '',
+                                                          displayName: report.creator?.displayName ?? '',
+                                                          instance: fetchInstanceNameFromUrl(report.creator?.actorId ?? '')),
                                                     ),
                                                   ),
                                                 ],
@@ -253,7 +261,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.postReports[index].reason),
+                                                    l10n.detailedReason(report.reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     textScaleFactor: contentFontSizeScale.textScaleFactor,
@@ -267,12 +275,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     onPressed: () {
                                                       HapticFeedback.mediumImpact();
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolvePost,
-                                                            postReportView: state.postReports[index],
-                                                            actionInput: ResolveReportActionInput(!state.postReports[index].resolved),
+                                                            reportAction: ReportAction.resolve,
+                                                            report: report,
+                                                            actionInput: ResolveReportActionInput(!report.resolved),
                                                           ));
                                                     },
-                                                    icon: Icon(state.postReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(report.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),
@@ -293,29 +301,14 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   ],
                                 );
                               },
-                              itemCount: state.postReports.length,
+                              itemCount: reports.length,
                             ),
 
                           if (reportFeedType == ReportFeedType.comment)
                             SliverList.builder(
                               itemBuilder: (context, index) {
-                                final comment = state.commentReports[index].comment?.copyWith(
-                                  creator: state.commentReports[index].creator,
-                                  post: state.commentReports[index].post,
-                                  community: state.commentReports[index].community,
-                                  score: state.commentReports[index].score,
-                                  upvotes: state.commentReports[index].upvotes,
-                                  downvotes: state.commentReports[index].downvotes,
-                                  childCount: state.commentReports[index].childCount,
-                                  creatorBannedFromCommunity: state.commentReports[index].creatorBannedFromCommunity,
-                                  bannedFromCommunity: false,
-                                  creatorIsModerator: state.commentReports[index].creatorIsModerator,
-                                  creatorIsAdmin: state.commentReports[index].creatorIsAdmin,
-                                  subscribed: state.commentReports[index].subscribed,
-                                  saved: state.commentReports[index].saved,
-                                  creatorBlocked: state.commentReports[index].creatorBlocked,
-                                  myVote: state.commentReports[index].myVote,
-                                );
+                                final report = reports[index];
+                                final comment = report.comment;
 
                                 return Column(
                                   children: [
@@ -336,14 +329,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                   InkWell(
                                                     borderRadius: BorderRadius.circular(6),
                                                     onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: state.commentReports[index].creator!.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.user, userId: report.creator!.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                          name: state.commentReports[index].creator?.name,
-                                                          displayName: state.commentReports[index].creator?.displayName,
-                                                          instance: fetchInstanceNameFromUrl(state.commentReports[index].creator?.actorId)),
+                                                          name: report.creator?.name, displayName: report.creator?.displayName, instance: fetchInstanceNameFromUrl(report.creator?.actorId)),
                                                     ),
                                                   ),
                                                 ],
@@ -354,7 +345,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   ScalableText(
-                                                    l10n.detailedReason(state.commentReports[index].reason),
+                                                    l10n.detailedReason(report.reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     textScaleFactor: contentFontSizeScale.textScaleFactor,
@@ -369,12 +360,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                       HapticFeedback.mediumImpact();
 
                                                       context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolveComment,
-                                                            commentReportView: state.commentReports[index],
-                                                            actionInput: ResolveReportActionInput(!state.commentReports[index].resolved),
+                                                            reportAction: ReportAction.resolve,
+                                                            report: report,
+                                                            actionInput: ResolveReportActionInput(!report.resolved),
                                                           ));
                                                     },
-                                                    icon: Icon(state.commentReports[index].resolved ? Icons.undo_rounded : Icons.check_rounded),
+                                                    icon: Icon(report.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
                                                 ],
                                               ),
@@ -395,12 +386,12 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                   ],
                                 );
                               },
-                              itemCount: state.commentReports.length,
+                              itemCount: reports.length,
                             ),
 
                           // Widget representing the bottom of the feed (reached end or loading more events indicators)
                           SliverToBoxAdapter(
-                            child: (reportFeedType == ReportFeedType.post && state.hasReachedPostReportsEnd) || (reportFeedType == ReportFeedType.comment && state.hasReachedCommentReportsEnd)
+                            child: state.hasReachedReportsEnd
                                 ? const FeedReachedEnd()
                                 : Container(
                                     height: state.status == ReportStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust

@@ -129,7 +129,7 @@ bool postDraftDiffersFromEdit(Draft draft, ThunderPost? post) {
   final isUrlDifferent = draft.url != post.url;
   final isCustomThumbnailDifferent = draft.customThumbnail != post.thumbnailUrl;
   final isAltTextDifferent = draft.altText != post.altText;
-  final isNsfwDifferent = draft.nsfw != post.nsfw;
+  final isNsfwDifferent = draft.nsfw != post.status.nsfw;
   final isLanguageIdDifferent = draft.languageId != post.languageId;
   final isBodyDifferent = draft.body != post.body;
 

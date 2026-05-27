@@ -45,6 +45,17 @@ class ThunderSite {
     );
   }
 
+  factory ThunderSite.fromLemmyV4Site(Map<String, dynamic> site) {
+    return ThunderSite(
+      name: site['name'],
+      sidebar: site['sidebar'],
+      icon: site['icon'],
+      description: site['description'] ?? site['summary'],
+      actorId: site['ap_id'],
+      contentWarning: site['content_warning'],
+    );
+  }
+
   factory ThunderSite.fromLemmySiteView(Map<String, dynamic> siteView) {
     final site = siteView['site'];
     final localSite = siteView['local_site'];
@@ -59,6 +70,23 @@ class ThunderSite {
       contentWarning: site['content_warning'],
       enableDownvotes: localSite['enable_downvotes'],
       users: counts['users'],
+    );
+  }
+
+  factory ThunderSite.fromLemmyV4SiteView(Map<String, dynamic> siteView) {
+    final site = siteView['site'];
+    final localSite = siteView['local_site'];
+    final instance = siteView['instance'];
+
+    return ThunderSite(
+      name: site['name'],
+      sidebar: site['sidebar'],
+      icon: site['icon'],
+      description: site['description'],
+      actorId: instance?['domain'] != null ? 'https://${instance['domain']}' : site['ap_id'],
+      contentWarning: site['content_warning'],
+      enableDownvotes: localSite?['enable_downvotes'],
+      users: instance?['users'],
     );
   }
 

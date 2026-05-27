@@ -137,25 +137,25 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         Navigator.of(context).pop();
         final deleted = await repository.delete(widget.post.id, true);
         if (deleted) showSnackbar(l10n.deletedPost);
-        widget.onAction(PostAction.delete, widget.post.copyWith(deleted: true));
+        widget.onAction(PostAction.delete, widget.post.copyWith(status: widget.post.status.copyWith(deleted: true)));
         break;
       case PostPostAction.restorePost:
         Navigator.of(context).pop();
         final deleted = await repository.delete(widget.post.id, false);
         if (!deleted) showSnackbar(l10n.restoredPost);
-        widget.onAction(PostAction.delete, widget.post.copyWith(deleted: false));
+        widget.onAction(PostAction.delete, widget.post.copyWith(status: widget.post.status.copyWith(deleted: false)));
         break;
       case PostPostAction.lockPost:
         Navigator.of(context).pop();
         final locked = await repository.lock(widget.post.id, true);
         if (locked) showSnackbar(l10n.lockedPost);
-        widget.onAction(PostAction.lock, widget.post.copyWith(locked: true));
+        widget.onAction(PostAction.lock, widget.post.copyWith(status: widget.post.status.copyWith(locked: true)));
         break;
       case PostPostAction.unlockPost:
         Navigator.of(context).pop();
         final locked = await repository.lock(widget.post.id, false);
         if (!locked) showSnackbar(l10n.unlockedPost);
-        widget.onAction(PostAction.lock, widget.post.copyWith(locked: false));
+        widget.onAction(PostAction.lock, widget.post.copyWith(status: widget.post.status.copyWith(locked: false)));
         break;
       case PostPostAction.removePost:
         showRemovePostReasonDialog();
@@ -167,13 +167,13 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         Navigator.of(context).pop();
         final pinned = await repository.pinCommunity(widget.post.id, true);
         if (pinned) showSnackbar(l10n.pinnedPostToCommunity);
-        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(featuredCommunity: true));
+        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(status: widget.post.status.copyWith(featuredCommunity: true)));
         break;
       case PostPostAction.unpinPostFromCommunity:
         Navigator.of(context).pop();
         final pinned = await repository.pinCommunity(widget.post.id, false);
         if (!pinned) showSnackbar(l10n.unpinnedPostFromCommunity);
-        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(featuredCommunity: false));
+        widget.onAction(PostAction.pinCommunity, widget.post.copyWith(status: widget.post.status.copyWith(featuredCommunity: false)));
         break;
     }
   }
@@ -217,14 +217,14 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     showThunderDialog(
       context: widget.context,
-      title: widget.post.removed ? l10n.restorePost : l10n.removalReason,
-      primaryButtonText: widget.post.removed ? l10n.restore : l10n.remove,
+      title: widget.post.status.removed ? l10n.restorePost : l10n.removalReason,
+      primaryButtonText: widget.post.status.removed ? l10n.restore : l10n.remove,
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
         final repository = PostRepositoryImpl(account: widget.account);
 
-        final removed = await repository.remove(widget.post.id, !widget.post.removed, controller.text);
+        final removed = await repository.remove(widget.post.id, !widget.post.status.removed, controller.text);
         removed ? showSnackbar(l10n.removedPost) : showSnackbar(l10n.restoredPost);
-        widget.onAction(PostAction.remove, widget.post.copyWith(removed: !widget.post.removed));
+        widget.onAction(PostAction.remove, widget.post.copyWith(status: widget.post.status.copyWith(removed: !widget.post.status.removed)));
 
         Navigator.of(dialogContext).pop();
       },
@@ -251,10 +251,10 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
 
     final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.post.community?.actorId).isNotEmpty;
 
-    final isPostLocked = widget.post.locked;
-    final isPostPinnedToCommunity = widget.post.featuredCommunity; // Pin to community
-    final isPostDeleted = widget.post.deleted; // Deleted by the user
-    final isPostRemoved = widget.post.removed; // Removed by a moderator
+    final isPostLocked = widget.post.status.locked;
+    final isPostPinnedToCommunity = widget.post.status.featuredCommunity; // Pin to community
+    final isPostDeleted = widget.post.status.deleted; // Deleted by the user
+    final isPostRemoved = widget.post.status.removed; // Removed by a moderator
 
     if (widget.account.anonymous) {
       userActions = userActions.where((action) => action.requiresAuthentication == false).toList();

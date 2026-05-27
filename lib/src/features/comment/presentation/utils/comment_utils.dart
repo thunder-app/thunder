@@ -5,17 +5,18 @@ import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/data/models/comment_node.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
+import 'package:thunder/src/foundation/primitives/models/vote_state.dart';
 import 'package:thunder/src/features/comment/data/repositories/comment_repository_impl.dart';
 import 'package:thunder/src/features/comment/domain/enums/comment_action.dart';
 
 // Optimistically updates a comment
 ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
-  assert(comment.score != null && comment.upvotes != null && comment.downvotes != null, 'Comment must have score, upvotes and downvotes');
+  assert(comment.counts.score != null && comment.counts.upvotes != null && comment.counts.downvotes != null, 'Comment must have score, upvotes and downvotes');
 
-  int newScore = comment.score!;
-  int newUpvotes = comment.upvotes!;
-  int newDownvotes = comment.downvotes!;
-  int? existingVoteType = comment.myVote;
+  int newScore = comment.counts.score!;
+  int newUpvotes = comment.counts.upvotes!;
+  int newDownvotes = comment.counts.downvotes!;
+  int existingVoteType = comment.context.vote.score;
 
   switch (voteType) {
     case -1:
@@ -40,17 +41,20 @@ ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
       break;
   }
 
-  return comment.copyWith(myVote: voteType, score: newScore, upvotes: newUpvotes, downvotes: newDownvotes);
+  return comment.copyWith(
+    context: comment.context.copyWith(vote: VoteState.fromScore(voteType)),
+    counts: comment.counts.copyWith(score: newScore, upvotes: newUpvotes, downvotes: newDownvotes),
+  );
 }
 
 /// Optimistically saves a comment without sending the network request
 ThunderComment optimisticallySaveComment(ThunderComment comment, bool saved) {
-  return comment.copyWith(saved: saved);
+  return comment.copyWith(context: comment.context.copyWith(saved: saved));
 }
 
 /// Optimistically deletes a comment without sending the network request
 ThunderComment optimisticallyDeleteComment(ThunderComment comment, bool deleted) {
-  return comment.copyWith(deleted: deleted);
+  return comment.copyWith(status: comment.status.copyWith(deleted: deleted));
 }
 
 /// Builds a tree of [ThunderComment]s given a flattened list of [ThunderComment]s.
@@ -143,7 +147,7 @@ bool hasDirectParent(ThunderComment comment, int parentId) {
   return int.tryParse(parentSegment) == parentId;
 }
 
-String cleanCommentContent(ThunderComment comment) => cleanComment(comment.content, comment.removed, comment.deleted);
+String cleanCommentContent(ThunderComment comment) => cleanComment(comment.content, comment.status.removed, comment.status.deleted);
 
 String cleanComment(String commentContent, bool? commentRemoved, bool? commentDeleted) {
   String deletedByModerator = 'deleted by moderator';
@@ -171,9 +175,9 @@ Future<ThunderComment?> onCommentAction(BuildContext context, Account account, C
 
   switch (action) {
     case CommentAction.vote:
-      updatedComment = await repository.vote(comment, comment.myVote == data?['voteType'] ? 0 : data?['voteType']);
+      updatedComment = await repository.vote(comment, comment.context.vote.score == data?['voteType'] ? 0 : data?['voteType']);
     case CommentAction.save:
-      updatedComment = await repository.save(comment, comment.saved != null && !comment.saved!);
+      updatedComment = await repository.save(comment, comment.context.saved != null && !comment.context.saved!);
     case CommentAction.delete:
       updatedComment = await repository.delete(comment, true);
     case CommentAction.report:
@@ -186,10 +190,8 @@ Future<ThunderComment?> onCommentAction(BuildContext context, Account account, C
       updatedComment = await navigateToCreateCommentPage(context, account: account, comment: comment, onCommentSuccess: (comment, _) => updatedComment = comment);
       break;
     case CommentAction.remove:
-      // TODO: Handle this case.
       break;
     case CommentAction.purge:
-      // TODO: Handle this case.
       break;
     default:
       break;

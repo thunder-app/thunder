@@ -46,7 +46,7 @@ abstract class NotificationRepository {
 
   /// Marks a private message as read
   Future<void> markMessageAsRead({
-    required int messageId,
+    required int notificationId,
     bool read = true,
   });
 
@@ -133,11 +133,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<void> markMessageAsRead({required int messageId, bool read = true}) async {
+  Future<void> markMessageAsRead({required int notificationId, bool read = true}) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
-    await _api.markPrivateMessageAsRead(messageId: messageId, read: read);
+    await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
 
   @override

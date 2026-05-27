@@ -159,28 +159,28 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     switch (action) {
       case GeneralQuickPostAction.upvote:
         Navigator.of(context).pop();
-        final post = await repository.vote(widget.post, widget.post.myVote == 1 ? 0 : 1);
+        final post = await repository.vote(widget.post, widget.post.context.vote.score == 1 ? 0 : 1);
         widget.onAction(PostAction.vote, post);
         break;
       case GeneralQuickPostAction.downvote:
         Navigator.of(context).pop();
-        final post = await repository.vote(widget.post, widget.post.myVote == -1 ? 0 : -1);
+        final post = await repository.vote(widget.post, widget.post.context.vote.score == -1 ? 0 : -1);
         widget.onAction(PostAction.vote, post);
         break;
       case GeneralQuickPostAction.save:
         Navigator.of(context).pop();
-        final post = await repository.save(widget.post, !(widget.post.saved ?? false));
+        final post = await repository.save(widget.post, !(widget.post.context.saved ?? false));
         widget.onAction(PostAction.save, post);
         break;
       case GeneralQuickPostAction.read:
         Navigator.of(context).pop();
-        final success = await repository.read(widget.post.id, !(widget.post.read ?? false));
-        widget.onAction(PostAction.read, widget.post.copyWith(read: success ? !(widget.post.read ?? false) : null));
+        final success = await repository.read(widget.post.id, !(widget.post.context.read ?? false));
+        widget.onAction(PostAction.read, widget.post.copyWith(context: widget.post.context.copyWith(read: success ? !(widget.post.context.read ?? false) : null)));
         break;
       case GeneralQuickPostAction.hide:
         Navigator.of(context).pop();
-        final hidden = await repository.hide(widget.post.id, !(widget.post.hidden ?? false));
-        widget.onAction(PostAction.hide, widget.post.copyWith(hidden: hidden));
+        final hidden = await repository.hide(widget.post.id, !(widget.post.context.hidden ?? false));
+        widget.onAction(PostAction.hide, widget.post.copyWith(context: widget.post.context.copyWith(hidden: hidden)));
         break;
     }
   }
@@ -190,15 +190,15 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.myVote == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
+        return post.context.vote.score == 1 ? GeneralQuickPostAction.upvote.enabledIcon : GeneralQuickPostAction.upvote.disabledIcon;
       case GeneralQuickPostAction.downvote:
-        return post.myVote == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
+        return post.context.vote.score == -1 ? GeneralQuickPostAction.downvote.enabledIcon : GeneralQuickPostAction.downvote.disabledIcon;
       case GeneralQuickPostAction.save:
-        return post.saved == true ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
+        return post.context.saved == true ? GeneralQuickPostAction.save.enabledIcon : GeneralQuickPostAction.save.disabledIcon;
       case GeneralQuickPostAction.read:
-        return post.read == true ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
+        return post.context.read == true ? GeneralQuickPostAction.read.enabledIcon : GeneralQuickPostAction.read.disabledIcon;
       case GeneralQuickPostAction.hide:
-        return post.hidden == true ? GeneralQuickPostAction.hide.enabledIcon : GeneralQuickPostAction.hide.disabledIcon;
+        return post.context.hidden == true ? GeneralQuickPostAction.hide.enabledIcon : GeneralQuickPostAction.hide.disabledIcon;
     }
   }
 
@@ -208,15 +208,15 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.myVote == 1 ? l10n.upvoted : l10n.upvote;
+        return post.context.vote.score == 1 ? l10n.upvoted : l10n.upvote;
       case GeneralQuickPostAction.downvote:
-        return post.myVote == -1 ? l10n.downvoted : l10n.downvote;
+        return post.context.vote.score == -1 ? l10n.downvoted : l10n.downvote;
       case GeneralQuickPostAction.save:
-        return post.saved == true ? l10n.saved : l10n.save;
+        return post.context.saved == true ? l10n.saved : l10n.save;
       case GeneralQuickPostAction.read:
-        return post.read == true ? l10n.read : l10n.markAsRead;
+        return post.context.read == true ? l10n.read : l10n.markAsRead;
       case GeneralQuickPostAction.hide:
-        return post.hidden == true ? l10n.hidden : l10n.hide;
+        return post.context.hidden == true ? l10n.hidden : l10n.hide;
     }
   }
 
@@ -243,15 +243,15 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     switch (action) {
       case GeneralQuickPostAction.upvote:
-        return post.myVote == 1 ? themeState.upvoteColor.color : null;
+        return post.context.vote.score == 1 ? themeState.upvoteColor.color : null;
       case GeneralQuickPostAction.downvote:
-        return post.myVote == -1 ? themeState.downvoteColor.color : null;
+        return post.context.vote.score == -1 ? themeState.downvoteColor.color : null;
       case GeneralQuickPostAction.save:
-        return post.saved == true ? themeState.saveColor.color : null;
+        return post.context.saved == true ? themeState.saveColor.color : null;
       case GeneralQuickPostAction.read:
-        return post.read == true ? themeState.markReadColor.color : null;
+        return post.context.read == true ? themeState.markReadColor.color : null;
       case GeneralQuickPostAction.hide:
-        return post.hidden == true ? themeState.hideColor.color : null;
+        return post.context.hidden == true ? themeState.hideColor.color : null;
     }
   }
 

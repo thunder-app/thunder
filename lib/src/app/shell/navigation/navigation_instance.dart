@@ -15,20 +15,22 @@ Future<void> navigateToInstancePage(
   final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
   final enableFullScreenSwipeNavigationGesture = context.read<GesturePreferencesCubit>().state.enableFullScreenSwipeNavigationGesture;
 
-  final platformInfo = await detectPlatformFromNodeInfo(instanceHost);
+  final canonicalInstanceHost = normalizeInstanceHost(instanceHost) ?? instanceHost;
+  final platformInfo = await detectPlatformFromNodeInfo(canonicalInstanceHost);
   final platform = platformInfo?['platform'] ?? ThreadiversePlatform.lemmy; // Fallback to Lemmy if we can't detect the platform
+  PlatformVersionCache().trySet(canonicalInstanceHost, platformInfo?['version']?.toString());
 
   ThunderSiteResponse? site;
 
   try {
     // Get the site information by connecting to the given instance
-    final account = Account(id: '', index: -1, instance: instanceHost, platform: platform);
+    final account = Account(id: '', index: -1, instance: canonicalInstanceHost, platform: platform);
     site = await InstanceRepositoryImpl(account: account).info().timeout(const Duration(seconds: 5));
   } catch (e) {
     // Continue if we can't get the site
   }
 
-  final fallbackAccount = Account(id: '', index: -1, anonymous: true, instance: instanceHost, platform: platform);
+  final fallbackAccount = Account(id: '', index: -1, anonymous: true, instance: canonicalInstanceHost, platform: platform);
   final routeScope = resolveAccountAwareRouteScope(context, account: account, fallbackAccount: fallbackAccount, useActiveAccount: true, includeThunderCubit: true);
   final effectiveAccount = routeScope.account;
 

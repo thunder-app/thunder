@@ -83,7 +83,7 @@ class MediaManagementPage extends StatelessWidget {
                         addRepaintBoundaries: false,
                         itemCount: state.images!.length,
                         itemBuilder: (context, index) {
-                          String url = 'https://${account.instance}/pictrs/image/${state.images![index]['local_image']['pictrs_alias']}';
+                          final image = state.images![index];
 
                           return KeepAlive(
                             keepAlive: true,
@@ -97,7 +97,7 @@ class MediaManagementPage extends StatelessWidget {
                                     child: Stack(
                                       children: [
                                         ExtendedImage.network(
-                                          url,
+                                          image.url,
                                           cache: true,
                                           clearMemoryCacheWhenDispose: imageCachingMode == ImageCachingMode.relaxed,
                                           loadStateChanged: (state) {
@@ -137,7 +137,7 @@ class MediaManagementPage extends StatelessWidget {
                                           child: Material(
                                             color: Colors.transparent,
                                             child: InkWell(
-                                              onTap: () => showImageViewer(context, url: url),
+                                              onTap: () => showImageViewer(context, url: image.url),
                                             ),
                                           ),
                                         ),
@@ -147,12 +147,12 @@ class MediaManagementPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       const SizedBox(width: 12),
-                                      Text(l10n.uploadedDate(dateFormat?.format(DateTime.parse(state.images![index]['local_image']['published']).toLocal()) ?? '')),
+                                      Text(l10n.uploadedDate(image.uploadedAt != null ? dateFormat?.format(image.uploadedAt!.toLocal()) ?? '' : '')),
                                       const Spacer(),
                                       IconButton(
                                         onPressed: () async {
                                           final UserMediaCubit userMediaCubit = context.read<UserMediaCubit>();
-                                          userMediaCubit.findMediaUsages(id: state.images![index]['local_image']['pictrs_alias']);
+                                          userMediaCubit.findMediaUsages(id: image.alias);
 
                                           showModalBottomSheet(
                                             context: context,
@@ -259,9 +259,7 @@ class MediaManagementPage extends StatelessWidget {
                                           );
 
                                           if (result && context.mounted) {
-                                            context
-                                                .read<UserMediaCubit>()
-                                                .deleteMedia(deleteToken: state.images![index]['local_image']['pictrs_delete_token'], id: state.images![index]['local_image']['pictrs_alias']);
+                                            context.read<UserMediaCubit>().deleteMedia(deleteToken: image.deleteToken, id: image.alias);
                                           }
                                         },
                                         icon: const Icon(Icons.delete_forever),

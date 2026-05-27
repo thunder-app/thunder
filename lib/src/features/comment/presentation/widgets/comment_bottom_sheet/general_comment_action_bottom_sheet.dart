@@ -153,17 +153,17 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
     switch (action) {
       case GeneralQuickCommentAction.upvote:
         Navigator.of(context).pop();
-        final comment = await repository.vote(widget.comment, widget.comment.myVote == 1 ? 0 : 1);
+        final comment = await repository.vote(widget.comment, widget.comment.context.vote.score == 1 ? 0 : 1);
         widget.onAction(CommentAction.vote, comment);
         break;
       case GeneralQuickCommentAction.downvote:
         Navigator.of(context).pop();
-        final comment = await repository.vote(widget.comment, widget.comment.myVote == -1 ? 0 : -1);
+        final comment = await repository.vote(widget.comment, widget.comment.context.vote.score == -1 ? 0 : -1);
         widget.onAction(CommentAction.vote, comment);
         break;
       case GeneralQuickCommentAction.save:
         Navigator.of(context).pop();
-        final comment = await repository.save(widget.comment, !(widget.comment.saved ?? false));
+        final comment = await repository.save(widget.comment, !(widget.comment.context.saved ?? false));
         widget.onAction(CommentAction.save, comment);
         break;
       case GeneralQuickCommentAction.reply:
@@ -182,11 +182,11 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return comment.myVote == 1 ? GeneralQuickCommentAction.upvote.enabledIcon : GeneralQuickCommentAction.upvote.disabledIcon;
+        return comment.context.vote.score == 1 ? GeneralQuickCommentAction.upvote.enabledIcon : GeneralQuickCommentAction.upvote.disabledIcon;
       case GeneralQuickCommentAction.downvote:
-        return comment.myVote == -1 ? GeneralQuickCommentAction.downvote.enabledIcon : GeneralQuickCommentAction.downvote.disabledIcon;
+        return comment.context.vote.score == -1 ? GeneralQuickCommentAction.downvote.enabledIcon : GeneralQuickCommentAction.downvote.disabledIcon;
       case GeneralQuickCommentAction.save:
-        return comment.saved == true ? GeneralQuickCommentAction.save.enabledIcon : GeneralQuickCommentAction.save.disabledIcon;
+        return comment.context.saved == true ? GeneralQuickCommentAction.save.enabledIcon : GeneralQuickCommentAction.save.disabledIcon;
       case GeneralQuickCommentAction.reply:
         return GeneralQuickCommentAction.reply.enabledIcon;
       case GeneralQuickCommentAction.edit:
@@ -200,11 +200,11 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return comment.myVote == 1 ? l10n.upvoted : l10n.upvote;
+        return comment.context.vote.score == 1 ? l10n.upvoted : l10n.upvote;
       case GeneralQuickCommentAction.downvote:
-        return comment.myVote == -1 ? l10n.downvoted : l10n.downvote;
+        return comment.context.vote.score == -1 ? l10n.downvoted : l10n.downvote;
       case GeneralQuickCommentAction.save:
-        return comment.saved == true ? l10n.saved : l10n.save;
+        return comment.context.saved == true ? l10n.saved : l10n.save;
       case GeneralQuickCommentAction.reply:
         return l10n.reply(1);
       case GeneralQuickCommentAction.edit:
@@ -235,11 +235,11 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
 
     switch (action) {
       case GeneralQuickCommentAction.upvote:
-        return comment.myVote == 1 ? themeState.upvoteColor.color : null;
+        return comment.context.vote.score == 1 ? themeState.upvoteColor.color : null;
       case GeneralQuickCommentAction.downvote:
-        return comment.myVote == -1 ? themeState.downvoteColor.color : null;
+        return comment.context.vote.score == -1 ? themeState.downvoteColor.color : null;
       case GeneralQuickCommentAction.save:
-        return comment.saved == true ? themeState.saveColor.color : null;
+        return comment.context.saved == true ? themeState.saveColor.color : null;
       default:
         return null;
     }

@@ -465,7 +465,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles updating a given item within the feed
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
-    // TODO: Add support for updating comments (for user profile)
     List<ThunderPost> updatedPosts = List.from(state.posts);
 
     bool foundPost = false;

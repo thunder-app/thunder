@@ -165,8 +165,8 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
           moderatedCommunities: moderatedCommunities,
           user: widget.post.creator!,
           communityId: widget.post.community?.id,
-          isUserCommunityModerator: widget.post.creatorIsModerator,
-          isUserBannedFromCommunity: widget.post.creatorBannedFromCommunity,
+          isUserCommunityModerator: widget.post.context.creatorIsModerator,
+          isUserBannedFromCommunity: widget.post.context.creatorBannedFromCommunity,
           onAction: (UserAction userAction, ThunderUser? updatedUser) {
             ProfileSiteInfoCache.instance.markDirty(account);
             widget.onAction?.call(userAction: userAction, post: widget.post);
@@ -185,7 +185,7 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
               communityAction: communityAction,
               post: widget.post.copyWith(
                 community: updatedCommunity,
-                subscribed: updatedCommunity?.subscribed,
+                context: widget.post.context.copyWith(subscribed: updatedCommunity?.context.subscribed),
               ),
             );
           },

@@ -7,14 +7,15 @@ import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/search_sort_type.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment_report.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
 import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post_report.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_page.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
+import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
@@ -22,12 +23,16 @@ import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
+import 'package:thunder/src/foundation/primitives/models/notification_ref.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// PieFed API client for the `/api/alpha` endpoints.
 class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
+  static const _mapper = PiefedPrimitiveMapper();
+
   PiefedApiClient({
     required super.account,
     super.debug,
@@ -106,8 +111,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'id': postId,
     });
 
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => ThunderUser.fromPiefedUser(mu['moderator'])).toList();
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => PiefedApiClient._mapper.user(mu['moderator'])).toList();
 
     return (
       post: post,
@@ -154,7 +159,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
     final json = await request(HttpMethod.get, '$basePath/post/list', queryParams);
 
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
+    final posts = (json['posts'] as List).map<ThunderPost>((pv) => PiefedApiClient._mapper.postView(pv)).toList();
     final nextPage = (json['next_cursor'] ?? json['next_page'])?.toString();
 
     return (posts: posts, nextPage: nextPage);
@@ -180,7 +185,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'nsfw': nsfw,
       'language_id': languageId,
     });
-    return ThunderPost.fromPiefedPostView(json['post_view']);
+    return PiefedApiClient._mapper.postView(json['post_view']);
   }
 
   @override
@@ -243,7 +248,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'nsfw': nsfw,
       'language_id': languageId,
     });
-    return ThunderPost.fromPiefedPostView(json['post_view']);
+    return PiefedApiClient._mapper.postView(json['post_view']);
   }
 
   @override
@@ -290,7 +295,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'score': score,
     });
-    return ThunderPost.fromPiefedPostView(json['post_view']);
+    return PiefedApiClient._mapper.postView(json['post_view']);
   }
 
   @override
@@ -299,7 +304,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'save': save,
     });
-    return ThunderPost.fromPiefedPostView(json['post_view']);
+    return PiefedApiClient._mapper.postView(json['post_view']);
   }
 
   @override
@@ -319,8 +324,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'hidden': hide,
     });
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    return post.hidden == hide;
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    return post.context.hidden == hide;
   }
 
   @override
@@ -329,8 +334,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'deleted': deleted,
     });
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    return post.deleted == deleted;
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    return post.status.deleted == deleted;
   }
 
   @override
@@ -339,8 +344,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'locked': locked,
     });
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    return post.locked == locked;
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    return post.status.locked == locked;
   }
 
   @override
@@ -350,8 +355,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'featured': pinned,
       'feature_type': 'Community',
     });
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    return post.featuredCommunity == pinned;
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    return post.status.featuredCommunity == pinned;
   }
 
   @override
@@ -361,8 +366,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'removed': removed,
       'reason': reason,
     });
-    final post = ThunderPost.fromPiefedPostView(json['post_view']);
-    return post.removed == removed;
+    final post = PiefedApiClient._mapper.postView(json['post_view']);
+    return post.status.removed == removed;
   }
 
   @override
@@ -416,7 +421,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
     final json = await request(HttpMethod.get, '$basePath/post/list2', queryParams);
 
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList();
+    final posts = (json['posts'] as List).map<ThunderPost>((pv) => PiefedApiClient._mapper.postView(pv)).toList();
     final nextPage = json['next_page'] as String?;
 
     return (posts: posts, nextPage: nextPage);
@@ -428,7 +433,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'flair_id_list': flairIds,
     });
-    return ThunderPost.fromPiefedPostView(json);
+    return PiefedApiClient._mapper.postView(json);
   }
 
   /// Subscribe or unsubscribe from a post.
@@ -437,7 +442,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'subscribe': subscribe,
     });
-    return ThunderPost.fromPiefedPostView(json['post_view']);
+    return PiefedApiClient._mapper.postView(json['post_view']);
   }
 
   /// Vote on a poll attached to a post.
@@ -462,19 +467,22 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<List<ThunderPostReport>> getPostReports({
+  Future<ThunderPage<ThunderReport>> getReports({
+    ReportKind? kind,
     int? postId,
+    int? commentId,
     int page = 1,
+    String? cursor,
     int limit = 20,
     bool unresolved = false,
     int? communityId,
   }) {
-    throw UnsupportedFeatureException('Post reports', platformName: platformName);
+    throw UnsupportedFeatureException('Reports', platformName: platformName);
   }
 
   @override
-  Future<ThunderPostReport> resolvePostReport({required int reportId, required bool resolved}) {
-    throw UnsupportedFeatureException('Post reports', platformName: platformName);
+  Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved}) {
+    throw UnsupportedFeatureException('Reports', platformName: platformName);
   }
 
   // =============================================================
@@ -484,7 +492,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   @override
   Future<ThunderComment> getComment(int commentId) async {
     final json = await request(HttpMethod.get, '$basePath/comment', {'id': commentId});
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -509,7 +517,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
     // PieFed returns nested replies for a post; flatten them in-order and inherit post/community.
     final flattenedComments = _flattenReplies(json['comments'] as List);
-    final comments = flattenedComments.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+    final comments = flattenedComments.map<ThunderComment>((cv) => PiefedApiClient._mapper.commentView(cv)).toList();
     final nextPage = json['next_page']?.toString();
 
     return (comments: comments, nextPage: nextPage);
@@ -544,7 +552,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'depth_first': depthFirst,
     });
 
-    final comments = (json['comments'] as List).map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList();
+    final comments = (json['comments'] as List).map<ThunderComment>((cv) => PiefedApiClient._mapper.commentView(cv)).toList();
     final nextPage = json['next_page']?.toString();
 
     return (comments: comments, nextPage: nextPage);
@@ -600,7 +608,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'comment_id': commentId,
       'locked': locked,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   /// Mark or unmark a comment reply as the answer.
@@ -618,7 +626,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'removed': removed,
       'reason': reason,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   /// Subscribe or unsubscribe from a comment.
@@ -627,7 +635,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'comment_id': commentId,
       'subscribe': subscribe,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -643,7 +651,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'parent_id': parentId,
       'language_id': languageId,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -657,7 +665,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'body': content,
       'language_id': languageId,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -666,7 +674,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'comment_id': commentId,
       'score': score,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -675,7 +683,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'comment_id': commentId,
       'save': save,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -684,7 +692,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'comment_id': commentId,
       'deleted': deleted,
     });
-    return ThunderComment.fromPiefedCommentView(json['comment_view']);
+    return PiefedApiClient._mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -696,21 +704,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<List<ThunderCommentReport>> getCommentReports({
-    int? commentId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) {
-    throw UnsupportedFeatureException('Comment reports', platformName: platformName);
-  }
-
-  @override
-  Future<ThunderCommentReport> resolveCommentReport({required int reportId, required bool resolved}) {
-    throw UnsupportedFeatureException('Comment reports', platformName: platformName);
-  }
-
   // =============================================================
   // Communities
   // =============================================================
@@ -723,9 +716,9 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     });
 
     return (
-      community: ThunderCommunity.fromPiefedCommunityView(json['community_view']),
+      community: PiefedApiClient._mapper.communityView(json['community_view']),
       site: json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
-      moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList(),
+      moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => PiefedApiClient._mapper.user(cmv['moderator'])).toList(),
       discussionLanguages: (json['discussion_languages'] as List?)?.cast<int>() ?? [],
       flairs: ThunderFlair.parsePiefedList(json['community_view']?['flair_list']),
     );
@@ -782,7 +775,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'type_': feedListType?.value,
       'sort': postSortType?.value,
     });
-    return (json['communities'] as List).map<ThunderCommunity>((cv) => ThunderCommunity.fromPiefedCommunityView(cv)).toList();
+    return (json['communities'] as List).map<ThunderCommunity>((cv) => PiefedApiClient._mapper.communityView(cv)).toList();
   }
 
   @override
@@ -792,7 +785,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'follow': follow,
     });
     // The API response should include the updated subscription status
-    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+    return PiefedApiClient._mapper.communityView(json['community_view']);
   }
 
   @override
@@ -801,7 +794,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'community_id': communityId,
       'block': block,
     });
-    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+    return PiefedApiClient._mapper.communityView(json['community_view']);
   }
 
   /// Delete or restore a community.
@@ -810,7 +803,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'community_id': communityId,
       'deleted': deleted,
     });
-    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+    return PiefedApiClient._mapper.communityView(json['community_view']);
   }
 
   /// Create a flair for a community.
@@ -874,7 +867,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'post_id': postId,
       'nsfw_status': nsfw,
     });
-    return ThunderPost.fromPiefedPostView(json);
+    return PiefedApiClient._mapper.postView(json);
   }
 
   /// Subscribe or unsubscribe to a community.
@@ -883,7 +876,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'community_id': communityId,
       'subscribe': subscribe,
     });
-    return ThunderCommunity.fromPiefedCommunityView(json['community_view']);
+    return PiefedApiClient._mapper.communityView(json['community_view']);
   }
 
   // =============================================================
@@ -896,26 +889,31 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     String? username,
     PostSortType? sort,
     int? page,
+    String? cursor,
     int? limit,
     bool? saved,
     bool? includeContent,
   }) async {
+    final pageNumber = page ?? int.tryParse(cursor ?? '') ?? 1;
     final json = await request(HttpMethod.get, '$basePath/user', {
       'person_id': userId,
       'username': username,
       'sort': sort?.value,
-      'page': page,
+      'page': pageNumber,
       'limit': limit,
       'saved_only': saved,
       'include_content': includeContent,
     });
+    final posts = (json['posts'] as List?)?.map<ThunderPost>((pv) => PiefedApiClient._mapper.postView(pv)).toList() ?? [];
+    final comments = (json['comments'] as List?)?.map<ThunderComment>((cv) => PiefedApiClient._mapper.commentView(cv)).toList() ?? [];
 
     return (
-      user: ThunderUser.fromPiefedUserView(json['person_view']),
+      user: PiefedApiClient._mapper.userView(json['person_view']),
       site: json['site'] != null ? ThunderSite.fromPiefedSite(json['site']) : null,
-      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList() ?? [],
-      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList() ?? [],
-      moderates: (json['moderates'] as List?)?.map<ThunderCommunity>((cmv) => ThunderCommunity.fromPiefedCommunity(cmv['community'])).toList() ?? [],
+      posts: posts,
+      comments: comments,
+      moderates: (json['moderates'] as List?)?.map<ThunderCommunity>((cmv) => PiefedApiClient._mapper.community(cmv['community'])).toList() ?? [],
+      nextPage: json['next_page']?.toString() ?? ((limit != null && posts.length < limit && comments.length < limit) ? null : (pageNumber + 1).toString()),
     );
   }
 
@@ -925,7 +923,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'person_id': userId,
       'block': block,
     });
-    return ThunderUser.fromPiefedUserView(json['person_view']);
+    return PiefedApiClient._mapper.userView(json['person_view']);
   }
 
   /// Ban a user instance-wide.
@@ -941,7 +939,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'purge_content': purgeContent,
       'reason': reason,
     });
-    return ThunderUser.fromPiefedUserView(json['person_view']);
+    return PiefedApiClient._mapper.userView(json['person_view']);
   }
 
   /// Unban a user instance-wide.
@@ -949,7 +947,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     final json = await request(HttpMethod.post, '$basePath/user/unban', {
       'person_id': userId,
     });
-    return ThunderUser.fromPiefedUserView(json['person_view']);
+    return PiefedApiClient._mapper.userView(json['person_view']);
   }
 
   /// Subscribe or unsubscribe from a user.
@@ -1003,7 +1001,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
         'community_id': communityId,
         'user_id': userId,
       });
-      return ThunderUser.fromPiefedUser(json['banned_user']);
+      return PiefedApiClient._mapper.user(json['banned_user']);
     }
 
     String? expiresAt;
@@ -1023,7 +1021,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'expires_at': expiresAt,
       'permanent': permanent,
     });
-    return ThunderUser.fromPiefedUser(json['banned_user']);
+    return PiefedApiClient._mapper.user(json['banned_user']);
   }
 
   @override
@@ -1037,7 +1035,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'community_id': communityId,
       'added': added,
     });
-    return (json['moderators'] as List).map<ThunderUser>((cmv) => ThunderUser.fromPiefedUser(cmv['moderator'])).toList();
+    return (json['moderators'] as List).map<ThunderUser>((cmv) => PiefedApiClient._mapper.user(cmv['moderator'])).toList();
   }
 
   // =============================================================
@@ -1073,10 +1071,10 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
     return (
       type: MetaSearchType.values.firstWhere((e) => e.searchType == json['type_']),
-      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => ThunderPost.fromPiefedPostView(pv)).toList() ?? [],
-      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => ThunderComment.fromPiefedCommentView(cv)).toList() ?? [],
-      communities: (json['communities'] as List?)?.map<ThunderCommunity>((cv) => ThunderCommunity.fromPiefedCommunityView(cv)).toList() ?? [],
-      users: (json['users'] as List?)?.map<ThunderUser>((pv) => ThunderUser.fromPiefedUserView(pv)).toList() ?? [],
+      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => PiefedApiClient._mapper.postView(pv)).toList() ?? [],
+      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => PiefedApiClient._mapper.commentView(cv)).toList() ?? [],
+      communities: (json['communities'] as List?)?.map<ThunderCommunity>((cv) => PiefedApiClient._mapper.communityView(cv)).toList() ?? [],
+      users: (json['users'] as List?)?.map<ThunderUser>((pv) => PiefedApiClient._mapper.userView(pv)).toList() ?? [],
     );
   }
 
@@ -1085,10 +1083,10 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     final json = await request(HttpMethod.get, '$basePath/resolve_object', {'q': query});
 
     return (
-      community: json['community'] != null ? ThunderCommunity.fromPiefedCommunityView(json['community']) : null,
-      post: json['post'] != null ? ThunderPost.fromPiefedPostView(json['post']) : null,
-      comment: json['comment'] != null ? ThunderComment.fromPiefedCommentView(json['comment']) : null,
-      user: json['person'] != null ? ThunderUser.fromPiefedUserView(json['person']) : null,
+      community: json['community'] != null ? PiefedApiClient._mapper.communityView(json['community']) : null,
+      post: json['post'] != null ? PiefedApiClient._mapper.postView(json['post']) : null,
+      comment: json['comment'] != null ? PiefedApiClient._mapper.commentView(json['comment']) : null,
+      user: json['person'] != null ? PiefedApiClient._mapper.userView(json['person']) : null,
     );
   }
 
@@ -1121,12 +1119,16 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     });
 
     return (response['replies'] as List).map<ThunderComment>((crv) {
-      final comment = ThunderComment.fromPiefedCommentView(crv);
+      final comment = PiefedApiClient._mapper.commentView(crv);
 
       return comment.copyWith(
-        recipient: ThunderUser.fromPiefedUser(crv['recipient']),
-        replyMentionId: crv['comment_reply']['id'],
-        read: crv['comment_reply']['read'],
+        recipient: PiefedApiClient._mapper.user(crv['recipient']),
+        notification: NotificationRef(
+          id: crv['comment_reply']['id'],
+          kind: NotificationKind.reply,
+          read: crv['comment_reply']['read'] ?? false,
+          createdAt: DateTime.tryParse(crv['comment_reply']['published'] ?? '') ?? comment.published,
+        ),
       );
     }).toList();
   }
@@ -1154,12 +1156,16 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     });
 
     return (response['replies'] as List).map<ThunderComment>((mention) {
-      final comment = ThunderComment.fromPiefedCommentView(mention);
+      final comment = PiefedApiClient._mapper.commentView(mention);
 
       return comment.copyWith(
-        recipient: ThunderUser.fromPiefedUser(mention['recipient']),
-        replyMentionId: mention['comment_reply']['id'],
-        read: mention['comment_reply']['read'],
+        recipient: PiefedApiClient._mapper.user(mention['recipient']),
+        notification: NotificationRef(
+          id: mention['comment_reply']['id'],
+          kind: NotificationKind.mention,
+          read: mention['comment_reply']['read'] ?? false,
+          createdAt: DateTime.tryParse(mention['comment_reply']['published'] ?? '') ?? comment.published,
+        ),
       );
     }).toList();
   }
@@ -1225,9 +1231,9 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<void> markPrivateMessageAsRead({required int messageId, required bool read}) async {
+  Future<void> markPrivateMessageAsRead({required int notificationId, required bool read}) async {
     await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
-      'private_message_id': messageId,
+      'private_message_id': notificationId,
       'read': read,
     });
   }
@@ -1320,11 +1326,17 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> media({int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/user/media', {
+  Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
+    final json = await request(HttpMethod.get, '$basePath/user/media', {
       'page': page,
       'limit': limit,
     });
+    final rawItems = (json['images'] as List?) ?? (json['items'] as List?) ?? const [];
+    final items = rawItems.whereType<Map<String, dynamic>>().map((image) => _accountMediaItemFromPiefed(image, account.instance)).toList();
+    return ThunderPage(
+      items: items,
+      nextPage: limit != null && items.length < limit ? null : ((page ?? 1) + 1).toString(),
+    );
   }
 
   /// List user media with additional filters.
@@ -1459,7 +1471,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<void> deleteImage({required String file, required String token}) async {
+  Future<void> deleteImage({required String file, String? token}) async {
     await request(HttpMethod.post, '$basePath/image/delete', {
       'file': file,
     });
@@ -1477,10 +1489,15 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       conversationId: privateMessageView['conversation_id'],
       content: privateMessage['content'],
       deleted: privateMessage['deleted'],
-      read: privateMessage['read'],
       published: DateTime.parse(privateMessage['published']),
-      recipient: recipient != null ? ThunderUser.fromPiefedUser(recipient) : null,
-      creator: creator != null ? ThunderUser.fromPiefedUser(creator) : null,
+      notification: NotificationRef(
+        id: privateMessage['id'],
+        kind: NotificationKind.privateMessage,
+        read: privateMessage['read'] ?? false,
+        createdAt: DateTime.parse(privateMessage['published']),
+      ),
+      recipient: recipient != null ? PiefedApiClient._mapper.user(recipient) : null,
+      creator: creator != null ? PiefedApiClient._mapper.user(creator) : null,
     );
   }
 
@@ -1530,4 +1547,17 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
     }
   }
+}
+
+AccountMediaItem _accountMediaItemFromPiefed(Map<String, dynamic> image, String instance) {
+  final localImage = image['local_image'] as Map<String, dynamic>? ?? image;
+  final alias = localImage['pictrs_alias']?.toString() ?? localImage['file']?.toString() ?? '';
+  final url = image['url']?.toString() ?? Uri.https(instance, '/pictrs/image/$alias').toString();
+  return AccountMediaItem(
+    alias: alias,
+    url: url,
+    uploadedAt: DateTime.tryParse((localImage['published'] ?? localImage['published_at'] ?? '').toString()),
+    thumbnailForPostId: localImage['thumbnail_for_post_id'] as int?,
+    deleteToken: localImage['pictrs_delete_token']?.toString() ?? image['delete_token']?.toString(),
+  );
 }

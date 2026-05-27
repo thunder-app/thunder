@@ -55,7 +55,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(
         state.copyWith(
-          status: event.post != null ? PostStatus.refreshing : PostStatus.loading,
+          status: event.post != null ? PostPageStatus.refreshing : PostPageStatus.loading,
           post: event.post ?? state.post,
           communityId: event.post?.community?.id ?? state.post?.community?.id,
           comments: const [],
@@ -95,7 +95,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       emit(state.copyWith(
-        status: PostStatus.success,
+        status: PostPageStatus.success,
         post: post,
         communityId: post?.community?.id,
         moderators: moderators,
@@ -111,7 +111,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorMessage: message,
         errorReason: AppErrorReason.unexpected(
           message: message,
@@ -134,7 +134,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final originalPost = state.post;
     if (originalPost == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorMessage: l10n.failedToPerformAction,
         errorReason: AppErrorReason.actionFailed(
           message: l10n.failedToPerformAction,
@@ -146,14 +146,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ThunderPost updatedPost = optimisticallyVotePost(originalPost, event.score);
 
       if (updatedPost != state.post) {
-        emit(state.copyWith(status: PostStatus.success, post: updatedPost, errorReason: null));
+        emit(state.copyWith(status: PostPageStatus.success, post: updatedPost, errorReason: null));
       }
 
       updatedPost = await postRepository.vote(originalPost, event.score);
 
       if (updatedPost != state.post) {
         return emit(state.copyWith(
-          status: PostStatus.success,
+          status: PostPageStatus.success,
           post: updatedPost,
           errorReason: null,
         ));
@@ -161,7 +161,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         post: originalPost,
         errorMessage: message,
         errorReason: AppErrorReason.actionFailed(
@@ -177,7 +177,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final originalPost = state.post;
     if (originalPost == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorMessage: l10n.failedToPerformAction,
         errorReason: AppErrorReason.actionFailed(
           message: l10n.failedToPerformAction,
@@ -189,14 +189,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ThunderPost updatedPost = optimisticallySavePost(originalPost, event.save);
 
       if (updatedPost != state.post) {
-        emit(state.copyWith(status: PostStatus.success, post: updatedPost, errorReason: null));
+        emit(state.copyWith(status: PostPageStatus.success, post: updatedPost, errorReason: null));
       }
 
       updatedPost = await postRepository.save(originalPost, event.save);
 
       if (updatedPost != state.post) {
         return emit(state.copyWith(
-          status: PostStatus.success,
+          status: PostPageStatus.success,
           post: updatedPost,
           errorReason: null,
         ));
@@ -204,7 +204,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         post: originalPost,
         errorMessage: message,
         errorReason: AppErrorReason.actionFailed(
@@ -250,7 +250,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       if (reset) {
         emit(state.copyWith(
-          status: PostStatus.refreshing,
+          status: PostPageStatus.refreshing,
           comments: const [],
           commentNodes: null,
           commentResponseMap: const [],
@@ -275,17 +275,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         final comments = response.comments;
         final nextPage = response.nextPage;
         final int? nextPageNumber = nextPage != null ? int.tryParse(nextPage) : null;
+        final String? nextCursor = nextPageNumber == null ? nextPage : null;
 
         final listing = CommentList.fromApi(comments);
 
         return emit(
           state.copyWith(
-            status: PostStatus.success,
+            status: PostPageStatus.success,
             comments: listing.comments,
             commentNodes: listing.tree,
             commentResponseMap: listing.api,
             commentPage: platform == ThreadiversePlatform.lemmy ? nextPageNumber : null,
-            commentCursor: platform == ThreadiversePlatform.piefed ? nextPage : null,
+            commentCursor: platform == ThreadiversePlatform.piefed || nextCursor != null ? nextPage : null,
             commentCount: listing.api.length,
             // If we're intentionally loading a single comment thread, prevent root-level auto pagination.
             hasReachedCommentEnd: isReplyFetch || nextPage == null,
@@ -296,14 +297,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       // Prevent duplicate root-level requests if we already loaded everything.
-      if (!isReplyFetch && (state.commentCount >= state.post!.comments! || state.hasReachedCommentEnd)) {
-        if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.comments!) {
+      if (!isReplyFetch && (state.commentCount >= state.post!.counts.comments! || state.hasReachedCommentEnd)) {
+        if (!state.hasReachedCommentEnd && state.commentCount >= state.post!.counts.comments!) {
           emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
         }
         return;
       }
 
-      emit(state.copyWith(status: PostStatus.refreshing));
+      emit(state.copyWith(status: PostPageStatus.refreshing));
+      final useCommentCursor = commentParentId == null && state.commentCursor != null;
 
       final response = await commentRepository.getComments(
         communityId: state.post?.community?.id,
@@ -312,21 +314,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         commentSortType: selectedCommentSortType,
         limit: COMMENT_LIMIT,
         maxDepth: COMMENT_MAX_DEPTH,
-        page: platform == ThreadiversePlatform.lemmy
+        page: platform == ThreadiversePlatform.lemmy && !useCommentCursor
             ? commentParentId == null
                 ? state.commentPage
                 : null
             : null,
-        cursor: platform == ThreadiversePlatform.piefed
-            ? commentParentId == null
-                ? state.commentCursor
-                : null
-            : null,
+        cursor: commentParentId == null ? state.commentCursor : null,
       );
 
       final comments = response.comments;
       final nextPage = response.nextPage;
       final int? nextPageNumber = nextPage != null ? int.tryParse(nextPage) : null;
+      final String? nextCursor = nextPageNumber == null ? nextPage : null;
 
       // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it, so we should display an error
       if (commentParentId != null) {
@@ -340,7 +339,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(
         state.copyWith(
-          status: PostStatus.success,
+          status: PostPageStatus.success,
           commentSortType: selectedCommentSortType,
           comments: listing.comments,
           commentNodes: listing.tree,
@@ -350,7 +349,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                   ? state.commentPage
                   : nextPageNumber
               : null,
-          commentCursor: platform == ThreadiversePlatform.piefed
+          commentCursor: platform == ThreadiversePlatform.piefed || nextCursor != null
               ? isReplyFetch
                   ? state.commentCursor
                   : nextPage
@@ -364,7 +363,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorMessage: message,
         errorReason: AppErrorReason.unexpected(
           message: message,
@@ -379,7 +378,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final originalCommentTree = state.commentNodes;
     if (originalCommentTree == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'Comment tree is unavailable.',
         ),
@@ -389,7 +388,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final existingCommentNode = originalCommentTree.search(event.commentId);
     if (existingCommentNode == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'Comment node was not found.',
         ),
@@ -401,7 +400,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         try {
           if (event.actionInput is! VoteCommentActionInput) {
             return emit(state.copyWith(
-              status: PostStatus.failure,
+              status: PostPageStatus.failure,
               errorReason: const AppErrorReason.validation(
                 message: 'Invalid payload for vote action.',
               ),
@@ -412,17 +411,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
           final updatedComments = updatedCommentTree.flatten();
 
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
+          emit(state.copyWith(status: PostPageStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
           final repositoryComment = await commentRepository.vote(existingCommentNode.comment!, value);
           if (repositoryComment != updatedComment) {
             final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
-            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+            return emit(state.copyWith(status: PostPageStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
           }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
-            status: PostStatus.failure,
+            status: PostPageStatus.failure,
             errorMessage: message,
             commentNodes: originalCommentTree,
             comments: originalCommentTree.flatten(),
@@ -436,7 +435,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         try {
           if (event.actionInput is! SaveCommentActionInput) {
             return emit(state.copyWith(
-              status: PostStatus.failure,
+              status: PostPageStatus.failure,
               errorReason: const AppErrorReason.validation(
                 message: 'Invalid payload for save action.',
               ),
@@ -447,17 +446,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
           final updatedComments = updatedCommentTree.flatten();
 
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
+          emit(state.copyWith(status: PostPageStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
           final repositoryComment = await commentRepository.save(existingCommentNode.comment!, value);
           if (repositoryComment != updatedComment) {
             final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
-            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+            return emit(state.copyWith(status: PostPageStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
           }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
-            status: PostStatus.failure,
+            status: PostPageStatus.failure,
             errorMessage: message,
             commentNodes: originalCommentTree,
             comments: originalCommentTree.flatten(),
@@ -471,7 +470,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         try {
           if (event.actionInput is! DeleteCommentActionInput) {
             return emit(state.copyWith(
-              status: PostStatus.failure,
+              status: PostPageStatus.failure,
               errorReason: const AppErrorReason.validation(
                 message: 'Invalid payload for delete action.',
               ),
@@ -482,17 +481,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           final updatedCommentTree = replaceComment(originalCommentTree, updatedComment);
           final updatedComments = updatedCommentTree.flatten();
 
-          emit(state.copyWith(status: PostStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
+          emit(state.copyWith(status: PostPageStatus.success, commentNodes: updatedCommentTree, comments: updatedComments, errorReason: null));
 
           final repositoryComment = await commentRepository.delete(existingCommentNode.comment!, value);
           if (repositoryComment != updatedComment) {
             final serverCommentTree = replaceComment(state.commentNodes ?? updatedCommentTree, repositoryComment);
-            return emit(state.copyWith(status: PostStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
+            return emit(state.copyWith(status: PostPageStatus.success, commentNodes: serverCommentTree, comments: serverCommentTree.flatten(), errorReason: null));
           }
         } catch (e) {
           final message = getExceptionErrorMessage(e);
           return emit(state.copyWith(
-            status: PostStatus.failure,
+            status: PostPageStatus.failure,
             errorMessage: message,
             commentNodes: originalCommentTree,
             comments: originalCommentTree.flatten(),
@@ -504,7 +503,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         }
       default:
         return emit(state.copyWith(
-          status: PostStatus.failure,
+          status: PostPageStatus.failure,
           errorMessage: 'Unsupported action: ${event.action}',
           errorReason: AppErrorReason.validation(
             message: 'Unsupported action: ${event.action}',
@@ -516,7 +515,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _commentItemUpdatedEvent(CommentItemUpdatedEvent event, Emitter<PostState> emit) async {
     if (state.comments.isEmpty) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'No comments are loaded.',
         ),
@@ -525,7 +524,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final currentCommentTree = state.commentNodes;
     if (currentCommentTree == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'Comment tree is unavailable.',
         ),
@@ -535,7 +534,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final existingCommentNode = currentCommentTree.search(event.comment.id);
     if (existingCommentNode == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'Comment node was not found.',
         ),
@@ -550,7 +549,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final updatedComments = updatedCommentTree.flatten();
 
     return emit(state.copyWith(
-      status: PostStatus.success,
+      status: PostPageStatus.success,
       commentNodes: updatedCommentTree,
       comments: updatedComments,
       moddingCommentId: -1,
@@ -562,7 +561,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final currentCommentTree = state.commentNodes;
     if (currentCommentTree == null) {
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorReason: const AppErrorReason.actionFailed(
           message: 'Comment tree is unavailable.',
         ),
@@ -584,7 +583,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     final updatedComments = updatedCommentTree.flatten();
 
     return emit(state.copyWith(
-      status: PostStatus.success,
+      status: PostPageStatus.success,
       commentNodes: updatedCommentTree,
       comments: updatedComments,
       moddingCommentId: -1,
@@ -603,7 +602,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e) {
       final message = getExceptionErrorMessage(e);
       return emit(state.copyWith(
-        status: PostStatus.failure,
+        status: PostPageStatus.failure,
         errorMessage: message,
         moddingCommentId: -1,
         errorReason: AppErrorReason.actionFailed(

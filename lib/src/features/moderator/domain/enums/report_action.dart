@@ -1,1 +1,1 @@
-enum ReportAction { resolvePost, resolveComment }
+enum ReportAction { resolve }

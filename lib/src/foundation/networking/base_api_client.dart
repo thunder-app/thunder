@@ -145,7 +145,7 @@ abstract class BaseApiClient {
         case HttpMethod.delete:
           uri = Uri.https(account.instance, endpoint);
           if (debug) debugPrint('$platformName API: DELETE $uri');
-          response = await httpClient.delete(uri, headers: headers);
+          response = await httpClient.delete(uri, body: data.isEmpty ? null : jsonEncode(data), headers: headers);
       }
 
       return await handleResponse(uri, response) as Map<String, dynamic>;

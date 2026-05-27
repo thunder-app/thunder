@@ -85,7 +85,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ));
     }
 
-    PlatformVersionCache().set(account.instance, platformInfo['version'] ?? '');
+    PlatformVersionCache().trySet(account.instance, platformInfo['version']?.toString());
 
     // Initialize the repositories with the current account
     instanceRepository = _instanceRepositoryFactory(account);

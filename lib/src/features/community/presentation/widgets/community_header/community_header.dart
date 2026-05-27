@@ -161,11 +161,11 @@ class _CommunityStats extends StatelessWidget {
       children: [
         ThunderIconLabel(
           icon: Icon(Icons.people_rounded, size: iconSize),
-          label: formatNumberToK(community.subscribers ?? 0),
+          label: formatNumberToK(community.counts.subscribers ?? 0),
         ),
         ThunderIconLabel(
           icon: Icon(Icons.library_books_rounded, size: iconSize),
-          label: formatNumberToK(community.posts ?? 0),
+          label: formatNumberToK(community.counts.posts ?? 0),
         ),
       ],
     );

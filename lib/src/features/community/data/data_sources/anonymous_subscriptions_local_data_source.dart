@@ -17,18 +17,13 @@ extension on LocalCommunity {
       id: id,
       name: name,
       title: title,
-      removed: false,
       published: DateTime.now(),
-      deleted: false,
-      nsfw: false,
       actorId: actorId,
-      local: false,
       icon: icon,
-      hidden: false,
-      postingRestrictedToMods: false,
       instanceId: -1,
       visibility: 'Public',
-      subscribed: SubscriptionStatus.subscribed, // Will always be subscribed
+      status: const CommunityStatus(removed: false, deleted: false, nsfw: false, local: false, hidden: false, postingRestrictedToMods: false),
+      context: const CommunityContext(subscribed: SubscriptionStatus.subscribed), // Will always be subscribed
     );
   }
 }

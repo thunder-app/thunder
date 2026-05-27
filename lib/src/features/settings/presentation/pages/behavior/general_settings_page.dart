@@ -638,7 +638,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     highlightKey: settingToHighlightKey,
                     onLongPress: () => shareLocalSetting(context, LocalSettings.openLinksInReaderMode),
                     highlighted: settingToHighlight == LocalSettings.openLinksInReaderMode),
-              // TODO:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
               if (!kIsWeb && Platform.isAndroid)
                 ThunderSettingsTile(
                     leading: Icon(Icons.add_link),

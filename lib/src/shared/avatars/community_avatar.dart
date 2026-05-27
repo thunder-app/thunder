@@ -40,7 +40,7 @@ class CommunityAvatar extends StatelessWidget {
             radius: radius,
           ),
         ),
-        if (community.postingRestrictedToMods && showCommunityStatus)
+        if (community.status.postingRestrictedToMods && showCommunityStatus)
           Positioned(
             bottom: -2.0,
             right: -2.0,
