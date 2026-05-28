@@ -2997,5 +2997,17 @@
     "untitledPostDraft": "İsimsiz gönderi taslağı",
     "@untitledPostDraft": {
         "description": "Fallback title for post drafts without a title"
+    },
+    "directMessage": "Doğrudan mesaj",
+    "@directMessage": {
+        "description": "Title for the private message compose page"
+    },
+    "selectRecipient": "Alıcıyı seçin",
+    "@selectRecipient": {
+        "description": "Prompt to choose a private message recipient"
+    },
+    "send": "İlet",
+    "@send": {
+        "description": "Action to send content"
     }
 }
