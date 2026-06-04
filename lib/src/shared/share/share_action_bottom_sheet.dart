@@ -8,7 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/api.dart';
-import 'package:thunder/src/shared/share/advanced_share_sheet.dart';
+import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, showSnackbar;
 
