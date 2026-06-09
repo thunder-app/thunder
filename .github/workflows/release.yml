@@ -138,6 +138,22 @@ jobs:
         working-directory: ios
         run: pod install
 
+      - name: Prepare iOS Swift package cache
+        run: |
+          rm -rf "$RUNNER_TEMP/swiftpm"
+          rm -rf "$HOME/Library/Caches/org.swift.swiftpm/artifacts"
+          mkdir -p "$RUNNER_TEMP/swiftpm/source" "$RUNNER_TEMP/swiftpm/cache"
+
+      - name: Resolve iOS Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -workspace ios/Runner.xcworkspace \
+            -scheme production \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/swiftpm/source" \
+            -packageCachePath "$RUNNER_TEMP/swiftpm/cache" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackageUpdates
+
       - name: Decode App Store Connect API key
         env:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
@@ -170,6 +186,10 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Thunder.xcarchive" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/swiftpm/source" \
+            -packageCachePath "$RUNNER_TEMP/swiftpm/cache" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackageUpdates \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$APP_STORE_CONNECT_API_KEY_PATH" \
             -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
