@@ -1429,6 +1429,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     return [];
   }
 
+  @override
   Future<void> logout() async {
     await request(HttpMethod.post, '$basePath/user/logout', {});
   }

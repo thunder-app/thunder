@@ -1284,6 +1284,15 @@ class AppLocalizationsSk extends AppLocalizations {
   String get instanceNameThickness => 'Instance Name Thickness';
 
   @override
+  String get instanceOffline => 'Instance is offline';
+
+  @override
+  String get instanceOnline => 'Instance is online';
+
+  @override
+  String get instanceStatusUnknown => 'Instance status unknown';
+
+  @override
   String get instances => 'Instances';
 
   @override
@@ -1706,6 +1715,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get normal => 'Normal';
 
   @override
+  String get notAvailable => 'N/A';
+
+  @override
   String notValidLemmyInstance(Object instance) {
     return 'Vyzerá to, že $instance nie je platná Lemmy inštancia';
   }
@@ -1818,6 +1830,10 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get permissionDeniedMessage =>
       'Thunder vyžaduje niektoré povolenia na uloženie tohto obrázka, ktoré boli zamietnuté.';
+
+  @override
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Pin Post to Community';
@@ -1942,6 +1958,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get profileBio => 'Profile Bio';
+
+  @override
+  String get profileOperationInProgress => 'Profile operation in progress';
 
   @override
   String get profiles => 'Profily';

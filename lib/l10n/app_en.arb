@@ -1506,6 +1506,12 @@
   "@instanceNameThickness": {
     "description": "Setting for instance name thickness"
   },
+  "instanceOffline": "Instance is offline",
+  "@instanceOffline": {},
+  "instanceOnline": "Instance is online",
+  "@instanceOnline": {},
+  "instanceStatusUnknown": "Instance status unknown",
+  "@instanceStatusUnknown": {},
   "instances": "Instances",
   "@instances": {
     "description": "Title for settings related to instances"
@@ -1978,6 +1984,8 @@
   "@normal": {
     "description": "Normal name thickness/weight"
   },
+  "notAvailable": "N/A",
+  "@notAvailable": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid instance",
   "@notValidLemmyInstance": {
     "description": "Message for when an instance is not a valid Lemmy/PieFed instance",
@@ -2093,6 +2101,8 @@
   "@permissionDeniedMessage": {
     "description": "Explanation for error when user denies OS permissions"
   },
+  "piefedSupportBeta": "PieFed support is currently in beta.\nNot all features are supported yet.",
+  "@piefedSupportBeta": {},
   "pinPostToCommunity": "Pin Post to Community",
   "@pinPostToCommunity": {
     "description": "Action for pinning a post to a community (moderator action)"
@@ -2232,6 +2242,8 @@
   "@profileBio": {
     "description": "Setting for profile bio"
   },
+  "profileOperationInProgress": "Profile operation in progress",
+  "@profileOperationInProgress": {},
   "profiles": "Profiles",
   "@profiles": {},
   "public": "Public",

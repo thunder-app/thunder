@@ -101,6 +101,9 @@ abstract class ThunderApiClient {
   /// Returns the JWT token on success, or null if login failed.
   Future<String?> login({required String username, required String password, String? totp});
 
+  /// Logout the current authenticated session.
+  Future<void> logout();
+
   /// Get instance details and, when signed in, the current account details.
   Future<ThunderSiteResponse> site();
 

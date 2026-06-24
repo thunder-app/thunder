@@ -50,13 +50,30 @@ class AnonymousSessionAdded extends SessionEvent {
 }
 
 class AuthenticatedLoginRequested extends SessionEvent {
-  const AuthenticatedLoginRequested({required this.username, required this.password, required this.instance, this.totp = ''});
+  /// Requests authentication against an instance that has already completed discovery.
+  const AuthenticatedLoginRequested({
+    required this.username,
+    required this.password,
+    required this.discovery,
+    this.totp = '',
+  });
 
+  /// Username supplied by the user.
   final String username;
+
+  /// Password supplied by the user.
   final String password;
-  final String instance;
+
+  /// Canonical host, platform, and version established during validation.
+  final InstanceDiscoveryResult discovery;
+
+  /// Optional time-based one-time password.
   final String totp;
 
+  /// Prevents credentials from being included in debug logs and diagnostics.
   @override
-  List<Object?> get props => [username, password, instance, totp];
+  bool get stringify => false;
+
+  @override
+  List<Object?> get props => [username, password, discovery, totp];
 }

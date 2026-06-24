@@ -6,6 +6,7 @@ import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/app/shell/navigation/loading_page.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
   if (url == null) {
@@ -96,6 +97,16 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
 /// If the URL is invalid or the instance is unreachable, it returns a default [ThunderInstanceInfo] with success set to false.
 Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? timeout}) async {
   return instance_discovery.getInstanceInfo(url, id: id, timeout: timeout);
+}
+
+/// Detects a supported instance without waiting for full site metadata.
+Future<InstanceDiscoveryResult?> discoverInstance(String? url, {Duration? timeout}) async {
+  return instance_discovery.discoverInstance(url, timeout: timeout);
+}
+
+/// Loads full site metadata for an already detected [discovery].
+Future<ThunderInstanceInfo> loadInstanceInfo(InstanceDiscoveryResult discovery, {int? id, Duration? timeout}) async {
+  return instance_discovery.loadInstanceInfo(discovery, id: id, timeout: timeout);
 }
 
 String? normalizeInstanceHost(String? url) {

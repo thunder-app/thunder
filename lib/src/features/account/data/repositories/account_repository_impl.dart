@@ -35,6 +35,14 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
+  Future<void> logout() async {
+    final l10n = _localizationService.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
+    await _api.logout();
+  }
+
+  @override
   Future<List<ThunderCommunity>> subscriptions() async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);

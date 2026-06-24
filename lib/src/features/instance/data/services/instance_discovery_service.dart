@@ -22,8 +22,12 @@ Future<ThunderInstanceInfo> getInstanceInfo(
   PlatformDetector? platformDetector,
   InstanceRepositoryFactory? instanceRepositoryFactory,
 }) async {
-  final instanceHost = normalizeInstanceHost(url);
-  if (instanceHost == null) {
+  final discovery = await discoverInstance(
+    url,
+    timeout: timeout,
+    platformDetector: platformDetector,
+  );
+  if (discovery == null) {
     return ThunderInstanceInfo(
       domain: '',
       name: '',
@@ -31,43 +35,77 @@ Future<ThunderInstanceInfo> getInstanceInfo(
     );
   }
 
+  return loadInstanceInfo(
+    discovery,
+    id: id,
+    timeout: timeout,
+    instanceRepositoryFactory: instanceRepositoryFactory,
+  );
+}
+
+/// Detects a supported instance and immediately caches its platform version.
+Future<InstanceDiscoveryResult?> discoverInstance(
+  String? url, {
+  Duration? timeout,
+  PlatformDetector? platformDetector,
+}) async {
+  final instanceHost = normalizeInstanceHost(url);
+  if (instanceHost == null) return null;
+
   try {
     final detector = platformDetector ?? detectPlatformFromNodeInfo;
-    final repositoryFactory = instanceRepositoryFactory ?? _defaultInstanceRepositoryFactory;
     final platformInfo = await detector(instanceHost, timeout: timeout);
     final platform = platformInfo?['platform'] as ThreadiversePlatform?;
-    if (platform == null) {
-      return ThunderInstanceInfo(
-        domain: '',
-        name: '',
-        success: false,
-      );
-    }
+    if (platform == null) return null;
 
-    PlatformVersionCache().trySet(instanceHost, platformInfo?['version']?.toString());
+    final version = platformInfo?['version']?.toString();
+    PlatformVersionCache().trySet(instanceHost, version);
 
-    final account = Account(instance: instanceHost, id: '', index: -1, platform: platform);
+    return InstanceDiscoveryResult(
+      host: instanceHost,
+      platform: platform,
+      version: version,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Loads full site metadata for an already detected [discovery].
+///
+/// This function does not repeat NodeInfo detection.
+Future<ThunderInstanceInfo> loadInstanceInfo(
+  InstanceDiscoveryResult discovery, {
+  int? id,
+  Duration? timeout,
+  InstanceRepositoryFactory? instanceRepositoryFactory,
+}) async {
+  try {
+    final repositoryFactory = instanceRepositoryFactory ?? _defaultInstanceRepositoryFactory;
+    final account = Account(instance: discovery.host, id: '', index: -1, platform: discovery.platform);
 
     final site = await repositoryFactory(account).info().timeout(timeout ?? const Duration(seconds: 5));
     final instance = site.site;
 
     return ThunderInstanceInfo(
       id: id,
-      domain: normalizeInstanceHost(instance.actorId) ?? instanceHost,
+      domain: normalizeInstanceHost(instance.actorId) ?? discovery.host,
       version: site.version,
       name: instance.name,
       icon: instance.icon,
       users: instance.users,
       success: true,
-      platform: platform,
+      platform: discovery.platform,
       contentWarning: site.site.contentWarning,
     );
   } catch (e) {
     debugPrint('Error getting instance info: $e');
 
     return ThunderInstanceInfo(
-      domain: '',
-      name: '',
+      domain: discovery.host,
+      name: discovery.host,
+      version: discovery.version,
+      platform: discovery.platform,
       success: false,
     );
   }

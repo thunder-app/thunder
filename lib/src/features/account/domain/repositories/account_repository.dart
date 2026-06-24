@@ -4,8 +4,11 @@ import 'package:thunder/src/features/account/domain/models/account_media.dart';
 
 //// Interface for an account repository
 abstract class AccountRepository {
-  /// Login to the Lemmy instance.
+  /// Login to the account's home instance.
   Future<String?> login({required String username, required String password, String? totp});
+
+  /// Logout the authenticated account on its home instance.
+  Future<void> logout();
 
   /// Fetches the user's subscribed communities.
   Future<List<ThunderCommunity>> subscriptions();

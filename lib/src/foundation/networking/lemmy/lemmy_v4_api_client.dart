@@ -107,6 +107,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     return json['jwt'] as String?;
   }
 
+  @override
   Future<void> logout() async {
     await request(HttpMethod.post, '$basePath/account/auth/logout', {});
   }

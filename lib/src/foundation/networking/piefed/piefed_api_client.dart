@@ -96,6 +96,11 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
+  Future<void> logout() async {
+    // TODO: Implement logout when API is available.
+  }
+
+  @override
   Future<ThunderSiteResponse> site() async {
     final json = await request(HttpMethod.get, '$basePath/site', {});
     return ThunderSiteResponse.fromPiefedSiteResponse(json);

@@ -1268,6 +1268,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get instanceNameThickness => 'Instance Name Thickness';
 
   @override
+  String get instanceOffline => 'Instance is offline';
+
+  @override
+  String get instanceOnline => 'Instance is online';
+
+  @override
+  String get instanceStatusUnknown => 'Instance status unknown';
+
+  @override
   String get instances => 'Instances';
 
   @override
@@ -1689,6 +1698,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get normal => 'Normal';
 
   @override
+  String get notAvailable => 'N/A';
+
+  @override
   String notValidLemmyInstance(Object instance) {
     return '$instance does not appear to be a valid instance';
   }
@@ -1801,6 +1813,10 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get permissionDeniedMessage =>
       'Thunder requires some permissions in order to save this image which have been denied.';
+
+  @override
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Pin Post to Community';
@@ -1926,6 +1942,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileBio => 'Profile Bio';
+
+  @override
+  String get profileOperationInProgress => 'Profile operation in progress';
 
   @override
   String get profiles => 'Profiles';

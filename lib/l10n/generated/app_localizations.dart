@@ -2364,6 +2364,24 @@ abstract class AppLocalizations {
   /// **'Instance Name Thickness'**
   String get instanceNameThickness;
 
+  /// No description provided for @instanceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance is offline'**
+  String get instanceOffline;
+
+  /// No description provided for @instanceOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance is online'**
+  String get instanceOnline;
+
+  /// No description provided for @instanceStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Instance status unknown'**
+  String get instanceStatusUnknown;
+
   /// Title for settings related to instances
   ///
   /// In en, this message translates to:
@@ -3102,6 +3120,12 @@ abstract class AppLocalizations {
   /// **'Normal'**
   String get normal;
 
+  /// No description provided for @notAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get notAvailable;
+
   /// Message for when an instance is not a valid Lemmy/PieFed instance
   ///
   /// In en, this message translates to:
@@ -3293,6 +3317,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thunder requires some permissions in order to save this image which have been denied.'**
   String get permissionDeniedMessage;
+
+  /// No description provided for @piefedSupportBeta.
+  ///
+  /// In en, this message translates to:
+  /// **'PieFed support is currently in beta.\nNot all features are supported yet.'**
+  String get piefedSupportBeta;
 
   /// Action for pinning a post to a community (moderator action)
   ///
@@ -3527,6 +3557,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile Bio'**
   String get profileBio;
+
+  /// No description provided for @profileOperationInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile operation in progress'**
+  String get profileOperationInProgress;
 
   /// No description provided for @profiles.
   ///

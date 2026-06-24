@@ -1283,6 +1283,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get instanceNameThickness => 'Sunucu Adı Kalınlığı';
 
   @override
+  String get instanceOffline => 'Instance is offline';
+
+  @override
+  String get instanceOnline => 'Instance is online';
+
+  @override
+  String get instanceStatusUnknown => 'Instance status unknown';
+
+  @override
   String get instances => 'Sunucular';
 
   @override
@@ -1706,6 +1715,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get normal => 'Normal';
 
   @override
+  String get notAvailable => 'N/A';
+
+  @override
   String notValidLemmyInstance(Object instance) {
     return '$instance geçerli bir örnek gibi görünmüyor';
   }
@@ -1817,6 +1829,10 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get permissionDeniedMessage =>
       'Thunder, bu resmi kaydetmek için reddedilen bazı izinlere ihtiyaç duyar.';
+
+  @override
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Gönderiyi Topluluğa Sabitle';
@@ -1943,6 +1959,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get profileBio => 'Profil Biyografisi';
+
+  @override
+  String get profileOperationInProgress => 'Profile operation in progress';
 
   @override
   String get profiles => 'Profiller';

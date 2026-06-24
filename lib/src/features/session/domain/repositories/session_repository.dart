@@ -20,4 +20,10 @@ abstract class SessionRepository {
   Future<Account?> addAnonymousSession(Account account);
 
   Future<void> removeSession(String sessionKey);
+
+  /// Atomically updates the display order of authenticated and anonymous profiles.
+  Future<void> updateSessionOrder({
+    required List<Account> authenticatedSessions,
+    required List<Account> anonymousSessions,
+  });
 }

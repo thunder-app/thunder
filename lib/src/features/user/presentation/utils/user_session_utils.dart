@@ -7,13 +7,13 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
 
+/// Shows a logout confirmation dialog without mutating session state.
 Future<bool> showLogOutDialog(BuildContext context) async {
   final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   bool result = false;
   await showThunderDialog<bool>(
     context: context,
-    customBuilder: (alertDialog) => BlocProvider<SessionBloc>.value(value: context.read<SessionBloc>(), child: alertDialog),
     title: l10n.confirmLogOutTitle,
     contentText: l10n.confirmLogOutBody,
     onSecondaryButtonPressed: (dialogContext) {
@@ -23,10 +23,6 @@ Future<bool> showLogOutDialog(BuildContext context) async {
     secondaryButtonText: l10n.cancel,
     onPrimaryButtonPressed: (dialogContext, _) {
       result = true;
-      final activeAccount = dialogContext.read<SessionBloc>().state.activeAccount;
-      if (activeAccount != null) {
-        dialogContext.read<SessionBloc>().add(SessionRemoved(sessionKey: activeAccount.anonymous ? activeAccount.instance : activeAccount.id));
-      }
       Navigator.of(dialogContext).pop();
     },
     primaryButtonText: l10n.logOut,

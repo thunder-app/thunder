@@ -4,10 +4,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/session/domain/repositories/session_repository.dart';
 
 part 'session_event.dart';
@@ -18,12 +16,10 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     required SessionRepository sessionRepository,
     required AccountRepository Function(Account) accountRepositoryFactory,
     required InstanceRepository Function(Account) instanceRepositoryFactory,
-    required PlatformDetectionService platformDetectionService,
     required LocalizationService localizationService,
   })  : _sessionRepository = sessionRepository,
         _accountRepositoryFactory = accountRepositoryFactory,
         _instanceRepositoryFactory = instanceRepositoryFactory,
-        _platformDetectionService = platformDetectionService,
         _localizationService = localizationService,
         super(const SessionState()) {
     on<SessionInitialized>(_onBootstrapRequested);
@@ -37,7 +33,6 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   final SessionRepository _sessionRepository;
   final AccountRepository Function(Account) _accountRepositoryFactory;
   final InstanceRepository Function(Account) _instanceRepositoryFactory;
-  final PlatformDetectionService _platformDetectionService;
   final LocalizationService _localizationService;
 
   Future<void> _onBootstrapRequested(SessionInitialized event, Emitter<SessionState> emit) async {
@@ -66,10 +61,25 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     emit(state.copyWith(mutationStatus: SessionMutationStatus.loading, lastMutation: () => SessionMutationType.removeSession, error: () => null));
 
     try {
+      final session = await _sessionRepository.getSessionByKey(event.sessionKey);
+      if (session != null && !session.anonymous) {
+        await _logoutBeforeRemoval(session);
+      }
+
       await _sessionRepository.removeSession(event.sessionKey);
       await _refreshState(emit, mutationStatus: SessionMutationStatus.success, mutationType: SessionMutationType.removeSession);
     } catch (error) {
       emit(state.copyWith(mutationStatus: SessionMutationStatus.failure, error: () => error.toString()));
+    }
+  }
+
+  Future<void> _logoutBeforeRemoval(Account session) async {
+    try {
+      await _accountRepositoryFactory(session).logout();
+    } catch (error) {
+      // Local profile removal should remain possible when the remote token is
+      // already expired, revoked, or the instance is temporarily unreachable.
+      debugPrint('Failed to logout removed profile ${session.id}: $error');
     }
   }
 
@@ -85,10 +95,9 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     emit(state.copyWith(mutationStatus: SessionMutationStatus.loading, lastMutation: () => SessionMutationType.authenticatedLogin, error: () => null));
 
     try {
-      final instanceUrl = normalizeInstanceHost(event.instance) ?? event.instance.replaceAll('https://', '').trim();
-      final platformInfo = await _platformDetectionService.detectPlatform(instanceUrl) ?? {'platform': ThreadiversePlatform.lemmy};
-      final platform = platformInfo['platform'] as ThreadiversePlatform;
-      PlatformVersionCache().trySet(instanceUrl, platformInfo['version']?.toString());
+      final instanceUrl = event.discovery.host;
+      final platform = event.discovery.platform;
+      PlatformVersionCache().trySet(instanceUrl, event.discovery.version);
 
       var tempAccount = Account(id: '', index: -1, instance: instanceUrl, platform: platform);
       final jwt = await _accountRepositoryFactory(tempAccount).login(username: event.username, password: event.password, totp: event.totp);

@@ -1,3 +1,5 @@
+import 'package:dart_ping/dart_ping.dart';
+
 import 'package:thunder/src/app/state/app_bootstrap_cubit/app_bootstrap_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/app/wiring/nodeinfo_platform_detection_service.dart';
@@ -7,12 +9,16 @@ import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/features/account/presentation/state/instance_validation_cubit.dart';
+import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/community/api.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/inbox/api.dart';
 import 'package:thunder/src/features/instance/api.dart';
+import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart';
+import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart' show fetchInstanceNameFromUrl;
 import 'package:thunder/src/features/moderator/api.dart';
 import 'package:thunder/src/features/notification/api.dart';
 import 'package:thunder/src/features/post/api.dart';
@@ -59,12 +65,38 @@ ProfileBloc createProfileBloc(Account account) {
   );
 }
 
+InstanceValidationCubit createInstanceValidationCubit() {
+  return InstanceValidationCubit();
+}
+
+ProfileModalCubit createProfileModalCubit({required bool quickSelectMode}) {
+  return ProfileModalCubit(
+    sessionRepository: const PersistentSessionRepository(),
+    quickSelectMode: quickSelectMode,
+    instanceInfoLookup: (instance) => getInstanceInfo(instance).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () => ThunderInstanceInfo(
+        domain: instance,
+        name: fetchInstanceNameFromUrl(instance) ?? instance,
+        success: false,
+      ),
+    ),
+    pingLookup: (instance) async {
+      final pingData = await Ping(instance, count: 1, timeout: 5).stream.first;
+      return pingData.response?.time;
+    },
+    unreadCountLookup: (account) async {
+      final unread = await NotificationRepositoryImpl(account: account).unreadNotificationsCount();
+      return unread.total == 0 ? null : unread.total;
+    },
+  );
+}
+
 SessionBloc createSessionBloc() {
   return SessionBloc(
     sessionRepository: const PersistentSessionRepository(),
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     instanceRepositoryFactory: (account) => InstanceRepositoryImpl(account: account),
-    platformDetectionService: const NodeInfoPlatformDetectionService(),
     localizationService: const GlobalContextLocalizationService(),
   );
 }

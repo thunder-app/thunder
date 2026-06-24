@@ -1287,6 +1287,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get instanceNameThickness => 'Dikte van instantie­naam';
 
   @override
+  String get instanceOffline => 'Instance is offline';
+
+  @override
+  String get instanceOnline => 'Instance is online';
+
+  @override
+  String get instanceStatusUnknown => 'Instance status unknown';
+
+  @override
   String get instances => 'Instanties';
 
   @override
@@ -1716,6 +1725,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get normal => 'Normaal';
 
   @override
+  String get notAvailable => 'N/A';
+
+  @override
   String notValidLemmyInstance(Object instance) {
     return '$instance lĳkt geen geldige instantie te zĳn';
   }
@@ -1828,6 +1840,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get permissionDeniedMessage =>
       'Thunder heeft enkele machtigingen nodig om deze afbeelding op te slaan die zĳn geweigerd.';
+
+  @override
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Bericht vastpinnen in gemeenschap';
@@ -1954,6 +1970,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get profileBio => 'Profiel­biografie';
+
+  @override
+  String get profileOperationInProgress => 'Profile operation in progress';
 
   @override
   String get profiles => 'Profielen';
