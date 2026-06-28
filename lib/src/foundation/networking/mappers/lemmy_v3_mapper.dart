@@ -34,8 +34,8 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
       body: json['body'],
       creatorId: json['creator_id'],
       communityId: json['community_id'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       thumbnailUrl: json['thumbnail_url'],
       apId: json['ap_id'],
       embedVideoUrl: json['embed_video_url'],
@@ -60,7 +60,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
     final creatorJson = json['creator'];
     final communityJson = json['community'];
     final counts = json['counts'];
-    final subscribed = _subscriptionStatus(json['subscribed']);
+    final subscribed = mapperSubscriptionStatus(json['subscribed']);
 
     return post(postJson, media: media).copyWith(
       creator: creatorJson is Map<String, dynamic> ? user(creatorJson) : null,
@@ -71,7 +71,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
         score: counts?['score'],
         upvotes: counts?['upvotes'],
         downvotes: counts?['downvotes'],
-        newestCommentAt: _date(counts?['newest_comment_time']),
+        newestCommentAt: mapperDate(counts?['newest_comment_time']),
         unreadComments: json['unread_comments'],
       ),
       context: PostContext(
@@ -95,8 +95,8 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
       creatorId: json['creator_id'],
       postId: json['post_id'],
       content: json['content'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       apId: json['ap_id'],
       path: json['path'],
       languageId: json['language_id'],
@@ -132,7 +132,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
         bannedFromCommunity: json['banned_from_community'],
         creatorIsModerator: json['creator_is_moderator'],
         creatorIsAdmin: json['creator_is_admin'],
-        subscribed: _subscriptionStatus(json['subscribed']),
+        subscribed: mapperSubscriptionStatus(json['subscribed']),
         saved: json['saved'],
         creatorBlocked: json['creator_blocked'],
         vote: VoteState.fromScore(json['my_vote']),
@@ -147,8 +147,8 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
       name: json['name'],
       displayName: json['display_name'],
       avatar: json['avatar'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       actorId: json['actor_id'],
       bio: json['bio'],
       banner: json['banner'],
@@ -159,7 +159,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
         local: json['local'] ?? false,
         deleted: json['deleted'] ?? false,
         botAccount: json['bot_account'] ?? false,
-        banExpires: _date(json['ban_expires']),
+        banExpires: mapperDate(json['ban_expires']),
       ),
     );
   }
@@ -181,8 +181,8 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
       name: json['name'],
       title: json['title'],
       description: json['description'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       actorId: json['actor_id'],
       icon: json['icon'],
       banner: json['banner'],
@@ -204,7 +204,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
   ThunderCommunity communityView(Map<String, dynamic> json) {
     final communityJson = json['community'] as Map<String, dynamic>;
     final counts = json['counts'];
-    return community(communityJson, subscribed: _subscriptionStatus(json['subscribed'])).copyWith(
+    return community(communityJson, subscribed: mapperSubscriptionStatus(json['subscribed'])).copyWith(
       counts: CommunityCounts(
         subscribers: counts?['subscribers'],
         subscribersLocal: counts?['subscribers_local'],
@@ -216,7 +216,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
         usersActiveHalfYear: counts?['users_active_half_year'],
       ),
       context: CommunityContext(
-        subscribed: _subscriptionStatus(json['subscribed']),
+        subscribed: mapperSubscriptionStatus(json['subscribed']),
         blocked: json['blocked'],
         bannedFromCommunity: json['banned_from_community'],
         canModerate: json['can_mod'],
@@ -227,7 +227,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
   @override
   ThunderPrivateMessage privateMessageView(Map<String, dynamic> json, {NotificationRef? notification}) {
     final privateMessage = json['private_message'] as Map<String, dynamic>;
-    final published = _date(privateMessage['published']) ?? DateTime.now();
+    final published = mapperDate(privateMessage['published']) ?? DateTime.now();
     return ThunderPrivateMessage(
       id: privateMessage['id'],
       creatorId: privateMessage['creator_id'],
@@ -244,7 +244,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
 
   ThunderReport postReportView(Map<String, dynamic> json) {
     final report = json['post_report'];
-    final subscribed = _subscriptionStatus(json['subscribed']);
+    final subscribed = mapperSubscriptionStatus(json['subscribed']);
     final postJson = json['post'];
     final counts = json['counts'];
     final mappedPost = postJson is Map<String, dynamic>
@@ -256,7 +256,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
               score: counts?['score'],
               upvotes: counts?['upvotes'],
               downvotes: counts?['downvotes'],
-              newestCommentAt: _date(counts?['newest_comment_time']),
+              newestCommentAt: mapperDate(counts?['newest_comment_time']),
               unreadComments: json['unread_comments'],
             ),
             context: PostContext(
@@ -306,4 +306,23 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
   }
 }
 
-/// Mapper for Lemmy 1.0.0 responses.
+ThunderLocalUser localUserFromLemmyV3(Map<String, dynamic> localUser) {
+  return ThunderLocalUser(
+    email: localUser['email'],
+    showNsfw: localUser['show_nsfw'],
+    showNsfl: null,
+    defaultSortType: localUser['default_sort_type'] != null ? PostSortType.values.firstWhereOrNull((e) => e.value == localUser['default_sort_type']) : null,
+    defaultListingType: localUser['default_listing_type'] != null ? FeedListType.values.firstWhereOrNull((e) => e.value == localUser['default_listing_type']) : null,
+    showScores: localUser['show_scores'] ?? true,
+    showBotAccounts: localUser['show_bot_accounts'] ?? true,
+    showReadPosts: localUser['show_read_posts'] ?? true,
+  );
+}
+
+ThunderLocalUserView localUserViewFromLemmyV3(Map<String, dynamic> localUserView) {
+  const mapper = LemmyV3PrimitiveMapper();
+  return ThunderLocalUserView(
+    localUser: localUserFromLemmyV3(localUserView['local_user']),
+    person: mapper.user(localUserView['person']),
+  );
+}

@@ -18,17 +18,17 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_local_user.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_my_user.dart';
 
-DateTime? _date(dynamic value) {
+DateTime? mapperDate(dynamic value) {
   if (value == null) return null;
   return DateTime.tryParse(value.toString());
 }
 
-SubscriptionStatus? _subscriptionStatus(dynamic value) {
+SubscriptionStatus? mapperSubscriptionStatus(dynamic value) {
   if (value == null) return null;
   return SubscriptionStatus.values.firstWhereOrNull((status) => status.name == value);
 }
 
-SubscriptionStatus? _v4SubscriptionStatus(dynamic value) {
+SubscriptionStatus? mapperV4SubscriptionStatus(dynamic value) {
   return switch (value) {
     'accepted' => SubscriptionStatus.subscribed,
     'pending' || 'approval_required' => SubscriptionStatus.pending,
@@ -37,19 +37,19 @@ SubscriptionStatus? _v4SubscriptionStatus(dynamic value) {
   };
 }
 
-PostSortType? _postSortType(dynamic value) {
+PostSortType? mapperPostSortType(dynamic value) {
   if (value == null) return null;
   final normalized = value.toString();
   return PostSortType.values.firstWhereOrNull((sort) => sort.value.toLowerCase() == normalized || sort.name.toLowerCase() == normalized);
 }
 
-FeedListType? _feedListType(dynamic value) {
+FeedListType? mapperFeedListType(dynamic value) {
   if (value == null) return null;
   final normalized = value.toString();
   return FeedListType.values.firstWhereOrNull((type) => type.value.toLowerCase() == normalized || type.name.toLowerCase() == normalized);
 }
 
-NotificationKind _notificationKind(dynamic value) {
+NotificationKind mapperNotificationKind(dynamic value) {
   return switch (value) {
     'mention' => NotificationKind.mention,
     'reply' => NotificationKind.reply,

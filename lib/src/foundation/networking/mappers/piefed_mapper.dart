@@ -33,8 +33,8 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       body: json['body'],
       creatorId: json['user_id'],
       communityId: json['community_id'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated'] ?? json['edited_at']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated'] ?? json['edited_at']),
       thumbnailUrl: json['thumbnail_url'],
       apId: json['ap_id'],
       languageId: json['language_id'],
@@ -56,7 +56,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
 
   @override
   ThunderPost postView(Map<String, dynamic> json, {List<Media> media = const []}) {
-    final subscribed = _subscriptionStatus(json['subscribed']);
+    final subscribed = mapperSubscriptionStatus(json['subscribed']);
     final counts = json['counts'];
     return post(json['post'], media: media).copyWith(
       creator: json['creator'] is Map<String, dynamic> ? user(json['creator']) : null,
@@ -69,7 +69,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
         score: counts?['score'],
         upvotes: counts?['upvotes'],
         downvotes: counts?['downvotes'],
-        newestCommentAt: _date(counts?['newest_comment_time']),
+        newestCommentAt: mapperDate(counts?['newest_comment_time']),
         unreadComments: json['unread_comments'],
       ),
       context: PostContext(
@@ -93,8 +93,8 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       creatorId: json['user_id'],
       postId: json['post_id'],
       content: json['body'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       apId: json['ap_id'],
       path: json['path'],
       languageId: json['language_id'],
@@ -123,7 +123,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
         childCount: counts?['child_count'],
       ),
       context: CommentContext(
-        subscribed: _subscriptionStatus(json['subscribed']),
+        subscribed: mapperSubscriptionStatus(json['subscribed']),
         saved: json['saved'],
         creatorBlocked: json['creator_blocked'],
         creatorBannedFromCommunity: json['creator_banned_from_community'],
@@ -142,7 +142,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       name: json['user_name'],
       displayName: json['title'],
       avatar: json['avatar'],
-      published: _date(json['published']) ?? DateTime.now(),
+      published: mapperDate(json['published']) ?? DateTime.now(),
       actorId: json['actor_id'],
       bio: json['about'],
       banner: json['banner'],
@@ -172,8 +172,8 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       name: json['name'],
       title: json['title'],
       description: json['description'],
-      published: _date(json['published']) ?? DateTime.now(),
-      updated: _date(json['updated']),
+      published: mapperDate(json['published']) ?? DateTime.now(),
+      updated: mapperDate(json['updated']),
       actorId: json['actor_id'],
       icon: json['icon'],
       banner: json['banner'],
@@ -194,7 +194,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
   @override
   ThunderCommunity communityView(Map<String, dynamic> json) {
     final counts = json['counts'];
-    final subscribed = _subscriptionStatus(json['subscribed']);
+    final subscribed = mapperSubscriptionStatus(json['subscribed']);
     return community(json['community'], subscribed: subscribed).copyWith(
       counts: CommunityCounts(
         subscribers: counts?['total_subscriptions_count'],
@@ -213,7 +213,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
   @override
   ThunderPrivateMessage privateMessageView(Map<String, dynamic> json, {NotificationRef? notification}) {
     final privateMessage = json['private_message'];
-    final published = _date(privateMessage['published']) ?? DateTime.now();
+    final published = mapperDate(privateMessage['published']) ?? DateTime.now();
     return ThunderPrivateMessage(
       id: privateMessage['id'],
       creatorId: privateMessage['creator_id'],
@@ -227,47 +227,5 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       notification: notification ?? NotificationRef(id: privateMessage['id'], kind: NotificationKind.privateMessage, read: privateMessage['read'] ?? false, createdAt: published),
     );
   }
-}
-
-ThunderLocalUser localUserFromLemmyV3(Map<String, dynamic> localUser) {
-  return ThunderLocalUser(
-    email: localUser['email'],
-    showNsfw: localUser['show_nsfw'],
-    showNsfl: null,
-    defaultSortType: localUser['default_sort_type'] != null ? PostSortType.values.firstWhereOrNull((e) => e.value == localUser['default_sort_type']) : null,
-    defaultListingType: localUser['default_listing_type'] != null ? FeedListType.values.firstWhereOrNull((e) => e.value == localUser['default_listing_type']) : null,
-    showScores: localUser['show_scores'] ?? true,
-    showBotAccounts: localUser['show_bot_accounts'] ?? true,
-    showReadPosts: localUser['show_read_posts'] ?? true,
-  );
-}
-
-ThunderLocalUser localUserFromLemmyV4(Map<String, dynamic> localUser) {
-  return ThunderLocalUser(
-    email: localUser['email'],
-    showNsfw: localUser['show_nsfw'] ?? false,
-    showNsfl: null,
-    defaultSortType: _postSortType(localUser['default_post_sort_type']),
-    defaultListingType: _feedListType(localUser['default_listing_type']),
-    showScores: localUser['show_score'] ?? true,
-    showBotAccounts: localUser['show_bot_accounts'] ?? true,
-    showReadPosts: localUser['show_read_posts'] ?? true,
-  );
-}
-
-ThunderLocalUserView localUserViewFromLemmyV3(Map<String, dynamic> localUserView) {
-  const mapper = LemmyV3PrimitiveMapper();
-  return ThunderLocalUserView(
-    localUser: localUserFromLemmyV3(localUserView['local_user']),
-    person: mapper.user(localUserView['person']),
-  );
-}
-
-ThunderLocalUserView localUserViewFromLemmyV4(Map<String, dynamic> localUserView) {
-  const mapper = LemmyV4PrimitiveMapper();
-  return ThunderLocalUserView(
-    localUser: localUserFromLemmyV4(localUserView['local_user']),
-    person: mapper.user(localUserView['person']),
-  );
 }
 

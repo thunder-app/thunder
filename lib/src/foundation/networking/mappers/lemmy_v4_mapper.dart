@@ -18,6 +18,7 @@ import 'package:thunder/src/foundation/primitives/enums/post_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_local_user.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_my_user.dart';
 
+import 'package:thunder/src/foundation/networking/mappers/mapper_helpers.dart';
 import 'package:thunder/src/foundation/networking/mappers/lemmy_v3_mapper.dart';
 
 class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
@@ -32,8 +33,8 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       body: json['body'],
       creatorId: json['creator_id'],
       communityId: json['community_id'],
-      published: _date(json['published_at']) ?? DateTime.now(),
-      updated: _date(json['updated_at']),
+      published: mapperDate(json['published_at']) ?? DateTime.now(),
+      updated: mapperDate(json['updated_at']),
       thumbnailUrl: json['thumbnail_url'],
       apId: json['ap_id'],
       embedVideoUrl: json['embed_video_url'],
@@ -53,7 +54,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
         score: json['score'],
         upvotes: json['upvotes'],
         downvotes: json['downvotes'],
-        newestCommentAt: _date(json['newest_comment_time_at']),
+        newestCommentAt: mapperDate(json['newest_comment_time_at']),
       ),
       media: media,
     );
@@ -72,7 +73,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
         read: actions?['read_at'] != null,
         hidden: actions?['hidden_at'] != null,
         vote: VoteState.fromIsUpvote(actions?['vote_is_upvote']),
-        subscribed: _v4SubscriptionStatus(communityActions?['follow_state']),
+        subscribed: mapperV4SubscriptionStatus(communityActions?['follow_state']),
         creatorBlocked: json['person_actions']?['blocked_at'] != null,
         creatorBannedFromCommunity: json['creator_banned_from_community'],
         creatorIsModerator: json['creator_is_moderator'],
@@ -89,8 +90,8 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       creatorId: json['creator_id'],
       postId: json['post_id'],
       content: json['content'],
-      published: _date(json['published_at']) ?? DateTime.now(),
-      updated: _date(json['updated_at']),
+      published: mapperDate(json['published_at']) ?? DateTime.now(),
+      updated: mapperDate(json['updated_at']),
       apId: json['ap_id'],
       path: json['path'],
       languageId: json['language_id'],
@@ -120,7 +121,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       community: json['community'] is Map<String, dynamic> ? community(json['community']) : null,
       notification: notification,
       context: CommentContext(
-        subscribed: _v4SubscriptionStatus(communityActions?['follow_state']),
+        subscribed: mapperV4SubscriptionStatus(communityActions?['follow_state']),
         saved: actions?['saved_at'] != null,
         creatorBlocked: json['person_actions']?['blocked_at'] != null,
         creatorBannedFromCommunity: json['creator_banned_from_community'],
@@ -139,8 +140,8 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       name: json['name'],
       displayName: json['display_name'],
       avatar: json['avatar'],
-      published: _date(json['published_at']) ?? DateTime.now(),
-      updated: _date(json['updated_at']),
+      published: mapperDate(json['published_at']) ?? DateTime.now(),
+      updated: mapperDate(json['updated_at']),
       actorId: json['ap_id'],
       bio: json['bio'],
       banner: json['banner'],
@@ -152,7 +153,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
         local: json['local'] ?? false,
         deleted: json['deleted'] ?? false,
         botAccount: json['bot_account'] ?? false,
-        banExpires: _date(json['ban_expires_at']),
+        banExpires: mapperDate(json['ban_expires_at']),
       ),
     );
   }
@@ -177,8 +178,8 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       name: json['name'],
       title: json['title'],
       description: json['description'] ?? json['summary'],
-      published: _date(json['published_at']) ?? DateTime.now(),
-      updated: _date(json['updated_at']),
+      published: mapperDate(json['published_at']) ?? DateTime.now(),
+      updated: mapperDate(json['updated_at']),
       actorId: json['ap_id'],
       icon: json['icon'],
       banner: json['banner'],
@@ -209,9 +210,9 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
   @override
   ThunderCommunity communityView(Map<String, dynamic> json) {
     final actions = json['community_actions'];
-    return community(json['community'], subscribed: _v4SubscriptionStatus(actions?['follow_state'])).copyWith(
+    return community(json['community'], subscribed: mapperV4SubscriptionStatus(actions?['follow_state'])).copyWith(
       context: CommunityContext(
-        subscribed: _v4SubscriptionStatus(actions?['follow_state']),
+        subscribed: mapperV4SubscriptionStatus(actions?['follow_state']),
         blocked: actions?['blocked_at'] != null,
         bannedFromCommunity: actions?['received_ban_at'] != null,
         canModerate: json['can_mod'],
@@ -222,7 +223,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
   @override
   ThunderPrivateMessage privateMessageView(Map<String, dynamic> json, {NotificationRef? notification}) {
     final privateMessage = json['private_message'] as Map<String, dynamic>;
-    final published = _date(privateMessage['published_at']) ?? DateTime.now();
+    final published = mapperDate(privateMessage['published_at']) ?? DateTime.now();
     return ThunderPrivateMessage(
       id: privateMessage['id'],
       creatorId: privateMessage['creator_id'],
@@ -248,9 +249,9 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
     final notification = json['notification'];
     return NotificationRef(
       id: notification['id'],
-      kind: _notificationKind(notification['kind']),
+      kind: mapperNotificationKind(notification['kind']),
       read: notification['read'] ?? false,
-      createdAt: _date(notification['published_at']) ?? DateTime.now(),
+      createdAt: mapperDate(notification['published_at']) ?? DateTime.now(),
     );
   }
 
@@ -269,7 +270,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
               read: actions?['read_at'] != null,
               hidden: actions?['hidden_at'] != null,
               vote: VoteState.fromIsUpvote(actions?['vote_is_upvote']),
-              subscribed: _v4SubscriptionStatus(communityActions?['follow_state']),
+              subscribed: mapperV4SubscriptionStatus(communityActions?['follow_state']),
               creatorBlocked: json['person_actions']?['blocked_at'] != null,
               creatorBannedFromCommunity: json['creator_banned_from_community'],
               creatorIsModerator: json['creator_is_moderator'],
@@ -285,7 +286,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       resolved: report['resolved'],
       creator: json['creator'] is Map<String, dynamic> ? user(json['creator']) : null,
       post: mappedPost,
-      community: json['community'] is Map<String, dynamic> ? community(json['community'], subscribed: _v4SubscriptionStatus(communityActions?['follow_state'])) : null,
+      community: json['community'] is Map<String, dynamic> ? community(json['community'], subscribed: mapperV4SubscriptionStatus(communityActions?['follow_state'])) : null,
     );
   }
 
@@ -337,7 +338,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
               recipientId: privateMessage['recipient_id'],
               content: privateMessage['content'],
               deleted: privateMessage['deleted'] ?? false,
-              published: _date(privateMessage['published_at']) ?? DateTime.now(),
+              published: mapperDate(privateMessage['published_at']) ?? DateTime.now(),
               creator: json['private_message_creator'] is Map<String, dynamic> ? user(json['private_message_creator']) : null,
             )
           : null,
@@ -357,4 +358,23 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
   }
 }
 
-/// Mapper for PieFed responses.
+ThunderLocalUser localUserFromLemmyV4(Map<String, dynamic> localUser) {
+  return ThunderLocalUser(
+    email: localUser['email'],
+    showNsfw: localUser['show_nsfw'] ?? false,
+    showNsfl: null,
+    defaultSortType: mapperPostSortType(localUser['default_post_sort_type']),
+    defaultListingType: mapperFeedListType(localUser['default_listing_type']),
+    showScores: localUser['show_score'] ?? true,
+    showBotAccounts: localUser['show_bot_accounts'] ?? true,
+    showReadPosts: localUser['show_read_posts'] ?? true,
+  );
+}
+
+ThunderLocalUserView localUserViewFromLemmyV4(Map<String, dynamic> localUserView) {
+  const mapper = LemmyV4PrimitiveMapper();
+  return ThunderLocalUserView(
+    localUser: localUserFromLemmyV4(localUserView['local_user']),
+    person: mapper.user(localUserView['person']),
+  );
+}
