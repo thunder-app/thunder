@@ -34,8 +34,9 @@ abstract class SessionRepository {
   });
 }
 
-class PersistentSessionRepository implements SessionRepository {
-  const PersistentSessionRepository();
+/// Implementation of [SessionRepository] backed by local Drift storage.
+class SessionRepositoryImpl implements SessionRepository {
+  const SessionRepositoryImpl();
 
   @override
   Future<Account> bootstrap() async {
