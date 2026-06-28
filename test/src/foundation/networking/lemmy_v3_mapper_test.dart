@@ -45,8 +45,8 @@ void main() {
       expect(post.name, 'Hello Lemmy');
       expect(post.creator?.name, 'alice');
       expect(post.community?.name, 'news');
-      expect(post.counts?.comments, 2);
-      expect(post.counts?.score, 10);
+      expect(post.counts.comments, 2);
+      expect(post.counts.score, 10);
     });
 
     test('maps comment view fixture to ThunderComment', () {
@@ -78,7 +78,7 @@ void main() {
       expect(comment.id, 99);
       expect(comment.content, 'Nice post');
       expect(comment.creator?.name, 'alice');
-      expect(comment.counts?.score, 3);
+      expect(comment.counts.score, 3);
     });
   });
 }

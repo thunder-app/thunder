@@ -1,6 +1,4 @@
-import 'package:http/http.dart' as http;
 
-import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_api_client_defaults.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_private_message_utils.dart';

@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 
 import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';

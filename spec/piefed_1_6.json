@@ -33,7 +33,8 @@
             "description": "Errors",
             "additionalProperties": {}
           }
-        }
+        },
+        "additionalProperties": false
       },
       "PaginationMetadata": {
         "type": "object",
@@ -59,7 +60,8 @@
           "next_page": {
             "type": "integer"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "DefaultError": {
         "type": "object",
@@ -67,7 +69,8 @@
           "message": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "PersonAggregates": {
         "type": "object",
@@ -1312,6 +1315,7 @@
           }
         },
         "required": [
+          "end",
           "start"
         ]
       },
@@ -4274,6 +4278,9 @@
           "creator_is_moderator": {
             "type": "boolean"
           },
+          "distinguished": {
+            "type": "boolean"
+          },
           "my_vote": {
             "type": "integer"
           },
@@ -4561,6 +4568,14 @@
               "Old",
               "Scaled"
             ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 255,
+            "description": "Pass a null value to remove the display name"
           },
           "email_unread": {
             "type": "boolean",
@@ -4927,6 +4942,82 @@
           "person_id"
         ]
       },
+      "UserRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "password_verify": {
+            "type": "string"
+          },
+          "show_nsfw": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "string"
+          },
+          "captcha_uuid": {
+            "type": "string"
+          },
+          "captcha_answer": {
+            "type": "string"
+          },
+          "honeypot": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "password_verify",
+          "username"
+        ]
+      },
+      "UserRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "jwt": {
+            "type": "string"
+          },
+          "registration_created": {
+            "type": "boolean"
+          },
+          "verify_email_sent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CaptchaFields": {
+        "type": "object",
+        "properties": {
+          "png": {
+            "type": "string"
+          },
+          "wav": {
+            "type": "string"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "FetchCaptchaResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CaptchaFields"
+            }
+          }
+        }
+      },
       "ListCommentsResponse": {
         "type": "object",
         "properties": {
@@ -5111,7 +5202,12 @@
             "type": "string"
           },
           "reason": {
-            "type": "string"
+            "type": "string",
+            "description": "Categories of report selected by the reporter"
+          },
+          "description": {
+            "type": "string",
+            "description": "Any additional information provided by the reporter"
           },
           "resolved": {
             "type": "boolean"
@@ -5225,6 +5321,26 @@
           "comment_report_view"
         ]
       },
+      "GetCommentReportListResponse": {
+        "type": "object",
+        "properties": {
+          "comment_reports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentReportView"
+            }
+          },
+          "next_page": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "comment_reports"
+        ]
+      },
       "RemoveCommentRequest": {
         "type": "object",
         "properties": {
@@ -5282,6 +5398,21 @@
         "required": [
           "answer",
           "comment_reply_id"
+        ]
+      },
+      "MarkCommentAsDistinguishedRequest": {
+        "type": "object",
+        "properties": {
+          "comment_reply_id": {
+            "type": "integer"
+          },
+          "distinguished": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "comment_reply_id",
+          "distinguished"
         ]
       },
       "LockCommentRequest": {
@@ -5360,7 +5491,8 @@
         },
         "required": [
           "posts"
-        ]
+        ],
+        "additionalProperties": false
       },
       "GetPostResponse": {
         "type": "object",
@@ -6459,8 +6591,8 @@
       }
     },
     "responses": {
-      "UNPROCESSABLE_ENTITY": {
-        "description": "Unprocessable Entity",
+      "UNPROCESSABLE_CONTENT": {
+        "description": "Unprocessable Content",
         "content": {
           "application/json": {
             "schema": {
@@ -6570,7 +6702,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -6677,7 +6809,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -6838,7 +6970,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -6881,7 +7013,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -6954,7 +7086,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7071,7 +7203,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -7132,7 +7264,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7163,7 +7295,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -7214,7 +7346,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7318,7 +7450,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7351,7 +7483,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7424,7 +7556,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7467,7 +7599,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7510,7 +7642,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7553,7 +7685,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7624,7 +7756,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7657,7 +7789,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7700,7 +7832,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7743,7 +7875,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7786,7 +7918,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7827,7 +7959,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7870,7 +8002,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7931,7 +8063,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -7962,7 +8094,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -8013,7 +8145,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8078,7 +8210,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8111,7 +8243,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8154,7 +8286,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8209,7 +8341,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8242,7 +8374,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8382,7 +8514,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8445,7 +8577,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -8574,7 +8706,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8653,7 +8785,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8732,7 +8864,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8765,7 +8897,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8838,7 +8970,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8881,7 +9013,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8958,7 +9090,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -8991,7 +9123,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9094,7 +9226,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9130,7 +9262,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9173,7 +9305,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9216,7 +9348,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9259,7 +9391,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9298,6 +9430,79 @@
         "summary": "Unban a user"
       }
     },
+    "/api/alpha/api/alpha/user/register": {
+      "post": {
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRegistrationResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistrationRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "summary": "Register a new user"
+      }
+    },
+    "/api/alpha/api/alpha/user/get_captcha": {
+      "get": {
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FetchCaptchaResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "summary": "Fetch a Captcha"
+      }
+    },
     "/api/alpha/comment/list": {
       "get": {
         "parameters": [
@@ -9332,6 +9537,23 @@
                 "New",
                 "Old",
                 "Controversial"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "type_",
+            "schema": {
+              "type": "string",
+              "default": "All",
+              "enum": [
+                "All",
+                "Local",
+                "Subscribed",
+                "Popular",
+                "Moderating",
+                "ModeratorView"
               ]
             },
             "required": false
@@ -9404,7 +9626,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9437,7 +9659,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9480,7 +9702,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9523,7 +9745,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9566,7 +9788,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -9617,7 +9839,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9668,7 +9890,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9701,7 +9923,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9744,7 +9966,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9783,11 +10005,91 @@
         "summary": "Report a comment."
       }
     },
+    "/api/alpha/comment/report/list": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "comment_id",
+            "description": "Get the reports for a single comment",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "community_id",
+            "description": "Limit reports to within a single community",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "unresolved_only",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCommentReportListResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Get list of comment reports."
+      }
+    },
     "/api/alpha/comment/remove": {
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9830,7 +10132,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9873,7 +10175,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9912,11 +10214,54 @@
         "summary": "Mark a comment as the preferred answer to a question."
       }
     },
+    "/api/alpha/comment/distinguish": {
+      "post": {
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCommentResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkCommentAsDistinguishedRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Distinguish your comment as a moderator comment"
+      }
+    },
     "/api/alpha/comment/lock": {
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -9987,7 +10332,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10099,6 +10444,20 @@
           },
           {
             "in": "query",
+            "name": "nsfw",
+            "schema": {
+              "type": "string",
+              "default": "Include",
+              "enum": [
+                "Exclude",
+                "Only",
+                "Include"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
             "name": "person_id",
             "schema": {
               "type": "integer"
@@ -10161,7 +10520,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10273,6 +10632,20 @@
           },
           {
             "in": "query",
+            "name": "nsfw",
+            "schema": {
+              "type": "string",
+              "default": "Include",
+              "enum": [
+                "Exclude",
+                "Only",
+                "Include"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
             "name": "person_id",
             "schema": {
               "type": "integer"
@@ -10335,7 +10708,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10378,7 +10751,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10409,7 +10782,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -10460,7 +10833,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10561,7 +10934,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10604,7 +10977,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10637,7 +11010,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10680,7 +11053,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10723,7 +11096,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10766,7 +11139,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10809,7 +11182,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10852,7 +11225,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10895,7 +11268,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10938,7 +11311,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -10981,7 +11354,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11024,7 +11397,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11095,7 +11468,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11128,7 +11501,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11171,7 +11544,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11214,7 +11587,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -11267,7 +11640,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -11320,7 +11693,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -11373,7 +11746,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -11452,7 +11825,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11523,7 +11896,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11556,7 +11929,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11592,7 +11965,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "429": {
             "description": "Too Many Requests",
@@ -11643,7 +12016,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11686,7 +12059,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11729,7 +12102,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11772,7 +12145,7 @@
       "post": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11857,7 +12230,7 @@
         ],
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",
@@ -11890,7 +12263,7 @@
       "put": {
         "responses": {
           "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "400": {
             "description": "Bad Request",

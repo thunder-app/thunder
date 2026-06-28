@@ -13,9 +13,9 @@ class MockHttpClient extends Mock implements http.Client {}
 
 class TestApiClient extends BaseApiClient {
   TestApiClient({
-    required Account account,
-    http.Client? httpClient,
-  }) : super(account: account, version: null, httpClient: httpClient);
+    required super.account,
+    super.httpClient,
+  }) : super(version: null);
 
   @override
   String get basePath => '/api/v3';
