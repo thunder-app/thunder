@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/instance/domain/models/federated_instances.dart';
 
 /// Repository contract for instance site reads and blocks.
@@ -21,7 +22,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors
   final LocalizationService _localization;
@@ -33,29 +34,32 @@ class InstanceRepositoryImpl implements InstanceRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
   Future<ThunderSiteResponse> info() async {
-    return _api.site();
+    final api = await _api.get();
+    return api.site();
   }
 
   @override
   Future<bool> block(int instanceId, bool block) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    if (!_api.supportsInstanceBlock) {
-      throw UnsupportedFeatureException('Instance blocking', platformName: _api.platformName);
+    if (!api.supportsInstanceBlock) {
+      throw UnsupportedFeatureException('Instance blocking', platformName: api.platformName);
     }
 
-    return _api.blockInstance(instanceId: instanceId, block: block);
+    return api.blockInstance(instanceId: instanceId, block: block);
   }
 
   @override
   Future<FederatedInstances> federated() async {
-    final response = await _api.federated();
+    final api = await _api.get();
+    final response = await api.federated();
     return FederatedInstances.fromJson(response);
   }
 }

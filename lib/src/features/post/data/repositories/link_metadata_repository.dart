@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 
 /// Repository contract for link metadata reads.
 abstract class LinkMetadataRepository {
@@ -14,7 +15,7 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// Kept for a consistent repository constructor surface across API-backed repos.
   // ignore: unused_field
@@ -27,16 +28,17 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    final api = await _api.get();
     final trimmedUrl = url.trim();
     if (trimmedUrl.isEmpty || account.anonymous) return null;
 
     try {
-      return _api.getLinkMetadata(url: trimmedUrl);
+      return api.getLinkMetadata(url: trimmedUrl);
     } catch (error) {
       if (kDebugMode) debugPrint('Failed to fetch link metadata for $trimmedUrl: $error');
       return null;

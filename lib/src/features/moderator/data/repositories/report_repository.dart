@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/moderator/domain/enums/report_feed_type.dart';
 
 /// Repository contract for moderator report reads and actions.
@@ -27,7 +28,7 @@ class ReportRepositoryImpl implements ReportRepository {
   final Account account;
 
   /// The API client to use for the repository.
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors.
   final LocalizationService _localization;
@@ -39,7 +40,7 @@ class ReportRepositoryImpl implements ReportRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
@@ -53,16 +54,17 @@ class ReportRepositoryImpl implements ReportRepository {
     int? commentId,
     required ReportFeedType reportFeedType,
   }) async {
+    final api = await _api.get();
     final kind = switch (reportFeedType) {
       ReportFeedType.post => ReportKind.post,
       ReportFeedType.comment => ReportKind.comment,
     };
 
-    if (!_api.supportsListReports) {
-      throw UnsupportedFeatureException('${kind.name} reports', platformName: _api.platformName);
+    if (!api.supportsListReports) {
+      throw UnsupportedFeatureException('${kind.name} reports', platformName: api.platformName);
     }
 
-    return _api.getReports(
+    return api.getReports(
       kind: kind,
       postId: postId,
       commentId: commentId,
@@ -76,10 +78,11 @@ class ReportRepositoryImpl implements ReportRepository {
 
   @override
   Future<bool> resolveReport(ThunderReport report, bool resolved) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    final response = await _api.resolveReport(reportId: report.id, kind: report.kind, resolved: resolved);
+    final response = await api.resolveReport(reportId: report.id, kind: report.kind, resolved: resolved);
     return response.resolved == resolved;
   }
 }

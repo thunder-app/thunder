@@ -3126,6 +3126,12 @@ abstract class AppLocalizations {
   /// **'Normal'**
   String get normal;
 
+  /// No description provided for @networkErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to reach the server. Check your connection and try again.'**
+  String get networkErrorMessage;
+
   /// No description provided for @notAvailable.
   ///
   /// In en, this message translates to:

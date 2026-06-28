@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/community/community.dart';
 
 /// Repository contract for community reads and moderation actions.
@@ -38,7 +39,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors
   final LocalizationService _localization;
@@ -50,12 +51,13 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
   Future<CommunityDetail> getCommunity({int? id, String? name}) async {
-    final response = await _api.getCommunity(id: id, name: name);
+    final api = await _api.get();
+    final response = await api.getCommunity(id: id, name: name);
     return CommunityDetail(
       community: response.community,
       site: response.site,
@@ -67,18 +69,20 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
   @override
   Future<ThunderCommunity> subscribe(int communityId, bool follow) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.subscribeToCommunity(communityId: communityId, follow: follow);
+    return api.subscribeToCommunity(communityId: communityId, follow: follow);
   }
 
   @override
   Future<ThunderCommunity> block(int communityId, bool block) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.blockCommunity(communityId: communityId, block: block);
+    return api.blockCommunity(communityId: communityId, block: block);
   }
 
   @override
@@ -90,10 +94,11 @@ class CommunityRepositoryImpl implements CommunityRepository {
     int? expires,
     bool removeData = false,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.banUserFromCommunity(
+    return api.banUserFromCommunity(
       userId: userId,
       communityId: communityId,
       ban: ban,
@@ -109,10 +114,11 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required bool added,
     required int communityId,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.addModerator(
+    return api.addModerator(
       userId: userId,
       communityId: communityId,
       added: added,
@@ -126,7 +132,8 @@ class CommunityRepositoryImpl implements CommunityRepository {
     FeedListType feedListType = FeedListType.local,
     PostSortType postSortType = PostSortType.active,
   }) async {
-    return _api.getCommunities(
+    final api = await _api.get();
+    return api.getCommunities(
       page: page,
       limit: limit,
       feedListType: feedListType,

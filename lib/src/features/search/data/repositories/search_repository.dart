@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/domain/models/search_resolve_result.dart';
 
@@ -30,7 +31,7 @@ class SearchRepositoryImpl implements SearchRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// Kept for a consistent repository constructor surface across API-backed repos.
   // ignore: unused_field
@@ -43,7 +44,7 @@ class SearchRepositoryImpl implements SearchRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
@@ -59,7 +60,8 @@ class SearchRepositoryImpl implements SearchRepository {
     int? minimumUpvotes,
     bool? nsfw,
   }) async {
-    final response = await _api.search(
+    final api = await _api.get();
+    final response = await api.search(
       query: query,
       type: type,
       sort: sort,
@@ -84,7 +86,8 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<SearchResolveResult> resolve({required String query}) async {
-    final response = await _api.resolve(query: query);
+    final api = await _api.get();
+    final response = await api.resolve(query: query);
 
     return SearchResolveResult(
       community: response.community,

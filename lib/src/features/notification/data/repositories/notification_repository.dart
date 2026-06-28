@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/notification/domain/models/unread_notifications_count.dart';
 
 /// Repository contract for notification inbox reads and read state.
@@ -46,7 +47,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors
   final LocalizationService _localization;
@@ -58,7 +59,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
@@ -68,18 +69,20 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
+    return api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
   Future<void> markReplyAsRead({required int replyId, bool read = true}) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    await _api.markCommentReplyAsRead(replyId: replyId, read: read);
+    await api.markCommentReplyAsRead(replyId: replyId, read: read);
   }
 
   @override
@@ -89,26 +92,29 @@ class NotificationRepositoryImpl implements NotificationRepository {
     CommentSortType sort = CommentSortType.new_,
     int page = 1,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
+    return api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
   Future<void> markMentionAsRead({required int mentionId, bool read = true}) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    await _api.markCommentMentionAsRead(mentionId: mentionId, read: read);
+    await api.markCommentMentionAsRead(mentionId: mentionId, read: read);
   }
 
   @override
   Future<UnreadNotificationsCount> unreadNotificationsCount() async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    final response = await _api.unreadCount();
+    final response = await api.unreadCount();
     return UnreadNotificationsCount(
       replies: response.replies,
       mentions: response.mentions,
@@ -118,9 +124,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> markAllNotificationsAsRead() async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    await _api.markAllNotificationsAsRead();
+    await api.markAllNotificationsAsRead();
   }
 }

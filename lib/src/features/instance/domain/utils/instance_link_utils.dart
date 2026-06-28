@@ -5,7 +5,7 @@ import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/app/shell/navigation/loading_page.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart' as instance_discovery;
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {

@@ -1988,6 +1988,8 @@
   "@normal": {
     "description": "Normal name thickness/weight"
   },
+  "networkErrorMessage": "Unable to reach the server. Check your connection and try again.",
+  "@networkErrorMessage": {},
   "notAvailable": "N/A",
   "@notAvailable": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid instance",

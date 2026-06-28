@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/domain/models/user_detail.dart';
 
@@ -28,7 +29,7 @@ class UserRepositoryImpl implements UserRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors
   final LocalizationService _localization;
@@ -40,7 +41,7 @@ class UserRepositoryImpl implements UserRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
@@ -54,7 +55,8 @@ class UserRepositoryImpl implements UserRepository {
     bool? saved,
     bool? includeContent,
   }) async {
-    final response = await _api.getUser(
+    final api = await _api.get();
+    final response = await api.getUser(
       userId: userId,
       username: username,
       sort: sort,
@@ -77,9 +79,10 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<ThunderUser> blockUser(int userId, bool block) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.blockUser(userId: userId, block: block);
+    return api.blockUser(userId: userId, block: block);
   }
 }

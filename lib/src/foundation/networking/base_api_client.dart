@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -150,6 +151,16 @@ abstract class BaseApiClient {
       }
 
       return await handleResponse(uri, response) as Map<String, dynamic>;
+    } on SocketException {
+      throw NetworkException(
+        'network_error',
+        platformName: platformName,
+      );
+    } on http.ClientException {
+      throw NetworkException(
+        'network_error',
+        platformName: platformName,
+      );
     } catch (e) {
       if (debug) debugPrint('$platformName API: Error: $e');
       rethrow;

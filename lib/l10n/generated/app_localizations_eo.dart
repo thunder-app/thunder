@@ -1699,6 +1699,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get normal => 'Normal';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get notAvailable => 'N/A';
 
   @override

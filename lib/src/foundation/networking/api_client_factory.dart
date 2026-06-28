@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:version/version.dart';
 
@@ -13,7 +15,7 @@ import 'package:thunder/src/foundation/contracts/account.dart';
 ///
 /// Example usage:
 /// ```dart
-/// final api = ApiClientFactory.create(account);
+/// final api = await ApiClientFactory.create(account);
 /// final posts = await api.getPosts();
 /// ```
 class ApiClientFactory {
@@ -22,27 +24,62 @@ class ApiClientFactory {
   /// The factory will automatically select the appropriate client based on:
   /// - The account's platform (Lemmy, PieFed, etc.)
   /// - The instance's API version (from PlatformVersionCache)
-  static ThunderApiClient create(
+  static Future<ThunderApiClient> create(
     Account account, {
     bool debug = false,
     http.Client? httpClient,
-  }) {
+  }) async {
     return switch (account.platform) {
       ThreadiversePlatform.lemmy => _createLemmyClient(account, debug, httpClient),
-      ThreadiversePlatform.piefed => _createPiefedClient(account, debug, httpClient),
+      ThreadiversePlatform.piefed => Future.value(_createPiefedClient(account, debug, httpClient)),
       _ => throw UnsupportedError('Unsupported platform: ${account.platform}'),
     };
   }
 
+  /// Probes Lemmy `/site` endpoints to discover and cache the instance version.
+  static Future<Version?> probeLemmySiteVersion(
+    String instance, {
+    http.Client? httpClient,
+  }) async {
+    final client = httpClient ?? http.Client();
+    final ownsClient = httpClient == null;
+
+    try {
+      for (final path in const ['/api/v4/site', '/api/v3/site']) {
+        try {
+          final response = await client.get(Uri.https(instance, path)).timeout(const Duration(seconds: 5));
+          if (response.statusCode != 200) continue;
+
+          final decoded = jsonDecode(response.body);
+          if (decoded is! Map<String, dynamic>) continue;
+
+          final versionString = decoded['version']?.toString();
+          if (versionString == null || versionString.isEmpty) continue;
+
+          PlatformVersionCache().trySet(instance, versionString);
+          return Version.parse(versionString);
+        } catch (_) {
+          continue;
+        }
+      }
+    } finally {
+      if (ownsClient) {
+        client.close();
+      }
+    }
+
+    return null;
+  }
+
   /// Create the appropriate Lemmy client based on version.
-  static ThunderApiClient _createLemmyClient(
+  static Future<ThunderApiClient> _createLemmyClient(
     Account account,
     bool debug,
     http.Client? httpClient,
-  ) {
-    final version = PlatformVersionCache().get(account.instance);
+  ) async {
+    var version = PlatformVersionCache().get(account.instance);
+    version ??= await probeLemmySiteVersion(account.instance, httpClient: httpClient);
 
-    // Check if the instance requires v4 API (Lemmy 1.0.0+)
     if (version != null && _isLemmyApiV4(version)) {
       return LemmyV4ApiClient(
         account: account,
@@ -52,7 +89,6 @@ class ApiClientFactory {
       );
     }
 
-    // Default to v3 API for older instances or when version is unknown
     return LemmyV3ApiClient(
       account: account,
       debug: debug,
@@ -85,7 +121,7 @@ class ApiClientFactory {
   }
 
   /// Create a mock client for testing.
-  static ThunderApiClient createForTesting({
+  static Future<ThunderApiClient> createForTesting({
     required Account account,
     required http.Client mockHttpClient,
     bool debug = false,

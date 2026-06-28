@@ -17,7 +17,7 @@ import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/inbox/api.dart';
 import 'package:thunder/src/features/instance/api.dart';
-import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart';
+import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart' show fetchInstanceNameFromUrl;
 import 'package:thunder/src/features/moderator/api.dart';
 import 'package:thunder/src/features/notification/api.dart';

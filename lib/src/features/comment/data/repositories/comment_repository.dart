@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/comment/domain/models/comment_page.dart';
 
 /// Repository contract for comment reads and mutations.
@@ -54,7 +55,7 @@ class CommentRepositoryImpl implements CommentRepository {
   final Account account;
 
   /// The API client to use for the repository
-  final ThunderApiClient _api;
+  final ResolvedApiClient _api;
 
   /// The localization service to use for user-facing errors
   final LocalizationService _localization;
@@ -66,12 +67,13 @@ class CommentRepositoryImpl implements CommentRepository {
     required this.account,
     ThunderApiClient? api,
     LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+  })  : _api = ResolvedApiClient(account: account, api: api),
         _localization = localization;
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
-    return _api.getComment(commentId);
+    final api = await _api.get();
+    return api.getComment(commentId);
   }
 
   @override
@@ -85,7 +87,8 @@ class CommentRepositoryImpl implements CommentRepository {
     int? limit,
     int? communityId,
   }) async {
-    final response = await _api.getComments(
+    final api = await _api.get();
+    final response = await api.getComments(
       postId: postId,
       page: page,
       cursor: cursor,
@@ -109,10 +112,11 @@ class CommentRepositoryImpl implements CommentRepository {
     int? parentId,
     int? languageId,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.createComment(
+    return api.createComment(
       postId: postId,
       content: content,
       parentId: parentId,
@@ -126,10 +130,11 @@ class CommentRepositoryImpl implements CommentRepository {
     required String content,
     int? languageId,
   }) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.editComment(
+    return api.editComment(
       commentId: commentId,
       content: content,
       languageId: languageId,
@@ -138,33 +143,37 @@ class CommentRepositoryImpl implements CommentRepository {
 
   @override
   Future<ThunderComment> vote(ThunderComment comment, int score) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.voteComment(commentId: comment.id, score: score);
+    return api.voteComment(commentId: comment.id, score: score);
   }
 
   @override
   Future<ThunderComment> save(ThunderComment comment, bool save) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.saveComment(commentId: comment.id, save: save);
+    return api.saveComment(commentId: comment.id, save: save);
   }
 
   @override
   Future<ThunderComment> delete(ThunderComment comment, bool deleted) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return _api.deleteComment(commentId: comment.id, deleted: deleted);
+    return api.deleteComment(commentId: comment.id, deleted: deleted);
   }
 
   @override
   Future<void> report(int commentId, String reason) async {
+    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    await _api.reportComment(commentId: commentId, reason: reason);
+    await api.reportComment(commentId: commentId, reason: reason);
   }
 }

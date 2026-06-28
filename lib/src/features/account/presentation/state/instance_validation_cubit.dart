@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/features/instance/data/services/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart' as instance_discovery;
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
