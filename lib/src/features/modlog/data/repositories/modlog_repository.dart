@@ -26,6 +26,7 @@ class ModlogRepositoryImpl implements ModlogRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  /// Kept for a consistent repository constructor surface across API-backed repos.
   // ignore: unused_field
   final LocalizationService _localization;
 
