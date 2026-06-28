@@ -720,6 +720,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
 
+  /// Lemmy 1.0 has no dedicated PM conversation endpoint; filter the inbox list.
   @override
   Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
     required int personId,
