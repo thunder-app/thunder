@@ -1,5 +1,5 @@
 import 'package:thunder/src/features/comment/data/repositories/comment_repository.dart';
-import 'package:thunder/src/features/community/data/repositories/community_repository_impl.dart';
+import 'package:thunder/src/features/community/data/repositories/community_repository.dart';
 import 'package:thunder/src/features/drafts/data/models/draft.dart';
 import 'package:thunder/src/features/drafts/data/repositories/draft_repository.dart';
 import 'package:thunder/src/features/post/data/repositories/post_repository.dart';
