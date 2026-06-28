@@ -15,6 +15,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
+import 'package:thunder/src/features/post/presentation/utils/post_example_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
@@ -354,10 +355,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Generates an example post to show in the post preview
   Future<List<ThunderPost?>> getExamplePosts() async {
-    final account = context.read<ProfileBloc>().state.account;
-    final repository = PostRepositoryImpl(account: account);
-
-    ThunderPost? postPinned = await repository.createExample(
+    ThunderPost? postPinned = await createExamplePost(
       postTitle: 'Example Pinned Post',
       personName: 'Lightning',
       personInstance: 'lemmy.world',
@@ -369,7 +367,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 1437,
     );
 
-    ThunderPost? postText = await repository.createExample(
+    ThunderPost? postText = await createExamplePost(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
       personInstance: 'lemmy.world',
@@ -380,7 +378,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4,
     );
 
-    ThunderPost? postImage = await repository.createExample(
+    ThunderPost? postImage = await createExamplePost(
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -393,7 +391,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4230,
     );
 
-    ThunderPost? postLink = await repository.createExample(
+    ThunderPost? postLink = await createExamplePost(
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',

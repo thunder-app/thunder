@@ -41,29 +41,9 @@ abstract class PostRepository {
     int? languageId,
   });
 
-  /// Creates a placeholder post from the given parameters. This is mainly used to display a preview of the post
-  /// with the applied settings on Settings -> Appearance -> Posts page.
-  Future<ThunderPost?> createExample({
-    String? postTitle,
-    String? postUrl,
-    String? postBody,
-    String? postThumbnailUrl,
-    String? postAltText,
-    bool? locked,
-    bool? nsfw,
-    bool? pinned,
-    String? personName,
-    String? personDisplayName,
-    String? personInstance,
-    String? communityName,
-    String? instanceUrl,
-    int? commentCount,
-    int? scoreCount,
-    bool? saved,
-    bool? read,
-  });
-
-  /// Votes on a post
+  /// Reports a post
+  Future<void> report(int postId, String reason);
+}
   Future<ThunderPost> vote(ThunderPost post, int score);
 
   /// Saves or unsaves a post
@@ -305,79 +285,5 @@ class PostRepositoryImpl implements PostRepository {
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.reportPost(postId: postId, reason: reason);
-  }
-
-  @override
-  Future<ThunderPost?> createExample({
-    String? postTitle,
-    String? postUrl,
-    String? postBody,
-    String? postThumbnailUrl,
-    String? postAltText,
-    bool? locked,
-    bool? nsfw,
-    bool? pinned,
-    String? personName,
-    String? personDisplayName,
-    String? personInstance,
-    String? communityName,
-    String? instanceUrl,
-    int? commentCount,
-    int? scoreCount,
-    bool? saved,
-    bool? read,
-  }) async {
-    ThunderPost post = ThunderPost(
-      id: 1,
-      name: postTitle ?? 'Example Title',
-      url: postUrl,
-      body: postBody,
-      thumbnailUrl: postThumbnailUrl,
-      altText: postAltText,
-      creatorId: 1,
-      communityId: 1,
-      published: DateTime.now(),
-      apId: '',
-      languageId: 0,
-      status: PostStatus(
-        deleted: false,
-        removed: false,
-        locked: locked ?? false,
-        nsfw: nsfw ?? false,
-        local: false,
-        featuredCommunity: pinned ?? false,
-        featuredLocal: false,
-      ),
-      creator: ThunderUser(
-        id: 1,
-        name: personName ?? 'Example Username',
-        displayName: personDisplayName ?? 'Example Name',
-        published: DateTime.now(),
-        actorId: 'https://$personInstance/u/$personName',
-        instanceId: 1,
-        status: const UserStatus(banned: false, local: false, deleted: false, botAccount: false),
-      ),
-      community: ThunderCommunity(
-        id: 1,
-        name: communityName ?? 'Example Community',
-        title: '',
-        published: DateTime.now(),
-        actorId: instanceUrl ?? 'https://thunder.lemmy',
-        instanceId: 1,
-        visibility: 'Public',
-        status: const CommunityStatus(removed: false, deleted: false, nsfw: false, local: false, hidden: false, postingRestrictedToMods: false),
-      ),
-      counts: PostCounts(comments: commentCount ?? 0, score: scoreCount ?? 0, upvotes: 0, downvotes: 0, newestCommentAt: DateTime.now(), unreadComments: 0),
-      context: PostContext(
-        creatorBannedFromCommunity: false,
-        subscribed: SubscriptionStatus.notSubscribed,
-        saved: saved ?? false,
-        read: read ?? false,
-        creatorBlocked: false,
-      ),
-    );
-
-    List<ThunderPost> posts = await parsePosts([post]);
-    return Future.value(posts.firstOrNull);
   }
 }

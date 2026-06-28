@@ -12,6 +12,7 @@ import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
+import 'package:thunder/src/features/comment/presentation/utils/comment_example_utils.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
@@ -129,10 +130,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Generates an example comment to show in the comment preview
   void getExampleComment() async {
-    final account = context.read<ProfileBloc>().state.account;
-    final repository = CommentRepositoryImpl(account: account);
-
-    ThunderComment comment = await repository.createExample(
+    ThunderComment comment = createExampleComment(
       id: 1,
       commentCreatorId: 1,
       path: '0.1',
@@ -144,7 +142,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
-    ThunderComment replyComment = await repository.createExample(
+    ThunderComment replyComment = createExampleComment(
       id: 3,
       commentCreatorId: 3,
       path: '0.1.3',
@@ -157,7 +155,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       isPersonAdmin: true,
     );
 
-    ThunderComment replyCommentSecond = await repository.createExample(
+    ThunderComment replyCommentSecond = createExampleComment(
         id: 2,
         commentCreatorId: 2,
         path: '0.1.2',
