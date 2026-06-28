@@ -1109,37 +1109,6 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   }
 
   // =============================================================
-  // Feature Flags
-  // =============================================================
-
-  @override
-  bool get supportsHidePosts => true;
-
-  @override
-  bool get supportsPostReports => true;
-
-  @override
-  bool get supportsCommentReports => true;
-
-  @override
-  bool get supportsPrivateMessages => true;
-
-  @override
-  bool get supportsModlog => true;
-
-  @override
-  bool get supportsSettingsImportExport => true;
-
-  @override
-  bool get supportsMedia => true;
-
-  @override
-  bool get supportsTOTP => true;
-
-  @override
-  bool get supportsInstanceBlock => true;
-
-  // =============================================================
   // Additional Lemmy v3 endpoints (0.19.11 spec)
   // =============================================================
 

@@ -508,11 +508,11 @@ abstract class ThunderApiClient {
   /// Whether the platform supports hiding posts.
   bool get supportsHidePosts => true;
 
-  /// Whether the platform supports post reports.
-  bool get supportsPostReports => true;
+  /// Whether the platform supports submitting post and comment reports.
+  bool get supportsSubmitReport => true;
 
-  /// Whether the platform supports comment reports.
-  bool get supportsCommentReports => true;
+  /// Whether the platform supports listing and resolving moderator reports.
+  bool get supportsListReports => true;
 
   /// Whether the platform supports private messages.
   bool get supportsPrivateMessages => true;

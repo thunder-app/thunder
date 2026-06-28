@@ -20,8 +20,8 @@ void main() {
   });
 
   group('ReportRepositoryImpl', () {
-    test('getReports throws UnsupportedFeatureException when post reports unsupported', () async {
-      when(() => api.supportsPostReports).thenReturn(false);
+    test('getReports throws UnsupportedFeatureException when report listing unsupported', () async {
+      when(() => api.supportsListReports).thenReturn(false);
 
       final repository = ReportRepositoryImpl(
         account: loggedInAccount(),

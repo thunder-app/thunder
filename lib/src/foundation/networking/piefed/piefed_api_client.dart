@@ -48,37 +48,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   String get platformName => 'PieFed';
 
   // =============================================================
-  // Feature Flags - PieFed has limited support
-  // =============================================================
-
-  @override
-  bool get supportsHidePosts => true;
-
-  @override
-  bool get supportsPostReports => false;
-
-  @override
-  bool get supportsCommentReports => false;
-
-  @override
-  bool get supportsPrivateMessages => true;
-
-  @override
-  bool get supportsModlog => false;
-
-  @override
-  bool get supportsSettingsImportExport => false;
-
-  @override
-  bool get supportsMedia => true;
-
-  @override
-  bool get supportsTOTP => false;
-
-  @override
-  bool get supportsInstanceBlock => true;
-
-  // =============================================================
   // Authentication & Site
   // =============================================================
 
@@ -1560,6 +1529,37 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
     }
   }
+
+  // =============================================================
+  // Feature Flags
+  // =============================================================
+
+  @override
+  bool get supportsHidePosts => true;
+
+  @override
+  bool get supportsSubmitReport => true;
+
+  @override
+  bool get supportsListReports => false;
+
+  @override
+  bool get supportsPrivateMessages => true;
+
+  @override
+  bool get supportsModlog => false;
+
+  @override
+  bool get supportsSettingsImportExport => false;
+
+  @override
+  bool get supportsMedia => true;
+
+  @override
+  bool get supportsTOTP => false;
+
+  @override
+  bool get supportsInstanceBlock => true;
 }
 
 AccountMediaItem _accountMediaItemFromPiefed(Map<String, dynamic> image, String instance) {

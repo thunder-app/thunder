@@ -718,10 +718,10 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   bool get supportsHidePosts => true;
 
   @override
-  bool get supportsPostReports => true;
+  bool get supportsSubmitReport => true;
 
   @override
-  bool get supportsCommentReports => true;
+  bool get supportsListReports => true;
 
   @override
   bool get supportsPrivateMessages => true;

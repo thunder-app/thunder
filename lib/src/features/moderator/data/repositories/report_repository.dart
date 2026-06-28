@@ -58,7 +58,7 @@ class ReportRepositoryImpl implements ReportRepository {
       ReportFeedType.comment => ReportKind.comment,
     };
 
-    if ((kind == ReportKind.post && !_api.supportsPostReports) || (kind == ReportKind.comment && !_api.supportsCommentReports)) {
+    if (!_api.supportsListReports) {
       throw UnsupportedFeatureException('${kind.name} reports', platformName: _api.platformName);
     }
 
