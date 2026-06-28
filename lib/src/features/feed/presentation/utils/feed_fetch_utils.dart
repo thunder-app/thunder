@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -10,7 +9,8 @@ import 'package:thunder/src/features/user/user.dart';
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
 Future<FeedResult> fetchFeedItems({
-  required Account account,
+  required PostRepository postRepository,
+  required UserRepository userRepository,
   String? cursor,
   FeedListType? feedListType,
   PostSortType? postSortType,
@@ -37,8 +37,6 @@ Future<FeedResult> fetchFeedItems({
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
-    final postRepository = PostRepositoryImpl(account: account);
-
     do {
       Map<String, dynamic> response = await postRepository.getPosts(
         cursor: currentCursor,
@@ -96,8 +94,6 @@ Future<FeedResult> fetchFeedItems({
     int currentPage = currentCursor != null ? int.tryParse(currentCursor) ?? 1 : 1;
 
     do {
-      final userRepository = UserRepositoryImpl(account: account);
-
       Map<String, dynamic>? response = await userRepository.getUser(
         userId: userId,
         username: username,
