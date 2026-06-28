@@ -9,7 +9,12 @@ abstract class CommunityRepository {
   Future<CommunityDetails> getCommunity({int? id, String? name});
 
   /// Lists trending communities
-  Future<List<ThunderCommunity>> trending();
+  Future<List<ThunderCommunity>> trending({
+    int page = 1,
+    int limit = 5,
+    FeedListType feedListType = FeedListType.local,
+    PostSortType postSortType = PostSortType.active,
+  });
 
   /// Follows or unfollows a community
   Future<ThunderCommunity> subscribe(int communityId, bool follow);
@@ -115,12 +120,17 @@ class CommunityRepositoryImpl implements CommunityRepository {
   }
 
   @override
-  Future<List<ThunderCommunity>> trending() async {
+  Future<List<ThunderCommunity>> trending({
+    int page = 1,
+    int limit = 5,
+    FeedListType feedListType = FeedListType.local,
+    PostSortType postSortType = PostSortType.active,
+  }) async {
     return await _api.getCommunities(
-      page: 1,
-      limit: 5,
-      feedListType: FeedListType.local,
-      postSortType: PostSortType.active,
+      page: page,
+      limit: limit,
+      feedListType: feedListType,
+      postSortType: postSortType,
     );
   }
 }
