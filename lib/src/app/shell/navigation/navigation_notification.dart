@@ -32,6 +32,7 @@ void navigateToNotificationPage(
   }
 
   final notificationRepository = NotificationRepositoryImpl(account: account);
+  final privateMessageRepository = PrivateMessageRepositoryImpl(account: account);
 
   late final NotificationsPage notificationsPage;
 
@@ -43,7 +44,7 @@ void navigateToNotificationPage(
     int currentPage = 1;
 
     while (!doneFetching) {
-      final response = await notificationRepository.messages(
+      final response = await privateMessageRepository.messages(
         unread: notificationId == null,
         limit: 50,
         page: currentPage,

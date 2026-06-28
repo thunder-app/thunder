@@ -21,6 +21,7 @@ import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/moderator/moderator.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/features/private_message/private_message.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/session.dart';
 import 'package:thunder/src/features/settings/settings.dart';

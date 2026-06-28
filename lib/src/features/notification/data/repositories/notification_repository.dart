@@ -33,19 +33,6 @@ abstract class NotificationRepository {
     bool read = true,
   });
 
-  /// Fetches any private messages
-  Future<List<ThunderPrivateMessage>> messages({
-    bool unread,
-    int limit,
-    int page,
-  });
-
-  /// Marks a private message as read
-  Future<void> markMessageAsRead({
-    required int notificationId,
-    bool read = true,
-  });
-
   /// Fetches number of unread notifications
   Future<UnreadNotificationsCount> unreadNotificationsCount();
 
@@ -114,26 +101,6 @@ class NotificationRepositoryImpl implements NotificationRepository {
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markCommentMentionAsRead(mentionId: mentionId, read: read);
-  }
-
-  @override
-  Future<List<ThunderPrivateMessage>> messages({
-    bool unread = false,
-    int limit = 50,
-    int page = 1,
-  }) async {
-    final l10n = _localization.l10n;
-    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
-
-    return await _api.getPrivateMessages(page: page, limit: limit, unread: unread);
-  }
-
-  @override
-  Future<void> markMessageAsRead({required int notificationId, bool read = true}) async {
-    final l10n = _localization.l10n;
-    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
-
-    await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
 
   @override

@@ -147,6 +147,7 @@ InboxBloc createInboxBloc(Account account) {
     account: account,
     commentRepository: CommentRepositoryImpl(account: account),
     notificationRepository: NotificationRepositoryImpl(account: account),
+    privateMessageRepository: PrivateMessageRepositoryImpl(account: account),
     localizationService: const ThunderLocalizationService(),
   );
 }
@@ -162,6 +163,7 @@ InboxBloc createInboxBlocWithInitial({
     showUnreadOnly: showUnreadOnly,
     commentRepository: CommentRepositoryImpl(account: account),
     notificationRepository: NotificationRepositoryImpl(account: account),
+    privateMessageRepository: PrivateMessageRepositoryImpl(account: account),
     localizationService: const ThunderLocalizationService(),
   );
 }
