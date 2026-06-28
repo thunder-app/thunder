@@ -830,26 +830,19 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<String> uploadImage(String filePath) async {
-    try {
-      final uploadRequest = http.MultipartRequest('POST', Uri.https(account.instance, '$basePath/image'));
-      uploadRequest.headers.addAll(buildHeaders()..remove('Content-Type'));
-      uploadRequest.files.add(await http.MultipartFile.fromPath('image', filePath));
-
-      final response = await uploadRequest.send();
-      final responseBody = await response.stream.bytesToString();
-      final parsed = await handleResponse(uploadRequest.url, http.Response(responseBody, response.statusCode, headers: response.headers));
-      if (parsed is Map<String, dynamic>) {
-        return parseUploadImageUrl(
-          parsed,
-          instance: account.instance,
-          platformName: platformName,
-        );
-      }
-      throw ApiErrorException('Failed to upload image', platformName: platformName);
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
-    }
+    final decoded = await uploadMultipartImage(
+      httpClient: httpClient,
+      uri: Uri.https(account.instance, '$basePath/image'),
+      headers: buildHeaders(),
+      fieldName: 'image',
+      filePath: filePath,
+      platformName: platformName,
+    );
+    return parseUploadImageUrl(
+      decoded,
+      instance: account.instance,
+      platformName: platformName,
+    );
   }
 
   @override

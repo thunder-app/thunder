@@ -901,34 +901,21 @@ class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<String> uploadImage(String filePath) async {
-    try {
-      final uploadRequest = http.MultipartRequest(
-        'POST',
-        Uri.https(account.instance, '/pictrs/image'),
-      );
-      uploadRequest.headers.addAll(buildHeaders());
-      uploadRequest.files.add(await http.MultipartFile.fromPath('images[]', filePath));
-
-      final response = await uploadRequest.send();
-      if (response.statusCode != 201) {
-        throw ApiErrorException(
-          'Failed to upload image: ${response.statusCode} ${response.reasonPhrase}',
-          statusCode: response.statusCode,
-          platformName: platformName,
-        );
-      }
-
-      final responseBody = await response.stream.bytesToString();
-      final decoded = jsonDecode(responseBody) as Map<String, dynamic>;
-      return parseUploadImageUrl(
-        decoded,
-        instance: account.instance,
-        platformName: platformName,
-      );
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
-    }
+    final decoded = await uploadMultipartImage(
+      httpClient: httpClient,
+      uri: Uri.https(account.instance, '/pictrs/image'),
+      headers: buildHeaders(),
+      fieldName: 'images[]',
+      filePath: filePath,
+      platformName: platformName,
+      stripContentType: false,
+      successStatusCode: 201,
+    );
+    return parseUploadImageUrl(
+      decoded,
+      instance: account.instance,
+      platformName: platformName,
+    );
   }
 
   @override
