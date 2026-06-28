@@ -126,25 +126,7 @@ class AccountRepositoryImpl implements AccountRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    final response = await _api.uploadImage(filePath);
-
-    if (response['url'] is String && (response['url'] as String).isNotEmpty) {
-      return response['url'] as String;
-    }
-
-    if (response['image_url'] is String && (response['image_url'] as String).isNotEmpty) {
-      return response['image_url'] as String;
-    }
-
-    if (response['files'] != null && (response['files'] as List).isNotEmpty) {
-      final filename = response['files'][0]['file'];
-      return "https://${account.instance}/pictrs/image/$filename";
-    }
-
-    throw ApiErrorException(
-      'Failed to upload image: Invalid response $response',
-      platformName: _api.platformName,
-    );
+    return _api.uploadImage(filePath);
   }
 
   @override

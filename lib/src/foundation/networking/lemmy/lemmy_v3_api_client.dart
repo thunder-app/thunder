@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
@@ -1070,7 +1071,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   // =============================================================
 
   @override
-  Future<Map<String, dynamic>> uploadImage(String filePath) async {
+  Future<String> uploadImage(String filePath) async {
     try {
       final uploadRequest = http.MultipartRequest(
         'POST',
@@ -1089,7 +1090,12 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       }
 
       final responseBody = await response.stream.bytesToString();
-      return jsonDecode(responseBody) as Map<String, dynamic>;
+      final decoded = jsonDecode(responseBody) as Map<String, dynamic>;
+      return parseUploadImageUrl(
+        decoded,
+        instance: account.instance,
+        platformName: platformName,
+      );
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiErrorException('Failed to upload image: $e', platformName: platformName);

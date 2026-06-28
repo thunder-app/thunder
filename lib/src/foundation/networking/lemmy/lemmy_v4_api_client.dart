@@ -6,6 +6,7 @@ import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/base_lemmy_api_client.dart';
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
+import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
@@ -811,7 +812,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> uploadImage(String filePath) async {
+  Future<String> uploadImage(String filePath) async {
     try {
       final uploadRequest = http.MultipartRequest('POST', Uri.https(account.instance, '$basePath/image'));
       uploadRequest.headers.addAll(buildHeaders()..remove('Content-Type'));
@@ -821,7 +822,11 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       final responseBody = await response.stream.bytesToString();
       final parsed = await handleResponse(uploadRequest.url, http.Response(responseBody, response.statusCode, headers: response.headers));
       if (parsed is Map<String, dynamic>) {
-        return _unwrapRequestState(parsed);
+        return parseUploadImageUrl(
+          _unwrapRequestState(parsed),
+          instance: account.instance,
+          platformName: platformName,
+        );
       }
       throw ApiErrorException('Failed to upload image', platformName: platformName);
     } catch (e) {

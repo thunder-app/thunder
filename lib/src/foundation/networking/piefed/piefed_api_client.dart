@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/meta_search_type.dart';
@@ -1461,17 +1462,17 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  Future<Map<String, dynamic>> uploadImage(String filePath) async {
+  Future<String> uploadImage(String filePath) async {
     return _uploadImageTo('$basePath/upload/image', filePath);
   }
 
   /// Upload a user image.
-  Future<Map<String, dynamic>> uploadUserImage(String filePath) async {
+  Future<String> uploadUserImage(String filePath) async {
     return _uploadImageTo('$basePath/upload/user_image', filePath);
   }
 
   /// Upload a community image.
-  Future<Map<String, dynamic>> uploadCommunityImage(String filePath) async {
+  Future<String> uploadCommunityImage(String filePath) async {
     return _uploadImageTo('$basePath/upload/community_image', filePath);
   }
 
@@ -1506,7 +1507,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     );
   }
 
-  Future<Map<String, dynamic>> _uploadImageTo(String endpoint, String filePath) async {
+  Future<String> _uploadImageTo(String endpoint, String filePath) async {
     try {
       final uploadRequest = http.MultipartRequest(
         'POST',
@@ -1536,8 +1537,16 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
       try {
         final decoded = jsonDecode(response.body);
-        if (decoded is Map<String, dynamic>) return decoded;
-        if (decoded is String && decoded.isNotEmpty) return {'url': decoded};
+        if (decoded is Map<String, dynamic>) {
+          return parseUploadImageUrl(
+            decoded,
+            instance: account.instance,
+            platformName: platformName,
+          );
+        }
+        if (decoded is String && decoded.isNotEmpty) {
+          return decoded;
+        }
       } catch (_) {
         // Fall through to handle non-JSON responses.
       }

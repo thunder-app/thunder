@@ -496,7 +496,7 @@ abstract class ThunderApiClient {
   // =============================================================
 
   /// Upload an image.
-  Future<Map<String, dynamic>> uploadImage(String filePath);
+  Future<String> uploadImage(String filePath);
 
   /// Delete an uploaded image.
   Future<void> deleteImage({required String file, String? token});

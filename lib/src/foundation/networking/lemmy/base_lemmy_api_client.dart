@@ -701,7 +701,7 @@ abstract class BaseLemmyApiClient extends BaseApiClient implements ThunderApiCli
   // =============================================================
 
   @override
-  Future<Map<String, dynamic>> uploadImage(String filePath) async {
+  Future<String> uploadImage(String filePath) async {
     throw UnimplementedError('Lemmy endpoints are implemented in version-specific clients.');
   }
 
