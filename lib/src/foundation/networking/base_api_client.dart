@@ -14,7 +14,8 @@ enum HttpMethod { get, post, put, delete }
 /// Base class containing shared HTTP infrastructure for all API clients.
 /// Handles requests, responses, and errors for all API clients.
 ///
-/// Subclasses must implement [basePath], [platformName], and [uploadImage].
+/// Subclasses must implement [basePath] and [platformName].
+/// [ThunderApiClient] endpoint methods, including [ThunderApiClient.uploadImage], live in concrete clients.
 abstract class BaseApiClient {
   /// The account to use for API calls (contains instance URL and JWT).
   final Account account;

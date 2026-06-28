@@ -67,7 +67,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<void> logout() async {
-    // TODO: Implement logout when API is available.
+    // PieFed has no server logout endpoint; clearing the local JWT is sufficient.
   }
 
   @override

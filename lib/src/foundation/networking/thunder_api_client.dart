@@ -116,7 +116,8 @@ abstract class ThunderApiClient {
 
   /// Fetch a list of posts.
   ///
-  /// Pass [cursor] from the previous response's `nextPage`, when loading more.
+  /// Pass [cursor] from the previous response's `nextPage` when loading more.
+  /// Treat [cursor] as opaque — do not parse or modify it.
   Future<GetPostsResponse> getPosts({
     String? cursor,
     int? limit,
@@ -163,6 +164,8 @@ abstract class ThunderApiClient {
   });
 
   /// Create a new post with any extra tags or flair the platform supports.
+  ///
+  /// Tags and flair IDs are fully supported on PieFed. Lemmy clients ignore them and delegate to [createPost].
   Future<ThunderPost> createPostWithMetadata({
     required String title,
     required int communityId,
