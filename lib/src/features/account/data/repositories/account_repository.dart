@@ -57,7 +57,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
-    return await _api.login(username: username, password: password, totp: totp);
+    return _api.login(username: username, password: password, totp: totp);
   }
 
   @override
@@ -86,7 +86,7 @@ class AccountRepositoryImpl implements AccountRepository {
       throw UnsupportedFeatureException('Media management', platformName: _api.platformName);
     }
 
-    return await _api.media(page: page, limit: limit);
+    return _api.media(page: page, limit: limit);
   }
 
   @override
@@ -106,7 +106,7 @@ class AccountRepositoryImpl implements AccountRepository {
       throw UnsupportedFeatureException('Settings import', platformName: _api.platformName);
     }
 
-    return await _api.importSettings(settings);
+    return _api.importSettings(settings);
   }
 
   @override
@@ -118,7 +118,7 @@ class AccountRepositoryImpl implements AccountRepository {
       throw UnsupportedFeatureException('Settings export', platformName: _api.platformName);
     }
 
-    return await _api.exportSettings();
+    return _api.exportSettings();
   }
 
   @override

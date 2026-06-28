@@ -70,7 +70,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.subscribeToCommunity(communityId: communityId, follow: follow);
+    return _api.subscribeToCommunity(communityId: communityId, follow: follow);
   }
 
   @override
@@ -78,7 +78,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.blockCommunity(communityId: communityId, block: block);
+    return _api.blockCommunity(communityId: communityId, block: block);
   }
 
   @override
@@ -93,7 +93,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.banUserFromCommunity(
+    return _api.banUserFromCommunity(
       userId: userId,
       communityId: communityId,
       ban: ban,
@@ -112,7 +112,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.addModerator(
+    return _api.addModerator(
       userId: userId,
       communityId: communityId,
       added: added,
@@ -126,7 +126,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     FeedListType feedListType = FeedListType.local,
     PostSortType postSortType = PostSortType.active,
   }) async {
-    return await _api.getCommunities(
+    return _api.getCommunities(
       page: page,
       limit: limit,
       feedListType: feedListType,

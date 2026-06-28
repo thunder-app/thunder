@@ -71,7 +71,7 @@ class CommentRepositoryImpl implements CommentRepository {
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
-    return await _api.getComment(commentId);
+    return _api.getComment(commentId);
   }
 
   @override
@@ -112,7 +112,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.createComment(
+    return _api.createComment(
       postId: postId,
       content: content,
       parentId: parentId,
@@ -129,7 +129,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.editComment(
+    return _api.editComment(
       commentId: commentId,
       content: content,
       languageId: languageId,
@@ -141,7 +141,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.voteComment(commentId: comment.id, score: score);
+    return _api.voteComment(commentId: comment.id, score: score);
   }
 
   @override
@@ -149,7 +149,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.saveComment(commentId: comment.id, save: save);
+    return _api.saveComment(commentId: comment.id, save: save);
   }
 
   @override
@@ -157,7 +157,7 @@ class CommentRepositoryImpl implements CommentRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.deleteComment(commentId: comment.id, deleted: deleted);
+    return _api.deleteComment(commentId: comment.id, deleted: deleted);
   }
 
   @override

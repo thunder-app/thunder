@@ -80,6 +80,6 @@ class UserRepositoryImpl implements UserRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.blockUser(userId: userId, block: block);
+    return _api.blockUser(userId: userId, block: block);
   }
 }

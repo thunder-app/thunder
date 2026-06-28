@@ -38,7 +38,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
 
   @override
   Future<ThunderSiteResponse> info() async {
-    return await _api.site();
+    return _api.site();
   }
 
   @override
@@ -50,7 +50,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
       throw UnsupportedFeatureException('Instance blocking', platformName: _api.platformName);
     }
 
-    return await _api.blockInstance(instanceId: instanceId, block: block);
+    return _api.blockInstance(instanceId: instanceId, block: block);
   }
 
   @override

@@ -251,7 +251,7 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.readPost(postIds: [postId], read: read);
+    return _api.readPost(postIds: [postId], read: read);
   }
 
   @override
@@ -272,7 +272,7 @@ class PostRepositoryImpl implements PostRepository {
       throw UnsupportedFeatureException('Hiding posts', platformName: _api.platformName);
     }
 
-    return await _api.hidePost(postId: postId, hide: hide);
+    return _api.hidePost(postId: postId, hide: hide);
   }
 
   @override
@@ -280,7 +280,7 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.deletePost(postId: postId, deleted: delete);
+    return _api.deletePost(postId: postId, deleted: delete);
   }
 
   @override
@@ -288,7 +288,7 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.lockPost(postId: postId, locked: lock);
+    return _api.lockPost(postId: postId, locked: lock);
   }
 
   @override
@@ -296,7 +296,7 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.pinPost(postId: postId, pinned: pin);
+    return _api.pinPost(postId: postId, pinned: pin);
   }
 
   @override
@@ -304,7 +304,7 @@ class PostRepositoryImpl implements PostRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.removePost(postId: postId, removed: remove, reason: reason);
+    return _api.removePost(postId: postId, removed: remove, reason: reason);
   }
 
   @override

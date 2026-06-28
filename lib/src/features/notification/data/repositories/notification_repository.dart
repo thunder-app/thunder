@@ -71,7 +71,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
+    return _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override
@@ -92,7 +92,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    return await _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
+    return _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
   }
 
   @override

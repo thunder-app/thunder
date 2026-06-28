@@ -36,7 +36,7 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
     if (trimmedUrl.isEmpty || account.anonymous) return null;
 
     try {
-      return await _api.getLinkMetadata(url: trimmedUrl);
+      return _api.getLinkMetadata(url: trimmedUrl);
     } catch (error) {
       if (kDebugMode) debugPrint('Failed to fetch link metadata for $trimmedUrl: $error');
       return null;
