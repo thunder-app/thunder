@@ -258,6 +258,7 @@ UserMediaCubit createUserMediaCubit(Account account) {
 ReportBloc createReportBloc(Account account) {
   return ReportBloc(
     account: account,
+    reportRepository: ReportRepositoryImpl(account: account),
     localizationService: const ThunderLocalizationService(),
   );
 }

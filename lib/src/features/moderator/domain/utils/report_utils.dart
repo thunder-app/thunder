@@ -1,5 +1,10 @@
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
+/// Optimistically resolves a post report. This changes the value of the report locally, without sending the network request.
+ThunderReport optimisticallyResolveReport(ThunderReport report, bool resolved) {
+  return report.copyWith(resolved: resolved);
+}
+
 bool shouldSkipPagination({
   required bool isFetching,
   required bool hasReachedReportsEnd,

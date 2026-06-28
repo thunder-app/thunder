@@ -21,8 +21,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  ReportBloc({required this.account, required LocalizationService localizationService})
-      : _localizationService = localizationService,
+  ReportBloc({
+    required this.account,
+    required this.reportRepository,
+    required LocalizationService localizationService,
+  })  : _localizationService = localizationService,
         super(const ReportState()) {
     /// Handles resetting the report feed to its initial state
     on<ResetReportEvent>(
@@ -56,6 +59,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   final Account account;
+  final ReportRepository reportRepository;
   final LocalizationService _localizationService;
 
   /// Handles clearing any messages from the state
@@ -104,13 +108,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       if (event.reset) {
         if (state.status != ReportStatus.initial) add(ResetReportEvent());
 
-        final response = await fetchReports(
-          account: account,
+        final response = await reportRepository.getReports(
           page: 1,
           unresolved: !event.showResolved,
           communityId: event.communityId,
-          postId: null,
-          commentId: null,
           reportFeedType: event.reportFeedType,
         );
 
@@ -139,14 +140,11 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       // Handle fetching the next page of the feed
       emit(state.copyWith(status: ReportStatus.fetching));
 
-      final response = await fetchReports(
-        account: account,
+      final response = await reportRepository.getReports(
         page: state.currentPage,
         cursor: state.nextPage,
         unresolved: !state.showResolved,
         communityId: state.communityId,
-        postId: null,
-        commentId: null,
         reportFeedType: state.reportFeedType,
       );
 
@@ -221,7 +219,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           emit(state.copyWith(status: ReportStatus.success, reports: optimisticReports));
           emit(state.copyWith(status: ReportStatus.fetching, reports: optimisticReports));
 
-          final success = await resolveReport(account, report, value);
+          final success = await reportRepository.resolveReport(report, value);
           if (success) {
             return emit(state.copyWith(
               status: ReportStatus.success,
