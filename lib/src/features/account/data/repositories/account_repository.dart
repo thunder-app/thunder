@@ -153,7 +153,7 @@ class AccountRepositoryImpl implements AccountRepository {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsMedia) {
-      throw UnsupportedFeatureException('Media management');
+      throw UnsupportedFeatureException('Media management', platformName: _api.platformName);
     }
 
     await _api.deleteImage(file: file, token: token);
