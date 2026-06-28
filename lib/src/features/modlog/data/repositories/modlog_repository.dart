@@ -1,22 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/features/modlog/modlog.dart';
+import 'package:thunder/src/features/modlog/domain/models/modlog_feed.dart';
+import 'package:thunder/src/features/modlog/data/models/modlog_event_item.dart';
+import 'package:thunder/src/features/modlog/domain/enums/modlog_action_type.dart';
 
-/// Model representing a page of modlog events
-class ModlogFeed {
-  final List<ModlogEventItem> items;
-  final bool hasReachedEnd;
-  final int currentPage;
-
-  ModlogFeed({
-    required this.items,
-    required this.hasReachedEnd,
-    required this.currentPage,
-  });
-}
-
-/// Interface for a modlog repository
+/// Repository contract for modlog event reads.
 abstract class ModlogRepository {
   Future<ModlogFeed> getModlogEvents({
     int limit = 20,
