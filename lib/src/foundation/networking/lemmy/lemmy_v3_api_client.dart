@@ -17,7 +17,8 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
-import 'package:thunder/src/foundation/networking/lemmy/base_lemmy_api_client.dart';
+import 'package:thunder/src/foundation/networking/lemmy/lemmy_api_client_defaults.dart';
+import 'package:thunder/src/foundation/networking/lemmy/lemmy_private_message_utils.dart';
 import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
@@ -35,7 +36,7 @@ import 'package:thunder/src/features/account/domain/models/account_settings_upda
 ///
 /// This client uses the `/api/v3` endpoints and the original JSON schema
 /// with field names like `actor_id`, `published`, etc.
-class LemmyV3ApiClient extends BaseLemmyApiClient {
+class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   static const _mapper = LemmyV3PrimitiveMapper();
 
   LemmyV3ApiClient({
@@ -46,46 +47,10 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   });
 
   @override
+  String get platformName => 'Lemmy';
+
+  @override
   String get basePath => '/api/v3';
-
-  // =============================================================
-  // Version-specific parsing methods
-  // =============================================================
-
-  @override
-  ThunderPost parsePost(Map<String, dynamic> json) {
-    return _mapper.postView(json);
-  }
-
-  @override
-  ThunderComment parseComment(Map<String, dynamic> json) {
-    return _mapper.commentView(json);
-  }
-
-  @override
-  ThunderUser parseUser(Map<String, dynamic> json) {
-    return _mapper.user(json);
-  }
-
-  @override
-  ThunderUser parseUserView(Map<String, dynamic> json) {
-    return _mapper.userView(json);
-  }
-
-  @override
-  ThunderCommunity parseCommunity(Map<String, dynamic> json) {
-    return _mapper.community(json);
-  }
-
-  @override
-  ThunderCommunity parseCommunityView(Map<String, dynamic> json) {
-    return _mapper.communityView(json);
-  }
-
-  @override
-  ThunderSiteResponse parseSiteResponse(Map<String, dynamic> json) {
-    return ThunderSiteResponse.fromLemmySiteResponse(json);
-  }
 
   // =============================================================
   // Authentication & Site
@@ -106,7 +71,12 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   @override
   Future<ThunderSiteResponse> site() async {
     final json = await request(HttpMethod.get, '$basePath/site', {});
-    return parseSiteResponse(json);
+    return ThunderSiteResponse.fromLemmySiteResponse(json);
+  }
+
+  @override
+  Future<void> logout() async {
+    await request(HttpMethod.post, '$basePath/user/logout', {});
   }
 
   // =============================================================
@@ -120,9 +90,9 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
     });
 
-    final post = parsePost(json['post_view']);
-    final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => parseUser(mu['moderator'])).toList();
-    final crossPosts = (json['cross_posts'] as List).map<ThunderPost>((cp) => parsePost(cp)).toList();
+    final post = _mapper.postView(json['post_view']);
+    final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => _mapper.user(mu['moderator'])).toList();
+    final crossPosts = (json['cross_posts'] as List).map<ThunderPost>((cp) => _mapper.postView(cp)).toList();
 
     return (
       post: post,
@@ -166,7 +136,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
 
     final json = await request(HttpMethod.get, '$basePath/post/list', queryParams);
 
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => parsePost(pv)).toList();
+    final posts = (json['posts'] as List).map<ThunderPost>((pv) => _mapper.postView(pv)).toList();
     final nextPage = posts.isNotEmpty ? (page + 1).toString() : null;
 
     return (posts: posts, nextPage: nextPage);
@@ -195,7 +165,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     };
 
     final json = await request(HttpMethod.post, '$basePath/post', body);
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -222,7 +192,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     };
 
     final json = await request(HttpMethod.put, '$basePath/post', body);
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -231,7 +201,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'score': score,
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -240,7 +210,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'save': save,
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -267,7 +237,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'deleted': deleted,
     });
-    final post = parsePost(json['post_view']);
+    final post = _mapper.postView(json['post_view']);
     return post.status.deleted == deleted;
   }
 
@@ -277,7 +247,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'locked': locked,
     });
-    final post = parsePost(json['post_view']);
+    final post = _mapper.postView(json['post_view']);
     return post.status.locked == locked;
   }
 
@@ -288,7 +258,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'featured': pinned,
       'feature_type': 'Community',
     });
-    final post = parsePost(json['post_view']);
+    final post = _mapper.postView(json['post_view']);
     return post.status.featuredCommunity == pinned;
   }
 
@@ -299,7 +269,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'removed': removed,
       'reason': reason,
     });
-    final post = parsePost(json['post_view']);
+    final post = _mapper.postView(json['post_view']);
     return post.status.removed == removed;
   }
 
@@ -309,6 +279,18 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'reason': reason,
     });
+  }
+
+  @override
+  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
+    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
+      'url': url,
+    });
+
+    final metadata = response['metadata'];
+    if (metadata is! Map<String, dynamic>) return null;
+
+    return ThunderLinkMetadata.fromLemmySiteMetadata(metadata, url: url);
   }
 
   @override
@@ -377,7 +359,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
   @override
   Future<ThunderComment> getComment(int commentId) async {
     final json = await request(HttpMethod.get, '$basePath/comment', {'id': commentId});
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -403,7 +385,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'type_': 'All',
     });
 
-    final comments = (json['comments'] as List).map<ThunderComment>((cv) => parseComment(cv)).toList();
+    final comments = (json['comments'] as List).map<ThunderComment>((cv) => _mapper.commentView(cv)).toList();
     final nextPage = (limit != null && comments.length < limit) ? null : ((page ?? 0) + 1).toString();
 
     return (comments: comments, nextPage: nextPage);
@@ -422,7 +404,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'parent_id': parentId,
       'language_id': languageId,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -436,7 +418,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'content': content,
       'language_id': languageId,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -445,7 +427,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'score': score,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -454,7 +436,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'save': save,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -463,7 +445,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'deleted': deleted,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -503,9 +485,9 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     });
 
     return (
-      community: parseCommunityView(json['community_view']),
+      community: _mapper.communityView(json['community_view']),
       site: json['site'] != null ? ThunderSite.fromLemmySite(json['site']) : null,
-      moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList(),
+      moderators: (json['moderators'] as List).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList(),
       discussionLanguages: (json['discussion_languages'] as List).cast<int>(),
       flairs: const <ThunderFlair>[],
     );
@@ -524,7 +506,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'type_': feedListType?.value,
       'sort': postSortType?.value,
     });
-    return (json['communities'] as List).map<ThunderCommunity>((cv) => parseCommunityView(cv)).toList();
+    return (json['communities'] as List).map<ThunderCommunity>((cv) => _mapper.communityView(cv)).toList();
   }
 
   @override
@@ -533,7 +515,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'follow': follow,
     });
-    return parseCommunityView(json['community_view']);
+    return _mapper.communityView(json['community_view']);
   }
 
   @override
@@ -542,7 +524,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'block': block,
     });
-    return parseCommunityView(json['community_view']);
+    return _mapper.communityView(json['community_view']);
   }
 
   // =============================================================
@@ -569,15 +551,15 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'limit': limit,
       'saved_only': saved,
     });
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => parsePost(pv)).toList();
-    final comments = (json['comments'] as List).map<ThunderComment>((cv) => parseComment(cv)).toList();
+    final posts = (json['posts'] as List).map<ThunderPost>((pv) => _mapper.postView(pv)).toList();
+    final comments = (json['comments'] as List).map<ThunderComment>((cv) => _mapper.commentView(cv)).toList();
 
     return (
-      user: parseUserView(json['person_view']),
+      user: _mapper.userView(json['person_view']),
       site: json['site'] != null ? ThunderSite.fromLemmySite(json['site']) : null,
       posts: posts,
       comments: comments,
-      moderates: (json['moderates'] as List).map<ThunderCommunity>((cmv) => parseCommunity(cmv['community'])).toList(),
+      moderates: (json['moderates'] as List).map<ThunderCommunity>((cmv) => _mapper.community(cmv['community'])).toList(),
       nextPage: (limit != null && posts.length < limit && comments.length < limit) ? null : (pageNumber + 1).toString(),
     );
   }
@@ -588,7 +570,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'person_id': userId,
       'block': block,
     });
-    return parseUserView(json['person_view']);
+    return _mapper.userView(json['person_view']);
   }
 
   @override
@@ -608,7 +590,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'reason': reason,
       'expires': expires,
     });
-    return parseUserView(json['person_view']);
+    return _mapper.userView(json['person_view']);
   }
 
   @override
@@ -622,7 +604,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'added': added,
     });
-    return (json['moderators'] as List).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList();
+    return (json['moderators'] as List).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList();
   }
 
   // =============================================================
@@ -657,10 +639,10 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
 
     return (
       type: MetaSearchType.values.firstWhere((e) => e.searchType == json['type_']),
-      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => parsePost(pv)).toList() ?? [],
-      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => parseComment(cv)).toList() ?? [],
-      communities: (json['communities'] as List?)?.map<ThunderCommunity>((cv) => parseCommunityView(cv)).toList() ?? [],
-      users: (json['users'] as List?)?.map<ThunderUser>((pv) => parseUserView(pv)).toList() ?? [],
+      posts: (json['posts'] as List?)?.map<ThunderPost>((pv) => _mapper.postView(pv)).toList() ?? [],
+      comments: (json['comments'] as List?)?.map<ThunderComment>((cv) => _mapper.commentView(cv)).toList() ?? [],
+      communities: (json['communities'] as List?)?.map<ThunderCommunity>((cv) => _mapper.communityView(cv)).toList() ?? [],
+      users: (json['users'] as List?)?.map<ThunderUser>((pv) => _mapper.userView(pv)).toList() ?? [],
     );
   }
 
@@ -669,10 +651,10 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     final json = await request(HttpMethod.get, '$basePath/resolve_object', {'q': query});
 
     return (
-      community: json['community'] != null ? parseCommunityView(json['community']) : null,
-      post: json['post'] != null ? parsePost(json['post']) : null,
-      comment: json['comment'] != null ? parseComment(json['comment']) : null,
-      user: json['person'] != null ? parseUserView(json['person']) : null,
+      community: json['community'] != null ? _mapper.communityView(json['community']) : null,
+      post: json['post'] != null ? _mapper.postView(json['post']) : null,
+      comment: json['comment'] != null ? _mapper.commentView(json['comment']) : null,
+      user: json['person'] != null ? _mapper.userView(json['person']) : null,
     );
   }
 
@@ -706,10 +688,10 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
 
     return (response['replies'] as List).map<ThunderComment>((crv) {
       // Parse the full comment reply view (includes post, creator info, etc.)
-      final comment = parseComment(crv);
+      final comment = _mapper.commentView(crv);
 
       return comment.copyWith(
-        recipient: parseUser(crv['recipient']),
+        recipient: _mapper.user(crv['recipient']),
         notification: NotificationRef(
           id: crv['comment_reply']['id'],
           kind: NotificationKind.reply,
@@ -744,10 +726,10 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
 
     return (response['mentions'] as List).map<ThunderComment>((mention) {
       // Parse the full mention view (includes post, creator info, etc.)
-      final comment = parseComment(mention);
+      final comment = _mapper.commentView(mention);
 
       return comment.copyWith(
-        recipient: parseUser(mention['recipient']),
+        recipient: _mapper.user(mention['recipient']),
         notification: NotificationRef(
           id: mention['person_mention']['id'],
           kind: NotificationKind.mention,
@@ -797,6 +779,31 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
       'private_message_id': notificationId,
       'read': read,
     });
+  }
+
+
+  @override
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
+    required int personId,
+    int? conversationId,
+    int? page,
+    int? limit,
+  }) async {
+    final messages = await getPrivateMessages(page: page, limit: limit);
+    return filterPrivateMessageConversation(
+      messages: messages,
+      personId: personId,
+      currentUserId: account.userId,
+    );
+  }
+
+  @override
+  Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
+    final json = await request(HttpMethod.post, '$basePath/private_message', {
+      'recipient_id': recipientId,
+      'content': content,
+    });
+    return _mapper.privateMessageView(json['private_message_view']);
   }
 
   // =============================================================
@@ -930,355 +937,7 @@ class LemmyV3ApiClient extends BaseLemmyApiClient {
     await request(HttpMethod.get, '/pictrs/image/delete/$token/$file', {});
   }
 
-  // =============================================================
-  // Additional Lemmy v3 endpoints (0.19.11 spec)
-  // =============================================================
 
-  // Admin
-  Future<Map<String, dynamic>> addAdmin({required int personId, required bool added}) async {
-    return await request(HttpMethod.post, '$basePath/admin/add', {
-      'person_id': personId,
-      'added': added,
-    });
-  }
-
-  Future<Map<String, dynamic>> listAllMedia({int? page, int? limit}) async {
-    return await request(HttpMethod.post, '$basePath/admin/list_all_media', {
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  Future<void> purgeComment({required int commentId, String? reason}) async {
-    await request(HttpMethod.post, '$basePath/admin/purge/comment', {
-      'comment_id': commentId,
-      'reason': reason,
-    });
-  }
-
-  Future<void> purgeCommunity({required int communityId, String? reason}) async {
-    await request(HttpMethod.post, '$basePath/admin/purge/community', {
-      'community_id': communityId,
-      'reason': reason,
-    });
-  }
-
-  Future<void> purgePerson({required int personId, String? reason}) async {
-    await request(HttpMethod.post, '$basePath/admin/purge/person', {
-      'person_id': personId,
-      'reason': reason,
-    });
-  }
-
-  Future<void> purgePost({required int postId, String? reason}) async {
-    await request(HttpMethod.post, '$basePath/admin/purge/post', {
-      'post_id': postId,
-      'reason': reason,
-    });
-  }
-
-  Future<Map<String, dynamic>> getRegistrationApplication({required int id}) async {
-    return await request(HttpMethod.post, '$basePath/admin/registration_application', {
-      'id': id,
-    });
-  }
-
-  Future<Map<String, dynamic>> approveRegistrationApplication({required int id, required bool approve}) async {
-    return await request(HttpMethod.post, '$basePath/admin/registration_application/approve', {
-      'id': id,
-      'approve': approve,
-    });
-  }
-
-  Future<Map<String, dynamic>> getRegistrationApplicationCount() async {
-    return await request(HttpMethod.get, '$basePath/admin/registration_application/count', {});
-  }
-
-  Future<Map<String, dynamic>> listRegistrationApplications({bool? unreadOnly, int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/admin/registration_application/list', {
-      'unread_only': unreadOnly,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  // Comments
-  Future<ThunderComment> distinguishComment({required int commentId, required bool distinguished}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/distinguish', {
-      'comment_id': commentId,
-      'distinguished': distinguished,
-    });
-    return parseComment(json['comment_view']);
-  }
-
-  Future<Map<String, dynamic>> listCommentLikes({required int commentId, int? page, int? limit}) async {
-    return await request(HttpMethod.post, '$basePath/comment/like/list', {
-      'comment_id': commentId,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  Future<ThunderComment> removeComment({required int commentId, required bool removed, String? reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/remove', {
-      'comment_id': commentId,
-      'removed': removed,
-      'reason': reason,
-    });
-    return parseComment(json['comment_view']);
-  }
-
-  // Communities
-  Future<ThunderCommunity> deleteCommunity({required int communityId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/delete', {
-      'community_id': communityId,
-      'deleted': deleted,
-    });
-    return parseCommunityView(json['community_view']);
-  }
-
-  Future<void> hideCommunity({required int communityId, required bool hide}) async {
-    await request(HttpMethod.post, '$basePath/community/hide', {
-      'community_id': communityId,
-      'hide': hide,
-    });
-  }
-
-  Future<ThunderCommunity> removeCommunity({required int communityId, required bool removed, String? reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/remove', {
-      'community_id': communityId,
-      'removed': removed,
-      'reason': reason,
-    });
-    return parseCommunityView(json['community_view']);
-  }
-
-  Future<ThunderCommunity> transferCommunity({required int communityId, required int personId}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/transfer', {
-      'community_id': communityId,
-      'person_id': personId,
-    });
-    return parseCommunityView(json['community_view']);
-  }
-
-  // Custom Emoji
-  Future<Map<String, dynamic>> createCustomEmoji({
-    required String category,
-    required String shortcode,
-    required String imageUrl,
-    required String altText,
-    required List<String> keywords,
-  }) async {
-    return await request(HttpMethod.post, '$basePath/custom_emoji', {
-      'category': category,
-      'shortcode': shortcode,
-      'image_url': imageUrl,
-      'alt_text': altText,
-      'keywords': keywords,
-    });
-  }
-
-  Future<Map<String, dynamic>> editCustomEmoji({
-    required int id,
-    required String category,
-    required String imageUrl,
-    required String altText,
-    required List<String> keywords,
-  }) async {
-    return await request(HttpMethod.put, '$basePath/custom_emoji', {
-      'id': id,
-      'category': category,
-      'image_url': imageUrl,
-      'alt_text': altText,
-      'keywords': keywords,
-    });
-  }
-
-  Future<void> deleteCustomEmoji({required int id}) async {
-    await request(HttpMethod.post, '$basePath/custom_emoji/delete', {
-      'id': id,
-    });
-  }
-
-  // Posts
-  Future<Map<String, dynamic>> listPostLikes({required int postId, int? page, int? limit}) async {
-    return await request(HttpMethod.post, '$basePath/post/like/list', {
-      'post_id': postId,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  @override
-  Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
-    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
-      'url': url,
-    });
-
-    final metadata = response['metadata'];
-    if (metadata is! Map<String, dynamic>) return null;
-
-    return ThunderLinkMetadata.fromLemmySiteMetadata(metadata, url: url);
-  }
-
-  // Private messages
-  @override
-  Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message', {
-      'recipient_id': recipientId,
-      'content': content,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
-  Future<ThunderPrivateMessage> editPrivateMessage({required int privateMessageId, required String content}) async {
-    final json = await request(HttpMethod.put, '$basePath/private_message', {
-      'private_message_id': privateMessageId,
-      'content': content,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
-  Future<ThunderPrivateMessage> deletePrivateMessage({required int privateMessageId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message/delete', {
-      'private_message_id': privateMessageId,
-      'deleted': deleted,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
-  Future<Map<String, dynamic>> reportPrivateMessage({required int privateMessageId, required String reason}) async {
-    return await request(HttpMethod.post, '$basePath/private_message/report', {
-      'private_message_id': privateMessageId,
-      'reason': reason,
-    });
-  }
-
-  Future<Map<String, dynamic>> listPrivateMessageReports() async {
-    return await request(HttpMethod.get, '$basePath/private_message/report/list', {});
-  }
-
-  Future<Map<String, dynamic>> resolvePrivateMessageReport({required int reportId, required bool resolved}) async {
-    return await request(HttpMethod.post, '$basePath/private_message/report/resolve', {
-      'report_id': reportId,
-      'resolved': resolved,
-    });
-  }
-
-  // Users
-  Future<ThunderUser> banPerson({
-    required int personId,
-    required bool ban,
-    bool? removeData,
-    String? reason,
-    int? expires,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/user/ban', {
-      'person_id': personId,
-      'ban': ban,
-      'remove_data': removeData,
-      'reason': reason,
-      'expires': expires,
-    });
-    return parseUserView(json['person_view']);
-  }
-
-  Future<Map<String, dynamic>> listBannedPersons() async {
-    return await request(HttpMethod.get, '$basePath/user/banned', {});
-  }
-
-  Future<Map<String, dynamic>> changePassword({
-    required String oldPassword,
-    required String newPassword,
-    required String newPasswordVerify,
-  }) async {
-    return await request(HttpMethod.post, '$basePath/user/change_password', {
-      'old_password': oldPassword,
-      'new_password': newPassword,
-      'new_password_verify': newPasswordVerify,
-    });
-  }
-
-  Future<void> deleteAccount({required String password}) async {
-    await request(HttpMethod.post, '$basePath/user/delete_account', {
-      'password': password,
-    });
-  }
-
-  Future<void> markDonationDialogShown() async {
-    await request(HttpMethod.get, '$basePath/user/donation_dialog_shown', {});
-  }
-
-  Future<Map<String, dynamic>> getCaptcha() async {
-    return await request(HttpMethod.get, '$basePath/user/get_captcha', {});
-  }
-
-  Future<Map<String, dynamic>> leaveAdmin() async {
-    return await request(HttpMethod.post, '$basePath/user/leave_admin', {});
-  }
-
-  Future<List<Map<String, dynamic>>> listLogins() async {
-    final headers = buildHeaders();
-    final uri = Uri.https(account.instance, '$basePath/user/list_logins');
-    final response = await httpClient.get(uri, headers: headers);
-    final data = await handleResponse(uri, response);
-    if (data is List) return data.cast<Map<String, dynamic>>();
-    return [];
-  }
-
-  @override
-  Future<void> logout() async {
-    await request(HttpMethod.post, '$basePath/user/logout', {});
-  }
-
-  Future<void> passwordChangeAfterReset({required String token, required String password, required String passwordVerify}) async {
-    await request(HttpMethod.post, '$basePath/user/password_change', {
-      'token': token,
-      'password': password,
-      'password_verify': passwordVerify,
-    });
-  }
-
-  Future<void> passwordReset({required String email}) async {
-    await request(HttpMethod.post, '$basePath/user/password_reset', {
-      'email': email,
-    });
-  }
-
-  Future<Map<String, dynamic>> register(Map<String, dynamic> payload) async {
-    return await request(HttpMethod.post, '$basePath/user/register', payload);
-  }
-
-  Future<Map<String, dynamic>> getReportCount({int? communityId}) async {
-    return await request(HttpMethod.get, '$basePath/user/report_count', {
-      'community_id': communityId,
-    });
-  }
-
-  Future<Map<String, dynamic>> generateTotpSecret() async {
-    return await request(HttpMethod.get, '$basePath/user/totp/generate', {});
-  }
-
-  Future<Map<String, dynamic>> updateTotp({required String totpToken, required bool enabled}) async {
-    return await request(HttpMethod.post, '$basePath/user/totp/update', {
-      'totp_token': totpToken,
-      'enabled': enabled,
-    });
-  }
-
-  Future<void> validateAuth() async {
-    await request(HttpMethod.get, '$basePath/user/validate_auth', {});
-  }
-
-  Future<void> verifyEmail(String token) async {
-    await request(HttpMethod.post, '$basePath/user/verify_email', {
-      'token': token,
-    });
-  }
-
-  ThunderPrivateMessage _parsePrivateMessageView(Map<String, dynamic> privateMessageView) {
-    return _mapper.privateMessageView(privateMessageView);
-  }
 }
 
 AccountMediaItem _accountMediaItemFromLegacy(Map<String, dynamic> image, String instance) {

@@ -353,55 +353,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     });
   }
 
-  /// Fetch a list of likes for a post.
-  Future<Map<String, dynamic>> listPostLikes({required int postId, int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/post/like/list', {
-      'post_id': postId,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  /// Alternate posts list endpoint (list2).
-  Future<GetPostsResponse> listPosts2({
-    String? cursor,
-    int? limit,
-    FeedListType? feedListType,
-    PostSortType? postSortType,
-    int? communityId,
-    String? communityName,
-    String? query,
-    int? personId,
-    bool? likedOnly,
-    int? feedId,
-    int? topicId,
-    bool? ignoreSticky,
-  }) async {
-    final page = cursor != null ? int.tryParse(cursor) ?? 1 : 1;
-
-    final Map<String, dynamic> queryParams = {
-      'q': query,
-      'type_': feedListType?.value,
-      'sort': postSortType?.value,
-      'page': page,
-      'limit': limit,
-      'community_name': communityName,
-      'community_id': communityId,
-      'person_id': personId,
-      'liked_only': likedOnly,
-      'feed_id': feedId,
-      'topic_id': topicId,
-      'ignore_sticky': ignoreSticky,
-    };
-
-    final json = await request(HttpMethod.get, '$basePath/post/list2', queryParams);
-
-    final posts = (json['posts'] as List).map<ThunderPost>((pv) => _mapper.postView(pv)).toList();
-    final nextPage = json['next_page'] as String?;
-
-    return (posts: posts, nextPage: nextPage);
-  }
-
   /// Assign flair to a post.
   Future<ThunderPost> setPostFlair({required int postId, List<int>? flairIds}) async {
     final json = await request(HttpMethod.post, '$basePath/post/assign_flair', {
@@ -409,23 +360,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'flair_id_list': flairIds,
     });
     return _mapper.postView(json);
-  }
-
-  /// Subscribe or unsubscribe from a post.
-  Future<ThunderPost> subscribePost({required int postId, required bool subscribe}) async {
-    final json = await request(HttpMethod.put, '$basePath/post/subscribe', {
-      'post_id': postId,
-      'subscribe': subscribe,
-    });
-    return _mapper.postView(json['post_view']);
-  }
-
-  /// Vote on a poll attached to a post.
-  Future<Map<String, dynamic>> voteInPoll({required int postId, required List<int> choiceId}) async {
-    return await request(HttpMethod.post, '$basePath/post/poll_vote', {
-      'post_id': postId,
-      'choice_id': choiceId,
-    });
   }
 
   /// Get site metadata for a URL.
@@ -498,41 +432,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return (comments: comments, nextPage: nextPage);
   }
 
-  /// List comments using the comment list endpoint.
-  Future<GetCommentsResponse> listComments({
-    int? page,
-    String? cursor,
-    int? limit,
-    CommentSortType? commentSortType,
-    bool? likedOnly,
-    bool? savedOnly,
-    int? personId,
-    int? communityId,
-    int? postId,
-    int? parentId,
-    int? maxDepth,
-    bool? depthFirst,
-  }) async {
-    final json = await request(HttpMethod.get, '$basePath/comment/list', {
-      'sort': commentSortType?.value,
-      'page': cursor ?? page,
-      'limit': limit,
-      'liked_only': likedOnly,
-      'saved_only': savedOnly,
-      'person_id': personId,
-      'community_id': communityId,
-      'post_id': postId,
-      'parent_id': parentId,
-      'max_depth': maxDepth,
-      'depth_first': depthFirst,
-    });
-
-    final comments = (json['comments'] as List).map<ThunderComment>((cv) => _mapper.commentView(cv)).toList();
-    final nextPage = json['next_page']?.toString();
-
-    return (comments: comments, nextPage: nextPage);
-  }
-
   /// Flattens nested PieFed reply structure, ensuring nested replies inherit post/community.
   List<dynamic> _flattenReplies(
     List<dynamic> comments, {
@@ -566,51 +465,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       }
     }
     return flattened;
-  }
-
-  /// Fetch a list of likes for a comment.
-  Future<Map<String, dynamic>> listCommentLikes({required int commentId, int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/comment/like/list', {
-      'comment_id': commentId,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  /// Lock or unlock a comment.
-  Future<ThunderComment> lockComment({required int commentId, required bool locked}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/lock', {
-      'comment_id': commentId,
-      'locked': locked,
-    });
-    return _mapper.commentView(json['comment_view']);
-  }
-
-  /// Mark or unmark a comment reply as the answer.
-  Future<Map<String, dynamic>> markCommentAsAnswer({required int commentReplyId, required bool answer}) async {
-    return await request(HttpMethod.post, '$basePath/comment/mark_as_answer', {
-      'comment_reply_id': commentReplyId,
-      'answer': answer,
-    });
-  }
-
-  /// Remove or restore a comment.
-  Future<ThunderComment> removeComment({required int commentId, required bool removed, String? reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/remove', {
-      'comment_id': commentId,
-      'removed': removed,
-      'reason': reason,
-    });
-    return _mapper.commentView(json['comment_view']);
-  }
-
-  /// Subscribe or unsubscribe from a comment.
-  Future<ThunderComment> subscribeComment({required int commentId, required bool subscribe}) async {
-    final json = await request(HttpMethod.put, '$basePath/comment/subscribe', {
-      'comment_id': commentId,
-      'subscribe': subscribe,
-    });
-    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -771,88 +625,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return _mapper.communityView(json['community_view']);
   }
 
-  /// Delete or restore a community.
-  Future<ThunderCommunity> deleteCommunity({required int communityId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/delete', {
-      'community_id': communityId,
-      'deleted': deleted,
-    });
-    return _mapper.communityView(json['community_view']);
-  }
-
-  /// Create a flair for a community.
-  Future<Map<String, dynamic>> createCommunityFlair({
-    required int communityId,
-    required String flairTitle,
-    String? textColor,
-    String? backgroundColor,
-    bool? blurImages,
-  }) async {
-    return await request(HttpMethod.post, '$basePath/community/flair', {
-      'community_id': communityId,
-      'flair_title': flairTitle,
-      'text_color': textColor,
-      'background_color': backgroundColor,
-      'blur_images': blurImages,
-    });
-  }
-
-  /// Edit a community flair.
-  Future<Map<String, dynamic>> editCommunityFlair({
-    required int flairId,
-    String? flairTitle,
-    String? textColor,
-    String? backgroundColor,
-    bool? blurImages,
-  }) async {
-    return await request(HttpMethod.put, '$basePath/community/flair', {
-      'flair_id': flairId,
-      'flair_title': flairTitle,
-      'text_color': textColor,
-      'background_color': backgroundColor,
-      'blur_images': blurImages,
-    });
-  }
-
-  /// Delete a community flair.
-  Future<Map<String, dynamic>> deleteCommunityFlair({required int flairId}) async {
-    return await request(HttpMethod.post, '$basePath/community/flair/delete', {
-      'flair_id': flairId,
-    });
-  }
-
-  /// Leave all communities.
-  Future<Map<String, dynamic>> leaveAllCommunities() async {
-    return await request(HttpMethod.post, '$basePath/community/leave_all', {});
-  }
-
-  /// List bans for a community.
-  Future<Map<String, dynamic>> listCommunityBans({required int communityId, int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/community/moderate/bans', {
-      'community_id': communityId,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  /// Update a post's NSFW status in a community.
-  Future<ThunderPost> setCommunityPostNsfw({required int postId, required bool nsfw}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/moderate/post/nsfw', {
-      'post_id': postId,
-      'nsfw_status': nsfw,
-    });
-    return _mapper.postView(json);
-  }
-
-  /// Subscribe or unsubscribe to a community.
-  Future<ThunderCommunity> subscribeCommunity({required int communityId, required bool subscribe}) async {
-    final json = await request(HttpMethod.put, '$basePath/community/subscribe', {
-      'community_id': communityId,
-      'subscribe': subscribe,
-    });
-    return _mapper.communityView(json['community_view']);
-  }
-
   // =============================================================
   // Users
   // =============================================================
@@ -898,67 +670,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'block': block,
     });
     return _mapper.userView(json['person_view']);
-  }
-
-  /// Ban a user instance-wide.
-  Future<ThunderUser> banUser({
-    required int userId,
-    required bool banIpAddress,
-    required bool purgeContent,
-    String? reason,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/user/ban', {
-      'person_id': userId,
-      'ban_ip_address': banIpAddress,
-      'purge_content': purgeContent,
-      'reason': reason,
-    });
-    return _mapper.userView(json['person_view']);
-  }
-
-  /// Unban a user instance-wide.
-  Future<ThunderUser> unbanUser({required int userId}) async {
-    final json = await request(HttpMethod.post, '$basePath/user/unban', {
-      'person_id': userId,
-    });
-    return _mapper.userView(json['person_view']);
-  }
-
-  /// Subscribe or unsubscribe from a user.
-  Future<Map<String, dynamic>> subscribeUser({required int userId, required bool subscribe}) async {
-    return await request(HttpMethod.put, '$basePath/user/subscribe', {
-      'person_id': userId,
-      'subscribe': subscribe,
-    });
-  }
-
-  /// Set a note on a user.
-  Future<Map<String, dynamic>> setUserNote({required int userId, String? note}) async {
-    return await request(HttpMethod.post, '$basePath/user/note', {
-      'person_id': userId,
-      'note': note,
-    });
-  }
-
-  /// Set user flair in a community.
-  Future<Map<String, dynamic>> setUserFlair({required int communityId, String? flairText}) async {
-    return await request(HttpMethod.post, '$basePath/user/set_flair', {
-      'community_id': communityId,
-      'flair_text': flairText,
-    });
-  }
-
-  /// Fetch the current user's profile.
-  Future<Map<String, dynamic>> getUserMe() async {
-    return await request(HttpMethod.get, '$basePath/user/me', {});
-  }
-
-  /// Verify credentials.
-  Future<void> verifyCredentials({required String username, required String password}) async {
-    await request(HttpMethod.post, '$basePath/user/verify_credentials', {
-      'username': username,
-      'password': password,
-    });
   }
 
   @override
@@ -1157,33 +868,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     await request(HttpMethod.post, '$basePath/user/mark_all_as_read', {});
   }
 
-  /// Mark all notifications as read using the notifications endpoint.
-  Future<Map<String, dynamic>> markAllNotificationsRead() async {
-    return await request(HttpMethod.put, '$basePath/user/mark_all_notifications_read', {});
-  }
-
-  /// Update a notification's read state.
-  Future<Map<String, dynamic>> setNotificationState({required int notificationId, required bool read}) async {
-    return await request(HttpMethod.put, '$basePath/user/notification_state', {
-      'notif_id': notificationId,
-      'read_state': read,
-    });
-  }
-
-  /// List notifications with a given status.
-  Future<Map<String, dynamic>> listNotifications({required String status, int? page, int? limit}) async {
-    return await request(HttpMethod.get, '$basePath/user/notifications', {
-      'status': status,
-      'page': page,
-      'limit': limit,
-    });
-  }
-
-  /// Get notification counts.
-  Future<Map<String, dynamic>> getNotificationsCount() async {
-    return await request(HttpMethod.get, '$basePath/user/notifications_count', {});
-  }
-
   // =============================================================
   // Private Messages
   // =============================================================
@@ -1222,33 +906,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return _parsePrivateMessageView(json['private_message_view']);
   }
 
-  /// Edit a private message.
-  Future<ThunderPrivateMessage> editPrivateMessage({required int messageId, required String content}) async {
-    final json = await request(HttpMethod.put, '$basePath/private_message', {
-      'private_message_id': messageId,
-      'content': content,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
-  /// Delete or restore a private message.
-  Future<ThunderPrivateMessage> deletePrivateMessage({required int messageId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message/delete', {
-      'private_message_id': messageId,
-      'deleted': deleted,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
-  /// Report a private message.
-  Future<ThunderPrivateMessage> reportPrivateMessage({required int messageId, required String reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message/report', {
-      'private_message_id': messageId,
-      'reason': reason,
-    });
-    return _parsePrivateMessageView(json['private_message_view']);
-  }
-
   /// Get private message conversation.
   @override
   Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
@@ -1264,13 +921,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'limit': limit,
     });
     return (response['private_messages'] as List).map<ThunderPrivateMessage>((pmv) => _parsePrivateMessageView(pmv)).toList();
-  }
-
-  /// Leave a private message conversation.
-  Future<void> leavePrivateMessageConversation({required int conversationId}) async {
-    await request(HttpMethod.post, '$basePath/private_message/conversation/leave', {
-      'conversation_id': conversationId,
-    });
   }
 
   // =============================================================
@@ -1313,16 +963,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     );
   }
 
-  /// List user media with additional filters.
-  Future<Map<String, dynamic>> listUserMedia({int? page, int? limit, String? sort, bool? unreadOnly}) async {
-    return await request(HttpMethod.get, '$basePath/user/media', {
-      'page': page,
-      'limit': limit,
-      'sort': sort,
-      'unread_only': unreadOnly,
-    });
-  }
-
   // =============================================================
   // Modlog - Not supported
   // =============================================================
@@ -1358,73 +998,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     return json['blocked'] as bool? ?? block;
   }
 
-  /// Fetch instance chooser data.
-  Future<Map<String, dynamic>> getInstanceChooser() async {
-    return await request(HttpMethod.get, '$basePath/site/instance_chooser', {});
-  }
-
-  /// Search instance chooser data.
-  Future<Map<String, dynamic>> searchInstanceChooser({
-    String? query,
-    bool? nsfw,
-    String? language,
-    bool? newbie,
-  }) async {
-    return await request(HttpMethod.get, '$basePath/site/instance_chooser_search', {
-      'q': query,
-      'nsfw': nsfw,
-      'language': language,
-      'newbie': newbie,
-    });
-  }
-
-  /// Get site version information.
-  Future<Map<String, dynamic>> getSiteVersion() async {
-    return await request(HttpMethod.get, '$basePath/site/version', {});
-  }
-
-  /// Block or unblock a domain.
-  Future<Map<String, dynamic>> blockDomain({required String domain, required bool block}) async {
-    return await request(HttpMethod.post, '$basePath/domain/block', {
-      'domain': domain,
-      'block': block,
-    });
-  }
-
-  // =============================================================
-  // Feeds & Topics
-  // =============================================================
-
-  /// Get a feed by id or name.
-  Future<Map<String, dynamic>> getFeed({int? id, String? name}) async {
-    return await request(HttpMethod.get, '$basePath/feed', {
-      'id': id,
-      'name': name,
-    });
-  }
-
-  /// List feeds.
-  Future<Map<String, dynamic>> listFeeds({bool? includeCommunities, bool? mineOnly}) async {
-    return await request(HttpMethod.get, '$basePath/feed/list', {
-      'include_communities': includeCommunities,
-      'mine_only': mineOnly,
-    });
-  }
-
-  /// List topics.
-  Future<Map<String, dynamic>> listTopics({bool? includeCommunities}) async {
-    return await request(HttpMethod.get, '$basePath/topic/list', {
-      'include_communities': includeCommunities,
-    });
-  }
-
-  /// Suggest completion for a query.
-  Future<Map<String, dynamic>> suggestCompletion({String? query}) async {
-    return await request(HttpMethod.get, '$basePath/suggest_completion', {
-      'q': query,
-    });
-  }
-
   // =============================================================
   // Media - Limited support
   // =============================================================
@@ -1432,16 +1005,6 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   @override
   Future<String> uploadImage(String filePath) async {
     return _uploadImageTo('$basePath/upload/image', filePath);
-  }
-
-  /// Upload a user image.
-  Future<String> uploadUserImage(String filePath) async {
-    return _uploadImageTo('$basePath/upload/user_image', filePath);
-  }
-
-  /// Upload a community image.
-  Future<String> uploadCommunityImage(String filePath) async {
-    return _uploadImageTo('$basePath/upload/community_image', filePath);
   }
 
   @override

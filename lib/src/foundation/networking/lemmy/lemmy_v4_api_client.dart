@@ -2,7 +2,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
-import 'package:thunder/src/foundation/networking/lemmy/base_lemmy_api_client.dart';
+import 'package:thunder/src/foundation/networking/lemmy/lemmy_api_client_defaults.dart';
+import 'package:thunder/src/foundation/networking/lemmy/lemmy_private_message_utils.dart';
 import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
@@ -33,7 +34,7 @@ import 'package:thunder/src/features/account/domain/models/account_settings_upda
 ///
 /// This class intentionally implements v4 endpoints directly so an old v3 path
 /// cannot accidentally be called under the v4 base path.
-class LemmyV4ApiClient extends BaseLemmyApiClient {
+class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   static const _mapper = LemmyV4PrimitiveMapper();
 
   LemmyV4ApiClient({
@@ -44,34 +45,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   });
 
   @override
+  String get platformName => 'Lemmy';
+
+  @override
   String get basePath => '/api/v4';
-
-  // =============================================================
-  // Version-specific parsing methods
-  // =============================================================
-
-  @override
-  ThunderPost parsePost(Map<String, dynamic> json) => _mapper.postView(json);
-
-  @override
-  ThunderComment parseComment(Map<String, dynamic> json) => _mapper.commentView(json);
-
-  @override
-  ThunderUser parseUser(Map<String, dynamic> json) => _mapper.user(json);
-
-  @override
-  ThunderUser parseUserView(Map<String, dynamic> json) => _mapper.userView(json);
-
-  @override
-  ThunderCommunity parseCommunity(Map<String, dynamic> json) => _mapper.community(json);
-
-  @override
-  ThunderCommunity parseCommunityView(Map<String, dynamic> json) => _mapper.communityView(json);
-
-  @override
-  ThunderSiteResponse parseSiteResponse(Map<String, dynamic> json) {
-    return ThunderSiteResponse.fromLemmyV4SiteAndAccount(siteResponse: json);
-  }
 
   // =============================================================
   // Authentication & Site
@@ -115,9 +92,9 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     });
 
     return (
-      post: parsePost(json['post_view']),
+      post: _mapper.postView(json['post_view']),
       moderators: const <ThunderUser>[],
-      crossPosts: (json['cross_posts'] as List? ?? const []).map<ThunderPost>((cp) => parsePost(cp)).toList(),
+      crossPosts: (json['cross_posts'] as List? ?? const []).map<ThunderPost>((cp) => _mapper.postView(cp)).toList(),
     );
   }
 
@@ -187,7 +164,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'language_id': languageId,
       'custom_thumbnail': customThumbnail,
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -212,7 +189,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'language_id': languageId,
       'custom_thumbnail': customThumbnail,
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -221,7 +198,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'is_upvote': switch (score) { 1 => true, -1 => false, _ => null },
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -230,7 +207,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'save': save,
     });
-    return parsePost(json['post_view']);
+    return _mapper.postView(json['post_view']);
   }
 
   @override
@@ -264,7 +241,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'post_id': postId,
       'deleted': deleted,
     });
-    return parsePost(json['post_view']).status.deleted == deleted;
+    return _mapper.postView(json['post_view']).status.deleted == deleted;
   }
 
   @override
@@ -274,7 +251,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'locked': locked,
       'reason': '',
     });
-    return parsePost(json['post_view']).status.locked == locked;
+    return _mapper.postView(json['post_view']).status.locked == locked;
   }
 
   @override
@@ -284,7 +261,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'featured': pinned,
       'feature_type': 'community',
     });
-    return parsePost(json['post_view']).status.featuredCommunity == pinned;
+    return _mapper.postView(json['post_view']).status.featuredCommunity == pinned;
   }
 
   @override
@@ -294,7 +271,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'removed': removed,
       'reason': reason,
     });
-    return parsePost(json['post_view']).status.removed == removed;
+    return _mapper.postView(json['post_view']).status.removed == removed;
   }
 
   @override
@@ -358,7 +335,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   @override
   Future<ThunderComment> getComment(int commentId) async {
     final json = await request(HttpMethod.get, '$basePath/comment', {'id': commentId});
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -400,7 +377,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'parent_id': parentId,
       'language_id': languageId,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -414,7 +391,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'content': content,
       'language_id': languageId,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -423,7 +400,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'is_upvote': switch (score) { 1 => true, -1 => false, _ => null },
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -432,7 +409,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'save': save,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -441,7 +418,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
       'deleted': deleted,
     });
-    return parseComment(json['comment_view']);
+    return _mapper.commentView(json['comment_view']);
   }
 
   @override
@@ -463,9 +440,9 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'name': name,
     });
     return (
-      community: parseCommunityView(json['community_view']),
+      community: _mapper.communityView(json['community_view']),
       site: json['site'] != null ? ThunderSite.fromLemmyV4Site(json['site']) : null,
-      moderators: (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList(),
+      moderators: (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList(),
       discussionLanguages: (json['discussion_languages'] as List? ?? const []).cast<int>(),
       flairs: const <ThunderFlair>[],
     );
@@ -483,7 +460,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'type_': feedListType?.value.toLowerCase(),
       'sort': postSortType?.value.toLowerCase(),
     });
-    return (json['items'] as List? ?? const []).map<ThunderCommunity>((cv) => parseCommunityView(cv)).toList();
+    return (json['items'] as List? ?? const []).map<ThunderCommunity>((cv) => _mapper.communityView(cv)).toList();
   }
 
   @override
@@ -492,7 +469,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'follow': follow,
     });
-    return parseCommunityView(json['community_view']);
+    return _mapper.communityView(json['community_view']);
   }
 
   @override
@@ -501,7 +478,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'block': block,
     });
-    return parseCommunityView(json['community_view']);
+    return _mapper.communityView(json['community_view']);
   }
 
   // =============================================================
@@ -539,11 +516,11 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     final items = (content['items'] as List? ?? const []).map((item) => _mapper.contentItem(item)).toList();
 
     return (
-      user: parseUserView(details['person_view']),
+      user: _mapper.userView(details['person_view']),
       site: details['site'] != null ? ThunderSite.fromLemmyV4Site(details['site']) : null,
       posts: items.whereType<ThunderPostItem>().map((item) => item.post).toList(),
       comments: items.whereType<ThunderCommentItem>().map((item) => item.comment).toList(),
-      moderates: (details['moderates'] as List? ?? const []).map<ThunderCommunity>((cmv) => parseCommunity(cmv['community'])).toList(),
+      moderates: (details['moderates'] as List? ?? const []).map<ThunderCommunity>((cmv) => _mapper.community(cmv['community'])).toList(),
       nextPage: content['next_page']?.toString(),
     );
   }
@@ -554,7 +531,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'person_id': userId,
       'block': block,
     });
-    return parseUserView(json['person_view']);
+    return _mapper.userView(json['person_view']);
   }
 
   @override
@@ -574,7 +551,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'reason': reason,
       'expires': expires,
     });
-    return parseUserView(json['person_view']);
+    return _mapper.userView(json['person_view']);
   }
 
   @override
@@ -588,7 +565,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'community_id': communityId,
       'added': added,
     });
-    return (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList();
+    return (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList();
   }
 
   // =============================================================
@@ -633,10 +610,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   Future<ResolveResponse> resolve({required String query}) async {
     final json = await request(HttpMethod.get, '$basePath/resolve_object', {'q': query});
     return (
-      community: json['community'] != null ? parseCommunityView(json['community']) : null,
-      post: json['post'] != null ? parsePost(json['post']) : null,
-      comment: json['comment'] != null ? parseComment(json['comment']) : null,
-      user: json['person'] != null ? parseUserView(json['person']) : null,
+      community: json['community'] != null ? _mapper.communityView(json['community']) : null,
+      post: json['post'] != null ? _mapper.postView(json['post']) : null,
+      comment: json['comment'] != null ? _mapper.commentView(json['comment']) : null,
+      user: json['person'] != null ? _mapper.userView(json['person']) : null,
     );
   }
 
@@ -742,6 +719,21 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
+
+  @override
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
+    required int personId,
+    int? conversationId,
+    int? page,
+    int? limit,
+  }) async {
+    final messages = await getPrivateMessages(page: page, limit: limit);
+    return filterPrivateMessageConversation(
+      messages: messages,
+      personId: personId,
+      currentUserId: account.userId,
+    );
+  }
   // =============================================================
   // Account Settings
   // =============================================================
