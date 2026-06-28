@@ -60,7 +60,7 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int page = 1,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return _api.getPrivateMessages(page: page, limit: limit, unread: unread);
   }
@@ -73,7 +73,7 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int limit = 50,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return _api.getPrivateMessageConversation(
       personId: personId,
@@ -89,7 +89,7 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     required String content,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return _api.createPrivateMessage(recipientId: recipientId, content: content);
   }
@@ -100,7 +100,7 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     bool read = true,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }

@@ -43,7 +43,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
   @override
   Future<bool> block(int instanceId, bool block) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsInstanceBlock) {
       throw UnsupportedFeatureException('Instance blocking', platformName: _api.platformName);

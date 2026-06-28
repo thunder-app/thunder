@@ -129,7 +129,7 @@ class CommentRepositoryImpl implements CommentRepository {
     int? languageId,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.createComment(
       postId: postId,
@@ -146,7 +146,7 @@ class CommentRepositoryImpl implements CommentRepository {
     int? languageId,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.editComment(
       commentId: commentId,
@@ -158,7 +158,7 @@ class CommentRepositoryImpl implements CommentRepository {
   @override
   Future<ThunderComment> vote(ThunderComment comment, int score) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.voteComment(commentId: comment.id, score: score);
   }
@@ -166,7 +166,7 @@ class CommentRepositoryImpl implements CommentRepository {
   @override
   Future<ThunderComment> save(ThunderComment comment, bool save) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.saveComment(commentId: comment.id, save: save);
   }
@@ -174,7 +174,7 @@ class CommentRepositoryImpl implements CommentRepository {
   @override
   Future<ThunderComment> delete(ThunderComment comment, bool deleted) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.deleteComment(commentId: comment.id, deleted: deleted);
   }
@@ -182,7 +182,7 @@ class CommentRepositoryImpl implements CommentRepository {
   @override
   Future<void> report(int commentId, String reason) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.reportComment(commentId: commentId, reason: reason);
   }

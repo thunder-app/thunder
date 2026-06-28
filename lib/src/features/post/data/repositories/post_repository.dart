@@ -186,7 +186,7 @@ class PostRepositoryImpl implements PostRepository {
     int? languageId,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     ThunderPost response;
 
@@ -225,7 +225,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<ThunderPost> vote(ThunderPost post, int score) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final response = await _api.votePost(postId: post.id, score: score);
     return response.copyWith(media: post.media);
@@ -234,7 +234,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<ThunderPost> save(ThunderPost post, bool save) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final response = await _api.savePost(postId: post.id, save: save);
     return response.copyWith(media: post.media);
@@ -243,7 +243,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> read(int postId, bool read) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.readPost(postIds: [postId], read: read);
   }
@@ -251,7 +251,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<List<int>> readMultiple(List<int> postIds, bool read) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final success = await _api.readPost(postIds: postIds, read: read);
     return success ? [] : List<int>.generate(postIds.length, (index) => index);
@@ -260,7 +260,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> hide(int postId, bool hide) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsHidePosts) {
       throw UnsupportedFeatureException('Hiding posts', platformName: _api.platformName);
@@ -272,7 +272,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> delete(int postId, bool delete) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.deletePost(postId: postId, deleted: delete);
   }
@@ -280,7 +280,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> lock(int postId, bool lock) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.lockPost(postId: postId, locked: lock);
   }
@@ -288,7 +288,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> pinCommunity(int postId, bool pin) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.pinPost(postId: postId, pinned: pin);
   }
@@ -296,7 +296,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<bool> remove(int postId, bool remove, String reason) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.removePost(postId: postId, removed: remove, reason: reason);
   }
@@ -304,7 +304,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<void> report(int postId, String reason) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.reportPost(postId: postId, reason: reason);
   }

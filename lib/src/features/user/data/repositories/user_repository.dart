@@ -76,7 +76,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<ThunderUser> blockUser(int userId, bool block) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.blockUser(userId: userId, block: block);
   }

@@ -63,7 +63,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<void> logout() async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.logout();
   }
@@ -71,7 +71,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<List<ThunderCommunity>> subscriptions() async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final response = await _api.site();
     return response.myUser?.follows ?? [];
@@ -80,7 +80,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsMedia) {
       throw UnsupportedFeatureException('Media management', platformName: _api.platformName);
@@ -92,7 +92,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<void> saveSettings(AccountSettingsUpdate update) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.saveUserSettings(update);
   }
@@ -100,7 +100,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<bool> importSettings(String settings) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsSettingsImportExport) {
       throw UnsupportedFeatureException('Settings import', platformName: _api.platformName);
@@ -112,7 +112,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<dynamic> exportSettings() async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsSettingsImportExport) {
       throw UnsupportedFeatureException('Settings export', platformName: _api.platformName);
@@ -124,7 +124,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<String> uploadImage(String filePath) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final response = await _api.uploadImage(filePath);
 
@@ -150,7 +150,7 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<void> deleteImage({required String file, String? token}) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     if (!_api.supportsMedia) {
       throw UnsupportedFeatureException('Media management', platformName: _api.platformName);

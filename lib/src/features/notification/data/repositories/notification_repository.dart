@@ -82,7 +82,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.getCommentReplies(page: page, limit: limit, sort: sort, unread: unread);
   }
@@ -90,7 +90,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> markReplyAsRead({required int replyId, bool read = true}) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markCommentReplyAsRead(replyId: replyId, read: read);
   }
@@ -103,7 +103,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.getCommentMentions(page: page, limit: limit, sort: sort, unread: unread);
   }
@@ -111,7 +111,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> markMentionAsRead({required int mentionId, bool read = true}) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markCommentMentionAsRead(mentionId: mentionId, read: read);
   }
@@ -123,7 +123,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     int page = 1,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.getPrivateMessages(page: page, limit: limit, unread: unread);
   }
@@ -131,7 +131,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> markMessageAsRead({required int notificationId, bool read = true}) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
@@ -139,7 +139,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<UnreadNotificationsCount> unreadNotificationsCount() async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final response = await _api.unreadCount();
     return UnreadNotificationsCount(
@@ -152,7 +152,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> markAllNotificationsAsRead() async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     await _api.markAllNotificationsAsRead();
   }

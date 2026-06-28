@@ -63,7 +63,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   @override
   Future<ThunderCommunity> subscribe(int communityId, bool follow) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.subscribeToCommunity(communityId: communityId, follow: follow);
   }
@@ -71,7 +71,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   @override
   Future<ThunderCommunity> block(int communityId, bool block) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.blockCommunity(communityId: communityId, block: block);
   }
@@ -86,7 +86,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     bool removeData = false,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.banUserFromCommunity(
       userId: userId,
@@ -105,7 +105,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required int communityId,
   }) async {
     final l10n = _localization.l10n;
-    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     return await _api.addModerator(
       userId: userId,
