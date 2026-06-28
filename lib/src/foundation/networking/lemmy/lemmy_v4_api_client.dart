@@ -74,6 +74,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     );
   }
 
+  // =============================================================
+  // Version-specific parsing methods
+  // =============================================================
+
   @override
   ThunderPost parsePost(Map<String, dynamic> json) => _mapper.postView(json);
 
@@ -96,6 +100,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   ThunderSiteResponse parseSiteResponse(Map<String, dynamic> json) {
     return ThunderSiteResponse.fromLemmyV4SiteAndAccount(siteResponse: json);
   }
+
+  // =============================================================
+  // Authentication & Site
+  // =============================================================
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
@@ -122,6 +130,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     }
     return ThunderSiteResponse.fromLemmyV4SiteAndAccount(siteResponse: siteJson, accountResponse: accountJson);
   }
+
+  // =============================================================
+  // Posts
+  // =============================================================
 
   @override
   Future<GetPostResponse> getPost(int postId, {int? commentId}) async {
@@ -367,6 +379,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     };
   }
 
+  // =============================================================
+  // Comments
+  // =============================================================
+
   @override
   Future<ThunderComment> getComment(int commentId) async {
     final json = await request(HttpMethod.get, '$basePath/comment', {'id': commentId});
@@ -464,6 +480,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     });
   }
 
+  // =============================================================
+  // Communities
+  // =============================================================
+
   @override
   Future<GetCommunityResponse> getCommunity({int? id, String? name}) async {
     final json = await request(HttpMethod.get, '$basePath/community', {
@@ -511,6 +531,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     });
     return parseCommunityView(json['community_view']);
   }
+
+  // =============================================================
+  // Users
+  // =============================================================
 
   @override
   Future<GetUserResponse> getUser({
@@ -595,6 +619,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     return (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => parseUser(cmv['moderator'])).toList();
   }
 
+  // =============================================================
+  // Search
+  // =============================================================
+
   @override
   Future<SearchResponse> search({
     required String query,
@@ -639,6 +667,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       user: json['person'] != null ? parseUserView(json['person']) : null,
     );
   }
+
+  // =============================================================
+  // Notifications
+  // =============================================================
 
   @override
   Future<UnreadCountResponse> unreadCount() async {
@@ -690,6 +722,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     await request(HttpMethod.post, '$basePath/account/notification/mark_as_read/all', {});
   }
 
+  // =============================================================
+  // Private Messages
+  // =============================================================
+
   @override
   Future<List<ThunderPrivateMessage>> getPrivateMessages({
     int? page,
@@ -734,6 +770,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
+  // =============================================================
+  // Account Settings
+  // =============================================================
+
   @override
   Future<void> saveUserSettings(AccountSettingsUpdate update) async {
     await request(HttpMethod.put, '$basePath/account/settings/save', {
@@ -771,6 +811,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     );
   }
 
+  // =============================================================
+  // Modlog
+  // =============================================================
+
   @override
   Future<List<ModlogEvent>> getModlog({
     int? page,
@@ -793,6 +837,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     return (json['items'] as List? ?? const []).map(_modlogEventFromV4).nonNulls.toList();
   }
 
+  // =============================================================
+  // Instance
+  // =============================================================
+
   @override
   Future<Map<String, dynamic>> federated() async {
     return await request(HttpMethod.get, '$basePath/federated_instances', {});
@@ -810,6 +858,10 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
     });
     return (communities['success'] as bool? ?? true) && (persons['success'] as bool? ?? true) ? block : !block;
   }
+
+  // =============================================================
+  // Media
+  // =============================================================
 
   @override
   Future<String> uploadImage(String filePath) async {
