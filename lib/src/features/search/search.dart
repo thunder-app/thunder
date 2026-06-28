@@ -1,3 +1,4 @@
+export 'application/search_service.dart';
 export 'presentation/pages/search_page.dart';
 export 'presentation/state/search_bloc.dart';
 export 'data/repositories/search_repository.dart';

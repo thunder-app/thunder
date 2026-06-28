@@ -132,10 +132,12 @@ InstancePageBloc createInstancePageBloc({
 }
 
 SearchBloc createSearchBloc(Account account) {
+  final searchRepository = SearchRepositoryImpl(account: account);
+
   return SearchBloc(
     account: account,
     commentRepository: CommentRepositoryImpl(account: account),
-    searchRepository: SearchRepositoryImpl(account: account),
+    searchService: SearchService(searchRepository: searchRepository),
     communityRepository: CommunityRepositoryImpl(account: account),
     userRepository: UserRepositoryImpl(account: account),
     instanceRepository: InstanceRepositoryImpl(account: account),

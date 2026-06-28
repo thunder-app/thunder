@@ -73,31 +73,12 @@ class SearchRepositoryImpl implements SearchRepository {
     );
 
     // Lists are already parsed by the API client
-    List<ThunderCommunity> communities = response.communities;
-    List<ThunderUser> users = response.users;
-    List<ThunderPost> posts = response.posts;
-    List<ThunderComment> comments = response.comments;
-
-    // Try to resolve if the query is a URL
-    if (isValidUrl(query)) {
-      final resolveResponse = await _api.resolve(query: query);
-      if (resolveResponse.community != null) {
-        communities.add(resolveResponse.community!);
-      } else if (resolveResponse.user != null) {
-        users.add(resolveResponse.user!);
-      } else if (resolveResponse.post != null) {
-        posts.add(resolveResponse.post!);
-      } else if (resolveResponse.comment != null) {
-        comments.add(resolveResponse.comment!);
-      }
-    }
-
     return SearchResults(
       type: response.type,
-      comments: comments,
-      posts: posts,
-      communities: communities,
-      users: users,
+      comments: response.comments,
+      posts: response.posts,
+      communities: response.communities,
+      users: response.users,
     );
   }
 

@@ -53,8 +53,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   /// The comment repository to use for comment operations
   final CommentRepository commentRepository;
 
-  /// The search repository to use for search operations
-  final SearchRepository searchRepository;
+  /// The search service to use for search operations
+  final SearchService searchService;
 
   /// The community repository to use for community operations
   final CommunityRepository communityRepository;
@@ -68,7 +68,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required this.account,
     required this.commentRepository,
-    required this.searchRepository,
+    required this.searchService,
     required this.communityRepository,
     required this.userRepository,
     required this.instanceRepository,
@@ -160,7 +160,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         emit(state.copyWith(status: SearchStatus.success, instances: instances, viewingAll: event.query.isEmpty));
       } else {
-        final response = await searchRepository.search(
+        final response = await searchService.search(
           query: event.query,
           type: effectiveSearchType,
           sort: state.searchSortType ?? SearchSortType.topYear,
@@ -255,7 +255,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           if (effectiveSearchType == MetaSearchType.instances) {
             // Instance search is not paged, so this is a no-op.
           } else {
-            final response = await searchRepository.search(
+            final response = await searchService.search(
               query: event.query,
               type: effectiveSearchType,
               sort: state.searchSortType ?? SearchSortType.topYear,
