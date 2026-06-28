@@ -10,6 +10,7 @@ export 'presentation/utils/user_label_dialog_utils.dart';
 export 'presentation/widgets/widgets.dart';
 export 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 export 'data/repositories/post_repository.dart';
+export 'data/repositories/link_metadata_repository.dart';
 export 'presentation/pages/create_post_page.dart';
 export 'presentation/widgets/post_body/post_body.dart';
 export 'presentation/widgets/post_body/post_body_metadata.dart';

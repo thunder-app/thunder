@@ -14,7 +14,7 @@ import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/services/localization_service.dart';
-import 'package:thunder/src/shared/links/link_metadata_repository.dart';
+import 'package:thunder/src/features/post/data/repositories/link_metadata_repository.dart';
 
 part 'create_post_state.dart';
 

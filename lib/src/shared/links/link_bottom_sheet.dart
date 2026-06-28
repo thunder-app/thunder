@@ -9,7 +9,7 @@ import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/presentation/utils/effective_account_context.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
-import 'package:thunder/src/shared/links/link_metadata_repository.dart';
+import 'package:thunder/src/features/post/data/repositories/link_metadata_repository.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Handles the long press on a link by showing a bottom sheet with the link details.

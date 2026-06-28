@@ -28,7 +28,7 @@ import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/foundation/services/localization_service.dart';
-import 'package:thunder/src/shared/links/link_metadata_repository.dart';
+import 'package:thunder/src/features/post/data/repositories/link_metadata_repository.dart';
 
 AppBootstrapCubit createAppBootstrapCubit() {
   return AppBootstrapCubit(
