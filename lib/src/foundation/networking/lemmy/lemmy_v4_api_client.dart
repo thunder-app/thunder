@@ -1,9 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/base_lemmy_api_client.dart';
+import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
@@ -806,7 +806,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'comment_id': commentId,
     });
 
-    return (json['items'] as List? ?? const []).map(_modlogEventFromV4).nonNulls.toList();
+    return (json['items'] as List? ?? const []).map((raw) => modlogEventFromV4(raw, _mapper)).nonNulls.toList();
   }
 
   // =============================================================
@@ -947,24 +947,3 @@ AccountMediaItem _accountMediaItemFromLemmyV4(Map<String, dynamic> image, String
   );
 }
 
-ModlogEvent? _modlogEventFromV4(dynamic raw) {
-  if (raw is! Map<String, dynamic>) return null;
-  final modlog = raw['modlog'];
-  if (modlog is! Map<String, dynamic>) return null;
-  final kind = modlog['type_']?.toString();
-  final type = ModlogActionType.values.firstWhereOrNull((value) => value.value.toLowerCase() == kind?.toLowerCase());
-  if (type == null) return null;
-
-  const mapper = LemmyV4PrimitiveMapper();
-  return ModlogEvent(
-    type: type,
-    dateTime: modlog['when_'] ?? modlog['published_at'],
-    moderator: raw['moderator'] != null ? mapper.user(raw['moderator']) : null,
-    reason: modlog['reason'],
-    user: raw['target_person'] != null ? mapper.user(raw['target_person']) : null,
-    post: raw['target_post'] != null ? mapper.post(raw['target_post']) : null,
-    comment: raw['target_comment'] != null ? mapper.comment(raw['target_comment']) : null,
-    community: raw['target_community'] != null ? mapper.community(raw['target_community']) : null,
-    actioned: modlog['removed'] ?? modlog['locked'] ?? modlog['featured'] ?? modlog['banned'] ?? true,
-  );
-}
