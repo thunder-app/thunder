@@ -37,7 +37,20 @@ abstract class PostRepository {
     List<String>? tags,
     List<int>? flairIds,
     bool? nsfw,
-    int? postIdBeingEdited,
+    int? languageId,
+  });
+
+  /// Edits an existing post
+  Future<ThunderPost> edit({
+    required int postId,
+    required String name,
+    String? body,
+    String? url,
+    String? customThumbnail,
+    String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
+    bool? nsfw,
     int? languageId,
   });
 
@@ -160,41 +173,56 @@ class PostRepositoryImpl implements PostRepository {
     List<String>? tags,
     List<int>? flairIds,
     bool? nsfw,
-    int? postIdBeingEdited,
     int? languageId,
   }) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    ThunderPost response;
+    final response = await _api.createPostWithMetadata(
+      communityId: communityId,
+      title: name,
+      contents: body,
+      url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+      altText: altText?.isEmpty == true ? null : altText,
+      tags: tags,
+      flairIds: flairIds,
+      nsfw: nsfw,
+      languageId: languageId,
+    );
 
-    if (postIdBeingEdited != null) {
-      response = await _api.editPostWithMetadata(
-        postId: postIdBeingEdited,
-        title: name,
-        contents: body,
-        url: url?.isEmpty == true ? null : url,
-        customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
-        altText: altText?.isEmpty == true ? null : altText,
-        tags: tags,
-        flairIds: flairIds,
-        nsfw: nsfw,
-        languageId: languageId,
-      );
-    } else {
-      response = await _api.createPostWithMetadata(
-        communityId: communityId,
-        title: name,
-        contents: body,
-        url: url?.isEmpty == true ? null : url,
-        customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
-        altText: altText?.isEmpty == true ? null : altText,
-        tags: tags,
-        flairIds: flairIds,
-        nsfw: nsfw,
-        languageId: languageId,
-      );
-    }
+    final posts = await parsePosts([response]);
+    return posts.firstOrNull!;
+  }
+
+  @override
+  Future<ThunderPost> edit({
+    required int postId,
+    required String name,
+    String? body,
+    String? url,
+    String? customThumbnail,
+    String? altText,
+    List<String>? tags,
+    List<int>? flairIds,
+    bool? nsfw,
+    int? languageId,
+  }) async {
+    final l10n = _localization.l10n;
+    if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
+
+    final response = await _api.editPostWithMetadata(
+      postId: postId,
+      title: name,
+      contents: body,
+      url: url?.isEmpty == true ? null : url,
+      customThumbnail: customThumbnail?.isEmpty == true ? null : customThumbnail,
+      altText: altText?.isEmpty == true ? null : altText,
+      tags: tags,
+      flairIds: flairIds,
+      nsfw: nsfw,
+      languageId: languageId,
+    );
 
     final posts = await parsePosts([response]);
     return posts.firstOrNull!;

@@ -357,19 +357,31 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         errorReason: null,
       ));
 
-      final post = await repository.create(
-        communityId: state.communityId!,
-        name: state.title,
-        body: state.body,
-        url: state.url,
-        customThumbnail: state.customThumbnail,
-        altText: state.altText,
-        tags: _submissionTags(),
-        flairIds: _submissionFlairIds(),
-        nsfw: state.isNsfw,
-        postIdBeingEdited: _editingPost?.id,
-        languageId: state.languageId,
-      );
+      final post = _editingPost?.id == null
+          ? await repository.create(
+              communityId: state.communityId!,
+              name: state.title,
+              body: state.body,
+              url: state.url,
+              customThumbnail: state.customThumbnail,
+              altText: state.altText,
+              tags: _submissionTags(),
+              flairIds: _submissionFlairIds(),
+              nsfw: state.isNsfw,
+              languageId: state.languageId,
+            )
+          : await repository.edit(
+              postId: _editingPost!.id,
+              name: state.title,
+              body: state.body,
+              url: state.url,
+              customThumbnail: state.customThumbnail,
+              altText: state.altText,
+              tags: _submissionTags(),
+              flairIds: _submissionFlairIds(),
+              nsfw: state.isNsfw,
+              languageId: state.languageId,
+            );
 
       emit(state.copyWith(
         status: CreatePostStatus.success,
