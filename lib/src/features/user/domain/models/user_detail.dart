@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 /// Represents a user profile lookup with optional content pages.
-class UserProfilePage extends Equatable {
+class UserDetail extends Equatable {
   /// The requested user.
   final ThunderUser user;
 
@@ -22,7 +22,7 @@ class UserProfilePage extends Equatable {
   /// The cursor/page token for the next page, if available.
   final String? nextPage;
 
-  const UserProfilePage({
+  const UserDetail({
     required this.user,
     this.site,
     this.posts = const [],

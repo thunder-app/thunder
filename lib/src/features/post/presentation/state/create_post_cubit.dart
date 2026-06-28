@@ -595,7 +595,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(piefedMetadataStatus: CreatePostPiefedMetadataStatus.loading));
 
     try {
-      final CommunityDetails details = await _communityRepository(account).getCommunity(id: state.communityId);
+      final CommunityDetail details = await _communityRepository(account).getCommunity(id: state.communityId);
 
       if (requestId != _piefedMetadataRequestId || state.communityId != details.community.id) {
         return;

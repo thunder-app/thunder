@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/user/domain/models/user_profile_page.dart';
+import 'package:thunder/src/features/user/domain/models/user_detail.dart';
 
 /// Repository contract for user profile reads and blocks.
 abstract class UserRepository {
   /// Fetches a user by their id or username
-  Future<UserProfilePage?> getUser({
+  Future<UserDetail?> getUser({
     int? userId,
     String? username,
     PostSortType? sort,
@@ -44,7 +44,7 @@ class UserRepositoryImpl implements UserRepository {
         _localization = localization;
 
   @override
-  Future<UserProfilePage?> getUser({
+  Future<UserDetail?> getUser({
     int? userId,
     String? username,
     PostSortType? sort,
@@ -65,7 +65,7 @@ class UserRepositoryImpl implements UserRepository {
       includeContent: includeContent,
     );
 
-    return UserProfilePage(
+    return UserDetail(
       user: response.user,
       site: response.site,
       posts: await parsePosts(response.posts),

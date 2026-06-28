@@ -1,5 +1,5 @@
 export 'domain/enums/community_action.dart';
-export 'domain/models/community_details.dart';
+export 'domain/models/community_detail.dart';
 export 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
 export 'data/repositories/community_repository.dart';
 export 'presentation/state/anonymous_subscriptions_cubit.dart';

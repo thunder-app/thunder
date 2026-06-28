@@ -6,7 +6,7 @@ import 'package:thunder/src/features/community/community.dart';
 /// Repository contract for community reads and moderation actions.
 abstract class CommunityRepository {
   /// Fetches community information by ID or name
-  Future<CommunityDetails> getCommunity({int? id, String? name});
+  Future<CommunityDetail> getCommunity({int? id, String? name});
 
   /// Lists trending communities
   Future<List<ThunderCommunity>> trending({
@@ -54,9 +54,9 @@ class CommunityRepositoryImpl implements CommunityRepository {
         _localization = localization;
 
   @override
-  Future<CommunityDetails> getCommunity({int? id, String? name}) async {
+  Future<CommunityDetail> getCommunity({int? id, String? name}) async {
     final response = await _api.getCommunity(id: id, name: name);
-    return CommunityDetails(
+    return CommunityDetail(
       community: response.community,
       site: response.site,
       moderators: response.moderators,

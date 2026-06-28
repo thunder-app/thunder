@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
-class CommunityDetails {
+class CommunityDetail extends Equatable {
   /// The community information
   final ThunderCommunity community;
 
@@ -16,11 +18,14 @@ class CommunityDetails {
   /// The list of flairs available for the community. PieFed only.
   final List<ThunderFlair> flairs;
 
-  const CommunityDetails({
+  const CommunityDetail({
     required this.community,
     required this.site,
     required this.moderators,
     required this.discussionLanguages,
     this.flairs = const [],
   });
+
+  @override
+  List<Object?> get props => [community, site, moderators, discussionLanguages, flairs];
 }

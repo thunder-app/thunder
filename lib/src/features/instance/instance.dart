@@ -1,5 +1,5 @@
 export 'data/repositories/instance_repository.dart';
-export 'domain/models/federated_instances_page.dart';
+export 'domain/models/federated_instances.dart';
 export 'domain/models/instance_discovery_result.dart';
 export 'presentation/pages/instance_page.dart';
 export 'presentation/widgets/instance_information.dart';

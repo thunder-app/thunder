@@ -49,26 +49,26 @@ class FederatedInstanceEntry extends Equatable {
 }
 
 /// Represents federated instances returned from the API.
-class FederatedInstancesPage extends Equatable {
+class FederatedInstances extends Equatable {
   /// Instances linked to the current instance.
   final List<FederatedInstanceEntry> linked;
 
-  const FederatedInstancesPage({
+  const FederatedInstances({
     this.linked = const [],
   });
 
-  factory FederatedInstancesPage.fromJson(Map<String, dynamic> json) {
+  factory FederatedInstances.fromJson(Map<String, dynamic> json) {
     final federatedInstances = json['federated_instances'];
     if (federatedInstances is! Map<String, dynamic>) {
-      return const FederatedInstancesPage();
+      return const FederatedInstances();
     }
 
     final linked = federatedInstances['linked'];
     if (linked is! List) {
-      return const FederatedInstancesPage();
+      return const FederatedInstances();
     }
 
-    return FederatedInstancesPage(
+    return FederatedInstances(
       linked: linked.whereType<Map<String, dynamic>>().map(FederatedInstanceEntry.fromJson).toList(),
     );
   }

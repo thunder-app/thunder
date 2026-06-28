@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 /// Represents a single post lookup with related metadata.
-class PostDetailPage extends Equatable {
+class PostDetail extends Equatable {
   /// The requested post.
   final ThunderPost post;
 
@@ -13,7 +13,7 @@ class PostDetailPage extends Equatable {
   /// Cross-posted versions of the post, when available.
   final List<ThunderPost> crossPosts;
 
-  const PostDetailPage({
+  const PostDetail({
     required this.post,
     this.moderators = const [],
     this.crossPosts = const [],

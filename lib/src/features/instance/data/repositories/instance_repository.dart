@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/features/instance/domain/models/federated_instances_page.dart';
+import 'package:thunder/src/features/instance/domain/models/federated_instances.dart';
 
 /// Repository contract for instance site reads and blocks.
 abstract class InstanceRepository {
@@ -12,7 +12,7 @@ abstract class InstanceRepository {
   Future<bool> block(int instanceId, bool block);
 
   /// Get federated instances
-  Future<FederatedInstancesPage> federated();
+  Future<FederatedInstances> federated();
 }
 
 /// Implementation of [InstanceRepository] using the unified API client
@@ -54,8 +54,8 @@ class InstanceRepositoryImpl implements InstanceRepository {
   }
 
   @override
-  Future<FederatedInstancesPage> federated() async {
+  Future<FederatedInstances> federated() async {
     final response = await _api.federated();
-    return FederatedInstancesPage.fromJson(response);
+    return FederatedInstances.fromJson(response);
   }
 }

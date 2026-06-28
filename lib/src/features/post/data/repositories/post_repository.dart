@@ -6,10 +6,10 @@ import 'package:thunder/src/features/post/post.dart';
 /// Repository contract for post reads and mutations.
 abstract class PostRepository {
   /// Fetches a post by its ID. Returns the post along with moderators and cross-posts information
-  Future<PostDetailPage?> getPost(int postId, {int? commentId});
+  Future<PostDetail?> getPost(int postId, {int? commentId});
 
   /// Fetches posts from the API
-  Future<PostFeedPage> getPosts({
+  Future<PostList> getPosts({
     String? cursor,
     int? limit,
     FeedListType? feedListType,
@@ -107,13 +107,13 @@ class PostRepositoryImpl implements PostRepository {
         _localization = localization;
 
   @override
-  Future<PostDetailPage?> getPost(int postId, {int? commentId}) async {
+  Future<PostDetail?> getPost(int postId, {int? commentId}) async {
     final response = await _api.getPost(postId, commentId: commentId);
 
     final parsedPost = await parsePostWithCurrentPreferences(response.post);
     final parsedCrossPosts = await Future.wait(response.crossPosts.map(parsePostWithCurrentPreferences));
 
-    return PostDetailPage(
+    return PostDetail(
       post: parsedPost,
       moderators: response.moderators,
       crossPosts: parsedCrossPosts,
@@ -121,7 +121,7 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<PostFeedPage> getPosts({
+  Future<PostList> getPosts({
     String? cursor,
     int? limit,
     int? personId,
@@ -154,7 +154,7 @@ class PostRepositoryImpl implements PostRepository {
       showSaved: showSaved,
     );
 
-    return PostFeedPage(
+    return PostList(
       posts: await parsePosts(response.posts),
       nextPage: response.nextPage,
     );
