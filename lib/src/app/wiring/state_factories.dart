@@ -27,6 +27,7 @@ import 'package:thunder/src/features/search/api.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 
 AppBootstrapCubit createAppBootstrapCubit() {
@@ -44,7 +45,7 @@ ThunderCubit createThunderCubit() {
 DeepLinksCubit createDeepLinksCubit() {
   return DeepLinksCubit(
     deepLinkService: AppLinksDeepLinkService(),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -61,7 +62,7 @@ ProfileBloc createProfileBloc(Account account) {
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     userRepositoryFactory: (account) => UserRepositoryImpl(account: account),
     platformDetectionService: const NodeInfoPlatformDetectionService(),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -97,7 +98,7 @@ SessionBloc createSessionBloc() {
     sessionRepository: const PersistentSessionRepository(),
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     instanceRepositoryFactory: (account) => InstanceRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -146,7 +147,7 @@ InboxBloc createInboxBloc(Account account) {
     account: account,
     commentRepository: CommentRepositoryImpl(account: account),
     notificationRepository: NotificationRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -161,7 +162,7 @@ InboxBloc createInboxBlocWithInitial({
     showUnreadOnly: showUnreadOnly,
     commentRepository: CommentRepositoryImpl(account: account),
     notificationRepository: NotificationRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -172,7 +173,7 @@ PostBloc createPostBloc(Account account) {
     commentRepository: CommentRepositoryImpl(account: account),
     communityRepository: CommunityRepositoryImpl(account: account),
     preferencesStore: const UserPreferencesStore(),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -185,7 +186,7 @@ CreatePostCubit createCreatePostCubit(Account account) {
     searchRepository: (account) => SearchRepositoryImpl(account: account),
     linkMetadataRepository: (account) => LinkMetadataRepositoryImpl(account: account),
     draftRepository: DraftRepositoryImpl(database: database),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -194,7 +195,7 @@ CreateCommentCubit createCreateCommentCubit(Account account) {
     account: account,
     commentRepositoryFactory: (account) => CommentRepositoryImpl(account: account),
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -203,7 +204,7 @@ CreatePrivateMessageCubit createCreatePrivateMessageCubit(Account account) {
     account: account,
     privateMessageRepository: (account) => PrivateMessageRepositoryImpl(account: account),
     searchRepository: (account) => SearchRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -226,7 +227,7 @@ AccountSettingsCubit createAccountSettingsCubit(Account account, {ThunderSiteRes
   return AccountSettingsCubit(
     account: account,
     accountRepository: AccountRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
     initialSiteResponse: initialSiteResponse,
   );
 }
@@ -237,7 +238,7 @@ UserBlocksCubit createUserBlocksCubit(Account account) {
     instanceRepository: InstanceRepositoryImpl(account: account),
     communityRepository: CommunityRepositoryImpl(account: account),
     userRepository: UserRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
@@ -246,13 +247,13 @@ UserMediaCubit createUserMediaCubit(Account account) {
     account: account,
     accountRepository: AccountRepositoryImpl(account: account),
     searchRepository: SearchRepositoryImpl(account: account),
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }
 
 ReportBloc createReportBloc(Account account) {
   return ReportBloc(
     account: account,
-    localizationService: const GlobalContextLocalizationService(),
+    localizationService: const ThunderLocalizationService(),
   );
 }

@@ -10,6 +10,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/private_message/domain/utils/private_message_thread_utils.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';

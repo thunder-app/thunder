@@ -327,7 +327,7 @@ class _BlockActionChip extends StatelessWidget {
             HapticFeedback.heavyImpact();
 
             final repository = UserRepositoryImpl(account: state.account);
-            await repository.block(user.id, !blocked);
+            await repository.blockUser(user.id, !blocked);
 
             context.read<ProfileBloc>().add(FetchProfileSettings());
           },

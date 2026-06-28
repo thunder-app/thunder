@@ -1,26 +1,36 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 
 abstract class LinkMetadataRepository {
+  /// Fetches the metadata for a given URL.
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url});
 }
 
+/// Implementation of [LinkMetadataRepository] using the unified API client
 class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
-  LinkMetadataRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
-
-  /// The account to use for the link metadata
+  /// The account to use for methods invoked in this repository
   final Account account;
 
-  /// The API client to use for the link metadata
+  /// The API client to use for the repository
   final ThunderApiClient _api;
+
+  // ignore: unused_field
+  final LocalizationService _localization;
+
+  /// Creates a new LinkMetadataRepositoryImpl.
+  ///
+  /// An optional [api] client and [localization] can be provided for testing.
+  LinkMetadataRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localization = const ThunderLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localization = localization;
 
   @override
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
     final trimmedUrl = url.trim();
-
     if (trimmedUrl.isEmpty || account.anonymous) return null;
 
     try {

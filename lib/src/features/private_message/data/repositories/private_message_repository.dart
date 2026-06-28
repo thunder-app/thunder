@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 
 /// Repository contract for direct-message reads, writes, and read state.
 abstract class PrivateMessageRepository {
@@ -34,26 +32,26 @@ abstract class PrivateMessageRepository {
   });
 }
 
-/// API-backed implementation of [PrivateMessageRepository].
+/// Implementation of [PrivateMessageRepository] using the unified API client
 class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
-  /// Creates a repository for [account].
+  /// The account to use for methods invoked in this repository
+  final Account account;
+
+  /// The API client to use for the repository
+  final ThunderApiClient _api;
+
+  /// The localization service to use for user-facing errors
+  final LocalizationService _localization;
+
+  /// Creates a new PrivateMessageRepositoryImpl.
+  ///
+  /// An optional [api] client and [localization] can be provided for testing.
   PrivateMessageRepositoryImpl({
     required this.account,
     ThunderApiClient? api,
-    LocalizationService localizationService = const GlobalContextLocalizationService(),
+    LocalizationService localization = const ThunderLocalizationService(),
   })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
-        _localizationService = localizationService;
-
-  /// Account used to authenticate private-message requests.
-  final Account account;
-  final ThunderApiClient _api;
-  final LocalizationService _localizationService;
-
-  void _ensureLoggedIn() {
-    if (account.anonymous) {
-      throw Exception(_localizationService.l10n.userNotLoggedIn);
-    }
-  }
+        _localization = localization;
 
   @override
   Future<List<ThunderPrivateMessage>> messages({
@@ -61,7 +59,9 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int limit = 50,
     int page = 1,
   }) async {
-    _ensureLoggedIn();
+    final l10n = _localization.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
     return _api.getPrivateMessages(page: page, limit: limit, unread: unread);
   }
 
@@ -72,7 +72,9 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int page = 1,
     int limit = 50,
   }) async {
-    _ensureLoggedIn();
+    final l10n = _localization.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
     return _api.getPrivateMessageConversation(
       personId: personId,
       conversationId: conversationId,
@@ -86,7 +88,9 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     required int recipientId,
     required String content,
   }) async {
-    _ensureLoggedIn();
+    final l10n = _localization.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
     return _api.createPrivateMessage(recipientId: recipientId, content: content);
   }
 
@@ -95,7 +99,9 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     required int notificationId,
     bool read = true,
   }) async {
-    _ensureLoggedIn();
+    final l10n = _localization.l10n;
+    if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
+
     await _api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
 }

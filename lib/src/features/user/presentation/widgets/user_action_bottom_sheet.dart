@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
 
+import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -150,7 +150,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         break;
       case UserBottomSheetAction.blockUser:
         Navigator.of(context).pop();
-        await userRepository.block(widget.user.id, true);
+        await userRepository.blockUser(widget.user.id, true);
         showSnackbar(l10n.successfullyBlockedUser(widget.user.displayNameOrName));
         widget.onAction(UserAction.block, null);
         break;
@@ -164,7 +164,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         break;
       case UserBottomSheetAction.unblockUser:
         Navigator.of(context).pop();
-        await userRepository.block(widget.user.id, false);
+        await userRepository.blockUser(widget.user.id, false);
         showSnackbar(l10n.successfullyUnblockedUser(widget.user.displayNameOrName));
         widget.onAction(UserAction.block, null);
         break;

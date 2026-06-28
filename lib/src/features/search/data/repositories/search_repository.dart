@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/domain/models/search_resolve_result.dart';
@@ -29,7 +25,7 @@ abstract class SearchRepository {
   Future<SearchResolveResult> resolve({required String query});
 }
 
-/// Implementation of [SearchRepository]
+/// Implementation of [SearchRepository] using the unified API client
 class SearchRepositoryImpl implements SearchRepository {
   /// The account to use for methods invoked in this repository
   final Account account;
@@ -37,10 +33,18 @@ class SearchRepositoryImpl implements SearchRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  // ignore: unused_field
+  final LocalizationService _localization;
+
   /// Creates a new SearchRepositoryImpl.
   ///
-  /// An optional [api] client can be provided for testing.
-  SearchRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  /// An optional [api] client and [localization] can be provided for testing.
+  SearchRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localization = const ThunderLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localization = localization;
 
   @override
   Future<SearchResults> search({
@@ -100,6 +104,7 @@ class SearchRepositoryImpl implements SearchRepository {
   @override
   Future<SearchResolveResult> resolve({required String query}) async {
     final response = await _api.resolve(query: query);
+
     return SearchResolveResult(
       community: response.community,
       post: response.post,

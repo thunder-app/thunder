@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/features/session/domain/repositories/session_repository.dart';
+import 'package:thunder/src/features/session/data/repositories/session_repository.dart';
 import 'package:thunder/src/foundation/contracts/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 

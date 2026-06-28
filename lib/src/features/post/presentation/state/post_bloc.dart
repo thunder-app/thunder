@@ -13,6 +13,7 @@ import 'package:thunder/src/features/post/domain/utils/comment_state_utils.dart'
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';

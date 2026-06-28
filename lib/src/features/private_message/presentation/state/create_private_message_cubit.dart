@@ -7,6 +7,7 @@ import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 part 'create_private_message_state.dart';
 

@@ -5,5 +5,4 @@ export 'presentation/utils/profile_utils.dart';
 export 'package:thunder/src/foundation/contracts/account.dart';
 export 'domain/models/account_media.dart';
 export 'domain/models/account_settings_update.dart';
-export 'domain/repositories/account_repository.dart';
-export 'data/repositories/account_repository_impl.dart';
+export 'data/repositories/account_repository.dart';

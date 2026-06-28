@@ -8,6 +8,7 @@ import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 const _userBlocksUnset = Object();
 
@@ -184,7 +185,7 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
     emit(state.copyWith(status: UserBlocksStatus.blocking, personBeingBlocked: personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
-      final user = await userRepository.block(personId, !unblock);
+      final user = await userRepository.blockUser(personId, !unblock);
       final updatedPersonBlocks = unblock ? state.personBlocks.where((person) => person.id != personId).toList() : [...state.personBlocks, user];
       updatedPersonBlocks.sort((a, b) => a.name.compareTo(b.name));
 

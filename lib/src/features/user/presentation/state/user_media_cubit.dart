@@ -5,10 +5,10 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/user/domain/utils/user_media_utils.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 const _userMediaUnset = Object();
 

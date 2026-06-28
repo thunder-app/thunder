@@ -2,8 +2,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_avif_ios (0.0.1):
     - Flutter
-  - flutter_file_dialog (0.0.1):
-    - Flutter
   - flutter_icmp_ping (0.0.1):
     - Flutter
   - flutter_inappwebview_ios (0.0.1):
@@ -16,17 +14,13 @@ PODS:
   - flutter_sharing_intent (1.0.1):
     - Flutter
   - OrderedSet (6.0.3)
-  - permission_handler_apple (9.3.0):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_avif_ios (from `.symlinks/plugins/flutter_avif_ios/ios`)
-  - flutter_file_dialog (from `.symlinks/plugins/flutter_file_dialog/ios`)
   - flutter_icmp_ping (from `.symlinks/plugins/flutter_icmp_ping/ios`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - flutter_sharing_intent (from `.symlinks/plugins/flutter_sharing_intent/ios`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
@@ -37,26 +31,20 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_avif_ios:
     :path: ".symlinks/plugins/flutter_avif_ios/ios"
-  flutter_file_dialog:
-    :path: ".symlinks/plugins/flutter_file_dialog/ios"
   flutter_icmp_ping:
     :path: ".symlinks/plugins/flutter_icmp_ping/ios"
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
   flutter_sharing_intent:
     :path: ".symlinks/plugins/flutter_sharing_intent/ios"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_avif_ios: 2553d2aafda56339cf924e943da89ad3f40af2dd
-  flutter_file_dialog: ca8d7fbd1772d4f0c2777b4ab20a7787ef4e7dd8
   flutter_icmp_ping: 47c1df3440c18ddd39fc457e607bb3b42d4a339f
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
   flutter_sharing_intent: 0c1e53949f09fa8df8ac2268505687bde8ff264c
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
-  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
 
 PODFILE CHECKSUM: de2b24a0060774db64e59356629bf21e28fefbce
 

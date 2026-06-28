@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -14,6 +13,7 @@ import 'package:thunder/src/features/post/data/repositories/post_repository.dart
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 import 'package:thunder/src/shared/links/link_metadata_repository.dart';
 
 part 'create_post_state.dart';

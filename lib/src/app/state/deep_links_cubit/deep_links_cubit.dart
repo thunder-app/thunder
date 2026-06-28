@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
 import 'package:thunder/src/app/shell/routing/deep_link_enums.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 part 'deep_links_state.dart';
 

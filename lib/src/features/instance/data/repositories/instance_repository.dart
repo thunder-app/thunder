@@ -1,12 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 
 /// Interface for a instance repository
 abstract class InstanceRepository {
@@ -20,7 +14,7 @@ abstract class InstanceRepository {
   Future<Map<String, dynamic>> federated();
 }
 
-/// Implementation of [InstanceRepository]
+/// Implementation of [InstanceRepository] using the unified API client
 class InstanceRepositoryImpl implements InstanceRepository {
   /// The account to use for methods invoked in this repository
   final Account account;
@@ -28,10 +22,18 @@ class InstanceRepositoryImpl implements InstanceRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  /// The localization service to use for user-facing errors
+  final LocalizationService _localization;
+
   /// Creates a new InstanceRepositoryImpl.
   ///
-  /// An optional [api] client can be provided for testing.
-  InstanceRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  /// An optional [api] client and [localization] can be provided for testing.
+  InstanceRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localization = const ThunderLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localization = localization;
 
   @override
   Future<ThunderSiteResponse> info() async {
@@ -40,7 +42,7 @@ class InstanceRepositoryImpl implements InstanceRepository {
 
   @override
   Future<bool> block(int instanceId, bool block) async {
-    final l10n = GlobalContext.l10n;
+    final l10n = _localization.l10n;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (!_api.supportsInstanceBlock) {

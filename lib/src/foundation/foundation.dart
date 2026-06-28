@@ -4,4 +4,5 @@ export 'errors/errors.dart';
 export 'networking/networking.dart';
 export 'persistence/persistence.dart';
 export 'primitives/primitives.dart';
+export 'services/services.dart';
 export 'utils/utils.dart';

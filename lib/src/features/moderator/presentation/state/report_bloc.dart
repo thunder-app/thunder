@@ -7,6 +7,7 @@ import 'package:thunder/src/foundation/contracts/contracts.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 import 'package:thunder/src/features/moderator/moderator.dart';
+import 'package:thunder/src/foundation/services/localization_service.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';

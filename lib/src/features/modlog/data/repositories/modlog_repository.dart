@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 
 /// Model representing a page of modlog events
@@ -32,7 +29,7 @@ abstract class ModlogRepository {
   });
 }
 
-/// Implementation of [ModlogRepository]
+/// Implementation of [ModlogRepository] using the unified API client
 class ModlogRepositoryImpl implements ModlogRepository {
   /// The account to use for methods invoked in this repository
   final Account account;
@@ -40,10 +37,18 @@ class ModlogRepositoryImpl implements ModlogRepository {
   /// The API client to use for the repository
   final ThunderApiClient _api;
 
+  // ignore: unused_field
+  final LocalizationService _localization;
+
   /// Creates a new ModlogRepositoryImpl.
   ///
-  /// An optional [api] client can be provided for testing.
-  ModlogRepositoryImpl({required this.account, ThunderApiClient? api}) : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode);
+  /// An optional [api] client and [localization] can be provided for testing.
+  ModlogRepositoryImpl({
+    required this.account,
+    ThunderApiClient? api,
+    LocalizationService localization = const ThunderLocalizationService(),
+  })  : _api = api ?? ApiClientFactory.create(account, debug: kDebugMode),
+        _localization = localization;
 
   @override
   Future<ModlogFeed> getModlogEvents({
