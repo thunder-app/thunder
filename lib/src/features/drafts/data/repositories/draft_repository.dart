@@ -215,11 +215,19 @@ class DraftRepositoryImpl implements DraftRepository {
   }
 
   Draft _normalizeDraftForStorage(Draft draft) {
-    return draft.copyWith(
+    return Draft(
+      id: draft.id,
+      draftType: draft.draftType,
+      existingId: draft.existingId,
+      replyId: draft.replyId,
+      active: draft.active,
+      accountId: draft.accountId,
       title: _normalizeNullableText(draft.title),
       url: _normalizeNullableText(draft.url),
       customThumbnail: _normalizeNullableText(draft.customThumbnail),
       altText: _normalizeNullableText(draft.altText),
+      nsfw: draft.nsfw,
+      languageId: draft.languageId,
       body: _normalizeNullableText(draft.body),
     );
   }
