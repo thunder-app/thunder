@@ -72,7 +72,7 @@ InstanceValidationCubit createInstanceValidationCubit() {
 
 ProfileModalCubit createProfileModalCubit({required bool quickSelectMode}) {
   return ProfileModalCubit(
-    sessionRepository: const SessionRepositoryImpl(),
+    sessionRepository: SessionRepositoryImpl(),
     quickSelectMode: quickSelectMode,
     instanceInfoLookup: (instance) => getInstanceInfo(instance).timeout(
       const Duration(seconds: 5),
@@ -95,7 +95,7 @@ ProfileModalCubit createProfileModalCubit({required bool quickSelectMode}) {
 
 SessionBloc createSessionBloc() {
   return SessionBloc(
-    sessionRepository: const SessionRepositoryImpl(),
+    sessionRepository: SessionRepositoryImpl(),
     accountRepositoryFactory: (account) => AccountRepositoryImpl(account: account),
     instanceRepositoryFactory: (account) => InstanceRepositoryImpl(account: account),
     localizationService: const ThunderLocalizationService(),

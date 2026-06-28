@@ -2,9 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/foundation/foundation.dart';
 
 /// Repository contract for session persistence and profile ordering.
 abstract class SessionRepository {
@@ -37,7 +35,12 @@ abstract class SessionRepository {
 
 /// Implementation of [SessionRepository] backed by local Drift storage.
 class SessionRepositoryImpl implements SessionRepository {
-  const SessionRepositoryImpl();
+  /// Creates a [SessionRepositoryImpl].
+  ///
+  /// An optional [localization] can be provided for testing.
+  SessionRepositoryImpl({LocalizationService localization = const ThunderLocalizationService()}) : _localization = localization;
+
+  final LocalizationService _localization;
 
   @override
   Future<Account> bootstrap() async {
@@ -54,7 +57,7 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     final account = await addAnonymousSession(const Account(id: '', instance: DEFAULT_INSTANCE, index: -1, anonymous: true, platform: ThreadiversePlatform.lemmy));
-    if (account == null) throw Exception('Failed to create default profile');
+    if (account == null) throw Exception(_localization.l10n.failedToCreateDefaultProfile);
 
     await _persistActiveSession(account);
 
@@ -177,7 +180,7 @@ class SessionRepositoryImpl implements SessionRepository {
 
     await clearActiveSession();
     final account = await addAnonymousSession(const Account(id: '', instance: DEFAULT_INSTANCE, index: -1, anonymous: true, platform: ThreadiversePlatform.lemmy));
-    if (account == null) throw Exception('Failed to create default profile');
+    if (account == null) throw Exception(_localization.l10n.failedToCreateDefaultProfile);
     await _persistActiveSession(account);
   }
 }

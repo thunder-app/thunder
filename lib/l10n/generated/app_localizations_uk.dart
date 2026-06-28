@@ -1009,6 +1009,9 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get failedToCreateDefaultProfile => 'Failed to create default profile';
+
+  @override
   String failedToLoadBlocks(Object errorMessage) {
     return 'Could not load blocks: $errorMessage';
   }

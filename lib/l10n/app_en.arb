@@ -1186,6 +1186,10 @@
       }
     }
   },
+  "failedToCreateDefaultProfile": "Failed to create default profile",
+  "@failedToCreateDefaultProfile": {
+    "description": "Error when session bootstrap cannot create the default anonymous profile"
+  },
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
   "@failedToLoadBlocks": {
     "description": "Error message for when we fail to load blocks",

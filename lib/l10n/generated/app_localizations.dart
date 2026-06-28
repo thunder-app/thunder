@@ -1896,6 +1896,12 @@ abstract class AppLocalizations {
   /// **'Failed to communicate with Thunder notification server at {serverAddress}.'**
   String failedToCommunicateWithThunderNotificationServer(Object serverAddress);
 
+  /// Error when session bootstrap cannot create the default anonymous profile
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create default profile'**
+  String get failedToCreateDefaultProfile;
+
   /// Error message for when we fail to load blocks
   ///
   /// In en, this message translates to:
