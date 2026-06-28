@@ -46,34 +46,6 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
   @override
   String get basePath => '/api/v4';
 
-  @override
-  Future<Map<String, dynamic>> request(HttpMethod method, String endpoint, Map<String, dynamic> data) async {
-    final response = await super.request(method, endpoint, data);
-    final state = response['state'];
-    if (state == null) return response;
-
-    if (state == 'success') {
-      final payload = response['data'];
-      if (payload is Map<String, dynamic>) return payload;
-      return {'value': payload};
-    }
-
-    if (state == 'failed') {
-      final err = response['err'];
-      throw ApiErrorException(
-        err?.toString() ?? 'Lemmy request failed',
-        errorCode: err is Map<String, dynamic> ? err['error']?.toString() : null,
-        platformName: platformName,
-      );
-    }
-
-    throw ApiErrorException(
-      'Lemmy request did not complete: $state',
-      errorCode: state?.toString(),
-      platformName: platformName,
-    );
-  }
-
   // =============================================================
   // Version-specific parsing methods
   // =============================================================
@@ -875,7 +847,7 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       final parsed = await handleResponse(uploadRequest.url, http.Response(responseBody, response.statusCode, headers: response.headers));
       if (parsed is Map<String, dynamic>) {
         return parseUploadImageUrl(
-          _unwrapRequestState(parsed),
+          parsed,
           instance: account.instance,
           platformName: platformName,
         );
@@ -933,19 +905,6 @@ class LemmyV4ApiClient extends BaseLemmyApiClient {
       'notification_id': notificationId,
       'read': read,
     });
-  }
-
-  Map<String, dynamic> _unwrapRequestState(Map<String, dynamic> response) {
-    if (response['state'] == null) return response;
-    if (response['state'] == 'success') {
-      final payload = response['data'];
-      if (payload is Map<String, dynamic>) return payload;
-      return {'value': payload};
-    }
-    if (response['state'] == 'failed') {
-      throw ApiErrorException(response['err']?.toString() ?? 'Lemmy request failed', platformName: platformName);
-    }
-    throw ApiErrorException('Lemmy request did not complete: ${response['state']}', platformName: platformName);
   }
 }
 
