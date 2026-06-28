@@ -66,9 +66,7 @@ Future<FeedResult> fetchFeedItems({
         return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()) || url.contains(keyword.toLowerCase()));
       }).toList();
 
-      // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
-      posts.addAll(formattedPosts);
+      posts.addAll(responsePosts);
 
       if (keywordFilters.isNotEmpty) {
         // Add some debugging logging so we can see what's going on when we're loading a feed with filters.

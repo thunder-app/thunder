@@ -1,4 +1,5 @@
 import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/data/repositories/search_repository.dart';
 
@@ -38,7 +39,13 @@ class SearchService {
     );
 
     if (!isValidUrl(query)) {
-      return response;
+      return SearchResults(
+        type: response.type,
+        comments: response.comments,
+        posts: await parsePosts(response.posts),
+        communities: response.communities,
+        users: response.users,
+      );
     }
 
     final resolveResponse = await _searchRepository.resolve(query: query);
@@ -61,7 +68,7 @@ class SearchService {
     return SearchResults(
       type: response.type,
       comments: comments,
-      posts: posts,
+      posts: await parsePosts(posts),
       communities: communities,
       users: users,
     );

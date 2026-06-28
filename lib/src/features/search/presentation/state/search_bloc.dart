@@ -211,7 +211,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         communities: prioritizeFavorites(communities, event.favoriteCommunities),
         users: users,
         comments: comments,
-        posts: await parsePosts(posts ?? []),
+        posts: posts ?? [],
         instances: instances,
         page: 2,
         viewingAll: event.query.isEmpty,
@@ -289,7 +289,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final List<ThunderCommunity> allCommunities = [...(state.communities ?? []), ...(communities ?? [])];
           final List<ThunderUser> allUsers = [...(state.users ?? []), ...(users ?? [])];
           final List<ThunderComment> allComments = [...(state.comments ?? []), ...(comments ?? [])];
-          final List<ThunderPost> allPosts = [...(state.posts ?? []), ...(await parsePosts(posts ?? []))];
+          final List<ThunderPost> allPosts = [...(state.posts ?? []), ...(posts ?? [])];
 
           return emit(state.copyWith(
             status: SearchStatus.success,

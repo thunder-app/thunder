@@ -166,7 +166,7 @@ class PostRepositoryImpl implements PostRepository {
     );
 
     return {
-      'posts': response.posts,
+      'posts': await parsePosts(response.posts),
       'next_page': response.nextPage,
     };
   }
