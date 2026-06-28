@@ -33,6 +33,7 @@ import 'package:thunder/src/features/account/domain/models/account_settings_upda
 /// PieFed API client for the `/api/alpha` endpoints.
 class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   static const _mapper = PiefedPrimitiveMapper();
+  static const _reportMapper = LemmyV3PrimitiveMapper();
 
   PiefedApiClient({
     required super.account,
@@ -385,13 +386,82 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     int limit = 20,
     bool unresolved = false,
     int? communityId,
-  }) {
-    throw UnsupportedFeatureException('Reports', platformName: platformName);
+  }) async {
+    final pageNumber = cursor != null ? int.tryParse(cursor) ?? page : page;
+    final reports = switch (kind) {
+      ReportKind.comment => await _getCommentReports(
+          commentId: commentId,
+          page: pageNumber,
+          limit: limit,
+          unresolved: unresolved,
+          communityId: communityId,
+        ),
+      ReportKind.privateMessage || ReportKind.community => <ThunderReport>[],
+      _ => await _getPostReports(
+          postId: postId,
+          page: pageNumber,
+          limit: limit,
+          unresolved: unresolved,
+          communityId: communityId,
+        ),
+    };
+
+    return ThunderPage(
+      items: reports,
+      nextPage: reports.length < limit ? null : (pageNumber + 1).toString(),
+    );
+  }
+
+  Future<List<ThunderReport>> _getPostReports({
+    int? postId,
+    int page = 1,
+    int limit = 20,
+    bool unresolved = false,
+    int? communityId,
+  }) async {
+    final json = await request(HttpMethod.get, '$basePath/post/report/list', {
+      'post_id': postId,
+      'page': page,
+      'limit': limit,
+      'unresolved_only': unresolved,
+      'community_id': communityId,
+    });
+    return (json['post_reports'] as List).map<ThunderReport>((report) => _reportMapper.postReportView(report)).toList();
+  }
+
+  Future<List<ThunderReport>> _getCommentReports({
+    int? commentId,
+    int page = 1,
+    int limit = 20,
+    bool unresolved = false,
+    int? communityId,
+  }) async {
+    final json = await request(HttpMethod.get, '$basePath/comment/report/list', {
+      'comment_id': commentId,
+      'page': page,
+      'limit': limit,
+      'unresolved_only': unresolved,
+      'community_id': communityId,
+    });
+    return (json['comment_reports'] as List).map<ThunderReport>((report) => _reportMapper.commentReportView(report)).toList();
   }
 
   @override
-  Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved}) {
-    throw UnsupportedFeatureException('Reports', platformName: platformName);
+  Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved}) async {
+    final endpoint = switch (kind) {
+      ReportKind.post => '$basePath/post/report/resolve',
+      ReportKind.comment => '$basePath/comment/report/resolve',
+      _ => throw UnsupportedFeatureException('${kind.name} reports', platformName: platformName),
+    };
+    final json = await request(HttpMethod.put, endpoint, {
+      'report_id': reportId,
+      'resolved': resolved,
+    });
+    return switch (kind) {
+      ReportKind.post => _reportMapper.postReportView(json['post_report_view']),
+      ReportKind.comment => _reportMapper.commentReportView(json['comment_report_view']),
+      _ => throw UnsupportedFeatureException('${kind.name} reports', platformName: platformName),
+    };
   }
 
   // =============================================================
@@ -1039,58 +1109,19 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   Future<String> _uploadImageTo(String endpoint, String filePath) async {
-    try {
-      final uploadRequest = http.MultipartRequest(
-        'POST',
-        Uri.https(account.instance, endpoint),
-      );
-      final headers = Map<String, String>.from(buildHeaders())..remove('Content-Type');
-      uploadRequest.headers.addAll(headers);
-      uploadRequest.files.add(await http.MultipartFile.fromPath('file', filePath));
-
-      final streamedResponse = await uploadRequest.send();
-      final response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 429) {
-        throw RateLimitException(
-          'Rate limit exceeded',
-          platformName: platformName,
-        );
-      }
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        throw ApiErrorException(
-          'Failed to upload image: ${response.statusCode} ${response.reasonPhrase}',
-          statusCode: response.statusCode,
-          platformName: platformName,
-        );
-      }
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map<String, dynamic>) {
-          return parseUploadImageUrl(
-            decoded,
-            instance: account.instance,
-            platformName: platformName,
-          );
-        }
-        if (decoded is String && decoded.isNotEmpty) {
-          return decoded;
-        }
-      } catch (_) {
-        // Fall through to handle non-JSON responses.
-      }
-
-      throw ApiErrorException(
-        'Failed to upload image: Invalid response ${response.body}',
-        statusCode: response.statusCode,
-        platformName: platformName,
-      );
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiErrorException('Failed to upload image: $e', platformName: platformName);
-    }
+    final decoded = await uploadMultipartImage(
+      httpClient: httpClient,
+      uri: Uri.https(account.instance, endpoint),
+      headers: buildHeaders(),
+      fieldName: 'file',
+      filePath: filePath,
+      platformName: platformName,
+    );
+    return parseUploadImageUrl(
+      decoded,
+      instance: account.instance,
+      platformName: platformName,
+    );
   }
 
   // =============================================================
@@ -1104,7 +1135,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   bool get supportsSubmitReport => true;
 
   @override
-  bool get supportsListReports => false;
+  bool get supportsListReports => true;
 
   @override
   bool get supportsPrivateMessages => true;
