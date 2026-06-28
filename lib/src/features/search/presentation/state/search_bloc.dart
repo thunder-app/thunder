@@ -134,27 +134,24 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (effectiveSearchType == MetaSearchType.instances) {
         // Retrieve all the federated instances from this instance.
         final federatedInstances = await instanceRepository.federated();
-        final federatedInstancesMap = federatedInstances['federated_instances'] as Map<String, dynamic>?;
-        final linkedInstances = federatedInstancesMap?['linked'] ?? [];
+        final linkedInstances = federatedInstances.linked;
 
-        final filteredInstances = linkedInstances.where((instance) => instance['software'] == "lemmy" && instance['domain'].contains(event.query)).toList();
+        final filteredInstances = linkedInstances.where((instance) => instance.software == 'lemmy' && instance.domain.contains(event.query)).toList();
 
         // Filter the instances down
         for (final instance in filteredInstances) {
-          if (instance.containsKey('federation_state') && instance['federation_state'].containsKey('last_successful_published_time')) {
-            final lastSuccessfulPublishedTime = DateTime.parse(instance['federation_state']['last_successful_published_time']);
+          final lastSuccessfulPublishedTime = instance.lastSuccessfulPublishedTime;
 
-            if (lastSuccessfulPublishedTime.isAfter(DateTime.now().subtract(const Duration(days: 1))) == true) {
-              instances.add(
-                ThunderInstanceInfo(
-                  id: instance['id'],
-                  domain: instance['domain'],
-                  name: fetchInstanceNameFromUrl(instance['domain'])!,
-                  version: instance['version'],
-                  success: true,
-                ),
-              );
-            }
+          if (lastSuccessfulPublishedTime != null && lastSuccessfulPublishedTime.isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
+            instances.add(
+              ThunderInstanceInfo(
+                id: instance.id,
+                domain: instance.domain,
+                name: fetchInstanceNameFromUrl(instance.domain)!,
+                version: instance.version,
+                success: true,
+              ),
+            );
           }
         }
 
@@ -199,7 +196,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (userName != null) {
           try {
             final response = await userRepository.getUser(username: userName);
-            users = [response!['user']];
+            users = [response!.user];
           } catch (e) {
             debugPrint('SearchBloc: Failed to fetch user by name: $e');
           }

@@ -38,7 +38,7 @@ Future<FeedResult> fetchFeedItems({
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   if (communityId != null || communityName != null || feedListType != null) {
     do {
-      Map<String, dynamic> response = await postRepository.getPosts(
+      final response = await postRepository.getPosts(
         cursor: currentCursor,
         postSortType: postSortType,
         feedListType: feedListType,
@@ -48,8 +48,8 @@ Future<FeedResult> fetchFeedItems({
         showSaved: showSaved,
       );
 
-      List<ThunderPost> responsePosts = response['posts'];
-      currentCursor = response['next_page'];
+      List<ThunderPost> responsePosts = response.posts;
+      currentCursor = response.nextPage;
 
       // Keep the length of the original response to see if there are any additional posts to fetch
       int postResponseLength = responsePosts.length;
@@ -92,7 +92,7 @@ Future<FeedResult> fetchFeedItems({
     int currentPage = currentCursor != null ? int.tryParse(currentCursor) ?? 1 : 1;
 
     do {
-      Map<String, dynamic>? response = await userRepository.getUser(
+      final response = await userRepository.getUser(
         userId: userId,
         username: username,
         sort: postSortType,
@@ -102,22 +102,21 @@ Future<FeedResult> fetchFeedItems({
         includeContent: true,
       );
 
-      List<ThunderPost> responsePosts = response!['posts'];
-      List<ThunderComment> responseComments = response['comments'];
+      List<ThunderPost> responsePosts = response!.posts;
+      List<ThunderComment> responseComments = response.comments;
 
       // Remove deleted posts and comments
       responsePosts = responsePosts.where((post) => post.status.deleted == false).toList();
       responseComments = responseComments.where((comment) => comment.status.deleted == false).toList();
 
       // Parse the posts and add in media information which is used elsewhere in the app
-      List<ThunderPost> formattedPosts = await parsePosts(responsePosts);
-      posts.addAll(formattedPosts);
+      posts.addAll(responsePosts);
       comments.addAll(responseComments);
 
       if (responsePosts.isEmpty) hasReachedPostsEnd = true;
       if (responseComments.isEmpty) hasReachedCommentsEnd = true;
 
-      currentCursor = response['next_page'];
+      currentCursor = response.nextPage;
       currentPage = int.tryParse(currentCursor ?? '') ?? currentPage + 1;
 
       if (currentCursor == null) {

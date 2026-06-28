@@ -20,3 +20,4 @@ export 'presentation/utils/user_session_utils.dart';
 export 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 export 'data/models/user_label.dart';
 export 'data/repositories/user_repository.dart';
+export 'domain/models/user_profile_page.dart';

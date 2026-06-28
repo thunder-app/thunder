@@ -46,7 +46,7 @@ void showUserInputDialog(
     if (normalizedUsername != null) {
       try {
         final response = await UserRepositoryImpl(account: account).getUser(username: normalizedUsername);
-        final user = response!['user'];
+        final user = response!.user;
 
         onUserSelected(user);
         Navigator.of(context).pop();
@@ -321,11 +321,11 @@ void showInstanceInputDialog(
 Future<void> _loadLinkedInstances(Account account, List<ThunderInstanceInfo> out) async {
   try {
     final federated = await InstanceRepositoryImpl(account: account).federated();
-    final linked = List<ThunderInstanceInfo>.from(
-      (federated['federated_instances']['linked'] as List).map<ThunderInstanceInfo>(
-        (instance) => ThunderInstanceInfo(id: instance['id'], domain: instance['domain'], name: instance['domain']),
-      ),
-    );
+    final linked = federated.linked
+        .map(
+          (instance) => ThunderInstanceInfo(id: instance.id, domain: instance.domain, name: instance.domain),
+        )
+        .toList();
 
     out
       ..clear()

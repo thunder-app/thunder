@@ -85,7 +85,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
           if (draft.existingId != null) {
             try {
               final response = await PostRepositoryImpl(account: account).getPost(draft.existingId!);
-              final post = response?['post'];
+              final post = response?.post;
               if (post is ThunderPost) {
                 community = post.community;
               }
@@ -104,7 +104,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
           if (draft.replyId != null) {
             try {
               final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
-              final post = response?['post'];
+              final post = response?.post;
               if (post is ThunderPost) {
                 community = post.community;
               }
@@ -161,7 +161,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {
               try {
                 final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
-                final post = response?['post'];
+                final post = response?.post;
                 if (post is ThunderPost) {
                   community = post.community;
                   contextLabel = l10n.replyToPost;

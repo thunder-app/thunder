@@ -6,10 +6,10 @@ import 'package:thunder/src/features/post/post.dart';
 /// Repository contract for post reads and mutations.
 abstract class PostRepository {
   /// Fetches a post by its ID. Returns the post along with moderators and cross-posts information
-  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});
+  Future<PostDetailPage?> getPost(int postId, {int? commentId});
 
   /// Fetches posts from the API
-  Future<Map<String, dynamic>> getPosts({
+  Future<PostFeedPage> getPosts({
     String? cursor,
     int? limit,
     FeedListType? feedListType,
@@ -116,23 +116,21 @@ class PostRepositoryImpl implements PostRepository {
         _localization = localization;
 
   @override
-  Future<Map<String, dynamic>?> getPost(int postId, {int? commentId}) async {
+  Future<PostDetailPage?> getPost(int postId, {int? commentId}) async {
     final response = await _api.getPost(postId, commentId: commentId);
 
     final parsedPost = await parsePostWithCurrentPreferences(response.post);
     final parsedCrossPosts = await Future.wait(response.crossPosts.map(parsePostWithCurrentPreferences));
 
-    return {
-      'post': parsedPost,
-      'moderators': response.moderators,
-      'cross_posts': parsedCrossPosts,
-      // Keep camelCase key for existing consumers.
-      'crossPosts': parsedCrossPosts,
-    };
+    return PostDetailPage(
+      post: parsedPost,
+      moderators: response.moderators,
+      crossPosts: parsedCrossPosts,
+    );
   }
 
   @override
-  Future<Map<String, dynamic>> getPosts({
+  Future<PostFeedPage> getPosts({
     String? cursor,
     int? limit,
     int? personId,
@@ -165,10 +163,10 @@ class PostRepositoryImpl implements PostRepository {
       showSaved: showSaved,
     );
 
-    return {
-      'posts': await parsePosts(response.posts),
-      'next_page': response.nextPage,
-    };
+    return PostFeedPage(
+      posts: await parsePosts(response.posts),
+      nextPage: response.nextPage,
+    );
   }
 
   @override

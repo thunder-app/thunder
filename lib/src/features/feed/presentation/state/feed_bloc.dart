@@ -608,8 +608,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             // Fetch user information
             try {
               final response = await userRepository.getUser(userId: event.userId, username: event.username);
-              user = response!['user'];
-              userModerates = response['moderates'];
+              user = response?.user;
+              userModerates = response?.moderates ?? [];
             } catch (e) {
               // If we are given a user feed, but we can't load the user, that's a problem! Emit an error.
               return emit(state.copyWith(

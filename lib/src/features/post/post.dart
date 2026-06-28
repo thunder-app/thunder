@@ -2,6 +2,8 @@ export 'presentation/state/post_bloc.dart';
 export 'presentation/state/create_post_cubit.dart';
 export 'presentation/state/post_navigation_cubit/post_navigation_cubit.dart';
 export 'domain/enums/enums.dart';
+export 'domain/models/post_detail_page.dart';
+export 'domain/models/post_feed_page.dart';
 export 'presentation/pages/pages.dart';
 export 'presentation/utils/post_media_utils.dart';
 export 'presentation/utils/post_optimistic_utils.dart';

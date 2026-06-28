@@ -14,6 +14,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/features/private_message/private_message.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
@@ -65,6 +66,7 @@ Future<void> pollNotificationsAndShow() async {
     if (account.anonymous) continue;
 
     final repository = NotificationRepositoryImpl(account: account);
+    final privateMessageRepository = PrivateMessageRepositoryImpl(account: account);
 
     // Poll replies
     try {
@@ -86,7 +88,7 @@ Future<void> pollNotificationsAndShow() async {
 
     // Poll messages
     try {
-      final messages = await repository.messages(unread: true, limit: 50, page: 1);
+      final messages = await privateMessageRepository.messages(unread: true, limit: 50, page: 1);
       final newMessages = messages.where((message) => message.published.isAfter(lastPollTime)).toList();
       if (newMessages.isNotEmpty) messageNotifications[account] = newMessages;
     } catch (e) {

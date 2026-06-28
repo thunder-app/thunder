@@ -158,7 +158,7 @@ class _UserSelectorState extends State<UserSelector> {
       }
 
       final response = await UserRepositoryImpl(account: targetAccount).getUser(username: username);
-      final user = response?['user'] as ThunderUser?;
+      final user = response?.user;
 
       if (!mounted) return;
 

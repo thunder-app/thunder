@@ -165,7 +165,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
       final post = await PostRepositoryImpl(account: account).getPost(postId);
 
       if (context.mounted) {
-        navigateToPost(context, post: post?['post']);
+        navigateToPost(context, post: post?.post);
         return;
       }
     } catch (e) {

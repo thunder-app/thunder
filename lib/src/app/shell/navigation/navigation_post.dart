@@ -27,7 +27,7 @@ Future<void> navigateToPost(
 
   if (pvm == null) {
     final response = await PostRepositoryImpl(account: effectiveAccount).getPost(postId!);
-    pvm = response?['post'];
+    pvm = response?.post;
   }
 
   // Mark post as read when tapped
@@ -94,7 +94,7 @@ Future<ThunderPost> getPostFromComment(ThunderComment comment, Account account) 
   if (comment.post != null) return comment.post!;
 
   final response = await PostRepositoryImpl(account: account).getPost(comment.postId, commentId: comment.id);
-  return response!['post'] as ThunderPost;
+  return response!.post;
 }
 
 Future<void> navigateToComment(BuildContext context, ThunderComment comment) async {

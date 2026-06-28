@@ -79,9 +79,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (postId != null) {
         final response = await postRepository.getPost(postId);
 
-        post = response?['post'];
-        moderators = response?['moderators'];
-        crossPosts = response?['crossPosts'];
+        post = response?.post;
+        moderators = response?.moderators;
+        crossPosts = response?.crossPosts;
       }
 
       // If we can't get mods from the post response, fallback to getting the whole community.
