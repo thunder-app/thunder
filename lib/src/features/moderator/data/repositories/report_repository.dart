@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/moderator/domain/enums/report_feed_type.dart';
-import 'package:thunder/src/features/moderator/data/repositories/report_repository.dart';
 
 /// Repository contract for moderator report reads and actions.
 abstract class ReportRepository {

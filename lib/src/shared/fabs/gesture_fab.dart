@@ -294,6 +294,8 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   }
 }
 
+// ActionButton mutates first/last when placed inside expanding FAB stacks.
+// ignore: must_be_immutable
 class ActionButton extends StatelessWidget {
   ActionButton({
     super.key,

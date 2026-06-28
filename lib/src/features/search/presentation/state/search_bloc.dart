@@ -12,7 +12,6 @@ import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';

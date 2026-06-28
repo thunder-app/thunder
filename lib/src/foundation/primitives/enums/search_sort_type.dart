@@ -20,7 +20,7 @@ enum SearchSortType {
   final String value;
 
   /// The platform this sort type is used on. If null, it is used on all platforms.
-  final ThreadiversePlatform? platform;
+  final ThreadiversePlatform? platform = null;
 
-  const SearchSortType(this.value, {this.platform});
+  const SearchSortType(this.value);
 }

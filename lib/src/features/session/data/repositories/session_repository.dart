@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 
-import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 
 /// Repository contract for session persistence and profile ordering.

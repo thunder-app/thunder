@@ -54,9 +54,7 @@ abstract class PostRepository {
     int? languageId,
   });
 
-  /// Reports a post
-  Future<void> report(int postId, String reason);
-}
+  /// Votes on a post
   Future<ThunderPost> vote(ThunderPost post, int score);
 
   /// Saves or unsaves a post

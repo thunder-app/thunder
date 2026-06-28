@@ -11,7 +11,7 @@ enum CommentSortType {
   final String value;
 
   /// The platform this sort type is used on. If null, it is used on all platforms.
-  final ThreadiversePlatform? platform;
+  final ThreadiversePlatform? platform = null;
 
-  const CommentSortType(this.value, {this.platform});
+  const CommentSortType(this.value);
 }

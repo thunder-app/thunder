@@ -14,7 +14,6 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/utils/post_example_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/modlog/domain/models/modlog_feed.dart';
 import 'package:thunder/src/features/modlog/data/models/modlog_event_item.dart';
-import 'package:thunder/src/features/modlog/domain/enums/enums.dart';
 
 /// Repository contract for modlog event reads.
 abstract class ModlogRepository {

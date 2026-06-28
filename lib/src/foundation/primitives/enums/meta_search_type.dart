@@ -16,9 +16,9 @@ enum MetaSearchType {
   final String? searchType;
 
   /// The platform this meta search type is used on. If null, it is used on all platforms.
-  final ThreadiversePlatform? platform;
+  final ThreadiversePlatform? platform = null;
 
-  const MetaSearchType({this.searchType, this.platform});
+  const MetaSearchType({this.searchType});
 
   /// Fetches the name of the meta search type.
   String get name =>

@@ -23,8 +23,6 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 
-import 'package:thunder/src/features/moderator/domain/enums/report_feed_type.dart';
-
 /// Creates a [ReportFeedPage] which holds a list of reported posts/comments.
 class ReportFeedPage extends StatefulWidget {
   const ReportFeedPage({super.key});
