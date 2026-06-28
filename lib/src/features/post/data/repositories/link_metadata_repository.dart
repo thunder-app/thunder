@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
 
+/// Repository contract for link metadata reads.
 abstract class LinkMetadataRepository {
   /// Fetches the metadata for a given URL.
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url});

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
 
+/// Repository contract for user profile reads and blocks.
 abstract class UserRepository {
   /// Fetches a user by their id or username
   Future<Map<String, dynamic>?> getUser({

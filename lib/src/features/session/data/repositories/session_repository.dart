@@ -6,6 +6,7 @@ import 'package:thunder/src/foundation/contracts/account.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 
+/// Repository contract for session persistence and profile ordering.
 abstract class SessionRepository {
   Future<Account> bootstrap();
 

@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/post/post.dart';
 
-/// Interface for a post repository
+/// Repository contract for post reads and mutations.
 abstract class PostRepository {
   /// Fetches a post by its ID. Returns the post along with moderators and cross-posts information
   Future<Map<String, dynamic>?> getPost(int postId, {int? commentId});

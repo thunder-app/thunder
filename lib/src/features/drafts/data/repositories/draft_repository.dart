@@ -6,6 +6,7 @@ import 'package:thunder/src/features/drafts/data/models/draft.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/foundation/primitives/enums/draft_type.dart';
 
+/// Repository contract for local draft persistence.
 abstract class DraftRepository {
   /// Upsert a draft into the database.
   Future<Draft?> upsertDraft(Draft draft, {bool active = false});
@@ -32,6 +33,7 @@ abstract class DraftRepository {
   Future<void> deleteDraft(DraftType draftType, int? existingId, int? replyId);
 }
 
+/// Implementation of [DraftRepository] backed by local Drift storage.
 class DraftRepositoryImpl implements DraftRepository {
   DraftRepositoryImpl({required AppDatabase database}) : _database = database;
 

@@ -4,7 +4,7 @@ import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
-/// Interface for an account repository
+/// Repository contract for account authentication and settings.
 abstract class AccountRepository {
   /// Login to the account's home instance.
   Future<String?> login({required String username, required String password, String? totp});

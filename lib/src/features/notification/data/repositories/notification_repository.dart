@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/notification/domain/models/unread_notifications_count.dart';
 
-/// Interface for a notification repository
+/// Repository contract for notification inbox reads and read state.
 abstract class NotificationRepository {
   /// Fetches any comment replies
   Future<List<ThunderComment>> replies({

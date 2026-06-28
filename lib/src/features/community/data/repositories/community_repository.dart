@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/community/community.dart';
 
-/// Interface for a community repository
+/// Repository contract for community reads and moderation actions.
 abstract class CommunityRepository {
   /// Fetches community information by ID or name
   Future<CommunityDetails> getCommunity({int? id, String? name});

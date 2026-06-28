@@ -5,7 +5,7 @@ import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/domain/models/search_resolve_result.dart';
 
-/// Interface for a search repository
+/// Repository contract for search and resolve queries.
 abstract class SearchRepository {
   /// Searches for posts, comments, users, communities, etc.
   Future<SearchResults> search({

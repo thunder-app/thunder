@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
 
-/// Interface for a instance repository
+/// Repository contract for instance site reads and blocks.
 abstract class InstanceRepository {
   /// Fetches the site info
   Future<ThunderSiteResponse> info();

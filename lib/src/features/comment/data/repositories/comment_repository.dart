@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/features/comment/domain/models/comment_page.dart';
 
-/// Interface for a comment repository
+/// Repository contract for comment reads and mutations.
 abstract class CommentRepository {
   /// Fetches a comment by its ID
   Future<ThunderComment> getComment(int commentId);
