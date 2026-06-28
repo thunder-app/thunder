@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/domain/models/search_resolve_result.dart';
 
