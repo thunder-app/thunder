@@ -3569,5 +3569,15 @@
     "send": "Enviar",
     "@send": {
         "description": "Action to send content"
-    }
+    },
+    "failedToCreateDefaultProfile": "Falha ao criar o perfil padrão",
+    "@failedToCreateDefaultProfile": {
+        "description": "Error when session bootstrap cannot create the default anonymous profile"
+    },
+    "instanceOffline": "A instância está off-line",
+    "instanceOnline": "A instância está on-line",
+    "instanceStatusUnknown": "Status da instância desconhecido",
+    "notAvailable": "N/A",
+    "piefedSupportBeta": "O suporte ao PieFed está atualmente em fase beta.\nAinda nem todos os recursos são suportados.",
+    "profileOperationInProgress": "Operação de perfil em andamento"
 }
