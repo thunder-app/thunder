@@ -78,21 +78,6 @@ void main() {
       expect(emptyResult, isEmpty);
     });
 
-    test('media throws UnsupportedFeatureException when media unsupported', () async {
-      when(() => api.supportsMedia).thenReturn(false);
-
-      final repository = AccountRepositoryImpl(
-        account: loggedInAccount(),
-        api: api,
-        localization: testLocalization,
-      );
-
-      expect(
-        () => repository.media(),
-        throwsA(isA<UnsupportedFeatureException>()),
-      );
-    });
-
     test('importSettings throws UnsupportedFeatureException when import unsupported', () async {
       when(() => api.supportsSettingsImportExport).thenReturn(false);
 
@@ -118,21 +103,6 @@ void main() {
       expect(
         () => repository.uploadImage('/tmp/image.png'),
         throwsA(isA<NotLoggedInException>()),
-      );
-    });
-
-    test('deleteImage throws UnsupportedFeatureException when media unsupported', () async {
-      when(() => api.supportsMedia).thenReturn(false);
-
-      final repository = AccountRepositoryImpl(
-        account: loggedInAccount(),
-        api: api,
-        localization: testLocalization,
-      );
-
-      expect(
-        () => repository.deleteImage(file: 'image.png'),
-        throwsA(isA<UnsupportedFeatureException>()),
       );
     });
   });

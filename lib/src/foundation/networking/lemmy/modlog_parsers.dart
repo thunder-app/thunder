@@ -1,14 +1,14 @@
 import 'package:collection/collection.dart';
 
-import 'package:thunder/src/foundation/networking/mappers/lemmy_v3_mapper.dart';
 import 'package:thunder/src/foundation/networking/mappers/lemmy_v4_mapper.dart';
+import 'package:thunder/src/foundation/networking/mappers/primitive_mapper.dart';
 import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
 import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
 
 /// Parses a grouped Lemmy v3 modlog response into normalized events.
 List<ModlogEvent> modlogEventsFromV3Response(
   Map<String, dynamic> response,
-  LemmyV3PrimitiveMapper mapper,
+  PrimitiveMapper mapper,
 ) {
   const groupedKeys = <String, ModlogActionType>{
     'removed_posts': ModlogActionType.modRemovePost,
@@ -41,7 +41,7 @@ List<ModlogEvent> modlogEventsFromV3Response(
 ModlogEvent modlogEventFromV3(
   ModlogActionType type,
   dynamic event,
-  LemmyV3PrimitiveMapper mapper,
+  PrimitiveMapper mapper,
 ) {
   switch (type) {
     case ModlogActionType.modRemovePost:

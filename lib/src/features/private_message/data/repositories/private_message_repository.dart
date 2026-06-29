@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 
@@ -59,10 +58,10 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int limit = 50,
     int page = 1,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.getPrivateMessages(page: page, limit: limit, unread: unread);
   }
 
@@ -73,10 +72,10 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     int page = 1,
     int limit = 50,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.getPrivateMessageConversation(
       personId: personId,
       conversationId: conversationId,
@@ -90,10 +89,10 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     required int recipientId,
     required String content,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.createPrivateMessage(recipientId: recipientId, content: content);
   }
 
@@ -102,10 +101,10 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
     required int notificationId,
     bool read = true,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     await api.markPrivateMessageAsRead(notificationId: notificationId, read: read);
   }
 }

@@ -86,15 +86,13 @@ class _ActionChipsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = context.read<ProfileBloc>().state.account;
-
     return Row(
       spacing: 8.0,
       children: [
         _SortActionChip(),
         ..._getAuthenticatedActions(context),
         _SearchActionChip(),
-        if (account.platform == ThreadiversePlatform.lemmy) _ModlogActionChip(community: community),
+        _ModlogActionChip(community: community),
         _ShareActionChip(community: community),
       ],
     );

@@ -234,20 +234,5 @@ void main() {
       final failed = await repository.readMultiple([1, 2, 3], false);
       expect(failed, [0, 1, 2]);
     });
-
-    test('hide throws UnsupportedFeatureException when hide unsupported', () async {
-      when(() => api.supportsHidePosts).thenReturn(false);
-
-      final repository = PostRepositoryImpl(
-        account: loggedInAccount(),
-        api: api,
-        localization: testLocalization,
-      );
-
-      expect(
-        () => repository.hide(100, true),
-        throwsA(isA<UnsupportedFeatureException>()),
-      );
-    });
   });
 }

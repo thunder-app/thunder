@@ -6,9 +6,13 @@ import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 
 /// Lazily resolves a [ThunderApiClient], including async version probing.
 class ResolvedApiClient {
-  ResolvedApiClient._(this._future);
+  ResolvedApiClient._(this._resolve);
 
-  final Future<ThunderApiClient> _future;
+  @visibleForTesting
+  ResolvedApiClient.fromResolver(Future<ThunderApiClient> Function() resolve) : this._(resolve);
+
+  final Future<ThunderApiClient> Function() _resolve;
+  Future<ThunderApiClient>? _future;
   ThunderApiClient? _cached;
 
   factory ResolvedApiClient({
@@ -17,9 +21,15 @@ class ResolvedApiClient {
     bool debug = kDebugMode,
   }) {
     return ResolvedApiClient._(
-      api != null ? Future.value(api) : ApiClientFactory.create(account, debug: debug),
+      () => api != null ? Future.value(api) : ApiClientFactory.create(account, debug: debug),
     );
   }
 
-  Future<ThunderApiClient> get() async => _cached ??= await _future;
+  Future<ThunderApiClient> get() async {
+    final cached = _cached;
+    if (cached != null) return cached;
+
+    final future = _future ??= _resolve();
+    return _cached ??= await future;
+  }
 }

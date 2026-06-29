@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -78,10 +77,10 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<ThunderUser> blockUser(int userId, bool block) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.blockUser(userId: userId, block: block);
   }
 }

@@ -48,21 +48,6 @@ void main() {
       );
     });
 
-    test('block throws UnsupportedFeatureException when instance block unsupported', () async {
-      when(() => api.supportsInstanceBlock).thenReturn(false);
-
-      final repository = InstanceRepositoryImpl(
-        account: loggedInAccount(),
-        api: api,
-        localization: testLocalization,
-      );
-
-      expect(
-        () => repository.block(1, true),
-        throwsA(isA<UnsupportedFeatureException>()),
-      );
-    });
-
     test('federated parses json into FederatedInstances linked list', () async {
       when(() => api.federated()).thenAnswer(
         (_) async => {

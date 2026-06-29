@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/account/domain/models/account_media.dart';
@@ -63,51 +62,47 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<void> logout() async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     await api.logout();
   }
 
   @override
   Future<List<ThunderCommunity>> subscriptions() async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     final response = await api.site();
     return response.myUser?.follows ?? [];
   }
 
   @override
   Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    if (!api.supportsMedia) {
-      throw UnsupportedFeatureException('Media management', platformName: api.platformName);
-    }
-
+    final api = await _api.get();
     return api.media(page: page, limit: limit);
   }
 
   @override
   Future<void> saveSettings(AccountSettingsUpdate update) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     await api.saveUserSettings(update);
   }
 
   @override
   Future<bool> importSettings(String settings) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     if (!api.supportsSettingsImportExport) {
       throw UnsupportedFeatureException('Settings import', platformName: api.platformName);
     }
@@ -117,10 +112,10 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<dynamic> exportSettings() async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     if (!api.supportsSettingsImportExport) {
       throw UnsupportedFeatureException('Settings export', platformName: api.platformName);
     }
@@ -130,23 +125,19 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<String> uploadImage(String filePath) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.uploadImage(filePath);
   }
 
   @override
   Future<void> deleteImage({required String file, String? token}) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    if (!api.supportsMedia) {
-      throw UnsupportedFeatureException('Media management', platformName: api.platformName);
-    }
-
+    final api = await _api.get();
     await api.deleteImage(file: file, token: token);
   }
 }

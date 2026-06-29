@@ -55,29 +55,11 @@ mixin LemmyApiClientDefaults on BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  bool get supportsHidePosts => true;
-
-  @override
-  bool get supportsSubmitReport => true;
-
-  @override
   bool get supportsListReports => true;
-
-  @override
-  bool get supportsPrivateMessages => true;
-
-  @override
-  bool get supportsModlog => true;
 
   @override
   bool get supportsSettingsImportExport => true;
 
   @override
-  bool get supportsMedia => true;
-
-  @override
   bool get supportsTOTP => true;
-
-  @override
-  bool get supportsInstanceBlock => true;
 }

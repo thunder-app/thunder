@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/primitives/enums/subscription_status.dart';
 import 'package:thunder/src/foundation/primitives/models/media.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';

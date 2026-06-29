@@ -1,5 +1,3 @@
-
-
 import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
@@ -17,6 +15,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site_response.d
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
+import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
@@ -31,7 +30,6 @@ import 'package:thunder/src/features/account/domain/models/account_settings_upda
 /// PieFed API client for the `/api/alpha` endpoints.
 class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   static const _mapper = PiefedPrimitiveMapper();
-  static const _reportMapper = LemmyV3PrimitiveMapper();
 
   PiefedApiClient({
     required super.account,
@@ -424,7 +422,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'unresolved_only': unresolved,
       'community_id': communityId,
     });
-    return (json['post_reports'] as List).map<ThunderReport>((report) => _reportMapper.postReportView(report)).toList();
+    return (json['post_reports'] as List).map<ThunderReport>((report) => _mapper.postReportView(report)).toList();
   }
 
   Future<List<ThunderReport>> _getCommentReports({
@@ -441,7 +439,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'unresolved_only': unresolved,
       'community_id': communityId,
     });
-    return (json['comment_reports'] as List).map<ThunderReport>((report) => _reportMapper.commentReportView(report)).toList();
+    return (json['comment_reports'] as List).map<ThunderReport>((report) => _mapper.commentReportView(report)).toList();
   }
 
   @override
@@ -456,8 +454,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       'resolved': resolved,
     });
     return switch (kind) {
-      ReportKind.post => _reportMapper.postReportView(json['post_report_view']),
-      ReportKind.comment => _reportMapper.commentReportView(json['comment_report_view']),
+      ReportKind.post => _mapper.postReportView(json['post_report_view']),
+      ReportKind.comment => _mapper.commentReportView(json['comment_report_view']),
       _ => throw UnsupportedFeatureException('${kind.name} reports', platformName: platformName),
     };
   }
@@ -1032,7 +1030,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   // =============================================================
-  // Modlog - Not supported
+  // Modlog
   // =============================================================
 
   @override
@@ -1044,8 +1042,18 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     int? userId,
     int? moderatorId,
     int? commentId,
-  }) {
-    throw UnsupportedFeatureException('Modlog', platformName: platformName);
+  }) async {
+    final response = await request(HttpMethod.get, '$basePath/modlog', {
+      'page': page,
+      'limit': limit,
+      'type_': modlogActionType?.value,
+      'community_id': communityId,
+      'other_person_id': userId,
+      'mod_person_id': moderatorId,
+      'comment_id': commentId,
+    });
+
+    return modlogEventsFromV3Response(response, _mapper);
   }
 
   // =============================================================
@@ -1127,31 +1135,13 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  bool get supportsHidePosts => true;
-
-  @override
-  bool get supportsSubmitReport => true;
-
-  @override
   bool get supportsListReports => true;
-
-  @override
-  bool get supportsPrivateMessages => true;
-
-  @override
-  bool get supportsModlog => false;
 
   @override
   bool get supportsSettingsImportExport => false;
 
   @override
-  bool get supportsMedia => true;
-
-  @override
   bool get supportsTOTP => false;
-
-  @override
-  bool get supportsInstanceBlock => true;
 }
 
 AccountMediaItem _accountMediaItemFromPiefed(Map<String, dynamic> image, String instance) {

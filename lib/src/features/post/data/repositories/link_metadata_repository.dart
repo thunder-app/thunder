@@ -33,10 +33,10 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
 
   @override
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
-    final api = await _api.get();
     final trimmedUrl = url.trim();
     if (trimmedUrl.isEmpty || account.anonymous) return null;
 
+    final api = await _api.get();
     try {
       return api.getLinkMetadata(url: trimmedUrl);
     } catch (error) {

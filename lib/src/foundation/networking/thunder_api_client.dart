@@ -508,32 +508,14 @@ abstract class ThunderApiClient {
   // Feature Flags
   // =============================================================
 
-  /// Whether the platform supports hiding posts.
-  bool get supportsHidePosts => true;
-
-  /// Whether the platform supports submitting post and comment reports.
-  bool get supportsSubmitReport => true;
-
   /// Whether the platform supports listing and resolving moderator reports.
   bool get supportsListReports => true;
-
-  /// Whether the platform supports private messages.
-  bool get supportsPrivateMessages => true;
-
-  /// Whether the platform supports modlog.
-  bool get supportsModlog => true;
 
   /// Whether the platform supports settings import/export.
   bool get supportsSettingsImportExport => true;
 
-  /// Whether the platform supports media management.
-  bool get supportsMedia => true;
-
   /// Whether the platform supports TOTP for login.
   bool get supportsTOTP => true;
-
-  /// Whether the platform supports instance blocking.
-  bool get supportsInstanceBlock => true;
 
   // =============================================================
   // Lifecycle

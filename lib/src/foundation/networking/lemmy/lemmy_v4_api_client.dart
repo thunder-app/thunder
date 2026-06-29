@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_api_client_defaults.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_private_message_utils.dart';
@@ -717,7 +716,6 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
-
   /// Lemmy 1.0 has no dedicated PM conversation endpoint; filter the inbox list.
   @override
   Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
@@ -930,4 +928,3 @@ AccountMediaItem _accountMediaItemFromLemmyV4(Map<String, dynamic> image, String
     thumbnailForPostId: localImage['thumbnail_for_post_id'] as int?,
   );
 }
-

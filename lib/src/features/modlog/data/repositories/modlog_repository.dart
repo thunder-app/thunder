@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/modlog/domain/models/modlog_feed.dart';

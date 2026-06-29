@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/instance/domain/models/federated_instances.dart';
@@ -44,14 +43,10 @@ class InstanceRepositoryImpl implements InstanceRepository {
 
   @override
   Future<bool> block(int instanceId, bool block) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
-    if (!api.supportsInstanceBlock) {
-      throw UnsupportedFeatureException('Instance blocking', platformName: api.platformName);
-    }
-
+    final api = await _api.get();
     return api.blockInstance(instanceId: instanceId, block: block);
   }
 

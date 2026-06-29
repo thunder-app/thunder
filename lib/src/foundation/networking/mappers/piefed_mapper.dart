@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/primitives/enums/subscription_status.dart';
 import 'package:thunder/src/foundation/primitives/models/media.dart';
 import 'package:thunder/src/foundation/primitives/models/piefed_post_metadata.dart';
@@ -7,6 +6,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_community.dart'
 import 'package:thunder/src/foundation/primitives/models/thunder_flair.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
+import 'package:thunder/src/foundation/primitives/models/thunder_report.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 import 'package:thunder/src/foundation/primitives/models/notification_ref.dart';
 import 'package:thunder/src/foundation/primitives/models/vote_state.dart';
@@ -220,5 +220,67 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       notification: notification ?? NotificationRef(id: privateMessage['id'], kind: NotificationKind.privateMessage, read: privateMessage['read'] ?? false, createdAt: published),
     );
   }
-}
 
+  ThunderReport postReportView(Map<String, dynamic> json) {
+    final report = json['post_report'];
+    final subscribed = mapperSubscriptionStatus(json['subscribed']);
+    final postJson = json['post'];
+    final counts = json['counts'];
+    final mappedPost = postJson is Map<String, dynamic>
+        ? post(postJson).copyWith(
+            creator: json['post_creator'] is Map<String, dynamic> ? user(json['post_creator']) : null,
+            community: json['community'] is Map<String, dynamic> ? community(json['community'], subscribed: subscribed) : null,
+            counts: PostCounts(
+              comments: counts?['comments'],
+              score: counts?['score'],
+              upvotes: counts?['upvotes'],
+              downvotes: counts?['downvotes'],
+              newestCommentAt: mapperDate(counts?['newest_comment_time']),
+              unreadComments: json['unread_comments'],
+            ),
+            context: PostContext(
+              subscribed: subscribed,
+              saved: json['saved'],
+              read: json['read'],
+              hidden: json['hidden'],
+              creatorBlocked: json['creator_blocked'],
+              creatorBannedFromCommunity: json['creator_banned_from_community'],
+              creatorIsModerator: json['creator_is_moderator'],
+              creatorIsAdmin: json['creator_is_admin'],
+              vote: VoteState.fromScore(json['my_vote']),
+            ),
+          )
+        : null;
+
+    return ThunderReport(
+      id: report['id'],
+      kind: ReportKind.post,
+      reason: report['reason'],
+      resolved: report['resolved'],
+      creator: json['creator'] is Map<String, dynamic> ? user(json['creator']) : null,
+      post: mappedPost,
+      community: json['community'] is Map<String, dynamic> ? community(json['community'], subscribed: subscribed) : null,
+    );
+  }
+
+  ThunderReport commentReportView(Map<String, dynamic> json) {
+    final report = json['comment_report'];
+    final mappedComment = json['comment'] is Map<String, dynamic>
+        ? commentView({
+            ...json,
+            'creator': json['comment_creator'],
+          })
+        : null;
+
+    return ThunderReport(
+      id: report['id'],
+      kind: ReportKind.comment,
+      reason: report['reason'],
+      resolved: report['resolved'],
+      creator: json['creator'] is Map<String, dynamic> ? user(json['creator']) : null,
+      post: json['post'] is Map<String, dynamic> ? post(json['post']) : null,
+      comment: mappedComment,
+      community: json['community'] is Map<String, dynamic> ? community(json['community']) : null,
+    );
+  }
+}

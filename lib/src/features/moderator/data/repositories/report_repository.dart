@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/moderator/domain/enums/report_feed_type.dart';
@@ -77,10 +76,10 @@ class ReportRepositoryImpl implements ReportRepository {
 
   @override
   Future<bool> resolveReport(ThunderReport report, bool resolved) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     final response = await api.resolveReport(reportId: report.id, kind: report.kind, resolved: resolved);
     return response.resolved == resolved;
   }

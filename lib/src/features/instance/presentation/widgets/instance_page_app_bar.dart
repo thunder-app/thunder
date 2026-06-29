@@ -139,15 +139,14 @@ class _InstancePageAppBarState extends State<InstancePageAppBar> {
                       }
                     },
                   ),
-                if (widget.instance.platform == ThreadiversePlatform.lemmy)
-                  ThunderPopupMenuItem(
-                    title: l10n.modlog,
-                    icon: Icons.shield_rounded,
-                    onTap: () async {
-                      HapticFeedback.mediumImpact();
-                      navigateToModlogPage(context, subtitle: widget.instance.name);
-                    },
-                  ),
+                ThunderPopupMenuItem(
+                  title: l10n.modlog,
+                  icon: Icons.shield_rounded,
+                  onTap: () async {
+                    HapticFeedback.mediumImpact();
+                    navigateToModlogPage(context, subtitle: widget.instance.name);
+                  },
+                ),
                 ThunderPopupMenuItem(
                   title: l10n.openInBrowser,
                   icon: Icons.open_in_browser_rounded,

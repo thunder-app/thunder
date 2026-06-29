@@ -43,51 +43,59 @@ class LoginCredentialsFields extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    return Column(
-      spacing: 12.0,
-      children: [
-        AutofillGroup(
-          child: Column(
-            spacing: 12.0,
-            children: [
+    return BlocSelector<InstanceValidationCubit, InstanceValidationState, ThreadiversePlatform?>(
+      selector: (state) => state.instanceInfo?.platform ?? state.platform,
+      builder: (context, platform) {
+        final showTotp = platform != ThreadiversePlatform.piefed;
+
+        return Column(
+          spacing: 12.0,
+          children: [
+            AutofillGroup(
+              child: Column(
+                spacing: 12.0,
+                children: [
+                  TextField(
+                    key: const Key('login-username-field'),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.url,
+                    autocorrect: false,
+                    controller: usernameController,
+                    focusNode: usernameFocusNode,
+                    autofillHints: const [AutofillHints.username],
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: l10n.username,
+                    ),
+                    enableSuggestions: false,
+                  ),
+                  _LoginPasswordField(
+                    usernameController: usernameController,
+                    passwordController: passwordController,
+                    isSubmitting: isSubmitting,
+                    onSubmit: onSubmit,
+                  ),
+                ],
+              ),
+            ),
+            if (showTotp)
               TextField(
-                key: const Key('login-username-field'),
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.url,
+                key: const Key('login-totp-field'),
                 autocorrect: false,
-                controller: usernameController,
-                focusNode: usernameFocusNode,
-                autofillHints: const [AutofillHints.username],
+                controller: totpController,
+                maxLength: 6,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
-                  labelText: l10n.username,
+                  labelText: l10n.totp,
+                  hintText: '000000',
                 ),
                 enableSuggestions: false,
               ),
-              _LoginPasswordField(
-                usernameController: usernameController,
-                passwordController: passwordController,
-                isSubmitting: isSubmitting,
-                onSubmit: onSubmit,
-              ),
-            ],
-          ),
-        ),
-        TextField(
-          key: const Key('login-totp-field'),
-          autocorrect: false,
-          controller: totpController,
-          maxLength: 6,
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: l10n.totp,
-            hintText: '000000',
-          ),
-          enableSuggestions: false,
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

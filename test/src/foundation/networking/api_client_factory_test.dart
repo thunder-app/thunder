@@ -7,8 +7,11 @@ import 'package:thunder/src/foundation/networking/api_client_factory.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_v3_api_client.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_v4_api_client.dart';
 import 'package:thunder/src/foundation/networking/piefed/piefed_api_client.dart';
+import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/foundation/primitives/enums/threadiverse_platform.dart';
 import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
+
+import '../../../helpers/mock_thunder_api_client.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
@@ -86,6 +89,21 @@ void main() {
       final client = await ApiClientFactory.create(piefedAccount, httpClient: mockHttpClient);
 
       expect(client, isA<PiefedApiClient>());
+    });
+
+    test('resolved client defers resolution until first use and caches the client', () async {
+      final api = MockThunderApiClient();
+      var callCount = 0;
+      final resolved = ResolvedApiClient.fromResolver(() async {
+        callCount += 1;
+        return api;
+      });
+
+      expect(callCount, 0);
+
+      expect(await resolved.get(), same(api));
+      expect(await resolved.get(), same(api));
+      expect(callCount, 1);
     });
   });
 }

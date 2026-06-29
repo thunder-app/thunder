@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -68,19 +67,19 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
   @override
   Future<ThunderCommunity> subscribe(int communityId, bool follow) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.subscribeToCommunity(communityId: communityId, follow: follow);
   }
 
   @override
   Future<ThunderCommunity> block(int communityId, bool block) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.blockCommunity(communityId: communityId, block: block);
   }
 
@@ -93,10 +92,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
     int? expires,
     bool removeData = false,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.banUserFromCommunity(
       userId: userId,
       communityId: communityId,
@@ -113,10 +112,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required bool added,
     required int communityId,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.addModerator(
       userId: userId,
       communityId: communityId,

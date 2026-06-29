@@ -1,5 +1,3 @@
-
-
 import 'package:thunder/src/foundation/networking/utils/upload_image_utils.dart';
 import 'package:thunder/src/foundation/primitives/enums/comment_sort_type.dart';
 import 'package:thunder/src/foundation/primitives/enums/feed_list_type.dart';
@@ -779,7 +777,6 @@ class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
     });
   }
 
-
   @override
   Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
     required int personId,
@@ -921,8 +918,6 @@ class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
     if (token == null || token.isEmpty) throw ApiErrorException('Missing delete token', platformName: platformName);
     await request(HttpMethod.get, '/pictrs/image/delete/$token/$file', {});
   }
-
-
 }
 
 AccountMediaItem _accountMediaItemFromLegacy(Map<String, dynamic> image, String instance) {

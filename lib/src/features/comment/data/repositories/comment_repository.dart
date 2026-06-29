@@ -1,4 +1,3 @@
-
 import 'package:thunder/src/foundation/foundation.dart';
 import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/comment/domain/models/comment_page.dart';
@@ -111,10 +110,10 @@ class CommentRepositoryImpl implements CommentRepository {
     int? parentId,
     int? languageId,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.createComment(
       postId: postId,
       content: content,
@@ -129,10 +128,10 @@ class CommentRepositoryImpl implements CommentRepository {
     required String content,
     int? languageId,
   }) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.editComment(
       commentId: commentId,
       content: content,
@@ -142,37 +141,37 @@ class CommentRepositoryImpl implements CommentRepository {
 
   @override
   Future<ThunderComment> vote(ThunderComment comment, int score) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.voteComment(commentId: comment.id, score: score);
   }
 
   @override
   Future<ThunderComment> save(ThunderComment comment, bool save) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.saveComment(commentId: comment.id, save: save);
   }
 
   @override
   Future<ThunderComment> delete(ThunderComment comment, bool deleted) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     return api.deleteComment(commentId: comment.id, deleted: deleted);
   }
 
   @override
   Future<void> report(int commentId, String reason) async {
-    final api = await _api.get();
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
+    final api = await _api.get();
     await api.reportComment(commentId: commentId, reason: reason);
   }
 }

@@ -261,11 +261,6 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
 
     if (widget.account.anonymous) {
       quickActions = quickActions.where((action) => action.requiresAuthentication == false).toList();
-    } else {
-      // Hide hide action if account is not Lemmy platform
-      if (widget.account.platform != ThreadiversePlatform.lemmy) {
-        quickActions = quickActions.where((action) => action != GeneralQuickPostAction.hide).toList();
-      }
     }
 
     // Determine the available sub-menus to display
