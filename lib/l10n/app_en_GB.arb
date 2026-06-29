@@ -3009,5 +3009,15 @@
     "selectRecipient": "Select recipient",
     "@selectRecipient": {
         "description": "Prompt to choose a private message recipient"
-    }
+    },
+    "instanceOffline": "Instance is offline",
+    "instanceOnline": "Instance is online",
+    "instanceStatusUnknown": "Instance status unknown",
+    "failedToCreateDefaultProfile": "Failed to create default profile",
+    "@failedToCreateDefaultProfile": {
+        "description": "Error when session bootstrap cannot create the default anonymous profile"
+    },
+    "notAvailable": "N/A",
+    "piefedSupportBeta": "PieFed support is currently in beta.\nNot all features are supported yet.",
+    "profileOperationInProgress": "Profile operation in progress"
 }
