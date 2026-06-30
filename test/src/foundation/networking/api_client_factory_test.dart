@@ -91,6 +91,17 @@ void main() {
       expect(client, isA<PiefedApiClient>());
     });
 
+    test('probeLemmySiteVersion caches version from /api/v4/site', () async {
+      when(() => mockHttpClient.get(any())).thenAnswer(
+        (_) async => http.Response('{"version":"1.0.0"}', 200),
+      );
+
+      final version = await ApiClientFactory.probeLemmySiteVersion('lemmy.test', httpClient: mockHttpClient);
+
+      expect(version?.toString(), '1.0.0');
+      expect(PlatformVersionCache().get('lemmy.test')?.toString(), '1.0.0');
+    });
+
     test('resolved client defers resolution until first use and caches the client', () async {
       final api = MockThunderApiClient();
       var callCount = 0;

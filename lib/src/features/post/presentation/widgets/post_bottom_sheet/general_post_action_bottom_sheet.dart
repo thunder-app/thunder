@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';

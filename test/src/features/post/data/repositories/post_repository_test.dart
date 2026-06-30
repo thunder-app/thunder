@@ -234,5 +234,91 @@ void main() {
       final failed = await repository.readMultiple([1, 2, 3], false);
       expect(failed, [0, 1, 2]);
     });
+
+    test('getPosts passes opaque cursor through to api', () async {
+      when(() => api.getPosts(
+            cursor: 'opaque-cursor',
+            limit: any(named: 'limit'),
+            feedListType: any(named: 'feedListType'),
+            postSortType: any(named: 'postSortType'),
+            communityId: any(named: 'communityId'),
+            communityName: any(named: 'communityName'),
+            query: any(named: 'query'),
+            personId: any(named: 'personId'),
+            likedOnly: any(named: 'likedOnly'),
+            feedId: any(named: 'feedId'),
+            topicId: any(named: 'topicId'),
+            ignoreSticky: any(named: 'ignoreSticky'),
+            showHidden: any(named: 'showHidden'),
+            showSaved: any(named: 'showSaved'),
+          )).thenAnswer((_) async => (posts: [testPost()], nextPage: 'next'));
+
+      final repository = PostRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      final result = await repository.getPosts(cursor: 'opaque-cursor');
+
+      expect(result.nextPage, 'next');
+      verify(() => api.getPosts(cursor: 'opaque-cursor', limit: any(named: 'limit'), feedListType: any(named: 'feedListType'), postSortType: any(named: 'postSortType'), communityId: any(named: 'communityId'), communityName: any(named: 'communityName'), query: any(named: 'query'), personId: any(named: 'personId'), likedOnly: any(named: 'likedOnly'), feedId: any(named: 'feedId'), topicId: any(named: 'topicId'), ignoreSticky: any(named: 'ignoreSticky'), showHidden: any(named: 'showHidden'), showSaved: any(named: 'showSaved'))).called(1);
+    });
+
+    test('hide delegates to api without feature flag guard', () async {
+      when(() => api.hidePost(postId: 100, hide: true)).thenAnswer((_) async => true);
+
+      final repository = PostRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      final hidden = await repository.hide(100, true);
+
+      expect(hidden, isTrue);
+      verify(() => api.hidePost(postId: 100, hide: true)).called(1);
+    });
+
+    test('report delegates reason to api', () async {
+      when(() => api.reportPost(postId: 100, reason: 'spam')).thenAnswer((_) async {});
+
+      final repository = PostRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      await repository.report(100, 'spam');
+
+      verify(() => api.reportPost(postId: 100, reason: 'spam')).called(1);
+    });
+
+    test('save delegates to api', () async {
+      final post = testPost();
+      when(() => api.savePost(postId: 100, save: true)).thenAnswer((_) async => post);
+
+      final repository = PostRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      await repository.save(post, true);
+
+      verify(() => api.savePost(postId: 100, save: true)).called(1);
+    });
+
+    test('read delegates to api', () async {
+      when(() => api.readPost(postIds: [100], read: true)).thenAnswer((_) async => true);
+
+      final repository = PostRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      expect(await repository.read(100, true), isTrue);
+    });
   });
 }

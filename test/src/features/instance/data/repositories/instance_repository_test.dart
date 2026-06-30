@@ -48,6 +48,21 @@ void main() {
       );
     });
 
+    test('block delegates to api without feature flag guard', () async {
+      when(() => api.blockInstance(instanceId: 9, block: true)).thenAnswer((_) async => true);
+
+      final repository = InstanceRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      final blocked = await repository.block(9, true);
+
+      expect(blocked, isTrue);
+      verify(() => api.blockInstance(instanceId: 9, block: true)).called(1);
+    });
+
     test('federated parses json into FederatedInstances linked list', () async {
       when(() => api.federated()).thenAnswer(
         (_) async => {

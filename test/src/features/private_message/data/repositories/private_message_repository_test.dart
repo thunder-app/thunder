@@ -65,5 +65,24 @@ void main() {
         throwsA(isA<NotLoggedInException>()),
       );
     });
+
+    test('conversation delegates personId and paging to api', () async {
+      when(() => api.getPrivateMessageConversation(
+            personId: 7,
+            conversationId: any(named: 'conversationId'),
+            page: 2,
+            limit: 20,
+          )).thenAnswer((_) async => []);
+
+      final repository = PrivateMessageRepositoryImpl(
+        account: loggedInAccount(),
+        api: api,
+        localization: testLocalization,
+      );
+
+      await repository.conversation(personId: 7, page: 2, limit: 20);
+
+      verify(() => api.getPrivateMessageConversation(personId: 7, conversationId: null, page: 2, limit: 20)).called(1);
+    });
   });
 }
