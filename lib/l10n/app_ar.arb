@@ -149,7 +149,7 @@
   "@boldUserName": {
     "description": "Setting for bolding the username"
   },
-  "browsingAnonymously": "‬أنت تتصفح {instance} بخصوصية.",
+  "browsingAnonymously": "أنت تتصفح {instance} بخصوصية.",
   "@browsingAnonymously": {},
   "cancel": "ألغِ",
   "@cancel": {},

@@ -1623,6 +1623,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Indikatorstil für verschachtelte Kommentare';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Niemals';
 
   @override
@@ -1738,10 +1742,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';
@@ -1922,7 +1922,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get postFlairsUnavailable =>
-      'No flair options available for this community';
+      'Für diese Community sind keine Flair-Optionen verfügbar';
 
   @override
   String get postLocked => 'Post gesperrt. Keine Antworten erlaubt.';
@@ -1955,7 +1955,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get postTags => 'Tags';
 
   @override
-  String get postTagsHelperText => 'Separate tags with commas';
+  String get postTagsHelperText => 'Tags mit Kommas trennen';
 
   @override
   String get postTitle => 'Titel';

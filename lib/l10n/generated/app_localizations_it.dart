@@ -1600,6 +1600,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Stile Indicatore Commento Nidificato';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Mai';
 
   @override
@@ -1712,10 +1716,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get normal => 'Normale';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

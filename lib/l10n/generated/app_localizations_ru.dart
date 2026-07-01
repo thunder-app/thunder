@@ -1595,6 +1595,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nestedCommentIndicatorStyle => 'Nested Comment Indicator Style';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Никогда';
 
   @override
@@ -1706,10 +1710,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get normal => 'Нормальный';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

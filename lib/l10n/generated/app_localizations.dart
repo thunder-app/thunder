@@ -2904,6 +2904,12 @@ abstract class AppLocalizations {
   /// **'Nested Comment Indicator Style'**
   String get nestedCommentIndicatorStyle;
 
+  /// No description provided for @networkErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to reach the server. Check your connection and try again.'**
+  String get networkErrorMessage;
+
   /// No description provided for @never.
   ///
   /// In en, this message translates to:
@@ -3125,12 +3131,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Normal'**
   String get normal;
-
-  /// No description provided for @networkErrorMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Unable to reach the server. Check your connection and try again.'**
-  String get networkErrorMessage;
 
   /// No description provided for @notAvailable.
   ///

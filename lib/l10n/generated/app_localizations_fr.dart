@@ -1622,6 +1622,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Style de l\'indicateur de commentaire imbriqué';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Never';
 
   @override
@@ -1733,10 +1737,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

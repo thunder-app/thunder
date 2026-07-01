@@ -55,12 +55,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
-    return 'Seçilen yorum \'$instance\' üzerinde bulunamadı.';
+    return 'Seçilen yorum \'$instance\' üzerinde bulunamadı';
   }
 
   @override
   String accountSwitchPostNotFound(Object instance) {
-    return 'Seçilen gönderi \'$instance\' üzerinde bulunamadı.';
+    return 'Seçilen gönderi \'$instance\' üzerinde bulunamadı';
   }
 
   @override
@@ -737,7 +737,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deleteDraftConfirmation =>
-      'Are you sure you want to delete this draft?';
+      'Bu taslağı silmek istediğinize emin misiniz?';
 
   @override
   String get deleteImageConfirmMessage =>
@@ -795,7 +795,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dimReadPosts => 'Okunmuş Gönderileri Soluklaştır';
 
   @override
-  String get directMessage => 'Direct message';
+  String get directMessage => 'Doğrudan mesaj';
 
   @override
   String get disable => 'Devre Dışı Bırak';
@@ -848,7 +848,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get downvotesDisabled => 'Bu sunucuda eksi oylar kapalı.';
 
   @override
-  String get drafts => 'Drafts';
+  String get drafts => 'Taslaklar';
 
   @override
   String get edit => 'Düzenle';
@@ -1605,6 +1605,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nestedCommentIndicatorStyle => 'İç İçe Yorum Göstergesi Stili';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Asla';
 
   @override
@@ -1635,7 +1639,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noCommunityBlocks => 'Engellenen topluluk yok';
 
   @override
-  String get noCommunitySelected => 'No community selected';
+  String get noCommunitySelected => 'Bir topluluk seçilmedi';
 
   @override
   String get noCompatibleAppFound => 'Uyumlu uygulama bulunamadı';
@@ -1647,7 +1651,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noDisplayNameSet => 'Görünen ad ayarlanmamış';
 
   @override
-  String get noDrafts => 'You do not have any drafts yet';
+  String get noDrafts => 'Henüz bir taslağınız yok';
 
   @override
   String get noEmailSet => 'E-posta ayarlanmamış';
@@ -1716,10 +1720,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';
@@ -1896,11 +1896,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get postCreatedSuccessfully => 'Gönderi başarıyla oluşturuldu!';
 
   @override
-  String get postFlairs => 'Flairs';
+  String get postFlairs => 'Rozet';
 
   @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postFlairsUnavailable => 'Bu topluluk için bir rozet seçeneği yok';
 
   @override
   String get postLocked => 'Gönderi kilitli. Yanıtlara izin verilmiyor.';
@@ -1930,10 +1929,10 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bunun yerine düğmeleri mi kullanmak istiyorsunuz? Genel ayarlarda gönderi kartlarında hangi düğmelerin görüneceğini değiştirin.';
 
   @override
-  String get postTags => 'Tags';
+  String get postTags => 'Etiketler';
 
   @override
-  String get postTagsHelperText => 'Separate tags with commas';
+  String get postTagsHelperText => 'Etiketleri virgül ile ayır';
 
   @override
   String get postTitle => 'Başlık';
@@ -2127,7 +2126,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu görünümden yanıtlamak şu anda desteklenmiyor';
 
   @override
-  String get replyToComment => 'Reply to Comment';
+  String get replyToComment => 'Yoruma Yanıt Ver';
 
   @override
   String get replyToPost => 'Gönderiye Yanıtla';
@@ -2306,7 +2305,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get selectLanguage => 'Dil Seç';
 
   @override
-  String get selectRecipient => 'Select recipient';
+  String get selectRecipient => 'Alıcıyı seçin';
 
   @override
   String get selectSearchType => 'Arama Türünü Seç';
@@ -2315,7 +2314,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get selectText => 'Metni Seç';
 
   @override
-  String get send => 'Send';
+  String get send => 'İlet';
 
   @override
   String get sendBackgroundTestLocalNotification =>
@@ -3050,10 +3049,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get unsubscribed => 'Abonelikten Çıkıldı';
 
   @override
-  String get untitledCommentDraft => 'Untitled comment draft';
+  String get untitledCommentDraft => 'İsimsiz yorum taslağı';
 
   @override
-  String get untitledPostDraft => 'Untitled post draft';
+  String get untitledPostDraft => 'İsimsiz gönderi taslağı';
 
   @override
   String updateReleased(Object version) {

@@ -1623,6 +1623,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'உள்ளமைக்கப்பட்ட கருத்து காட்டி பாணி';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'ஒருபோதும்';
 
   @override
@@ -1739,10 +1743,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get normal => 'சாதாரண';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

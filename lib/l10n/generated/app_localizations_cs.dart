@@ -1602,6 +1602,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Styl Indikátoru Podřazeného Komentáře';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Never';
 
   @override
@@ -1713,10 +1717,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

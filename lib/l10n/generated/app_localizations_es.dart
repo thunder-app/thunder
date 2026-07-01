@@ -1630,6 +1630,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Estilo del indicador del comentario fijado';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Nunca';
 
   @override
@@ -1743,10 +1747,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';

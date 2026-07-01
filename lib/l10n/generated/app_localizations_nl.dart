@@ -739,7 +739,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get deleteDraftConfirmation =>
-      'Are you sure you want to delete this draft?';
+      'Weet u zeker dat u dit concept wilt verwijderen?';
 
   @override
   String get deleteImageConfirmMessage =>
@@ -797,7 +797,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dimReadPosts => 'Gelezen berichten dimmen';
 
   @override
-  String get directMessage => 'Direct message';
+  String get directMessage => 'Privé­bericht';
 
   @override
   String get disable => 'Uitschakelen';
@@ -851,7 +851,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Downvotes zĳn uitgeschakeld op deze instantie.';
 
   @override
-  String get drafts => 'Drafts';
+  String get drafts => 'Concepten';
 
   @override
   String get edit => 'Bewerken';
@@ -1193,11 +1193,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get imageDimensionTimeout => 'Time-out voor afbeeldings­afmetingen';
 
   @override
-  String get imagePeekDuration => 'Image Peek Duration';
+  String get imagePeekDuration => 'Indruk­duur afbeeldings­voorvertoning';
 
   @override
   String get imagePeekDurationDescription =>
-      'Duration of long press before image peek is triggered';
+      'Hoe lang moet er worden ingedrukt voordat een voor­vertoning van de afbeelding wordt geactiveerd';
 
   @override
   String get importDatabase => 'Database importeren';
@@ -1379,7 +1379,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get linkHandlingInAppShort => 'Intern';
 
   @override
-  String get linkPostsUseCompactView => 'Show Compact Link Posts';
+  String get linkPostsUseCompactView => 'Compacte link­berichten';
 
   @override
   String get linksBehaviourSettings => 'Koppelingen';
@@ -1612,6 +1612,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Stijl van indicator voor geneste opmerkingen';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Nooit';
 
   @override
@@ -1643,7 +1647,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noCommunityBlocks => 'Geen geblokkeerde gemeen­schappen';
 
   @override
-  String get noCommunitySelected => 'No community selected';
+  String get noCommunitySelected => 'Geen gemeen­schap geselecteerd';
 
   @override
   String get noCompatibleAppFound => 'Geen compatibele app gevonden';
@@ -1656,7 +1660,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noDisplayNameSet => 'Geen weergave­naam ingesteld';
 
   @override
-  String get noDrafts => 'You do not have any drafts yet';
+  String get noDrafts => 'U heeft nog geen concepten';
 
   @override
   String get noEmailSet => 'Geen e-mail ingesteld';
@@ -1726,10 +1730,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get normal => 'Normaal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';
@@ -1865,7 +1865,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pinnedPostToCommunity => 'Bericht vastgepind in gemeenschap';
 
   @override
-  String get pinnedPostsUseCompactView => 'Show Compact Pinned Posts';
+  String get pinnedPostsUseCompactView => 'Compacte vast­gezette berichten';
 
   @override
   String get placeholderText =>
@@ -1941,10 +1941,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Wilt u liever knoppen gebruiken? Wĳzig welke knoppen worden weergegeven op berichtkaarten in de algemene instellingen.';
 
   @override
-  String get postTags => 'Tags';
+  String get postTags => 'Labels';
 
   @override
-  String get postTagsHelperText => 'Separate tags with commas';
+  String get postTagsHelperText => 'Scheid labels met komma\'s';
 
   @override
   String get postTitle => 'Titel';
@@ -2138,7 +2138,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Reageren vanuit deze weergave wordt momenteel nog niet ondersteund';
 
   @override
-  String get replyToComment => 'Reply to Comment';
+  String get replyToComment => 'Reactie op opmerking';
 
   @override
   String get replyToPost => 'Reageren op bericht';
@@ -2320,7 +2320,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get selectLanguage => 'Taal selecteren';
 
   @override
-  String get selectRecipient => 'Select recipient';
+  String get selectRecipient => 'Selecteer ontvanger';
 
   @override
   String get selectSearchType => 'Selecteer zoektype';
@@ -2329,7 +2329,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get selectText => 'Tekst selecteren';
 
   @override
-  String get send => 'Send';
+  String get send => 'Verzenden';
 
   @override
   String get sendBackgroundTestLocalNotification =>
@@ -2581,7 +2581,8 @@ class AppLocalizationsNl extends AppLocalizations {
       'Bericht­auteur wordt altĳd getoond in gemeenschaps­feeds';
 
   @override
-  String get showPostCommunityFirst => 'Show Community and Author First';
+  String get showPostCommunityFirst =>
+      'Gemeen­schap en auteur eerst weer­geven';
 
   @override
   String get showPostCommunityIcons => 'Gemeenschaps­pictogrammen tonen';

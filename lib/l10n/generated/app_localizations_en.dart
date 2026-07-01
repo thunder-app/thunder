@@ -1596,6 +1596,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nestedCommentIndicatorStyle => 'Nested Comment Indicator Style';
 
   @override
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
+
+  @override
   String get never => 'Never';
 
   @override
@@ -1707,10 +1711,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get normal => 'Normal';
-
-  @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get notAvailable => 'N/A';
@@ -4413,6 +4413,10 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get deleteComment => 'Delete Comment';
 
   @override
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
+
+  @override
   String get deleteImageConfirmMessage =>
       'Are you sure you want to delete this image?';
 
@@ -4468,6 +4472,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get dimReadPosts => 'Dim Read Posts';
 
   @override
+  String get directMessage => 'Direct message';
+
+  @override
   String get disable => 'Disable';
 
   @override
@@ -4516,6 +4523,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get downvotesDisabled => 'Downvotes are turned off on this instance.';
+
+  @override
+  String get drafts => 'Drafts';
 
   @override
   String get edit => 'Edit';
@@ -4676,6 +4686,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
       Object serverAddress) {
     return 'Failed to communicate with Thunder notification server at $serverAddress.';
   }
+
+  @override
+  String get failedToCreateDefaultProfile => 'Failed to create default profile';
 
   @override
   String failedToLoadBlocks(Object errorMessage) {
@@ -4945,6 +4958,15 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get instanceNameThickness => 'Instance Name Thickness';
+
+  @override
+  String get instanceOffline => 'Instance is offline';
+
+  @override
+  String get instanceOnline => 'Instance is online';
+
+  @override
+  String get instanceStatusUnknown => 'Instance status unknown';
 
   @override
   String get instances => 'Instances';
@@ -5285,6 +5307,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get noCommunityBlocks => 'No blocked communities';
 
   @override
+  String get noCommunitySelected => 'No community selected';
+
+  @override
   String get noCompatibleAppFound => 'No compatible app found';
 
   @override
@@ -5292,6 +5317,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get noDisplayNameSet => 'No display name set';
+
+  @override
+  String get noDrafts => 'You do not have any drafts yet';
 
   @override
   String get noEmailSet => 'No email set';
@@ -5360,6 +5388,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get normal => 'Normal';
+
+  @override
+  String get notAvailable => 'N/A';
 
   @override
   String notValidLemmyInstance(Object instance) {
@@ -5476,6 +5507,10 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
       'Thunder requires some permissions in order to save this image which have been denied.';
 
   @override
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
+
+  @override
   String get pinPostToCommunity => 'Pin Post to Community';
 
   @override
@@ -5529,6 +5564,13 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get postCreatedSuccessfully => 'Post created successfully!';
 
   @override
+  String get postFlairs => 'Flairs';
+
+  @override
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
+
+  @override
   String get postLocked => 'Post locked. No replies allowed.';
 
   @override
@@ -5554,6 +5596,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String get postSwipeGesturesHint =>
       'Looking to use buttons instead? Change what buttons appear on post cards in general settings.';
+
+  @override
+  String get postTags => 'Tags';
+
+  @override
+  String get postTagsHelperText => 'Separate tags with commas';
 
   @override
   String get postTitle => 'Title';
@@ -5586,6 +5634,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get profileBio => 'Profile Bio';
+
+  @override
+  String get profileOperationInProgress => 'Profile operation in progress';
 
   @override
   String get profiles => 'Profiles';
@@ -5741,6 +5792,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   @override
   String get replyNotSupported =>
       'Replying from this view is currently not supported yet';
+
+  @override
+  String get replyToComment => 'Reply to Comment';
 
   @override
   String get replyToPost => 'Reply to Post';
@@ -5920,10 +5974,16 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get selectLanguage => 'Select Language';
 
   @override
+  String get selectRecipient => 'Select recipient';
+
+  @override
   String get selectSearchType => 'Select Search Type';
 
   @override
   String get selectText => 'Select Text';
+
+  @override
+  String get send => 'Send';
 
   @override
   String get sendBackgroundTestLocalNotification =>
@@ -6653,6 +6713,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get unsubscribed => 'Unsubscribed';
+
+  @override
+  String get untitledCommentDraft => 'Untitled comment draft';
+
+  @override
+  String get untitledPostDraft => 'Untitled post draft';
 
   @override
   String updateReleased(Object version) {
