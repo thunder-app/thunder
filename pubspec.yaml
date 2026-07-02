@@ -29,8 +29,6 @@ dependencies:
   cached_network_image: ^3.2.3
   collection: ^1.17.0
   connectivity_plus: ^7.0.0
-  dart_ping: ^9.0.0
-  dart_ping_ios: ^4.0.0
   drift: ^2.32.0
   drift_flutter: ^0.3.0
   dynamic_color: ^1.6.5
@@ -45,7 +43,7 @@ dependencies:
   flutter_displaymode: ^0.7.0
   flutter_file_dialog: ^3.0.2
   keyboard_detection: ^0.8.1
-  flutter_local_notifications: ^21.0.0
+  flutter_local_notifications: ^22.0.1
   flutter_markdown: ^0.7.3+1
   flutter_native_splash: ^2.4.7
   flutter_sharing_intent: ^2.0.4
@@ -78,7 +76,7 @@ dependencies:
   webview_flutter: ^4.2.2
   webview_flutter_android: ^4.1.0
   webview_flutter_wkwebview: ^3.5.0
-  youtube_player_flutter: ^9.1.0
+  youtube_player_flutter: ^10.0.1
   youtube_player_iframe: ^6.0.0
   freezed_annotation: ^3.1.0
   freezed: ^3.2.2

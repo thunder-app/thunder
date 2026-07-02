@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path/path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,8 +46,6 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   String? pushNotificationServer;
   String? unifiedPushServer;
   String? thunderNotificationServer;
-  String? thunderNotificationServerPing;
-  bool pingDone = false;
 
   /// Enable experimental features in the app.
   bool enableExperimentalFeatures = false;
@@ -107,22 +104,6 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
         // Find the Thunder notification server
         thunderNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name);
-
-        // Ping the Thunder notification server
-        Uri? thunderNotificationServerUri = Uri.tryParse(thunderNotificationServer ?? '');
-        if (thunderNotificationServerUri != null) {
-          Future.microtask(() async {
-            PingData pingData = await Ping(
-              thunderNotificationServerUri.host,
-              count: 1,
-              timeout: 5,
-            ).stream.first;
-            setState(() {
-              pingDone = true;
-              thunderNotificationServerPing = pingData.response?.time == null ? null : '${pingData.response?.time?.inMilliseconds}ms';
-            });
-          });
-        }
       } else if (!kIsWeb && Platform.isIOS) {
         IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
@@ -324,7 +305,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 SizedBox(height: 8.0),
                 ThunderSettingsTile(
                     leading: Icon(Icons.info_rounded),
-                    title: '${l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none)} ${pingDone ? '(${thunderNotificationServerPing ?? l10n.offline})' : ''}',
+                    title: l10n.thunderNotificationServer(thunderNotificationServer ?? l10n.none),
                     trailing: Container(),
                     onTap: null,
                     highlightKey: settingToHighlightKey,

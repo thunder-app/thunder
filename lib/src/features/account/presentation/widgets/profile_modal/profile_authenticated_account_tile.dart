@@ -97,7 +97,6 @@ class ProfileAuthenticatedAccountTile extends StatelessWidget {
         subtitle: ProfileMetadata(
           instance: row.account.instance.replaceAll('https://', ''),
           version: row.version,
-          latency: row.latency,
         ),
         trailing: ProfileTrailingAction(
           active: active,

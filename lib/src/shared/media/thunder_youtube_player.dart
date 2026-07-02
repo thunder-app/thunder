@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
@@ -27,11 +23,9 @@ class ThunderYoutubePlayer extends StatefulWidget {
 }
 
 class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
-  late final ypf.YoutubePlayerController? _mobileController;
-  late final YoutubePlayerController? _webController;
+  late final YoutubePlayerController _controller;
 
   bool _isMuted = false;
-  final bool _isMobile = Platform.isAndroid || Platform.isIOS;
 
   @override
   void initState() {
@@ -42,51 +36,30 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
   void _initializePlayer() {
     final videoPreferences = context.read<VideoPreferencesCubit>().state;
     final startSeconds = _extractStartSeconds(widget.videoUrl);
-    final videoId = ypf.YoutubePlayer.convertUrlToId(widget.videoUrl) ?? '';
+    final videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl) ?? '';
 
     _isMuted = videoPreferences.videoAutoMute;
 
-    if (_isMobile) {
-      _mobileController = ypf.YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: ypf.YoutubePlayerFlags(
-          controlsVisibleAtStart: true,
-          autoPlay: _shouldAutoPlay(),
-          enableCaption: false,
-          hideControls: false,
-          loop: videoPreferences.videoAutoLoop,
-          mute: _isMuted,
-          startAt: startSeconds,
-        ),
-      )..setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: _shouldAutoPlay(),
+      startSeconds: startSeconds.toDouble(),
+      params: YoutubePlayerParams(
+        mute: _isMuted,
+        loop: videoPreferences.videoAutoLoop,
+      ),
+    );
 
-      if (videoPreferences.videoAutoFullscreen) {
-        _mobileController?.toggleFullScreenMode();
-      }
-      _webController = null;
-    } else {
-      _webController = YoutubePlayerController(
-        params: YoutubePlayerParams(
-          showControls: true,
-          mute: _isMuted,
-          showFullscreenButton: true,
-          loop: videoPreferences.videoAutoLoop,
-        ),
-      );
+    _controller.setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
 
-      _webController?.loadVideoById(
-        videoId: videoId,
-        startSeconds: startSeconds.toDouble(),
-      );
-      _webController?.setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
-      _mobileController = null;
+    if (videoPreferences.videoAutoFullscreen) {
+      _controller.enterFullScreen();
     }
   }
 
   @override
   void dispose() {
-    _mobileController?.dispose();
-    _webController?.close();
+    _controller.close();
     super.dispose();
   }
 
@@ -142,88 +115,62 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
     setState(() {
       _isMuted = !_isMuted;
       if (_isMuted) {
-        _mobileController?.mute();
-        _webController?.mute();
+        _controller.mute();
       } else {
-        _mobileController?.unMute();
-        _webController?.unMute();
+        _controller.unMute();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isMobile && _mobileController != null) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Center(
-                child: ypf.YoutubePlayerBuilder(
-                  player: ypf.YoutubePlayer(
-                    aspectRatio: 16 / 9,
-                    controller: _mobileController!,
-                    actionsPadding: const EdgeInsets.only(bottom: 8),
-                    topActions: const [],
-                  ),
-                  builder: (context, player) => player,
-                  onExitFullScreen: () => SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Center(
+              child: YoutubePlayer(controller: _controller),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: _toggleMute,
+                      icon: Icon(
+                        _isMuted ? Icons.volume_off : Icons.volume_up,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
+                      icon: Icon(
+                        Icons.open_in_browser_rounded,
+                        semanticLabel: GlobalContext.l10n.openInBrowser,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.arrow_back,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: _toggleMute,
-                        icon: Icon(
-                          _isMuted ? Icons.volume_off : Icons.volume_up,
-                          color: Colors.white,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                        icon: Icon(
-                          Icons.open_in_browser_rounded,
-                          semanticLabel: GlobalContext.l10n.openInBrowser,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
-
-    if (_webController != null) {
-      return Material(
-        color: Colors.black,
-        child: YoutubePlayerScaffold(
-          autoFullScreen: false,
-          controller: _webController!,
-          builder: (context, player) => Center(child: player),
-        ),
-      );
-    }
-
-    return const SizedBox.shrink();
+      ),
+    );
   }
 }

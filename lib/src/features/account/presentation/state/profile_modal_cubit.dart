@@ -10,9 +10,6 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 /// Looks up display metadata for an instance host.
 typedef ProfileModalInstanceInfoLookup = Future<ThunderInstanceInfo> Function(String instance);
 
-/// Measures network latency for an instance host.
-typedef ProfileModalPingLookup = Future<Duration?> Function(String instance);
-
 /// Loads the unread notification count for an authenticated account.
 typedef ProfileModalUnreadCountLookup = Future<int?> Function(Account account);
 
@@ -26,19 +23,16 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
     required SessionRepository sessionRepository,
     required bool quickSelectMode,
     required ProfileModalInstanceInfoLookup instanceInfoLookup,
-    required ProfileModalPingLookup pingLookup,
     required ProfileModalUnreadCountLookup unreadCountLookup,
   })  : _sessionRepository = sessionRepository,
         _quickSelectMode = quickSelectMode,
         _instanceInfoLookup = instanceInfoLookup,
-        _pingLookup = pingLookup,
         _unreadCountLookup = unreadCountLookup,
         super(const ProfileModalState());
 
   final SessionRepository _sessionRepository;
   final bool _quickSelectMode;
   final ProfileModalInstanceInfoLookup _instanceInfoLookup;
-  final ProfileModalPingLookup _pingLookup;
   final ProfileModalUnreadCountLookup _unreadCountLookup;
 
   int _loadGeneration = 0;
@@ -213,7 +207,6 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
     for (final row in rows) {
       if (_isStale(generation)) return;
       unawaited(_updateAuthenticatedInstanceInfo(row, generation));
-      unawaited(_updateAuthenticatedLatency(row, generation));
       unawaited(_updateUnreadCount(row, generation));
     }
   }
@@ -222,7 +215,6 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
     for (final row in rows) {
       if (_isStale(generation)) return;
       unawaited(_updateAnonymousInstanceInfo(row, generation));
-      unawaited(_updateAnonymousLatency(row, generation));
     }
   }
 
@@ -239,22 +231,6 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
       final instanceInfo = await _instanceInfoLookup(row.account.instance);
       if (_isStale(generation)) return;
       _emitAnonymousRow(row.sessionKey, (current) => current.copyWith(instanceIcon: () => instanceInfo.icon, version: () => instanceInfo.version, alive: () => instanceInfo.success));
-    } catch (_) {}
-  }
-
-  Future<void> _updateAuthenticatedLatency(ProfileModalAuthenticatedAccountRow row, int generation) async {
-    try {
-      final latency = await _pingLookup(row.account.instance);
-      if (_isStale(generation)) return;
-      _emitAuthenticatedRow(row.sessionKey, (current) => current.copyWith(latency: () => latency));
-    } catch (_) {}
-  }
-
-  Future<void> _updateAnonymousLatency(ProfileModalAnonymousInstanceRow row, int generation) async {
-    try {
-      final latency = await _pingLookup(row.account.instance);
-      if (_isStale(generation)) return;
-      _emitAnonymousRow(row.sessionKey, (current) => current.copyWith(latency: () => latency));
     } catch (_) {}
   }
 
@@ -393,7 +369,6 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
     required this.account,
     this.instanceIcon,
     this.version,
-    this.latency,
     this.alive,
     this.totalUnreadCount,
   });
@@ -406,9 +381,6 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
 
   /// Optional instance software version.
   final String? version;
-
-  /// Optional measured instance latency.
-  final Duration? latency;
 
   /// Latest instance availability result, or `null` while unknown.
   final bool? alive;
@@ -423,7 +395,6 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
     Account? account,
     String? Function()? instanceIcon,
     String? Function()? version,
-    Duration? Function()? latency,
     bool? Function()? alive,
     int? Function()? totalUnreadCount,
   }) {
@@ -431,14 +402,13 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
       account: account ?? this.account,
       instanceIcon: instanceIcon != null ? instanceIcon() : this.instanceIcon,
       version: version != null ? version() : this.version,
-      latency: latency != null ? latency() : this.latency,
       alive: alive != null ? alive() : this.alive,
       totalUnreadCount: totalUnreadCount != null ? totalUnreadCount() : this.totalUnreadCount,
     );
   }
 
   @override
-  List<Object?> get props => [account, instanceIcon, version, latency, alive, totalUnreadCount];
+  List<Object?> get props => [account, instanceIcon, version, alive, totalUnreadCount];
 }
 
 /// Immutable anonymous-instance data displayed by a profile row.
@@ -447,7 +417,6 @@ class ProfileModalAnonymousInstanceRow extends Equatable {
     required this.account,
     this.instanceIcon,
     this.version,
-    this.latency,
     this.alive,
   });
 
@@ -460,9 +429,6 @@ class ProfileModalAnonymousInstanceRow extends Equatable {
   /// Optional instance software version.
   final String? version;
 
-  /// Optional measured instance latency.
-  final Duration? latency;
-
   /// Latest instance availability result, or `null` while unknown.
   final bool? alive;
 
@@ -473,20 +439,18 @@ class ProfileModalAnonymousInstanceRow extends Equatable {
     Account? account,
     String? Function()? instanceIcon,
     String? Function()? version,
-    Duration? Function()? latency,
     bool? Function()? alive,
   }) {
     return ProfileModalAnonymousInstanceRow(
       account: account ?? this.account,
       instanceIcon: instanceIcon != null ? instanceIcon() : this.instanceIcon,
       version: version != null ? version() : this.version,
-      latency: latency != null ? latency() : this.latency,
       alive: alive != null ? alive() : this.alive,
     );
   }
 
   @override
-  List<Object?> get props => [account, instanceIcon, version, latency, alive];
+  List<Object?> get props => [account, instanceIcon, version, alive];
 }
 
 List<T> _reorder<T>(List<T> items, int oldIndex, int newIndex) {

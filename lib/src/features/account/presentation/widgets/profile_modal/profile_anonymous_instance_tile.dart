@@ -87,7 +87,6 @@ class ProfileAnonymousInstanceTile extends StatelessWidget {
         subtitle: ProfileMetadata(
           instance: row.account.instance,
           version: row.version,
-          latency: row.latency,
         ),
         trailing: ProfileTrailingAction(
           active: active,

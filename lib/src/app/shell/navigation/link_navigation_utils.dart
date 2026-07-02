@@ -94,7 +94,7 @@ void _openLink(BuildContext context, {required String url, bool isVideo = false}
 }
 
 void _showVideoPlayer(BuildContext context, {required String url, int? postId}) {
-  final videoId = YoutubePlayer.convertUrlToId(url);
+  final videoId = YoutubePlayerController.convertUrlToId(url);
   final videoPlayerMode = context.read<VideoPreferencesCubit>().state.videoPlayerMode;
 
   switch (videoPlayerMode) {

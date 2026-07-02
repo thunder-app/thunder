@@ -190,7 +190,7 @@ class _CreatePostTagEditorState extends State<_CreatePostTagEditor> {
   }
 
   void _handlePendingChanged(String value) {
-    if (!value.contains(RegExp(r'[\s,]'))) {
+    if (!value.contains(',')) {
       return;
     }
 
@@ -204,7 +204,7 @@ class _CreatePostTagEditorState extends State<_CreatePostTagEditor> {
   }
 
   void _commitPendingInput() {
-    final pendingTags = normalizePiefedTags(_pendingController.text.split(RegExp(r'[\s,]+')));
+    final pendingTags = normalizePiefedTags(_pendingController.text.split(','));
     if (pendingTags.isEmpty) {
       _pendingController.clear();
       return;

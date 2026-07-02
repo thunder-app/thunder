@@ -1,5 +1,3 @@
-import 'package:dart_ping/dart_ping.dart';
-
 import 'package:thunder/src/app/state/app_bootstrap_cubit/app_bootstrap_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/app/wiring/nodeinfo_platform_detection_service.dart';
@@ -94,10 +92,6 @@ ProfileModalCubit createProfileModalCubit({required bool quickSelectMode}) {
         success: false,
       ),
     ),
-    pingLookup: (instance) async {
-      final pingData = await Ping(instance, count: 1, timeout: 5).stream.first;
-      return pingData.response?.time;
-    },
     unreadCountLookup: (account) async {
       final unread = await createNotificationRepository(account).unreadNotificationsCount();
       return unread.total == 0 ? null : unread.total;

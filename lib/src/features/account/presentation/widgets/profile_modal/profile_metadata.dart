@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Displays an instance host with optional version and latency metadata.
+/// Displays an instance host with optional version metadata.
 class ProfileMetadata extends StatelessWidget {
   const ProfileMetadata({
     super.key,
     required this.instance,
     required this.version,
-    required this.latency,
   });
 
   /// Instance host displayed at the start of the metadata row.
@@ -15,16 +14,12 @@ class ProfileMetadata extends StatelessWidget {
   /// Optional instance software version.
   final String? version;
 
-  /// Optional measured network latency.
-  final Duration? latency;
-
   @override
   Widget build(BuildContext context) {
     return Wrap(
       children: [
         Text(instance),
         _AnimatedMetadataSegment(text: version == null ? null : 'v$version'),
-        _AnimatedMetadataSegment(text: latency == null ? null : '${latency!.inMilliseconds}ms'),
       ],
     );
   }

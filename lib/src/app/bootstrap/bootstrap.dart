@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +44,6 @@ Future<void> bootstrap() async {
 
   // Additional platform-specific setup
   if (!kIsWeb && Platform.isAndroid) FlutterDisplayMode.setHighRefreshRate();
-  if (!kIsWeb && Platform.isIOS) DartPingIOS.register();
 
   await clearExtendedImageCache();
 }

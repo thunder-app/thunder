@@ -278,7 +278,7 @@ bool isVideoUrl(String url) {
     'vob',
   ];
 
-  final youtubeVideoId = YoutubePlayer.convertUrlToId(url);
+  final youtubeVideoId = YoutubePlayerController.convertUrlToId(url);
   final fileExtension = url.split('.').last.toLowerCase();
 
   return videoExtensions.contains(fileExtension) || (youtubeVideoId?.isNotEmpty ?? false);
