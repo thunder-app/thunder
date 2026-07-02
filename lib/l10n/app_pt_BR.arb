@@ -3579,5 +3579,6 @@
     "instanceStatusUnknown": "Status da instância desconhecido",
     "notAvailable": "N/A",
     "piefedSupportBeta": "O suporte ao PieFed está atualmente em fase beta.\nAinda nem todos os recursos são suportados.",
-    "profileOperationInProgress": "Operação de perfil em andamento"
+    "profileOperationInProgress": "Operação de perfil em andamento",
+    "networkErrorMessage": "Não foi possível acessar o servidor. Verifique sua conexão e tente novamente."
 }
