@@ -3019,5 +3019,6 @@
     },
     "notAvailable": "N/A",
     "piefedSupportBeta": "PieFed support is currently in beta.\nNot all features are supported yet.",
-    "profileOperationInProgress": "Profile operation in progress"
+    "profileOperationInProgress": "Profile operation in progress",
+    "networkErrorMessage": "Unable to reach the server. Check your connection and try again."
 }
