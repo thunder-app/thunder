@@ -601,10 +601,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
               ThunderListOption(
                   title: l10n.postViewType,
-                  value: ListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
+                  value: ThunderListPickerItem(label: useCompactView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactView),
                   options: [
-                    ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
-                    ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
+                    ThunderListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
+                    ThunderListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
                   ],
                   leading: Icon(Icons.view_list_rounded),
                   onChanged: (value) async => setPreferences(LocalSettings.useCompactView, value.payload),
@@ -689,7 +689,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ThunderListOption(
                   title: l10n.dateFormat,
                   disabled: !showFullPostDate,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                     label: (selectedDateFormat == null || selectedDateFormat!.pattern == dateFormats.first.pattern) ? l10n.system : selectedDateFormat!.pattern!,
                     icon: Icons.access_time_filled_rounded,
                     payload: selectedDateFormat,
@@ -697,7 +697,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   ),
                   options: dateFormats
                       .map(
-                        (DateFormat dateFormat) => ListPickerItem(
+                        (DateFormat dateFormat) => ThunderListPickerItem(
                           icon: Icons.access_time_filled_rounded,
                           label: dateFormat.format(DateTime.now()),
                           payload: dateFormat,
@@ -712,7 +712,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   highlighted: settingToHighlight == LocalSettings.dateFormat),
               ThunderListOption(
                   title: l10n.dividerAppearance,
-                  value: const ListPickerItem(payload: -1),
+                  value: const ThunderListPickerItem(payload: -1),
                   options: const [],
                   leading: Icon(Icons.splitscreen_rounded),
                   highlightKey: settingToHighlightKey,
@@ -720,7 +720,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   highlighted: settingToHighlight == LocalSettings.dividerAppearance,
                   customListPicker: StatefulBuilder(
                     builder: (context, setState) {
-                      return BottomSheetListPicker(
+                      return ThunderBottomSheetListPicker(
                         title: l10n.dividerAppearance,
                         heading: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -732,7 +732,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                           ],
                         ),
                         items: [
-                          ListPickerItem<int>(
+                          ThunderListPickerItem<int>(
                             customWidget: ListTile(
                               title: Text(l10n.thickness),
                               contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
@@ -748,7 +748,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                             ),
                             payload: -1,
                           ),
-                          ListPickerItem<int>(
+                          ThunderListPickerItem<int>(
                             customWidget: ListTile(
                               title: Text(l10n.color),
                               contentPadding: const EdgeInsets.only(left: 24.0, right: 20.0),
@@ -1021,7 +1021,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   highlighted: settingToHighlight == LocalSettings.showCrossPosts),
               ThunderListOption(
                   title: l10n.postBodyViewType,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                       label: switch (postBodyViewType) {
                         PostBodyViewType.condensed => l10n.condensed,
                         PostBodyViewType.expanded => l10n.expanded,
@@ -1030,8 +1030,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                       payload: postBodyViewType,
                       capitalizeLabel: false),
                   options: [
-                    ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
-                    ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
+                    ThunderListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
+                    ThunderListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
                   ],
                   leading: Icon(Icons.view_list_rounded),
                   onChanged: (value) async => setPreferences(LocalSettings.postBodyViewType, value.payload),
@@ -1139,7 +1139,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           const SizedBox(height: 6.0),
         ],
         if (showTextContent) ...[
-          ScalableText(
+          ThunderScalableText(
             l10n.placeholderText,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,

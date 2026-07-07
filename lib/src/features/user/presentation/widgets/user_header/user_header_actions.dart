@@ -11,7 +11,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays relevant actions for a user in a scrollable chip list.
 class UserHeaderActions extends StatelessWidget {

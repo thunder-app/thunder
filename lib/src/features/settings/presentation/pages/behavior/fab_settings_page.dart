@@ -601,11 +601,11 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
-      builder: (context) => BottomSheetListPicker(
+      builder: (context) => ThunderBottomSheetListPicker(
         title: l10n.setAction,
         items: [
-          ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
+          ThunderListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ThunderListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
         onSelect: (value) async {
           if (value.payload == 'short') {
@@ -625,11 +625,11 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
-      builder: (context) => BottomSheetListPicker(
+      builder: (context) => ThunderBottomSheetListPicker(
         title: l10n.setAction,
         items: [
-          ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
+          ThunderListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ThunderListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
         onSelect: (value) async {
           if (value.payload == 'short') {

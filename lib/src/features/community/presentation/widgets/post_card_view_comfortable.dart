@@ -10,9 +10,9 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/media/media_view.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays a card view of a post card. This view is used in the feed related pages.
 class PostCardViewComfortable extends StatelessWidget {
@@ -259,7 +259,7 @@ class PostCardViewComfortable extends StatelessWidget {
           if (showTextContent && textContent.isNotEmpty)
             Padding(
               padding: showCommunityFirst ? edgesPadding : edgesPadding + const EdgeInsets.only(bottom: 6.0),
-              child: ScalableText(
+              child: ThunderScalableText(
                 post.textPreview ?? textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,

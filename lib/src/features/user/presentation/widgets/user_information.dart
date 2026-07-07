@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -48,23 +49,23 @@ class _UserInformationState extends State<UserInformation> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           UserHeader(user: widget.user, moderates: widget.moderates, condensed: true),
-          SidebarSectionHeader(value: l10n.profileBio),
+          ThunderSectionHeader(title: l10n.profileBio, variant: ThunderSectionHeaderVariant.sidebar),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CommonMarkdownBody(body: widget.user.bio ?? '_${l10n.noProfileBioSet}_', imageMaxWidth: MediaQuery.of(context).size.width, launchContext: widget.launchContext),
           ),
-          SidebarSectionHeader(value: l10n.stats),
+          ThunderSectionHeader(title: l10n.stats, variant: ThunderSectionHeaderVariant.sidebar),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: UserStatsList(user: widget.user),
           ),
-          SidebarSectionHeader(value: l10n.activity),
+          ThunderSectionHeader(title: l10n.activity, variant: ThunderSectionHeaderVariant.sidebar),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: UserActivityList(user: widget.user),
           ),
           if (widget.moderates.isNotEmpty) ...[
-            SidebarSectionHeader(value: l10n.moderates),
+            ThunderSectionHeader(title: l10n.moderates, variant: ThunderSectionHeaderVariant.sidebar),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: UserModeratorList(launchContext: widget.launchContext, account: widget.account, moderates: widget.moderates),
@@ -91,18 +92,18 @@ class UserStatsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.joined(DateFormat.yMMMMd().format(user.published))} · ${l10n.ago(formatTimeToString(dateTime: user.published.toIso8601String()))}',
+          label: '${l10n.joined(DateFormat.yMMMMd().format(user.published))} · ${l10n.ago(formatTimeToString(dateTime: user.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.counts.posts)),
+          label: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.counts.posts)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.totalComments(NumberFormat("#,###,###,###").format(user.counts.comments)),
+          label: l10n.totalComments(NumberFormat("#,###,###,###").format(user.counts.comments)),
         ),
       ],
     );
@@ -144,17 +145,17 @@ class UserActivityList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.averagePosts(NumberFormat("#,###,###,###").format(postsPerMonth)),
+          label: l10n.averagePosts(NumberFormat("#,###,###,###").format(postsPerMonth)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.averageComments(NumberFormat("#,###,###,###").format(commentsPerMonth)),
+          label: l10n.averageComments(NumberFormat("#,###,###,###").format(commentsPerMonth)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.score_rounded,
-          value: l10n.averageContributions(NumberFormat("#,###,###,###").format(totalContributionsPerMonth)),
+          label: l10n.averageContributions(NumberFormat("#,###,###,###").format(totalContributionsPerMonth)),
         ),
       ],
     );
@@ -212,60 +213,6 @@ class UserModeratorList extends StatelessWidget {
               ),
             ),
           ),
-      ],
-    );
-  }
-}
-
-/// A widget that displays a section header in the sidebar.
-class SidebarSectionHeader extends StatelessWidget {
-  /// The header title.
-  final String value;
-
-  const SidebarSectionHeader({super.key, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0, bottom: 8.0, left: 8.0, right: 8.0),
-      child: Row(
-        children: [
-          Text(value),
-          const Expanded(child: Divider(height: 5.0, thickness: 2.0, indent: 15.0)),
-        ],
-      ),
-    );
-  }
-}
-
-/// A widget that displays a statistic in the sidebar.
-class SidebarStat extends StatelessWidget {
-  /// The icon to display for the statistic.
-  final IconData icon;
-
-  /// The value of the statistic.
-  final String value;
-
-  const SidebarStat({super.key, required this.icon, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, top: 2.0, bottom: 2.0),
-          child: Icon(
-            icon,
-            size: 18.0,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withValues(alpha: 0.65)),
-        ),
       ],
     );
   }

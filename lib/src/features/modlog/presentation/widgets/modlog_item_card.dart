@@ -5,10 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Widget to display a single modlog event item
 class ModlogItemCard extends StatelessWidget {
@@ -77,7 +76,7 @@ class ModlogItemCard extends StatelessWidget {
                           color: theme.colorScheme.onSurface,
                         ),
                       ),
-                      ScalableText(
+                      ThunderScalableText(
                         event.getModlogEventTypeName(),
                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                         textScaleFactor: titleFontSizeScale.textScaleFactor,
@@ -101,7 +100,7 @@ class ModlogItemCard extends StatelessWidget {
                 Divider(thickness: 1.0, color: theme.dividerColor.withValues(alpha: 0.3)),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6.0),
-                  child: ScalableText(
+                  child: ThunderScalableText(
                     l10n.detailedReason('${event.reason}'),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,

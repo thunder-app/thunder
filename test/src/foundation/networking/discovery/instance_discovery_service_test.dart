@@ -24,6 +24,12 @@ void main() {
       expect(normalizeInstanceHost('Lemmy.Test'), 'lemmy.test');
       expect(normalizeInstanceHost('https://lemmy.test/path'), 'lemmy.test');
     });
+
+    test('preserves explicit ports for local instances', () {
+      expect(normalizeInstanceHost('127.0.0.1:8536'), '127.0.0.1:8536');
+      expect(normalizeInstanceHost('http://localhost:8030'), 'localhost:8030');
+      expect(normalizeInstanceHost('10.0.2.2:8537'), '10.0.2.2:8537');
+    });
   });
 
   group('discoverInstance', () {

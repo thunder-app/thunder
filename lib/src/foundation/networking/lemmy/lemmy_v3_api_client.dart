@@ -13,6 +13,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_site_response.dart';
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_api_client_defaults.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_private_message_utils.dart';
 import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
@@ -898,7 +899,7 @@ class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   Future<String> uploadImage(String filePath) async {
     final decoded = await uploadMultipartImage(
       httpClient: httpClient,
-      uri: Uri.https(account.instance, '/pictrs/image'),
+      uri: buildInstanceUri(account.instance, '/pictrs/image'),
       headers: buildHeaders(),
       fieldName: 'images[]',
       filePath: filePath,
@@ -923,7 +924,7 @@ class LemmyV3ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 AccountMediaItem _accountMediaItemFromLegacy(Map<String, dynamic> image, String instance) {
   final localImage = image['local_image'] as Map<String, dynamic>? ?? image;
   final alias = localImage['pictrs_alias']?.toString() ?? localImage['file']?.toString() ?? '';
-  final url = image['url']?.toString() ?? Uri.https(instance, '/pictrs/image/$alias').toString();
+  final url = image['url']?.toString() ?? buildInstanceUrl(instance, '/pictrs/image/$alias');
 
   return AccountMediaItem(
     alias: alias,

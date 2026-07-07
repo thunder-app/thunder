@@ -10,8 +10,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderImageViewer, ThunderImageViewerSource, showSnackbar;
 import 'package:thunder/src/shared/media/media_utils.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// An experimental Thunder-specific image viewer built on top of
 /// [ThunderImageViewer].
@@ -224,7 +224,7 @@ class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
         sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
       ));
     } catch (e) {
-      showSnackbar(l10n.errorDownloadingMedia(e));
+      showThunderSnackbar(l10n.errorDownloadingMedia(e));
     } finally {
       if (mounted) {
         setState(() => _isDownloadingMedia = false);
@@ -264,12 +264,12 @@ class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
       setState(() => _downloaded = true);
     } on GalException catch (e) {
       if (mounted) {
-        showSnackbar(e.type.message);
+        showThunderSnackbar(e.type.message);
         setState(() => _downloaded = false);
       }
     } catch (e) {
       if (mounted) {
-        showSnackbar(l10n.errorDownloadingMedia(e));
+        showThunderSnackbar(l10n.errorDownloadingMedia(e));
       }
     } finally {
       if (mounted) {

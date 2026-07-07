@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/feed/api.dart';
 
 /// A user-customizable divider used between items (posts/comments) in the feed page.
@@ -24,6 +25,12 @@ class FeedCardDivider extends StatelessWidget {
       color = Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), dividerColor).withValues(alpha: 0.2);
     }
 
-    return Divider(height: thickness, thickness: thickness, color: color);
+    return ThunderDivider(
+      sliver: false,
+      padding: false,
+      thickness: thickness,
+      height: thickness,
+      color: color,
+    );
   }
 }

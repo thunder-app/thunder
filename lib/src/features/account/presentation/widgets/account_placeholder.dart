@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 
@@ -15,28 +16,37 @@ class AccountPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
-
     final account = context.select<ProfileBloc, Account>((bloc) => bloc.state.account);
+    final bodyStyle = theme.textTheme.bodyMedium;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.people_rounded, size: 100.0, color: theme.dividerColor),
-            const SizedBox(height: 16.0),
-            Text(l10n.browsingAnonymously(account.instance), textAlign: TextAlign.center),
-            Text(l10n.addAccountToSeeProfile, textAlign: TextAlign.center),
-            const SizedBox(height: 24.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
-              child: Text(l10n.manageAccounts),
-              onPressed: () => showProfileModalSheet(context),
-            )
-          ],
-        ),
+    return ThunderStateView(
+      mode: ThunderStateViewMode.custom,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ThunderStateIcon(
+            icon: Icons.people_rounded,
+            color: theme.dividerColor,
+          ),
+          const SizedBox(height: 16),
+          ThunderStateText(
+            title: l10n.browsingAnonymously(account.instance),
+            message: l10n.addAccountToSeeProfile,
+            titleStyle: bodyStyle,
+            messageStyle: bodyStyle,
+          ),
+          const SizedBox(height: 24),
+          ThunderStateActions(
+            actions: [
+              ThunderStateAction(
+                label: l10n.manageAccounts,
+                onPressed: () => showProfileModalSheet(context),
+                primary: true,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

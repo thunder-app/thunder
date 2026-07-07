@@ -8,7 +8,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/shared/name/full_name_copy_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, MultiPickerItem, PickerItemData;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the general actions that can be taken on a post
 enum GeneralPostAction {
@@ -271,8 +271,8 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
     return Column(
       children: [
         if (quickActions.isNotEmpty)
-          MultiPickerItem(
-            pickerItems: quickActions.map<PickerItemData>((quickPostAction) {
+          ThunderMultiPickerItem(
+            pickerItems: quickActions.map<ThunderMultiPickerItemData>((quickPostAction) {
               Function()? onSelected;
 
               if (quickPostAction == GeneralQuickPostAction.downvote && !widget.downvotesEnabled) {
@@ -281,7 +281,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
                 onSelected = widget.account.anonymous ? null : () => performAction(quickPostAction);
               }
 
-              return PickerItemData(
+              return ThunderMultiPickerItemData(
                 icon: getIcon(quickPostAction),
                 label: getLabel(quickPostAction),
                 foregroundColor: getForegroundColor(quickPostAction),
@@ -291,7 +291,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
             }).toList(),
           ),
         ...submenus.map<Widget>(
-          (page) => BottomSheetAction(
+          (page) => ThunderBottomSheetAction(
             leading: Icon(page.icon),
             trailing: const Icon(Icons.chevron_right_rounded),
             title: page.name,

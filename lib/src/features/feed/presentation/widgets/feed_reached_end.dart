@@ -24,7 +24,7 @@ class FeedReachedEnd extends StatelessWidget {
         Container(
           color: theme.dividerColor.withValues(alpha: 0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: ScalableText(
+          child: ThunderScalableText(
             l10n.reachedTheBottom,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,

@@ -12,7 +12,7 @@ import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a user
 enum UserBottomSheetAction {
@@ -151,7 +151,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       case UserBottomSheetAction.blockUser:
         Navigator.of(context).pop();
         await userRepository.blockUser(widget.user.id, true);
-        showSnackbar(l10n.successfullyBlockedUser(widget.user.displayNameOrName));
+        showThunderSnackbar(l10n.successfullyBlockedUser(widget.user.displayNameOrName));
         widget.onAction(UserAction.block, null);
         break;
       case UserBottomSheetAction.messageUser:
@@ -165,7 +165,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       case UserBottomSheetAction.unblockUser:
         Navigator.of(context).pop();
         await userRepository.blockUser(widget.user.id, false);
-        showSnackbar(l10n.successfullyUnblockedUser(widget.user.displayNameOrName));
+        showThunderSnackbar(l10n.successfullyUnblockedUser(widget.user.displayNameOrName));
         widget.onAction(UserAction.block, null);
         break;
       case UserBottomSheetAction.addUserLabel:
@@ -180,7 +180,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         Navigator.of(context).pop();
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: false);
         if (!user.status.banned) {
-          showSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
+          showThunderSnackbar(l10n.unbannedUserFromCommunity(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.banFromCommunity, null);
         break;
@@ -188,7 +188,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         Navigator.of(context).pop();
         final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: true);
         if (moderators.where((m) => m.id == widget.user.id).isNotEmpty) {
-          showSnackbar(l10n.addedUserAsCommunityModerator(widget.user.displayNameOrName));
+          showThunderSnackbar(l10n.addedUserAsCommunityModerator(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.addModerator, null);
         break;
@@ -196,7 +196,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         Navigator.of(context).pop();
         final moderators = await communityRepository.addModerator(userId: widget.user.id, communityId: widget.communityId!, added: false);
         if (moderators.where((m) => m.id == widget.user.id).isEmpty) {
-          showSnackbar(l10n.removedUserAsCommunityModerator(widget.user.displayNameOrName));
+          showThunderSnackbar(l10n.removedUserAsCommunityModerator(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.addModerator, null);
         break;
@@ -219,7 +219,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
 
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: true, reason: controller.text, removeData: removeData);
         if (user.status.banned) {
-          showSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
+          showThunderSnackbar(l10n.successfullyBannedUser(widget.user.displayNameOrName));
         }
         widget.onAction(UserAction.banFromCommunity, null);
 
@@ -309,7 +309,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (userPostAction) => BottomSheetAction(
+          (userPostAction) => ThunderBottomSheetAction(
             leading: Icon(userPostAction.icon),
             title: userPostAction.name,
             onTap: () => performAction(userPostAction),
@@ -318,12 +318,12 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
-            (userPostAction) => BottomSheetAction(
+            (userPostAction) => ThunderBottomSheetAction(
               leading: Icon(userPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
                 child: Icon(
-                  Thunder.shield,
+                  ThunderIcon.shield,
                   size: 20,
                   color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),

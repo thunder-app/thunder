@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:thunder/packages/ui/src/widgets/settings/thunder_settings_tile.dart';
+import 'package:thunder/packages/ui/src/widgets/settings/thunder_settings_trailing.dart';
 
+/// Settings tile with a trailing switch or placeholder switch slot.
+@immutable
 class ThunderToggleOption extends StatelessWidget {
   const ThunderToggleOption({
     super.key,
@@ -17,7 +20,6 @@ class ThunderToggleOption extends StatelessWidget {
     this.iconDisabled,
     this.iconEnabledSize,
     this.iconDisabledSize,
-    this.iconSpacing = 8,
     this.additionalTrailing = const [],
     this.padding,
     this.highlighted = false,
@@ -26,23 +28,55 @@ class ThunderToggleOption extends StatelessWidget {
     this.disabled = false,
   });
 
+  /// Primary title text.
   final String title;
+
+  /// Optional subtitle shown below [title].
   final String? subtitle;
+
+  /// Semantic label for accessibility.
   final String? semanticLabel;
+
+  /// Current switch value. When null, a placeholder slot is shown instead.
   final bool? value;
-  final ValueChanged<bool>? onChanged;
-  final VoidCallback? onTap;
-  final VoidCallback? onLongPress;
+
+  /// Called when the switch value changes.
+  final void Function(bool)? onChanged;
+
+  /// Called when the tile is tapped. Overrides switch toggling when provided.
+  final void Function()? onTap;
+
+  /// Called when the tile is long-pressed.
+  final void Function()? onLongPress;
+
+  /// Leading icon shown when [value] is true.
   final IconData? iconEnabled;
+
+  /// Leading icon shown when [value] is false.
   final IconData? iconDisabled;
+
+  /// Size of [iconEnabled].
   final double? iconEnabledSize;
+
+  /// Size of [iconDisabled].
   final double? iconDisabledSize;
-  final double iconSpacing;
+
+  /// Extra trailing widgets shown before the switch.
   final List<Widget> additionalTrailing;
+
+  /// Outer padding around the tile.
   final EdgeInsetsGeometry? padding;
+
+  /// Whether to show the smooth highlight animation.
   final bool highlighted;
+
+  /// Key attached to the highlight widget when [highlighted] is true.
   final GlobalKey? highlightKey;
+
+  /// Highlight color passed to [ThunderSettingsTile].
   final Color? highlightColor;
+
+  /// When true, interaction and switch changes are disabled.
   final bool disabled;
 
   void _handleTap() {
@@ -69,9 +103,9 @@ class ThunderToggleOption extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...additionalTrailing,
-        if (additionalTrailing.isNotEmpty) const SizedBox(width: 12),
+        if (additionalTrailing.isNotEmpty) const SizedBox(width: 12.0),
         if (value != null)
-          Switch(
+          ThunderSettingsSwitchTrailing(
             value: value!,
             onChanged: disabled || onChanged == null
                 ? null
@@ -81,7 +115,7 @@ class ThunderToggleOption extends StatelessWidget {
                   },
           )
         else
-          const SizedBox(height: 50, width: 60),
+          const ThunderSettingsSwitchTrailing(value: false, placeholder: true),
       ],
     );
 
@@ -89,12 +123,7 @@ class ThunderToggleOption extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       semanticLabel: semanticLabel,
-      leading: leading == null
-          ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [leading, SizedBox(width: iconSpacing)],
-            ),
+      leading: leading,
       trailing: trailing,
       padding: padding,
       highlighted: highlighted,

@@ -16,12 +16,11 @@ import 'package:thunder/src/features/comment/presentation/widgets/comment_refere
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/session/api.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Creates a [ReportFeedPage] which holds a list of reported posts/comments.
 class ReportFeedPage extends StatefulWidget {
@@ -180,7 +179,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
             },
             listener: (context, state) {
               if ((state.status == ReportStatus.failure) && state.message != null) {
-                showSnackbar(state.message!);
+                showThunderSnackbar(state.message!);
                 context.read<ReportBloc>().add(ReportFeedClearMessageEvent()); // Clear the message so that it does not spam
               }
             },
@@ -258,7 +257,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  ScalableText(
+                                                  ThunderScalableText(
                                                     l10n.detailedReason(report.reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
@@ -342,7 +341,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  ScalableText(
+                                                  ThunderScalableText(
                                                     l10n.detailedReason(report.reason),
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,

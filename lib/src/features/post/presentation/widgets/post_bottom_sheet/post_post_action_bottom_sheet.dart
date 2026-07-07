@@ -6,7 +6,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a post
 enum PostPostAction {
@@ -136,25 +136,25 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       case PostPostAction.deletePost:
         Navigator.of(context).pop();
         final deleted = await repository.delete(widget.post.id, true);
-        if (deleted) showSnackbar(l10n.deletedPost);
+        if (deleted) showThunderSnackbar(l10n.deletedPost);
         widget.onAction(PostAction.delete, widget.post.copyWith(status: widget.post.status.copyWith(deleted: true)));
         break;
       case PostPostAction.restorePost:
         Navigator.of(context).pop();
         final deleted = await repository.delete(widget.post.id, false);
-        if (!deleted) showSnackbar(l10n.restoredPost);
+        if (!deleted) showThunderSnackbar(l10n.restoredPost);
         widget.onAction(PostAction.delete, widget.post.copyWith(status: widget.post.status.copyWith(deleted: false)));
         break;
       case PostPostAction.lockPost:
         Navigator.of(context).pop();
         final locked = await repository.lock(widget.post.id, true);
-        if (locked) showSnackbar(l10n.lockedPost);
+        if (locked) showThunderSnackbar(l10n.lockedPost);
         widget.onAction(PostAction.lock, widget.post.copyWith(status: widget.post.status.copyWith(locked: true)));
         break;
       case PostPostAction.unlockPost:
         Navigator.of(context).pop();
         final locked = await repository.lock(widget.post.id, false);
-        if (!locked) showSnackbar(l10n.unlockedPost);
+        if (!locked) showThunderSnackbar(l10n.unlockedPost);
         widget.onAction(PostAction.lock, widget.post.copyWith(status: widget.post.status.copyWith(locked: false)));
         break;
       case PostPostAction.removePost:
@@ -166,13 +166,13 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       case PostPostAction.pinPostToCommunity:
         Navigator.of(context).pop();
         final pinned = await repository.pinCommunity(widget.post.id, true);
-        if (pinned) showSnackbar(l10n.pinnedPostToCommunity);
+        if (pinned) showThunderSnackbar(l10n.pinnedPostToCommunity);
         widget.onAction(PostAction.pinCommunity, widget.post.copyWith(status: widget.post.status.copyWith(featuredCommunity: true)));
         break;
       case PostPostAction.unpinPostFromCommunity:
         Navigator.of(context).pop();
         final pinned = await repository.pinCommunity(widget.post.id, false);
-        if (!pinned) showSnackbar(l10n.unpinnedPostFromCommunity);
+        if (!pinned) showThunderSnackbar(l10n.unpinnedPostFromCommunity);
         widget.onAction(PostAction.pinCommunity, widget.post.copyWith(status: widget.post.status.copyWith(featuredCommunity: false)));
         break;
     }
@@ -191,7 +191,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         final repository = PostRepositoryImpl(account: widget.account);
 
         await repository.report(widget.post.id, controller.text);
-        showSnackbar(l10n.reportedPost);
+        showThunderSnackbar(l10n.reportedPost);
         widget.onAction(PostAction.report, null);
 
         Navigator.of(dialogContext).pop();
@@ -223,7 +223,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         final repository = PostRepositoryImpl(account: widget.account);
 
         final removed = await repository.remove(widget.post.id, !widget.post.status.removed, controller.text);
-        removed ? showSnackbar(l10n.removedPost) : showSnackbar(l10n.restoredPost);
+        removed ? showThunderSnackbar(l10n.removedPost) : showThunderSnackbar(l10n.restoredPost);
         widget.onAction(PostAction.remove, widget.post.copyWith(status: widget.post.status.copyWith(removed: !widget.post.status.removed)));
 
         Navigator.of(dialogContext).pop();
@@ -294,7 +294,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (postPostAction) => BottomSheetAction(
+          (postPostAction) => ThunderBottomSheetAction(
             leading: Icon(postPostAction.icon),
             title: postPostAction.name,
             onTap: () => performAction(postPostAction),
@@ -303,12 +303,12 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
-            (postPostAction) => BottomSheetAction(
+            (postPostAction) => ThunderBottomSheetAction(
               leading: Icon(postPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
                 child: Icon(
-                  Thunder.shield,
+                  ThunderIcon.shield,
                   size: 20,
                   color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),

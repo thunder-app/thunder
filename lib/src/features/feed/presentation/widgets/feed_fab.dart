@@ -17,7 +17,7 @@ import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Floating action button menu for feed-level actions.
 class FeedFAB extends StatelessWidget {
@@ -265,11 +265,11 @@ class FeedFAB extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (!context.read<ProfileBloc>().state.isLoggedIn) {
-      return showSnackbar(l10n.mustBeLoggedInPost);
+      return showThunderSnackbar(l10n.mustBeLoggedInPost);
     }
 
     if (isPostingLocked) {
-      return showSnackbar(l10n.onlyModsCanPostInCommunity);
+      return showThunderSnackbar(l10n.onlyModsCanPostInCommunity);
     }
 
     FeedBloc feedBloc = context.read<FeedBloc>();

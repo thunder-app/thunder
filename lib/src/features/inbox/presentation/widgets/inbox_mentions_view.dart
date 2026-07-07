@@ -9,7 +9,7 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_reference.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
+import 'package:thunder/packages/ui/ui.dart';
 
 class InboxMentionsView extends StatefulWidget {
   final List<ThunderComment> mentions;

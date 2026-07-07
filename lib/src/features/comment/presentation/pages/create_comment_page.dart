@@ -27,8 +27,8 @@ import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/shared/media/media_utils.dart' show selectImagesToUpload;
+import 'package:thunder/packages/ui/ui.dart';
 
 class CreateCommentPage extends StatefulWidget {
   /// The account to use for composing this comment.
@@ -192,7 +192,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
       Future.delayed(const Duration(milliseconds: 1000), () {
         if (!mounted) return;
 
-        showSnackbar(
+        showThunderSnackbar(
           AppLocalizations.of(context)!.restoredCommentFromDraft,
           trailingIcon: Icons.delete_forever_rounded,
           trailingIconColor: Theme.of(context).colorScheme.errorContainer,
@@ -241,7 +241,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     );
 
     if (showSaveDraftSnackbar && result == DraftPersistenceResult.saved) {
-      showSnackbar(GlobalContext.l10n.commentSavedAsDraft);
+      showThunderSnackbar(GlobalContext.l10n.commentSavedAsDraft);
     }
 
     return result;
@@ -267,17 +267,24 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
               }
 
               if (state.status == CreateCommentStatus.error && state.message != null) {
-                showSnackbar(state.message!);
+                showThunderSnackbar(state.message!);
                 ctx.read<CreateCommentCubit>().clearMessage();
               }
 
               switch (state.status) {
                 case CreateCommentStatus.imageUploadSuccess:
-                  String markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
-                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, markdownImages);
+                  final markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
+                  if (markdownImages.isEmpty) {
+                    ctx.read<CreateCommentCubit>().clearMessage();
+                    break;
+                  }
+
+                  final insertIndex = _bodyTextController.selection.isValid ? _bodyTextController.selection.end : _bodyTextController.text.length;
+                  _bodyTextController.text = _bodyTextController.text.replaceRange(insertIndex, insertIndex, markdownImages);
+                  ctx.read<CreateCommentCubit>().clearMessage();
                   break;
                 case CreateCommentStatus.imageUploadFailure:
-                  showSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+                  showThunderSnackbar(l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
                 default:
                   break;
               }

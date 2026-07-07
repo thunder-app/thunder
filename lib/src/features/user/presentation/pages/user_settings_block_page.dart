@@ -16,7 +16,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the user's blocked users, communities, and instances.
 class UserSettingsBlockPage extends StatefulWidget {
@@ -224,17 +224,17 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           bool isBlock = (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0);
 
           if (state.status == UserBlocksStatus.failure && !isBlock) {
-            return showSnackbar(state.errorMessage ?? l10n.unexpectedError);
+            return showThunderSnackbar(state.errorMessage ?? l10n.unexpectedError);
           }
 
           if (state.status == UserBlocksStatus.failure) {
-            showSnackbar(l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage));
+            showThunderSnackbar(l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage));
           } else if (state.status == UserBlocksStatus.failedRevert) {
-            showSnackbar(l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
+            showThunderSnackbar(l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage));
           } else if (state.status == UserBlocksStatus.revert) {
-            showSnackbar(l10n.successfullyBlocked);
+            showThunderSnackbar(l10n.successfullyBlocked);
           } else if (state.status == UserBlocksStatus.successBlock) {
-            showSnackbar(
+            showThunderSnackbar(
               l10n.successfullyUnblocked,
               trailingIcon: Icons.undo_rounded,
               trailingAction: () {

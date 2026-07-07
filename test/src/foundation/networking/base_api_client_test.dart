@@ -93,6 +93,20 @@ void main() {
   });
 
   group('BaseApiClient.request', () {
+    test('uses http for local instance authorities', () async {
+      const localAccount = Account(
+        id: 'local',
+        index: 0,
+        instance: '127.0.0.1:8536',
+      );
+      final localClient = TestApiClient(account: localAccount, httpClient: mockHttpClient);
+      when(() => mockHttpClient.get(any(), headers: any(named: 'headers'))).thenAnswer((_) async => http.Response('{}', 200));
+
+      await localClient.request(HttpMethod.get, '/api/v3/site', {});
+
+      verify(() => mockHttpClient.get(Uri.parse('http://127.0.0.1:8536/api/v3/site'), headers: any(named: 'headers'))).called(1);
+    });
+
     test('wraps SocketException in NetworkException', () async {
       when(() => mockHttpClient.get(any(), headers: any(named: 'headers'))).thenThrow(const SocketException('offline'));
 

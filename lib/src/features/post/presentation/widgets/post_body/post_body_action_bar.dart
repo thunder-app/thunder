@@ -10,7 +10,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the quick actions bar for a post
 class PostBodyActionsBar extends StatefulWidget {
@@ -193,7 +193,7 @@ class _PostBodyActionsBarState extends State<PostBodyActionsBar> {
           if (widget.locked)
             Expanded(
               child: IconButton(
-                onPressed: () => showSnackbar(l10n.postLocked),
+                onPressed: () => showThunderSnackbar(l10n.postLocked),
                 icon: Icon(Icons.lock, semanticLabel: l10n.postLocked, color: theme.colorScheme.error),
               ),
             ),

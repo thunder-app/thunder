@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/app/wiring/state_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
@@ -14,6 +13,7 @@ import 'package:thunder/src/features/account/presentation/widgets/login/login_pa
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Coordinates instance validation and session submission for the login flow.
 class LoginPage extends StatefulWidget {
@@ -117,14 +117,14 @@ class _LoginPageState extends State<LoginPage> {
         _isSubmitting.value = true;
       case SessionMutationStatus.failure:
         _isSubmitting.value = false;
-        showSnackbar(GlobalContext.l10n.loginFailed(state.error ?? GlobalContext.l10n.missingErrorMessage));
+        showThunderSnackbar(GlobalContext.l10n.loginFailed(state.error ?? GlobalContext.l10n.missingErrorMessage));
       case SessionMutationStatus.success:
         _isSubmitting.value = false;
         if (widget.anonymous) {
           widget.popRegister();
         } else {
           widget.popModal();
-          showSnackbar(GlobalContext.l10n.loginSucceeded);
+          showThunderSnackbar(GlobalContext.l10n.loginSucceeded);
         }
       case SessionMutationStatus.idle:
         break;
@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_isSubmitting.value) return;
 
     if (!_instanceValidationCubit.state.isValid) {
-      showSnackbar(l10n.notValidLemmyInstance(_instanceController.text));
+      showThunderSnackbar(l10n.notValidLemmyInstance(_instanceController.text));
       return;
     }
 
@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
     final platform = validationState.platform;
     if (!validationState.isValid || instanceInfo == null || instanceHost == null || platform == null) {
       _isSubmitting.value = false;
-      showSnackbar(l10n.notValidLemmyInstance(_instanceController.text));
+      showThunderSnackbar(l10n.notValidLemmyInstance(_instanceController.text));
       return;
     }
 

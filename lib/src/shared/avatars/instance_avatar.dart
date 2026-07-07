@@ -21,8 +21,8 @@ class InstanceAvatar extends StatelessWidget {
             ? instance.domain
             : '';
 
-    return Avatar(
-      data: AvatarData(
+    return ThunderAvatar(
+      data: ThunderAvatarData(
         fallbackLabel: fallbackLabel,
         imageUrl: instance.icon,
         radius: radius,

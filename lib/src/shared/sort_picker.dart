@@ -3,69 +3,69 @@ import 'package:flutter/material.dart';
 import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem, PickerItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 // ============================================================================
 // Post Sort Type Items
 // ============================================================================
 
 /// Returns the "Top" sort type items for posts (TopHour, TopDay, etc.)
-List<ListPickerItem<PostSortType>> getTopPostSortTypeItems({Account? account}) {
+List<ThunderListPickerItem<PostSortType>> getTopPostSortTypeItems({Account? account}) {
   final l10n = GlobalContext.l10n;
   final platform = account?.platform;
 
-  List<ListPickerItem<PostSortType>> topPostSortTypeItems = [
-    ListPickerItem(
+  List<ThunderListPickerItem<PostSortType>> topPostSortTypeItems = [
+    ThunderListPickerItem(
       payload: PostSortType.topHour,
       icon: Icons.check_box_outline_blank,
       label: l10n.topHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topSixHour,
       icon: Icons.calendar_view_month,
       label: l10n.topSixHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topTwelveHour,
       icon: Icons.calendar_view_week,
       label: l10n.topTwelveHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topDay,
       icon: Icons.today,
       label: l10n.topDay,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topWeek,
       icon: Icons.view_week_sharp,
       label: l10n.topWeek,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topMonth,
       icon: Icons.calendar_month,
       label: l10n.topMonth,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topThreeMonths,
       icon: Icons.calendar_month_outlined,
       label: l10n.topThreeMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topSixMonths,
       icon: Icons.calendar_today_outlined,
       label: l10n.topSixMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topNineMonths,
       icon: Icons.calendar_view_day_outlined,
       label: l10n.topNineMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topYear,
       icon: Icons.calendar_today,
       label: l10n.topYear,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.topAll,
       icon: Icons.military_tech,
       label: l10n.topAll,
@@ -79,47 +79,47 @@ List<ListPickerItem<PostSortType>> getTopPostSortTypeItems({Account? account}) {
 }
 
 /// Returns the default (non-Top) sort type items for posts
-List<ListPickerItem<PostSortType>> getDefaultPostSortTypeItems({Account? account}) {
+List<ThunderListPickerItem<PostSortType>> getDefaultPostSortTypeItems({Account? account}) {
   final l10n = GlobalContext.l10n;
   final platform = account?.platform;
 
-  List<ListPickerItem<PostSortType>> defaultPostSortTypeItems = [
-    ListPickerItem(
+  List<ThunderListPickerItem<PostSortType>> defaultPostSortTypeItems = [
+    ThunderListPickerItem(
       payload: PostSortType.hot,
       icon: Icons.local_fire_department_rounded,
       label: l10n.hot,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.active,
       icon: Icons.rocket_launch_rounded,
       label: l10n.active,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.scaled,
       icon: Icons.line_weight_rounded,
       label: l10n.scaled,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.controversial,
       icon: Icons.warning_rounded,
       label: l10n.controversial,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.new_,
       icon: Icons.auto_awesome_rounded,
       label: l10n.new_,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.old,
       icon: Icons.access_time_outlined,
       label: l10n.old,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.mostComments,
       icon: Icons.comment_bank_rounded,
       label: l10n.mostComments,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: PostSortType.newComments,
       icon: Icons.add_comment_rounded,
       label: l10n.newComments,
@@ -133,39 +133,39 @@ List<ListPickerItem<PostSortType>> getDefaultPostSortTypeItems({Account? account
 }
 
 /// All post sort type items (default + top) combined.
-List<ListPickerItem<PostSortType>> allPostSortTypeItems = [...getDefaultPostSortTypeItems(), ...getTopPostSortTypeItems()];
+List<ThunderListPickerItem<PostSortType>> allPostSortTypeItems = [...getDefaultPostSortTypeItems(), ...getTopPostSortTypeItems()];
 
 // ============================================================================
 // Comment Sort Type Items
 // ============================================================================
 
 /// Returns the sort type items for comments
-List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({Account? account}) {
+List<ThunderListPickerItem<CommentSortType>> getCommentSortTypeItems({Account? account}) {
   final l10n = GlobalContext.l10n;
   final platform = account?.platform;
 
-  List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
-    ListPickerItem(
+  List<ThunderListPickerItem<CommentSortType>> commentSortTypeItems = [
+    ThunderListPickerItem(
       payload: CommentSortType.hot,
       icon: Icons.local_fire_department,
       label: l10n.hot,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: CommentSortType.top,
       icon: Icons.military_tech,
       label: l10n.top,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: CommentSortType.controversial,
       icon: Icons.warning_rounded,
       label: l10n.controversial,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: CommentSortType.new_,
       icon: Icons.auto_awesome_rounded,
       label: l10n.new_,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: CommentSortType.old,
       icon: Icons.access_time_outlined,
       label: l10n.old,
@@ -183,62 +183,62 @@ List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({Account? account}
 // ============================================================================
 
 /// Returns the "Top" sort type items for search (TopHour, TopDay, etc.)
-List<ListPickerItem<SearchSortType>> getTopSearchSortTypeItems({Account? account}) {
+List<ThunderListPickerItem<SearchSortType>> getTopSearchSortTypeItems({Account? account}) {
   final l10n = GlobalContext.l10n;
   final platform = account?.platform;
 
-  List<ListPickerItem<SearchSortType>> topSearchSortTypeItems = [
-    ListPickerItem(
+  List<ThunderListPickerItem<SearchSortType>> topSearchSortTypeItems = [
+    ThunderListPickerItem(
       payload: SearchSortType.topHour,
       icon: Icons.check_box_outline_blank,
       label: l10n.topHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topSixHour,
       icon: Icons.calendar_view_month,
       label: l10n.topSixHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topTwelveHour,
       icon: Icons.calendar_view_week,
       label: l10n.topTwelveHour,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topDay,
       icon: Icons.today,
       label: l10n.topDay,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topWeek,
       icon: Icons.view_week_sharp,
       label: l10n.topWeek,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topMonth,
       icon: Icons.calendar_month,
       label: l10n.topMonth,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topThreeMonths,
       icon: Icons.calendar_month_outlined,
       label: l10n.topThreeMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topSixMonths,
       icon: Icons.calendar_today_outlined,
       label: l10n.topSixMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topNineMonths,
       icon: Icons.calendar_view_day_outlined,
       label: l10n.topNineMonths,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topYear,
       icon: Icons.calendar_today,
       label: l10n.topYear,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.topAll,
       icon: Icons.military_tech,
       label: l10n.topAll,
@@ -252,22 +252,22 @@ List<ListPickerItem<SearchSortType>> getTopSearchSortTypeItems({Account? account
 }
 
 /// Returns the default (non-Top) sort type items for search
-List<ListPickerItem<SearchSortType>> getDefaultSearchSortTypeItems({Account? account}) {
+List<ThunderListPickerItem<SearchSortType>> getDefaultSearchSortTypeItems({Account? account}) {
   final l10n = GlobalContext.l10n;
   final platform = account?.platform;
 
-  List<ListPickerItem<SearchSortType>> defaultSearchSortTypeItems = [
-    ListPickerItem(
+  List<ThunderListPickerItem<SearchSortType>> defaultSearchSortTypeItems = [
+    ThunderListPickerItem(
       payload: SearchSortType.new_,
       icon: Icons.auto_awesome_rounded,
       label: l10n.new_,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.old,
       icon: Icons.access_time_outlined,
       label: l10n.old,
     ),
-    ListPickerItem(
+    ThunderListPickerItem(
       payload: SearchSortType.controversial,
       icon: Icons.warning_rounded,
       label: l10n.controversial,
@@ -281,7 +281,7 @@ List<ListPickerItem<SearchSortType>> getDefaultSearchSortTypeItems({Account? acc
 }
 
 /// All search sort type items (default + top) combined.
-List<ListPickerItem<SearchSortType>> allSearchSortTypeItems = [...getDefaultSearchSortTypeItems(), ...getTopSearchSortTypeItems()];
+List<ThunderListPickerItem<SearchSortType>> allSearchSortTypeItems = [...getDefaultSearchSortTypeItems(), ...getTopSearchSortTypeItems()];
 
 // ============================================================================
 // Unified Sort Picker Widget
@@ -312,7 +312,7 @@ List<ListPickerItem<SearchSortType>> allSearchSortTypeItems = [...getDefaultSear
 ///   previouslySelected: SearchSortType.topYear,
 /// )
 /// ```
-class SortPicker<T> extends BottomSheetListPicker<T> {
+class SortPicker<T> extends ThunderBottomSheetListPicker<T> {
   /// The account that triggered the sort picker. Used to filter sort options by platform.
   final Account? account;
 
@@ -326,13 +326,13 @@ class SortPicker<T> extends BottomSheetListPicker<T> {
   }) : super(items: _getItems<T>(account));
 
   /// Get the appropriate items based on the generic type T.
-  static List<ListPickerItem<T>> _getItems<T>(Account? account) {
+  static List<ThunderListPickerItem<T>> _getItems<T>(Account? account) {
     if (T == PostSortType) {
-      return getDefaultPostSortTypeItems(account: account) as List<ListPickerItem<T>>;
+      return getDefaultPostSortTypeItems(account: account) as List<ThunderListPickerItem<T>>;
     } else if (T == CommentSortType) {
-      return getCommentSortTypeItems(account: account) as List<ListPickerItem<T>>;
+      return getCommentSortTypeItems(account: account) as List<ThunderListPickerItem<T>>;
     } else if (T == SearchSortType) {
-      return getDefaultSearchSortTypeItems(account: account) as List<ListPickerItem<T>>;
+      return getDefaultSearchSortTypeItems(account: account) as List<ThunderListPickerItem<T>>;
     }
     throw ArgumentError('Unsupported sort type: $T. Must be PostSortType, CommentSortType, or SearchSortType.');
   }
@@ -380,7 +380,7 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
           children: [
             ..._generateList(_getDefaultItems(), theme),
             if (hasTopSubmenu)
-              PickerItem(
+              ThunderPickerItem(
                 label: l10n.top,
                 icon: Icons.military_tech,
                 onSelected: () => setState(() => topSelected = true),
@@ -445,23 +445,23 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
   }
 
   /// Get the default (non-Top) items for the current sort type.
-  List<ListPickerItem<T>> _getDefaultItems() {
+  List<ThunderListPickerItem<T>> _getDefaultItems() {
     if (T == PostSortType) {
-      return getDefaultPostSortTypeItems(account: widget.account) as List<ListPickerItem<T>>;
+      return getDefaultPostSortTypeItems(account: widget.account) as List<ThunderListPickerItem<T>>;
     } else if (T == CommentSortType) {
-      return getCommentSortTypeItems(account: widget.account) as List<ListPickerItem<T>>;
+      return getCommentSortTypeItems(account: widget.account) as List<ThunderListPickerItem<T>>;
     } else if (T == SearchSortType) {
-      return getDefaultSearchSortTypeItems(account: widget.account) as List<ListPickerItem<T>>;
+      return getDefaultSearchSortTypeItems(account: widget.account) as List<ThunderListPickerItem<T>>;
     }
     return [];
   }
 
   /// Get the "Top" items for the current sort type.
-  List<ListPickerItem<T>> _getTopItems() {
+  List<ThunderListPickerItem<T>> _getTopItems() {
     if (T == PostSortType) {
-      return getTopPostSortTypeItems(account: widget.account) as List<ListPickerItem<T>>;
+      return getTopPostSortTypeItems(account: widget.account) as List<ThunderListPickerItem<T>>;
     } else if (T == SearchSortType) {
-      return getTopSearchSortTypeItems(account: widget.account) as List<ListPickerItem<T>>;
+      return getTopSearchSortTypeItems(account: widget.account) as List<ThunderListPickerItem<T>>;
     }
     return [];
   }
@@ -472,9 +472,9 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
     return topItems.map((item) => item.payload).contains(widget.previouslySelected);
   }
 
-  List<Widget> _generateList(List<ListPickerItem<T>> items, ThemeData theme) {
+  List<Widget> _generateList(List<ThunderListPickerItem<T>> items, ThemeData theme) {
     return items
-        .map((item) => PickerItem(
+        .map((item) => ThunderPickerItem(
             label: item.label,
             icon: item.icon,
             onSelected: () {

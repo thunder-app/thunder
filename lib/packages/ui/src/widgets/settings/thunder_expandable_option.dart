@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/packages/ui/src/widgets/settings/thunder_settings_tile.dart';
+import 'package:thunder/packages/ui/src/widgets/settings/thunder_settings_trailing.dart';
+
+/// Expandable settings section with a chevron header and animated child content.
 class ThunderExpandableOption extends StatefulWidget {
   const ThunderExpandableOption({
     super.key,
-    this.icon,
+    this.leading,
     required this.title,
     required this.child,
     this.initiallyExpanded = false,
   });
 
-  final Widget? icon;
+  /// Optional leading widget shown in the header tile.
+  final Widget? leading;
+
+  /// Header title text.
   final String title;
+
+  /// Content revealed when the section is expanded.
   final Widget child;
+
+  /// Whether the section starts expanded.
   final bool initiallyExpanded;
 
   @override
@@ -45,34 +56,13 @@ class _ThunderExpandableOptionState extends State<ThunderExpandableOption> with 
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Column(
       children: [
-        InkWell(
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
+        ThunderSettingsTile(
+          title: widget.title,
+          leading: widget.leading,
+          trailing: ThunderSettingsExpandTrailing(expanded: _isExpanded),
           onTap: () => setState(() => _isExpanded = !_isExpanded),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      if (widget.icon != null) ...[
-                        widget.icon!,
-                        const SizedBox(width: 8),
-                      ],
-                      Expanded(child: Text(widget.title, style: theme.textTheme.bodyMedium)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Icon(_isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded),
-              ],
-            ),
-          ),
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
@@ -86,7 +76,7 @@ class _ThunderExpandableOptionState extends State<ThunderExpandableOption> with 
           },
           child: _isExpanded
               ? Padding(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(6.0),
                   child: widget.child,
                 )
               : const SizedBox.shrink(),

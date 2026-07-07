@@ -38,8 +38,8 @@ import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/features/post/presentation/state/post_bloc.dart' as post_bloc;
+import 'package:thunder/packages/ui/ui.dart';
 
 part 'navigation_feed.dart';
 part 'navigation_instance.dart';

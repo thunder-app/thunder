@@ -68,7 +68,7 @@ Future<void> navigateToInstancePage(
   } else {
     final l10n = GlobalContext.l10n;
 
-    showSnackbar(
+    showThunderSnackbar(
       l10n.unableToNavigateToInstance(instanceHost),
       trailingAction: () => handleLink(context, url: "https://$instanceHost", forceOpenInBrowser: true),
       trailingIcon: Icons.open_in_browser_rounded,

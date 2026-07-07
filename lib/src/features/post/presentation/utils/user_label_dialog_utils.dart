@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thunder/src/features/user/user.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Shows a dialog which allows the user to create/modify/edit a label for the given [username].
 /// Tip: Call `UserLabel.usernameFromParts` to generate a [username] in the right format.

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keyboard_detection/keyboard_detection.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/post/post.dart';
@@ -25,6 +24,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/media/media_utils.dart' show isImageUrl, selectImagesToUpload;
 import 'package:thunder/src/shared/media/media_view.dart';
 import 'package:thunder/src/shared/language_selector.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({
@@ -141,7 +141,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     if (widget.prePopulated == true && widget.url != null && widget.text?.isNotEmpty == true && widget.isCrossPost) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final l10n = GlobalContext.l10n;
-        showSnackbar(
+        showThunderSnackbar(
           l10n.addOriginalPostBody,
           duration: const Duration(seconds: 10),
           trailingIcon: Icons.add_rounded,
@@ -172,7 +172,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
         await cubit.clearActiveDraft();
 
         if (result == DraftPersistenceResult.saved && GlobalContext.scaffoldMessengerKey.currentState != null) {
-          showSnackbar(GlobalContext.l10n.postSavedAsDraft);
+          showThunderSnackbar(GlobalContext.l10n.postSavedAsDraft);
         }
       }(),
     );
@@ -250,7 +250,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     if (state.restoredDraftAvailable && state.restoredDraftNoticeId != _lastHandledDraftNoticeId) {
       _lastHandledDraftNoticeId = state.restoredDraftNoticeId;
 
-      showSnackbar(
+      showThunderSnackbar(
         GlobalContext.l10n.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.errorContainer,
@@ -265,7 +265,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     }
 
     if (state.status == CreatePostStatus.error && state.message != null) {
-      showSnackbar(state.message!);
+      showThunderSnackbar(state.message!);
       context.read<CreatePostCubit>().clearMessage();
       return;
     }
@@ -274,17 +274,24 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
       case CreatePostStatus.imageUploadSuccess:
         final markdownImages = state.imageUrls?.map((url) => '![]($url)').join('\n\n') ?? '';
         if (markdownImages.isEmpty) {
+          context.read<CreatePostCubit>().clearMessage();
           return;
         }
 
         final selection = _bodyTextController.selection;
         final insertIndex = selection.isValid ? selection.end : _bodyTextController.text.length;
-        _bodyTextController.text = _bodyTextController.text.replaceRange(insertIndex, insertIndex, markdownImages);
+        final newBody = _bodyTextController.text.replaceRange(insertIndex, insertIndex, markdownImages);
+
+        _syncingControllers = true;
+        _bodyTextController.text = newBody;
         _bodyTextController.selection = TextSelection.collapsed(offset: insertIndex + markdownImages.length);
+        _syncingControllers = false;
+
+        context.read<CreatePostCubit>().updateBody(newBody);
         break;
       case CreatePostStatus.imageUploadFailure:
       case CreatePostStatus.postImageUploadFailure:
-        showSnackbar(
+        showThunderSnackbar(
           GlobalContext.l10n.postUploadImageError + (state.message?.isNotEmpty == true ? '. ${state.message}' : ''),
           leadingIcon: Icons.warning_rounded,
           leadingIconColor: Theme.of(context).colorScheme.errorContainer,

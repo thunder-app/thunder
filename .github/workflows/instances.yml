@@ -51,7 +51,7 @@ jobs:
                 inSection=true
               fi
 
-              if [[ $line == *"#INSTANCE_LIST_END#"* ]]; then  
+              if [[ $line == *"#INSTANCE_LIST_END#"* ]]; then
                 echo "$manifestInstances" >> android/app/src/main/AndroidManifest-new.xml
                 inSection=false
               fi
@@ -99,7 +99,7 @@ jobs:
               inSection=true
           fi
 
-          if [[ $line == "            ]" ]]; then 
+          if [[ $line == "            ]" ]]; then
               printf "$safariManifestInstances" >> "ios/Open In Thunder/Resources/manifest-new.json"
               inSection=false
           fi
@@ -121,7 +121,7 @@ jobs:
               inSection=true
           fi
 
-          if [[ $line == "];" ]]; then 
+          if [[ $line == "];" ]]; then
               printf "$safariContentInstances" >> "ios/Open In Thunder/Resources/content-new.js"
               inSection=false
           fi

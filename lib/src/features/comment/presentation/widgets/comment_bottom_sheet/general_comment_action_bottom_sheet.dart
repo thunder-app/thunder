@@ -9,7 +9,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/shared/name/full_name_copy_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, MultiPickerItem, PickerItemData;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the general actions that can be taken on a comment
 enum GeneralCommentAction {
@@ -264,8 +264,8 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
     return Column(
       children: [
         if (quickActions.isNotEmpty)
-          MultiPickerItem(
-            pickerItems: quickActions.map<PickerItemData>((quickCommentAction) {
+          ThunderMultiPickerItem(
+            pickerItems: quickActions.map<ThunderMultiPickerItemData>((quickCommentAction) {
               Function()? onSelected;
 
               if (quickCommentAction == GeneralQuickCommentAction.downvote && !widget.downvotesEnabled) {
@@ -274,7 +274,7 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
                 onSelected = widget.account.anonymous ? null : () => performAction(quickCommentAction);
               }
 
-              return PickerItemData(
+              return ThunderMultiPickerItemData(
                 icon: getIcon(quickCommentAction),
                 label: getLabel(quickCommentAction),
                 foregroundColor: getForegroundColor(quickCommentAction),
@@ -284,7 +284,7 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
             }).toList(),
           ),
         ...submenus.map<Widget>(
-          (page) => BottomSheetAction(
+          (page) => ThunderBottomSheetAction(
             leading: Icon(page.icon),
             trailing: const Icon(Icons.chevron_right_rounded),
             title: page.name,

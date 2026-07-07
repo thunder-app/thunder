@@ -7,7 +7,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/packages/ui/ui.dart';
 
 class AdditionalCommentCard extends StatefulWidget {
   /// The function to call when tapped
@@ -63,7 +63,7 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(12.0, 12.0, 0.0, 12.0),
-                    child: ScalableText(
+                    child: ThunderScalableText(
                       reply,
                       textScaleFactor: commentFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(

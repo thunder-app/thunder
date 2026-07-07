@@ -26,6 +26,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site_response.d
 import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
 import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 
 /// Lemmy API client for Lemmy 1.0+ (`/api/v4`).
 ///
@@ -828,7 +829,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   Future<String> uploadImage(String filePath) async {
     final decoded = await uploadMultipartImage(
       httpClient: httpClient,
-      uri: Uri.https(account.instance, '$basePath/image'),
+      uri: buildInstanceUri(account.instance, '$basePath/image'),
       headers: buildHeaders(),
       fieldName: 'image',
       filePath: filePath,
@@ -923,7 +924,7 @@ AccountMediaItem _accountMediaItemFromLemmyV4(Map<String, dynamic> image, String
   final alias = localImage['pictrs_alias']?.toString() ?? '';
   return AccountMediaItem(
     alias: alias,
-    url: Uri.https(instance, '/pictrs/image/$alias').toString(),
+    url: buildInstanceUrl(instance, '/pictrs/image/$alias'),
     uploadedAt: DateTime.tryParse((localImage['published_at'] ?? '').toString()),
     thumbnailForPostId: localImage['thumbnail_for_post_id'] as int?,
   );

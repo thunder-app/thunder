@@ -13,7 +13,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
-import 'package:thunder/src/shared/error_message.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A scaffold for instance tabs. Handles loading, retry and loading more.
 class _InstanceTabScaffold<T> extends StatefulWidget {
@@ -64,10 +64,15 @@ class _InstanceTabScaffoldState<T> extends State<_InstanceTabScaffold<T>> with A
     }
 
     if (state.status == InstancePageStatus.failure && state.items.isEmpty) {
-      return ErrorMessage(
+      return ThunderStateView(
+        title: l10n.somethingWentWrong,
         message: state.message,
         actions: [
-          (text: l10n.refreshContent, action: widget.onRetry, loading: false),
+          ThunderStateAction(
+            label: l10n.refreshContent,
+            onPressed: widget.onRetry,
+            primary: true,
+          ),
         ],
       );
     }

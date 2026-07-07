@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_body_sliver.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_bottom_sliver.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_comments_sliver.dart';
-import 'package:thunder/src/features/post/presentation/widgets/post_page_error.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// Selects the post-page content branch and delegates each branch to slivers.
 class PostPageContentSlivers extends StatelessWidget {
@@ -53,9 +54,22 @@ class PostPageContentSlivers extends StatelessWidget {
         }
 
         if (state.status == PostPageStatus.failure) {
+          final l10n = GlobalContext.l10n;
           return SliverFillRemaining(
             hasScrollBody: false,
-            child: PostPageError(onRetry: onRetry),
+            child: Center(
+              child: ThunderStateView(
+                title: l10n.unableToLoadPost,
+                message: l10n.internetOrInstanceIssues,
+                actions: [
+                  ThunderStateAction(
+                    label: l10n.retry,
+                    onPressed: onRetry,
+                    primary: true,
+                  ),
+                ],
+              ),
+            ),
           );
         }
 

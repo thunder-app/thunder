@@ -13,7 +13,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// This function is used to update the notification settings. It is called when the user changes the notification settings.
 ///
@@ -59,7 +59,7 @@ Future<bool> updateNotificationSettings(
     } else if (updatedNotificationType == NotificationType.none && !success) {
       // If we failed to remove all tokens from the server, we'll set the preference to NotificationType.none
       // The next time the app is opened, it will attempt to remove tokens from the server
-      showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL));
+      showThunderSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL));
       onUpdate?.call(updatedNotificationType);
       return true;
     }
@@ -104,7 +104,7 @@ Future<bool> updateNotificationSettings(
       if (areAndroidNotificationsAllowed != true) {
         areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
         if (areAndroidNotificationsAllowed != true) {
-          showSnackbar(
+          showThunderSnackbar(
             l10n.permissionDenied,
             trailingIcon: Icons.settings_rounded,
             trailingAction: () async {
@@ -138,7 +138,7 @@ Future<bool> updateNotificationSettings(
       if (notificationsEnabledOptions?.isEnabled != true) {
         bool? areIOSNotificationsAllowed = await iosFlutterLocalNotificationsPlugin?.requestPermissions(alert: true, badge: true, sound: true);
         if (areIOSNotificationsAllowed != true) {
-          showSnackbar(l10n.permissionDenied);
+          showThunderSnackbar(l10n.permissionDenied);
           return Future.delayed(const Duration(seconds: 2)).then((_) => false);
         }
       }

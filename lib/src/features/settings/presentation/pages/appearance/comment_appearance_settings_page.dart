@@ -365,10 +365,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
               ThunderListOption(
                   title: l10n.nestedCommentIndicatorStyle,
-                  value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                  value: ThunderListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
                   options: [
-                    ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                    ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                    ThunderListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                    ThunderListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
                   ],
                   leading: Icon(Icons.format_list_bulleted_rounded),
                   onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
@@ -378,10 +378,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
               ThunderListOption(
                   title: l10n.nestedCommentIndicatorColor,
-                  value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                  value: ThunderListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
                   options: [
-                    ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                    ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                    ThunderListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                    ThunderListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
                   ],
                   leading: Icon(Icons.color_lens_outlined),
                   onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
@@ -392,10 +392,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               ThunderSettingsTile(
                   leading: Icon(Icons.alternate_email_rounded),
                   title: l10n.usernameFormattingRedirect,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming, settingToHighlight: LocalSettings.userStyle),
                   highlightKey: settingToHighlightKey,
                   highlighted: false),

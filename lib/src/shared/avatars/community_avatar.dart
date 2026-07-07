@@ -33,8 +33,8 @@ class CommunityAvatar extends StatelessWidget {
 
     return Stack(
       children: [
-        Avatar(
-          data: AvatarData(
+        ThunderAvatar(
+          data: ThunderAvatarData(
             fallbackLabel: community.titleOrName,
             imageUrl: imageUrl,
             radius: radius,

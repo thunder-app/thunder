@@ -113,7 +113,7 @@ class _PrivateMessageThreadPageState extends State<PrivateMessageThreadPage> {
       listenWhen: (previous, current) => previous.messages.length != current.messages.length || previous.status != current.status || previous.message != current.message,
       listener: (context, state) {
         if (state.message?.isNotEmpty == true) {
-          showSnackbar(state.message!);
+          showThunderSnackbar(state.message!);
         }
 
         final messagesGrew = state.messages.length > _previousMessageCount;

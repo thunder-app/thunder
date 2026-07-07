@@ -16,7 +16,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a given community's information. This widget is generally used in a list.
 class CommunityListEntry extends StatefulWidget {
@@ -123,7 +123,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
             ? IconButton(
                 onPressed: () {
                   onSubscribe(community.context.subscribed != SubscriptionStatus.notSubscribed, isUserLoggedIn);
-                  showSnackbar(community.context.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
+                  showThunderSnackbar(community.context.subscribed == SubscriptionStatus.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
                 },
                 icon: Semantics(
                   label: subscriptionButtonLabel,

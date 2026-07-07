@@ -12,12 +12,12 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText, ThunderIconLabel;
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Contains metadata related to a given post. This is generally displayed as part of the post card.
 ///
@@ -214,7 +214,7 @@ class ScorePostCardMetaData extends StatelessWidget {
             ),
           ),
           if (showScores)
-            ScalableText(
+            ThunderScalableText(
               formattedScore,
               semanticsLabel: l10n.xScore(formattedScore),
               textScaleFactor: metadataFontScale.textScaleFactor,

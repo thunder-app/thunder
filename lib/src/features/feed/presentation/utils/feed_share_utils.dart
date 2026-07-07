@@ -8,7 +8,8 @@ import 'package:thunder/src/features/feed/presentation/models/feed_share_options
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Shows a bottom modal sheet which allows sharing the given [community].
 Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity community) async {
@@ -17,30 +18,30 @@ Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity comm
 
   final communityLink = await getLemmyCommunity(community.actorId) ?? '';
   final lemmyLink = '!$communityLink';
-  final localLink = 'https://${account.instance}/c/$communityLink';
+  final localLink = buildInstanceUrl(account.instance, '/c/$communityLink');
 
   if (context.mounted) {
     showModalBottomSheet(
       showDragHandle: true,
       isScrollControlled: true,
       context: context,
-      builder: (builderContext) => BottomSheetListPicker(
+      builder: (builderContext) => ThunderBottomSheetListPicker(
         title: l10n.shareCommunity,
         items: [
-          ListPickerItem(
+          ThunderListPickerItem(
             label: l10n.shareCommunityLink,
             icon: Icons.link_rounded,
             subtitle: community.actorId,
             payload: CommunityShareOptions.link,
           ),
           if (!community.actorId.contains(account.instance))
-            ListPickerItem(
+            ThunderListPickerItem(
               label: l10n.shareCommunityLinkLocal,
               icon: Icons.link_rounded,
               subtitle: localLink,
               payload: CommunityShareOptions.localLink,
             ),
-          ListPickerItem(
+          ThunderListPickerItem(
             label: l10n.shareLemmyLink,
             icon: Icons.share_rounded,
             subtitle: lemmyLink,
@@ -78,30 +79,30 @@ Future<void> showUserShareSheet(BuildContext context, ThunderUser person) async 
 
   String user = await getLemmyUser(person.actorId) ?? '';
   String lemmyLink = '@$user';
-  String localLink = 'https://${account.instance}/u/$user';
+  String localLink = buildInstanceUrl(account.instance, '/u/$user');
 
   if (context.mounted) {
     showModalBottomSheet(
       showDragHandle: true,
       isScrollControlled: true,
       context: context,
-      builder: (builderContext) => BottomSheetListPicker(
+      builder: (builderContext) => ThunderBottomSheetListPicker(
         title: l10n.shareUser,
         items: [
-          ListPickerItem(
+          ThunderListPickerItem(
             label: l10n.shareUserLink,
             payload: UserShareOptions.link,
             subtitle: person.actorId,
             icon: Icons.link_rounded,
           ),
           if (!person.actorId.contains(account.instance))
-            ListPickerItem(
+            ThunderListPickerItem(
               label: l10n.shareUserLinkLocal,
               payload: UserShareOptions.localLink,
               subtitle: localLink,
               icon: Icons.link_rounded,
             ),
-          ListPickerItem(
+          ThunderListPickerItem(
             label: l10n.shareLemmyLink,
             payload: UserShareOptions.lemmy,
             subtitle: lemmyLink,

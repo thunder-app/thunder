@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:version/version.dart';
 
 import 'package:thunder/src/foundation/errors/api_exception.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/utils/check_github_update.dart';
 import 'package:thunder/src/foundation/contracts/account.dart';
 
@@ -130,22 +131,22 @@ abstract class BaseApiClient {
         case HttpMethod.get:
           // Convert all values to strings for query parameters
           final queryParams = data.map((k, v) => MapEntry(k, v.toString()));
-          uri = Uri.https(account.instance, endpoint, queryParams.isEmpty ? null : queryParams);
+          uri = buildInstanceUri(account.instance, endpoint, queryParameters: queryParams.isEmpty ? null : queryParams);
           if (debug) debugPrint('$platformName API: GET $uri');
           response = await httpClient.get(uri, headers: headers);
 
         case HttpMethod.post:
-          uri = Uri.https(account.instance, endpoint);
+          uri = buildInstanceUri(account.instance, endpoint);
           if (debug) debugPrint('$platformName API: POST $uri');
           response = await httpClient.post(uri, body: jsonEncode(data), headers: headers);
 
         case HttpMethod.put:
-          uri = Uri.https(account.instance, endpoint);
+          uri = buildInstanceUri(account.instance, endpoint);
           if (debug) debugPrint('$platformName API: PUT $uri');
           response = await httpClient.put(uri, body: jsonEncode(data), headers: headers);
 
         case HttpMethod.delete:
-          uri = Uri.https(account.instance, endpoint);
+          uri = buildInstanceUri(account.instance, endpoint);
           if (debug) debugPrint('$platformName API: DELETE $uri');
           response = await httpClient.delete(uri, body: data.isEmpty ? null : jsonEncode(data), headers: headers);
       }

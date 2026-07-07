@@ -8,7 +8,7 @@ import 'package:flutter_sharing_intent/model/sharing_file.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Handles share intents (external content shared to Thunder) from the OS.
 ///
@@ -46,7 +46,7 @@ class ShareIntentHandler {
       });
     } catch (e) {
       if (context.mounted) {
-        showSnackbar(l10n.unexpectedError);
+        showThunderSnackbar(l10n.unexpectedError);
       }
     }
   }

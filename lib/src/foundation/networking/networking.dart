@@ -1,6 +1,7 @@
 export 'api_client_factory.dart';
 export 'base_api_client.dart';
 export 'error_message_utils.dart';
+export 'instance_uri.dart';
 export 'lemmy/lemmy_v3_api_client.dart';
 export 'lemmy/lemmy_v4_api_client.dart';
 export 'mappers/mappers.dart';

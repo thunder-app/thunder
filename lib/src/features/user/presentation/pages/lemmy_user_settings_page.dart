@@ -75,19 +75,19 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     super.dispose();
   }
 
-  List<ListPickerItem<FeedListType>> _feedTypeOptions() {
+  List<ThunderListPickerItem<FeedListType>> _feedTypeOptions() {
     return const [
-      ListPickerItem(
+      ThunderListPickerItem(
         icon: Icons.view_list_rounded,
         label: 'Subscribed',
         payload: FeedListType.subscribed,
       ),
-      ListPickerItem(
+      ThunderListPickerItem(
         icon: Icons.home_rounded,
         label: 'All',
         payload: FeedListType.all,
       ),
-      ListPickerItem(
+      ThunderListPickerItem(
         icon: Icons.grid_view_rounded,
         label: 'Local',
         payload: FeedListType.local,
@@ -95,20 +95,20 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     ];
   }
 
-  ListPickerItem<FeedListType> _currentFeedTypeOption(
+  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(
     FeedListType? currentType,
   ) {
     return _feedTypeOptions().firstWhereOrNull(
           (item) => item.payload == currentType,
         ) ??
-        const ListPickerItem(
+        const ThunderListPickerItem(
           icon: Icons.view_list_rounded,
           label: 'Subscribed',
           payload: FeedListType.subscribed,
         );
   }
 
-  ListPickerItem<PostSortType> _currentSortOption(
+  ThunderListPickerItem<PostSortType> _currentSortOption(
     Account account,
     PostSortType? currentSortType,
   ) {
@@ -122,7 +122,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     return options.firstWhereOrNull((item) => item.payload == currentSortType) ??
         allPostSortTypeItems.firstWhere(
           (item) => item.payload == currentSortType,
-          orElse: () => ListPickerItem(
+          orElse: () => ThunderListPickerItem(
             payload: currentSortType,
             icon: Icons.sort_rounded,
             label: currentSortType.value,
@@ -147,7 +147,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
         final currentSortOption = _currentSortOption(account, localUser?.defaultSortType);
 
         return [
-          UserSettingsSectionHeader(title: l10n.general),
+          ThunderSectionHeader(title: l10n.general),
           ThunderSettingsTile(
             leading: const Icon(Icons.person_rounded),
             title: l10n.displayName,
@@ -169,7 +169,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountProfileBio),
             highlighted: settingToHighlight == LocalSettings.accountProfileBio,
           ),
-          UserSettingsSectionHeader(
+          ThunderSectionHeader(
             title: l10n.feedSettings,
             description: l10n.settingOverrideLabel,
           ),
@@ -239,9 +239,8 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
           ThunderToggleOption(
             title: l10n.showBotAccounts,
             value: localUser?.showBotAccounts,
-            iconEnabled: Thunder.robot,
-            iconDisabled: Thunder.robot,
-            iconSpacing: 14.0,
+            iconEnabled: ThunderIcon.robot,
+            iconDisabled: ThunderIcon.robot,
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showBotAccounts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
@@ -265,11 +264,11 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             ),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType,
           ),
-          UserSettingsSectionHeader(title: l10n.contentManagement),
+          ThunderSectionHeader(title: l10n.contentManagement),
           ThunderSettingsTile(
             leading: const Icon(Icons.language_rounded),
             title: l10n.discussionLanguages,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: isUpdating
                 ? null
                 : () => navigateToSettingPage(
@@ -283,7 +282,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.block_rounded),
             title: l10n.blockSettingLabel,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => navigateToSettingPage(
               context,
               LocalSettings.settingsPageAccountBlocks,
@@ -292,14 +291,14 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountBlocks),
             highlighted: settingToHighlight == LocalSettings.accountBlocks,
           ),
-          UserSettingsSectionHeader(
+          ThunderSectionHeader(
             title: l10n.importExportSettings,
             description: l10n.importExportLemmyAccountSettingsSubtitle,
           ),
           ThunderSettingsTile(
             leading: const Icon(Icons.file_download_rounded),
             title: l10n.exportLemmyAccountSettingsDescription,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _exportSettings(context),
             highlightKey: settingToHighlightKey,
             onLongPress: () => shareLocalSetting(
@@ -311,7 +310,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.file_upload_rounded),
             title: l10n.importLemmyAccountSettingsDescription,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _importSettings(context),
             highlightKey: settingToHighlightKey,
             onLongPress: () => shareLocalSetting(
@@ -320,11 +319,11 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             ),
             highlighted: settingToHighlight == LocalSettings.accountImportSettings,
           ),
-          UserSettingsSectionHeader(title: l10n.dangerZone),
+          ThunderSectionHeader(title: l10n.dangerZone),
           ThunderSettingsTile(
             leading: const Icon(Icons.password),
             title: l10n.changePassword,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _openInstanceSettings(
               context,
               title: l10n.changePassword,
@@ -340,7 +339,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.delete_forever_rounded),
             title: l10n.deleteAccount,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _openInstanceSettings(
               context,
               title: l10n.deleteAccount,
@@ -356,7 +355,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.hide_image_rounded),
             title: l10n.manageMedia,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => navigateToSettingPage(
               context,
               LocalSettings.settingsPageAccountMedia,
@@ -433,7 +432,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       final account = resolveEffectiveAccount(context);
       exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
     } catch (e) {
-      showSnackbar(getExceptionErrorMessage(e));
+      showThunderSnackbar(getExceptionErrorMessage(e));
       return;
     }
 
@@ -454,12 +453,12 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       );
 
       if (savedFilePath?.isNotEmpty == true) {
-        showSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
+        showThunderSnackbar(l10n.accountSettingsExportedSuccessfully(savedFilePath!));
       } else {
-        showSnackbar(l10n.errorSavingAccountSettings);
+        showThunderSnackbar(l10n.errorSavingAccountSettings);
       }
     } catch (e) {
-      showSnackbar('${l10n.errorSavingAccountSettings} $e');
+      showThunderSnackbar('${l10n.errorSavingAccountSettings} $e');
     }
   }
 
@@ -477,16 +476,16 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       if (filePath != null) {
         importSettings = await File(filePath).readAsString();
       } else {
-        showSnackbar(l10n.errorLoadingAccountSettings);
+        showThunderSnackbar(l10n.errorLoadingAccountSettings);
         return;
       }
     } catch (e) {
       if (e is FormatException) {
-        showSnackbar(l10n.errorParsingJson);
+        showThunderSnackbar(l10n.errorParsingJson);
       } else if ((e as PlatformException?)?.code == 'invalid_file_extension') {
-        showSnackbar(l10n.youMustSelectAJsonFile);
+        showThunderSnackbar(l10n.youMustSelectAJsonFile);
       } else {
-        showSnackbar('${l10n.errorLoadingAccountSettings} $e');
+        showThunderSnackbar('${l10n.errorLoadingAccountSettings} $e');
       }
       return;
     }
@@ -499,13 +498,13 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       );
 
       if (success) {
-        showSnackbar(appL10n.accountSettingsImportedSuccessfully);
+        showThunderSnackbar(appL10n.accountSettingsImportedSuccessfully);
         context.read<ProfileBloc>().add(FetchProfileSettings());
       } else {
-        showSnackbar(appL10n.errorImportingAccountSettings);
+        showThunderSnackbar(appL10n.errorImportingAccountSettings);
       }
     } catch (e) {
-      showSnackbar(getExceptionErrorMessage(e));
+      showThunderSnackbar(getExceptionErrorMessage(e));
     }
   }
 

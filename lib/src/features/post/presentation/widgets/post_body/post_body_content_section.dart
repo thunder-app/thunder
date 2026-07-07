@@ -75,7 +75,7 @@ class PostBodyContentSection extends StatelessWidget {
       ),
       expanded: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: ConditionalParentWidget(
+        child: ThunderConditionalParent(
           condition: selectable,
           parentBuilder: (child) {
             return SelectableRegion(
@@ -93,7 +93,7 @@ class PostBodyContentSection extends StatelessWidget {
             );
           },
           child: viewSource
-              ? ScalableText(
+              ? ThunderScalableText(
                   post.body ?? '',
                   style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                   textScaleFactor: contentFontSizeScale.textScaleFactor,

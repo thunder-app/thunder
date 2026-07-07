@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/api.dart';
 
 /// A widget that displays the proper background when a swipe action is performed on a comment.
@@ -36,14 +37,11 @@ class CommentCardBackground extends StatelessWidget {
 
     final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
 
-    return AnimatedContainer(
+    return ThunderSwipeActionBackground(
       alignment: alignment,
-      duration: const Duration(milliseconds: 200),
-      color: backgroundColor,
-      child: SizedBox(
-        width: MediaQuery.sizeOf(context).width * dismissThreshold,
-        child: swipeAction != null ? Icon(swipeAction!.getIcon()) : const SizedBox.shrink(),
-      ),
+      backgroundColor: backgroundColor,
+      width: MediaQuery.sizeOf(context).width * dismissThreshold,
+      icon: swipeAction?.getIcon(),
     );
   }
 }

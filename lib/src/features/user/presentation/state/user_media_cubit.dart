@@ -121,7 +121,7 @@ class UserMediaCubit extends Cubit<UserMediaState> {
     emit(state.copyWith(status: UserMediaStatus.searching, errorMessage: '', errorReason: null, imageSearchPosts: null, imageSearchComments: null));
 
     try {
-      final url = Uri.https(account.instance, 'pictrs/image/$id').toString();
+      final url = buildInstanceUrl(account.instance, '/pictrs/image/$id');
 
       final postsResponse = await searchRepository.search(query: url, type: MetaSearchType.posts);
       final postsByUrlResponse = await searchRepository.search(query: url, type: MetaSearchType.url);

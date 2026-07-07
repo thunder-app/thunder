@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 enum ActivityPubFullNameType {
   user,
@@ -59,5 +59,5 @@ Future<void> copyActivityPubFullName({
 
   HapticFeedback.mediumImpact();
   await Clipboard.setData(ClipboardData(text: fullName));
-  showSnackbar(GlobalContext.l10n.copiedToClipboard);
+  showThunderSnackbar(GlobalContext.l10n.copiedToClipboard);
 }

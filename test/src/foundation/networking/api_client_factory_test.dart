@@ -102,6 +102,18 @@ void main() {
       expect(PlatformVersionCache().get('lemmy.test')?.toString(), '1.0.0');
     });
 
+    test('probeLemmySiteVersion uses http for local instance authorities', () async {
+      when(() => mockHttpClient.get(any())).thenAnswer(
+        (_) async => http.Response('{"version":"1.0.0-alpha.20"}', 200),
+      );
+
+      final version = await ApiClientFactory.probeLemmySiteVersion('127.0.0.1:8537', httpClient: mockHttpClient);
+
+      expect(version?.toString(), '1.0.0-alpha.20');
+      expect(PlatformVersionCache().get('127.0.0.1:8537')?.toString(), '1.0.0-alpha.20');
+      verify(() => mockHttpClient.get(Uri.parse('http://127.0.0.1:8537/api/v4/site'))).called(1);
+    });
+
     test('resolved client defers resolution until first use and caches the client', () async {
       final api = MockThunderApiClient();
       var callCount = 0;

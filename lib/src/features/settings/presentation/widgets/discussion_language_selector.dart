@@ -9,7 +9,7 @@ import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 class DiscussionLanguageSelector extends StatefulWidget {
   const DiscussionLanguageSelector({super.key});

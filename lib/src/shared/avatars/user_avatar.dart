@@ -24,8 +24,8 @@ class UserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = generateAvatarImageUrl(user.avatar, thumbnailSize: thumbnailSize, format: format);
 
-    return Avatar(
-      data: AvatarData(
+    return ThunderAvatar(
+      data: ThunderAvatarData(
         fallbackLabel: user.displayNameOrName,
         imageUrl: imageUrl,
         radius: radius,

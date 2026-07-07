@@ -8,7 +8,7 @@ import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/user/presentation/widgets/account_picker_sheet.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the currently selected user account with the ability to switch between accounts.
 ///
@@ -213,23 +213,23 @@ class _UserSelectorState extends State<UserSelector> {
       );
 
       if (widget.communityActorId?.isNotEmpty == true && resolvedContent.community == null) {
-        showSnackbar(l10n.unableToFindCommunityOnInstance);
+        showThunderSnackbar(l10n.unableToFindCommunityOnInstance);
         return null;
       }
 
       if (widget.postActorId?.isNotEmpty == true && resolvedContent.post == null) {
-        showSnackbar(l10n.accountSwitchPostNotFound(newAccount.instance));
+        showThunderSnackbar(l10n.accountSwitchPostNotFound(newAccount.instance));
         return null;
       }
 
       if (widget.parentCommentActorId?.isNotEmpty == true && resolvedContent.parentComment == null) {
-        showSnackbar(l10n.accountSwitchParentCommentNotFound(newAccount.instance));
+        showThunderSnackbar(l10n.accountSwitchParentCommentNotFound(newAccount.instance));
         return null;
       }
 
       return resolvedContent;
     } catch (e) {
-      showSnackbar(e.toString());
+      showThunderSnackbar(e.toString());
       return null;
     }
   }

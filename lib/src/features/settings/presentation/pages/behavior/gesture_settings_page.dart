@@ -52,21 +52,21 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   bool isLoading = true;
 
   /// The available gesture options
-  List<ListPickerItem<SwipeAction>> postGestureOptions = [
-    ListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
-    ListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
-    ListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
-    ListPickerItem(icon: SwipeAction.toggleRead.getIcon(), label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
-    ListPickerItem(icon: SwipeAction.hide.getIcon(), label: SwipeAction.hide.label, payload: SwipeAction.hide),
-    ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
+  List<ThunderListPickerItem<SwipeAction>> postGestureOptions = [
+    ThunderListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ThunderListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ThunderListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
+    ThunderListPickerItem(icon: SwipeAction.toggleRead.getIcon(), label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
+    ThunderListPickerItem(icon: SwipeAction.hide.getIcon(), label: SwipeAction.hide.label, payload: SwipeAction.hide),
+    ThunderListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
-  List<ListPickerItem<SwipeAction>> commentGestureOptions = [
-    ListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
-    ListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
-    ListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
-    ListPickerItem(icon: SwipeAction.reply.getIcon(), label: SwipeAction.reply.label, payload: SwipeAction.reply),
-    ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
+  List<ThunderListPickerItem<SwipeAction>> commentGestureOptions = [
+    ThunderListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ThunderListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ThunderListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
+    ThunderListPickerItem(icon: SwipeAction.reply.getIcon(), label: SwipeAction.reply.label, payload: SwipeAction.reply),
+    ThunderListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   GlobalKey settingToHighlightKey = GlobalKey();
@@ -312,13 +312,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ThunderListOption(
                         title: l10n.imagePeekDuration,
                         subtitle: l10n.imagePeekDurationDescription,
-                        value: ListPickerItem(label: '${imagePeekDuration}ms', icon: Icons.touch_app_rounded, payload: imagePeekDuration),
+                        value: ThunderListPickerItem(label: '${imagePeekDuration}ms', icon: Icons.touch_app_rounded, payload: imagePeekDuration),
                         options: [
-                          ListPickerItem(icon: Icons.touch_app_rounded, label: '100ms', payload: 100),
-                          ListPickerItem(icon: Icons.touch_app_rounded, label: '200ms', payload: 200),
-                          ListPickerItem(icon: Icons.touch_app_rounded, label: '300ms', payload: 300),
-                          ListPickerItem(icon: Icons.touch_app_rounded, label: '400ms', payload: 400),
-                          ListPickerItem(icon: Icons.touch_app_rounded, label: '500ms', payload: 500),
+                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '100ms', payload: 100),
+                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '200ms', payload: 200),
+                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '300ms', payload: 300),
+                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '400ms', payload: 400),
+                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '500ms', payload: 500),
                         ],
                         leading: Icon(Icons.touch_app_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.imagePeekDuration, value.payload),
@@ -541,10 +541,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ThunderSettingsTile(
                         leading: Icon(Icons.color_lens_rounded),
                         title: l10n.actionColorsRedirect,
-                        trailing: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
+                        trailing: const ThunderSettingsChevronTrailing(),
                         onTap: () => navigateToSettingPage(context, LocalSettings.actionColors),
                         highlightKey: settingToHighlightKey,
                         highlighted: false),

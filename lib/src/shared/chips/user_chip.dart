@@ -139,7 +139,7 @@ class _UserChipGroups extends StatelessWidget {
       children: [
         if (groups.contains(UserType.op))
           Icon(
-            Thunder.microphone_variant,
+            ThunderIcon.microphone_variant,
             size: 15.0 * metadataFontSizeScale.textScaleFactor,
             color: iconColor,
           ),
@@ -151,13 +151,13 @@ class _UserChipGroups extends StatelessWidget {
           ),
         if (groups.contains(UserType.admin))
           Icon(
-            Thunder.shield_crown,
+            ThunderIcon.shield_crown,
             size: 14.0 * metadataFontSizeScale.textScaleFactor,
             color: iconColor,
           ),
         if (groups.contains(UserType.moderator))
           Icon(
-            Thunder.shield,
+            ThunderIcon.shield,
             size: 14.0 * metadataFontSizeScale.textScaleFactor,
             color: iconColor,
           ),
@@ -165,7 +165,7 @@ class _UserChipGroups extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Icon(
-              Thunder.robot,
+              ThunderIcon.robot,
               size: 12.0 * metadataFontSizeScale.textScaleFactor,
               color: iconColor,
             ),

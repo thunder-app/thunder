@@ -66,7 +66,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
     super.dispose();
   }
 
-  List<ListPickerItem<PostSortType>> _defaultSortOptions(Account account) {
+  List<ThunderListPickerItem<PostSortType>> _defaultSortOptions(Account account) {
     const allowedSortTypes = {
       PostSortType.hot,
       PostSortType.new_,
@@ -81,13 +81,13 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
     ].where((item) => allowedSortTypes.contains(item.payload)).toList();
   }
 
-  List<ListPickerItem<FeedListType>> _feedTypeOptions(Account account) {
+  List<ThunderListPickerItem<FeedListType>> _feedTypeOptions(Account account) {
     return FeedListType.values
         .where(
           (type) => type.platform == null || type.platform == account.platform,
         )
         .map(
-          (type) => ListPickerItem<FeedListType>(
+          (type) => ThunderListPickerItem<FeedListType>(
             payload: type,
             icon: switch (type) {
               FeedListType.all => Icons.home_rounded,
@@ -103,14 +103,14 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         .toList();
   }
 
-  ListPickerItem<FeedListType> _currentFeedTypeOption(
+  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(
     Account account,
     FeedListType? currentType,
   ) {
     return _feedTypeOptions(account).firstWhereOrNull(
           (item) => item.payload == currentType,
         ) ??
-        ListPickerItem<FeedListType>(
+        ThunderListPickerItem<FeedListType>(
           payload: currentType ?? FeedListType.subscribed,
           icon: Icons.feed_rounded,
           label: currentType?.value ?? FeedListType.subscribed.value,
@@ -118,7 +118,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         );
   }
 
-  ListPickerItem<PostSortType> _currentSortOption({
+  ThunderListPickerItem<PostSortType> _currentSortOption({
     required Account account,
     required PostSortType? currentSortType,
   }) {
@@ -129,7 +129,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
     return options.firstWhereOrNull((item) => item.payload == currentSortType) ??
         allPostSortTypeItems.firstWhere(
           (item) => item.payload == currentSortType,
-          orElse: () => ListPickerItem<PostSortType>(
+          orElse: () => ThunderListPickerItem<PostSortType>(
             payload: currentSortType,
             icon: Icons.sort_rounded,
             label: currentSortType.value,
@@ -174,7 +174,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         final selectedLanguageIds = myUser?.discussionLanguages ?? const <int>[];
 
         return [
-          UserSettingsSectionHeader(title: l10n.general),
+          ThunderSectionHeader(title: l10n.general),
           ThunderSettingsTile(
             leading: const Icon(Icons.note_rounded),
             title: l10n.profileBio,
@@ -186,7 +186,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountProfileBio),
             highlighted: settingToHighlight == LocalSettings.accountProfileBio,
           ),
-          UserSettingsSectionHeader(
+          ThunderSectionHeader(
             title: l10n.feedSettings,
             description: l10n.settingOverrideLabel,
           ),
@@ -198,7 +198,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onChanged: (_) async {},
             disabled: isUpdating,
             isBottomModalScrollControlled: true,
-            customListPicker: BottomSheetListPicker<PostSortType>(
+            customListPicker: ThunderBottomSheetListPicker<PostSortType>(
               title: l10n.defaultFeedSortType,
               items: _defaultSortOptions(account),
               previouslySelected: localUser?.defaultSortType,
@@ -265,9 +265,8 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
           ThunderToggleOption(
             title: l10n.showBotAccounts,
             value: localUser?.showBotAccounts,
-            iconEnabled: Thunder.robot,
-            iconDisabled: Thunder.robot,
-            iconSpacing: 14.0,
+            iconEnabled: ThunderIcon.robot,
+            iconDisabled: ThunderIcon.robot,
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showBotAccounts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
@@ -290,7 +289,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             ),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType,
           ),
-          UserSettingsSectionHeader(title: l10n.contentManagement),
+          ThunderSectionHeader(title: l10n.contentManagement),
           ThunderSettingsTile(
             leading: const Icon(Icons.language_rounded),
             title: l10n.discussionLanguages,
@@ -306,7 +305,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.block_rounded),
             title: l10n.blockSettingLabel,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => navigateToSettingPage(
               context,
               LocalSettings.settingsPageAccountBlocks,
@@ -315,11 +314,11 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountBlocks),
             highlighted: settingToHighlight == LocalSettings.accountBlocks,
           ),
-          UserSettingsSectionHeader(title: l10n.dangerZone),
+          ThunderSectionHeader(title: l10n.dangerZone),
           ThunderSettingsTile(
             leading: const Icon(Icons.password),
             title: l10n.changePassword,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _openInstanceSettings(
               context,
               title: l10n.changePassword,
@@ -335,7 +334,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.delete_forever_rounded),
             title: l10n.deleteAccount,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _openInstanceSettings(
               context,
               title: l10n.deleteAccount,
@@ -351,7 +350,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
           ThunderSettingsTile(
             leading: const Icon(Icons.hide_image_rounded),
             title: l10n.manageMedia,
-            trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+            trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => navigateToSettingPage(
               context,
               LocalSettings.settingsPageAccountMedia,

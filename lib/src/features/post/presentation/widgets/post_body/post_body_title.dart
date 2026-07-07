@@ -8,11 +8,11 @@ import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/community_chip.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/shared/media/compact_thumbnail_preview.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_flair_tags.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays the title and related information for a given post.
 ///
@@ -106,7 +106,7 @@ class PostBodyTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ScalableText(
+        ThunderScalableText(
           post.name,
           textScaleFactor: titleFontSizeScale.textScaleFactor,
           style: theme.textTheme.titleMedium,

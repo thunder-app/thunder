@@ -14,7 +14,8 @@ import 'package:thunder/src/features/post/presentation/widgets/cross_posts.dart'
 import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_content_section.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_flair_section.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_body/post_body_media_section.dart';
-import 'package:thunder/src/shared/reply_to_preview_actions.dart';
+import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 
@@ -278,11 +279,16 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     }
 
     if (widget.showReplyEditorButtons && post.body?.isNotEmpty == true) {
+      final l10n = GlobalContext.l10n;
       children.add(
-        ReplyToPreviewActions(
+        ThunderPreviewActionRow(
           text: post.body!,
           viewSource: widget.viewSource,
           onViewSourceToggled: widget.onViewSourceToggled,
+          viewSourceLabel: l10n.viewSource,
+          viewOriginalLabel: l10n.viewOriginal,
+          copyLabel: l10n.copyText,
+          copiedMessage: l10n.copiedToClipboard,
         ),
       );
     }

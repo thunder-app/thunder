@@ -9,12 +9,11 @@ import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a reference to a comment with additional post and community information.
 ///
@@ -37,7 +36,7 @@ class CommentReference extends StatelessWidget {
     final l10n = GlobalContext.l10n;
 
     if (comment.post?.status.deleted == true && comment.post?.creatorId != account.userId) {
-      return showSnackbar(l10n.unableToLoadPost);
+      return showThunderSnackbar(l10n.unableToLoadPost);
     }
 
     navigateToComment(context, comment);
@@ -130,7 +129,7 @@ class _CommentReferenceHeader extends StatelessWidget {
                   spacing: 5.0,
                   children: [
                     ExcludeSemantics(
-                      child: ScalableText(
+                      child: ThunderScalableText(
                         l10n.in_,
                         textScaleFactor: contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(

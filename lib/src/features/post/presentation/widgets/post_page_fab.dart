@@ -17,7 +17,7 @@ import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 
 import 'package:thunder/src/shared/fabs/comment_navigator_fab.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderTypeaheadDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// The FAB for the post page.
 class PostPageFAB extends StatelessWidget {
@@ -64,8 +64,8 @@ class PostPageFAB extends StatelessWidget {
     final l10n = GlobalContext.l10n;
     final isLoggedIn = !resolveEffectiveAccount(context).anonymous;
 
-    if (postLocked) return showSnackbar(l10n.postLocked);
-    if (!isLoggedIn) return showSnackbar(l10n.mustBeLoggedInComment);
+    if (postLocked) return showThunderSnackbar(l10n.postLocked);
+    if (!isLoggedIn) return showThunderSnackbar(l10n.mustBeLoggedInComment);
 
     navigateToCreateCommentPage(
       context,
@@ -114,7 +114,7 @@ class PostPageFAB extends StatelessWidget {
             }
 
             if (commentSearchResults.isEmpty) {
-              showSnackbar(l10n.noResultsFound);
+              showThunderSnackbar(l10n.noResultsFound);
             } else {
               context.read<PostNavigationCubit>().startCommentSearch(commentSearchResults);
             }

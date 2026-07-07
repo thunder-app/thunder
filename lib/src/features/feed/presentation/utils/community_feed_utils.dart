@@ -10,7 +10,7 @@ import 'package:thunder/src/features/session/api.dart';
 
 import 'package:thunder/src/foundation/networking/networking.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   try {
@@ -37,7 +37,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
       context.read<ProfileBloc>().add(const FetchProfileFavorites());
     }
   } catch (e) {
-    showSnackbar(getExceptionErrorMessage(e));
+    showThunderSnackbar(getExceptionErrorMessage(e));
   }
 }
 

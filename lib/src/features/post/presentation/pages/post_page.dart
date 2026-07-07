@@ -14,8 +14,8 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_fab_overlay.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_page_floating_action_button.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_page_scroll_body.dart';
-import 'package:thunder/src/features/post/presentation/widgets/post_top_bar_scrim.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A page that displays the post details and comments associated with a post.
 class PostPage extends StatefulWidget {
@@ -160,7 +160,7 @@ class _PostPageState extends State<PostPage> {
       return;
     }
 
-    showSnackbar(GlobalContext.l10n.noVisibleComments);
+    showThunderSnackbar(GlobalContext.l10n.noVisibleComments);
   }
 
   bool _listenWhen(PostState previous, PostState current) {
@@ -190,7 +190,7 @@ class _PostPageState extends State<PostPage> {
     }
 
     if (state.status == PostPageStatus.failure) {
-      showSnackbar(state.errorMessage ?? l10n.missingErrorMessage);
+      showThunderSnackbar(state.errorMessage ?? l10n.missingErrorMessage);
     }
 
     _maybeScrollToHighlightedComment(state);
@@ -277,7 +277,9 @@ class _PostPageState extends State<PostPage> {
                   highlightedCommentId: highlightedCommentId,
                   commentPath: widget.commentPath,
                 ),
-                const PostTopBarScrim(),
+                ThunderTopBarScrim(
+                  visible: context.select<ThunderCubit, bool>((cubit) => cubit.state.hideTopBarOnScroll),
+                ),
                 const PostFabOverlay(),
               ],
             ),

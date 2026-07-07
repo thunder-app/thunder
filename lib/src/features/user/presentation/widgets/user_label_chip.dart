@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a user's label in a chip format.
 class UserLabelChip extends StatelessWidget {
@@ -42,7 +42,7 @@ class UserLabelChip extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: ScalableText(
+            child: ThunderScalableText(
               label,
               textScaleFactor: metadataFontSizeScale.textScaleFactor,
             ),

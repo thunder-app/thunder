@@ -5,7 +5,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Shows a logout confirmation dialog without mutating session state.
 Future<bool> showLogOutDialog(BuildContext context) async {

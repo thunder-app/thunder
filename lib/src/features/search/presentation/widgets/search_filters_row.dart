@@ -11,12 +11,12 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem, ThunderActionChip;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// The horizontal filter chips row for search options.
 class SearchFiltersRow extends StatefulWidget {
   /// Available search type options.
-  final List<ListPickerItem<MetaSearchType>> searchOptions;
+  final List<ThunderListPickerItem<MetaSearchType>> searchOptions;
 
   /// Limits the search to a specific community.
   final ThunderCommunity? community;
@@ -128,7 +128,7 @@ class _SearchFiltersRowState extends State<SearchFiltersRow> {
 
 /// Chip widget for selecting search type.
 class _SearchTypeChip extends StatelessWidget {
-  final List<ListPickerItem<MetaSearchType>> searchOptions;
+  final List<ThunderListPickerItem<MetaSearchType>> searchOptions;
   final VoidCallback onSearch;
 
   const _SearchTypeChip({
@@ -150,7 +150,7 @@ class _SearchTypeChip extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
-              builder: (ctx) => BottomSheetListPicker(
+              builder: (ctx) => ThunderBottomSheetListPicker(
                 title: l10n.selectSearchType,
                 items: searchOptions,
                 onSelect: (value) async {
@@ -188,11 +188,11 @@ class _UrlTextChip extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
-              builder: (ctx) => BottomSheetListPicker(
+              builder: (ctx) => ThunderBottomSheetListPicker(
                 title: l10n.searchPostSearchType,
                 items: [
-                  ListPickerItem(label: l10n.searchByText, payload: 'text', icon: Icons.wysiwyg_rounded),
-                  ListPickerItem(label: l10n.searchByUrl, payload: 'url', icon: Icons.link_rounded),
+                  ThunderListPickerItem(label: l10n.searchByText, payload: 'text', icon: Icons.wysiwyg_rounded),
+                  ThunderListPickerItem(label: l10n.searchByUrl, payload: 'url', icon: Icons.link_rounded),
                 ],
                 onSelect: (value) async {
                   context.read<SearchBloc>().add(SearchFiltersUpdated(searchByUrl: value.payload == 'url'));
@@ -255,12 +255,12 @@ class _FeedTypeChip extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
-              builder: (ctx) => BottomSheetListPicker(
+              builder: (ctx) => ThunderBottomSheetListPicker(
                 title: l10n.selectFeedType,
                 items: [
-                  ListPickerItem(label: l10n.subscribed, payload: FeedListType.subscribed, icon: Icons.view_list_rounded),
-                  ListPickerItem(label: l10n.local, payload: FeedListType.local, icon: Icons.home_rounded),
-                  ListPickerItem(label: l10n.all, payload: FeedListType.all, icon: Icons.grid_view_rounded),
+                  ThunderListPickerItem(label: l10n.subscribed, payload: FeedListType.subscribed, icon: Icons.view_list_rounded),
+                  ThunderListPickerItem(label: l10n.local, payload: FeedListType.local, icon: Icons.home_rounded),
+                  ThunderListPickerItem(label: l10n.all, payload: FeedListType.all, icon: Icons.grid_view_rounded),
                 ],
                 onSelect: (value) async {
                   context.read<SearchBloc>().add(SearchFiltersUpdated(feedListType: value.payload));

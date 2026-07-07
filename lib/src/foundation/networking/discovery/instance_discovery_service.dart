@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/features/account/api.dart';
@@ -114,16 +115,7 @@ Future<ThunderInstanceInfo> loadInstanceInfo(
 InstanceRepository _defaultInstanceRepositoryFactory(Account account) => InstanceRepositoryImpl(account: account);
 
 String? normalizeInstanceHost(String? url) {
-  final trimmed = url?.trim();
-  if (trimmed == null || trimmed.isEmpty) return null;
-
-  final lowerTrimmed = trimmed.toLowerCase();
-  final value = lowerTrimmed.startsWith('http://') || lowerTrimmed.startsWith('https://') ? trimmed : 'https://$trimmed';
-  final uri = Uri.tryParse(value);
-  final host = uri?.host.trim().toLowerCase();
-  if (host == null || host.isEmpty) return null;
-
-  return host;
+  return normalizeInstanceAuthority(url);
 }
 
 /// Determines the proper ThreadiversePlatform by fetching software information from nodeinfo.
@@ -139,16 +131,7 @@ Future<Map<String, dynamic>?> detectPlatformFromNodeInfo(String url, {Duration? 
     final instanceHost = normalizeInstanceHost(url);
     if (instanceHost == null) return null;
 
-    final rawUrl = url.trim().toLowerCase();
-    final scheme = rawUrl.startsWith('http://') ? 'http' : 'https';
-    final uri = Uri.parse('$scheme://$instanceHost');
-
-    final nodeInfoUri = Uri(
-      scheme: uri.scheme,
-      host: uri.host,
-      port: uri.port,
-      path: '/.well-known/nodeinfo',
-    );
+    final nodeInfoUri = buildInstanceUri(instanceHost, '/.well-known/nodeinfo');
 
     final response = await http.get(nodeInfoUri).timeout(timeout ?? const Duration(seconds: 5));
 

@@ -102,13 +102,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   // For now, we will use the pre-made themes provided by FlexScheme
 
-  List<ListPickerItem> customThemeOptions = [
-    ListPickerItem(
+  List<ThunderListPickerItem> customThemeOptions = [
+    ThunderListPickerItem(
         colors: [CustomThemeType.deepBlue.primaryColor, CustomThemeType.deepBlue.secondaryColor, CustomThemeType.deepBlue.tertiaryColor],
         label: '${CustomThemeType.deepBlue.label} (Default)',
         payload: CustomThemeType.deepBlue),
     ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
-      return ListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
+      return ThunderListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
     })
   ];
 
@@ -126,10 +126,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   FontScale metadataFontSizeScale = FontScale.base;
 
   /// Theme - this is initialized in initState since we need to get l10n for localization strings
-  List<ListPickerItem> themeOptions = [];
+  List<ThunderListPickerItem> themeOptions = [];
 
   /// Font size scales
-  List<ListPickerItem> fontScaleOptions = [];
+  List<ThunderListPickerItem> fontScaleOptions = [];
 
   /// Defines the separator used to denote full usernames
   FullNameSeparator userSeparator = FullNameSeparator.at;
@@ -361,7 +361,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     setState(() {
       fontScaleOptions = FontScale.values
           .map(
-            (FontScale fontScale) => ListPickerItem(
+            (FontScale fontScale) => ThunderListPickerItem(
               icon: Icons.text_fields_rounded,
               label: fontScale.label,
               payload: fontScale,
@@ -379,9 +379,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   @override
   void initState() {
     themeOptions = [
-      ListPickerItem(icon: Icons.phonelink_setup_rounded, label: l10n.system, payload: ThemeType.system),
-      ListPickerItem(icon: Icons.light_mode_rounded, label: l10n.light, payload: ThemeType.light),
-      ListPickerItem(icon: Icons.dark_mode_outlined, label: l10n.dark, payload: ThemeType.dark),
+      ThunderListPickerItem(icon: Icons.phonelink_setup_rounded, label: l10n.system, payload: ThemeType.system),
+      ThunderListPickerItem(icon: Icons.light_mode_rounded, label: l10n.light, payload: ThemeType.light),
+      ThunderListPickerItem(icon: Icons.dark_mode_outlined, label: l10n.dark, payload: ThemeType.dark),
     ];
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
@@ -436,7 +436,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                     ThunderListOption(
                         title: l10n.theme,
-                        value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
+                        value: ThunderListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                         options: themeOptions,
                         leading: Icon(Icons.wallpaper_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.appTheme, value.payload.index),
@@ -461,7 +461,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                     ThunderListOption(
                         title: l10n.themeAccentColor,
-                        value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                        value: ThunderListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
                         valueDisplay: Stack(
                           children: [
                             Container(
@@ -546,7 +546,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                     ThunderListOption(
                         title: l10n.postTitleFontScale,
-                        value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
+                        value: ThunderListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                         options: fontScaleOptions,
                         leading: Icon(Icons.text_fields_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
@@ -555,7 +555,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.titleFontSizeScale),
                     ThunderListOption(
                         title: l10n.postContentFontScale,
-                        value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
+                        value: ThunderListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                         options: fontScaleOptions,
                         leading: Icon(Icons.text_fields_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
@@ -564,7 +564,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.contentFontSizeScale),
                     ThunderListOption(
                         title: l10n.commentFontScale,
-                        value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                        value: ThunderListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
                         options: fontScaleOptions,
                         leading: Icon(Icons.text_fields_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
@@ -573,7 +573,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.commentFontSizeScale),
                     ThunderListOption(
                         title: l10n.metadataFontScale,
-                        value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                        value: ThunderListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
                         options: fontScaleOptions,
                         leading: Icon(Icons.text_fields_rounded),
                         onChanged: (value) async => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
@@ -595,7 +595,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                     ThunderListOption(
                         title: l10n.userFormat,
-                        value: ListPickerItem(
+                        value: ThunderListPickerItem(
                           label: _generateSampleUserFullName(userSeparator, useDisplayNamesForUsers),
                           labelWidget: _generateSampleUserFullNameWidget(
                             userSeparator,
@@ -611,7 +611,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           capitalizeLabel: false,
                         ),
                         options: [
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: const IconData(0x2022),
                             label: _generateSampleUserFullName(FullNameSeparator.dot, useDisplayNamesForUsers),
                             labelWidget: _generateSampleUserFullNameWidget(
@@ -626,7 +626,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             payload: FullNameSeparator.dot,
                             capitalizeLabel: false,
                           ),
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: Icons.alternate_email_rounded,
                             label: _generateSampleUserFullName(FullNameSeparator.at, useDisplayNamesForUsers),
                             labelWidget: _generateSampleUserFullNameWidget(
@@ -641,7 +641,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             payload: FullNameSeparator.at,
                             capitalizeLabel: false,
                           ),
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: Icons.alternate_email_rounded,
                             label: _generateSampleUserFullName(FullNameSeparator.lemmy, useDisplayNamesForUsers),
                             labelWidget: _generateSampleUserFullNameWidget(
@@ -664,7 +664,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.userFormat),
                     ThunderListOption(
                         isBottomModalScrollControlled: true,
-                        value: const ListPickerItem(payload: -1),
+                        value: const ThunderListPickerItem(payload: -1),
                         options: const [],
                         title: l10n.userStyle,
                         leading: Icon(Icons.person_rounded),
@@ -673,7 +673,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.userStyle,
                         customListPicker: StatefulBuilder(
                           builder: (context, setState) {
-                            return BottomSheetListPicker(
+                            return ThunderBottomSheetListPicker(
                               title: l10n.userStyle,
                               heading: _generateSampleUserFullNameWidget(
                                 userSeparator,
@@ -685,7 +685,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 useDisplayName: useDisplayNamesForUsers,
                               ),
                               items: [
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -707,7 +707,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -729,7 +729,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -772,7 +772,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -821,7 +821,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         )),
                     ThunderListOption(
                         title: l10n.communityFormat,
-                        value: ListPickerItem(
+                        value: ThunderListPickerItem(
                           label: _generateSampleCommunityFullName(communitySeparator, useDisplayNamesForCommunities),
                           labelWidget: _generateSampleCommunityFullNameWidget(
                             communitySeparator,
@@ -837,7 +837,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           capitalizeLabel: false,
                         ),
                         options: [
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: const IconData(0x2022),
                             label: _generateSampleCommunityFullName(FullNameSeparator.dot, useDisplayNamesForCommunities),
                             labelWidget: _generateSampleCommunityFullNameWidget(
@@ -852,7 +852,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             payload: FullNameSeparator.dot,
                             capitalizeLabel: false,
                           ),
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: Icons.alternate_email_rounded,
                             label: _generateSampleCommunityFullName(FullNameSeparator.at, useDisplayNamesForCommunities),
                             labelWidget: _generateSampleCommunityFullNameWidget(
@@ -867,7 +867,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             payload: FullNameSeparator.at,
                             capitalizeLabel: false,
                           ),
-                          ListPickerItem(
+                          ThunderListPickerItem(
                             icon: Icons.alternate_email_rounded,
                             label: _generateSampleCommunityFullName(FullNameSeparator.lemmy, useDisplayNamesForCommunities),
                             labelWidget: _generateSampleCommunityFullNameWidget(
@@ -890,7 +890,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.communityFormat),
                     ThunderListOption(
                         isBottomModalScrollControlled: true,
-                        value: const ListPickerItem(payload: -1),
+                        value: const ThunderListPickerItem(payload: -1),
                         options: const [],
                         title: l10n.communityStyle,
                         leading: Icon(Icons.person_rounded),
@@ -899,7 +899,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlighted: settingToHighlight == LocalSettings.communityStyle,
                         customListPicker: StatefulBuilder(
                           builder: (context, setState) {
-                            return BottomSheetListPicker(
+                            return ThunderBottomSheetListPicker(
                               title: l10n.communityStyle,
                               heading: _generateSampleCommunityFullNameWidget(
                                 communitySeparator,
@@ -911,7 +911,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                 useDisplayName: useDisplayNamesForCommunities,
                               ),
                               items: [
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -933,7 +933,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -955,7 +955,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(
@@ -998,7 +998,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                                     ),
                                   ),
                                 ),
-                                ListPickerItem(
+                                ThunderListPickerItem(
                                   payload: -1,
                                   customWidget: ListTile(
                                     title: Text(

@@ -15,7 +15,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 class WebView extends StatefulWidget {
   final String url;

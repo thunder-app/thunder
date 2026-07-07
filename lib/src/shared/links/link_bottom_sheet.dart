@@ -315,17 +315,17 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
               ),
               const SizedBox(height: 10),
               if ((page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
-                PickerItem(
+                ThunderPickerItem(
                   label: l10n.open,
                   icon: Icons.language,
                   onSelected: () => handleLinkTap(context, widget.text, widget.url),
                 ),
-                PickerItem(
+                ThunderPickerItem(
                   label: l10n.copy,
                   icon: Icons.copy_rounded,
                   onSelected: () => Clipboard.setData(ClipboardData(text: widget.url ?? widget.text)),
                 ),
-                PickerItem(
+                ThunderPickerItem(
                   label: l10n.share,
                   icon: Icons.share_rounded,
                   onSelected: () => SharePlus.instance.share(ShareParams(
@@ -333,7 +333,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                     sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
                   )),
                 ),
-                PickerItem(
+                ThunderPickerItem(
                   label: l10n.alternateSources,
                   icon: Icons.link_rounded,
                   onSelected: () => setState(() => page = LinkBottomSheetPage.alternateLinks),
@@ -342,7 +342,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
               ],
               if ((page ?? widget.initialPage) == LinkBottomSheetPage.alternateLinks)
                 ...generateAlternateSources(widget.url ?? widget.text).map((alternateSource) {
-                  return PickerItem(
+                  return ThunderPickerItem(
                     label: alternateSource.sourceName,
                     subtitle: alternateSource.link,
                     icon: Icons.archive_rounded,

@@ -121,9 +121,9 @@ InstancePageBloc createInstancePageBloc({
   required Account account,
   required ThunderInstanceInfo instanceInfo,
 }) {
-  final uri = Uri.parse(instanceInfo.domain);
+  final instanceAuthority = normalizeInstanceHost(instanceInfo.domain) ?? instanceInfo.domain;
   final remoteAccount = Account(
-    instance: uri.host,
+    instance: instanceAuthority,
     id: '',
     index: -1,
     platform: instanceInfo.platform,

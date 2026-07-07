@@ -283,7 +283,7 @@ Future<void> navigateToCreatePostPage(
               // Show snackbar message if the post was just created
               if (!userChanged && post == null) {
                 try {
-                  showSnackbar(
+                  showThunderSnackbar(
                     l10n.postCreatedSuccessfully,
                     trailingIcon: Icons.remove_red_eye_rounded,
                     trailingAction: () {
@@ -292,7 +292,7 @@ Future<void> navigateToCreatePostPage(
                   );
                 } catch (e) {
                   if (context.mounted) {
-                    showSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
+                    showThunderSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
                   }
                 }
               }
@@ -307,7 +307,7 @@ Future<void> navigateToCreatePostPage(
     ));
   } catch (e) {
     if (context.mounted) {
-      showSnackbar(AppLocalizations.of(context)!.unexpectedError);
+      showThunderSnackbar(AppLocalizations.of(context)!.unexpectedError);
     }
   }
 }

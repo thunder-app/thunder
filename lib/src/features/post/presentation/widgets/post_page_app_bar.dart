@@ -11,7 +11,7 @@ import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/shared/links/link_bottom_sheet.dart';
-import 'package:thunder/packages/ui/ui.dart' show ListPickerItem, ThunderPopupMenuItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Holds the app bar for the post page.
 class PostPageAppBar extends StatelessWidget {
@@ -225,7 +225,7 @@ class PostAppBarActions extends StatelessWidget {
           child: PopupMenuButton(
             itemBuilder: (context) => [
               ThunderPopupMenuItem(
-                onTap: onCreateCrossPost,
+                onTap: () => onCreateCrossPost?.call(),
                 icon: Icons.repeat_rounded,
                 title: l10n.createNewCrossPost,
               ),
@@ -235,7 +235,7 @@ class PostAppBarActions extends StatelessWidget {
                 title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
               ),
               ThunderPopupMenuItem(
-                onTap: onSelectText,
+                onTap: () => onSelectText?.call(),
                 icon: Icons.select_all_rounded,
                 title: l10n.selectText,
               ),
@@ -283,7 +283,7 @@ class PostAppBarActions extends StatelessWidget {
     return ('', null);
   }
 
-  ListPickerItem<CommentSortType>? commentSortTypeItem = getCommentSortTypeItems().firstWhereOrNull((item) => item.payload == state.commentSortType);
+  ThunderListPickerItem<CommentSortType>? commentSortTypeItem = getCommentSortTypeItems().firstWhereOrNull((item) => item.payload == state.commentSortType);
 
   return (commentSortTypeItem?.label ?? '', commentSortTypeItem?.icon);
 }

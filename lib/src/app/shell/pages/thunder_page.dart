@@ -38,10 +38,9 @@ import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/shared/error_message.dart';
 import 'package:thunder/src/app/state/app_bootstrap_cubit/app_bootstrap_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 String? currentIntent;
 bool hasAttemptedDraftRestore = false;
@@ -121,7 +120,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   void _showExitWarning() {
-    showSnackbar(
+    showThunderSnackbar(
       AppLocalizations.of(context)!.tapToExit,
       duration: const Duration(milliseconds: 3500),
       closable: false,
@@ -292,9 +291,9 @@ class _ThunderState extends State<Thunder> {
               case DeepLinkStatus.loading:
                 return;
               case DeepLinkStatus.empty:
-                showSnackbar(state.error ?? l10n.emptyUri);
+                showThunderSnackbar(state.error ?? l10n.emptyUri);
               case DeepLinkStatus.error:
-                showSnackbar(state.error ?? l10n.exceptionProcessingUri);
+                showThunderSnackbar(state.error ?? l10n.exceptionProcessingUri);
 
               case DeepLinkStatus.success:
                 try {
@@ -304,7 +303,7 @@ class _ThunderState extends State<Thunder> {
                 }
 
               case DeepLinkStatus.unknown:
-                showSnackbar(state.error ?? l10n.uriNotSupported);
+                showThunderSnackbar(state.error ?? l10n.uriNotSupported);
             }
           },
         ),
@@ -581,26 +580,26 @@ class _ThunderState extends State<Thunder> {
                       case ProfileStatus.loading:
                         return Container();
                       case ProfileStatus.failureCheckingInstance:
-                        showSnackbar(state.error ?? AppLocalizations.of(context)!.missingErrorMessage);
+                        showThunderSnackbar(state.error ?? AppLocalizations.of(context)!.missingErrorMessage);
                         errorMessageLoading = false;
 
                         return StatefulBuilder(
-                          builder: (context, setState) => ErrorMessage(
+                          builder: (context, setState) => ThunderStateView(
                             title: AppLocalizations.of(context)!.unableToLoadInstance(state.account.instance),
                             message: AppLocalizations.of(context)!.internetOrInstanceIssues,
                             actions: [
-                              (
-                                text: AppLocalizations.of(context)!.retry,
-                                action: () {
+                              ThunderStateAction(
+                                label: AppLocalizations.of(context)!.retry,
+                                onPressed: () {
                                   context.read<ProfileBloc>().add(InitializeAuth());
                                   setState(() => errorMessageLoading = true);
                                 },
                                 loading: errorMessageLoading,
+                                primary: true,
                               ),
-                              (
-                                text: AppLocalizations.of(context)!.accountSettings,
-                                action: () => showProfileModalSheet(context),
-                                loading: false,
+                              ThunderStateAction(
+                                label: AppLocalizations.of(context)!.accountSettings,
+                                onPressed: () => showProfileModalSheet(context),
                               ),
                             ],
                           ),
@@ -610,13 +609,14 @@ class _ThunderState extends State<Thunder> {
                 ),
               );
             case AppBootstrapStatus.failure:
-              return ErrorMessage(
+              return ThunderStateView(
+                title: AppLocalizations.of(context)!.somethingWentWrong,
                 message: appBootstrapState.errorMessage,
                 actions: [
-                  (
-                    text: AppLocalizations.of(context)!.refreshContent,
-                    action: () => context.read<AppBootstrapCubit>().initialize(),
-                    loading: false,
+                  ThunderStateAction(
+                    label: AppLocalizations.of(context)!.refreshContent,
+                    onPressed: () => context.read<AppBootstrapCubit>().initialize(),
+                    primary: true,
                   ),
                 ],
               );

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
@@ -47,18 +47,18 @@ class CommunityInformation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommunityHeader(community: community, instance: instance, moderators: moderators, condensed: true),
-          SidebarSectionHeader(value: l10n.information),
+          ThunderSectionHeader(title: l10n.information, variant: ThunderSectionHeaderVariant.sidebar),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CommonMarkdownBody(body: community.description ?? '', imageMaxWidth: MediaQuery.of(context).size.width, launchContext: launchContext),
           ),
-          SidebarSectionHeader(value: l10n.stats),
+          ThunderSectionHeader(title: l10n.stats, variant: ThunderSectionHeaderVariant.sidebar),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CommunityStatsList(community: community),
           ),
           if (moderators.isNotEmpty) ...[
-            SidebarSectionHeader(value: l10n.moderator(2)),
+            ThunderSectionHeader(title: l10n.moderator(2), variant: ThunderSectionHeaderVariant.sidebar),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: CommunityModeratorList(launchContext: launchContext, account: account, moderators: moderators),
@@ -86,50 +86,50 @@ class CommunityStatsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ...[
-          SidebarStat(
+          ThunderSidebarStat(
             icon: community.status.local ? Icons.house_rounded : Icons.language_rounded,
-            value: l10n.visibility(community.status.local ? l10n.localOnly : l10n.public),
+            label: l10n.visibility(community.status.local ? l10n.localOnly : l10n.public),
           ),
           const SizedBox(height: 8.0),
         ],
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.cake_rounded,
-          value: '${l10n.created(DateFormat.yMMMMd().format(community.published))} · ${l10n.ago(formatTimeToString(dateTime: community.published.toIso8601String()))}',
+          label: '${l10n.created(DateFormat.yMMMMd().format(community.published))} · ${l10n.ago(formatTimeToString(dateTime: community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.people_rounded,
-          value: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribers)),
+          label: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribers)),
         ),
         if (community.counts.subscribersLocal != null)
-          SidebarStat(
+          ThunderSidebarStat(
             icon: Icons.people_rounded,
-            value: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribersLocal)),
+            label: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribersLocal)),
           ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.wysiwyg_rounded,
-          value: l10n.countPosts(NumberFormat("#,###,###,###").format(community.counts.posts)),
+          label: l10n.countPosts(NumberFormat("#,###,###,###").format(community.counts.posts)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.chat_rounded,
-          value: l10n.countComments(NumberFormat("#,###,###,###").format(community.counts.comments)),
+          label: l10n.countComments(NumberFormat("#,###,###,###").format(community.counts.comments)),
         ),
         const SizedBox(height: 8.0),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.calendar_month_rounded,
-          value: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.counts.usersActiveHalfYear)),
+          label: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.counts.usersActiveHalfYear)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.calendar_view_month_rounded,
-          value: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.counts.usersActiveMonth)),
+          label: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.counts.usersActiveMonth)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.calendar_view_week_rounded,
-          value: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.counts.usersActiveWeek)),
+          label: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.counts.usersActiveWeek)),
         ),
-        SidebarStat(
+        ThunderSidebarStat(
           icon: Icons.calendar_view_day_rounded,
-          value: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.counts.usersActiveDay)),
+          label: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.counts.usersActiveDay)),
         ),
       ],
     );

@@ -63,7 +63,7 @@ Future<ThunderPrivateMessage?> navigateToCreatePrivateMessagePage(
     final result = await pushOnTopOfLoadingPage(context, route);
     if (result is ThunderPrivateMessage) return result;
   } catch (e) {
-    showSnackbar(e.toString());
+    showThunderSnackbar(e.toString());
   }
 
   return null;

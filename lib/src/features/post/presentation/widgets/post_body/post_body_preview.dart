@@ -6,7 +6,7 @@ import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Provides a preview of the post body when the post is collapsed.
 ///
@@ -53,7 +53,7 @@ class PostBodyPreview extends StatelessWidget {
     );
 
     final content = viewSource
-        ? ScalableText(
+        ? ThunderScalableText(
             post.body ?? '',
             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
             textScaleFactor: contentFontSizeScale.textScaleFactor,

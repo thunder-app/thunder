@@ -16,6 +16,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/app/shell/widgets/session.dart';
 import 'package:thunder/src/app/shell/widgets/session_scope.dart';
 import 'package:thunder/src/features/settings/api.dart';
@@ -124,6 +125,7 @@ class _ThunderAppState extends State<ThunderApp> {
 
               theme = theme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
+                extensions: const [ThunderTheme()],
                 inputDecorationTheme: InputDecorationTheme(
                   hintStyle: TextStyle(
                     color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
@@ -132,6 +134,7 @@ class _ThunderAppState extends State<ThunderApp> {
               );
               darkTheme = darkTheme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
+                extensions: const [ThunderTheme()],
                 inputDecorationTheme: InputDecorationTheme(
                   hintStyle: TextStyle(
                     color: darkColorScheme?.onSurface.withValues(alpha: 0.6),

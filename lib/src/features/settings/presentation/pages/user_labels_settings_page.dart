@@ -15,7 +15,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 class UserLabelSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;

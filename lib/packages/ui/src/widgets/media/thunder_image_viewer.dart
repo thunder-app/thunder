@@ -6,6 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 
+import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
+
 /// Describes the image content displayed by a [ThunderImageViewer].
 ///
 /// Create a source with either [ThunderImageViewerSource.network] for cached
@@ -14,6 +16,7 @@ import 'package:flutter_avif/flutter_avif.dart';
 /// The optional [contentType] can be used to hint the image format when the URL
 /// alone is not sufficient, such as for AVIF images served without an `.avif`
 /// file extension.
+@immutable
 sealed class ThunderImageViewerSource {
   /// Creates a descriptor for image content shown by a
   /// [ThunderImageViewer].
@@ -36,6 +39,7 @@ sealed class ThunderImageViewerSource {
 }
 
 /// A [ThunderImageViewerSource] backed by image bytes held in memory.
+@immutable
 class ThunderImageViewerMemorySource extends ThunderImageViewerSource {
   /// Creates a memory-backed image source.
   const ThunderImageViewerMemorySource(this.bytes, {super.contentType});
@@ -45,6 +49,7 @@ class ThunderImageViewerMemorySource extends ThunderImageViewerSource {
 }
 
 /// A [ThunderImageViewerSource] backed by a network URL.
+@immutable
 class ThunderImageViewerNetworkSource extends ThunderImageViewerSource {
   /// Creates a network-backed image source.
   const ThunderImageViewerNetworkSource(this.url, {super.contentType});
@@ -74,7 +79,7 @@ class ThunderImageViewer extends StatefulWidget {
   const ThunderImageViewer({
     super.key,
     required this.source,
-    this.backgroundColor = Colors.black,
+    this.backgroundColor,
     this.contentSize,
     this.dismissible = true,
     this.doubleTapScales = const <double>[2.0, 4.0],
@@ -94,7 +99,7 @@ class ThunderImageViewer extends StatefulWidget {
   /// The color painted behind the image.
   ///
   /// This color also fades during a drag-to-dismiss gesture.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// The intrinsic size of the image content, if known.
   ///
@@ -138,22 +143,22 @@ class ThunderImageViewer extends StatefulWidget {
   /// Called when the viewer has been dragged far enough to dismiss.
   ///
   /// This callback is only invoked when [dismissible] is true.
-  final VoidCallback? onDismiss;
+  final void Function()? onDismiss;
 
   /// Called when the viewer detects a long press.
-  final VoidCallback? onLongPress;
+  final void Function()? onLongPress;
 
   /// Called whenever the effective zoom scale changes.
   ///
   /// This includes animated double-tap zoom, double-tap-and-drag zoom, pinch
   /// gestures, and snap-back corrections after a gesture ends.
-  final ValueChanged<double>? onScaleChanged;
+  final void Function(double)? onScaleChanged;
 
   /// Called after a completed single tap.
   ///
   /// Single taps are delayed slightly so the viewer can distinguish them from a
   /// double tap.
-  final VoidCallback? onTap;
+  final void Function()? onTap;
 
   /// The semantic label used for the underlying image.
   final String? semanticLabel;
@@ -167,8 +172,8 @@ class ThunderImageViewer extends StatefulWidget {
 
 class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProviderStateMixin {
   static const Duration _doubleTapTimeout = Duration(milliseconds: 280);
-  static const double _doubleTapDragSlop = 8;
-  static const double _doubleTapSlop = 36;
+  static const double _doubleTapDragSlop = 8.0;
+  static const double _doubleTapSlop = 36.0;
   static const double _gestureEpsilon = 0.01;
 
   late final AnimationController _transformAnimationController;
@@ -207,6 +212,7 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
   bool _didTriggerLongPress = false;
   bool _ignoreScaleEnd = false;
   bool _tapMoved = false;
+  bool? _isNetworkAvif;
 
   void _setScale(double value) {
     if ((_scale - value).abs() <= _gestureEpsilon) {
@@ -227,6 +233,38 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
   void initState() {
     super.initState();
     _transformAnimationController = AnimationController(vsync: this)..addListener(_handleTransformAnimationTick);
+    _cacheNetworkAvifHint();
+  }
+
+  @override
+  void didUpdateWidget(ThunderImageViewer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.source != widget.source) {
+      _cacheNetworkAvifHint();
+    }
+  }
+
+  void _cacheNetworkAvifHint() {
+    final source = widget.source;
+    if (source is ThunderImageViewerNetworkSource) {
+      final isAvifByUrl = source.url.toLowerCase().endsWith('.avif');
+      final isAvifByContentType = source.contentType?.toLowerCase() == 'image/avif';
+      _isNetworkAvif = isAvifByUrl || isAvifByContentType;
+    } else {
+      _isNetworkAvif = null;
+    }
+  }
+
+  void _scheduleViewportSync(Size viewportSize) {
+    if (_viewportSize == viewportSize) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _viewportSize == viewportSize) return;
+      setState(() {
+        _viewportSize = viewportSize;
+        _baseContentSize = _resolveBaseContentSize(viewportSize);
+      });
+    });
   }
 
   @override
@@ -578,76 +616,24 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     _gestureMode = _ViewerGestureMode.idle;
   }
 
-  Widget _buildDefaultLoader(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
-  }
-
-  Widget _buildDefaultError(BuildContext context, Object error) {
-    return const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white70, size: 36));
-  }
-
-  Widget _buildImageWidget() {
-    final source = widget.source;
-
-    if (source is ThunderImageViewerMemorySource) {
-      return Image.memory(
-        source.bytes,
-        filterQuality: widget.filterQuality,
-        fit: BoxFit.contain,
-        semanticLabel: widget.semanticLabel,
-      );
-    }
-
-    final networkSource = source as ThunderImageViewerNetworkSource;
-    final isAvifByUrl = networkSource.url.toLowerCase().endsWith('.avif');
-    final isAvifByContentType = source.contentType?.toLowerCase() == 'image/avif';
-    final isAvif = isAvifByUrl || isAvifByContentType;
-
-    if (isAvif) {
-      return CachedNetworkAvifImage(
-        networkSource.url,
-        fit: BoxFit.contain,
-        filterQuality: widget.filterQuality,
-        errorBuilder: (context, error, stackTrace) {
-          return widget.errorBuilder?.call(context, error) ?? _buildDefaultError(context, error);
-        },
-      );
-    }
-
-    return CachedNetworkImage(
-      imageUrl: networkSource.url,
-      fadeInDuration: const Duration(milliseconds: 100),
-      fadeOutDuration: Duration.zero,
-      fit: BoxFit.contain,
-      imageBuilder: (context, imageProvider) {
-        return Image(
-          image: imageProvider,
-          filterQuality: widget.filterQuality,
-          fit: BoxFit.contain,
-          semanticLabel: widget.semanticLabel,
-        );
-      },
-      placeholder: (context, url) => widget.loadingBuilder?.call(context) ?? _buildDefaultLoader(context),
-      errorWidget: (context, url, error) {
-        return widget.errorBuilder?.call(context, error) ?? _buildDefaultError(context, error);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        _viewportSize = Size(constraints.maxWidth, constraints.maxHeight);
-        _baseContentSize = _resolveBaseContentSize(_viewportSize);
+        final viewportSize = Size(constraints.maxWidth, constraints.maxHeight);
+        _scheduleViewportSync(viewportSize);
 
-        final dismissProgress = _viewportSize == Size.zero ? 0.0 : (_dismissOffset.distance / (_viewportSize.shortestSide * 0.35)).clamp(0.0, 1.0);
+        final effectiveViewport = _viewportSize == Size.zero ? viewportSize : _viewportSize;
+        final baseContentSize = _viewportSize == Size.zero ? _resolveBaseContentSize(viewportSize) : _baseContentSize;
+
+        final backgroundColor = widget.backgroundColor ?? ThunderTheme.of(context).viewerBackgroundColor;
+        final dismissProgress = effectiveViewport == Size.zero ? 0.0 : (_dismissOffset.distance / (effectiveViewport.shortestSide * 0.35)).clamp(0.0, 1.0);
         final backgroundOpacity = 1.0 - (dismissProgress * 0.75);
         final imageOpacity = 1.0 - (dismissProgress * 0.35);
         final visualOffset = (_scale <= widget.minScale + _gestureEpsilon ? Offset.zero : _offset) + _dismissOffset;
 
         return ColoredBox(
-          color: Color.lerp(Colors.transparent, widget.backgroundColor, backgroundOpacity) ?? widget.backgroundColor,
+          color: Color.lerp(Colors.transparent, backgroundColor, backgroundOpacity) ?? backgroundColor,
           child: Listener(
             behavior: HitTestBehavior.opaque,
             onPointerCancel: _handlePointerCancel,
@@ -671,9 +657,16 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
                         scale: _scale,
                         child: RepaintBoundary(
                           child: SizedBox(
-                            height: _baseContentSize.height,
-                            width: _baseContentSize.width,
-                            child: _buildImageWidget(),
+                            height: baseContentSize.height,
+                            width: baseContentSize.width,
+                            child: _ThunderImageViewerImage(
+                              source: widget.source,
+                              filterQuality: widget.filterQuality,
+                              semanticLabel: widget.semanticLabel,
+                              loadingBuilder: widget.loadingBuilder,
+                              errorBuilder: widget.errorBuilder,
+                              isNetworkAvif: _isNetworkAvif,
+                            ),
                           ),
                         ),
                       ),
@@ -686,5 +679,103 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
         );
       },
     );
+  }
+}
+
+/// Renders the image for [ThunderImageViewer] from its source.
+class _ThunderImageViewerImage extends StatelessWidget {
+  const _ThunderImageViewerImage({
+    required this.source,
+    required this.filterQuality,
+    required this.semanticLabel,
+    required this.loadingBuilder,
+    required this.errorBuilder,
+    required this.isNetworkAvif,
+  });
+
+  /// The image source to display.
+  final ThunderImageViewerSource source;
+
+  /// The filter quality used when painting the image.
+  final FilterQuality filterQuality;
+
+  /// The semantic label for the image.
+  final String? semanticLabel;
+
+  /// Builds a widget shown while a network image is loading.
+  final WidgetBuilder? loadingBuilder;
+
+  /// Builds a widget shown when the image fails to load.
+  final Widget Function(BuildContext context, Object error)? errorBuilder;
+
+  /// Whether the network source should be treated as AVIF.
+  final bool? isNetworkAvif;
+
+  @override
+  Widget build(BuildContext context) {
+    if (source is ThunderImageViewerMemorySource) {
+      final memorySource = source as ThunderImageViewerMemorySource;
+      return Image.memory(
+        memorySource.bytes,
+        filterQuality: filterQuality,
+        fit: BoxFit.contain,
+        semanticLabel: semanticLabel,
+      );
+    }
+
+    final networkSource = source as ThunderImageViewerNetworkSource;
+    if (isNetworkAvif == true) {
+      return CachedNetworkAvifImage(
+        networkSource.url,
+        fit: BoxFit.contain,
+        filterQuality: filterQuality,
+        errorBuilder: (context, error, stackTrace) {
+          return errorBuilder?.call(context, error) ?? _ThunderImageViewerError(errorBuilder: errorBuilder);
+        },
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: networkSource.url,
+      fadeInDuration: const Duration(milliseconds: 100),
+      fadeOutDuration: Duration.zero,
+      fit: BoxFit.contain,
+      imageBuilder: (context, imageProvider) {
+        return Image(
+          image: imageProvider,
+          filterQuality: filterQuality,
+          fit: BoxFit.contain,
+          semanticLabel: semanticLabel,
+        );
+      },
+      placeholder: (context, url) => loadingBuilder?.call(context) ?? const _ThunderImageViewerLoader(),
+      errorWidget: (context, url, error) {
+        return errorBuilder?.call(context, error) ?? _ThunderImageViewerError(errorBuilder: errorBuilder);
+      },
+    );
+  }
+}
+
+/// Default loading indicator for [ThunderImageViewer].
+class _ThunderImageViewerLoader extends StatelessWidget {
+  const _ThunderImageViewerLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+/// Default error indicator for [ThunderImageViewer].
+class _ThunderImageViewerError extends StatelessWidget {
+  const _ThunderImageViewerError({this.errorBuilder});
+
+  /// Optional custom error builder.
+  final Widget Function(BuildContext context, Object error)? errorBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final thunderTheme = ThunderTheme.of(context);
+    return Center(child: Icon(Icons.broken_image_outlined, color: thunderTheme.viewerErrorIconColor, size: 36.0));
   }
 }

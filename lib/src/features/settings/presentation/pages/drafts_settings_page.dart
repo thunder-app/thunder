@@ -316,7 +316,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
     if (opened != DraftOpenResult.opened) {
       await _draftRepository.clearActiveDraft();
-      if (mounted) showSnackbar(GlobalContext.l10n.unexpectedError);
+      if (mounted) showThunderSnackbar(GlobalContext.l10n.unexpectedError);
     }
 
     if (mounted) await _loadDrafts();

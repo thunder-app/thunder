@@ -13,10 +13,9 @@ import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Provides some additional context for a [ModlogEventItem]
 class ModlogItemContextCard extends StatelessWidget {
@@ -100,7 +99,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
         if (!post.status.removed) {
           navigateToPost(context, postId: post.id);
         } else {
-          showSnackbar(l10n.unableToFindPost);
+          showThunderSnackbar(l10n.unableToFindPost);
         }
       },
       child: Container(
@@ -112,7 +111,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ScalableText(
+                  ThunderScalableText(
                     HtmlUnescape().convert(post.name),
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     textScaleFactor: titleFontSizeScale.textScaleFactor,
@@ -186,11 +185,11 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
       onTap: () {
         try {
           if (widget.post == null) {
-            return showSnackbar(l10n.unableToFindPost);
+            return showThunderSnackbar(l10n.unableToFindPost);
           }
           navigateToPost(context, postId: widget.post!.id, highlightedCommentId: widget.comment.id);
         } catch (e) {
-          showSnackbar(l10n.unableToFindPost);
+          showThunderSnackbar(l10n.unableToFindPost);
         }
       },
       child: Container(
@@ -237,7 +236,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             }),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: ScalableText(
+                              child: ThunderScalableText(
                                 l10n.sensitiveContentWarning,
                                 style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.secondary),
                                 textScaleFactor: metadataFontSizeScale.textScaleFactor,
@@ -258,13 +257,13 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             InkWell(
                               borderRadius: BorderRadius.circular(6),
                               onTap: () => navigateToFeedPage(context, feedType: FeedType.user, userId: widget.user?.id),
-                              child: ScalableText(
+                              child: ThunderScalableText(
                                 '${widget.user?.displayName ?? widget.user?.displayNameOrName}',
                                 textScaleFactor: metadataFontSizeScale.textScaleFactor,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: textStyleCommunityAndAuthor(theme.textTheme.bodyMedium?.color)),
                               ),
                             ),
-                            ScalableText(
+                            ThunderScalableText(
                               ' in ',
                               textScaleFactor: metadataFontSizeScale.textScaleFactor,
                               style: theme.textTheme.bodyMedium?.copyWith(
@@ -315,7 +314,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
         if (user != null) {
           navigateToFeedPage(context, feedType: FeedType.user, userId: user!.id);
         } else {
-          showSnackbar(l10n.unableToFindUser);
+          showThunderSnackbar(l10n.unableToFindUser);
         }
       },
       child: Container(
@@ -331,7 +330,7 @@ class ModlogUserItemContextCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ScalableText(
+                    ThunderScalableText(
                       HtmlUnescape().convert(user?.displayName ?? user?.displayNameOrName ?? l10n.user),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       textScaleFactor: titleFontSizeScale.textScaleFactor,
@@ -368,7 +367,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
         if (community != null && !community!.status.removed) {
           navigateToFeedPage(context, feedType: FeedType.community, communityId: community!.id);
         } else {
-          showSnackbar(l10n.unableToFindCommunity);
+          showThunderSnackbar(l10n.unableToFindCommunity);
         }
       },
       child: Container(
@@ -384,7 +383,7 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ScalableText(
+                    ThunderScalableText(
                       HtmlUnescape().convert(community?.title ?? community?.name ?? l10n.community),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       textScaleFactor: titleFontSizeScale.textScaleFactor,

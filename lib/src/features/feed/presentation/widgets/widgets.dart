@@ -16,4 +16,3 @@ export 'feed_header_sliver.dart';
 export 'feed_initial_loading_sliver.dart';
 export 'feed_scroll_body.dart';
 export 'feed_reached_end.dart';
-export 'feed_top_bar_scrim.dart';

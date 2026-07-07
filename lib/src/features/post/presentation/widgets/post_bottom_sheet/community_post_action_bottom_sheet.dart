@@ -7,7 +7,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
@@ -117,7 +117,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, true);
         if (community.context.subscribed != SubscriptionStatus.notSubscribed) {
-          showSnackbar('Subscribed to ${community.titleOrName}');
+          showThunderSnackbar('Subscribed to ${community.titleOrName}');
         }
         widget.onAction(CommunityAction.follow, community);
         break;
@@ -125,7 +125,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         Navigator.of(context).pop();
         final community = await repository.subscribe(widget.post.community!.id, false);
         if (community.context.subscribed == SubscriptionStatus.notSubscribed) {
-          showSnackbar('Unsubscribed from ${community.titleOrName}');
+          showThunderSnackbar('Unsubscribed from ${community.titleOrName}');
         }
         widget.onAction(CommunityAction.follow, community);
         break;
@@ -133,7 +133,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, true);
         if (community.context.blocked == true) {
-          showSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
+          showThunderSnackbar(l10n.successfullyBlockedCommunity(community.titleOrName));
         }
         widget.onAction(CommunityAction.block, community);
         break;
@@ -141,7 +141,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         Navigator.of(context).pop();
         final community = await repository.block(widget.post.community!.id, false);
         if (community.context.blocked == false) {
-          showSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
+          showThunderSnackbar(l10n.successfullyUnblockedCommunity(community.titleOrName));
         }
         widget.onAction(CommunityAction.block, community);
         break;
@@ -193,7 +193,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (communityPostAction) => BottomSheetAction(
+          (communityPostAction) => ThunderBottomSheetAction(
             leading: Icon(communityPostAction.icon),
             title: communityPostAction.name,
             onTap: () => performAction(communityPostAction),
@@ -202,12 +202,12 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
-            (communityPostAction) => BottomSheetAction(
+            (communityPostAction) => ThunderBottomSheetAction(
               leading: Icon(communityPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
                 child: Icon(
-                  Thunder.shield,
+                  ThunderIcon.shield,
                   size: 20,
                   color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),

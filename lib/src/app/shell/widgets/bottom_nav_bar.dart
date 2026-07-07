@@ -10,7 +10,7 @@ import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/app/shell/widgets/thunder_bottom_nav_bar.dart';
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 
 /// Defines the bottom navigation bar for Thunder. Uses a custom [ThunderBottomNavigationBar] to handle additional gestures and long-press behavior.

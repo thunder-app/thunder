@@ -15,12 +15,11 @@ import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/src/shared/marquee_widget.dart';
 import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showThunderTypeaheadDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(
@@ -105,7 +104,7 @@ Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {voi
         title: Text(payload.displayNameOrName, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: Marquee(
+          child: ThunderMarquee(
             animationDuration: const Duration(seconds: 2),
             backDuration: const Duration(seconds: 2),
             pauseDuration: const Duration(seconds: 1),
@@ -226,7 +225,7 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Marquee(
+              ThunderMarquee(
                 animationDuration: const Duration(seconds: 2),
                 backDuration: const Duration(seconds: 2),
                 pauseDuration: const Duration(seconds: 1),

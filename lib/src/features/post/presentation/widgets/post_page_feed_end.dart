@@ -73,7 +73,7 @@ class _PostPageFeedEndState extends State<PostPageFeedEnd> {
         key: _reachedEndKey,
         color: theme.dividerColor.withValues(alpha: 0.1),
         padding: const EdgeInsets.symmetric(vertical: 32.0),
-        child: ScalableText(
+        child: ThunderScalableText(
           comments.isEmpty ? l10n.noCommentsFound : l10n.endOfComments,
           textScaleFactor: metadataFontSizeScale.textScaleFactor,
           textAlign: TextAlign.center,

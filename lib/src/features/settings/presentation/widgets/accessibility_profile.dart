@@ -31,7 +31,7 @@ class SettingProfile extends StatelessWidget {
     bool recentSuccess = false;
 
     return ThunderExpandableOption(
-      icon: Icon(icon),
+      leading: Icon(icon),
       title: name,
       child: Column(
         children: [
@@ -68,12 +68,12 @@ class SettingProfile extends StatelessWidget {
                           // before adding a profile containing those types.
                           success = false;
                           if (context.mounted) {
-                            showSnackbar(AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
+                            showThunderSnackbar(AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
                           }
                         }
                       }
                       if (context.mounted && success) {
-                        showSnackbar(AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
+                        showThunderSnackbar(AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
                         setState(() => recentSuccess = true);
                         Future.delayed(const Duration(seconds: 5), () async {
                           setState(() => recentSuccess = false);

@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 
 import 'package:thunder/src/shared/media/media_utils.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// The loading state of an image preview.
 enum ImagePreviewState {
@@ -373,30 +374,13 @@ class ImagePreviewError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    if (blur) return const SizedBox.shrink();
-
-    final iconColor = theme.colorScheme.onSecondaryContainer.withValues(alpha: viewed ? 0.55 : 1.0);
-
-    if (canRetry && onRetry != null) {
-      return GestureDetector(
-        onTap: onRetry,
-        behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: Tooltip(
-            message: retryTooltip,
-            child: Icon(Icons.refresh_rounded, color: iconColor),
-          ),
-        ),
-      );
-    }
-
-    return Center(
-      child: Icon(
-        _getErrorIcon(mediaType),
-        color: iconColor,
-      ),
+    return ThunderMediaPreviewError(
+      icon: _getErrorIcon(mediaType),
+      blur: blur,
+      viewed: viewed,
+      canRetry: canRetry,
+      onRetry: onRetry,
+      retryTooltip: retryTooltip,
     );
   }
 }

@@ -9,11 +9,10 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/shared/reply_to_preview_actions.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show ConditionalParentWidget;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the content of a comment.
 class CommentContent extends StatefulWidget {
@@ -123,7 +122,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                         children: [
                           Padding(
                             padding: EdgeInsets.only(top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
-                            child: ConditionalParentWidget(
+                            child: ThunderConditionalParent(
                               condition: widget.selectable,
                               parentBuilder: (child) {
                                 return SelectableRegion(
@@ -141,7 +140,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                 );
                               },
                               child: widget.viewSource
-                                  ? ScalableText(
+                                  ? ThunderScalableText(
                                       content,
                                       style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                       textScaleFactor: contentFontSizeScale.textScaleFactor,
@@ -153,10 +152,14 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                       ),
               ),
               if (widget.showReplyEditorButtons && widget.comment.content.isNotEmpty == true)
-                ReplyToPreviewActions(
+                ThunderPreviewActionRow(
                   viewSource: widget.viewSource,
                   onViewSourceToggled: widget.onViewSourceToggled,
                   text: content,
+                  viewSourceLabel: GlobalContext.l10n.viewSource,
+                  viewOriginalLabel: GlobalContext.l10n.viewOriginal,
+                  copyLabel: GlobalContext.l10n.copyText,
+                  copiedMessage: GlobalContext.l10n.copiedToClipboard,
                 ),
             ],
           ),

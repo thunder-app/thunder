@@ -170,10 +170,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ThunderSettingsTile(
                   leading: Icon(Icons.co_present_rounded),
                   title: l10n.deleteLocalPreferences,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     showThunderDialog<void>(
                       context: context,
@@ -186,9 +183,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
 
                         if (cleared) {
                           context.read<ThunderCubit>().reload();
-                          showSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
+                          showThunderSnackbar(AppLocalizations.of(context)!.clearedUserPreferences);
                         } else {
-                          showSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
+                          showThunderSnackbar(AppLocalizations.of(context)!.failedToPerformAction);
                         }
 
                         Navigator.of(dialogContext).pop();
@@ -203,10 +200,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ThunderSettingsTile(
                   leading: Icon(Icons.data_array_rounded),
                   title: l10n.deleteLocalDatabase,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     showThunderDialog<void>(
                       context: context,
@@ -221,7 +215,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         await databaseFactory.deleteDatabase(file.path);
 
                         if (context.mounted) {
-                          showSnackbar(AppLocalizations.of(context)!.clearedDatabase);
+                          showThunderSnackbar(AppLocalizations.of(context)!.clearedDatabase);
                           Navigator.of(context).pop();
                         }
                       },
@@ -239,13 +233,10 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                     return ThunderSettingsTile(
                         leading: Icon(Icons.data_saver_off_rounded),
                         title: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
-                        trailing: const SizedBox(
-                          height: 42.0,
-                          child: Icon(Icons.chevron_right_rounded),
-                        ),
+                        trailing: const ThunderSettingsChevronTrailing(),
                         onTap: () async {
                           await clearDiskCachedImages();
-                          if (context.mounted) showSnackbar(l10n.clearedCache);
+                          if (context.mounted) showThunderSnackbar(l10n.clearedCache);
                           setState(() {}); // Trigger a rebuild to refresh the cache size
                         },
                         highlightKey: settingToHighlightKey,
@@ -330,10 +321,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 ThunderSettingsTile(
                     leading: Icon(Icons.notifications_rounded),
                     title: l10n.sendTestLocalNotification,
-                    trailing: const SizedBox(
-                      height: 42.0,
-                      child: Icon(Icons.chevron_right_rounded),
-                    ),
+                    trailing: const ThunderSettingsChevronTrailing(),
                     onTap: inboxNotificationType == NotificationType.local
                         ? () {
                             showTestAndroidNotification();
@@ -346,10 +334,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                 ThunderSettingsTile(
                     leading: Icon(Icons.circle_notifications_rounded),
                     title: l10n.sendBackgroundTestLocalNotification,
-                    trailing: const SizedBox(
-                      height: 42.0,
-                      child: Icon(Icons.chevron_right_rounded),
-                    ),
+                    trailing: const ThunderSettingsChevronTrailing(),
                     onTap: inboxNotificationType == NotificationType.local
                         ? () async {
                             bool result = false;
@@ -393,18 +378,15 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   ThunderSettingsTile(
                       leading: Icon(Icons.notifications_rounded),
                       title: l10n.sendTestUnifiedPushNotification,
-                      trailing: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
-                      ),
+                      trailing: const ThunderSettingsChevronTrailing(),
                       onTap: inboxNotificationType == NotificationType.unifiedPush
                           ? () async {
                               final error = await requestTestNotification(resolveActiveAccount(context));
 
                               if (error == null) {
-                                showSnackbar(l10n.sentRequestForTestNotification);
+                                showThunderSnackbar(l10n.sentRequestForTestNotification);
                               } else {
-                                showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
+                                showThunderSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
                               }
                             }
                           : null,
@@ -415,10 +397,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   ThunderSettingsTile(
                       leading: Icon(Icons.circle_notifications_rounded),
                       title: l10n.sendBackgroundTestUnifiedPushNotification,
-                      trailing: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
-                      ),
+                      trailing: const ThunderSettingsChevronTrailing(),
                       onTap: inboxNotificationType == NotificationType.unifiedPush
                           ? () async {
                               bool result = false;
@@ -441,9 +420,9 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                                 final error = await requestTestNotification(resolveActiveAccount(context));
 
                                 if (error == null) {
-                                  showSnackbar(l10n.sentRequestForTestNotification);
+                                  showThunderSnackbar(l10n.sentRequestForTestNotification);
                                 } else {
-                                  showSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
+                                  showThunderSnackbar(l10n.failedToCommunicateWithThunderNotificationServer('$pushNotificationServer\n\n$error'));
                                 }
 
                                 SystemNavigator.pop();
@@ -459,10 +438,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               ThunderSettingsTile(
                   leading: Icon(Icons.edit_notifications_rounded),
                   title: l10n.changeNotificationSettings,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () => navigateToSettingPage(context, LocalSettings.inboxNotificationType),
                   highlightKey: settingToHighlightKey,
                   highlighted: false),
@@ -499,8 +475,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
               SizedBox(height: 8.0),
               ThunderListOption(
                   title: l10n.imageDimensionTimeout,
-                  value: ListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
-                  options: imageDimensionTimeouts.map((value) => ListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
+                  value: ThunderListPickerItem(label: '${imageDimensionTimeout}s', icon: Icons.timelapse, payload: imageDimensionTimeout),
+                  options: imageDimensionTimeouts.map((value) => ThunderListPickerItem(icon: Icons.timelapse, label: '${value}s', payload: value)).toList(),
                   leading: Icon(Icons.timelapse),
                   onChanged: (value) async => setPreferences(LocalSettings.imageDimensionTimeout, value.payload),
                   highlightKey: settingToHighlightKey,

@@ -4,18 +4,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_anonymous_instances_sliver.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_authenticated_accounts_sliver.dart';
-import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_empty_message.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_modal_load_state.dart';
-import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_section_header.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/presentation/utils/user_session_utils.dart';
 import 'package:thunder/src/foundation/contracts/account.dart';
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays profile sections and coordinates profile-modal user actions.
 class ProfileSelect extends StatefulWidget {
@@ -76,7 +74,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
             final modalCubit = context.read<ProfileModalCubit>();
             if (state.mutationStatus == SessionMutationStatus.failure) {
               modalCubit.clearPendingSession();
-              showSnackbar(l10n.somethingWentWrong);
+              showThunderSnackbar(l10n.somethingWentWrong);
               return;
             }
 
@@ -87,11 +85,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
           listenWhen: (previous, current) => previous.operationError != current.operationError || (previous.loadError != current.loadError && current.status == ProfileModalStatus.success),
           listener: (context, state) {
             if (state.operationError != null) {
-              showSnackbar(l10n.somethingWentWrong);
+              showThunderSnackbar(l10n.somethingWentWrong);
               context.read<ProfileModalCubit>().clearOperationError();
             }
             if (state.loadError != null && state.status == ProfileModalStatus.success) {
-              showSnackbar(l10n.somethingWentWrong);
+              showThunderSnackbar(l10n.somethingWentWrong);
               context.read<ProfileModalCubit>().clearLoadError();
             }
           },
@@ -107,9 +105,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
             return CustomScrollView(
               slivers: [
                 if (scaffoldState.status != ProfileModalStatus.success)
-                  ProfileSectionHeader(
+                  ThunderSectionHeader(
                     title: widget.customHeading ?? l10n.account(2),
-                    actions: const [],
+                    variant: ThunderSectionHeaderVariant.sliver,
                   ),
                 if (scaffoldState.status == ProfileModalStatus.loading || scaffoldState.status == ProfileModalStatus.initial) ...[
                   const ProfileModalLoadState.loading(),
@@ -214,8 +212,9 @@ class _AuthenticatedProfileSection extends StatelessWidget {
       builder: (context, state) {
         return SliverMainAxisGroup(
           slivers: [
-            ProfileSectionHeader(
+            ThunderSectionHeader(
               title: customHeading ?? l10n.account(2),
+              variant: ThunderSectionHeaderVariant.sliver,
               actions: quickSelectMode
                   ? const []
                   : [
@@ -248,7 +247,10 @@ class _AuthenticatedProfileSection extends StatelessWidget {
                 onRemove: onRemove,
               )
             else
-              ProfileEmptyMessage(message: l10n.noAccountsAdded),
+              ThunderSliverAdapter(
+                sliver: true,
+                child: ThunderEmptyText(message: l10n.noAccountsAdded),
+              )
           ],
         );
       },
@@ -282,8 +284,9 @@ class _AnonymousProfileSection extends StatelessWidget {
       builder: (context, state) {
         return SliverMainAxisGroup(
           slivers: [
-            ProfileSectionHeader(
+            ThunderSectionHeader(
               title: l10n.anonymousInstances,
+              variant: ThunderSectionHeaderVariant.sliver,
               actions: [
                 if (state.rows.length > 1)
                   IconButton(
@@ -313,7 +316,10 @@ class _AnonymousProfileSection extends StatelessWidget {
                 onRemove: onRemove,
               )
             else
-              ProfileEmptyMessage(message: l10n.noAnonymousInstances),
+              ThunderSliverAdapter(
+                sliver: true,
+                child: ThunderEmptyText(message: l10n.noAnonymousInstances),
+              )
           ],
         );
       },

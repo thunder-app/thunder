@@ -14,7 +14,7 @@ import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/gestures/swipe_utils.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderMultiActionDismissible, ThunderSwipeAction, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Interactive feed card for a post.
 class PostCard extends StatefulWidget {
@@ -121,7 +121,7 @@ class _PostCardState extends State<PostCard> {
         bool downvotesEnabled = context.read<ProfileBloc>().state.downvotesEnabled;
 
         if (downvotesEnabled == false) {
-          showSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
+          showThunderSnackbar(AppLocalizations.of(context)!.downvotesDisabled);
           return;
         }
 
@@ -129,7 +129,7 @@ class _PostCardState extends State<PostCard> {
         return;
       case SwipeAction.reply:
       case SwipeAction.edit:
-        showSnackbar(AppLocalizations.of(context)!.replyNotSupported);
+        showThunderSnackbar(AppLocalizations.of(context)!.replyNotSupported);
         break;
       case SwipeAction.save:
         onSaveAction(post.id, !(saved ?? false));

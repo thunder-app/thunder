@@ -14,8 +14,7 @@ import 'package:thunder/src/features/search/presentation/widgets/search_communit
 import 'package:thunder/src/features/search/presentation/widgets/search_instances_results.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_posts_results.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_users_results.dart';
-import 'package:thunder/src/shared/error_message.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// The main body content of the search page showing results based on search state.
 class SearchBody extends StatelessWidget {
@@ -96,11 +95,21 @@ class SearchBody extends StatelessWidget {
           state: state,
         );
       case SearchStatus.empty:
-        return Center(child: Text(l10n.empty));
+        return ThunderStateView(
+          mode: ThunderStateViewMode.empty,
+          title: l10n.empty,
+        );
       case SearchStatus.failure:
-        return _SearchErrorView(
-          errorMessage: state.message,
-          onRetry: onSearch,
+        return ThunderStateView(
+          title: l10n.somethingWentWrong,
+          message: state.message,
+          actions: [
+            ThunderStateAction(
+              label: l10n.retry,
+              onPressed: onSearch,
+              primary: true,
+            ),
+          ],
         );
     }
   }
@@ -367,29 +376,6 @@ class _SearchNoResultsView extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// Widget that displays an error message with retry option.
-class _SearchErrorView extends StatelessWidget {
-  final String? errorMessage;
-  final VoidCallback onRetry;
-
-  const _SearchErrorView({
-    required this.errorMessage,
-    required this.onRetry,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = GlobalContext.l10n;
-
-    return ErrorMessage(
-      message: errorMessage,
-      actions: [
-        (text: l10n.retry, action: onRetry, loading: false),
-      ],
     );
   }
 }

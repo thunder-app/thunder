@@ -7,7 +7,7 @@ import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on an instance
 enum InstanceBottomSheetAction {
@@ -121,7 +121,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, true);
         if (blocked) {
-          showSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
+          showThunderSnackbar(l10n.successfullyBlockedCommunity(communityInstance!));
         }
         widget.onAction?.call();
         break;
@@ -129,7 +129,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.communityInstanceId!, false);
         if (!blocked) {
-          showSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
+          showThunderSnackbar(l10n.successfullyUnblockedCommunity(communityInstance!));
         }
         widget.onAction?.call();
         break;
@@ -139,14 +139,14 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
       case InstanceBottomSheetAction.blockUserInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.userInstanceId!, true);
-        if (blocked) showSnackbar(l10n.successfullyBlockedUser(userInstance!));
+        if (blocked) showThunderSnackbar(l10n.successfullyBlockedUser(userInstance!));
         widget.onAction?.call();
         break;
       case InstanceBottomSheetAction.unblockUserInstance:
         Navigator.of(context).pop();
         final blocked = await repository.block(widget.userInstanceId!, false);
         if (!blocked) {
-          showSnackbar(l10n.successfullyUnblockedUser(userInstance!));
+          showThunderSnackbar(l10n.successfullyUnblockedUser(userInstance!));
         }
         widget.onAction?.call();
         break;
@@ -218,7 +218,7 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (instancePostAction) => BottomSheetAction(
+          (instancePostAction) => ThunderBottomSheetAction(
             leading: Icon(instancePostAction.icon),
             subtitle: switch (instancePostAction) {
               InstanceBottomSheetAction.visitCommunityInstance => communityInstance,

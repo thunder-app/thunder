@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// Defines a custom [PopupMenuItem] that can be used throughout the app
+/// Standardized popup menu item with a leading icon and optional trailing widget.
 class ThunderPopupMenuItem<T> extends PopupMenuItem<T> {
-  final IconData icon;
-  final String title;
-  final Widget? trailing;
-
+  /// Creates a [PopupMenuItem] with Thunder list-tile styling.
   ThunderPopupMenuItem({
     super.key,
     super.value,
-    required super.onTap,
-    required this.icon,
-    required this.title,
-    this.trailing,
+    required void Function() onTap,
+    required IconData icon,
+    required String title,
+    Widget? trailing,
   }) : super(
+          onTap: onTap,
           child: ListTile(
             dense: true,
-            horizontalTitleGap: 5,
-            leading: Icon(icon, size: 20),
+            horizontalTitleGap: 5.0,
+            leading: Icon(icon, size: 20.0),
             title: Text(title),
             trailing: trailing,
           ),

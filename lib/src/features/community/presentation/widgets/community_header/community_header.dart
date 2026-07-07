@@ -8,7 +8,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/shared/media/image_preview.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderIconLabel;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a community's header information and related actions.
 ///

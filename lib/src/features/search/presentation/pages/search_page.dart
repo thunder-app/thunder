@@ -18,7 +18,7 @@ import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show ListPickerItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// The main search page that handles search functionality.
 class SearchPage extends StatefulWidget {
@@ -105,19 +105,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     return DEFAULT_SEARCH_SORT_TYPE;
   }
 
-  List<ListPickerItem<SearchSortType>> _searchSortItems() {
+  List<ThunderListPickerItem<SearchSortType>> _searchSortItems() {
     return [
       ...getDefaultSearchSortTypeItems(account: widget.account),
       ...getTopSearchSortTypeItems(account: widget.account),
     ];
   }
 
-  ListPickerItem<SearchSortType> _resolveSearchSortItem(SearchSortType sortType) {
+  ThunderListPickerItem<SearchSortType> _resolveSearchSortItem(SearchSortType sortType) {
     final items = _searchSortItems();
 
     final defaultItem = items.firstWhere(
       (item) => item.payload == DEFAULT_SEARCH_SORT_TYPE,
-      orElse: () => ListPickerItem(
+      orElse: () => ThunderListPickerItem(
         payload: DEFAULT_SEARCH_SORT_TYPE,
         icon: Icons.military_tech,
         label: GlobalContext.l10n.topYear,
@@ -235,15 +235,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     search();
   }
 
-  List<ListPickerItem<MetaSearchType>> getSearchOptions(Account account) {
+  List<ThunderListPickerItem<MetaSearchType>> getSearchOptions(Account account) {
     final l10n = GlobalContext.l10n;
 
-    List<ListPickerItem<MetaSearchType>> options = [
-      ListPickerItem(label: l10n.communities, payload: MetaSearchType.communities, icon: Icons.people_rounded),
-      ListPickerItem(label: l10n.users, payload: MetaSearchType.users, icon: Icons.person_rounded),
-      ListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
-      ListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
-      ListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
+    List<ThunderListPickerItem<MetaSearchType>> options = [
+      ThunderListPickerItem(label: l10n.communities, payload: MetaSearchType.communities, icon: Icons.people_rounded),
+      ThunderListPickerItem(label: l10n.users, payload: MetaSearchType.users, icon: Icons.person_rounded),
+      ThunderListPickerItem(label: l10n.posts, payload: MetaSearchType.posts, icon: Icons.wysiwyg_rounded),
+      ThunderListPickerItem(label: l10n.comments, payload: MetaSearchType.comments, icon: Icons.chat_rounded),
+      ThunderListPickerItem(label: l10n.instance(2), payload: MetaSearchType.instances, icon: Icons.language),
     ];
 
     // Only keep post/comment for community search

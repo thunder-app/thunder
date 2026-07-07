@@ -15,6 +15,7 @@ import 'package:thunder/src/foundation/primitives/models/thunder_site_response.d
 import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/foundation/errors/api_exception.dart';
 import 'package:thunder/src/foundation/networking/base_api_client.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/networking/lemmy/modlog_parsers.dart';
 import 'package:thunder/src/foundation/networking/thunder_api_client.dart';
 import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
@@ -1117,7 +1118,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   Future<String> _uploadImageTo(String endpoint, String filePath) async {
     final decoded = await uploadMultipartImage(
       httpClient: httpClient,
-      uri: Uri.https(account.instance, endpoint),
+      uri: buildInstanceUri(account.instance, endpoint),
       headers: buildHeaders(),
       fieldName: 'file',
       filePath: filePath,
@@ -1147,7 +1148,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 AccountMediaItem _accountMediaItemFromPiefed(Map<String, dynamic> image, String instance) {
   final localImage = image['local_image'] as Map<String, dynamic>? ?? image;
   final alias = localImage['pictrs_alias']?.toString() ?? localImage['file']?.toString() ?? '';
-  final url = image['url']?.toString() ?? Uri.https(instance, '/pictrs/image/$alias').toString();
+  final url = image['url']?.toString() ?? buildInstanceUrl(instance, '/pictrs/image/$alias');
   return AccountMediaItem(
     alias: alias,
     url: url,

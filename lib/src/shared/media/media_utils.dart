@@ -21,7 +21,6 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/utils/media_url_utils.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/shared/media/experimental_image_viewer.dart';
-import 'package:thunder/src/shared/media/image_viewer.dart';
 
 final Map<String, Size> _imageDimensionsCache = <String, Size>{};
 
@@ -193,10 +192,6 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file.path];
 }
 
-bool useExperimentalImageViewer(BuildContext context) {
-  return context.read<ThunderCubit>().state.enableExperimentalFeatures;
-}
-
 Widget buildImageViewerWidget(
   BuildContext context, {
   String? altText,
@@ -207,24 +202,12 @@ Widget buildImageViewerWidget(
   int? postId,
   String? url,
 }) {
-  if (useExperimentalImageViewer(context)) {
-    return ExperimentalImageViewer(
-      altText: altText,
-      bytes: bytes,
-      isPeek: isPeek,
-      navigateToPost: navigateToPost,
-      url: url,
-    );
-  }
-
-  return ImageViewer(
-    url: url,
-    bytes: bytes,
-    postId: postId,
-    navigateToPost: navigateToPost,
+  return ExperimentalImageViewer(
     altText: altText,
+    bytes: bytes,
     isPeek: isPeek,
-    clearMemoryCacheWhenDispose: clearMemoryCacheWhenDispose ?? false,
+    navigateToPost: navigateToPost,
+    url: url,
   );
 }
 

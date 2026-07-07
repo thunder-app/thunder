@@ -53,7 +53,7 @@ class ActionColorSettingWidget extends StatelessWidget {
           ),
           ThunderListOption(
               isBottomModalScrollControlled: true,
-              value: const ListPickerItem(payload: -1),
+              value: const ThunderListPickerItem(payload: -1),
               options: const [],
               title: l10n.actionColors,
               leading: Icon(Icons.color_lens_rounded),
@@ -62,10 +62,10 @@ class ActionColorSettingWidget extends StatelessWidget {
               highlighted: settingToHighlight == LocalSettings.actionColors,
               customListPicker: StatefulBuilder(
                 builder: (context, setState) {
-                  return BottomSheetListPicker(
+                  return ThunderBottomSheetListPicker(
                     title: l10n.actionColors,
                     items: [
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(
@@ -108,7 +108,7 @@ class ActionColorSettingWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(
@@ -151,7 +151,7 @@ class ActionColorSettingWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(
@@ -194,7 +194,7 @@ class ActionColorSettingWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(
@@ -237,7 +237,7 @@ class ActionColorSettingWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(
@@ -280,7 +280,7 @@ class ActionColorSettingWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ListPickerItem(
+                      ThunderListPickerItem(
                         payload: -1,
                         customWidget: ListTile(
                           title: Text(

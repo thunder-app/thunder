@@ -376,10 +376,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               ThunderListOption(
                   title: l10n.defaultFeedType,
-                  value: ListPickerItem(label: defaultFeedListType.value, icon: Icons.feed, payload: defaultFeedListType),
+                  value: ThunderListPickerItem(label: defaultFeedListType.value, icon: Icons.feed, payload: defaultFeedListType),
                   options: [
-                    ListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
-                    ListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
+                    ThunderListPickerItem(icon: Icons.home_rounded, label: FeedListType.all.value, payload: FeedListType.all),
+                    ThunderListPickerItem(icon: Icons.grid_view_rounded, label: FeedListType.local.value, payload: FeedListType.local),
                   ],
                   leading: Icon(Icons.filter_alt_rounded),
                   onChanged: (value) => setPreferences(LocalSettings.defaultFeedListType, value.payload.name),
@@ -388,7 +388,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   highlighted: settingToHighlight == LocalSettings.defaultFeedListType),
               ThunderListOption(
                   title: l10n.defaultFeedSortType,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                     label: allPostSortTypeItems.firstWhere((item) => item.payload == defaultPostSortType).label,
                     icon: Icons.local_fire_department_rounded,
                     payload: defaultPostSortType,
@@ -429,10 +429,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ThunderSettingsTile(
                   leading: Icon(Icons.manage_accounts_rounded),
                   title: l10n.lookingForAccountSpecificFeedSettings,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccount),
                   highlightKey: settingToHighlightKey,
                   highlighted: false),
@@ -444,10 +441,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ThunderListOption(
                   title: l10n.appLanguage,
                   bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
-                  value: ListPickerItem(label: LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()), icon: Icons.language_rounded, payload: currentLocale),
-                  options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
+                  value:
+                      ThunderListPickerItem(label: LanguageLocal.getDisplayLanguage(currentLocale.languageCode, currentLocale.toLanguageTag()), icon: Icons.language_rounded, payload: currentLocale),
+                  options:
+                      supportedLocales.map((e) => ThunderListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode, e.toLanguageTag()), icon: Icons.language_rounded, payload: e)).toList(),
                   leading: Icon(Icons.language_rounded),
-                  onChanged: (ListPickerItem<Locale> value) async {
+                  onChanged: (ThunderListPickerItem<Locale> value) async {
                     setPreferences(LocalSettings.appLanguageCode, value.payload);
                   },
                   valueDisplay: Row(
@@ -550,7 +549,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               ThunderListOption(
                   title: l10n.defaultCommentSortType,
-                  value: ListPickerItem(label: defaultCommentSortType.name, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
+                  value: ThunderListPickerItem(label: defaultCommentSortType.name, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                   options: getCommentSortTypeItems(),
                   leading: Icon(Icons.comment_bank_rounded),
                   onChanged: (_) async {},
@@ -609,7 +608,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
               ThunderListOption(
                   title: l10n.browserMode,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                     label: switch (browserMode) {
                       BrowserMode.inApp => l10n.linkHandlingInAppShort,
                       BrowserMode.customTabs => l10n.linkHandlingCustomTabsShort,
@@ -619,9 +618,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     capitalizeLabel: false,
                   ),
                   options: [
-                    ListPickerItem(label: l10n.linkHandlingInApp, icon: Icons.dataset_linked_rounded, payload: BrowserMode.inApp),
-                    ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: BrowserMode.customTabs),
-                    ListPickerItem(label: l10n.linkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: BrowserMode.external),
+                    ThunderListPickerItem(label: l10n.linkHandlingInApp, icon: Icons.dataset_linked_rounded, payload: BrowserMode.inApp),
+                    ThunderListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: BrowserMode.customTabs),
+                    ThunderListPickerItem(label: l10n.linkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: BrowserMode.external),
                   ],
                   leading: Icon(Icons.link_rounded),
                   onChanged: (value) => setPreferences(LocalSettings.browserMode, value.payload.name),
@@ -641,10 +640,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               if (!kIsWeb && Platform.isAndroid)
                 ThunderSettingsTile(
                     leading: Icon(Icons.add_link),
-                    trailing: const SizedBox(
-                      height: 42.0,
-                      child: Icon(Icons.chevron_right_rounded),
-                    ),
+                    trailing: const ThunderSettingsChevronTrailing(),
                     onTap: () async {
                       try {
                         const AndroidIntent intent = AndroidIntent(
@@ -671,7 +667,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               if (!kIsWeb && Platform.isAndroid)
                 ThunderListOption(
                     title: l10n.imageCachingMode,
-                    value: ListPickerItem(
+                    value: ThunderListPickerItem(
                       label: switch (imageCachingMode) {
                         ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
                         ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
@@ -680,8 +676,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       capitalizeLabel: false,
                     ),
                     options: [
-                      ListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
-                      ListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
+                      ThunderListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
+                      ThunderListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
                     ],
                     leading: Icon(switch (imageCachingMode) {
                       ImageCachingMode.aggressive => Icons.broken_image,
@@ -793,7 +789,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ],
                       ),
                     ),
-                    value: const ListPickerItem(payload: -1),
+                    value: const ThunderListPickerItem(payload: -1),
                     options: const [],
                     disabled: accounts.isEmpty,
                     leading: Icon(inboxNotificationType == NotificationType.none ? Icons.notifications_off_rounded : Icons.notifications_on_rounded),
@@ -802,7 +798,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     highlighted: settingToHighlight == LocalSettings.inboxNotificationType,
                     customListPicker: StatefulBuilder(
                       builder: (context, setState) {
-                        return BottomSheetListPicker<NotificationType>(
+                        return ThunderBottomSheetListPicker<NotificationType>(
                           title: l10n.pushNotification,
                           heading: Align(
                             alignment: Alignment.centerLeft,
@@ -811,13 +807,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           previouslySelected: inboxNotificationType,
                           items: Platform.isAndroid
                               ? [
-                                  ListPickerItem(
+                                  ThunderListPickerItem(
                                     icon: Icons.notifications_off_rounded,
                                     label: l10n.none,
                                     payload: NotificationType.none,
                                     softWrap: true,
                                   ),
-                                  ListPickerItem(
+                                  ThunderListPickerItem(
                                     icon: Icons.notifications_rounded,
                                     label: l10n.useLocalNotifications,
                                     subtitle: l10n.useLocalNotificationsDescription,
@@ -825,7 +821,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                     softWrap: true,
                                   ),
                                   if (enableExperimentalFeatures)
-                                    ListPickerItem(
+                                    ThunderListPickerItem(
                                       icon: Icons.notifications_active_rounded,
                                       label: l10n.useUnifiedPushNotifications,
                                       subtitleWidget: Text.rich(
@@ -854,14 +850,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                     ),
                                 ]
                               : [
-                                  ListPickerItem(
+                                  ThunderListPickerItem(
                                     icon: Icons.notifications_off_rounded,
                                     label: l10n.disablePushNotifications,
                                     payload: NotificationType.none,
                                     softWrap: true,
                                   ),
                                   if (enableExperimentalFeatures)
-                                    ListPickerItem(
+                                    ThunderListPickerItem(
                                       icon: Icons.notifications_active_rounded,
                                       label: l10n.useApplePushNotifications,
                                       subtitle: l10n.useApplePushNotificationsDescription,
@@ -869,7 +865,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                       softWrap: true,
                                     ),
                                 ],
-                          onSelect: (ListPickerItem<NotificationType> notificationType) async {
+                          onSelect: (ThunderListPickerItem<NotificationType> notificationType) async {
                             if (notificationType.payload == inboxNotificationType) {
                               return;
                             }
@@ -893,7 +889,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             );
 
                             if (!success) {
-                              showSnackbar(l10n.failedToUpdateNotificationSettings);
+                              showThunderSnackbar(l10n.failedToUpdateNotificationSettings);
                             }
                             _initPreferences();
                           },
@@ -905,10 +901,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       leading: Icon(Icons.electrical_services_rounded),
                       title: l10n.pushNotificationServer,
                       subtitle: pushNotificationServer,
-                      trailing: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
-                      ),
+                      trailing: const ThunderSettingsChevronTrailing(),
                       onTap: () async {
                         showThunderDialog<void>(
                           context: context,
@@ -949,10 +942,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 ThunderSettingsTile(
                     leading: Icon(Icons.bug_report_rounded),
                     title: l10n.havingIssuesWithNotifications,
-                    trailing: const SizedBox(
-                      height: 42.0,
-                      child: Icon(Icons.chevron_right_rounded),
-                    ),
+                    trailing: const ThunderSettingsChevronTrailing(),
                     onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageDebug),
                     highlightKey: settingToHighlightKey,
                     highlighted: false),
@@ -966,17 +956,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   leading: Icon(Icons.settings_rounded),
                   title: l10n.saveSettings,
                   subtitle: l10n.exportSettingsSubtitle,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     String? savedFilePath = await UserPreferences.exportToJson();
 
                     if (savedFilePath?.isNotEmpty == true) {
-                      showSnackbar(l10n.settingsExportedSuccessfully(savedFilePath!));
+                      showThunderSnackbar(l10n.settingsExportedSuccessfully(savedFilePath!));
                     } else {
-                      showSnackbar(l10n.settingsNotExportedSuccessfully);
+                      showThunderSnackbar(l10n.settingsNotExportedSuccessfully);
                     }
                   },
                   highlightKey: settingToHighlightKey,
@@ -985,22 +972,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ThunderSettingsTile(
                   leading: Icon(Icons.import_export_rounded),
                   title: l10n.importSettings,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     bool? importedSuccessfully = await UserPreferences.importFromJson();
 
                     if (importedSuccessfully == true) {
-                      showSnackbar(l10n.settingsImportedSuccessfully);
+                      showThunderSnackbar(l10n.settingsImportedSuccessfully);
 
                       if (context.mounted) {
                         _initPreferences();
                         context.read<ThunderCubit>().reload();
                         context.read<FeedPreferencesCubit>().reload();
                       } else {
-                        showSnackbar(l10n.settingsNotImportedSuccessfully);
+                        showThunderSnackbar(l10n.settingsNotImportedSuccessfully);
                       }
                     }
                   },
@@ -1010,10 +994,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   leading: Icon(Icons.dashboard_customize_rounded),
                   title: l10n.exportDatabase,
                   subtitle: l10n.exportDatabaseSubtitle,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     bool result = false;
 
@@ -1035,9 +1016,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     String? savedFilePath = await exportDatabase();
 
                     if (savedFilePath?.isNotEmpty == true) {
-                      showSnackbar(l10n.databaseExportedSuccessfully(savedFilePath!));
+                      showThunderSnackbar(l10n.databaseExportedSuccessfully(savedFilePath!));
                     } else {
-                      showSnackbar(l10n.databaseNotExportedSuccessfully);
+                      showThunderSnackbar(l10n.databaseNotExportedSuccessfully);
                     }
                   },
                   highlightKey: settingToHighlightKey,
@@ -1046,17 +1027,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ThunderSettingsTile(
                   leading: Icon(Icons.dashboard_customize_outlined),
                   title: l10n.importDatabase,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () async {
                     bool importedSuccessfully = await importDatabase();
 
                     if (importedSuccessfully == true) {
-                      showSnackbar(l10n.databaseImportedSuccessfully);
+                      showThunderSnackbar(l10n.databaseImportedSuccessfully);
                     } else {
-                      showSnackbar(l10n.databaseNotImportedSuccessfully);
+                      showThunderSnackbar(l10n.databaseNotImportedSuccessfully);
                     }
                   },
                   highlightKey: settingToHighlightKey,

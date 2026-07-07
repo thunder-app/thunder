@@ -158,7 +158,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         itemBuilder: (context, index) {
                           return ThunderSettingsTile(
                               title: keywordFilters[index],
-                              trailing: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
+                              trailing: const ThunderSettingsChevronTrailing(),
                               onTap: () async {
                                 showThunderDialog(
                                   context: context,
@@ -182,10 +182,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
               ThunderSettingsTile(
                   leading: Icon(Icons.language),
                   title: l10n.languageFilters,
-                  trailing: const SizedBox(
-                    height: 42.0,
-                    child: Icon(Icons.chevron_right_rounded),
-                  ),
+                  trailing: const ThunderSettingsChevronTrailing(),
                   onTap: () {
                     // Can only set discussion language if user is logged in
                     if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {

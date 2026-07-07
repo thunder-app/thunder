@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the timestamp for a comment, with special styling for recent comments.
 ///
@@ -32,7 +32,7 @@ class CommentCardHeaderDate extends StatelessWidget {
     final theme = Theme.of(context);
 
     final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
-    final formattedDate = ScalableText(
+    final formattedDate = ThunderScalableText(
       date,
       textScaleFactor: metadataFontSizeScale.textScaleFactor,
       style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),

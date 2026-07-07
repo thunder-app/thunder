@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetListPicker, ListPickerItem;
+import 'package:thunder/packages/ui/ui.dart';
 
 enum SwipePickerSide { left, right }
 
 class SwipePickerItem {
   String label;
-  List<ListPickerItem<SwipeAction>> options;
+  List<ThunderListPickerItem<SwipeAction>> options;
   SwipeAction value;
-  final void Function(ListPickerItem<SwipeAction>) onChanged;
+  final void Function(ThunderListPickerItem<SwipeAction>) onChanged;
 
   SwipePickerItem({
     required this.label,
@@ -57,7 +57,7 @@ class SwipePicker<T> extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           showDragHandle: true,
-                          builder: (context) => BottomSheetListPicker(
+                          builder: (context) => ThunderBottomSheetListPicker(
                             title: items[0].label,
                             items: items[0].options,
                             onSelect: (value) async {
@@ -99,7 +99,7 @@ class SwipePicker<T> extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           showDragHandle: true,
-                          builder: (context) => BottomSheetListPicker(
+                          builder: (context) => ThunderBottomSheetListPicker(
                             title: items[1].label,
                             items: items[1].options,
                             onSelect: (value) async {
@@ -134,7 +134,7 @@ class SwipePicker<T> extends StatelessWidget {
                 child: Container(
                   height: 65,
                   decoration: const BoxDecoration(),
-                  child: const PostPlaceholder(),
+                  child: const ThunderSkeletonPlaceholder.post(),
                 ),
               ),
               if (side == SwipePickerSide.right && items.length >= 2)
@@ -148,7 +148,7 @@ class SwipePicker<T> extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           showDragHandle: true,
-                          builder: (context) => BottomSheetListPicker(
+                          builder: (context) => ThunderBottomSheetListPicker(
                             title: items[1].label,
                             items: items[1].options,
                             onSelect: (value) async {
@@ -198,7 +198,7 @@ class SwipePicker<T> extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           showDragHandle: true,
-                          builder: (context) => BottomSheetListPicker(
+                          builder: (context) => ThunderBottomSheetListPicker(
                             title: items[0].label,
                             items: items[0].options,
                             onSelect: (value) async {

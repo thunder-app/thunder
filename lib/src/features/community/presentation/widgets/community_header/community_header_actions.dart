@@ -12,7 +12,7 @@ import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays relevant actions for a community in a scrollable chip list.
 class CommunityHeaderActions extends StatelessWidget {
@@ -231,10 +231,10 @@ class _AnonymousSubscriptionChip extends StatelessWidget {
 
         if (isSubscribed) {
           context.read<AnonymousSubscriptionsCubit>().removeSubscriptions({community.actorId});
-          showSnackbar(l10n.unsubscribed);
+          showThunderSnackbar(l10n.unsubscribed);
         } else {
           context.read<AnonymousSubscriptionsCubit>().addSubscriptions({community});
-          showSnackbar(l10n.subscribed);
+          showThunderSnackbar(l10n.subscribed);
         }
       },
     );

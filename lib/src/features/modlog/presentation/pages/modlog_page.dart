@@ -9,7 +9,7 @@ import 'package:thunder/src/features/modlog/modlog.dart';
 
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -140,7 +140,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
             }
 
             if ((state.status == ModlogStatus.failure) && state.message != null) {
-              showSnackbar(state.message!);
+              showThunderSnackbar(state.message!);
               context.read<ModlogCubit>().clearMessage(); // Clear the message so that it does not spam
             }
           },

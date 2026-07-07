@@ -6,11 +6,12 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a post when sharing
 enum ShareBottomSheetAction {
@@ -101,12 +102,12 @@ class ShareActionBottomSheet extends StatefulWidget {
 class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
   String generateCommentUrl(int commentId) {
     final account = widget.account;
-    return 'https://${account.instance}/comment/$commentId';
+    return buildInstanceUrl(account.instance, '/comment/$commentId');
   }
 
   String generatePostUrl(int postId) {
     final account = widget.account;
-    return 'https://${account.instance}/post/$postId';
+    return buildInstanceUrl(account.instance, '/post/$postId');
   }
 
   void retrieveMedia(String? url) async {
@@ -120,7 +121,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       File? mediaFile = media?.file;
 
       if (media == null) {
-        showSnackbar(l10n.downloadingMedia);
+        showThunderSnackbar(l10n.downloadingMedia);
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
@@ -129,7 +130,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
       ));
     } catch (e) {
-      showSnackbar(l10n.errorDownloadingMedia(e));
+      showThunderSnackbar(l10n.errorDownloadingMedia(e));
     }
   }
 
@@ -253,7 +254,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (sharePostAction) => BottomSheetAction(
+          (sharePostAction) => ThunderBottomSheetAction(
             title: sharePostAction.name,
             subtitle: generateSubtitle(sharePostAction),
             leading: Icon(sharePostAction.icon),

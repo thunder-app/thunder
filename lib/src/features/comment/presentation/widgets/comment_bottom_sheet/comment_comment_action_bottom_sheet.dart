@@ -9,7 +9,7 @@ import 'package:thunder/src/shared/text/selectable_text_modal.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show BottomSheetAction, Thunder, ThunderDivider, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a comment
 enum CommentBottomSheetAction {
@@ -145,13 +145,13 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       case CommentBottomSheetAction.deleteComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, true);
-        if (updatedComment.status.deleted) showSnackbar(l10n.deletedComment);
+        if (updatedComment.status.deleted) showThunderSnackbar(l10n.deletedComment);
         widget.onAction(CommentAction.delete, widget.comment.copyWith(status: widget.comment.status.copyWith(deleted: true)));
         break;
       case CommentBottomSheetAction.restoreComment:
         Navigator.of(context).pop();
         final updatedComment = await repository.delete(widget.comment, false);
-        if (!updatedComment.status.deleted) showSnackbar(l10n.restoredComment);
+        if (!updatedComment.status.deleted) showThunderSnackbar(l10n.restoredComment);
         widget.onAction(CommentAction.delete, widget.comment.copyWith(status: widget.comment.status.copyWith(deleted: false)));
         break;
     }
@@ -170,7 +170,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         final repository = CommentRepositoryImpl(account: widget.account);
 
         await repository.report(widget.comment.id, controller.text);
-        showSnackbar(l10n.reportedComment);
+        showThunderSnackbar(l10n.reportedComment);
         widget.onAction(CommentAction.report, widget.comment);
 
         Navigator.of(dialogContext).pop();
@@ -234,7 +234,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (commentBottomSheetAction) => BottomSheetAction(
+          (commentBottomSheetAction) => ThunderBottomSheetAction(
             leading: Icon(commentBottomSheetAction.icon),
             title: commentBottomSheetAction.name,
             onTap: () => performAction(commentBottomSheetAction),
@@ -243,12 +243,12 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
-            (commentBottomSheetAction) => BottomSheetAction(
+            (commentBottomSheetAction) => ThunderBottomSheetAction(
               leading: Icon(commentBottomSheetAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
                 child: Icon(
-                  Thunder.shield,
+                  ThunderIcon.shield,
                   size: 20,
                   color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
                 ),

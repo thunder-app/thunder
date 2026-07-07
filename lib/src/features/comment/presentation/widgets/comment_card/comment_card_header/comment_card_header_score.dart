@@ -9,7 +9,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays voting scores for comments with upvote/downvote indicators
 ///
@@ -99,7 +99,7 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
         spacing: 2.0,
         children: [
           VoteIcon(type: 1, voteType: widget.voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
-          ScalableText(
+          ThunderScalableText(
             scoreLabel,
             semanticsLabel: l10n.xScore(scoreLabel),
             textScaleFactor: metadataFontSizeScale.textScaleFactor,
@@ -122,7 +122,7 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
       children: [
         VoteIcon(type: 1, voteType: widget.voteType, color: upvoteColor, fontScale: metadataFontSizeScale),
         const SizedBox(width: 2.0),
-        ScalableText(
+        ThunderScalableText(
           upvotesLabel,
           semanticsLabel: l10n.xUpvotes(upvotesLabel),
           textScaleFactor: metadataFontSizeScale.textScaleFactor,
@@ -134,7 +134,7 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
         if (widget.downvotes != 0) ...[
           VoteIcon(type: -1, voteType: widget.voteType, color: downvoteColor, fontScale: metadataFontSizeScale),
           const SizedBox(width: 2.0),
-          ScalableText(
+          ThunderScalableText(
             downvotesLabel,
             semanticsLabel: l10n.xDownvotes(downvotesLabel),
             textScaleFactor: metadataFontSizeScale.textScaleFactor,

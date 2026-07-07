@@ -10,7 +10,7 @@ import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem, showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.
 class InboxPage extends StatefulWidget {
@@ -123,7 +123,7 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
           }
 
           if (state.errorMessage?.isNotEmpty == true) {
-            showSnackbar(
+            showThunderSnackbar(
               state.errorMessage!,
               trailingIcon: Icons.refresh_rounded,
               trailingAction: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),

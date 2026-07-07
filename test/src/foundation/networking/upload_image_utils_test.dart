@@ -51,7 +51,11 @@ void main() {
 
     test('builds pictrs url from files array', () {
       expect(
-        parseUploadImageUrl({'files': [{'file': 'abc.png'}]}, instance: 'lemmy.test', platformName: 'Lemmy'),
+        parseUploadImageUrl({
+          'files': [
+            {'file': 'abc.png'}
+          ]
+        }, instance: 'lemmy.test', platformName: 'Lemmy'),
         'https://lemmy.test/pictrs/image/abc.png',
       );
     });

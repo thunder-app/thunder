@@ -164,7 +164,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   highlighted: settingToHighlight == LocalSettings.videoAutoLoop),
               ThunderListOption(
                   title: l10n.videoAutoPlay,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                       label: switch (videoAutoPlay) {
                         VideoAutoPlay.never => l10n.never,
                         VideoAutoPlay.always => l10n.always,
@@ -173,9 +173,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                       icon: Icons.video_settings_outlined,
                       payload: videoAutoPlay),
                   options: [
-                    ListPickerItem(icon: Icons.not_interested, label: l10n.never, payload: VideoAutoPlay.never),
-                    ListPickerItem(icon: Icons.play_arrow, label: l10n.always, payload: VideoAutoPlay.always),
-                    ListPickerItem(icon: Icons.wifi, label: l10n.onWifi, payload: VideoAutoPlay.onWifi),
+                    ThunderListPickerItem(icon: Icons.not_interested, label: l10n.never, payload: VideoAutoPlay.never),
+                    ThunderListPickerItem(icon: Icons.play_arrow, label: l10n.always, payload: VideoAutoPlay.always),
+                    ThunderListPickerItem(icon: Icons.wifi, label: l10n.onWifi, payload: VideoAutoPlay.onWifi),
                   ],
                   leading: Icon(Icons.play_circle),
                   onChanged: (value) async => setPreferences(LocalSettings.videoAutoPlay, value.payload.name),
@@ -184,16 +184,16 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   highlighted: settingToHighlight == LocalSettings.videoAutoPlay),
               ThunderListOption(
                   title: l10n.videoDefaultPlaybackSpeed,
-                  value: ListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
+                  value: ThunderListPickerItem(label: videoDefaultPlaybackSpeed.label, icon: Icons.speed, payload: videoDefaultPlaybackSpeed),
                   options: [
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
-                    ListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointTow5x.label, payload: VideoPlayBackSpeed.pointTow5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.point5x.label, payload: VideoPlayBackSpeed.point5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.pointSeven5x.label, payload: VideoPlayBackSpeed.pointSeven5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.normal.label, payload: VideoPlayBackSpeed.normal),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointTwo5x.label, payload: VideoPlayBackSpeed.onePointTwo5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePoint5x.label, payload: VideoPlayBackSpeed.onePoint5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.onePointSeven5x.label, payload: VideoPlayBackSpeed.onePointSeven5x),
+                    ThunderListPickerItem(icon: Icons.speed, label: VideoPlayBackSpeed.twoX.label, payload: VideoPlayBackSpeed.twoX),
                   ],
                   leading: Icon(Icons.speed),
                   onChanged: (value) async => setPreferences(LocalSettings.videoDefaultPlaybackSpeed, value.payload.name),
@@ -202,7 +202,7 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                   highlighted: settingToHighlight == LocalSettings.videoDefaultPlaybackSpeed),
               ThunderListOption(
                   title: l10n.videoPlayerMode,
-                  value: ListPickerItem(
+                  value: ThunderListPickerItem(
                     label: switch (videoPlayerMode) {
                       VideoPlayerMode.inApp => l10n.videoPlayerInApp,
                       VideoPlayerMode.customTabs => l10n.linkHandlingCustomTabsShort,
@@ -212,9 +212,9 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
                     capitalizeLabel: false,
                   ),
                   options: [
-                    ListPickerItem(label: l10n.videoPlayerInApp, icon: Icons.play_circle_fill, payload: VideoPlayerMode.inApp),
-                    ListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: VideoPlayerMode.customTabs),
-                    ListPickerItem(label: l10n.videoLinkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: VideoPlayerMode.externalPlayer),
+                    ThunderListPickerItem(label: l10n.videoPlayerInApp, icon: Icons.play_circle_fill, payload: VideoPlayerMode.inApp),
+                    ThunderListPickerItem(label: l10n.linkHandlingCustomTabs, icon: Icons.language_rounded, payload: VideoPlayerMode.customTabs),
+                    ThunderListPickerItem(label: l10n.videoLinkHandlingExternal, icon: Icons.open_in_browser_rounded, payload: VideoPlayerMode.externalPlayer),
                   ],
                   leading: Icon(Icons.video_label_outlined),
                   onChanged: (value) => setPreferences(LocalSettings.videoPlayerMode, value.payload.name),

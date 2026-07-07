@@ -17,7 +17,7 @@ import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.
 ///
@@ -353,7 +353,7 @@ class _FeedViewState extends State<FeedView> {
 
             if (state.excessiveApiCalls && !_hasShownExcessiveApiCallsWarning) {
               _hasShownExcessiveApiCallsWarning = true;
-              showSnackbar(
+              showThunderSnackbar(
                 l10n.excessiveApiCallsWarning,
                 trailingIcon: Icons.settings_rounded,
                 trailingAction: () => navigateToSettingPage(context, LocalSettings.settingsPageFilters, settingToHighlight: LocalSettings.keywordFilters),
@@ -375,7 +375,7 @@ class _FeedViewState extends State<FeedView> {
             }
 
             if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser) && state.message != null) {
-              showSnackbar(state.message!);
+              showThunderSnackbar(state.message!);
               context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
             }
           },
@@ -396,7 +396,9 @@ class _FeedViewState extends State<FeedView> {
                   onChangeFeedType: (feedType) => setState(() => selectedSubview = feedType),
                 ),
                 const FeedFabOverlay(),
-                const FeedTopBarScrim(),
+                ThunderTopBarScrim(
+                  visible: context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll),
+                ),
               ],
             ),
           ),

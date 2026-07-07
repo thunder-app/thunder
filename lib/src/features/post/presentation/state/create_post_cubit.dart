@@ -167,9 +167,13 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   void updateBody(String value) {
-    if (value == state.body) return;
+    final shouldClearImageUploadStatus = state.status == CreatePostStatus.imageUploadSuccess;
+    if (value == state.body && !shouldClearImageUploadStatus) return;
 
-    emit(state.copyWith(body: value));
+    emit(state.copyWith(
+      body: value,
+      status: shouldClearImageUploadStatus ? CreatePostStatus.initial : state.status,
+    ));
     _scheduleDraftPersistence();
   }
 

@@ -4,7 +4,7 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
+import 'package:thunder/packages/ui/ui.dart';
 
 class AppearanceSettingsPage extends StatelessWidget {
   final LocalSettings? settingToHighlight;

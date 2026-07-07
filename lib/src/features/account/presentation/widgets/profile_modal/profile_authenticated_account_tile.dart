@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_instance_status_avatar.dart';
-import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_metadata.dart';
-import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_tile_shell.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_trailing_action.dart';
 
 /// Displays one authenticated account in the profile modal.
@@ -62,8 +61,8 @@ class ProfileAuthenticatedAccountTile extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = GlobalContext.l10n;
 
-    return ProfileTileShell(
-      active: active,
+    return ThunderSelectableTileShell(
+      selected: active,
       reordering: reordering,
       selectedColor: selectedColor,
       onTap: onTap,
@@ -94,9 +93,9 @@ class ProfileAuthenticatedAccountTile extends StatelessWidget {
             ),
           ],
         ),
-        subtitle: ProfileMetadata(
-          instance: row.account.instance.replaceAll('https://', ''),
-          version: row.version,
+        subtitle: ThunderMetadataRow(
+          primary: row.account.instance.replaceAll('https://', ''),
+          secondary: row.version == null ? null : 'v${row.version}',
         ),
         trailing: ProfileTrailingAction(
           active: active,

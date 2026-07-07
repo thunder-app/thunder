@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:version/version.dart';
 
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
 import 'package:thunder/src/foundation/primitives/enums/threadiverse_platform.dart';
 import 'package:thunder/src/foundation/networking/lemmy/lemmy_v3_api_client.dart';
@@ -41,13 +42,14 @@ class ApiClientFactory {
     String instance, {
     http.Client? httpClient,
   }) async {
+    final normalizedInstance = normalizeInstanceAuthority(instance) ?? instance;
     final client = httpClient ?? http.Client();
     final ownsClient = httpClient == null;
 
     try {
       for (final path in const ['/api/v4/site', '/api/v3/site']) {
         try {
-          final response = await client.get(Uri.https(instance, path)).timeout(const Duration(seconds: 5));
+          final response = await client.get(buildInstanceUri(normalizedInstance, path)).timeout(const Duration(seconds: 5));
           if (response.statusCode != 200) continue;
 
           final decoded = jsonDecode(response.body);
@@ -56,7 +58,7 @@ class ApiClientFactory {
           final versionString = decoded['version']?.toString();
           if (versionString == null || versionString.isEmpty) continue;
 
-          PlatformVersionCache().trySet(instance, versionString);
+          PlatformVersionCache().trySet(normalizedInstance, versionString);
           return Version.parse(versionString);
         } catch (_) {
           continue;
@@ -77,8 +79,9 @@ class ApiClientFactory {
     bool debug,
     http.Client? httpClient,
   ) async {
-    var version = PlatformVersionCache().get(account.instance);
-    version ??= await probeLemmySiteVersion(account.instance, httpClient: httpClient);
+    final normalizedInstance = normalizeInstanceAuthority(account.instance) ?? account.instance;
+    var version = PlatformVersionCache().get(normalizedInstance);
+    version ??= await probeLemmySiteVersion(normalizedInstance, httpClient: httpClient);
 
     if (version != null && _isLemmyApiV4(version)) {
       return LemmyV4ApiClient(
@@ -103,7 +106,8 @@ class ApiClientFactory {
     bool debug,
     http.Client? httpClient,
   ) {
-    final version = PlatformVersionCache().get(account.instance);
+    final normalizedInstance = normalizeInstanceAuthority(account.instance) ?? account.instance;
+    final version = PlatformVersionCache().get(normalizedInstance);
 
     return PiefedApiClient(
       account: account,

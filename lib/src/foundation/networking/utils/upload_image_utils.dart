@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/foundation/networking/instance_uri.dart';
 
 /// Parses an image upload API response into a public image URL.
 String parseUploadImageUrl(
@@ -20,7 +21,7 @@ String parseUploadImageUrl(
 
   if (response['files'] != null && (response['files'] as List).isNotEmpty) {
     final filename = response['files'][0]['file'];
-    return 'https://$instance/pictrs/image/$filename';
+    return buildInstanceUrl(instance, '/pictrs/image/$filename');
   }
 
   throw ApiErrorException(

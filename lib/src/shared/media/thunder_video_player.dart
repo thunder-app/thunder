@@ -12,7 +12,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
 import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderPopupMenuItem, showSnackbar;
+import 'package:thunder/packages/ui/ui.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {
   const ThunderVideoPlayer({
@@ -100,7 +100,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       }
 
       if (_videoPlayerController.value.hasError) {
-        showSnackbar(
+        showThunderSnackbar(
           GlobalContext.l10n.failedToLoadVideo,
           trailingIcon: Icons.chevron_right_rounded,
           trailingAction: () {

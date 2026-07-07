@@ -9,9 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderActionChip;
+import 'package:thunder/packages/ui/ui.dart';
 
 void showSelectableTextModal(BuildContext context, {String? title, required String text}) {
   final l10n = GlobalContext.l10n;
@@ -132,7 +131,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: viewSource
-                                        ? ScalableText(
+                                        ? ThunderScalableText(
                                             text,
                                             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                             textScaleFactor: contentFontSizeScale.textScaleFactor,

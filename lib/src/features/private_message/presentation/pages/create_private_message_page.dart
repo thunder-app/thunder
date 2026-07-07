@@ -111,7 +111,7 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
     return BlocConsumer<CreatePrivateMessageCubit, CreatePrivateMessageState>(
       listener: (context, state) {
         if (state.message?.isNotEmpty == true) {
-          showSnackbar(state.message!);
+          showThunderSnackbar(state.message!);
         }
       },
       builder: (context, state) {

@@ -12,14 +12,13 @@ import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/packages/ui/ui.dart' show ScalableText;
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/foundation/config/config.dart';
 import 'package:thunder/src/shared/media/media_utils.dart';
-import 'package:thunder/packages/ui/ui.dart' show showSnackbar, showThunderDialog;
+import 'package:thunder/packages/ui/ui.dart';
 
 class MediaManagementPage extends StatelessWidget {
   const MediaManagementPage({super.key, required this.account});
@@ -38,7 +37,7 @@ class MediaManagementPage extends StatelessWidget {
     return BlocConsumer<UserMediaCubit, UserMediaState>(
       listener: (context, state) {
         if (state.status == UserMediaStatus.loadFailure && state.errorMessage?.isNotEmpty == true) {
-          showSnackbar(
+          showThunderSnackbar(
             state.errorMessage!,
             trailingIcon: Icons.refresh_rounded,
             trailingAction: () => context.read<UserMediaCubit>().loadMedia(),
@@ -215,7 +214,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                   child: Container(
                                                                     color: theme.dividerColor.withValues(alpha: 0.1),
                                                                     padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                                                    child: ScalableText(
+                                                                    child: ThunderScalableText(
                                                                       l10n.noReferencesToImage,
                                                                       textAlign: TextAlign.center,
                                                                       style: theme.textTheme.titleSmall,
@@ -277,7 +276,7 @@ class MediaManagementPage extends StatelessWidget {
                         child: Container(
                           color: theme.dividerColor.withValues(alpha: 0.1),
                           padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: ScalableText(
+                          child: ThunderScalableText(
                             l10n.noImages,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,

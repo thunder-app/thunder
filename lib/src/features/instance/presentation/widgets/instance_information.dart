@@ -6,7 +6,7 @@ import 'package:thunder/src/foundation/config/global_context.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/avatars/instance_avatar.dart';
-import 'package:thunder/packages/ui/ui.dart' show ThunderDivider;
+import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays information about a given instance.
 class InstanceInformation extends StatelessWidget {

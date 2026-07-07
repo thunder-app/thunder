@@ -3,6 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
+
+/// Compact or default-styled action button used by [ThunderExpandableFab].
+@immutable
 class ThunderFabActionButton extends StatelessWidget {
   const ThunderFabActionButton({
     super.key,
@@ -13,10 +17,19 @@ class ThunderFabActionButton extends StatelessWidget {
     this.compact = false,
   });
 
-  final VoidCallback? onPressed;
+  /// Called when the button is pressed.
+  final void Function()? onPressed;
+
+  /// Icon shown on the button.
   final Icon icon;
+
+  /// Optional label shown beside the icon in compact mode.
   final String? label;
+
+  /// Background color for the default (non-compact) button.
   final Color? backgroundColor;
+
+  /// When true, renders a wider pill-shaped button with an inline label.
   final bool compact;
 
   @override
@@ -25,21 +38,21 @@ class ThunderFabActionButton extends StatelessWidget {
 
     if (compact) {
       return SizedBox(
-        width: 160,
+        width: 160.0,
         child: Material(
           color: Colors.transparent,
           elevation: 3,
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           child: InkWell(
-            borderRadius: const BorderRadius.all(Radius.circular(16)),
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
             onTap: onPressed,
             child: SizedBox(
-              height: 40,
+              height: 40.0,
               child: Row(
                 children: [
-                  const SizedBox(width: 12),
-                  Icon(icon.icon, size: 20),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12.0),
+                  Icon(icon.icon, size: 20.0),
+                  const SizedBox(width: 10.0),
                   Expanded(
                     child: Text(
                       label ?? '',
@@ -47,7 +60,7 @@ class ThunderFabActionButton extends StatelessWidget {
                       maxLines: 1,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 12.0),
                 ],
               ),
             ),
@@ -60,12 +73,12 @@ class ThunderFabActionButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (label != null) Text(label!),
-        if (label != null) const SizedBox(width: 16),
+        if (label != null) const SizedBox(width: 16.0),
         SizedBox(
-          height: 40,
-          width: 40,
+          height: 40.0,
+          width: 40.0,
           child: Material(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             clipBehavior: Clip.antiAlias,
             color: backgroundColor ?? theme.colorScheme.primaryContainer,
             elevation: 4,
@@ -77,9 +90,12 @@ class ThunderFabActionButton extends StatelessWidget {
   }
 }
 
+/// Expandable floating action button with directional child actions.
+@immutable
 class ThunderExpandableFab extends StatefulWidget {
   const ThunderExpandableFab({
     super.key,
+    this.open,
     this.initialOpen = false,
     required this.distance,
     required this.children,
@@ -95,19 +111,47 @@ class ThunderExpandableFab extends StatefulWidget {
     this.onOpenChanged,
   });
 
+  /// Controlled open state. When null, open state is managed internally.
+  final bool? open;
+
+  /// Initial open state when [open] is null.
   final bool initialOpen;
+
+  /// Distance between stacked child action buttons.
   final double distance;
+
+  /// Action buttons revealed when the FAB is expanded.
   final List<Widget> children;
+
+  /// Icon shown on the main FAB.
   final Icon icon;
-  final VoidCallback? onSlideUp;
-  final VoidCallback? onSlideLeft;
-  final VoidCallback? onSlideDown;
-  final VoidCallback? onPressed;
-  final VoidCallback? onLongPress;
+
+  /// Called when the user slides up on the main FAB.
+  final void Function()? onSlideUp;
+
+  /// Called when the user slides left on the main FAB.
+  final void Function()? onSlideLeft;
+
+  /// Called when the user slides down on the main FAB.
+  final void Function()? onSlideDown;
+
+  /// Called when the main FAB is tapped.
+  final void Function()? onPressed;
+
+  /// Called when the main FAB is long-pressed.
+  final void Function()? onLongPress;
+
+  /// When true, centers the FAB horizontally in its parent.
   final bool centered;
+
+  /// Hero tag for the main FAB.
   final String? heroTag;
+
+  /// Background color for the main FAB.
   final Color? fabBackgroundColor;
-  final ValueChanged<bool>? onOpenChanged;
+
+  /// Called when the expanded state changes.
+  final void Function(bool)? onOpenChanged;
 
   @override
   State<ThunderExpandableFab> createState() => _ThunderExpandableFabState();
@@ -121,7 +165,7 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
   @override
   void initState() {
     super.initState();
-    _isOpen = widget.initialOpen;
+    _isOpen = widget.open ?? widget.initialOpen;
     _controller = AnimationController(
       value: _isOpen ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),
@@ -132,6 +176,15 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
       reverseCurve: Curves.easeOutQuad,
       parent: _controller,
     );
+  }
+
+  @override
+  void didUpdateWidget(ThunderExpandableFab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final controlledOpen = widget.open;
+    if (controlledOpen != null && controlledOpen != _isOpen) {
+      _setOpen(controlledOpen);
+    }
   }
 
   @override
@@ -158,37 +211,80 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
         alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
         clipBehavior: Clip.none,
         children: [
-          _buildTapToCloseFab(),
-          ..._buildExpandingActionButtons(),
-          _buildTapToOpenFab(),
+          _ThunderTapToCloseFab(
+            centered: widget.centered,
+            expandAnimation: _expandAnimation,
+            onClose: () => _setOpen(false),
+          ),
+          for (var i = 0, distance = widget.distance; i < widget.children.length; i++, distance += widget.distance)
+            _ThunderExpandingActionButton(
+              maxDistance: distance,
+              progress: _expandAnimation,
+              centered: widget.centered,
+              child: widget.children[i],
+            ),
+          _ThunderTapToOpenFab(
+            centered: widget.centered,
+            isOpen: _isOpen,
+            icon: widget.icon,
+            heroTag: widget.heroTag,
+            fabBackgroundColor: widget.fabBackgroundColor,
+            onPressed: widget.onPressed,
+            onLongPress: widget.onLongPress,
+            onSlideUp: widget.onSlideUp,
+            onSlideLeft: widget.onSlideLeft,
+            onSlideDown: widget.onSlideDown,
+            onOpen: () => _setOpen(true),
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTapToCloseFab() {
+/// Close overlay shown when [ThunderExpandableFab] is expanded.
+class _ThunderTapToCloseFab extends StatelessWidget {
+  const _ThunderTapToCloseFab({
+    required this.centered,
+    required this.expandAnimation,
+    required this.onClose,
+  });
+
+  /// Whether the FAB is centered horizontally.
+  final bool centered;
+
+  /// Animation driving the expand/collapse transition.
+  final Animation<double> expandAnimation;
+
+  /// Called when the close affordance is tapped.
+  final void Function() onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final tileBorderRadius = ThunderTheme.of(context).tileBorderRadius;
+
     return SizedBox(
-      width: widget.centered ? 45 : 56,
-      height: widget.centered ? 45 : 56,
+      width: centered ? 45.0 : 56.0,
+      height: centered ? 45.0 : 56.0,
       child: AnimatedBuilder(
-        animation: _expandAnimation,
+        animation: expandAnimation,
         builder: (context, child) => child!,
         child: FadeTransition(
-          opacity: _expandAnimation,
+          opacity: expandAnimation,
           child: Center(
             child: Material(
-              shape: widget.centered ? null : const CircleBorder(),
-              clipBehavior: widget.centered ? Clip.none : Clip.antiAlias,
-              color: widget.centered ? Colors.transparent : null,
-              elevation: widget.centered ? 0 : 4,
+              shape: centered ? null : const CircleBorder(),
+              clipBehavior: centered ? Clip.none : Clip.antiAlias,
+              color: centered ? Colors.transparent : null,
+              elevation: centered ? 0.0 : 4.0,
               child: InkWell(
-                borderRadius: BorderRadius.circular(50),
-                onTap: () => _setOpen(false),
+                borderRadius: tileBorderRadius,
+                onTap: onClose,
                 child: Padding(
-                  padding: EdgeInsets.all(widget.centered ? 12 : 8),
+                  padding: EdgeInsets.all(centered ? 12.0 : 8.0),
                   child: Icon(
                     Icons.close,
-                    size: widget.centered ? 20 : 25,
+                    size: centered ? 20.0 : 25.0,
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
@@ -199,77 +295,112 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
       ),
     );
   }
+}
 
-  List<Widget> _buildExpandingActionButtons() {
-    final children = <Widget>[];
-    final count = widget.children.length;
+/// Main FAB that opens [ThunderExpandableFab] child actions.
+class _ThunderTapToOpenFab extends StatelessWidget {
+  const _ThunderTapToOpenFab({
+    required this.centered,
+    required this.isOpen,
+    required this.icon,
+    required this.onOpen,
+    this.heroTag,
+    this.fabBackgroundColor,
+    this.onPressed,
+    this.onLongPress,
+    this.onSlideUp,
+    this.onSlideLeft,
+    this.onSlideDown,
+  });
 
-    for (var i = 0, distance = widget.distance; i < count; i++, distance += widget.distance) {
-      children.add(
-        _ThunderExpandingActionButton(
-          maxDistance: distance,
-          progress: _expandAnimation,
-          centered: widget.centered,
-          child: widget.children[i],
-        ),
-      );
-    }
+  /// Whether the FAB is centered horizontally.
+  final bool centered;
 
-    return children;
-  }
+  /// Whether the expandable FAB is currently open.
+  final bool isOpen;
 
-  Widget _buildTapToOpenFab() {
+  /// Icon shown on the main FAB.
+  final Icon icon;
+
+  /// Hero tag for the main FAB.
+  final String? heroTag;
+
+  /// Background color for the main FAB.
+  final Color? fabBackgroundColor;
+
+  /// Called when the main FAB is tapped.
+  final void Function()? onPressed;
+
+  /// Called when the main FAB is long-pressed.
+  final void Function()? onLongPress;
+
+  /// Called when the user slides up on the main FAB.
+  final void Function()? onSlideUp;
+
+  /// Called when the user slides left on the main FAB.
+  final void Function()? onSlideLeft;
+
+  /// Called when the user slides down on the main FAB.
+  final void Function()? onSlideDown;
+
+  /// Called to open the expandable FAB.
+  final void Function() onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final tileBorderRadius = ThunderTheme.of(context).tileBorderRadius;
+
     return IgnorePointer(
-      ignoring: _isOpen,
+      ignoring: isOpen,
       child: AnimatedContainer(
         transformAlignment: Alignment.center,
-        transform: Matrix4.diagonal3Values(_isOpen ? 0.7 : 1, _isOpen ? 0.7 : 1, 1),
+        transform: Matrix4.diagonal3Values(isOpen ? 0.7 : 1, isOpen ? 0.7 : 1, 1),
         duration: const Duration(milliseconds: 250),
         curve: const Interval(0, 0.5, curve: Curves.easeOut),
         child: AnimatedOpacity(
-          opacity: _isOpen ? 0 : 1,
+          opacity: isOpen ? 0.0 : 1.0,
           curve: const Interval(0.25, 1, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: GestureDetector(
             onVerticalDragUpdate: (details) {
               if (details.delta.dy < -5) {
-                _setOpen(true);
-                widget.onSlideUp?.call();
+                onOpen();
+                onSlideUp?.call();
               }
               if (details.delta.dy > 5) {
-                widget.onSlideDown?.call();
+                onSlideDown?.call();
               }
             },
             onHorizontalDragUpdate: (details) {
-              if (details.delta.dx < -5) widget.onSlideLeft?.call();
+              if (details.delta.dx < -5) onSlideLeft?.call();
             },
             onLongPress: () {
               HapticFeedback.heavyImpact();
-              widget.onLongPress?.call();
+              onLongPress?.call();
             },
             onTapDown: (_) => HapticFeedback.mediumImpact(),
-            child: widget.centered
+            child: centered
                 ? SizedBox(
-                    width: 45,
-                    height: 45,
+                    width: 45.0,
+                    height: 45.0,
                     child: Material(
                       clipBehavior: Clip.antiAlias,
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: tileBorderRadius,
                         onTap: () {
                           HapticFeedback.mediumImpact();
-                          widget.onPressed?.call();
+                          onPressed?.call();
                         },
-                        child: Icon(widget.icon.icon, size: 20, semanticLabel: widget.icon.semanticLabel),
+                        child: Icon(icon.icon, size: 20.0, semanticLabel: icon.semanticLabel),
                       ),
                     ),
                   )
                 : FloatingActionButton(
-                    heroTag: widget.heroTag,
-                    backgroundColor: widget.fabBackgroundColor,
-                    onPressed: widget.onPressed,
-                    child: widget.icon,
+                    heroTag: heroTag,
+                    backgroundColor: fabBackgroundColor,
+                    onPressed: onPressed,
+                    child: icon,
                   ),
           ),
         ),
@@ -278,8 +409,9 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
   }
 }
 
+/// Positions and animates one child action in [ThunderExpandableFab].
 @immutable
-class _ThunderExpandingActionButton extends StatefulWidget {
+class _ThunderExpandingActionButton extends StatelessWidget {
   const _ThunderExpandingActionButton({
     required this.maxDistance,
     required this.progress,
@@ -287,39 +419,39 @@ class _ThunderExpandingActionButton extends StatefulWidget {
     this.centered = false,
   });
 
+  /// Maximum vertical offset from the main FAB.
   final double maxDistance;
+
+  /// Expand animation progress.
   final Animation<double> progress;
+
+  /// The action button to position.
   final Widget child;
+
+  /// Whether the FAB stack is centered horizontally.
   final bool centered;
-
-  @override
-  State<_ThunderExpandingActionButton> createState() => _ThunderExpandingActionButtonState();
-}
-
-class _ThunderExpandingActionButtonState extends State<_ThunderExpandingActionButton> {
-  bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: widget.progress,
+      animation: progress,
       builder: (context, child) {
         final offset = Offset.fromDirection(
           90 * (math.pi / 180.0),
-          widget.progress.value * widget.maxDistance,
+          progress.value * maxDistance,
         );
-        _visible = !widget.progress.isDismissed;
+        final visible = !progress.isDismissed;
 
         return Visibility(
-          visible: _visible,
+          visible: visible,
           child: Positioned(
-            right: widget.centered ? null : 8 + offset.dx,
-            bottom: (widget.centered ? 15 : 10) + offset.dy,
+            right: centered ? null : 8 + offset.dx,
+            bottom: (centered ? 15.0 : 10.0) + offset.dy,
             child: child!,
           ),
         );
       },
-      child: FadeTransition(opacity: widget.progress, child: widget.child),
+      child: FadeTransition(opacity: progress, child: child),
     );
   }
 }

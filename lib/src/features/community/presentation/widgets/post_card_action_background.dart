@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
 
@@ -48,14 +49,11 @@ class PostCardActionBackground extends StatelessWidget {
     final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
     final computedWidth = width * (tabletMode ? 0.5 : 1) * dismissThreshold;
 
-    return AnimatedContainer(
+    return ThunderSwipeActionBackground(
       alignment: alignment,
-      duration: const Duration(milliseconds: 200),
-      color: backgroundColor,
-      child: SizedBox(
-        width: computedWidth,
-        child: swipeAction != null ? Icon(swipeAction!.getIcon(read: read, hidden: hidden)) : const SizedBox.shrink(),
-      ),
+      backgroundColor: backgroundColor,
+      width: computedWidth,
+      icon: swipeAction?.getIcon(read: read, hidden: hidden),
     );
   }
 }
