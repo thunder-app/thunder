@@ -1,1 +1,3615 @@
-{}
+{
+    "about": "Rreth",
+    "@about": {
+        "description": "About settings category."
+    },
+    "accept": "Prano",
+    "@accept": {
+        "description": "The ability to accept an option"
+    },
+    "accessibility": "Aksesueshmëria",
+    "accessibilityProfilesDescription": "Profilet e aksesueshmërisë lejojnë zbatimin e disa cilësimeve njëherësh për të përmbushur një kërkesë të veçantë aksesueshmërie.",
+    "account": "{count, plural, zero {Llogari} one {Llogari} other {Llogari} } ",
+    "@account": {
+        "description": "Describes the user account",
+        "placeholders": {
+            "count": {
+                "description": "The number of accounts"
+            }
+        }
+    },
+    "accountBirthday": "Ditëlindja e llogarisë {additionalInfo}",
+    "@accountBirthday": {
+        "description": "User descriptor for accounts created on today's date",
+        "placeholders": {
+            "additionalInfo": {
+                "description": "Additional information about the account"
+            }
+        }
+    },
+    "accountSettingOverrideWarning": "Cilësimet e llogarisë tënde anashkalojnë cilësimet e mëposhtme",
+    "@accountSettingOverrideWarning": {
+        "description": "Warning for account settings override"
+    },
+    "accountSettings": "Cilësimet e llogarisë",
+    "accountSettingsExportedSuccessfully": "Cilësimet e llogarisë Lemmy u eksportuan me sukses në {savedFilePath}!",
+    "@accountSettingsExportedSuccessfully": {
+        "description": "Message shown to user when account settings are exported successfully",
+        "placeholders": {
+            "savedFilePath": {
+                "description": "The path to the saved file"
+            }
+        }
+    },
+    "accountSettingsImportedSuccessfully": "Cilësimet e llogarisë Lemmy u importuan me sukses!",
+    "@accountSettingsImportedSuccessfully": {
+        "description": "Message shown to user when account settings are imported successfully"
+    },
+    "accountSwitchParentCommentNotFound": "Komenti i përzgjedhur nuk u gjet në '{instance}'",
+    "@accountSwitchParentCommentNotFound": {
+        "description": "Error message for when we couldn't resolve comment to reply to",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "accountSwitchPostNotFound": "Postimi i përzgjedhur nuk u gjet në '{instance}'",
+    "@accountSwitchPostNotFound": {
+        "description": "Error message for when we couldn't resolve post to reply to",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "actionColors": "Ngjyrat e veprimeve",
+    "@actionColors": {
+        "description": "Setting heading for action colors"
+    },
+    "actionColorsRedirect": "Dëshiron të personalizosh ngjyrat?",
+    "@actionColorsRedirect": {
+        "description": "Redirect hint to action colors"
+    },
+    "actions": "Veprime",
+    "active": "Aktiv",
+    "activity": "Aktiviteti",
+    "@activity": {
+        "description": "A heading describing a user's activity statistics (e.g., posts/comments created)"
+    },
+    "add": "Shto",
+    "addAccount": "Shto llogari",
+    "addAccountToSeeProfile": "Hyr për të parë llogarinë tënde.",
+    "addAnonymousInstance": "Shto instancë anonime",
+    "addAsCommunityModerator": "Shto si moderator të komunitetit",
+    "@addAsCommunityModerator": {
+        "description": "Moderator action to add a user as community moderator"
+    },
+    "addDiscussionLanguage": "Shto gjuhë",
+    "@addDiscussionLanguage": {
+        "description": "Hint for text field to add language"
+    },
+    "addKeywordFilter": "Shto fjalëkyç",
+    "@addKeywordFilter": {
+        "description": "Hint for text field to add keyword"
+    },
+    "addOriginalPostBody": "Të shtohet trupi origjinal i postimit?",
+    "@addOriginalPostBody": {
+        "description": "Prompt to add the original post body to a cross post"
+    },
+    "addToFavorites": "Shto te të preferuarat",
+    "@addToFavorites": {
+        "description": "Action to add a community in drawer to favorites"
+    },
+    "addUserLabel": "Shto etiketë përdoruesi",
+    "@addUserLabel": {
+        "description": "Action for adding a user label"
+    },
+    "addedCommunityToSubscriptions": "U abonove te komuniteti",
+    "addedInstanceMod": "U shtua moderatori i instancës",
+    "@addedInstanceMod": {
+        "description": "Short decription for moderator action to add a mod to an instance"
+    },
+    "addedModToCommunity": "U shtua moderatori te komuniteti",
+    "@addedModToCommunity": {
+        "description": "Short decription for moderator action to add a mod to a community"
+    },
+    "addedUserAsCommunityModerator": "{username} u shtua si moderator i komunitetit",
+    "@addedUserAsCommunityModerator": {
+        "description": "Short decription for moderator action to add a user as community moderator",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user"
+            }
+        }
+    },
+    "admin": "Administrator",
+    "@admin": {
+        "description": "Role name for admin"
+    },
+    "advanced": "Të përparuara",
+    "@advanced": {
+        "description": "Heading for advanced settings"
+    },
+    "ago": "{time} më parë",
+    "@ago": {
+        "description": "Represents a duration in the past",
+        "placeholders": {
+            "time": {
+                "description": "The duration in the past"
+            }
+        }
+    },
+    "all": "Të gjitha",
+    "allPosts": "Të gjitha postimet",
+    "allowOpenSupportedLinks": "Lejo aplikacionin të hapë lidhjet e mbështetura.",
+    "@allowOpenSupportedLinks": {
+        "description": "Option to permit the app to open supported links."
+    },
+    "alreadyPostedTo": "Tashmë postuar te",
+    "altText": "Tekst alternativ",
+    "@altText": {
+        "description": "Create/edit post field for adding alt text to an image post"
+    },
+    "alternateSources": "Burime alternative",
+    "@alternateSources": {
+        "description": "Action for viewing a link from alternate sources"
+    },
+    "always": "Gjithmonë",
+    "andXMore": "dhe {count} të tjera",
+    "@andXMore": {
+        "description": "Represents a number of items",
+        "placeholders": {
+            "count": {
+                "description": "The number of items"
+            }
+        }
+    },
+    "animations": "Animacione",
+    "anonymous": "Anonim",
+    "anonymousInstances": "Instanca anonime",
+    "@anonymousInstances": {
+        "description": "Heading for the anonymous instances section of the login page"
+    },
+    "appLanguage": "Gjuha e aplikacionit",
+    "@appLanguage": {
+        "description": "Language selection in settings."
+    },
+    "appearance": "Pamja",
+    "@appearance": {
+        "description": "Title of Appearance in Settings -> Appearance"
+    },
+    "applePushNotificationService": "Shërbimi i njoftimeve push të Apple",
+    "@applePushNotificationService": {
+        "description": "Describes the notification type for Apple Push Notification Service"
+    },
+    "applied": "Zbatuar",
+    "apply": "Zbato",
+    "areNotificationsAllowedBySystem": "Njoftimet lejohen nga sistemi: {yesOrNo}",
+    "@areNotificationsAllowedBySystem": {
+        "description": "A status indicator for whether notifications are allowed by OS permissions",
+        "placeholders": {
+            "yesOrNo": {
+                "description": "Whether notifications are allowed by OS permissions"
+            }
+        }
+    },
+    "averageComments": "{x} komente/muaj",
+    "@averageComments": {
+        "description": "Describes the average number of comments created in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of comments created in the past month"
+            }
+        }
+    },
+    "averageContributions": "{x} kontribute/muaj",
+    "@averageContributions": {
+        "description": "Describes the average number of contributions (both posts and comments) in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of contributions (both posts and comments) in the past month"
+            }
+        }
+    },
+    "averagePosts": "{x} postime/muaj",
+    "@averagePosts": {
+        "description": "Describes the average number of posts created in the past month",
+        "placeholders": {
+            "x": {
+                "description": "The average number of posts created in the past month"
+            }
+        }
+    },
+    "back": "Mbrapa",
+    "backButton": "Butoni i kthimit mbrapa",
+    "backToTop": "Kthehu lart",
+    "backgroundCheckWarning": "Vër re se kontrollet e njoftimeve do të konsumojnë bateri shtesë",
+    "@backgroundCheckWarning": {
+        "description": "Warning for enabling notifications"
+    },
+    "ban": "Përjashto",
+    "@ban": {
+        "description": "Short decription for moderator action to ban a user"
+    },
+    "banFromCommunity": "Përjashto nga komuniteti",
+    "@banFromCommunity": {
+        "description": "Moderator action to ban a user from a community"
+    },
+    "bannedUser": "Përdorues i përjashtuar",
+    "@bannedUser": {
+        "description": "Short decription for moderator action to ban a user"
+    },
+    "bannedUserFromCommunity": "Përdoruesi u përjashtua nga komuniteti",
+    "@bannedUserFromCommunity": {
+        "description": "Short decription for moderator action to ban a user from a community"
+    },
+    "base": "Bazë",
+    "@base": {
+        "description": "Description for base font scale"
+    },
+    "block": "Blloko",
+    "@block": {
+        "description": "Action for blocking an item"
+    },
+    "blockCommunity": "Blloko komunitetin",
+    "blockCommunityInstance": "Blloko instancën e komunitetit",
+    "@blockCommunityInstance": {
+        "description": "Action to block the instance of a community"
+    },
+    "blockInstance": "Blloko instancën",
+    "blockManagement": "Menaxhimi i bllokimeve",
+    "@blockManagement": {
+        "description": "Setting for user, community, and instance block settings"
+    },
+    "blockSettingLabel": "Bllokime përdoruesish/komunitetesh/instancash",
+    "@blockSettingLabel": {
+        "description": "Setting for user, community, and instance block settings"
+    },
+    "blockUser": "Blloko përdoruesin",
+    "blockUserInstance": "Blloko instancën e përdoruesit",
+    "@blockUserInstance": {
+        "description": "Action to block the instance of a user"
+    },
+    "blockedCommunities": "Komunitete të bllokuara",
+    "blockedInstances": "Instanca të bllokuara",
+    "blockedUsers": "Përdorues të bllokuar",
+    "blue": "Blu",
+    "@blue": {
+        "description": "The color blue"
+    },
+    "bold": "Të trasha",
+    "@bold": {
+        "description": "Bold name thickness/weight"
+    },
+    "boldCommunityName": "Emër komuniteti me shkronja të trasha",
+    "@boldCommunityName": {
+        "description": "Setting for bolding the community name"
+    },
+    "boldInstanceName": "Emër instance me shkronja të trasha",
+    "@boldInstanceName": {
+        "description": "Setting for bolding the instance name"
+    },
+    "boldUserName": "Emër përdoruesi me shkronja të trasha",
+    "@boldUserName": {
+        "description": "Setting for bolding the username"
+    },
+    "bot": "Bot",
+    "@bot": {
+        "description": "Label for a bot user."
+    },
+    "browserMode": "Trajtimi i lidhjeve",
+    "@browserMode": {
+        "description": "Title for link handling setting (called browserMode internally)"
+    },
+    "browsingAnonymously": "Aktualisht po shfleton {instance} në mënyrë anonime.",
+    "@browsingAnonymously": {
+        "description": "Message shown to user when browsing anonymously",
+        "placeholders": {
+            "instance": {
+                "description": "The instance name"
+            }
+        }
+    },
+    "cancel": "Anulo",
+    "cannotReportOwnComment": "Nuk mund të dërgosh një raport për komentin tënd.",
+    "cantBlockAdmin": "Nuk mund të bllokosh një administrator instance.",
+    "cantBlockYourself": "Nuk mund të bllokosh veten.",
+    "cardPostCardMetadataItems": "Meta të dhënat e pamjes me karta",
+    "@cardPostCardMetadataItems": {
+        "description": "Name of setting for card post card metadata items"
+    },
+    "cardView": "Pamje me karta",
+    "@cardView": {
+        "description": "Label for the card view option in Setting -> Appearance -> Posts"
+    },
+    "cardViewDescription": "Aktivizo pamjen me karta për të rregulluar cilësimet",
+    "@cardViewDescription": {
+        "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+    },
+    "cardViewSettings": "Cilësimet e pamjes me karta",
+    "@cardViewSettings": {
+        "description": "Subcategory in Setting -> Appearance -> Posts"
+    },
+    "changeAccountSettingsFor": "Ndrysho cilësimet e llogarisë për",
+    "@changeAccountSettingsFor": {
+        "description": "Heading for the profiler modal when changing account settings"
+    },
+    "changeNotificationSettings": "Ndrysho cilësimet e njoftimeve...",
+    "@changeNotificationSettings": {
+        "description": "A shortcut to navigate to the notification settings"
+    },
+    "changePassword": "Ndrysho fjalëkalimin",
+    "@changePassword": {
+        "description": "Label for action to change password"
+    },
+    "changePasswordWarning": "Për të ndryshuar fjalëkalimin tënd, do të ridrejtohesh te faqja e instancës tënde. \n\nJe i sigurt që dëshiron të vazhdosh?",
+    "@changePasswordWarning": {
+        "description": "Warning label for changing password"
+    },
+    "changeSort": "Ndrysho renditjen",
+    "clearCache": "Pastro memorien ({cacheSize})",
+    "@clearCache": {
+        "description": "Label for action to clear cache in the dialog",
+        "placeholders": {
+            "cacheSize": {
+                "description": "The size of the cache"
+            }
+        }
+    },
+    "clearCacheLabel": "Pastro memorien",
+    "@clearCacheLabel": {
+        "description": "Label for action to clear cache in the dialog"
+    },
+    "clearDatabase": "Pastro bazën e të dhënave",
+    "@clearDatabase": {
+        "description": "Label for action to clear local database in the dialog"
+    },
+    "clearPreferences": "Pastro preferencat",
+    "@clearPreferences": {
+        "description": "Label for action to clear local user preferences in the dialog"
+    },
+    "clearSearch": "Pastro kërkimin",
+    "clearedCache": "Memoria u pastrua me sukses.",
+    "@clearedCache": {
+        "description": "Message indicating that cache was cleared successfully"
+    },
+    "clearedDatabase": "Baza lokale e të dhënave u pastrua. Rinis Thunder që ndryshimet e reja të hyjnë në fuqi.",
+    "clearedUserPreferences": "U pastruan të gjitha preferencat e përdoruesit",
+    "close": "Mbyll",
+    "collapse": "Palos",
+    "@collapse": {
+        "description": "Action to collapse something"
+    },
+    "collapseCommentPreview": "Palos pamjen paraprake të komentit",
+    "@collapseCommentPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+    },
+    "collapseInformation": "Palos informacionin",
+    "@collapseInformation": {
+        "description": "Describes the action to collapse information - used in FAB settings"
+    },
+    "collapseParentCommentBodyOnGesture": "Fshih komentin prind kur është i palosur",
+    "@collapseParentCommentBodyOnGesture": {
+        "description": "Toggle to collapse parent comment body on gesture."
+    },
+    "collapsePost": "Palos postimin",
+    "collapsePostPreview": "Palos pamjen paraprake të postimit",
+    "@collapsePostPreview": {
+        "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+    },
+    "collapseSpoiler": "Palos spoiler-in",
+    "@collapseSpoiler": {
+        "description": "Label for collapsing spoiler"
+    },
+    "color": "Ngjyra",
+    "@color": {
+        "description": "Describes a color"
+    },
+    "colorizeCommunityName": "Ngjyros emrin e komunitetit",
+    "@colorizeCommunityName": {
+        "description": "Setting for colorizing community name"
+    },
+    "colorizeInstanceName": "Ngjyros emrin e instancës",
+    "@colorizeInstanceName": {
+        "description": "Setting for colorizing instance name"
+    },
+    "colorizeUserName": "Ngjyros emrin e përdoruesit",
+    "@colorizeUserName": {
+        "description": "Setting for colorizing username"
+    },
+    "colors": "Ngjyrat",
+    "@colors": {
+        "description": "Heading for colors"
+    },
+    "combineCommentScores": "Bashko rezultatet e komenteve",
+    "@combineCommentScores": {
+        "description": "Toggle to combine comment scores."
+    },
+    "combineCommentScoresLabel": "Bashko rezultatet e komenteve",
+    "@combineCommentScoresLabel": {
+        "description": "Label for setting to combine comment scores"
+    },
+    "combineNavAndFab": "Bashko FAB-in dhe butonat e navigimit",
+    "combineNavAndFabDescription": "Butoni pluskues i veprimit do të shfaqet midis butonave të navigimit.",
+    "comfortable": "Komod",
+    "@comfortable": {
+        "description": "Describes a comfortable visual density"
+    },
+    "comment": "Koment",
+    "commentActions": "Veprime komenti",
+    "@commentActions": {
+        "description": "Title for the comment actions bottom sheet"
+    },
+    "commentBehaviourSettings": "Komente",
+    "@commentBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "commentFontScale": "Shkalla e fontit të përmbajtjes së komentit",
+    "@commentFontScale": {
+        "description": "Setting for comment font scale"
+    },
+    "commentPreview": "Shfaq një pamje paraprake të komenteve me cilësimet e dhëna",
+    "@commentPreview": {
+        "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+    },
+    "commentReported": "Komenti u shënua për shqyrtim.",
+    "commentSavedAsDraft": "Komenti u ruajt si skicë",
+    "commentShowUserAvatar": "Shfaq avatarin e përdoruesit",
+    "@commentShowUserAvatar": {
+        "description": "Settings toggle to display user avatar alongside their display name in comments"
+    },
+    "commentShowUserInstance": "Shfaq instancën e përdoruesit",
+    "@commentShowUserInstance": {
+        "description": "Settings toggle to display user instance alongside their display name in comments"
+    },
+    "commentSortType": "Lloji i renditjes së komenteve",
+    "commentSwipeActions": "Veprimet me rrëshqitje të komentit",
+    "@commentSwipeActions": {
+        "description": "Setting for comment swipe actions"
+    },
+    "commentSwipeGesturesHint": "Dëshiron të përdorësh butona në vend të kësaj? Aktivizoji ata në seksionin e komenteve në cilësimet e përgjithshme.",
+    "comments": "Komente",
+    "communities": "Komunitete",
+    "community": "Komunitet",
+    "communityActions": "Veprime komuniteti",
+    "@communityActions": {
+        "description": "Heading for community actions page"
+    },
+    "communityEntry": "Komuniteti '{community}'",
+    "@communityEntry": {
+        "description": "Entry in list for a community to perform further actions",
+        "placeholders": {
+            "community": {
+                "description": "The name of the community"
+            }
+        }
+    },
+    "communityFormat": "Formati i komunitetit",
+    "@communityFormat": {
+        "description": "Setting for community full name format"
+    },
+    "communityNameColor": "Ngjyra e emrit të komunitetit",
+    "@communityNameColor": {
+        "description": "Setting for community name color"
+    },
+    "communityNameThickness": "Trashësia e emrit të komunitetit",
+    "@communityNameThickness": {
+        "description": "Setting for community name thickness"
+    },
+    "communityStyle": "Stili i komunitetit",
+    "@communityStyle": {
+        "description": "Heading for community style setting"
+    },
+    "compact": "Kompakt",
+    "@compact": {
+        "description": "Describes a compact visual density"
+    },
+    "compactPostCardMetadataItems": "Meta të dhënat e pamjes kompakte",
+    "@compactPostCardMetadataItems": {
+        "description": "Name of setting for compact post card metadata items"
+    },
+    "compactView": "Pamje kompakte",
+    "@compactView": {
+        "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+    },
+    "compactViewDescription": "Aktivizo pamjen kompakte për të rregulluar cilësimet",
+    "@compactViewDescription": {
+        "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+    },
+    "compactViewSettings": "Cilësimet e pamjes kompakte",
+    "@compactViewSettings": {
+        "description": "Subcategory in Setting -> Appearance -> Posts"
+    },
+    "condensed": "I ngjeshur",
+    "@condensed": {
+        "description": "Condensed post body view type"
+    },
+    "confirm": "Konfirmo",
+    "@confirm": {
+        "description": "Label for the confirm action in the dialog"
+    },
+    "confirmLogOutBody": "Je i sigurt që dëshiron të dalësh?",
+    "@confirmLogOutBody": {
+        "description": "The body of the confirm logout dialog"
+    },
+    "confirmLogOutTitle": "Të dalësh?",
+    "@confirmLogOutTitle": {
+        "description": "The title of the confirm logout dialog"
+    },
+    "confirmMarkAllAsReadBody": "Je i sigurt që dëshiron t'i shënosh si të lexuara të gjitha përgjigjet, përmendjet dhe mesazhet?",
+    "@confirmMarkAllAsReadBody": {
+        "description": "The body of the confirm mark all as read dialog"
+    },
+    "confirmMarkAllAsReadTitle": "Të shënohen të gjitha si të lexuara?",
+    "@confirmMarkAllAsReadTitle": {
+        "description": "The title of the confirm mark all as read dialog"
+    },
+    "confirmResetCommentPreferences": "Kjo do të rivendosë të gjitha preferencat e komenteve. Je i sigurt që dëshiron të vazhdosh?",
+    "@confirmResetCommentPreferences": {
+        "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+    },
+    "confirmResetPostPreferences": "Kjo do të rivendosë të gjitha preferencat e postimeve. Je i sigurt që dëshiron të vazhdosh?",
+    "@confirmResetPostPreferences": {
+        "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+    },
+    "confirmUnsubscription": "Je i sigurt që dëshiron të çabonohesh?",
+    "@confirmUnsubscription": {
+        "description": "Ask the user to confirm that they want to unsubscribe"
+    },
+    "connectedToUnifiedPushDistributorApp": "Lidhur me {app}",
+    "@connectedToUnifiedPushDistributorApp": {
+        "description": "Tell the user which UnifiedPush app we're connected to",
+        "placeholders": {
+            "app": {
+                "description": "The name of the UnifiedPush app"
+            }
+        }
+    },
+    "contentManagement": "Menaxhimi i përmbajtjes",
+    "@contentManagement": {
+        "description": "Setting for content management (languages/blocking)"
+    },
+    "contentWarning": "Paralajmërim përmbajtjeje",
+    "@contentWarning": {
+        "description": "Heading for content warning dialog"
+    },
+    "controversial": "I diskutueshëm",
+    "copiedToClipboard": "U kopjua në kujtesën e fragmenteve",
+    "copy": "Kopjo",
+    "copyComment": "Kopjo komentin",
+    "@copyComment": {
+        "description": "Action for copying a whole comment"
+    },
+    "copySelected": "Kopjo të përzgjedhurën",
+    "@copySelected": {
+        "description": "Action for copying selected text"
+    },
+    "copyText": "Kopjo tekstin",
+    "couldNotDetermineCommentDelete": "Gabim: Nuk u përcaktua dot postimi për të fshirë komentin.",
+    "couldNotDeterminePostComment": "Gabim: Nuk u përcaktua dot postimi për të komentuar.",
+    "couldntCreateReport": "Raporti yt i komentit nuk u dërgua dot në këtë moment. Të lutem provo përsëri më vonë",
+    "couldntFindPost": "Postimi i kërkuar nuk u ngarkua dot. Mund të jetë fshirë ose hequr.",
+    "@couldntFindPost": {
+        "description": "Error message for when we can't load a post."
+    },
+    "countComments": "{count} komente",
+    "@countComments": {
+        "description": "Number of comments",
+        "placeholders": {
+            "count": {
+                "description": "The number of comments"
+            }
+        }
+    },
+    "countLocalSubscribers": "{count} abonentë lokalë",
+    "@countLocalSubscribers": {
+        "description": "Number of local subscribers",
+        "placeholders": {
+            "count": {
+                "description": "The number of local subscribers"
+            }
+        }
+    },
+    "countPosts": "{count} postime",
+    "@countPosts": {
+        "description": "Number of posts",
+        "placeholders": {
+            "count": {
+                "description": "The number of posts"
+            }
+        }
+    },
+    "countSubscribers": "{count} abonentë",
+    "@countSubscribers": {
+        "description": "Number of subscribers",
+        "placeholders": {
+            "count": {
+                "description": "The number of subscribers"
+            }
+        }
+    },
+    "countUsers": "{count} përdorues",
+    "@countUsers": {
+        "description": "Describes a certain number of users",
+        "placeholders": {
+            "count": {
+                "description": "The number of users"
+            }
+        }
+    },
+    "countUsersActiveDay": "{count} përdorues/ditë",
+    "@countUsersActiveDay": {
+        "description": "Number of users active in the last day",
+        "placeholders": {
+            "count": {
+                "description": "The number of users active in the last day"
+            }
+        }
+    },
+    "countUsersActiveHalfYear": "{count} përdorues/6 muaj",
+    "@countUsersActiveHalfYear": {
+        "description": "Number of users active in the last half year",
+        "placeholders": {
+            "count": {
+                "description": "The number of users active in the last half year"
+            }
+        }
+    },
+    "countUsersActiveMonth": "{count} përdorues/muaj",
+    "@countUsersActiveMonth": {
+        "description": "Number of users active in the last month",
+        "placeholders": {
+            "count": {
+                "description": "The number of users active in the last month"
+            }
+        }
+    },
+    "countUsersActiveWeek": "{count} përdorues/javë",
+    "@countUsersActiveWeek": {
+        "description": "Number of users active in the last week",
+        "placeholders": {
+            "count": {
+                "description": "The number of users active in the last week"
+            }
+        }
+    },
+    "createAccount": "Krijo llogari",
+    "createComment": "Krijo koment",
+    "createNewCrossPost": "Krijo postim të kryqëzuar të ri",
+    "createPost": "Krijo postim",
+    "created": "Krijuar më {date}",
+    "@created": {
+        "description": "The date that something was created",
+        "placeholders": {
+            "date": {
+                "description": "The date that something was created"
+            }
+        }
+    },
+    "createdToday": "Krijuar sot",
+    "@createdToday": {
+        "description": "An account descriptor for an account with a birthday today"
+    },
+    "creator": "Krijuesi",
+    "@creator": {
+        "description": "The creator filter for searches."
+    },
+    "crossPostedFrom": "postuar në mënyrë të kryqëzuar nga: {postUrl}",
+    "@crossPostedFrom": {
+        "description": "Initial heading for text-based cross-post",
+        "placeholders": {
+            "postUrl": {
+                "description": "The URL of the post that was cross-posted from"
+            }
+        }
+    },
+    "crossPostedTo": "Postuar në mënyrë të kryqëzuar te",
+    "currentLongPress": "Aktualisht i caktuar si shtypje e gjatë",
+    "currentNotificationsMode": "Modaliteti aktual i njoftimeve: {mode}",
+    "@currentNotificationsMode": {
+        "description": "A status indicator for the current notifications mode",
+        "placeholders": {
+            "mode": {
+                "description": "The current notifications mode"
+            }
+        }
+    },
+    "currentSinglePress": "Aktualisht i caktuar si shtypje e vetme",
+    "customizeSwipeActions": "Personalizo veprimet me rrëshqitje (trokit për të ndryshuar)",
+    "dangerZone": "Zonë rreziku",
+    "@dangerZone": {
+        "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+    },
+    "dark": "E errët",
+    "@dark": {
+        "description": "Describes using the dark theme"
+    },
+    "databaseExportWarning": "Baza e të dhënave mund të përmbajë informacion të ndjeshëm lidhur me llogarinë tënde Lemmy. Nëse e eksporton, nuk duhet ta ndash me askënd. Dëshiron të vazhdosh?",
+    "@databaseExportWarning": {
+        "description": "Message shown to the user when exporting the db"
+    },
+    "databaseExportedSuccessfully": "Baza e të dhënave u eksportua me sukses në '{savedFilePath}'",
+    "@databaseExportedSuccessfully": {
+        "description": "Message shown to the user when the db was successfully exported",
+        "placeholders": {
+            "savedFilePath": {
+                "description": "The path to the saved file"
+            }
+        }
+    },
+    "databaseImportedSuccessfully": "Baza e të dhënave u importua me sukses!",
+    "@databaseImportedSuccessfully": {
+        "description": "Message shown to the user when the db was successfully imported"
+    },
+    "databaseNotExportedSuccessfully": "Baza e të dhënave nuk u eksportua me sukses ose veprimi u anulua.",
+    "@databaseNotExportedSuccessfully": {
+        "description": "Message shown to the user when the db was unsuccessfully exported"
+    },
+    "databaseNotImportedSuccessfully": "Baza e të dhënave nuk u importua me sukses ose veprimi u anulua.",
+    "@databaseNotImportedSuccessfully": {
+        "description": "Message shown to the user when the db was unsuccessfully imported"
+    },
+    "dateFormat": "Formati i datës",
+    "@dateFormat": {
+        "description": "Setting for date format"
+    },
+    "debug": "Korrigjimi i defekteve",
+    "@debug": {
+        "description": "Debug settings category."
+    },
+    "debugDescription": "Cilësimet e mëposhtme të korrigjimit duhet të përdoren vetëm për qëllime zgjidhjeje problemesh.",
+    "@debugDescription": {
+        "description": "Explanation for debug settings page"
+    },
+    "debugNotificationsDescription": "Përdor opsionet e mëposhtme për të zgjidhur problemet lidhur me njoftimet.",
+    "@debugNotificationsDescription": {
+        "description": "A description for the notification debugging section"
+    },
+    "decline": "Refuzo",
+    "@decline": {
+        "description": "The ability to decline an option"
+    },
+    "defaultColor": "E parazgjedhur",
+    "@defaultColor": {
+        "description": "Default setting value (e.g., color)"
+    },
+    "defaultCommentSortType": "Lloji i parazgjedhur i renditjes së komenteve",
+    "@defaultCommentSortType": {
+        "description": "Setting for default comment sort type"
+    },
+    "defaultFeedSortType": "Lloji i parazgjedhur i renditjes së furnizimit",
+    "@defaultFeedSortType": {
+        "description": "Default sorting type for the feed."
+    },
+    "defaultFeedType": "Lloji i parazgjedhur i furnizimit",
+    "@defaultFeedType": {
+        "description": "Default listing type for the feed."
+    },
+    "delete": "Fshi",
+    "deleteAccount": "Fshi llogarinë",
+    "@deleteAccount": {
+        "description": "Label for action to delete account"
+    },
+    "deleteAccountDescription": "Për të fshirë përgjithmonë llogarinë tënde, do të ridrejtohesh te faqja e instancës tënde. \n\nJe i sigurt që dëshiron të vazhdosh?",
+    "@deleteAccountDescription": {
+        "description": "Description for confirmation action to delete account"
+    },
+    "deleteComment": "Fshi komentin",
+    "@deleteComment": {
+        "description": "Action for deleting a comment"
+    },
+    "deleteDraftConfirmation": "Je i sigurt që dëshiron të fshish këtë skicë?",
+    "@deleteDraftConfirmation": {
+        "description": "Confirmation message for deleting a draft"
+    },
+    "deleteImageConfirmMessage": "Je i sigurt që dëshiron të fshish këtë imazh?",
+    "@deleteImageConfirmMessage": {
+        "description": "Confirmation messages for deleting an image"
+    },
+    "deleteImageConfirmTitle": "Të fshihet?",
+    "@deleteImageConfirmTitle": {
+        "description": "Confirmation title message for deleting an image"
+    },
+    "deleteLocalDatabase": "Fshi bazën lokale të të dhënave",
+    "@deleteLocalDatabase": {
+        "description": "Label for action to delete local database"
+    },
+    "deleteLocalDatabaseDescription": "Ky veprim do të heqë bazën lokale të të dhënave dhe do të të nxjerrë nga të gjitha llogaritë e tua.\n\nJe i sigurt që dëshiron të vazhdosh?",
+    "@deleteLocalDatabaseDescription": {
+        "description": "Description for confirmation action to delete local database"
+    },
+    "deleteLocalPreferences": "Fshi preferencat lokale",
+    "@deleteLocalPreferences": {
+        "description": "Label for action to delete local preferences"
+    },
+    "deleteLocalPreferencesDescription": "Kjo do të pastrojë të gjitha preferencat dhe cilësimet e tua të përdoruesit në Thunder.\n\nDëshiron të vazhdosh?",
+    "@deleteLocalPreferencesDescription": {
+        "description": "Description for confirmation action to delete local preferences"
+    },
+    "deletePost": "Fshi postimin",
+    "@deletePost": {
+        "description": "Action for deleting a post"
+    },
+    "deleteUserLabelConfirmation": "Je i sigurt që dëshiron të fshish etiketën?",
+    "@deleteUserLabelConfirmation": {
+        "description": "Confirmation message for deleting a label"
+    },
+    "deleted": "Fshirë",
+    "@deleted": {
+        "description": "Status to indicate that an item has been deleted"
+    },
+    "deletedByCreator": "fshirë nga krijuesi",
+    "@deletedByCreator": {
+        "description": "Placeholder text for a comment deleted by the creator. Be sure to keep this lowercase."
+    },
+    "deletedByModerator": "fshirë nga moderatori",
+    "@deletedByModerator": {
+        "description": "Placeholder text for a comment deleted by a moderator. Be sure to keep this lowercase."
+    },
+    "deletedComment": "Komenti u fshi",
+    "@deletedComment": {
+        "description": "Message shown when a comment is deleted"
+    },
+    "deletedPost": "Postimi u fshi",
+    "@deletedPost": {
+        "description": "Message shown when a post is deleted"
+    },
+    "deselectUndeterminedWarning": "Nëse çzgjedh 'E papërcaktuar', nuk do të shohësh shumicën e përmbajtjes.",
+    "detailedReason": "Arsyeja: {reason}",
+    "@detailedReason": {
+        "description": "The reason for the moderation action",
+        "placeholders": {
+            "reason": {
+                "description": "The reason for the moderation action"
+            }
+        }
+    },
+    "dimReadPosts": "Zbeh postimet e lexuara",
+    "@dimReadPosts": {
+        "description": "Description of the effect on read posts."
+    },
+    "directMessage": "Mesazh i drejtpërdrejtë",
+    "@directMessage": {
+        "description": "Title for the private message compose page"
+    },
+    "disable": "Çaktivizo",
+    "@disable": {
+        "description": "Action for disabling something"
+    },
+    "disablePushNotifications": "Çaktivizo njoftimet push",
+    "@disablePushNotifications": {
+        "description": "Description when disabling push notifications"
+    },
+    "disabled": "Çaktivizuar",
+    "@disabled": {
+        "description": "Describes the state of something that is disabled"
+    },
+    "discussionLanguages": "Gjuhët e diskutimit",
+    "@discussionLanguages": {
+        "description": "Only load posts and communities in your language(s)"
+    },
+    "discussionLanguagesTooltip": "Përmbajtja filtrohet sipas gjuhëve të përzgjedhura.",
+    "dismissRead": "Hiq të lexuarat",
+    "displayName": "Emri i shfaqur",
+    "@displayName": {
+        "description": "Label for display name"
+    },
+    "displayUserScore": "Shfaq rezultatet e përdoruesit (Karma).",
+    "@displayUserScore": {
+        "description": "Option for displaying user scores or karma."
+    },
+    "dividerAppearance": "Pamja e ndarësit",
+    "@dividerAppearance": {
+        "description": "Divider appearance category"
+    },
+    "doNotShowAgain": "Mos e shfaq më",
+    "@doNotShowAgain": {
+        "description": "Action for hiding something permanently"
+    },
+    "doNotSupportMultipleUnifiedPushApps": "U gjetën shumë aplikacione të pajtueshme; të lutem instalo vetëm një",
+    "@doNotSupportMultipleUnifiedPushApps": {
+        "description": "Tell the user we don't currently support multiple UnifiedPush apps"
+    },
+    "downloadingMedia": "Po shkarkohet media për ndarje…",
+    "downvote": "Vota poshtë",
+    "@downvote": {
+        "description": "Action for downvoting a post/comment"
+    },
+    "downvoteColor": "Ngjyra e votës poshtë",
+    "@downvoteColor": {
+        "description": "Name of downvote color setting"
+    },
+    "downvoted": "Votuar poshtë",
+    "@downvoted": {
+        "description": "Short description for downvoting a post/comment"
+    },
+    "downvotesDisabled": "Votat poshtë janë çaktivizuar në këtë instancë.",
+    "drafts": "Skica",
+    "@drafts": {
+        "description": "Heading for drafts settings"
+    },
+    "edit": "Modifiko",
+    "editComment": "Modifiko komentin",
+    "editPost": "Modifiko postimin",
+    "@editPost": {
+        "description": "Title when editing a post."
+    },
+    "email": "Email",
+    "@email": {
+        "description": "Label for email input"
+    },
+    "empty": "Bosh",
+    "emptyInbox": "Kutia hyrëse bosh",
+    "emptyUri": "Lidhja është bosh. Të lutem jep një lidhje dinamike të vlefshme për të vazhduar.",
+    "@emptyUri": {
+        "description": "Error message for empty link."
+    },
+    "enableCommentNavigation": "Aktivizo navigimin e komenteve",
+    "@enableCommentNavigation": {
+        "description": "Setting for enable comment navigation"
+    },
+    "enableExperimentalFeatures": "Aktivizo veçoritë eksperimentale",
+    "@enableExperimentalFeatures": {
+        "description": "Setting to enable experimental features"
+    },
+    "enableFeedFab": "Aktivizo butonin pluskues në furnizimet",
+    "@enableFeedFab": {
+        "description": "Enable the Floating Action Button for the feed"
+    },
+    "enableFloatingButtonOnFeeds": "Aktivizo butonin pluskues në furnizimet",
+    "@enableFloatingButtonOnFeeds": {
+        "description": "Setting for enable floating button on feeds"
+    },
+    "enableFloatingButtonOnPosts": "Aktivizo butonin pluskues në postimet",
+    "@enableFloatingButtonOnPosts": {
+        "description": "Setting for enable floating button on posts"
+    },
+    "enableInboxNotifications": "Aktivizo njoftimet e kutisë hyrëse",
+    "@enableInboxNotifications": {
+        "description": "Setting name for inbox notifications"
+    },
+    "enablePostFab": "Aktivizo butonin pluskues në postimet",
+    "@enablePostFab": {
+        "description": "Enable the Floating Action Button for the post"
+    },
+    "endOfComments": "Fundi i komenteve",
+    "endSearch": "Përfundo kërkimin",
+    "errorDeletingImage": "Pati një gabim gjatë fshirjes së imazhit: {error}",
+    "@errorDeletingImage": {
+        "description": "Error message for deleting an image",
+        "placeholders": {
+            "error": {
+                "description": "The error message"
+            }
+        }
+    },
+    "errorDownloadingMedia": "Skedari i medias nuk u shkarkua dot për ndarje: {errorMessage}",
+    "@errorDownloadingMedia": {
+        "description": "Error message for downloading media",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "errorImportingAccountSettings": "Pati një gabim gjatë importimit të cilësimeve. Skedari mund të mos jetë në formatin e duhur.",
+    "@errorImportingAccountSettings": {
+        "description": "Message shown to user when account there was an error importing the settings"
+    },
+    "errorInitializingClient": "Gabim gjatë nisjes së klientit",
+    "@errorInitializingClient": {
+        "description": "Error message for initializing client"
+    },
+    "errorLoadingAccountSettings": "Pati një gabim gjatë ngarkimit të skedarit të cilësimeve ose veprimi u anulua.",
+    "@errorLoadingAccountSettings": {
+        "description": "Message shown to user when there was an error loading the settings file"
+    },
+    "errorMarkingReplyRead": "Pati një gabim gjatë shënimit të përgjigjes si të lexuar.",
+    "@errorMarkingReplyRead": {
+        "description": "Error message for marking a reply read"
+    },
+    "errorMarkingReplyUnread": "Pati një gabim gjatë shënimit të përgjigjes si të palexuar.",
+    "@errorMarkingReplyUnread": {
+        "description": "Error message for marking a reply unread"
+    },
+    "errorNoActiveInstance": "Nuk u gjet asnjë instancë aktive",
+    "@errorNoActiveInstance": {
+        "description": "Error message for no active instance found"
+    },
+    "errorParsingJson": "Pati një gabim gjatë analizimit të skedarit të përzgjedhur. Mund të mos jetë JSON i vlefshëm.",
+    "@errorParsingJson": {
+        "description": "Message shown to user when there was an error parsing the selected file"
+    },
+    "errorSavingAccountSettings": "Pati një gabim gjatë ruajtjes së skedarit të cilësimeve ose veprimi u anulua.",
+    "@errorSavingAccountSettings": {
+        "description": "Message shown to user when there was an error saving the settings file"
+    },
+    "exceptionProcessingUri": "Ndodhi një gabim gjatë përpunimit të lidhjes. Mund të mos jetë e disponueshme në instancën tënde.",
+    "@exceptionProcessingUri": {
+        "description": "An unspecified error during link processing."
+    },
+    "excessiveApiCallsWarning": "Furnizimi yt mund të jetë duke u ngarkuar ngadalë për shkak të filtrave të fjalëkyçeve.",
+    "@excessiveApiCallsWarning": {
+        "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
+    },
+    "expand": "Zgjero",
+    "@expand": {
+        "description": "Action to expand something"
+    },
+    "expandCommentPreview": "Zgjero pamjen paraprake të komentit",
+    "@expandCommentPreview": {
+        "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+    },
+    "expandInformation": "Zgjero informacionin",
+    "@expandInformation": {
+        "description": "Describes the action to expand information - used in FAB settings"
+    },
+    "expandOptions": "Zgjero opsionet",
+    "expandPost": "Zgjero postimin",
+    "expandPostPreview": "Zgjero pamjen paraprake të postimit",
+    "@expandPostPreview": {
+        "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+    },
+    "expandSpoiler": "Zgjero spoiler-in",
+    "@expandSpoiler": {
+        "description": "Label for expanding spoiler"
+    },
+    "expanded": "I zgjeruar",
+    "@expanded": {
+        "description": "Expanded post body view type"
+    },
+    "experimentalFeatures": "Veçori eksperimentale",
+    "@experimentalFeatures": {
+        "description": "Name of setting for experimental features"
+    },
+    "experimentalFeaturesDescription": "Këto veçori janë ende në zhvillim dhe mund të jenë të paqëndrueshme. Përdori me përgjegjësinë tënde. Duhet të rinisësh Thunder që të hyjnë në fuqi.",
+    "@experimentalFeaturesDescription": {
+        "description": "Description for experimental features setting"
+    },
+    "exploreInstance": "Eksploro instancën",
+    "@exploreInstance": {
+        "description": "Button for exploring an instance"
+    },
+    "exportDatabase": "Eksporto bazën e të dhënave",
+    "@exportDatabase": {
+        "description": "Name of the setting for exporting the db"
+    },
+    "exportDatabaseSubtitle": "Baza e të dhënave përmban informacion për llogaritë, të preferuarat, abonimet anonime dhe etiketat e përdoruesve.",
+    "@exportDatabaseSubtitle": {
+        "description": "Subtitle of setting for exporting the db"
+    },
+    "exportLemmyAccountSettingsDescription": "Eksporto cilësimet e llogarisë Lemmy",
+    "@exportLemmyAccountSettingsDescription": {
+        "description": "Description for setting related to Lemmy account settings export"
+    },
+    "exportSettingsSubtitle": "Cilësimet përfshijnë të gjitha preferencat që ke konfiguruar në Thunder.",
+    "@exportSettingsSubtitle": {
+        "description": "Subtitle of setting for exporting settings"
+    },
+    "extraLarge": "Shumë i madh",
+    "@extraLarge": {
+        "description": "Description for extra large font scale"
+    },
+    "failedToBlock": "Bllokimi dështoi: {errorMessage}",
+    "@failedToBlock": {
+        "description": "Error message for when we fail to block a user",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToCommunicateWithThunderNotificationServer": "Komunikimi me serverin e njoftimeve të Thunder në {serverAddress} dështoi.",
+    "@failedToCommunicateWithThunderNotificationServer": {
+        "description": "Error message for when we fail to communicate with Thunder notification server",
+        "placeholders": {
+            "serverAddress": {
+                "description": "The address of the Thunder notification server"
+            }
+        }
+    },
+    "failedToCreateDefaultProfile": "Krijimi i profilit të parazgjedhur dështoi",
+    "@failedToCreateDefaultProfile": {
+        "description": "Error when session bootstrap cannot create the default anonymous profile"
+    },
+    "failedToLoadBlocks": "Bllokimet nuk u ngarkuan dot: {errorMessage}",
+    "@failedToLoadBlocks": {
+        "description": "Error message for when we fail to load blocks",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToLoadVideo": "Ngarkimi i videos dështoi. Të hapet lidhja në shfletues?",
+    "@failedToLoadVideo": {
+        "description": "Error message that displays when we fail to load a video"
+    },
+    "failedToPerformAction": "Kryerja e veprimit dështoi",
+    "@failedToPerformAction": {
+        "description": "Error message when we fail to perform an action"
+    },
+    "failedToUnblock": "Zhbllokimi dështoi: {errorMessage}",
+    "@failedToUnblock": {
+        "description": "Error message for when we fail to unblock a user",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "failedToUpdateNotificationSettings": "Përditësimi i cilësimeve të njoftimeve dështoi",
+    "@failedToUpdateNotificationSettings": {
+        "description": "Error message when failed to update notification settings."
+    },
+    "favorite": "I preferuar",
+    "@favorite": {
+        "description": "Action for favoriting a community"
+    },
+    "favorites": "Të preferuarat",
+    "@favorites": {
+        "description": "The favorited communities on the drawer"
+    },
+    "featuredPost": "Postim i veçuar",
+    "@featuredPost": {
+        "description": "Short decription for moderator action to feature a post"
+    },
+    "feed": "Furnizimi",
+    "feedBehaviourSettings": "Furnizimi",
+    "@feedBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "feedSettings": "Cilësimet e furnizimit",
+    "@feedSettings": {
+        "description": "Feed settings category."
+    },
+    "feedTypeAndSorts": "Lloji dhe renditja e parazgjedhur e furnizimit",
+    "@feedTypeAndSorts": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "fetchAccountError": "Llogaria nuk u përcaktua dot",
+    "filteringBy": "Po filtrohet sipas {entity}",
+    "@filteringBy": {
+        "description": "Filtering by a community or creator in search.",
+        "placeholders": {
+            "entity": {
+                "description": "The entity that is being filtered by"
+            }
+        }
+    },
+    "filters": "Filtra",
+    "@filters": {
+        "description": "Category to describe various filters (user, community, instance blocking)"
+    },
+    "floatingActionButton": "Butoni pluskues i veprimit",
+    "@floatingActionButton": {
+        "description": "Floating Action Button settings category."
+    },
+    "floatingActionButtonInformation": "Thunder ka një përvojë FAB plotësisht të personalizueshme që mbështet disa gjeste.\n- Rrëshqit lart për të zbuluar veprime shtesë të FAB-it\n- Rrëshqit poshtë/lart për të fshehur ose zbuluar FAB-in\n\nPër të personalizuar veprimet kryesore dhe dytësore të FAB-it, shtyp gjatë njërin nga veprimet më poshtë.",
+    "@floatingActionButtonInformation": {
+        "description": "Description of the FAB in the settings page"
+    },
+    "floatingActionButtonLongPressDescription": "tregon veprimin me shtypje të gjatë të FAB-it.",
+    "@floatingActionButtonLongPressDescription": {
+        "description": "Description of the FAB's long-press action"
+    },
+    "floatingActionButtonSinglePressDescription": "tregon veprimin me shtypje të vetme të FAB-it.",
+    "@floatingActionButtonSinglePressDescription": {
+        "description": "Description of the FAB's single-press action"
+    },
+    "fonts": "Fontet",
+    "@fonts": {
+        "description": "Settings category for fonts"
+    },
+    "forward": "Përpara",
+    "@forward": {
+        "description": "Label for navigating forward (e.g., in a browser)"
+    },
+    "foundUnifiedPushDistribtorApp": "U gjet aplikacioni i pajtueshëm; rinis Thunder për t'u lidhur",
+    "@foundUnifiedPushDistribtorApp": {
+        "description": "Tell the user we found a compatible UnifiedPush app but they have to restart to connect"
+    },
+    "fullScreenNavigationSwipeDescription": "Rrëshqit kudo për t'u kthyer mbrapa kur gjestet nga e majta në të djathtë janë të çaktivizuara",
+    "fullscreen": "Ekran i plotë",
+    "@fullscreen": {
+        "description": "Action for entering fullscreen"
+    },
+    "fullscreenSwipeGestures": "Gjeste rrëshqitjeje në ekran të plotë",
+    "@fullscreenSwipeGestures": {
+        "description": "Setting for fullscreen swipe gestures"
+    },
+    "general": "Të përgjithshme",
+    "@general": {
+        "description": "General settings category."
+    },
+    "generalSettings": "Cilësimet e përgjithshme",
+    "@generalSettings": {
+        "description": "Subcategory in Settings"
+    },
+    "gestures": "Gjeste",
+    "gettingStarted": "Si të fillosh",
+    "green": "Jeshile",
+    "@green": {
+        "description": "The color green"
+    },
+    "guestModeFeedSettings": "Cilësimet e furnizimit në modalitetin mysafir",
+    "@guestModeFeedSettings": {
+        "description": "Feed settings for guest accounts"
+    },
+    "guestModeFeedSettingsLabel": "Cilësimet e mëposhtme zbatohen vetëm te llogaritë mysafire. Për të rregulluar cilësimet e furnizimit për llogarinë tënde, shko te Cilësimet e llogarisë.",
+    "@guestModeFeedSettingsLabel": {
+        "description": "Description for guest mode feed settings"
+    },
+    "havingIssuesWithNotifications": "Ke probleme me njoftimet?",
+    "@havingIssuesWithNotifications": {
+        "description": "A shortcut to navigate to the notification debugging section"
+    },
+    "hidCommunity": "Komuniteti u fsheh",
+    "@hidCommunity": {
+        "description": "Short decription for moderator action to hide a community"
+    },
+    "hidden": "I fshehur",
+    "@hidden": {
+        "description": "Describes a post that is hidden"
+    },
+    "hide": "Fshih",
+    "@hide": {
+        "description": "The action to hide a post"
+    },
+    "hideBottomBarOnScroll": "Fshih shiritin e poshtëm gjatë rrëshqitjes",
+    "@hideBottomBarOnScroll": {
+        "description": "Settings toggle to hide the bottom navigation bar on scroll"
+    },
+    "hideColor": "Fshih ngjyrën",
+    "@hideColor": {
+        "description": "Name of the hide color setting"
+    },
+    "hideNsfwPostsFromFeed": "Fshih postimet NSFW nga furnizimi",
+    "@hideNsfwPostsFromFeed": {
+        "description": "Toggle to hide NSFW posts from the feed."
+    },
+    "hideNsfwPreviews": "Turbullo pamjet paraprake NSFW",
+    "@hideNsfwPreviews": {
+        "description": "Toggle to blur NSFW previews."
+    },
+    "hidePassword": "Fshih fjalëkalimin",
+    "hideThumbnails": "Fshih miniaturat",
+    "@hideThumbnails": {
+        "description": "Option to hide thumbnails in feed"
+    },
+    "hideTopBarOnScroll": "Fshih shiritin e sipërm gjatë rrëshqitjes",
+    "@hideTopBarOnScroll": {
+        "description": "Settings toggle to hide the top bar on scroll"
+    },
+    "hostInstance": "Instanca pritëse",
+    "@hostInstance": {
+        "description": "The instance hosting a community"
+    },
+    "hot": "Të nxehta",
+    "image": "Imazh",
+    "imageCachingMode": "Modaliteti i ruajtjes së imazheve në memorie",
+    "@imageCachingMode": {
+        "description": "Title for setting related to image caching mode"
+    },
+    "imageCachingModeAggressive": "Ruaj imazhet agresivisht në memorie (përdor më shumë memorie)",
+    "@imageCachingModeAggressive": {
+        "description": "Long description for aggressive image caching mode"
+    },
+    "imageCachingModeAggressiveShort": "Agresiv",
+    "@imageCachingModeAggressiveShort": {
+        "description": "Short description for aggressive image caching mode"
+    },
+    "imageCachingModeRelaxed": "Lejo skedimet e imazheve të skadojnë (përdor më pak memorie, por bën që imazhet të ringarkohen më shpesh)",
+    "@imageCachingModeRelaxed": {
+        "description": "Long description for relaxed image caching mode"
+    },
+    "imageCachingModeRelaxedShort": "I relaksuar",
+    "@imageCachingModeRelaxedShort": {
+        "description": "Short description for relaxed image caching mode"
+    },
+    "imageDimensionTimeout": "Afati kohor i përmasave të imazhit",
+    "@imageDimensionTimeout": {
+        "description": "Setting for how long to wait for the image dimensions to be fetched"
+    },
+    "imagePeekDuration": "Kohëzgjatja e paraparjes së imazhit",
+    "@imagePeekDuration": {
+        "description": "Setting for image peek duration"
+    },
+    "imagePeekDurationDescription": "Kohëzgjatja e shtypjes së gjatë para se të aktivizohet paraparja e imazhit",
+    "@imagePeekDurationDescription": {
+        "description": "Description for image peek duration setting"
+    },
+    "importDatabase": "Importo bazën e të dhënave",
+    "@importDatabase": {
+        "description": "Name of setting for importing the db"
+    },
+    "importExportDatabase": "Importo/Eksporto bazën e të dhënave të Thunder",
+    "@importExportDatabase": {
+        "description": "Overall name of setting for importing or exporting the db (for searching)"
+    },
+    "importExportLemmyAccountSettings": "Importo/Eksporto cilësimet e llogarisë Lemmy",
+    "@importExportLemmyAccountSettings": {
+        "description": "This is specifically used in search results to distinguish from Thunder import/export"
+    },
+    "importExportLemmyAccountSettingsSubtitle": "Përfshin komunitetet e abonuara, listat e bllokimeve dhe preferencat e llogarisë",
+    "@importExportLemmyAccountSettingsSubtitle": {
+        "description": "Subtitle for Lemmy account settings import/export section"
+    },
+    "importExportSettings": "Importo/Eksporto cilësimet",
+    "@importExportSettings": {
+        "description": "Category for settings related to import and export."
+    },
+    "importExportThunderSettings": "Importo/Eksporto cilësimet e Thunder",
+    "@importExportThunderSettings": {
+        "description": "This is specifically used in search results to distinguish from Lemmy import/export"
+    },
+    "importLemmyAccountSettingsDescription": "Importo cilësimet e llogarisë Lemmy",
+    "@importLemmyAccountSettingsDescription": {
+        "description": "Description for setting related to Lemmy account settings import"
+    },
+    "importSettings": "Importo cilësimet",
+    "@importSettings": {
+        "description": "Action to import application settings."
+    },
+    "inReplyTo": "Në përgjigje të {post} në {community}",
+    "@inReplyTo": {
+        "description": "Indicates that a comment/post is in reply to a certain post in a certain community",
+        "placeholders": {
+            "post": {
+                "description": "The post that is being replied to"
+            },
+            "community": {
+                "description": "The community that the post is in"
+            }
+        }
+    },
+    "in_": "në",
+    "@in_": {
+        "description": "Connecting word used to indicate that a certain comment/post post came from a certain community"
+    },
+    "inbox": "Kutia hyrëse",
+    "includeCommunity": "Përfshi komunitetin",
+    "includeExternalLink": "Përfshi lidhjen e jashtme",
+    "includeImage": "Përfshi imazhin",
+    "includePostLink": "Përfshi lidhjen e postimit",
+    "includeText": "Përfshi tekstin",
+    "includeTitle": "Përfshi titullin",
+    "information": "Informacion",
+    "@information": {
+        "description": "Information heading - used in the FAB settings page"
+    },
+    "instance": "{count, plural, zero {Instancë} one {Instancë} other {Instanca} } ",
+    "@instance": {
+        "description": "Heading for an instance",
+        "placeholders": {
+            "count": {
+                "description": "The number of instances"
+            }
+        }
+    },
+    "instanceActions": "Veprime instance",
+    "@instanceActions": {
+        "description": "Heading for instance actions page"
+    },
+    "instanceEntry": "Instanca '{username}'",
+    "@instanceEntry": {
+        "description": "Entry in list for a instance to perform further actions",
+        "placeholders": {
+            "username": {
+                "description": "The username of the instance"
+            }
+        }
+    },
+    "instanceHasAlreadyBenAdded": "{instance} është shtuar tashmë.",
+    "@instanceHasAlreadyBenAdded": {
+        "description": "Error message for when an instance has already been added",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that has already been added"
+            }
+        }
+    },
+    "instanceNameColor": "Ngjyra e emrit të instancës",
+    "@instanceNameColor": {
+        "description": "Setting for instance name color"
+    },
+    "instanceNameThickness": "Trashësia e emrit të instancës",
+    "@instanceNameThickness": {
+        "description": "Setting for instance name thickness"
+    },
+    "instanceOffline": "Instanca është jashtë linje",
+    "instanceOnline": "Instanca është në linjë",
+    "instanceStatusUnknown": "Statusi i instancës i panjohur",
+    "instances": "Instanca",
+    "@instances": {
+        "description": "Title for settings related to instances"
+    },
+    "internetOrInstanceIssues": "Mund të mos jesh i lidhur me internetin, ose instanca jote mund të jetë aktualisht e padisponueshme.",
+    "invalidUrl": "Format URL-je i pavlefshëm",
+    "@invalidUrl": {
+        "description": "Error message for invalid URL format"
+    },
+    "joined": "U bashkua më {x}",
+    "@joined": {
+        "description": "Describes the time when a user joined the site (or was created)",
+        "placeholders": {
+            "x": {
+                "description": "The time when a user joined the site (or was created)"
+            }
+        }
+    },
+    "keywordFilterDescription": "Filtron postimet që përmbajnë çdo fjalëkyç në titull, trup ose URL",
+    "@keywordFilterDescription": {
+        "description": "Description of keyword filter settings"
+    },
+    "keywordFilters": "Filtra fjalëkyçesh",
+    "@keywordFilters": {
+        "description": "Subcategory in Settings -> Filters"
+    },
+    "label": "Etiketë",
+    "@label": {
+        "description": "Text field label for a user label"
+    },
+    "language": "Gjuha",
+    "@language": {
+        "description": "Label when creating or editing a post."
+    },
+    "languageFilters": "Kërkon filtra gjuhësh?",
+    "languageNotAllowed": "Komuniteti ku po poston nuk lejon postime në gjuhën që ke përzgjedhur. Provo një gjuhë tjetër.",
+    "@languageNotAllowed": {
+        "description": "The error message for the language_not_allowed Lemmy exception"
+    },
+    "large": "I madh",
+    "@large": {
+        "description": "Description for large font scale"
+    },
+    "leftLongSwipe": "Rrëshqitje e gjatë majtas",
+    "@leftLongSwipe": {
+        "description": "Setting for left long swipe"
+    },
+    "leftShortSwipe": "Rrëshqitje e shkurtër majtas",
+    "@leftShortSwipe": {
+        "description": "Setting for left short swipe"
+    },
+    "light": "E çelët",
+    "@light": {
+        "description": "Describes using the light theme"
+    },
+    "link": "{count, plural, zero {Lidhje} one {Lidhje} other {Lidhje} } ",
+    "@link": {
+        "description": "Describes a link",
+        "placeholders": {
+            "count": {
+                "description": "The number of links"
+            }
+        }
+    },
+    "linkActions": "Veprime lidhjeje",
+    "linkHandlingCustomTabs": "Hap në shfletuesin e sistemit të inkorporuar në aplikacion",
+    "@linkHandlingCustomTabs": {
+        "description": "Description for custom tabs link handling"
+    },
+    "linkHandlingCustomTabsShort": "I inkorporuar në aplikacion",
+    "@linkHandlingCustomTabsShort": {
+        "description": "Short description for custom tabs link handling"
+    },
+    "linkHandlingExternal": "Hap në shfletuesin e sistemit nga jashtë",
+    "@linkHandlingExternal": {
+        "description": "Description for external link handling"
+    },
+    "linkHandlingExternalShort": "I jashtëm",
+    "@linkHandlingExternalShort": {
+        "description": "Short description for external link handling"
+    },
+    "linkHandlingInApp": "Përdor shfletuesin e integruar të Thunder",
+    "@linkHandlingInApp": {
+        "description": "Description for in-app link handling"
+    },
+    "linkHandlingInAppShort": "Në aplikacion",
+    "@linkHandlingInAppShort": {
+        "description": "Short description for in-app link handling"
+    },
+    "linkPostsUseCompactView": "Shfaq postimet e lidhjeve në formë kompakte",
+    "@linkPostsUseCompactView": {
+        "description": "Toggle to use compact view for link posts."
+    },
+    "linksBehaviourSettings": "Lidhje",
+    "@linksBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "loadMorePlural": "Ngarko {count} përgjigje të tjera…",
+    "@loadMorePlural": {
+        "description": "Load more replies",
+        "placeholders": {
+            "count": {
+                "description": "The number of replies to load"
+            }
+        }
+    },
+    "loadMoreSingular": "Ngarko {count} përgjigje tjetër…",
+    "@loadMoreSingular": {
+        "description": "Load more replies",
+        "placeholders": {
+            "count": {
+                "description": "The number of replies to load"
+            }
+        }
+    },
+    "loading": "Po ngarkohet...",
+    "@loading": {
+        "description": "Placeholder text for loading"
+    },
+    "local": "Lokal",
+    "localNotifications": "Njoftime lokale",
+    "@localNotifications": {
+        "description": "Describes the notification type for Local Notifications"
+    },
+    "localOnly": "Vetëm lokal",
+    "@localOnly": {
+        "description": "Local community visibility"
+    },
+    "localPosts": "Postime lokale",
+    "lockPost": "Kyç postimin",
+    "@lockPost": {
+        "description": "Action for locking a post (moderator action)"
+    },
+    "locked": "I kyçur",
+    "@locked": {
+        "description": "Status to indicate that an item has been locked"
+    },
+    "lockedPost": "Postim i kyçur",
+    "@lockedPost": {
+        "description": "Short decription for moderator action to lock a post"
+    },
+    "logOut": "Dil",
+    "login": "Hyr",
+    "loginAttemptCanceled": "Përpjekja për hyrje u anulua.",
+    "@loginAttemptCanceled": {
+        "description": "Message shown to user when they cancel a login attempt"
+    },
+    "loginFailed": "Nuk u krye dot hyrja. Të lutem provo përsëri. (Gabim: {errorMessage})",
+    "@loginFailed": {
+        "description": "Message shown to user when their login attempt failed",
+        "placeholders": {
+            "errorMessage": {
+                "description": "The error message"
+            }
+        }
+    },
+    "loginSucceeded": "Hyre.",
+    "loginToPerformAction": "Duhet të kesh hyrë për të kryer këtë detyrë.",
+    "loginToSeeInbox": "Hyr për të parë kutinë tënde hyrëse",
+    "lookingForAccountSpecificFeedSettings": "Kërkon cilësime furnizimi specifike për llogarinë?",
+    "@lookingForAccountSpecificFeedSettings": {
+        "description": "Helper setting which navigates to account page"
+    },
+    "malformedUri": "Lidhja që dhe është në një format të pambështetur. Të lutem sigurohu që të jetë një lidhje e vlefshme.",
+    "@malformedUri": {
+        "description": "Error related to unsupported link format."
+    },
+    "manageAccounts": "Menaxho llogaritë",
+    "manageMedia": "Menaxho median",
+    "@manageMedia": {
+        "description": "Setting name and page title for media management"
+    },
+    "markAllAsRead": "Shëno të gjitha si të lexuara",
+    "@markAllAsRead": {
+        "description": "The mark all as read action"
+    },
+    "markAsRead": "Shëno si të lexuar",
+    "@markAsRead": {
+        "description": "Label for the action to mark a message as read"
+    },
+    "markPostAsReadOnMediaView": "Shëno si të lexuar pas shikimit të medias",
+    "@markPostAsReadOnMediaView": {
+        "description": "Toggle to mark posts as read after viewing media."
+    },
+    "markPostAsReadOnScroll": "Shëno si të lexuar gjatë rrëshqitjes",
+    "@markPostAsReadOnScroll": {
+        "description": "Toggle to mark posts as read as you scroll past them in the feed."
+    },
+    "markReadColor": "Ngjyra e shënimit të lexuar/palexuar",
+    "@markReadColor": {
+        "description": "Name of mark read/unread color setting"
+    },
+    "matrixUser": "Përdorues Matrix",
+    "@matrixUser": {
+        "description": "Label for Matrix user id"
+    },
+    "me": "Unë",
+    "@me": {
+        "description": "Label for the current user."
+    },
+    "media": "Media",
+    "@media": {
+        "description": "Describes a piece of media content (e.g., image, video)"
+    },
+    "medium": "Mesatar",
+    "@medium": {
+        "description": "Description for medium font scale"
+    },
+    "mention": "{count, plural, zero {Përmendje} one {Përmendje} other {Përmendje} }",
+    "@mention": {
+        "description": "Describes a mention",
+        "placeholders": {
+            "count": {
+                "description": "The number of mentions"
+            }
+        }
+    },
+    "menu": "Menyja",
+    "@menu": {
+        "description": "Menu button description"
+    },
+    "message": "{count, plural, zero {Mesazh} one {Mesazh} other {Mesazhe} }",
+    "@message": {
+        "description": "Describes a message",
+        "placeholders": {
+            "count": {
+                "description": "The number of messages"
+            }
+        }
+    },
+    "metadataFontScale": "Shkalla e fontit të meta të dhënave",
+    "@metadataFontScale": {
+        "description": "Setting for metadata font scale"
+    },
+    "missingErrorMessage": "Nuk ka mesazh gabimi të disponueshëm",
+    "modAdd": "Shto/Hiq moderatorë instance",
+    "@modAdd": {
+        "description": "Description for modlog filter for actions that add instance moderators"
+    },
+    "modAddCommunity": "Shto/Hiq moderatorë te komunitetet",
+    "@modAddCommunity": {
+        "description": "Description for modlog filter for actions that add moderators to communities"
+    },
+    "modBan": "Përjashto/Çpërjashto përdorues instance",
+    "@modBan": {
+        "description": "Description for modlog filter for actions that ban instance users"
+    },
+    "modBanFromCommunity": "Përjashto/Çpërjashto përdorues nga komunitetet",
+    "@modBanFromCommunity": {
+        "description": "Description for modlog filter for actions that ban users from communities"
+    },
+    "modFeaturePost": "Veço/Çveço postime",
+    "@modFeaturePost": {
+        "description": "Description for modlog filter for actions that feature posts"
+    },
+    "modLockPost": "Kyç/Çkyç postime",
+    "@modLockPost": {
+        "description": "Description for modlog filter for actions that lock posts"
+    },
+    "modRemoveComment": "Hiq/Rikthe komente",
+    "@modRemoveComment": {
+        "description": "Description for modlog filter for actions that remove comments"
+    },
+    "modRemoveCommunity": "Hiq/Rikthe komunitete",
+    "@modRemoveCommunity": {
+        "description": "Description for modlog filter for actions that remove communities"
+    },
+    "modRemovePost": "Hiq/Rikthe postime",
+    "@modRemovePost": {
+        "description": "Description for modlog filter for actions that remove posts"
+    },
+    "modTransferCommunity": "Transferimi i komuniteteve",
+    "@modTransferCommunity": {
+        "description": "Description for modlog filter for actions that transfer moderators to another community"
+    },
+    "moderatedCommunities": "Komunitete të moderuara",
+    "@moderatedCommunities": {
+        "description": "Describes a list of communities that are moderated by the current user."
+    },
+    "moderates": "Modron",
+    "@moderates": {
+        "description": "A heading describing the communities that a user moderates"
+    },
+    "moderator": "{count, plural, zero {Moderator} one {Moderator} other {Moderatorë}}",
+    "@moderator": {
+        "description": "Role name for moderator",
+        "placeholders": {
+            "count": {
+                "description": "The number of moderators"
+            }
+        }
+    },
+    "moderatorActions": "Veprime moderatori",
+    "@moderatorActions": {
+        "description": "Actions for moderators to perform on posts"
+    },
+    "modlog": "Regjistri i moderimit",
+    "@modlog": {
+        "description": "Option for viewing modlog."
+    },
+    "mostComments": "Më shumë komente",
+    "mustBeLoggedIn": "Duhet të kesh hyrë",
+    "mustBeLoggedInComment": "Duhet të kesh hyrë për të komentuar",
+    "mustBeLoggedInPost": "Duhet të kesh hyrë për të krijuar një postim",
+    "names": "Emra",
+    "@names": {
+        "description": "Heading for name-related settings"
+    },
+    "navbarDoubleTapGestures": "Gjeste me trokitje të dyfishtë në shiritin e navigimit",
+    "@navbarDoubleTapGestures": {
+        "description": "Setting for navbar double tap gestures"
+    },
+    "navbarSwipeGestures": "Gjeste me rrëshqitje në shiritin e navigimit",
+    "@navbarSwipeGestures": {
+        "description": "Setting for navbar swipe gestures"
+    },
+    "navigateDown": "Komenti tjetër",
+    "navigateUp": "Komenti i mëparshëm",
+    "navigation": "Navigimi",
+    "nestedCommentIndicatorColor": "Ngjyra e treguesit të komenteve të ndërthurura",
+    "@nestedCommentIndicatorColor": {
+        "description": "Setting for nested comment indicator color"
+    },
+    "nestedCommentIndicatorStyle": "Stili i treguesit të komenteve të ndërthurura",
+    "@nestedCommentIndicatorStyle": {
+        "description": "Setting for nested comment indicator style"
+    },
+    "networkErrorMessage": "Serveri nuk u arrit dot. Kontrollo lidhjen tënde dhe provo përsëri.",
+    "never": "Kurrë",
+    "newComments": "Komente të reja",
+    "newPost": "Postim i ri",
+    "@newPost": {
+        "description": "Setting for new post"
+    },
+    "new_": "Të reja",
+    "no": "Jo",
+    "@no": {
+        "description": "A negative status"
+    },
+    "noAccountsAdded": "Nuk është shtuar asnjë llogari",
+    "@noAccountsAdded": {
+        "description": "Placeholder text when no accounts have been added"
+    },
+    "noAnonymousInstances": "Nuk është shtuar asnjë instancë anonime",
+    "@noAnonymousInstances": {
+        "description": "Placeholder text when no anonymous instances have been added"
+    },
+    "noCommentsFound": "Nuk u gjet asnjë koment",
+    "noCommunitiesFound": "Nuk u gjet asnjë komunitet",
+    "noCommunityBlocks": "Nuk ka komunitete të bllokuara",
+    "noCommunitySelected": "Nuk është përzgjedhur asnjë komunitet",
+    "@noCommunitySelected": {
+        "description": "Fallback subtitle when a draft has no selected community"
+    },
+    "noCompatibleAppFound": "Nuk u gjet asnjë aplikacion i pajtueshëm",
+    "@noCompatibleAppFound": {
+        "description": "Tell the user we didn't find a compatible UnifiedPush app"
+    },
+    "noDiscussionLanguages": "Asnjë përmbajtje nuk është fshehur bazuar në gjuhë.",
+    "@noDiscussionLanguages": {
+        "description": "Message for no discussion languages added"
+    },
+    "noDisplayNameSet": "Nuk është caktuar asnjë emër i shfaqur",
+    "@noDisplayNameSet": {
+        "description": "Message for no display name set"
+    },
+    "noDrafts": "Nuk ke ende asnjë skicë",
+    "@noDrafts": {
+        "description": "Placeholder message for empty draft list"
+    },
+    "noEmailSet": "Nuk është caktuar asnjë email",
+    "@noEmailSet": {
+        "description": "Message for no email set"
+    },
+    "noFavoritedCommunities": "Nuk ka komunitete të preferuara",
+    "@noFavoritedCommunities": {
+        "description": "Message for no favorited communities on the drawer"
+    },
+    "noImages": "Duket se nuk ke ngarkuar asnjë imazh.",
+    "@noImages": {
+        "description": "Message for no uploaded images"
+    },
+    "noInstanceBlocks": "Nuk ka instanca të bllokuara.",
+    "noItems": "Nuk ka artikuj",
+    "@noItems": {
+        "description": "Generic text when there are no items"
+    },
+    "noKeywordFilters": "Nuk janë shtuar filtra fjalëkyçesh",
+    "@noKeywordFilters": {
+        "description": "Message for no keyword filters added"
+    },
+    "noLanguage": "Asnjë gjuhë",
+    "@noLanguage": {
+        "description": "The entry for no language when selecting a post language"
+    },
+    "noMatrixUserSet": "Nuk është caktuar asnjë përdorues Matrix",
+    "@noMatrixUserSet": {
+        "description": "Message for no matrix user set"
+    },
+    "noMentions": "Nuk ka përmendje",
+    "@noMentions": {
+        "description": "Label for when there are no person mentions in the list"
+    },
+    "noMessages": "Nuk ka mesazhe",
+    "@noMessages": {
+        "description": "Label for when there are no messages in the inbox"
+    },
+    "noPostsFound": "Nuk u gjet asnjë postim.",
+    "noProfileBioSet": "Nuk është caktuar asnjë biografi profili",
+    "@noProfileBioSet": {
+        "description": "Message for no profile bio set"
+    },
+    "noReferencesToImage": "Nuk u gjet asnjë postim ose koment që përmban këtë imazh. Megjithatë, ai mund të përdoret gjetkë në internet.",
+    "@noReferencesToImage": {
+        "description": "Message indicating media was not found on Lemmy"
+    },
+    "noReplies": "Nuk ka përgjigje",
+    "@noReplies": {
+        "description": "Label for when there are no replies in the list"
+    },
+    "noResultsFound": "Nuk u gjet asnjë rezultat.",
+    "noSubscriptions": "Nuk ka abonime",
+    "@noSubscriptions": {
+        "description": "Message for no subscriptions on the drawer"
+    },
+    "noUserBlocks": "Nuk ka përdorues të bllokuar.",
+    "noUserLabels": "Nuk ke krijuar ende asnjë etiketë përdoruesi",
+    "@noUserLabels": {
+        "description": "Placeholder message for empty list of labels"
+    },
+    "noUsersFound": "Nuk u gjet asnjë përdorues.",
+    "noVisibleComments": "Komentet mund të mos jenë të dukshme sepse komuniteti është i bllokuar.",
+    "@noVisibleComments": {
+        "description": "A message that shows up when a user navigates to a post but the associated community is blocked."
+    },
+    "none": "Asnjë",
+    "@none": {
+        "description": "Describes the notification type when push notifications are disabled"
+    },
+    "normal": "Normal",
+    "@normal": {
+        "description": "Normal name thickness/weight"
+    },
+    "notAvailable": "N/A",
+    "notValidLemmyInstance": "{instance} nuk duket të jetë një instancë e vlefshme",
+    "@notValidLemmyInstance": {
+        "description": "Message for when an instance is not a valid Lemmy/PieFed instance",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that is not a valid Lemmy/PieFed instance"
+            }
+        }
+    },
+    "notValidUrl": "URL e pavlefshme",
+    "nothingToShare": "Asgjë për të ndarë",
+    "notifications": "{count, plural, zero {Njoftim} one {Njoftime} other {Njoftime}}",
+    "@notifications": {
+        "description": "Message formatting for notifications count.",
+        "placeholders": {
+            "count": {
+                "description": "The number of notifications"
+            }
+        }
+    },
+    "notificationsBehaviourSettings": "Njoftime",
+    "@notificationsBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "notificationsNotAllowed": "Njoftimet nuk lejohen për Thunder në cilësimet e sistemit",
+    "@notificationsNotAllowed": {
+        "description": "Description for when notifications are now allowed for app"
+    },
+    "notificationsWarningDialog": "Njoftimet janë një **veçori eksperimentale** që mund të mos funksionojë saktë në të gjitha pajisjet.\n\n - Kontrollet do të ndodhin çdo ~15 minuta dhe do të konsumojnë bateri shtesë.\n\n - Çaktivizo optimizimet e baterisë për një gjasë më të lartë njoftimesh të suksesshme.\n\n Shiko faqen e mëposhtme për më shumë informacion.",
+    "@notificationsWarningDialog": {
+        "description": "The content of the warning dialog for the notifications feature"
+    },
+    "nsfw": "NSFW",
+    "@nsfw": {
+        "description": "Short description for NSFW label"
+    },
+    "nsfwWarning": "NSFW - Trokit për të zbuluar",
+    "@nsfwWarning": {
+        "description": "Warning for NSFW posts"
+    },
+    "off": "joaktiv",
+    "offline": "jashtë linje",
+    "@offline": {
+        "description": "Describes a service that is unavailable"
+    },
+    "ok": "Në rregull",
+    "old": "Të vjetra",
+    "on": "aktiv",
+    "onWifi": "Në Wi-Fi",
+    "onlyModsCanPostInCommunity": "Vetëm moderatorët mund të postojnë në këtë komunitet",
+    "open": "Hap",
+    "openAccountSwitcher": "Hap ndërruesin e llogarive",
+    "openByDefault": "Hap si parazgjedhje",
+    "@openByDefault": {
+        "description": "Indicating the default behavior of opening links."
+    },
+    "openInBrowser": "Hap në shfletues",
+    "openInstance": "Hap instancën",
+    "openLinksInExternalBrowser": "Hap lidhjet në shfletues të jashtëm",
+    "@openLinksInExternalBrowser": {
+        "description": "Toggle to open links in an external browser."
+    },
+    "openLinksInReaderMode": "Hap lidhjet në modalitetin e leximit",
+    "@openLinksInReaderMode": {
+        "description": "Toggle to open links in reader mode when available."
+    },
+    "openSettings": "Hap cilësimet",
+    "@openSettings": {
+        "description": "Prompt for the user to open system settings"
+    },
+    "orange": "Portokalli",
+    "@orange": {
+        "description": "The color orange"
+    },
+    "originalPoster": "Postuesi origjinal",
+    "@originalPoster": {
+        "description": "Label for the original poster."
+    },
+    "overview": "Përmbledhje",
+    "password": "Fjalëkalimi",
+    "pending": "Në pritje",
+    "@pending": {
+        "description": "Describes the subscription status for 'Pending'"
+    },
+    "performedBy": "Kryer nga: {user}",
+    "@performedBy": {
+        "description": "Describes the user who performed an action (e.g., moderator)",
+        "placeholders": {
+            "user": {
+                "description": "The user who performed the action"
+            }
+        }
+    },
+    "permissionDenied": "Thunder-it nuk i është dhënë leje për të shfaqur njoftime. Të lutem aktivizoje në cilësimet e sistemit.",
+    "@permissionDenied": {
+        "description": "Title for error when user denies OS permissions"
+    },
+    "permissionDeniedMessage": "Thunder-i kërkon disa leje për të ruajtur këtë imazh, të cilat janë refuzuar.",
+    "@permissionDeniedMessage": {
+        "description": "Explanation for error when user denies OS permissions"
+    },
+    "piefedSupportBeta": "Mbështetja për PieFed është aktualisht në beta.\nJo të gjitha veçoritë mbështeten ende.",
+    "pinPostToCommunity": "Gozhdo postimin te komuniteti",
+    "@pinPostToCommunity": {
+        "description": "Action for pinning a post to a community (moderator action)"
+    },
+    "pinToCommunity": "Gozhdo te komuniteti",
+    "@pinToCommunity": {
+        "description": "Setting for pinning a post to a community (moderator action)"
+    },
+    "pinned": "I gozhduar",
+    "@pinned": {
+        "description": "Status to indicate that an item has been pinned"
+    },
+    "pinnedPostToCommunity": "Postimi u gozhdua te komuniteti",
+    "@pinnedPostToCommunity": {
+        "description": "Message shown when a post is pinned to a community"
+    },
+    "pinnedPostsUseCompactView": "Shfaq postimet e gozhduara në formë kompakte",
+    "@pinnedPostsUseCompactView": {
+        "description": "Toggle to use compact view for pinned posts."
+    },
+    "placeholderText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "@placeholderText": {
+        "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
+    },
+    "post": "Postim",
+    "@post": {
+        "description": "Describes a single post"
+    },
+    "postActions": "Veprime postimi",
+    "@postActions": {
+        "description": "Describes a given set of actions that can be performed on a post"
+    },
+    "postBehaviourSettings": "Postime",
+    "@postBehaviourSettings": {
+        "description": "Subcategory in Setting -> General"
+    },
+    "postBody": "Trupi i postimit",
+    "postBodySettings": "Cilësimet e trupit të postimit",
+    "@postBodySettings": {
+        "description": "Settings heading for post body settings"
+    },
+    "postBodySettingsDescription": "Këto cilësime ndikojnë në shfaqjen e trupit të postimit",
+    "@postBodySettingsDescription": {
+        "description": "Description of post body settings"
+    },
+    "postBodyShowCommunityInstance": "Shfaq instancën e komunitetit",
+    "@postBodyShowCommunityInstance": {
+        "description": "Whether to show the community instance for post bodies"
+    },
+    "postBodyShowUserInstance": "Shfaq instancën e përdoruesit",
+    "@postBodyShowUserInstance": {
+        "description": "Whether to show the user instance for post bodies"
+    },
+    "postBodyViewType": "Lloji i pamjes së trupit të postimit",
+    "@postBodyViewType": {
+        "description": "Setting name for the post body view type setting"
+    },
+    "postContentFontScale": "Shkalla e fontit të përmbajtjes së postimit",
+    "@postContentFontScale": {
+        "description": "Setting for post content font scale"
+    },
+    "postCreatedSuccessfully": "Postimi u krijua me sukses!",
+    "@postCreatedSuccessfully": {
+        "description": "Notifying the user that their post was created successfully"
+    },
+    "postFlairs": "Etiketat (flairs)",
+    "@postFlairs": {
+        "description": "Label for post flair selection"
+    },
+    "postFlairsUnavailable": "Nuk ka opsione flair të disponueshme për këtë komunitet",
+    "@postFlairsUnavailable": {
+        "description": "Helper text when no post flairs are available"
+    },
+    "postLocked": "Postimi është i kyçur. Nuk lejohen përgjigje.",
+    "postMetadataInstructions": "Mund të personalizosh informacionin e meta të dhënave duke tërhequr dhe lëshuar informacionin e dëshiruar",
+    "@postMetadataInstructions": {
+        "description": "Instructions on how to customize the post metadata information. This is found in the Appearance -> Post settings page"
+    },
+    "postNSFW": "Shëno si NSFW",
+    "postPreview": "Shfaq një pamje paraprake të postimit me cilësimet e dhëna",
+    "@postPreview": {
+        "description": "Description for the post preview in Setting -> Appearance -> Posts"
+    },
+    "postSavedAsDraft": "Postimi u ruajt si skicë",
+    "postShowUserInstance": "Shfaq instancën e përdoruesit",
+    "@postShowUserInstance": {
+        "description": "Whether to show the user instance for post listings"
+    },
+    "postSwipeActions": "Veprimet me rrëshqitje të postimit",
+    "@postSwipeActions": {
+        "description": "Setting for post swipe actions"
+    },
+    "postSwipeGesturesHint": "Dëshiron të përdorësh butona në vend të kësaj? Ndrysho cilët butona shfaqen te kartat e postimeve në cilësimet e përgjithshme.",
+    "postTags": "Etiketa",
+    "@postTags": {
+        "description": "Label for post tags"
+    },
+    "postTagsHelperText": "Ndaj etiketat me presje",
+    "@postTagsHelperText": {
+        "description": "Helper text for comma-separated post tags"
+    },
+    "postTitle": "Titulli",
+    "postTitleFontScale": "Shkalla e fontit të titullit të postimit",
+    "@postTitleFontScale": {
+        "description": "Setting for post title font scale"
+    },
+    "postTogglePreview": "Ndërro pamjen paraprake",
+    "postURL": "URL",
+    "postUploadImageError": "Imazhi nuk u ngarkua dot",
+    "postViewType": "Lloji i pamjes së postimit",
+    "@postViewType": {
+        "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+    },
+    "posts": "Postime",
+    "preview": "Pamje paraprake",
+    "profileAppliedSuccessfully": "{profile} u zbatua me sukses!",
+    "@profileAppliedSuccessfully": {
+        "description": "Message shown to user when a profile is applied successfully",
+        "placeholders": {
+            "profile": {
+                "description": "The profile that was applied"
+            }
+        }
+    },
+    "profileBio": "Biografia e profilit",
+    "@profileBio": {
+        "description": "Setting for profile bio"
+    },
+    "profileOperationInProgress": "Veprimi i profilit në vazhdim",
+    "profiles": "Profile",
+    "public": "Publik",
+    "@public": {
+        "description": "Public community visibility"
+    },
+    "pureBlack": "E zezë e plotë",
+    "@pureBlack": {
+        "description": "Describes using the pure black theme"
+    },
+    "purgedComment": "Komenti u spastrua",
+    "@purgedComment": {
+        "description": "Short decription for moderator action to purge a comment"
+    },
+    "purgedCommunity": "Komuniteti u spastrua",
+    "@purgedCommunity": {
+        "description": "Short decription for moderator action to purge a community"
+    },
+    "purgedPerson": "Personi u spastrua",
+    "@purgedPerson": {
+        "description": "Short decription for moderator action to purge a person"
+    },
+    "purgedPost": "Postimi u spastrua",
+    "@purgedPost": {
+        "description": "Short decription for moderator action to purge a post"
+    },
+    "purple": "Vjollcë",
+    "@purple": {
+        "description": "The color purple"
+    },
+    "pushNotification": "Njoftime push",
+    "@pushNotification": {
+        "description": "Setting for push notifications"
+    },
+    "pushNotificationDescription": "Nëse aktivizohet, Thunder do t'i dërgojë token-in(at) tënd JWT serverit për të kontrolluar për njoftime të reja. \n\n **SHËNIM:** Kjo nuk do të hyjë në fuqi deri herën tjetër që hapet aplikacioni.",
+    "@pushNotificationDescription": {
+        "description": "Description of push notification setting"
+    },
+    "pushNotificationServer": "Serveri i njoftimeve push",
+    "@pushNotificationServer": {
+        "description": "Setting for choosing push notification server"
+    },
+    "pushNotificationServerDescription": "Konfiguro serverin e njoftimeve push. Serveri duhet të jetë konfiguruar siç duhet për të dërguar njoftime push në pajisjen tënde.\n\n **Vendos vetëm një server që i beson me kredencialet e tua.**",
+    "@pushNotificationServerDescription": {
+        "description": "Description of choosing push notification server setting"
+    },
+    "rateLimitErrorMessage": "Ke arritur kufirin e shpeshtësisë për këtë kërkesë. Të lutem prit dhe provo përsëri më vonë.",
+    "@rateLimitErrorMessage": {
+        "description": "Error message for the rate-limit Lemmy exception"
+    },
+    "reachedTheBottom": "Nuk ka më artikuj për të ngarkuar",
+    "read": "Të lexuara",
+    "@read": {
+        "description": "Indicates that a post has been read"
+    },
+    "readAll": "Lexo të gjitha",
+    "readerMode": "Modaliteti i leximit",
+    "@readerMode": {
+        "description": "Menu item for toggling reader mode"
+    },
+    "reason": "Arsyeja",
+    "@reason": {
+        "description": "The reason for the moderation action (e.g., removing post)"
+    },
+    "red": "E kuqe",
+    "@red": {
+        "description": "The color red"
+    },
+    "reduceAnimations": "Redukto animacionet",
+    "@reduceAnimations": {
+        "description": "Toggle to reduce animations."
+    },
+    "reducesAnimations": "Redukton animacionet e përdorura brenda Thunder",
+    "refresh": "Rifresko",
+    "refreshContent": "Rifresko përmbajtjen",
+    "removalReason": "Arsyeja e heqjes",
+    "@removalReason": {
+        "description": "Title for the dialog for removing a post"
+    },
+    "remove": "Hiq",
+    "removeAccount": "Hiq llogarinë",
+    "removeAsCommunityModerator": "Hiq si moderator të komunitetit",
+    "@removeAsCommunityModerator": {
+        "description": "Moderator action to remove user as community moderator"
+    },
+    "removeComment": "Hiq komentin",
+    "@removeComment": {
+        "description": "Moderator action to remove a comment"
+    },
+    "removeFromFavorites": "Hiq nga të preferuarat",
+    "@removeFromFavorites": {
+        "description": "Action to remove a community in drawer from favorites"
+    },
+    "removeInstance": "Hiq instancën",
+    "removeKeyword": "Të hiqet \"{keyword}\"?",
+    "@removeKeyword": {
+        "description": "Description of removing a keyword filter",
+        "placeholders": {
+            "keyword": {
+                "description": "The keyword that is being removed"
+            }
+        }
+    },
+    "removeKeywordFilter": "Hiq fjalëkyçin",
+    "@removeKeywordFilter": {
+        "description": "Title for dialog to remove keyword filter"
+    },
+    "removePost": "Hiq postimin",
+    "@removePost": {
+        "description": "Action to remove a post (moderator action)"
+    },
+    "removeUserData": "Hiq të dhënat e përdoruesit",
+    "@removeUserData": {
+        "description": "Description for removing user data when banning user"
+    },
+    "removed": "Hequr",
+    "@removed": {
+        "description": "Status to indicate that an item has been removed"
+    },
+    "removedComment": "Komenti u hoq",
+    "@removedComment": {
+        "description": "Short decription for moderator action to remove a comment"
+    },
+    "removedCommunity": "Komuniteti u hoq",
+    "@removedCommunity": {
+        "description": "Short decription for moderator action to remove a community"
+    },
+    "removedCommunityFromSubscriptions": "U çabonove nga komuniteti",
+    "removedInstanceMod": "U hoq moderatori i instancës",
+    "@removedInstanceMod": {
+        "description": "Short decription for moderator action to remove a mod from an instance"
+    },
+    "removedModFromCommunity": "U hoq moderatori nga komuniteti",
+    "@removedModFromCommunity": {
+        "description": "Short decription for moderator action to remove a mod from a community"
+    },
+    "removedPost": "Postimi u hoq",
+    "@removedPost": {
+        "description": "Short decription for moderator action to remove a post"
+    },
+    "removedUserAsCommunityModerator": "{username} u hoq si moderator i komunitetit",
+    "@removedUserAsCommunityModerator": {
+        "description": "Short decription for moderator action to remove a user as community moderator",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was removed as community moderator"
+            }
+        }
+    },
+    "reorder": "Rirendit",
+    "@reorder": {
+        "description": "Tooltip text for the list editor button"
+    },
+    "reply": "{count, plural, zero {Përgjigje} one {Përgjigje} other {Përgjigje} }",
+    "@reply": {
+        "description": "Message formatting for reply count.",
+        "placeholders": {
+            "count": {
+                "description": "The number of replies"
+            }
+        }
+    },
+    "replyColor": "Ngjyra e përgjigjes",
+    "@replyColor": {
+        "description": "Name of reply color setting"
+    },
+    "replyNotSupported": "Përgjigjja nga kjo pamje aktualisht nuk mbështetet ende",
+    "replyToComment": "Përgjigju komentit",
+    "@replyToComment": {
+        "description": "Label used for comment drafts replying to another comment"
+    },
+    "replyToPost": "Përgjigju postimit",
+    "replyingTo": "Po i përgjigjesh {author}",
+    "@replyingTo": {
+        "description": "Describes the author of the post that is being replied to",
+        "placeholders": {
+            "author": {
+                "description": "The author of the post that is being replied to"
+            }
+        }
+    },
+    "report": "{count, plural, zero {Raport} one {Raport} other {Raporte} } ",
+    "@report": {
+        "description": "Message formatting for report count.",
+        "placeholders": {
+            "count": {
+                "description": "The number of reports"
+            }
+        }
+    },
+    "reportComment": "Raporto komentin",
+    "reportPost": "Raporto postimin",
+    "@reportPost": {
+        "description": "Action to report a post (moderator action)"
+    },
+    "reportedComment": "Komenti u raportua",
+    "@reportedComment": {
+        "description": "Message shown when a comment is reported"
+    },
+    "reportedPost": "Postimi u raportua",
+    "@reportedPost": {
+        "description": "Message shown when a post is reported"
+    },
+    "reporter": "Raportuesi:",
+    "@reporter": {
+        "description": "Name of reporter that reported a post/comment"
+    },
+    "requiredField": "*e detyrueshme",
+    "@requiredField": {
+        "description": "Helper text for a required form field"
+    },
+    "reset": "Rivendos",
+    "@reset": {
+        "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+    },
+    "resetCommentPreferences": "Rivendos preferencat e komenteve",
+    "@resetCommentPreferences": {
+        "description": "Semantic label for button in comment appearance settings."
+    },
+    "resetPostPreferences": "Rivendos preferencat e postimeve",
+    "@resetPostPreferences": {
+        "description": "Semantic label for button in post appearance settings."
+    },
+    "resetPreferences": "Rivendos preferencat",
+    "resetPreferencesAndData": "Rivendos preferencat dhe të dhënat",
+    "@resetPreferencesAndData": {
+        "description": "Debug setting header for resetting all user preferences and data."
+    },
+    "restore": "Rikthe",
+    "restoreComment": "Rikthe komentin",
+    "@restoreComment": {
+        "description": "Moderator action to restore a comment"
+    },
+    "restorePost": "Rikthe postimin",
+    "@restorePost": {
+        "description": "Action to restore a post (moderator action)"
+    },
+    "restoredComment": "Komenti u rikthye",
+    "@restoredComment": {
+        "description": "Short decription for moderator action to restore a comment"
+    },
+    "restoredCommentFromDraft": "Komenti u rikthye nga skica",
+    "restoredCommunity": "Komuniteti u rikthye",
+    "@restoredCommunity": {
+        "description": "Short decription for moderator action to restore a community"
+    },
+    "restoredPost": "Postimi u rikthye",
+    "@restoredPost": {
+        "description": "Short decription for moderator action to restore a post"
+    },
+    "restoredPostFromDraft": "Postimi u rikthye nga skica",
+    "retry": "Riprovo",
+    "rightLongSwipe": "Rrëshqitje e gjatë djathtas",
+    "@rightLongSwipe": {
+        "description": "Setting for right long swipe"
+    },
+    "rightShortSwipe": "Rrëshqitje e shkurtër djathtas",
+    "@rightShortSwipe": {
+        "description": "Setting for right short swipe"
+    },
+    "save": "Ruaj",
+    "saveColor": "Ruaj ngjyrën",
+    "@saveColor": {
+        "description": "Name of save color setting"
+    },
+    "saveSettings": "Ruaj cilësimet",
+    "@saveSettings": {
+        "description": "Action to save the application settings."
+    },
+    "saved": "Ruajtur",
+    "scaled": "I shkallëzuar",
+    "scrapeMissingLinkPreviews": "Nxirr pamjet paraprake të lidhjeve që mungojnë",
+    "@scrapeMissingLinkPreviews": {
+        "description": "Toggle to scrape missing external link previews."
+    },
+    "screenReaderProfile": "Profili i lexuesit të ekranit",
+    "screenReaderProfileDescription": "Optimizon Thunder për lexuesit e ekranit duke reduktuar elementet e përgjithshme dhe duke hequr gjestet potencialisht konfliktuale.",
+    "search": "Kërko",
+    "searchByText": "Kërko sipas tekstit",
+    "searchByUrl": "Kërko sipas URL-së",
+    "searchComments": "Kërko komente",
+    "searchCommentsFederatedWith": "Kërko komente të federuara me {instance}",
+    "@searchCommentsFederatedWith": {
+        "description": "Placeholder text for searching for comments",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the comments are federated with"
+            }
+        }
+    },
+    "searchCommunitiesFederatedWith": "Kërko komunitete të federuara me {instance}",
+    "@searchCommunitiesFederatedWith": {
+        "description": "Placeholder text for searching for communities",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the communities are federated with"
+            }
+        }
+    },
+    "searchInstance": "Kërko në {instance}",
+    "@searchInstance": {
+        "description": "Placeholder text for searching for an instance",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that is being searched for"
+            }
+        }
+    },
+    "searchInstancesFederatedWith": "Kërko instanca të federuara me {instance}",
+    "@searchInstancesFederatedWith": {
+        "description": "Placeholder text for searching for instances",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the instances are federated with"
+            }
+        }
+    },
+    "searchPostSearchType": "Zgjidh llojin e kërkimit të postimeve",
+    "searchPostsFederatedWith": "Kërko postime të federuara me {instance}",
+    "@searchPostsFederatedWith": {
+        "description": "Placeholder text for searching for posts",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the posts are federated with"
+            }
+        }
+    },
+    "searchTerm": "Termi i kërkimit",
+    "searchUsersFederatedWith": "Kërko përdorues të federuar me {instance}",
+    "@searchUsersFederatedWith": {
+        "description": "Placeholder text for searching for users",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the users are federated with"
+            }
+        }
+    },
+    "selectAccountToCommentAs": "Zgjidh llogarinë me të cilën do të komentosh",
+    "@selectAccountToCommentAs": {
+        "description": "Profile modal heading for commenting as other user"
+    },
+    "selectAccountToPostAs": "Zgjidh llogarinë me të cilën do të postosh",
+    "@selectAccountToPostAs": {
+        "description": "Heading for account selector when posting"
+    },
+    "selectAll": "Zgjidh të gjitha",
+    "@selectAll": {
+        "description": "Action for selecting all text"
+    },
+    "selectCommunity": "Zgjidh një komunitet (e detyrueshme)",
+    "selectFeedType": "Zgjidh llojin e furnizimit",
+    "selectLanguage": "Zgjidh gjuhën",
+    "@selectLanguage": {
+        "description": "The prompt to select a language in the post creation page"
+    },
+    "selectRecipient": "Zgjidh marrësin",
+    "@selectRecipient": {
+        "description": "Prompt to choose a private message recipient"
+    },
+    "selectSearchType": "Zgjidh llojin e kërkimit",
+    "selectText": "Zgjidh tekstin",
+    "@selectText": {
+        "description": "Post and comment action for selecting text"
+    },
+    "send": "Dërgo",
+    "@send": {
+        "description": "Action to send content"
+    },
+    "sendBackgroundTestLocalNotification": "Dërgo njoftim testues lokal në sfond",
+    "@sendBackgroundTestLocalNotification": {
+        "description": "The option to send a background notification for testing"
+    },
+    "sendBackgroundTestUnifiedPushNotification": "Dërgo njoftim testues UnifiedPush në sfond",
+    "@sendBackgroundTestUnifiedPushNotification": {
+        "description": "The option to send a background UnifiedPUsh notification for testing"
+    },
+    "sendTestLocalNotification": "Dërgo njoftim testues lokal",
+    "@sendTestLocalNotification": {
+        "description": "The option to send a notification for testing"
+    },
+    "sendTestUnifiedPushNotification": "Dërgo njoftim testues UnifiedPush",
+    "@sendTestUnifiedPushNotification": {
+        "description": "The option to send a UnifiedPush notification for testing"
+    },
+    "sensitiveContentWarning": "Mund të përmbajë përmbajtje të ndjeshme. Trokit për të zbuluar.",
+    "@sensitiveContentWarning": {
+        "description": "Warning for sensitive content (e.g., from modlog)"
+    },
+    "sentRequestForTestNotification": "Kërkesa për njoftim testues u dërgua.",
+    "serverErrorComments": "U ndesh një gabim serveri gjatë marrjes së më shumë komenteve: {message}",
+    "@serverErrorComments": {
+        "description": "Error message for when we fail to fetch more comments",
+        "placeholders": {
+            "message": {
+                "description": "The error message"
+            }
+        }
+    },
+    "setAction": "Cakto veprimin",
+    "@setAction": {
+        "description": "Label for the action to set (short-press, long-press)"
+    },
+    "setLongPress": "Cakto si veprim me shtypje të gjatë",
+    "setShortPress": "Cakto si veprim me shtypje të shkurtër",
+    "settingOverrideLabel": "Këto cilësime anashkalojnë cilësimet e parazgjedhura të Thunder.",
+    "@settingOverrideLabel": {
+        "description": "Message which indicates that the (instance) settings override the app settings"
+    },
+    "settingTypeNotSupported": "Cilësimet e llojit {settingType} nuk mbështeten ende.",
+    "@settingTypeNotSupported": {
+        "description": "Error message for when a setting type is not supported",
+        "placeholders": {
+            "settingType": {
+                "description": "The type of setting that is not supported"
+            }
+        }
+    },
+    "settings": "Cilësimet",
+    "settingsExportedSuccessfully": "Cilësimet u ruajtën me sukses në '{savedFilePath}'",
+    "@settingsExportedSuccessfully": {
+        "description": "Message shown to the user when the settings were exported successfully",
+        "placeholders": {
+            "savedFilePath": {
+                "description": "The path to the saved file"
+            }
+        }
+    },
+    "settingsFeedCards": "Këto cilësime zbatohen te kartat në furnizimin kryesor; veprimet janë gjithmonë të disponueshme kur hap postimet.",
+    "@settingsFeedCards": {
+        "description": "Settings for controlling the display of cards in the main feed."
+    },
+    "settingsImportedSuccessfully": "Cilësimet u importuan me sukses!",
+    "@settingsImportedSuccessfully": {
+        "description": "Message shown to the user when the settings were imported successfully"
+    },
+    "settingsNotExportedSuccessfully": "Cilësimet nuk u ruajtën me sukses ose veprimi u anulua.",
+    "@settingsNotExportedSuccessfully": {
+        "description": "Message shown to the user when the settings were exported unsuccessfully"
+    },
+    "settingsNotImportedSuccessfully": "Cilësimet nuk u importuan me sukses ose veprimi u anulua.",
+    "@settingsNotImportedSuccessfully": {
+        "description": "Message shown to the user when the settings were imported unsuccessfully"
+    },
+    "settingsPage": "Faqja e cilësimeve",
+    "@settingsPage": {
+        "description": "Settings page subtitle for search results"
+    },
+    "settingsPageAbout": "Rreth",
+    "@settingsPageAbout": {
+        "description": "About settings page"
+    },
+    "settingsPageAccessibility": "Aksesueshmëria",
+    "@settingsPageAccessibility": {
+        "description": "Accessibility settings page"
+    },
+    "settingsPageAccount": "Llogaria",
+    "@settingsPageAccount": {
+        "description": "Account settings page"
+    },
+    "settingsPageAccountBlocks": "Listat e bllokimeve",
+    "@settingsPageAccountBlocks": {
+        "description": "Account blocklist (user/community/instance) page"
+    },
+    "settingsPageAccountLanguages": "Gjuhët e diskutimit",
+    "@settingsPageAccountLanguages": {
+        "description": "Account discussion languages page"
+    },
+    "settingsPageAccountMedia": "Menaxho median",
+    "@settingsPageAccountMedia": {
+        "description": "Account manage media page"
+    },
+    "settingsPageAppearance": "Pamja",
+    "@settingsPageAppearance": {
+        "description": "Appearance settings page"
+    },
+    "settingsPageAppearanceComments": "Komente",
+    "@settingsPageAppearanceComments": {
+        "description": "Theming comments page"
+    },
+    "settingsPageAppearancePosts": "Postime",
+    "@settingsPageAppearancePosts": {
+        "description": "Theming posts page"
+    },
+    "settingsPageAppearanceTheming": "Tematizimi",
+    "@settingsPageAppearanceTheming": {
+        "description": "Theming settings page"
+    },
+    "settingsPageDebug": "Korrigjimi i defekteve",
+    "@settingsPageDebug": {
+        "description": "Debug settings page"
+    },
+    "settingsPageFilters": "Filtra",
+    "@settingsPageFilters": {
+        "description": "Filters settings page"
+    },
+    "settingsPageFloatingActionButton": "Butoni pluskues i veprimit",
+    "@settingsPageFloatingActionButton": {
+        "description": "Floating action button settings page"
+    },
+    "settingsPageGeneral": "Të përgjithshme",
+    "@settingsPageGeneral": {
+        "description": "General settings page"
+    },
+    "settingsPageGestures": "Gjeste",
+    "@settingsPageGestures": {
+        "description": "Gestures settings page"
+    },
+    "settingsPageUserLabels": "Etiketat e përdoruesve",
+    "@settingsPageUserLabels": {
+        "description": "User labels settings page"
+    },
+    "settingsPageVideo": "Video",
+    "@settingsPageVideo": {
+        "description": "Video settings page"
+    },
+    "share": "Ndaj",
+    "shareComment": "Ndaj lidhjen e komentit",
+    "@shareComment": {
+        "description": "Menu item for sharing a comment"
+    },
+    "shareCommentLocal": "Ndaj lidhjen e komentit (instanca ime)",
+    "@shareCommentLocal": {
+        "description": "Menu item for sharing a local link to comment"
+    },
+    "shareCommunity": "Ndaj komunitetin",
+    "@shareCommunity": {
+        "description": "Heading for sharing a community"
+    },
+    "shareCommunityLink": "Ndaj lidhjen e komunitetit",
+    "@shareCommunityLink": {
+        "description": "Menu item for sharing a community"
+    },
+    "shareCommunityLinkLocal": "Ndaj lidhjen e komunitetit (instanca ime)",
+    "@shareCommunityLinkLocal": {
+        "description": "Menu item for sharing a local community link"
+    },
+    "shareImage": "Ndaj imazhin",
+    "@shareImage": {
+        "description": "Action for sharing an image"
+    },
+    "shareLemmyLink": "Ndaj lidhjen Lemmy",
+    "@shareLemmyLink": {
+        "description": "Menu item for sharing a Lemmy link"
+    },
+    "shareLink": "Ndaj lidhjen e jashtme",
+    "shareMedia": "Ndaj median",
+    "shareMediaLink": "Ndaj lidhjen e medias",
+    "@shareMediaLink": {
+        "description": "Action for sharing the link to the media associated with a post"
+    },
+    "shareOriginalLink": "Ndaj lidhjen origjinale",
+    "@shareOriginalLink": {
+        "description": "Action for sharing the original link associated with a post"
+    },
+    "sharePost": "Ndaj lidhjen e postimit",
+    "sharePostLocal": "Ndaj lidhjen e postimit (instanca ime)",
+    "@sharePostLocal": {
+        "description": "Item for sharing a link to a post on my instance"
+    },
+    "shareThumbnail": "Ndaj miniaturën",
+    "@shareThumbnail": {
+        "description": "Action for sharing the thumbnail of a post"
+    },
+    "shareThumbnailAsImage": "Ndaj miniaturën si imazh",
+    "@shareThumbnailAsImage": {
+        "description": "Action for sharing the thumbnail of a post as an image"
+    },
+    "shareUser": "Ndaj përdoruesin",
+    "@shareUser": {
+        "description": "Heading for sharing a user"
+    },
+    "shareUserLink": "Ndaj lidhjen e përdoruesit",
+    "@shareUserLink": {
+        "description": "Menu item for sharing a user"
+    },
+    "shareUserLinkLocal": "Ndaj lidhjen e përdoruesit (instanca ime)",
+    "@shareUserLinkLocal": {
+        "description": "Menu item for sharing a local user link"
+    },
+    "showAll": "Shfaq të gjitha",
+    "showBotAccounts": "Shfaq llogaritë bot",
+    "@showBotAccounts": {
+        "description": "Option to show bot accounts."
+    },
+    "showCommentActionButtons": "Shfaq butonat e veprimeve të komenteve",
+    "@showCommentActionButtons": {
+        "description": "Toggle to show comment action buttons."
+    },
+    "showCommunityDisplayNames": "Shfaq emrat e shfaqur të komuniteteve",
+    "@showCommunityDisplayNames": {
+        "description": "Setting for showing community display names"
+    },
+    "showCrossPosts": "Shfaq postimet e kryqëzuara",
+    "@showCrossPosts": {
+        "description": "Toggle to show cross posts."
+    },
+    "showEdgeToEdgeImages": "Shfaq imazhe nga skaji në skaj",
+    "@showEdgeToEdgeImages": {
+        "description": "Toggle to view edge to edge images."
+    },
+    "showExpandedTaglines": "Shfaq parullat e zgjeruara",
+    "@showExpandedTaglines": {
+        "description": "Toggle that shows the full expanded tagline in the feed page"
+    },
+    "showFullDate": "Shfaq datën e plotë",
+    "@showFullDate": {
+        "description": "Toggle to show full date on posts"
+    },
+    "showFullDateDescription": "Shfaq datën e plotë te postimet",
+    "@showFullDateDescription": {
+        "description": "Description to show full date on posts"
+    },
+    "showFullHeightImages": "Shfaq imazhe në lartësi të plotë",
+    "@showFullHeightImages": {
+        "description": "Toggle to view full height images."
+    },
+    "showHiddenPosts": "Shfaq postimet e fshehura",
+    "@showHiddenPosts": {
+        "description": "The name of the setting for showing hidden posts"
+    },
+    "showInAppUpdateNotifications": "Merr njoftim për botime të reja në GitHub",
+    "@showInAppUpdateNotifications": {
+        "description": "Toggle to get notified of new GitHub releases."
+    },
+    "showLess": "Shfaq më pak",
+    "showMore": "Shfaq më shumë",
+    "showNavigationLabels": "Shfaq etiketat e navigimit",
+    "@showNavigationLabels": {
+        "description": "Setting for showing navigation labels"
+    },
+    "showNavigationLabelsDescription": "Nëse do të shfaqen etiketa nën butonat e navigimit të poshtëm",
+    "@showNavigationLabelsDescription": {
+        "description": "Description for setting for showing navigation labels"
+    },
+    "showNsfwContent": "Shfaq përmbajtje NSFW",
+    "@showNsfwContent": {
+        "description": "Toggle to show NSFW content."
+    },
+    "showOwnContent": "Shfaq përmbajtjen time",
+    "@showOwnContent": {
+        "description": "Toggle to show your own posts/comments."
+    },
+    "showPassword": "Shfaq fjalëkalimin",
+    "showPostAuthor": "Shfaq autorin e postimit",
+    "@showPostAuthor": {
+        "description": "Toggle to show post author."
+    },
+    "showPostAuthorSubtitle": "Autori i postimit shfaqet gjithmonë në furnizimet e komuniteteve",
+    "@showPostAuthorSubtitle": {
+        "description": "Subtitle for the Show Post Author setting"
+    },
+    "showPostCommunityFirst": "Shfaq komunitetin dhe autorin të parët",
+    "@showPostCommunityFirst": {
+        "description": "Toggle to show community and author first."
+    },
+    "showPostCommunityIcons": "Shfaq ikonat e komuniteteve",
+    "@showPostCommunityIcons": {
+        "description": "Toggle to show community icons."
+    },
+    "showPostSaveAction": "Shfaq butonin e ruajtjes",
+    "@showPostSaveAction": {
+        "description": "Toggle to show save button."
+    },
+    "showPostTextContentPreview": "Shfaq pamje paraprake të tekstit",
+    "@showPostTextContentPreview": {
+        "description": "Toggle to show text previews."
+    },
+    "showPostTitleFirst": "Shfaq titullin të parin",
+    "@showPostTitleFirst": {
+        "description": "Toggle to show post title first."
+    },
+    "showPostVoteActions": "Shfaq butonat e votimit",
+    "@showPostVoteActions": {
+        "description": "Toggle to show vote buttons."
+    },
+    "showReadPosts": "Shfaq postimet e lexuara",
+    "@showReadPosts": {
+        "description": "Setting to show read posts in feed."
+    },
+    "showSavedContent": "Shfaq përmbajtjen e ruajtur",
+    "@showSavedContent": {
+        "description": "Toggle to show saved posts/comments."
+    },
+    "showScoreCounters": "Shfaq rezultatet e përdoruesve",
+    "@showScoreCounters": {
+        "description": "Toggle to display user scores."
+    },
+    "showScores": "Shfaq rezultatet e postimeve/komenteve",
+    "@showScores": {
+        "description": "Option to show scores on posts and comments."
+    },
+    "showTextPostIndicator": "Shfaq treguesin e postimeve me tekst",
+    "@showTextPostIndicator": {
+        "description": "Toggle to show text post indicator."
+    },
+    "showThumbnailPreviewOnRight": "Shfaq miniaturat në të djathtë",
+    "@showThumbnailPreviewOnRight": {
+        "description": "Toggle to show thumbnails on the right side."
+    },
+    "showUnreadOnly": "Shfaq vetëm të palexuarat",
+    "@showUnreadOnly": {
+        "description": "Show unread replies/mentions/messages only"
+    },
+    "showUpdateChangelogs": "Shfaq regjistrat e ndryshimeve të përditësimeve",
+    "@showUpdateChangelogs": {
+        "description": "Setting for showing changelogs after updates"
+    },
+    "showUpdateChangelogsSubtitle": "Shfaq një listë ndryshimesh pas një përditësimi",
+    "@showUpdateChangelogsSubtitle": {
+        "description": "Subtitle for setting for showing changelogs after updates"
+    },
+    "showUserAvatar": "Shfaq avatarin e përdoruesit",
+    "@showUserAvatar": {
+        "description": "Toggle to show user avatar."
+    },
+    "showUserDisplayNames": "Shfaq emrat e shfaqur të përdoruesve",
+    "@showUserDisplayNames": {
+        "description": "Toggle to show user display names."
+    },
+    "showUserInstance": "Shfaq instancën e përdoruesit",
+    "@showUserInstance": {
+        "description": "Toggle to show user instance."
+    },
+    "sidebar": "Shiriti anësor",
+    "sidebarBottomNavDoubleTapDescription": "Trokit dy herë navigimin e poshtëm për të hapur shiritin anësor",
+    "sidebarBottomNavSwipeDescription": "Rrëshqit navigimin e poshtëm për të hapur shiritin anësor",
+    "small": "I vogël",
+    "@small": {
+        "description": "Description for small font scale"
+    },
+    "somethingWentWrong": "Ups, diçka shkoi keq!",
+    "sortBy": "Rendit sipas",
+    "sortByTop": "Rendit sipas 'Top'",
+    "sortOptions": "Opsionet e renditjes",
+    "spoiler": "Spoiler",
+    "@spoiler": {
+        "description": "Placeholder label for spoiler"
+    },
+    "standard": "Standard",
+    "@standard": {
+        "description": "Describes a standard visual density"
+    },
+    "stats": "Statistikat",
+    "@stats": {
+        "description": "Community statistics"
+    },
+    "status": "Statusi",
+    "@status": {
+        "description": "Status of the action"
+    },
+    "submit": "Dërgo",
+    "subscribe": "Abonohu",
+    "subscribeToCommunity": "Abonohu te komuniteti",
+    "@subscribeToCommunity": {
+        "description": "Action for subscribing to a community"
+    },
+    "subscribed": "I abonuar",
+    "subscriptionRequestSent": "Kërkesa për abonim u dërgua",
+    "@subscriptionRequestSent": {
+        "description": "Message for subscription request sent"
+    },
+    "subscriptions": "Abonimet",
+    "successfullyBannedUser": "{username} u përjashtua",
+    "@successfullyBannedUser": {
+        "description": "Notification for successfully banning a user",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was banned"
+            }
+        }
+    },
+    "successfullyBlocked": "U bllokua.",
+    "successfullyBlockedCommunity": "{communityName} u bllokua",
+    "@successfullyBlockedCommunity": {
+        "description": "Notification for successfully blocking a community",
+        "placeholders": {
+            "communityName": {
+                "description": "The name of the community that was blocked"
+            }
+        }
+    },
+    "successfullyBlockedUser": "{username} u bllokua",
+    "@successfullyBlockedUser": {
+        "description": "Notification for successfully blocking a user",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was blocked"
+            }
+        }
+    },
+    "successfullyUnbannedUser": "{username} u çpërjashtua",
+    "@successfullyUnbannedUser": {
+        "description": "Notification for successfully unbanning a user",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was unbanned"
+            }
+        }
+    },
+    "successfullyUnblocked": "U zhbllokua.",
+    "successfullyUnblockedCommunity": "{communityName} u zhbllokua",
+    "@successfullyUnblockedCommunity": {
+        "description": "Notification for successfully unblocking a community",
+        "placeholders": {
+            "communityName": {
+                "description": "The name of the community that was unblocked"
+            }
+        }
+    },
+    "successfullyUnblockedUser": "{username} u zhbllokua",
+    "@successfullyUnblockedUser": {
+        "description": "Notification for successfully unblocking a user",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was unblocked"
+            }
+        }
+    },
+    "suchAs": "si për shembull",
+    "@suchAs": {
+        "description": "This is a connecting phrase and could be translated into anything equivalent of 'like', 'e.g.,', 'for example', etc."
+    },
+    "suggestedTitle": "Titull i sugjeruar",
+    "@suggestedTitle": {
+        "description": "Suggested title for the post."
+    },
+    "switchedAccount": "U kalua te {username}",
+    "@switchedAccount": {
+        "description": "Message shown to the user when Thunder automatically switches accounts",
+        "placeholders": {
+            "username": {
+                "description": "The username of the account that was switched to"
+            }
+        }
+    },
+    "system": "Sistemi",
+    "@system": {
+        "description": "Describes using the system settings for theme"
+    },
+    "systemDarkMode": "E zezë e plotë",
+    "@systemDarkMode": {
+        "description": "Setting which toggles the pure black theme type when the theme is dark"
+    },
+    "systemDarkModeDescription": "Aktivizo temën e zezë të plotë për modalitetin e errët",
+    "@systemDarkModeDescription": {
+        "description": "Toggle which enables the pure black theme when dark mode is selected"
+    },
+    "tabletMode": "Modaliteti i tabletit (pamje me 2 kolona)",
+    "@tabletMode": {
+        "description": "Toggle to enable 2-column tablet mode."
+    },
+    "tapToExit": "Shtyp përsëri mbrapa për të dalë",
+    "tappableAuthorCommunity": "Autorë & komunitete të trokitshëm",
+    "@tappableAuthorCommunity": {
+        "description": "Toggle to make authors and communities tappable."
+    },
+    "teal": "Cel",
+    "@teal": {
+        "description": "The color teal"
+    },
+    "testBackgroundNotificationDescription": "Thunder do të mbyllet vetë dhe më pas do të përpiqet të gjenerojë një njoftim në sfond. (Do të duhen të paktën 15 minuta.)",
+    "@testBackgroundNotificationDescription": {
+        "description": "A message describing the background test notification"
+    },
+    "testBackgroundUnifiedPushNotificationDescription": "Thunder do t'i kërkojë serverit të njoftimeve të dërgojë një njoftim të vonuar dhe më pas do të mbyllet vetë. (Mund të duhen disa minuta.)",
+    "@testBackgroundUnifiedPushNotificationDescription": {
+        "description": "A message describing the UnifiedPush background test notification"
+    },
+    "text": "Tekst",
+    "textActions": "Veprime teksti",
+    "@textActions": {
+        "description": "Option for text actions"
+    },
+    "theme": "Tema",
+    "@theme": {
+        "description": "Setting for theme"
+    },
+    "themeAccentColor": "Ngjyrat e theksit",
+    "@themeAccentColor": {
+        "description": "Setting for theme accent color"
+    },
+    "themePrimary": "Ngjyra parësore e temës",
+    "@themePrimary": {
+        "description": "Name of primary theme color"
+    },
+    "themeSecondary": "Ngjyra dytësore e temës",
+    "@themeSecondary": {
+        "description": "Name of secondary theme color"
+    },
+    "themeTertiary": "Ngjyra tretësore e temës",
+    "@themeTertiary": {
+        "description": "Name of primary theme color"
+    },
+    "theming": "Tematizimi",
+    "@theming": {
+        "description": "Title of Theming in Settings -> Appearance -> Theming"
+    },
+    "thickness": "Trashësia",
+    "@thickness": {
+        "description": "Describes a thickness (e.g., divider)"
+    },
+    "thisAccount": "Kjo llogari",
+    "@thisAccount": {
+        "description": "Referring to the currently active account in account settings"
+    },
+    "thumbnailUrl": "URL e miniaturës",
+    "@thumbnailUrl": {
+        "description": "Post field for adding a custom thumbnail to the post"
+    },
+    "thunderHasBeenUpdated": "Thunder u përditësua në {version}!",
+    "@thunderHasBeenUpdated": {
+        "description": "Heading for changelog when Thunder has been updated",
+        "placeholders": {
+            "version": {
+                "description": "The version of Thunder that has been updated"
+            }
+        }
+    },
+    "thunderNotificationServer": "Serveri i njoftimeve të Thunder: {server}",
+    "@thunderNotificationServer": {
+        "description": "Text for the user to know what the currently selected notification server is",
+        "placeholders": {
+            "server": {
+                "description": "The currently selected notification server"
+            }
+        }
+    },
+    "timeoutComments": "Gabim: Afati kohor skadoi gjatë përpjekjes për të marrë komentet",
+    "timeoutErrorMessage": "Afati kohor skadoi duke pritur për një përgjigje.",
+    "timeoutSaveComment": "Gabim: Afati kohor skadoi gjatë përpjekjes për të ruajtur një koment",
+    "timeoutSavingPost": "Gabim: Afati kohor skadoi gjatë përpjekjes për të ruajtur postimin.",
+    "timeoutUpvoteComment": "Gabim: Afati kohor skadoi gjatë përpjekjes për të votuar komentin",
+    "timeoutVotingPost": "Gabim: Afati kohor skadoi gjatë përpjekjes për të votuar postimin.",
+    "toggelRead": "Ndërro të lexuar/palexuar",
+    "top": "Top",
+    "topAll": "Top i të gjitha kohërave",
+    "topDay": "Top sot",
+    "topHour": "Top në orën e fundit",
+    "topMonth": "Top i muajit",
+    "topNineMonths": "Top në 9 muajt e fundit",
+    "@topNineMonths": {
+        "description": "Sort mode for top in past 9 months"
+    },
+    "topSixHour": "Top në 6 orët e fundit",
+    "topSixMonths": "Top në 6 muajt e fundit",
+    "@topSixMonths": {
+        "description": "Sort mode for top in past 6 months"
+    },
+    "topThreeMonths": "Top në 3 muajt e fundit",
+    "@topThreeMonths": {
+        "description": "Sort mode for top in past 3 months"
+    },
+    "topTwelveHour": "Top në 12 orët e fundit",
+    "topWeek": "Top i javës",
+    "topYear": "Top i vitit",
+    "totalComments": "{x} komente",
+    "@totalComments": {
+        "description": "The total comments created by a user",
+        "placeholders": {
+            "x": {
+                "description": "The total comments created by a user"
+            }
+        }
+    },
+    "totalPosts": "{x} postime",
+    "@totalPosts": {
+        "description": "The total posts created by a user",
+        "placeholders": {
+            "x": {
+                "description": "The total posts created by a user"
+            }
+        }
+    },
+    "totp": "TOTP (opsionale)",
+    "transferredModToCommunity": "Komuniteti u transferua",
+    "@transferredModToCommunity": {
+        "description": "Short decription for moderator action to transfer a community"
+    },
+    "translationsMayNotBeComplete": "Të lutem vër re se përkthimet mund të mos jenë të plota",
+    "@translationsMayNotBeComplete": {
+        "description": "Warning that translations may not be complete when selecting a language in the settings"
+    },
+    "trendingCommunities": "Komunitete në trend",
+    "trySearchingFor": "Provo të kërkosh për...",
+    "@trySearchingFor": {
+        "description": "Suggestion for the user to try searching for a different type"
+    },
+    "unableToFindCommunity": "Komuniteti nuk u gjet dot",
+    "unableToFindCommunityName": "Komuniteti '{communityName}' nuk u gjet dot",
+    "@unableToFindCommunityName": {
+        "description": "Error message for when we are unable to find a community, including the name",
+        "placeholders": {
+            "communityName": {
+                "description": "The name of the community that was unable to be found"
+            }
+        }
+    },
+    "unableToFindCommunityOnInstance": "Komuniteti i përzgjedhur nuk u gjet dot në instancën e përdoruesit të përzgjedhur.",
+    "@unableToFindCommunityOnInstance": {
+        "description": "An error message for when we can't find a community on an instance"
+    },
+    "unableToFindInstance": "Instanca nuk u gjet dot",
+    "unableToFindLanguage": "Gjuha nuk u gjet dot",
+    "@unableToFindLanguage": {
+        "description": "Error message when language cannot be found."
+    },
+    "unableToFindPost": "Postimi nuk u gjet dot",
+    "@unableToFindPost": {
+        "description": "Error message when we are unable to find a post"
+    },
+    "unableToFindUser": "Përdoruesi nuk u gjet dot",
+    "unableToFindUserName": "Përdoruesi '{username}' nuk u gjet dot",
+    "@unableToFindUserName": {
+        "description": "Error message when we are unable to find a user",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was unable to be found"
+            }
+        }
+    },
+    "unableToLoadImage": "Imazhi nuk u ngarkua dot",
+    "@unableToLoadImage": {
+        "description": "Placeholder for when we are unable to load a binary image"
+    },
+    "unableToLoadImageFrom": "Imazhi nuk u ngarkua dot nga {domain}",
+    "@unableToLoadImageFrom": {
+        "description": "Placeholder for when we are unable to load an image from a URL",
+        "placeholders": {
+            "domain": {
+                "description": "The domain that the image is from"
+            }
+        }
+    },
+    "unableToLoadInstance": "{instance} nuk u ngarkua dot",
+    "@unableToLoadInstance": {
+        "description": "Error message when we are unable to load an instance",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that was unable to be loaded"
+            }
+        }
+    },
+    "unableToLoadPost": "Postimi nuk u ngarkua dot",
+    "@unableToLoadPost": {
+        "description": "Error message shown when we are unable to load a post."
+    },
+    "unableToLoadPostsFrominstance": "Postimet nuk u ngarkuan dot nga {instance}",
+    "@unableToLoadPostsFrominstance": {
+        "description": "Error message when we are unable to load posts from an instance",
+        "placeholders": {
+            "instance": {
+                "description": "The instance that the posts are from"
+            }
+        }
+    },
+    "unableToLoadReplies": "Nuk u ngarkuan dot më shumë përgjigje.",
+    "unableToNavigateToInstance": "Nuk u navigua dot te {instanceHost}. Mund të mos jetë një instancë e vlefshme Lemmy.",
+    "@unableToNavigateToInstance": {
+        "description": "Error message for when we can't navigate to a Lemmy instance",
+        "placeholders": {
+            "instanceHost": {
+                "description": "The host of the instance that we are unable to navigate to"
+            }
+        }
+    },
+    "unableToResolveReport": "Raporti nuk u zgjidh dot",
+    "@unableToResolveReport": {
+        "description": "Error message when we are unable to resolve a report"
+    },
+    "unableToRetrieveChangelog": "Regjistri i ndryshimeve për versionin {version} nuk u mor dot.",
+    "@unableToRetrieveChangelog": {
+        "description": "Error message for when we are unable to retrieve the changelog.",
+        "placeholders": {
+            "version": {
+                "description": "The version of the changelog that we are unable to retrieve"
+            }
+        }
+    },
+    "unbanFromCommunity": "Çpërjashto nga komuniteti",
+    "@unbanFromCommunity": {
+        "description": "Moderator action to unban a user from a community"
+    },
+    "unbannedUser": "Përdorues i çpërjashtuar",
+    "@unbannedUser": {
+        "description": "Short decription for moderator action to unban a user"
+    },
+    "unbannedUserFromCommunity": "{username} u çpërjashtua nga komuniteti",
+    "@unbannedUserFromCommunity": {
+        "description": "Short decription for moderator action to unban a user from a community",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user that was unbanned from the community"
+            }
+        }
+    },
+    "unblock": "Zhblloko",
+    "@unblock": {
+        "description": "Action for unblocking an item"
+    },
+    "unblockCommunity": "Zhblloko komunitetin",
+    "@unblockCommunity": {
+        "description": "Action to unblock a community"
+    },
+    "unblockCommunityInstance": "Zhblloko instancën e komunitetit",
+    "@unblockCommunityInstance": {
+        "description": "Action to unblock the instance of a given community"
+    },
+    "unblockInstance": "Zhblloko instancën",
+    "@unblockInstance": {
+        "description": "Tooltip for unblocking an instance"
+    },
+    "unblockUser": "Zhblloko përdoruesin",
+    "@unblockUser": {
+        "description": "Action to unblock a user"
+    },
+    "unblockUserInstance": "Zhblloko instancën e përdoruesit",
+    "@unblockUserInstance": {
+        "description": "Action to unblock the instance of a given user"
+    },
+    "understandEnable": "E kuptoj, aktivizo",
+    "@understandEnable": {
+        "description": "Action for acknowledging and enabling something"
+    },
+    "unexpectedError": "Gabim i papritur",
+    "@unexpectedError": {
+        "description": "Error message for unexpected error"
+    },
+    "unfavorite": "Hiq nga të preferuarat",
+    "@unfavorite": {
+        "description": "Action for unfavoriting a community"
+    },
+    "unfeaturedPost": "Postim i paveçuar",
+    "@unfeaturedPost": {
+        "description": "Short decription for moderator action to unfeature a post"
+    },
+    "unhidCommunity": "Komuniteti u çfsheh",
+    "@unhidCommunity": {
+        "description": "Short decription for moderator action to unhide a community"
+    },
+    "unhide": "Çfshih",
+    "@unhide": {
+        "description": "The action to unhide a post"
+    },
+    "unifiedPushDistributorApp": "Aplikacioni shpërndarës UnifiedPush: {app} ({count} të disponueshëm)",
+    "@unifiedPushDistributorApp": {
+        "description": "A status indicator telling the current state of the UnifiedPush distributor app",
+        "placeholders": {
+            "app": {
+                "description": "The name of the UnifiedPush distributor app"
+            },
+            "count": {
+                "description": "The number of available UnifiedPush distributor apps"
+            }
+        }
+    },
+    "unifiedPushNotifications": "Njoftime UnifiedPush",
+    "@unifiedPushNotifications": {
+        "description": "Describes the notification type for UnifiedPush Notifications"
+    },
+    "unifiedPushServer": "Serveri UnifiedPush: {server}",
+    "@unifiedPushServer": {
+        "description": "Debug text that tells the user what UnifiedPush server is being used",
+        "placeholders": {
+            "server": {
+                "description": "The UnifiedPush server that is being used"
+            }
+        }
+    },
+    "unifiedpush": "UnifiedPush",
+    "@unifiedpush": {
+        "description": "The UnifiedPush notification type (maybe shouldn't be translated)"
+    },
+    "unlockPost": "Çkyç postimin",
+    "@unlockPost": {
+        "description": "Action for unlocking a post (moderator action)"
+    },
+    "unlockedPost": "Postim i çkyçur",
+    "@unlockedPost": {
+        "description": "Short decription for moderator action to unlock a post"
+    },
+    "unpinFromCommunity": "Çgozhdo nga komuniteti",
+    "@unpinFromCommunity": {
+        "description": "Setting for unpinning a post from a community (moderator action)"
+    },
+    "unpinPostFromCommunity": "Çgozhdo postimin nga komuniteti",
+    "@unpinPostFromCommunity": {
+        "description": "Moderator action to unpin a post from a community"
+    },
+    "unpinnedPostFromCommunity": "Postimi u çgozhdua nga komuniteti",
+    "@unpinnedPostFromCommunity": {
+        "description": "Message shown when a post is unpinned from a community"
+    },
+    "unreachable": "I paarritshëm",
+    "@unreachable": {
+        "description": "Describes an instance that is currently unreachable"
+    },
+    "unresolved": "I pazgjidhur",
+    "@unresolved": {
+        "description": "Description for unresolved status (e.g., unresolved reports)"
+    },
+    "unsubscribe": "Çabonohu",
+    "unsubscribeFromCommunity": "Çabonohu nga komuniteti",
+    "@unsubscribeFromCommunity": {
+        "description": "Action for unsubscribing from a community"
+    },
+    "unsubscribePending": "Çabonohu (abonimi në pritje)",
+    "unsubscribed": "I çabonuar",
+    "untitledCommentDraft": "Skicë komenti pa titull",
+    "@untitledCommentDraft": {
+        "description": "Fallback title for comment drafts without body text"
+    },
+    "untitledPostDraft": "Skicë postimi pa titull",
+    "@untitledPostDraft": {
+        "description": "Fallback title for post drafts without a title"
+    },
+    "updateReleased": "Përditësimi u lëshua: {version}",
+    "@updateReleased": {
+        "description": "Message shown to the user when a new update is released",
+        "placeholders": {
+            "version": {
+                "description": "The version of the update that was released"
+            }
+        }
+    },
+    "uploadImage": "Ngarko imazh",
+    "uploadedDate": "Ngarkuar: {date}",
+    "@uploadedDate": {
+        "description": "Metadata for image uploads",
+        "placeholders": {
+            "date": {
+                "description": "The date of the image upload"
+            }
+        }
+    },
+    "upvote": "Vota lart",
+    "@upvote": {
+        "description": "Action for upvoting a post/comment"
+    },
+    "upvoteColor": "Ngjyra e votës lart",
+    "@upvoteColor": {
+        "description": "Name of upvote color setting"
+    },
+    "upvoted": "Votuar lart",
+    "@upvoted": {
+        "description": "Short description for upvoted post/comment"
+    },
+    "uriNotSupported": "Ky lloj lidhjeje nuk mbështetet për momentin.",
+    "@uriNotSupported": {
+        "description": "Unsupported link type at the present time."
+    },
+    "url": "URL",
+    "useAdvancedShareSheet": "Përdor fletën e avancuar të ndarjes",
+    "@useAdvancedShareSheet": {
+        "description": "Toggle to use advanced share sheet."
+    },
+    "useApplePushNotifications": "Përdor njoftime APNs",
+    "@useApplePushNotifications": {
+        "description": "Toggle to use APNs."
+    },
+    "useApplePushNotificationsDescription": "Përdor shërbimin e njoftimeve push të Apple",
+    "@useApplePushNotificationsDescription": {
+        "description": "Subtitle of the setting for using APNs"
+    },
+    "useCompactView": "Aktivizo për postime të vogla, çaktivizo për të mëdha.",
+    "@useCompactView": {
+        "description": "Option to enable or disable compact view for small posts."
+    },
+    "useLocalNotifications": "Përdor njoftime lokale (eksperimentale)",
+    "@useLocalNotifications": {
+        "description": "Toggle to use local notifications."
+    },
+    "useLocalNotificationsDescription": "Kontrollon periodikisht për njoftime në sfond",
+    "@useLocalNotificationsDescription": {
+        "description": "Subtitle of the setting for using local notifications"
+    },
+    "useMaterialYouTheme": "Përdor temën Material You",
+    "@useMaterialYouTheme": {
+        "description": "Toggle to use Material You theme."
+    },
+    "useMaterialYouThemeDescription": "Anashkalon temën e personalizuar të përzgjedhur",
+    "@useMaterialYouThemeDescription": {
+        "description": "Subtitle of the setting for using Material You theme"
+    },
+    "useProfilePictureForDrawer": "Përdor fotografinë e profilit për sirtarin",
+    "@useProfilePictureForDrawer": {
+        "description": "Setting name for using the profile picture for the drawer"
+    },
+    "useProfilePictureForDrawerSubtitle": "Kur je i loguar, shfaq fotografinë e profilit të përdoruesit në vend të ikonës së sirtarit",
+    "@useProfilePictureForDrawerSubtitle": {
+        "description": "Setting subtitle for using the profile picture for the drawer"
+    },
+    "useSuggestedTitle": "Përdor titullin e sugjeruar: {title}",
+    "@useSuggestedTitle": {
+        "description": "Message shown to the user when the suggested title is found",
+        "placeholders": {
+            "title": {
+                "description": "The suggested title"
+            }
+        }
+    },
+    "useUnifiedPushNotifications": "Përdor njoftime UnifiedPush",
+    "@useUnifiedPushNotifications": {
+        "description": "Toggle to use UnifiedPush Notifications"
+    },
+    "useUnifiedPushNotificationsDescription": "Kërkon një aplikacion të pajtueshëm",
+    "@useUnifiedPushNotificationsDescription": {
+        "description": "Subtitle of the setting for using UnifiedPush Notifications"
+    },
+    "user": "Përdorues",
+    "@user": {
+        "description": "Role name for user"
+    },
+    "userActions": "Veprime përdoruesi",
+    "@userActions": {
+        "description": "Heading for user actions page"
+    },
+    "userEntry": "Përdoruesi '{username}'",
+    "@userEntry": {
+        "description": "Entry in list for a user to perform further actions",
+        "placeholders": {
+            "username": {
+                "description": "The username of the user"
+            }
+        }
+    },
+    "userFormat": "Formati i përdoruesit",
+    "@userFormat": {
+        "description": "Setting for user full name format"
+    },
+    "userLabelHint": "Ky është përdoruesi im i preferuar",
+    "@userLabelHint": {
+        "description": "Hint text for adding a new user label"
+    },
+    "userLabels": "Etiketat e përdoruesve",
+    "@userLabels": {
+        "description": "Heading for user labels settings"
+    },
+    "userLabelsSettingsPageDescription": "Mund të shtosh, modifikosh ose heqësh etiketa të lidhura me përdoruesit.",
+    "@userLabelsSettingsPageDescription": {
+        "description": "Description text for user labels settings page"
+    },
+    "userNameColor": "Ngjyra e emrit të përdoruesit",
+    "@userNameColor": {
+        "description": "Setting for username color"
+    },
+    "userNameThickness": "Trashësia e emrit të përdoruesit",
+    "@userNameThickness": {
+        "description": "Setting for user name thickness"
+    },
+    "userNotLoggedIn": "Përdoruesi nuk ka hyrë",
+    "userProfiles": "Profilet e përdoruesve",
+    "@userProfiles": {
+        "description": "Settings related to user profiles."
+    },
+    "userSettingDescription": "Këto cilësime sinkronizohen me llogarinë tënde Lemmy dhe zbatohen vetëm për çdo llogari veç e veç.",
+    "@userSettingDescription": {
+        "description": "Description which explains that the settings are applied globally to the current user."
+    },
+    "userStyle": "Stili i përdoruesit",
+    "@userStyle": {
+        "description": "Heading for user style setting"
+    },
+    "username": "Emri i përdoruesit",
+    "usernameFormattingRedirect": "Kërkon formatim të emrit të përdoruesit?",
+    "@usernameFormattingRedirect": {
+        "description": "Setting title for sending the user to the new formatting options"
+    },
+    "users": "Përdorues",
+    "versionNumber": "Versioni {version}",
+    "@versionNumber": {
+        "description": "String for describing the current version",
+        "placeholders": {
+            "version": {
+                "description": "The version of the current version"
+            }
+        }
+    },
+    "video": "Video",
+    "@video": {
+        "description": "String for video "
+    },
+    "videoAutoFullscreen": "Ekran i plotë automatik",
+    "@videoAutoFullscreen": {
+        "description": "Option to always start the video players in landscape"
+    },
+    "videoAutoLoop": "Përsërit videon",
+    "@videoAutoLoop": {
+        "description": "Option to always loop a video"
+    },
+    "videoAutoMute": "Heshto videot",
+    "@videoAutoMute": {
+        "description": "Option to always mute videos"
+    },
+    "videoAutoPlay": "Riprodhim automatik i videove",
+    "@videoAutoPlay": {
+        "description": "Option to always autoplay videos"
+    },
+    "videoDefaultPlaybackSpeed": "Shpejtësia e parazgjedhur e riprodhimit",
+    "@videoDefaultPlaybackSpeed": {
+        "description": "Option to select the default video playback Speed"
+    },
+    "videoLinkHandlingExternal": "Luaj videon me një aplikacion të jashtëm",
+    "@videoLinkHandlingExternal": {
+        "description": "Description to Open video with an external application"
+    },
+    "videoPlayerInApp": "Përdor riprodhuesin e integruar të Thunder",
+    "@videoPlayerInApp": {
+        "description": "Description for using in-app video player"
+    },
+    "videoPlayerMode": "Modaliteti i riprodhuesit",
+    "@videoPlayerMode": {
+        "description": "Option to select video player mode (in-app or external)  "
+    },
+    "viewAll": "Shiko të gjitha",
+    "@viewAll": {
+        "description": "A title for viewing all of something (e.g., instances)"
+    },
+    "viewAllComments": "Shiko të gjitha komentet",
+    "viewCommentSource": "Shiko burimin e komentit",
+    "@viewCommentSource": {
+        "description": "Menu item for viewing a comment's source"
+    },
+    "viewModlog": "Shiko regjistrin e moderimit",
+    "@viewModlog": {
+        "description": "Action which allows the user to navigate to the modlog for a particular entity"
+    },
+    "viewOriginal": "Shiko origjinalin",
+    "@viewOriginal": {
+        "description": "Action for viewing original text (as opposed to raw markdown)"
+    },
+    "viewPostAsDifferentAccount": "Shiko postimin si llogari tjetër",
+    "@viewPostAsDifferentAccount": {
+        "description": "Action for viewing a post as a different account"
+    },
+    "viewPostSource": "Shiko burimin e postimit",
+    "@viewPostSource": {
+        "description": "Menu item for viewing a post's source"
+    },
+    "viewSource": "Shiko burimin",
+    "@viewSource": {
+        "description": "Action for viewing source (raw markdown)"
+    },
+    "viewingAll": "Po shihen të gjitha",
+    "@viewingAll": {
+        "description": "Chip for viewing all possible search results"
+    },
+    "visibility": "Dukshmëria: {visibility}",
+    "@visibility": {
+        "description": "Visibility heading for community",
+        "placeholders": {
+            "visibility": {
+                "description": "The visibility of the community"
+            }
+        }
+    },
+    "visitCommunity": "Vizito komunitetin",
+    "visitCommunityInstance": "Vizito instancën e komunitetit",
+    "@visitCommunityInstance": {
+        "description": "Action to visit the instance of a community"
+    },
+    "visitInstance": "Vizito instancën",
+    "visitUserInstance": "Vizito instancën e përdoruesit",
+    "@visitUserInstance": {
+        "description": "Action to visit the instance of a user"
+    },
+    "visitUserProfile": "Vizito profilin e përdoruesit",
+    "warning": "Paralajmërim",
+    "@warning": {
+        "description": "Heading for warning dialogs"
+    },
+    "xDownvotes": "{x} vota poshtë",
+    "@xDownvotes": {
+        "description": "The total downvotes of post or comment",
+        "placeholders": {
+            "x": {
+                "description": "The total downvotes of post or comment"
+            }
+        }
+    },
+    "xScore": "{x} pikë",
+    "@xScore": {
+        "description": "The total score of post or comment",
+        "placeholders": {
+            "x": {
+                "description": "The total score of post or comment"
+            }
+        }
+    },
+    "xUpvotes": "{x} vota lart",
+    "@xUpvotes": {
+        "description": "The total upvotes of post or comment",
+        "placeholders": {
+            "x": {
+                "description": "The total upvotes of post or comment"
+            }
+        }
+    },
+    "xYearsOld": "{count, plural, zero {{x} vjeç} one {{x} vjeç} other {{x} vjeç}}",
+    "@xYearsOld": {
+        "description": "An account descriptor representing how old an account is",
+        "placeholders": {
+            "count": {
+                "description": "The number of years old the account is"
+            },
+            "x": {
+                "description": "The number of years old the account is"
+            }
+        }
+    },
+    "yes": "Po",
+    "@yes": {
+        "description": "A positive status"
+    },
+    "youMustSelectAJsonFile": "Duhet të zgjedhësh një skedar .json.",
+    "@youMustSelectAJsonFile": {
+        "description": "Error message shown to user when they attempt to import a JSON file that doesn't have the right extension"
+    }
+}
