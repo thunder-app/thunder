@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/comment/presentation/utils/comment_example_utils.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class CommentAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -58,15 +58,15 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
-      showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
-      commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
-      commentShowUserAvatar = prefs.getBool(LocalSettings.commentShowUserAvatar.name) ?? false;
-      combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
-      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
-      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+      showCommentButtonActions = prefs.getLocalSetting<bool>(LocalSettings.showCommentActionButtons) ?? false;
+      commentShowUserInstance = prefs.getLocalSetting<bool>(LocalSettings.commentShowUserInstance) ?? false;
+      commentShowUserAvatar = prefs.getLocalSetting<bool>(LocalSettings.commentShowUserAvatar) ?? false;
+      combineCommentScores = prefs.getLocalSetting<bool>(LocalSettings.combineCommentScores) ?? false;
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getLocalSetting<String>(LocalSettings.nestedCommentIndicatorStyle) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getLocalSetting<String>(LocalSettings.nestedCommentIndicatorColor) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
 
     getExampleComment();
@@ -74,29 +74,29 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.showCommentActionButtons:
-        await prefs.setBool(LocalSettings.showCommentActionButtons.name, value);
+        await prefs.setSetting(LocalSettings.showCommentActionButtons, value);
         setState(() => showCommentButtonActions = value);
         break;
       case LocalSettings.commentShowUserInstance:
-        await prefs.setBool(LocalSettings.commentShowUserInstance.name, value);
+        await prefs.setSetting(LocalSettings.commentShowUserInstance, value);
         setState(() => commentShowUserInstance = value);
       case LocalSettings.commentShowUserAvatar:
-        await prefs.setBool(LocalSettings.commentShowUserAvatar.name, value);
+        await prefs.setSetting(LocalSettings.commentShowUserAvatar, value);
         setState(() => commentShowUserAvatar = value);
       case LocalSettings.combineCommentScores:
-        await prefs.setBool(LocalSettings.combineCommentScores.name, value);
+        await prefs.setSetting(LocalSettings.combineCommentScores, value);
         setState(() => combineCommentScores = value);
         break;
       case LocalSettings.nestedCommentIndicatorStyle:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorStyle.name, value);
+        await prefs.setSetting(LocalSettings.nestedCommentIndicatorStyle, value);
         setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
         break;
       case LocalSettings.nestedCommentIndicatorColor:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
+        await prefs.setSetting(LocalSettings.nestedCommentIndicatorColor, value);
         setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
       default:
@@ -111,7 +111,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
   /// Reset the comment preferences to their defaults
   void resetCommentPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     await prefs.remove(LocalSettings.showCommentActionButtons.name);
     await prefs.remove(LocalSettings.combineCommentScores.name);

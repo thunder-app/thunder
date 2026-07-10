@@ -5,10 +5,9 @@ import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/features/private_message/data/repositories/private_message_repository.dart';
 import 'package:thunder/src/features/private_message/domain/utils/private_message_thread_utils.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/errors/errors.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 part 'private_message_thread_state.dart';
 

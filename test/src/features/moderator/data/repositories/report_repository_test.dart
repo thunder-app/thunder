@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:thunder/src/features/moderator/data/repositories/report_repository.dart';
 import 'package:thunder/src/features/moderator/domain/enums/report_feed_type.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/mock_thunder_api_client.dart';
 import '../../../../../helpers/repository_test_fixtures.dart';

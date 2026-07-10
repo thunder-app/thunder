@@ -1,6 +1,6 @@
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/shared/webview/web_controller.dart';
 
 class CustomWebViewController implements IWebController {
   final WebViewController controller;

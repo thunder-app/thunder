@@ -6,10 +6,11 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/text/selectable_text_modal.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a comment
 enum CommentBottomSheetAction {
@@ -118,7 +119,7 @@ class CommentCommentActionBottomSheet extends StatefulWidget {
 class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBottomSheet> {
   void performAction(CommentBottomSheetAction action) async {
     final l10n = GlobalContext.l10n;
-    final repository = CommentRepositoryImpl(account: widget.account);
+    final repository = createCommentRepository(widget.account);
 
     switch (action) {
       case CommentBottomSheetAction.selectCommentText:
@@ -167,7 +168,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       title: l10n.reportComment,
       primaryButtonText: l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
-        final repository = CommentRepositoryImpl(account: widget.account);
+        final repository = createCommentRepository(widget.account);
 
         await repository.report(widget.comment.id, controller.text);
         showThunderSnackbar(l10n.reportedComment);

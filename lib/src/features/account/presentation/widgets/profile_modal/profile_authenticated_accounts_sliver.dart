@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_authenticated_account_tile.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
+import 'package:thunder/src/core/domain/models/account.dart';
 
 /// Displays and reorders the authenticated account rows in the profile modal.
 class ProfileAuthenticatedAccountsSliver extends StatelessWidget {

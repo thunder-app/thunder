@@ -6,18 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/shared/links/link_bottom_sheet.dart';
 
 import 'package:thunder/src/shared/media/image_preview.dart';
 import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/src/shared/media/link_information.dart';
-import 'package:thunder/src/shared/media/media_view_text.dart';
 
 class MediaView extends StatefulWidget {
   /// The media information.
@@ -78,6 +77,45 @@ class MediaView extends StatefulWidget {
 
   @override
   State<MediaView> createState() => _MediaViewState();
+}
+
+class _MediaViewText extends StatelessWidget {
+  const _MediaViewText({
+    this.text,
+    this.read,
+  });
+
+  final String? text;
+  final bool? read;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final foreground = theme.colorScheme.onSurface.withValues(
+      alpha: read == true ? 0.55 : 1.0,
+    );
+
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: read == true ? 0.55 : 1.0,
+        ),
+      ),
+      height: ViewMode.compact.height,
+      width: ViewMode.compact.height,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Text(
+          text ?? '',
+          maxLines: 4,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodyMedium?.copyWith(color: foreground, fontSize: 8.0),
+        ),
+      ),
+    );
+  }
 }
 
 class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
@@ -240,7 +278,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     }
 
     if (widget.viewMode == ViewMode.compact && widget.media.mediaType == MediaType.text) {
-      return MediaViewText(
+      return _MediaViewText(
         text: widget.media.altText,
         read: widget.read,
       );

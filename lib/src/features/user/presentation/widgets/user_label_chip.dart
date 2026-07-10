@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A widget that displays a user's label in a chip format.
 class UserLabelChip extends StatelessWidget {
@@ -18,7 +19,7 @@ class UserLabelChip extends StatelessWidget {
   const UserLabelChip({super.key, required this.username});
 
   Future<UserLabel?> fetchUserLabel() async {
-    return await UserLabel.fetchUserLabel(username);
+    return await createUserLabelRepository().fetchUserLabel(username);
   }
 
   @override

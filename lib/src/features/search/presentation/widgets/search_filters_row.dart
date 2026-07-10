@@ -4,10 +4,9 @@ import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';

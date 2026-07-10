@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/presentation/pages/lemmy_user_settings_page.dart';
 import 'package:thunder/src/features/user/presentation/pages/piefed_user_settings_page.dart';
-import 'package:thunder/src/foundation/primitives/enums/enums.dart';
+import 'package:thunder/src/core/domain/enums/enums.dart';
 
 /// Routes the account settings view to the platform-specific implementation.
 class UserSettingsPage extends StatelessWidget {

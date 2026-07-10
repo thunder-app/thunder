@@ -6,7 +6,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 

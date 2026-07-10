@@ -1,9 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:thunder/src/features/account/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/instance/api.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A cache that holds a given [account]'s site info.
 class ProfileSiteInfoCache {
@@ -34,7 +33,7 @@ class ProfileSiteInfoCache {
       return entry.response;
     }
 
-    final repository = InstanceRepositoryImpl(account: account);
+    final repository = createInstanceRepository(account);
     final response = await repository.info();
 
     _cacheByAccountKey[key] = _CacheEntry(response: response, fetchedAt: now, isDirty: false);

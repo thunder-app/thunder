@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// A generic widget that displays information about a media/link URL.
 class LinkInformation extends StatelessWidget {

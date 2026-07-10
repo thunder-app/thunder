@@ -7,9 +7,10 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
 
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/config/config.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
@@ -55,7 +56,7 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   Widget build(BuildContext context) {
     return BlocProvider<ModlogCubit>(
       create: (_) => ModlogCubit(
-        repository: ModlogRepositoryImpl(account: widget.account),
+        repository: createModlogRepository(widget.account),
       )..fetchModlogFeed(
           modlogActionType: widget.modlogActionType,
           communityId: widget.communityId,

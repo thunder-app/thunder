@@ -14,18 +14,19 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 import 'package:thunder/src/features/user/presentation/state/account_settings_cubit.dart';
 import 'package:thunder/src/features/user/presentation/widgets/user_settings_page_scaffold.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/networking/error_message_utils.dart';
-import 'package:thunder/src/foundation/primitives/enums/enums.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/networking/error_message_utils.dart';
+import 'package:thunder/src/core/domain/enums/enums.dart';
+import 'package:thunder/src/core/domain/models/thunder_user.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Lemmy account settings page.
 class LemmyUserSettingsPage extends StatefulWidget {
@@ -430,7 +431,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     dynamic exportSettings;
     try {
       final account = resolveEffectiveAccount(context);
-      exportSettings = await AccountRepositoryImpl(account: account).exportSettings();
+      exportSettings = await createAccountRepository(account).exportSettings();
     } catch (e) {
       showThunderSnackbar(getExceptionErrorMessage(e));
       return;
@@ -493,7 +494,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     try {
       final appL10n = AppLocalizations.of(GlobalContext.context)!;
       final account = resolveEffectiveAccount(context);
-      final success = await AccountRepositoryImpl(account: account).importSettings(
+      final success = await createAccountRepository(account).importSettings(
         importSettings,
       );
 

@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 // Package imports
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/core/config/config.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
 // Project imports
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 /// This function is used to update the notification settings. It is called when the user changes the notification settings.
 ///
@@ -25,7 +25,7 @@ Future<bool> updateNotificationSettings(
   Function? onUpdate,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final prefs = UserPreferences.instance.preferences;
+  final prefs = const UserPreferencesStore();
 
   // Disable background fetch and unregister unified push. This is only applied to Android. For iOS, simply deleting the token is enough.
   // The user should be aware that restarting the app is required to update their push notification settings
@@ -59,7 +59,7 @@ Future<bool> updateNotificationSettings(
     } else if (updatedNotificationType == NotificationType.none && !success) {
       // If we failed to remove all tokens from the server, we'll set the preference to NotificationType.none
       // The next time the app is opened, it will attempt to remove tokens from the server
-      showThunderSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL));
+      showThunderSnackbar(l10n.failedToCommunicateWithThunderNotificationServer(prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL));
       onUpdate?.call(updatedNotificationType);
       return true;
     }

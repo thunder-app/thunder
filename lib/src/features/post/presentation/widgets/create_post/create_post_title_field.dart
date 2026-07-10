@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// A title input field with support for link-based title suggestions.
 class CreatePostTitleField extends StatefulWidget {

@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 
 /// App bar actions shown on general listing feeds.

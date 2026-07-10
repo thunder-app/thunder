@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/post/presentation/state/create_post_cubit.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 class CreatePostUrlField extends StatelessWidget {
   const CreatePostUrlField({

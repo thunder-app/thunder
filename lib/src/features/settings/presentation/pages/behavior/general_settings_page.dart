@@ -9,24 +9,25 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/persistence/persistence.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/settings/domain/models/language_local.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -140,116 +141,116 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool enableExperimentalFeatures = false;
 
   Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.defaultFeedListType:
-        await prefs.setString(LocalSettings.defaultFeedListType.name, value);
+        await prefs.setSetting(LocalSettings.defaultFeedListType, value);
         setState(() => defaultFeedListType = FeedListType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedPostSortType:
-        await prefs.setString(LocalSettings.defaultFeedPostSortType.name, value);
+        await prefs.setSetting(LocalSettings.defaultFeedPostSortType, value);
         setState(() => defaultPostSortType = PostSortType.values.byName(value ?? DEFAULT_POST_SORT_TYPE.name));
         break;
       case LocalSettings.defaultCommentSortType:
-        await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
+        await prefs.setSetting(LocalSettings.defaultCommentSortType, value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
       case LocalSettings.appLanguageCode:
-        await prefs.setString(LocalSettings.appLanguageCode.name, value.toLanguageTag());
+        await prefs.setSetting(LocalSettings.appLanguageCode, value.toLanguageTag());
         setState(() => currentLocale = value);
         break;
       case LocalSettings.useProfilePictureForDrawer:
-        await prefs.setBool(LocalSettings.useProfilePictureForDrawer.name, value);
+        await prefs.setSetting(LocalSettings.useProfilePictureForDrawer, value);
         setState(() => useProfilePictureForDrawer = value);
         break;
 
       case LocalSettings.hideNsfwPosts:
-        await prefs.setBool(LocalSettings.hideNsfwPosts.name, value);
+        await prefs.setSetting(LocalSettings.hideNsfwPosts, value);
         setState(() => hideNsfwPosts = value);
         break;
       case LocalSettings.tappableAuthorCommunity:
-        await prefs.setBool(LocalSettings.tappableAuthorCommunity.name, value);
+        await prefs.setSetting(LocalSettings.tappableAuthorCommunity, value);
         setState(() => tappableAuthorCommunity = value);
         break;
       case LocalSettings.markPostAsReadOnMediaView:
-        await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
+        await prefs.setSetting(LocalSettings.markPostAsReadOnMediaView, value);
         setState(() => markPostReadOnMediaView = value);
         break;
       case LocalSettings.markPostAsReadOnScroll:
-        await prefs.setBool(LocalSettings.markPostAsReadOnScroll.name, value);
+        await prefs.setSetting(LocalSettings.markPostAsReadOnScroll, value);
         setState(() => markPostReadOnScroll = value);
         break;
       case LocalSettings.useTabletMode:
-        await prefs.setBool(LocalSettings.useTabletMode.name, value);
+        await prefs.setSetting(LocalSettings.useTabletMode, value);
         setState(() => tabletMode = value);
         break;
       case LocalSettings.hideTopBarOnScroll:
-        await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
+        await prefs.setSetting(LocalSettings.hideTopBarOnScroll, value);
         setState(() => hideTopBarOnScroll = value);
         break;
       case LocalSettings.hideBottomBarOnScroll:
-        await prefs.setBool(LocalSettings.hideBottomBarOnScroll.name, value);
+        await prefs.setSetting(LocalSettings.hideBottomBarOnScroll, value);
         setState(() => hideBottomBarOnScroll = value);
         break;
       case LocalSettings.showHiddenPosts:
-        await prefs.setBool(LocalSettings.showHiddenPosts.name, value);
+        await prefs.setSetting(LocalSettings.showHiddenPosts, value);
         setState(() => showHiddenPosts = value);
         break;
       case LocalSettings.showExpandedTaglines:
-        await prefs.setBool(LocalSettings.showExpandedTaglines.name, value);
+        await prefs.setSetting(LocalSettings.showExpandedTaglines, value);
         setState(() => showExpandedTaglines = value);
         break;
       case LocalSettings.collapseParentCommentBodyOnGesture:
-        await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
+        await prefs.setSetting(LocalSettings.collapseParentCommentBodyOnGesture, value);
         setState(() => collapseParentCommentOnGesture = value);
         break;
       case LocalSettings.enableCommentNavigation:
-        await prefs.setBool(LocalSettings.enableCommentNavigation.name, value);
+        await prefs.setSetting(LocalSettings.enableCommentNavigation, value);
         setState(() => enableCommentNavigation = value);
         if (!value) {
           // if the user has disabled comment navigation, we can't combine the nav and fab
-          await prefs.setBool(LocalSettings.combineNavAndFab.name, false);
+          await prefs.setSetting(LocalSettings.combineNavAndFab, false);
           setState(() => combineNavAndFab = false);
         }
         break;
       case LocalSettings.combineNavAndFab:
-        await prefs.setBool(LocalSettings.combineNavAndFab.name, value);
+        await prefs.setSetting(LocalSettings.combineNavAndFab, value);
         setState(() => combineNavAndFab = value);
         break;
 
       case LocalSettings.browserMode:
-        await prefs.setString(LocalSettings.browserMode.name, value);
+        await prefs.setSetting(LocalSettings.browserMode, value);
         setState(() => browserMode = BrowserMode.values.byName(value ?? BrowserMode.customTabs));
         break;
       case LocalSettings.openLinksInReaderMode:
-        await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
+        await prefs.setSetting(LocalSettings.openLinksInReaderMode, value);
         setState(() => openInReaderMode = value);
         break;
 
       case LocalSettings.showInAppUpdateNotification:
-        await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
+        await prefs.setSetting(LocalSettings.showInAppUpdateNotification, value);
         setState(() => showInAppUpdateNotification = value);
         break;
       case LocalSettings.showUpdateChangelogs:
-        await prefs.setBool(LocalSettings.showUpdateChangelogs.name, value);
+        await prefs.setSetting(LocalSettings.showUpdateChangelogs, value);
         setState(() => showUpdateChangelogs = value);
         break;
       case LocalSettings.inboxNotificationType:
-        await prefs.setString(LocalSettings.inboxNotificationType.name, (value as NotificationType).name);
+        await prefs.setSetting(LocalSettings.inboxNotificationType, (value as NotificationType).name);
         setState(() => inboxNotificationType = value);
         break;
       case LocalSettings.pushNotificationServer:
-        await prefs.setString(LocalSettings.pushNotificationServer.name, value);
+        await prefs.setSetting(LocalSettings.pushNotificationServer, value);
         setState(() => pushNotificationServer = value);
         break;
 
       case LocalSettings.imageCachingMode:
-        await prefs.setString(LocalSettings.imageCachingMode.name, value);
+        await prefs.setSetting(LocalSettings.imageCachingMode, value);
         setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
         break;
       case LocalSettings.showNavigationLabels:
-        await prefs.setBool(LocalSettings.showNavigationLabels.name, value);
+        await prefs.setSetting(LocalSettings.showNavigationLabels, value);
         setState(() => showNavigationLabels = value);
         break;
       default:
@@ -263,59 +264,59 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     // Get all currently active accounts
-    List<Account> accountList = await Account.accounts();
+    List<Account> accountList = await createSessionRepository().getAuthenticatedSessions();
 
     setState(() {
       // Default Sorts and Listing
       try {
-        defaultFeedListType = FeedListType.values.byName(prefs.getString(LocalSettings.defaultFeedListType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultPostSortType = PostSortType.values.byName(prefs.getString(LocalSettings.defaultFeedPostSortType.name) ?? DEFAULT_POST_SORT_TYPE.name);
+        defaultFeedListType = FeedListType.values.byName(prefs.getLocalSetting<String>(LocalSettings.defaultFeedListType) ?? DEFAULT_LISTING_TYPE.name);
+        defaultPostSortType = PostSortType.values.byName(prefs.getLocalSetting<String>(LocalSettings.defaultFeedPostSortType) ?? DEFAULT_POST_SORT_TYPE.name);
       } catch (e) {
         defaultFeedListType = FeedListType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultPostSortType = PostSortType.values.byName(DEFAULT_POST_SORT_TYPE.name);
       }
 
-      defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultCommentSortType = CommentSortType.values.byName(prefs.getLocalSetting<String>(LocalSettings.defaultCommentSortType) ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Load saved locale from preferences, if not found, fallback to system locale
-      Locale? parsedLocale = LanguageLocal.parseLanguageTag(prefs.getString(LocalSettings.appLanguageCode.name));
+      Locale? parsedLocale = LanguageLocal.parseLanguageTag(prefs.getLocalSetting<String>(LocalSettings.appLanguageCode));
       currentLocale = parsedLocale ?? Localizations.localeOf(context);
 
-      useProfilePictureForDrawer = prefs.getBool(LocalSettings.useProfilePictureForDrawer.name) ?? false;
+      useProfilePictureForDrawer = prefs.getLocalSetting<bool>(LocalSettings.useProfilePictureForDrawer) ?? false;
 
-      hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      markPostReadOnScroll = prefs.getBool(LocalSettings.markPostAsReadOnScroll.name) ?? false;
-      tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
-      hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
-      hideBottomBarOnScroll = prefs.getBool(LocalSettings.hideBottomBarOnScroll.name) ?? false;
-      showHiddenPosts = prefs.getBool(LocalSettings.showHiddenPosts.name) ?? false;
-      showExpandedTaglines = prefs.getBool(LocalSettings.showExpandedTaglines.name) ?? false;
+      hideNsfwPosts = prefs.getLocalSetting<bool>(LocalSettings.hideNsfwPosts) ?? false;
+      tappableAuthorCommunity = prefs.getLocalSetting<bool>(LocalSettings.tappableAuthorCommunity) ?? false;
+      markPostReadOnMediaView = prefs.getLocalSetting<bool>(LocalSettings.markPostAsReadOnMediaView) ?? false;
+      markPostReadOnScroll = prefs.getLocalSetting<bool>(LocalSettings.markPostAsReadOnScroll) ?? false;
+      tabletMode = prefs.getLocalSetting<bool>(LocalSettings.useTabletMode) ?? false;
+      hideTopBarOnScroll = prefs.getLocalSetting<bool>(LocalSettings.hideTopBarOnScroll) ?? false;
+      hideBottomBarOnScroll = prefs.getLocalSetting<bool>(LocalSettings.hideBottomBarOnScroll) ?? false;
+      showHiddenPosts = prefs.getLocalSetting<bool>(LocalSettings.showHiddenPosts) ?? false;
+      showExpandedTaglines = prefs.getLocalSetting<bool>(LocalSettings.showExpandedTaglines) ?? false;
 
-      collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
-      enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
-      combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
+      collapseParentCommentOnGesture = prefs.getLocalSetting<bool>(LocalSettings.collapseParentCommentBodyOnGesture) ?? true;
+      enableCommentNavigation = prefs.getLocalSetting<bool>(LocalSettings.enableCommentNavigation) ?? true;
+      combineNavAndFab = prefs.getLocalSetting<bool>(LocalSettings.combineNavAndFab) ?? true;
 
-      browserMode = BrowserMode.values.byName(prefs.getString(LocalSettings.browserMode.name) ?? BrowserMode.customTabs.name);
+      browserMode = BrowserMode.values.byName(prefs.getLocalSetting<String>(LocalSettings.browserMode) ?? BrowserMode.customTabs.name);
 
-      openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
+      openInReaderMode = prefs.getLocalSetting<bool>(LocalSettings.openLinksInReaderMode) ?? false;
 
-      imageCachingMode = ImageCachingMode.values.byName(prefs.getString(LocalSettings.imageCachingMode.name) ?? ImageCachingMode.relaxed.name);
-      showNavigationLabels = prefs.getBool(LocalSettings.showNavigationLabels.name) ?? true;
+      imageCachingMode = ImageCachingMode.values.byName(prefs.getLocalSetting<String>(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
+      showNavigationLabels = prefs.getLocalSetting<bool>(LocalSettings.showNavigationLabels) ?? true;
 
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
-      showUpdateChangelogs = prefs.getBool(LocalSettings.showUpdateChangelogs.name) ?? true;
-      inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
-      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      showInAppUpdateNotification = prefs.getLocalSetting<bool>(LocalSettings.showInAppUpdateNotification) ?? false;
+      showUpdateChangelogs = prefs.getLocalSetting<bool>(LocalSettings.showUpdateChangelogs) ?? true;
+      inboxNotificationType = NotificationType.values.byName(prefs.getLocalSetting<String>(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
+      pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
       controller.text = pushNotificationServer;
 
       accounts = accountList;
 
-      enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
+      enableExperimentalFeatures = prefs.getLocalSetting<bool>(LocalSettings.enableExperimentalFeatures) ?? false;
     });
   }
 

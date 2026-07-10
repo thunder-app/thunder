@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:thunder/src/features/account/api.dart';
-import 'package:thunder/src/foundation/networking/instance_uri.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/networking/instance_uri.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a post when sharing

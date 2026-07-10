@@ -5,12 +5,13 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/shared/links/alternate_source_links.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/presentation/utils/effective_account_context.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_link_metadata.dart';
-import 'package:thunder/src/features/post/data/repositories/link_metadata_repository.dart';
+import 'package:thunder/src/core/domain/models/thunder_link_metadata.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Handles the long press on a link by showing a bottom sheet with the link details.
 void handleLinkLongPress(
@@ -105,7 +106,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
 
     _linkMetadataUrl = url;
     _linkMetadataAccountKey = accountKey;
-    _linkMetadataFuture = LinkMetadataRepositoryImpl(account: account).getLinkMetadata(url: url);
+    _linkMetadataFuture = createLinkMetadataRepository(account).getLinkMetadata(url: url);
   }
 
   Widget _buildLinkMetadataPreviewSection(ThemeData theme) {

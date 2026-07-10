@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';

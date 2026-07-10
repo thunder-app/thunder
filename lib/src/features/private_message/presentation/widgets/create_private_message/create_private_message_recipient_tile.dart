@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// A compact selector row for choosing the recipient of a direct message.
 class CreatePrivateMessageRecipientTile extends StatelessWidget {

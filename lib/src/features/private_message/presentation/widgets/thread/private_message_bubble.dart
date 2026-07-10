@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 

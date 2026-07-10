@@ -14,19 +14,20 @@ import 'package:unifiedpush/unifiedpush.dart';
 import 'package:markdown/markdown.dart';
 
 // Project imports
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/networking/mappers/primitive_mappers.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/networking/mappers/primitive_mappers.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/persistence/persistence.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Initializes push notifications for UnifiedPush.
 /// For now, initializing UnifiedPush will enable push notifications for all accounts active on the app.
 ///
 /// The [controller] is passed in so that we can react to push notifications when the user taps on the notification.
 void initUnifiedPushNotifications({required StreamController<NotificationResponse> controller}) async {
-  final prefs = UserPreferences.instance.preferences;
+  final prefs = const UserPreferencesStore();
 
   UnifiedPush.initialize(
     onNewEndpoint: (PushEndpoint endpoint, String instance) async {
@@ -35,7 +36,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Save the endpoint to preferences so we can retrieve it later for troubleshooting
       prefs.setString('unified_push_endpoint', endpoint.url);
 
-      List<Account> accounts = await Account.accounts();
+      List<Account> accounts = await createSessionRepository().getAuthenticatedSessions();
 
       // We should remove any previously sent tokens, and send them again
       bool removed = await deleteAccountFromNotificationServer();
@@ -70,10 +71,10 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
       // Ensure that the db is initialized before attempting to access below.
       initializeDatabase();
 
-      final FullNameSeparator userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
-      final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
-      final bool useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
-      final bool useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+      final FullNameSeparator userSeparator = FullNameSeparator.values.byName(const UserPreferencesStore().getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+      final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(const UserPreferencesStore().getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
+      final bool useDisplayNamesForUsers = const UserPreferencesStore().getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+      final bool useDisplayNamesForCommunities = const UserPreferencesStore().getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
 
       final String decodedMessage = utf8.decode(message.content);
 
@@ -120,7 +121,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           htmlFormatBigText: true,
         );
 
-        List<Account> accounts = await Account.accounts();
+        List<Account> accounts = await createSessionRepository().getAuthenticatedSessions();
         Account account = accounts.firstWhere((Account account) => account.actorId == commentReplyView.recipientActorId);
 
         // Create a notification group for the account
@@ -186,7 +187,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
           htmlFormatBigText: true,
         );
 
-        List<Account> accounts = await Account.accounts();
+        List<Account> accounts = await createSessionRepository().getAuthenticatedSessions();
         Account account = accounts.firstWhere((Account account) => account.actorId == comment.recipient?.actorId);
 
         showAndroidNotification(

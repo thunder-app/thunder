@@ -1,24 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/persistence/persistence.dart';
+import 'package:thunder/src/features/community/domain/models/favorite.dart';
 
-class Favorite {
-  final String id;
-  final int communityId;
-  final String accountId;
-
-  const Favorite({
-    required this.id,
-    required this.communityId,
-    required this.accountId,
-  });
-
-  Favorite copyWith({String? id}) => Favorite(
-        id: id ?? this.id,
-        communityId: communityId,
-        accountId: accountId,
-      );
+/// Local Drift data source for favorite communities.
+class FavoriteLocalDataSource {
+  const FavoriteLocalDataSource._();
 
   static Future<Favorite?> insertFavorite(Favorite favourite) async {
     // If we are given a brand new favorite to insert with an existing id, something is wrong.
@@ -36,7 +24,6 @@ class Favorite {
     }
   }
 
-  // A method that retrieves all favourites from the database
   static Future<List<Favorite>> favorites(String accountId) async {
     try {
       return (await (database.select(database.favorites)..where((table) => table.accountId.equals(int.parse(accountId)))).get())

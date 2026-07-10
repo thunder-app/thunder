@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_instance_status_avatar.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_trailing_action.dart';

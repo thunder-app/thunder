@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/account/presentation/state/instance_validation_cubit.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Builds an image provider for a detected instance icon URL.
 typedef LoginInstanceIconProviderBuilder = ImageProvider<Object> Function(String iconUrl);

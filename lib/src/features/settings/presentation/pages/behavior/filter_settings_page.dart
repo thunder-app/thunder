@@ -6,16 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class FilterSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -34,11 +34,11 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   LocalSettings? settingToHighlight;
 
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.keywordFilters:
-        await prefs.setStringList(LocalSettings.keywordFilters.name, value);
+        await prefs.setSetting(LocalSettings.keywordFilters, value);
         setState(() => keywordFilters = value);
         break;
       default:
@@ -52,10 +52,10 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
-      keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+      keywordFilters = prefs.getLocalSetting<List<String>>(LocalSettings.keywordFilters) ?? [];
     });
   }
 

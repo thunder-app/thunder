@@ -8,14 +8,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/features/private_message/private_message.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 const String _lastPollTimeId = 'thunder_last_notifications_poll_time';
 
@@ -40,20 +40,20 @@ Future<void> pollNotificationsAndShow() async {
   // If we see this line outputted when notifications are disabled, then something is wrong with our configuration of background_fetch.
   debugPrint('Thunder - Background fetch - Running notification poll');
 
-  final userFormat = UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name;
-  final communityFormat = UserPreferences.getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name;
-  final useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
-  final useDisplayNamesForCommunities = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
+  final userFormat = const UserPreferencesStore().getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name;
+  final communityFormat = const UserPreferencesStore().getLocalSetting(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name;
+  final useDisplayNamesForUsers = const UserPreferencesStore().getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+  final useDisplayNamesForCommunities = const UserPreferencesStore().getLocalSetting(LocalSettings.useDisplayNamesForCommunities) ?? false;
 
   final userSeparator = FullNameSeparator.values.byName(userFormat);
   final communitySeparator = FullNameSeparator.values.byName(communityFormat);
 
-  final prefs = UserPreferences.instance.preferences;
+  final prefs = const UserPreferencesStore();
 
   // Ensure that the db is initialized before attempting to access below.
   initializeDatabase();
 
-  final accounts = await Account.accounts();
+  final accounts = await createSessionRepository().getAuthenticatedSessions();
   final lastPollTime = DateTime.tryParse(prefs.getString(_lastPollTimeId) ?? '') ?? DateTime.now();
 
   // Track notifications by type for each account
@@ -65,8 +65,8 @@ Future<void> pollNotificationsAndShow() async {
     // Skip anonymous accounts since they can't have notifications
     if (account.anonymous) continue;
 
-    final repository = NotificationRepositoryImpl(account: account);
-    final privateMessageRepository = PrivateMessageRepositoryImpl(account: account);
+    final repository = createNotificationRepository(account);
+    final privateMessageRepository = createPrivateMessageRepository(account);
 
     // Poll replies
     try {

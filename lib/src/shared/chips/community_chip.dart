@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/shared/name/full_name_copy_utils.dart';
 
 /// A chip which displays the given community and instance information.

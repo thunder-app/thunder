@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class AccessibilitySettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -29,11 +29,11 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   LocalSettings? settingToHighlight;
 
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.reduceAnimations:
-        await prefs.setBool(LocalSettings.reduceAnimations.name, value);
+        await prefs.setSetting(LocalSettings.reduceAnimations, value);
         setState(() => reduceAnimations = value);
         if (context.mounted) context.read<ThemePreferencesCubit>().reload();
         break;
@@ -47,10 +47,10 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
-      reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+      reduceAnimations = prefs.getLocalSetting<bool>(LocalSettings.reduceAnimations) ?? false;
     });
   }
 

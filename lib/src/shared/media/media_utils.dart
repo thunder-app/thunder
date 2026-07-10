@@ -17,9 +17,9 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_dimension_parser/image_dimension_parser.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/utils/media_url_utils.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/utils/media_url_utils.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/shared/media/experimental_image_viewer.dart';
 
 final Map<String, Size> _imageDimensionsCache = <String, Size>{};

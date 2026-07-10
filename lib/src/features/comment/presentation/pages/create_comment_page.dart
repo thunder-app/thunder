@@ -10,9 +10,7 @@ import 'package:keyboard_detection/keyboard_detection.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 // Project imports
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
@@ -24,11 +22,12 @@ import 'package:thunder/src/shared/language_selector.dart';
 
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/shared/media/media_utils.dart' show selectImagesToUpload;
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class CreateCommentPage extends StatefulWidget {
   /// The account to use for composing this comment.
@@ -61,7 +60,7 @@ class CreateCommentPage extends StatefulWidget {
 }
 
 class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindingObserver {
-  final DraftRepository _draftRepository = DraftRepositoryImpl(database: database);
+  final DraftRepository _draftRepository = createDraftRepository();
 
   /// Whether to save this comment as a draft
   bool saveDraft = true;

@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'package:dynamic_color/dynamic_color.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/features/settings/presentation/utils/local_setting_localization.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class SettingProfile extends StatelessWidget {
   final IconData icon;
@@ -62,7 +63,7 @@ class SettingProfile extends StatelessWidget {
 
                       for (MapEntry<LocalSettings, Object> entry in settingsToChange.entries) {
                         if (entry.value is bool) {
-                          await UserPreferences.instance.preferences.setBool(entry.key.name, entry.value as bool);
+                          await const UserPreferencesStore().setSetting(entry.key, entry.value);
                         } else {
                           // This should never happen in production, since we should add support for any unsupported types
                           // before adding a profile containing those types.

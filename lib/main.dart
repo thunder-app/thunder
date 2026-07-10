@@ -1,4 +1,4 @@
-import 'package:thunder/src/app/bootstrap/bootstrap.dart';
+import 'package:thunder/src/core/app/bootstrap.dart';
 
 Future<void> main() async {
   await bootstrap();

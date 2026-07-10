@@ -4,20 +4,19 @@ import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/search/search.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/src/shared/media/media_utils.dart' show getScaledMediaSize, isImageUrl, isVideoUrl, retrieveImageDimensions;
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 final _htmlUnescape = HtmlUnescape();
 
 /// Parse a post with media
 Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutionInstance}) async {
-  final prefs = UserPreferences.instance.preferences;
+  final prefs = const UserPreferencesStore();
   final mediaOptions = _getMediaParsingOptions();
-  final hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
+  final hideNsfwPosts = prefs.getLocalSetting<bool>(LocalSettings.hideNsfwPosts) ?? false;
 
   List<ThunderPost> resolvedPosts = [];
 
@@ -27,7 +26,7 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
 
     for (ThunderPost post in posts) {
       try {
-        final response = await SearchRepositoryImpl(account: account).resolve(query: post.apId);
+        final response = await createSearchRepository(account).resolve(query: post.apId);
         if (response.post != null) {
           resolvedPosts.add(response.post!);
         }
@@ -53,10 +52,10 @@ Future<ThunderPost> parsePostWithCurrentPreferences(ThunderPost post) {
 }
 
 ({bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode}) _getMediaParsingOptions() {
-  final prefs = UserPreferences.instance.preferences;
-  final fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) != false && prefs.getBool(LocalSettings.useCompactView.name) != true;
-  final edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-  final tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+  final prefs = const UserPreferencesStore();
+  final fetchImageDimensions = prefs.getLocalSetting<bool>(LocalSettings.showPostFullHeightImages) != false && prefs.getLocalSetting<bool>(LocalSettings.useCompactView) != true;
+  final edgeToEdgeImages = prefs.getLocalSetting<bool>(LocalSettings.showPostEdgeToEdgeImages) ?? false;
+  final tabletMode = prefs.getLocalSetting<bool>(LocalSettings.useTabletMode) ?? false;
 
   return (fetchImageDimensions: fetchImageDimensions, edgeToEdgeImages: edgeToEdgeImages, tabletMode: tabletMode);
 }
@@ -133,7 +132,7 @@ Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool 
   if (size == null && fetchImageDimensions && media.thumbnailUrl != null) {
     // If the instance does not contain image metadata, we'll do some additional checks
     try {
-      int imageDimensionTimeout = UserPreferences.getLocalSetting(LocalSettings.imageDimensionTimeout) ?? 2;
+      int imageDimensionTimeout = const UserPreferencesStore().getLocalSetting(LocalSettings.imageDimensionTimeout) ?? 2;
       size = await retrieveImageDimensions(imageUrl: media.thumbnailUrl ?? media.mediaUrl).timeout(Duration(seconds: imageDimensionTimeout));
     } catch (e) {
       debugPrint('${media.thumbnailUrl ?? media.originalUrl} - $e: Falling back to default image size');

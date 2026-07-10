@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a post
 enum PostPostAction {
@@ -123,7 +124,7 @@ class PostPostActionBottomSheet extends StatefulWidget {
 class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
   void performAction(PostPostAction action) async {
     final l10n = GlobalContext.l10n;
-    final repository = PostRepositoryImpl(account: widget.account);
+    final repository = createPostRepository(widget.account);
 
     switch (action) {
       case PostPostAction.reportPost:
@@ -188,7 +189,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       title: l10n.reportPost,
       primaryButtonText: l10n.report(1),
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
-        final repository = PostRepositoryImpl(account: widget.account);
+        final repository = createPostRepository(widget.account);
 
         await repository.report(widget.post.id, controller.text);
         showThunderSnackbar(l10n.reportedPost);
@@ -220,7 +221,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       title: widget.post.status.removed ? l10n.restorePost : l10n.removalReason,
       primaryButtonText: widget.post.status.removed ? l10n.restore : l10n.remove,
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
-        final repository = PostRepositoryImpl(account: widget.account);
+        final repository = createPostRepository(widget.account);
 
         final removed = await repository.remove(widget.post.id, !widget.post.status.removed, controller.text);
         removed ? showThunderSnackbar(l10n.removedPost) : showThunderSnackbar(l10n.restoredPost);

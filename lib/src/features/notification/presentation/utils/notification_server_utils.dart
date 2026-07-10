@@ -9,12 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 // Project imports
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Sends a request to the push notification server, including the [NotificationType], [jwt], and [instance].
 ///
@@ -27,8 +27,8 @@ Future<bool> sendAuthTokenToNotificationServer({
   required String instance,
 }) async {
   try {
-    final prefs = UserPreferences.instance.preferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    final prefs = const UserPreferencesStore();
+    String pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
 
     // Send POST request to notification server
     http.Response response = await http.post(
@@ -56,10 +56,10 @@ Future<bool> sendAuthTokenToNotificationServer({
 /// This is generally called when the user changes push notification types, or disables all push notifications.
 Future<bool> deleteAccountFromNotificationServer() async {
   try {
-    final prefs = UserPreferences.instance.preferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    final prefs = const UserPreferencesStore();
+    String pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
 
-    List<Account> accounts = await Account.accounts();
+    List<Account> accounts = await createSessionRepository().getAuthenticatedSessions();
     List<String> jwts = accounts.map((Account account) => account.jwt!).toList();
 
     // Send POST request to notification server
@@ -79,8 +79,8 @@ Future<bool> deleteAccountFromNotificationServer() async {
 
 Future<String?> requestTestNotification(Account account) async {
   try {
-    final prefs = UserPreferences.instance.preferences;
-    String pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+    final prefs = const UserPreferencesStore();
+    String pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
 
     final l10n = AppLocalizations.of(GlobalContext.context)!;
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);

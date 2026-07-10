@@ -8,16 +8,16 @@ import 'package:html/parser.dart';
 import 'package:markdown/markdown.dart' hide Text;
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 import 'package:thunder/src/features/user/presentation/state/account_settings_cubit.dart';
 import 'package:thunder/src/features/user/presentation/widgets/user_settings_page_scaffold.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/enums/enums.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_language.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/enums/enums.dart';
+import 'package:thunder/src/core/domain/models/thunder_language.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
 
 /// PieFed account settings page.

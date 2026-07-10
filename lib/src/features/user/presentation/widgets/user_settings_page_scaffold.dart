@@ -8,8 +8,8 @@ import 'package:thunder/src/features/user/presentation/state/account_settings_cu
 import 'package:thunder/src/features/user/presentation/widgets/account_picker_sheet.dart';
 import 'package:thunder/src/features/user/presentation/widgets/account_settings_listener.dart';
 import 'package:thunder/src/features/user/presentation/widgets/user_indicator.dart';
-import 'package:thunder/src/foundation/config/app_constants.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/app_constants.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 typedef UserSettingsChildrenBuilder = List<Widget> Function(
   BuildContext context,

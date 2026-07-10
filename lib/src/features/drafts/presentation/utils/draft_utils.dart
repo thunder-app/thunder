@@ -1,13 +1,11 @@
-import 'package:thunder/src/features/comment/data/repositories/comment_repository.dart';
-import 'package:thunder/src/features/community/data/repositories/community_repository.dart';
 import 'package:thunder/src/features/drafts/data/models/draft.dart';
 import 'package:thunder/src/features/drafts/data/repositories/draft_repository.dart';
-import 'package:thunder/src/features/post/data/repositories/post_repository.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/primitives/enums/draft_type.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
+import 'package:thunder/src/core/domain/models/account.dart';
+import 'package:thunder/src/core/domain/enums/draft_type.dart';
+import 'package:thunder/src/core/domain/models/thunder_community.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/thunder_post.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 enum DraftPersistenceResult {
   saved,
@@ -165,7 +163,7 @@ Future<DraftOpenResult> openDraftSession({
 
         if (draft.replyId != null) {
           try {
-            final details = await CommunityRepositoryImpl(account: account).getCommunity(id: draft.replyId);
+            final details = await createCommunityRepository(account).getCommunity(id: draft.replyId);
             community = details.community;
           } catch (_) {
             community = null;
@@ -181,7 +179,7 @@ Future<DraftOpenResult> openDraftSession({
           return DraftOpenResult.abandoned;
         }
 
-        final response = await PostRepositoryImpl(account: account).getPost(draft.existingId!);
+        final response = await createPostRepository(account).getPost(draft.existingId!);
         final post = response?.post;
 
         if (post is! ThunderPost) {
@@ -197,7 +195,7 @@ Future<DraftOpenResult> openDraftSession({
           return DraftOpenResult.abandoned;
         }
 
-        final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+        final response = await createPostRepository(account).getPost(draft.replyId!);
         final post = response?.post;
 
         if (post is! ThunderPost) {
@@ -213,7 +211,7 @@ Future<DraftOpenResult> openDraftSession({
           return DraftOpenResult.abandoned;
         }
 
-        final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+        final comment = await createCommentRepository(account).getComment(draft.replyId!);
         await onCommentCreateFromCommentRestore(account, comment);
         return DraftOpenResult.opened;
 
@@ -223,7 +221,7 @@ Future<DraftOpenResult> openDraftSession({
           return DraftOpenResult.abandoned;
         }
 
-        final comment = await CommentRepositoryImpl(account: account).getComment(draft.existingId!);
+        final comment = await createCommentRepository(account).getComment(draft.existingId!);
         await onCommentEditRestore(account, comment);
         return DraftOpenResult.opened;
 
@@ -234,10 +232,10 @@ Future<DraftOpenResult> openDraftSession({
         }
 
         try {
-          final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+          final comment = await createCommentRepository(account).getComment(draft.replyId!);
           await onCommentCreateFromCommentRestore(account, comment);
         } catch (_) {
-          final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+          final response = await createPostRepository(account).getPost(draft.replyId!);
           final post = response?.post;
 
           if (post is! ThunderPost) {

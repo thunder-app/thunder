@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/state/network_checker_cubit.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 class ThunderYoutubePlayer extends StatefulWidget {
   const ThunderYoutubePlayer({

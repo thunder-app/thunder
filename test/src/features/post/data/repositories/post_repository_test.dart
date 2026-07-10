@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:thunder/src/features/post/data/repositories/post_repository.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/mock_thunder_api_client.dart';
 import '../../../../../helpers/repository_test_fixtures.dart';
@@ -262,7 +262,21 @@ void main() {
       final result = await repository.getPosts(cursor: 'opaque-cursor');
 
       expect(result.nextPage, 'next');
-      verify(() => api.getPosts(cursor: 'opaque-cursor', limit: any(named: 'limit'), feedListType: any(named: 'feedListType'), postSortType: any(named: 'postSortType'), communityId: any(named: 'communityId'), communityName: any(named: 'communityName'), query: any(named: 'query'), personId: any(named: 'personId'), likedOnly: any(named: 'likedOnly'), feedId: any(named: 'feedId'), topicId: any(named: 'topicId'), ignoreSticky: any(named: 'ignoreSticky'), showHidden: any(named: 'showHidden'), showSaved: any(named: 'showSaved'))).called(1);
+      verify(() => api.getPosts(
+          cursor: 'opaque-cursor',
+          limit: any(named: 'limit'),
+          feedListType: any(named: 'feedListType'),
+          postSortType: any(named: 'postSortType'),
+          communityId: any(named: 'communityId'),
+          communityName: any(named: 'communityName'),
+          query: any(named: 'query'),
+          personId: any(named: 'personId'),
+          likedOnly: any(named: 'likedOnly'),
+          feedId: any(named: 'feedId'),
+          topicId: any(named: 'topicId'),
+          ignoreSticky: any(named: 'ignoreSticky'),
+          showHidden: any(named: 'showHidden'),
+          showSaved: any(named: 'showSaved'))).called(1);
     });
 
     test('hide delegates to api without feature flag guard', () async {

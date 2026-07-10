@@ -6,17 +6,17 @@ import 'package:flutter/services.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.

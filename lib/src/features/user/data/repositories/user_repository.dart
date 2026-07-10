@@ -1,5 +1,5 @@
-import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
+import 'package:thunder/src/core/core.dart';
+import 'package:thunder/src/core/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/domain/models/user_detail.dart';
 

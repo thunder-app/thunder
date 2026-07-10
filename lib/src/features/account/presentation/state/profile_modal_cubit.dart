@@ -4,8 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/features/session/data/repositories/session_repository.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Looks up display metadata for an instance host.
 typedef ProfileModalInstanceInfoLookup = Future<ThunderInstanceInfo> Function(String instance);

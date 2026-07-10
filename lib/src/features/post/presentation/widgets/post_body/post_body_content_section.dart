@@ -7,7 +7,7 @@ import 'package:expandable/expandable.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 

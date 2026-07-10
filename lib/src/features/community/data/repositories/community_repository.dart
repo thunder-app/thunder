@@ -1,5 +1,5 @@
-import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
+import 'package:thunder/src/core/core.dart';
+import 'package:thunder/src/core/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/community/community.dart';
 
 /// Repository contract for community reads and moderation actions.

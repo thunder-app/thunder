@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
 
 /// Barrier shown behind the expanded post FAB menu.
 class PostFabOverlay extends StatelessWidget {

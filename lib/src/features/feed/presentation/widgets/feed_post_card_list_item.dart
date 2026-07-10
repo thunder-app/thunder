@@ -7,7 +7,7 @@ import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// A single feed post row with action wiring, read tracking, and dismissal animation.
 class FeedPostCardListItem extends StatelessWidget {

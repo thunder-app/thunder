@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/services/services.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
-import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/features/private_message/private_message.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A page for displaying notifications (replies, mentions, or messages).
 class NotificationsPage extends StatelessWidget {
@@ -78,9 +75,9 @@ class NotificationsPage extends StatelessWidget {
           value: inboxType == InboxType.messages
               ? (InboxBloc(
                   account: account,
-                  commentRepository: CommentRepositoryImpl(account: account),
-                  notificationRepository: NotificationRepositoryImpl(account: account),
-                  privateMessageRepository: PrivateMessageRepositoryImpl(account: account),
+                  commentRepository: createCommentRepository(account),
+                  notificationRepository: createNotificationRepository(account),
+                  privateMessageRepository: createPrivateMessageRepository(account),
                   localizationService: const ThunderLocalizationService(),
                 )..add(
                   const GetInboxEvent(reset: true, inboxType: InboxType.messages),
@@ -89,18 +86,18 @@ class NotificationsPage extends StatelessWidget {
                   account: account,
                   replies: comments,
                   showUnreadOnly: true,
-                  commentRepository: CommentRepositoryImpl(account: account),
-                  notificationRepository: NotificationRepositoryImpl(account: account),
-                  privateMessageRepository: PrivateMessageRepositoryImpl(account: account),
+                  commentRepository: createCommentRepository(account),
+                  notificationRepository: createNotificationRepository(account),
+                  privateMessageRepository: createPrivateMessageRepository(account),
                   localizationService: const ThunderLocalizationService(),
                 ),
         ),
         BlocProvider.value(
           value: PostBloc(
             account: account,
-            postRepository: PostRepositoryImpl(account: account),
-            commentRepository: CommentRepositoryImpl(account: account),
-            communityRepository: CommunityRepositoryImpl(account: account),
+            postRepository: createPostRepository(account),
+            commentRepository: createCommentRepository(account),
+            communityRepository: createCommunityRepository(account),
             preferencesStore: const UserPreferencesStore(),
             localizationService: const ThunderLocalizationService(),
           ),

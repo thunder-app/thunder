@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
 import 'package:thunder/src/shared/links/link_bottom_sheet.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';

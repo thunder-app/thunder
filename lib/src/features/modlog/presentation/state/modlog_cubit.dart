@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/core/networking/networking.dart';
 
 part 'modlog_state.dart';
 part 'modlog_cubit.freezed.dart';

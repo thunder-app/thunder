@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/contracts/platform_detection_service.dart';
-import 'package:thunder/src/foundation/contracts/preferences_store.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/services/platform_detection_service.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/settings/api.dart';
 
@@ -65,5 +65,5 @@ Widget wrapWithThemePreferences(Widget child) {
 
 class _FakePlatformDetectionService implements PlatformDetectionService {
   @override
-  Future<Map<String, dynamic>?> detectPlatform(String instance) async => null;
+  Future<Map<String, dynamic>?> detectPlatform(String instance, {Duration? timeout}) async => null;
 }

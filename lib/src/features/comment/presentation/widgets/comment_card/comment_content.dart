@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart';

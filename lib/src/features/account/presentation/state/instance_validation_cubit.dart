@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/core/services/instance_discovery_service.dart' as instance_discovery;
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 typedef InstanceDiscoveryLookup = Future<InstanceDiscoveryResult?> Function(String instance);
 typedef InstanceMetadataLookup = Future<ThunderInstanceInfo> Function(InstanceDiscoveryResult discovery);

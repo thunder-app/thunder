@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thunder/src/features/drafts/data/models/draft.dart';
 import 'package:thunder/src/features/drafts/data/repositories/draft_repository.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/in_memory_database.dart';
 

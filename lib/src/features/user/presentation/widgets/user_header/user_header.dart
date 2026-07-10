@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/src/shared/media/image_preview.dart';
 import 'package:thunder/packages/ui/ui.dart';
 

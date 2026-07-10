@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 
 /// Holds the app bar for the feed page. The app bar actions changes depending on the type of feed (general, community, user)
 class FeedPageAppBar extends StatefulWidget {

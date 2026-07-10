@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
 
 /// Represents a page of comments returned from an API request.
 class CommentPage extends Equatable {

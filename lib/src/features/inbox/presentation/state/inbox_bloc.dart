@@ -3,14 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/notification/notification.dart';
 import 'package:thunder/src/features/private_message/private_message.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 
 part 'inbox_event.dart';
 part 'inbox_state.dart';

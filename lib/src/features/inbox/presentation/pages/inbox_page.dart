@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
+import 'package:thunder/src/core/navigation/navigation_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays the user's inbox replies, mentions, and private messages.

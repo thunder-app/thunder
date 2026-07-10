@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';

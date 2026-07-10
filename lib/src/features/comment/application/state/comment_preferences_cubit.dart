@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/config/config.dart';
 
 part 'comment_preferences_state.dart';
 

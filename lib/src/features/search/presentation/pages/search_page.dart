@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/search/search.dart';
@@ -15,10 +13,11 @@ import 'package:thunder/src/features/search/presentation/widgets/search_body.dar
 import 'package:thunder/src/features/search/presentation/widgets/search_filters_row.dart';
 import 'package:thunder/src/features/search/presentation/widgets/search_page_app_bar.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/utils/utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 /// The main search page that handles search functionality.
 class SearchPage extends StatefulWidget {
@@ -81,7 +80,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   void initializePreferences() {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     final sortType = _resolveInitialSearchSortType(prefs);
     final sortTypeItem = _resolveSearchSortItem(sortType);
@@ -89,7 +88,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     context.read<SearchBloc>().add(SearchFiltersUpdated(sortType: sortType, sortTypeIcon: sortTypeItem.icon, sortTypeLabel: sortTypeItem.label));
   }
 
-  SearchSortType _resolveInitialSearchSortType(SharedPreferences prefs) {
+  SearchSortType _resolveInitialSearchSortType(PreferencesStore prefs) {
     final storedSortTypeName = prefs.getString("search_default_sort_type");
 
     for (final sortType in SearchSortType.values) {
@@ -204,7 +203,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     final feedBloc = context.read<FeedBloc>();
     final searchBloc = context.read<SearchBloc>();
 
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     showModalBottomSheet(
       context: context,

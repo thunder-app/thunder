@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_instance_info.dart';
+import 'package:thunder/src/core/domain/models/thunder_instance_info.dart';
 
 /// A widget that displays an instance avatar.
 class InstanceAvatar extends StatelessWidget {

@@ -5,18 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A widget that displays a given community's information. This widget is generally used in a list.
 class CommunityListEntry extends StatefulWidget {
@@ -44,7 +44,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
   void onSubscribe(bool subscribed, bool isUserLoggedIn) async {
     if (isUserLoggedIn) {
       final account = context.read<ProfileBloc>().state.account;
-      final repository = CommunityRepositoryImpl(account: account);
+      final repository = createCommunityRepository(account);
 
       await repository.subscribe(widget.community.id, !subscribed);
       context.read<ProfileBloc>().add(const FetchProfileSubscriptions());
@@ -145,7 +145,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
 
           if (widget.resolutionAccount != null) {
             try {
-              final response = await SearchRepositoryImpl(account: widget.resolutionAccount!).resolve(query: widget.community.actorId);
+              final response = await createSearchRepository(widget.resolutionAccount!).resolve(query: widget.community.actorId);
 
               communityId = response.community?.id;
             } catch (e) {

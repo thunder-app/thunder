@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class FabSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -83,78 +83,78 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   LocalSettings? settingToHighlight;
 
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.enableFeedsFab:
-        await prefs.setBool(LocalSettings.enableFeedsFab.name, value);
+        await prefs.setSetting(LocalSettings.enableFeedsFab, value);
         setState(() => enableFeedsFab = value);
         break;
       case LocalSettings.enablePostsFab:
-        await prefs.setBool(LocalSettings.enablePostsFab.name, value);
+        await prefs.setSetting(LocalSettings.enablePostsFab, value);
         setState(() => enablePostsFab = value);
         break;
 
       case LocalSettings.enableBackToTop:
-        await prefs.setBool(LocalSettings.enableBackToTop.name, value);
+        await prefs.setSetting(LocalSettings.enableBackToTop, value);
         setState(() => enableBackToTop = value);
         break;
       case LocalSettings.enableSubscriptions:
-        await prefs.setBool(LocalSettings.enableSubscriptions.name, value);
+        await prefs.setSetting(LocalSettings.enableSubscriptions, value);
         setState(() => enableSubscriptions = value);
         break;
       case LocalSettings.enableChangeSort:
-        await prefs.setBool(LocalSettings.enableChangeSort.name, value);
+        await prefs.setSetting(LocalSettings.enableChangeSort, value);
         setState(() => enableChangeSort = value);
         break;
       case LocalSettings.enableRefresh:
-        await prefs.setBool(LocalSettings.enableRefresh.name, value);
+        await prefs.setSetting(LocalSettings.enableRefresh, value);
         setState(() => enableRefresh = value);
         break;
       case LocalSettings.enableDismissRead:
-        await prefs.setBool(LocalSettings.enableDismissRead.name, value);
+        await prefs.setSetting(LocalSettings.enableDismissRead, value);
         setState(() => enableDismissRead = value);
         break;
       case LocalSettings.enableNewPost:
-        await prefs.setBool(LocalSettings.enableNewPost.name, value);
+        await prefs.setSetting(LocalSettings.enableNewPost, value);
         setState(() => enableNewPost = value);
         break;
 
       case LocalSettings.postFabEnableBackToTop:
-        await prefs.setBool(LocalSettings.postFabEnableBackToTop.name, value);
+        await prefs.setSetting(LocalSettings.postFabEnableBackToTop, value);
         setState(() => postFabEnableBackToTop = value);
         break;
       case LocalSettings.postFabEnableChangeSort:
-        await prefs.setBool(LocalSettings.postFabEnableChangeSort.name, value);
+        await prefs.setSetting(LocalSettings.postFabEnableChangeSort, value);
         setState(() => postFabEnableChangeSort = value);
         break;
       case LocalSettings.postFabEnableReplyToPost:
-        await prefs.setBool(LocalSettings.postFabEnableReplyToPost.name, value);
+        await prefs.setSetting(LocalSettings.postFabEnableReplyToPost, value);
         setState(() => postFabEnableReplyToPost = value);
         break;
       case LocalSettings.postFabEnableRefresh:
-        await prefs.setBool(LocalSettings.postFabEnableRefresh.name, value);
+        await prefs.setSetting(LocalSettings.postFabEnableRefresh, value);
         setState(() => postFabEnableRefresh = value);
         break;
       case LocalSettings.postFabEnableSearch:
-        await prefs.setBool(LocalSettings.postFabEnableSearch.name, value);
+        await prefs.setSetting(LocalSettings.postFabEnableSearch, value);
         setState(() => postFabEnableSearch = value);
         break;
 
       case LocalSettings.feedFabSinglePressAction:
-        await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
+        await prefs.setSetting(LocalSettings.feedFabSinglePressAction, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
         break;
       case LocalSettings.feedFabLongPressAction:
-        await prefs.setString(LocalSettings.feedFabLongPressAction.name, (value as FeedFabAction).name);
+        await prefs.setSetting(LocalSettings.feedFabLongPressAction, (value as FeedFabAction).name);
         setState(() => feedFabLongPressAction = value);
         break;
       case LocalSettings.postFabSinglePressAction:
-        await prefs.setString(LocalSettings.postFabSinglePressAction.name, (value as PostFabAction).name);
+        await prefs.setSetting(LocalSettings.postFabSinglePressAction, (value as PostFabAction).name);
         setState(() => postFabSinglePressAction = value);
         break;
       case LocalSettings.postFabLongPressAction:
-        await prefs.setString(LocalSettings.postFabLongPressAction.name, (value as PostFabAction).name);
+        await prefs.setSetting(LocalSettings.postFabLongPressAction, (value as PostFabAction).name);
         setState(() => postFabLongPressAction = value);
         break;
       default:
@@ -168,29 +168,29 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
-      enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
-      enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
+      enableFeedsFab = prefs.getLocalSetting<bool>(LocalSettings.enableFeedsFab) ?? true;
+      enablePostsFab = prefs.getLocalSetting<bool>(LocalSettings.enablePostsFab) ?? true;
 
-      enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
-      enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
-      enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
-      enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
-      enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
-      enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+      enableBackToTop = prefs.getLocalSetting<bool>(LocalSettings.enableBackToTop) ?? true;
+      enableSubscriptions = prefs.getLocalSetting<bool>(LocalSettings.enableSubscriptions) ?? true;
+      enableChangeSort = prefs.getLocalSetting<bool>(LocalSettings.enableChangeSort) ?? true;
+      enableRefresh = prefs.getLocalSetting<bool>(LocalSettings.enableRefresh) ?? true;
+      enableDismissRead = prefs.getLocalSetting<bool>(LocalSettings.enableDismissRead) ?? true;
+      enableNewPost = prefs.getLocalSetting<bool>(LocalSettings.enableNewPost) ?? true;
 
-      postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
-      postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
-      postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
-      postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
-      postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
+      postFabEnableBackToTop = prefs.getLocalSetting<bool>(LocalSettings.postFabEnableBackToTop) ?? true;
+      postFabEnableChangeSort = prefs.getLocalSetting<bool>(LocalSettings.postFabEnableChangeSort) ?? true;
+      postFabEnableReplyToPost = prefs.getLocalSetting<bool>(LocalSettings.postFabEnableReplyToPost) ?? true;
+      postFabEnableRefresh = prefs.getLocalSetting<bool>(LocalSettings.postFabEnableRefresh) ?? true;
+      postFabEnableSearch = prefs.getLocalSetting<bool>(LocalSettings.postFabEnableSearch) ?? true;
 
-      feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.newPost.name);
-      feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
-      postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
-      postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
+      feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.feedFabSinglePressAction) ?? FeedFabAction.newPost.name);
+      feedFabLongPressAction = FeedFabAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.feedFabLongPressAction) ?? FeedFabAction.openFab.name);
+      postFabSinglePressAction = PostFabAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postFabSinglePressAction) ?? PostFabAction.replyToPost.name);
+      postFabLongPressAction = PostFabAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postFabLongPressAction) ?? PostFabAction.openFab.name);
     });
   }
 

@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 const testLocalization = TestLocalizationService();
 

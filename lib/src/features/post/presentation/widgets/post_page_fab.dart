@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';

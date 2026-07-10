@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
 import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 const String _repliesChannelId = 'inbox_replies';
 const String _repliesChannelName = 'Inbox Replies';
@@ -27,8 +26,8 @@ const String _testChannelName = 'Troubleshooting';
 /// to help display a group of notifications on Android.
 Future<void> showNotificationGroups({required NotificationType type, required List<Account> accounts, required List<NotificationInboxType> inboxTypes}) async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final userSeparator = FullNameSeparator.values.byName(UserPreferences.getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
-  final useDisplayNamesForUsers = UserPreferences.getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
+  final userSeparator = FullNameSeparator.values.byName(const UserPreferencesStore().getLocalSetting(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+  final useDisplayNamesForUsers = const UserPreferencesStore().getLocalSetting(LocalSettings.useDisplayNamesForUsers) ?? false;
 
   for (final account in accounts) {
     for (final inboxType in inboxTypes) {

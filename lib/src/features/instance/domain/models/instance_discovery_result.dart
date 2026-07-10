@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/primitives/enums/threadiverse_platform.dart';
+import 'package:thunder/src/core/domain/enums/threadiverse_platform.dart';
 
 /// A supported instance identified through NodeInfo discovery.
 class InstanceDiscoveryResult extends Equatable {

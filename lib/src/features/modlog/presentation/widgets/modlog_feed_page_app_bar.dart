@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/modlog/modlog.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/config/config.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/config/config.dart';
 
 /// The app bar for the modlog feed page
 class ModlogFeedPageAppBar extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thunder/src/features/instance/presentation/widgets/instance_page_app_bar.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/test_setup.dart';
 import '../../../../../helpers/widget_test_harness.dart';

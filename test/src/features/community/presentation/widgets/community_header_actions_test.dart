@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thunder/src/features/community/presentation/widgets/community_header/community_header_actions.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
-import 'package:thunder/src/foundation/primitives/enums/threadiverse_platform.dart';
+import 'package:thunder/src/core/domain/models/account.dart';
+import 'package:thunder/src/core/domain/enums/threadiverse_platform.dart';
 
 import '../../../../../helpers/repository_test_fixtures.dart';
 import '../../../../../helpers/test_setup.dart';

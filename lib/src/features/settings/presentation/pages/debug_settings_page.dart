@@ -13,18 +13,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/notification/notification.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/utils/utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class DebugSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -57,15 +57,15 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
   List<int> imageDimensionTimeouts = List.generate(10, (index) => index + 1);
 
   Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.enableExperimentalFeatures:
-        await prefs.setBool(LocalSettings.enableExperimentalFeatures.name, value);
+        await prefs.setSetting(LocalSettings.enableExperimentalFeatures, value);
         setState(() => enableExperimentalFeatures = value);
         break;
       case LocalSettings.imageDimensionTimeout:
-        await prefs.setInt(LocalSettings.imageDimensionTimeout.name, value);
+        await prefs.setSetting(LocalSettings.imageDimensionTimeout, value);
         setState(() => imageDimensionTimeout = value);
         break;
       default:
@@ -82,8 +82,8 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final prefs = UserPreferences.instance.preferences;
-      inboxNotificationType = NotificationType.values.byName(prefs.getString(LocalSettings.inboxNotificationType.name) ?? NotificationType.none.name);
+      final prefs = const UserPreferencesStore();
+      inboxNotificationType = NotificationType.values.byName(prefs.getLocalSetting<String>(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
 
       if (!kIsWeb && Platform.isAndroid) {
         AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
@@ -103,18 +103,18 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
         }
 
         // Find the Thunder notification server
-        thunderNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name);
+        thunderNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer);
       } else if (!kIsWeb && Platform.isIOS) {
         IOSFlutterLocalNotificationsPlugin? iosFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
         areNotificationsAllowed = (await iosFlutterLocalNotificationsPlugin?.checkPermissions())?.isEnabled ?? false;
       }
 
-      pushNotificationServer = prefs.getString(LocalSettings.pushNotificationServer.name) ?? THUNDER_SERVER_URL;
+      pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
 
       setState(() {
-        enableExperimentalFeatures = prefs.getBool(LocalSettings.enableExperimentalFeatures.name) ?? false;
-        imageDimensionTimeout = prefs.getInt(LocalSettings.imageDimensionTimeout.name) ?? 2;
+        enableExperimentalFeatures = prefs.getLocalSetting<bool>(LocalSettings.enableExperimentalFeatures) ?? false;
+        imageDimensionTimeout = prefs.getLocalSetting<int>(LocalSettings.imageDimensionTimeout) ?? 2;
       });
 
       if (widget.settingToHighlight != null) {
@@ -179,7 +179,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                       onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                       secondaryButtonText: l10n.cancel,
                       onPrimaryButtonPressed: (dialogContext, _) async {
-                        final cleared = await UserPreferences.clearAllPreferences();
+                        final cleared = await const UserPreferencesStore().clear();
 
                         if (cleared) {
                           context.read<ThunderCubit>().reload();

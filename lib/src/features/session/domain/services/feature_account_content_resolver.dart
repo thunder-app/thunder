@@ -7,12 +7,13 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/domain/models/feature_account_resolution_request.dart';
 import 'package:thunder/src/features/session/domain/models/feature_account_resolved_content.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class FeatureAccountContentResolver {
   FeatureAccountContentResolver({
     SearchRepository Function(Account account)? searchRepositoryFactory,
     Future<List<ThunderPost>> Function(List<ThunderPost> posts)? postParser,
-  })  : _searchRepositoryFactory = searchRepositoryFactory ?? ((account) => SearchRepositoryImpl(account: account)),
+  })  : _searchRepositoryFactory = searchRepositoryFactory ?? ((account) => createSearchRepository(account)),
         _postParser = postParser ?? ((posts) => parsePosts(posts));
 
   final SearchRepository Function(Account account) _searchRepositoryFactory;

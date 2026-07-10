@@ -1,5 +1,5 @@
 export 'domain/enums/user_action.dart';
-export 'package:thunder/src/foundation/primitives/models/thunder_my_user.dart';
+export 'package:thunder/src/core/domain/models/thunder_my_user.dart';
 export 'presentation/state/account_settings_cubit.dart';
 export 'presentation/state/user_blocks_cubit.dart';
 export 'presentation/state/user_media_cubit.dart';
@@ -17,7 +17,9 @@ export 'presentation/widgets/user_list_entry.dart';
 export 'presentation/widgets/user_selector.dart';
 export 'presentation/utils/user_group_utils.dart';
 export 'presentation/utils/user_session_utils.dart';
-export 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
-export 'data/models/user_label.dart';
+export 'package:thunder/src/core/domain/models/thunder_user.dart';
+export 'domain/models/user_label.dart';
+export 'data/data_sources/user_label_local_data_source.dart';
+export 'data/repositories/user_label_repository.dart';
 export 'data/repositories/user_repository.dart';
 export 'domain/models/user_detail.dart';

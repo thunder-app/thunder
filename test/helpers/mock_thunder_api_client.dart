@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 class MockThunderApiClient extends Mock implements ThunderApiClient {}
 

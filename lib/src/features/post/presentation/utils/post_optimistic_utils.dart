@@ -1,5 +1,5 @@
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/primitives/models/vote_state.dart';
+import 'package:thunder/src/core/domain/models/vote_state.dart';
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
 ThunderPost optimisticallyVotePost(ThunderPost post, int voteType) {

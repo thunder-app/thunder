@@ -6,9 +6,10 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/user/presentation/widgets/account_picker_sheet.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A widget that displays the currently selected user account with the ability to switch between accounts.
 ///
@@ -157,7 +158,7 @@ class _UserSelectorState extends State<UserSelector> {
         return;
       }
 
-      final response = await UserRepositoryImpl(account: targetAccount).getUser(username: username);
+      final response = await createUserRepository(targetAccount).getUser(username: username);
       final user = response?.user;
 
       if (!mounted) return;

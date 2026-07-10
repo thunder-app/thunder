@@ -1,5 +1,5 @@
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Resolved action configuration for [FeedFAB].
 class FeedFabActionConfig {

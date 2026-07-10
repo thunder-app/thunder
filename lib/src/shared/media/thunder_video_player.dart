@@ -7,11 +7,11 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/app/state/network_checker_cubit/network_checker_cubit.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/state/network_checker_cubit.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/src/shared/media/image_preview.dart';
 import 'package:thunder/packages/ui/ui.dart';
 

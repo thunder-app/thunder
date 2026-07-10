@@ -9,13 +9,14 @@ import 'package:smooth_highlight/smooth_highlight.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class UserLabelSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -76,7 +77,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
       }
 
       // Load the user labels
-      userLabels = await UserLabel.fetchAllUserLabels();
+      userLabels = await createUserLabelRepository().fetchAllUserLabels();
       setState(() {});
     });
   }
@@ -177,7 +178,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                                 );
 
                                 if (result) {
-                                  UserLabel.deleteUserLabel(userLabels[index].username);
+                                  createUserLabelRepository().deleteUserLabel(userLabels[index].username);
                                   _updateChangedUserLabel((userLabel: userLabels[index], deleted: true));
                                 }
                               },

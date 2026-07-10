@@ -4,8 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/shared/name/name_style.dart' show FullNameSeparator, NameColor, NameThickness;
 

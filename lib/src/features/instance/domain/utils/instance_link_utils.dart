@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/app/shell/navigation/loading_page.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/core/navigation/loading_page.dart';
+import 'package:thunder/src/core/utils/utils.dart';
+import 'package:thunder/src/core/services/instance_discovery_service.dart' as instance_discovery;
+import 'package:thunder/src/core/services/platform_detection_service.dart' as platform_detection;
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
   if (url == null) {
@@ -70,7 +71,7 @@ Future<int?> getLemmyPostId(BuildContext context, String text) async {
     // This is a post on another instance. Try to resolve it
     try {
       showLoadingPage(context);
-      final response = await SearchRepositoryImpl(account: account).resolve(query: text);
+      final response = await createSearchRepository(account).resolve(query: text);
       return response.post?.id;
     } catch (e) {
       return null;
@@ -99,7 +100,7 @@ Future<int?> getLemmyCommentId(BuildContext context, String text) async {
     // This is a comment on another instance. Try to resolve it
     try {
       showLoadingPage(context);
-      final response = await SearchRepositoryImpl(account: account).resolve(query: text);
+      final response = await createSearchRepository(account).resolve(query: text);
       return response.comment?.id;
     } catch (e) {
       return null;
@@ -136,5 +137,5 @@ String? normalizeInstanceHost(String? url) {
 ///
 /// Returns the detected ThreadiversePlatform or null if detection fails.
 Future<Map<String, dynamic>?> detectPlatformFromNodeInfo(String url, {Duration? timeout}) async {
-  return instance_discovery.detectPlatformFromNodeInfo(url, timeout: timeout);
+  return platform_detection.detectPlatformFromNodeInfo(url, timeout: timeout);
 }

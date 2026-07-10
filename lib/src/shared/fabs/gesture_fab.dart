@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
 
 /// Distinguishes feed and post FAB chrome state.
 enum FabType { feed, post }

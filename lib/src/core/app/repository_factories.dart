@@ -1,0 +1,34 @@
+import 'package:thunder/src/core/persistence/persistence.dart';
+import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/features/comment/api.dart';
+import 'package:thunder/src/features/community/api.dart';
+import 'package:thunder/src/features/drafts/api.dart';
+import 'package:thunder/src/features/instance/api.dart';
+import 'package:thunder/src/features/moderator/api.dart';
+import 'package:thunder/src/features/modlog/api.dart';
+import 'package:thunder/src/features/notification/api.dart';
+import 'package:thunder/src/features/post/api.dart';
+import 'package:thunder/src/features/private_message/api.dart';
+import 'package:thunder/src/features/search/api.dart';
+import 'package:thunder/src/features/session/api.dart';
+import 'package:thunder/src/features/user/api.dart';
+
+AccountRepository createAccountRepository(Account account) => AccountRepositoryImpl(account: account);
+CommentRepository createCommentRepository(Account account) => CommentRepositoryImpl(account: account);
+CommunityRepository createCommunityRepository(Account account) => CommunityRepositoryImpl(account: account);
+InstanceRepository createInstanceRepository(Account account) => InstanceRepositoryImpl(account: account);
+LinkMetadataRepository createLinkMetadataRepository(Account account) => LinkMetadataRepositoryImpl(account: account);
+ModlogRepository createModlogRepository(Account account) => ModlogRepositoryImpl(account: account);
+NotificationRepository createNotificationRepository(Account account) => NotificationRepositoryImpl(account: account);
+PostRepository createPostRepository(Account account) => PostRepositoryImpl(account: account);
+PrivateMessageRepository createPrivateMessageRepository(Account account) => PrivateMessageRepositoryImpl(account: account);
+ReportRepository createReportRepository(Account account) => ReportRepositoryImpl(account: account);
+SearchRepository createSearchRepository(Account account) => SearchRepositoryImpl(account: account);
+SearchService createSearchService(Account account) => SearchService(searchRepository: createSearchRepository(account));
+UserRepository createUserRepository(Account account) => UserRepositoryImpl(account: account);
+
+DraftRepository createDraftRepository() => DraftRepositoryImpl(database: database);
+SessionRepository createSessionRepository() => SessionRepositoryImpl();
+FavoriteRepository createFavoriteRepository() => const FavoriteRepositoryImpl();
+AnonymousSubscriptionsRepository createAnonymousSubscriptionsRepository() => const AnonymousSubscriptionsRepositoryImpl();
+UserLabelRepository createUserLabelRepository() => const UserLabelRepositoryImpl();

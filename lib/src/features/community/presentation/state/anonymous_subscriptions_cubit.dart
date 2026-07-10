@@ -4,8 +4,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/core/errors/errors.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 part 'anonymous_subscriptions_state.dart';
 
@@ -45,7 +46,7 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
       final newCommunities = communities.where((ThunderCommunity community) => !state.urls.contains(community.actorId)).toList();
       if (newCommunities.isEmpty) return;
 
-      await insertSubscriptions(newCommunities.toSet());
+      await createAnonymousSubscriptionsRepository().insertSubscriptions(newCommunities.toSet());
 
       emit(
         state.copyWith(
@@ -68,7 +69,7 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
 
   Future<void> removeSubscriptions(Set<String> urls) async {
     try {
-      await AnonymousSubscriptions.deleteCommunities(urls);
+      await createAnonymousSubscriptionsRepository().deleteCommunities(urls);
 
       emit(
         state.copyWith(
@@ -97,7 +98,7 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
     ));
 
     try {
-      final subscribedCommunities = await getSubscriptions();
+      final subscribedCommunities = await createAnonymousSubscriptionsRepository().getSubscriptions();
       final communities = <String, ThunderCommunity>{};
 
       for (final community in subscribedCommunities) {

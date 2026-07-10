@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on an instance
 enum InstanceBottomSheetAction {
@@ -108,7 +107,7 @@ class InstanceActionBottomSheet extends StatefulWidget {
 class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
   Future<void> performAction(InstanceBottomSheetAction action) async {
     final l10n = GlobalContext.l10n;
-    final repository = InstanceRepositoryImpl(account: widget.account);
+    final repository = createInstanceRepository(widget.account);
 
     final userInstance = fetchInstanceNameFromUrl(widget.userInstanceUrl);
     final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);

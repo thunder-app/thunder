@@ -4,9 +4,9 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/post/api.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/community/api.dart';
 
 /// Widget which displays a post's cross-posts

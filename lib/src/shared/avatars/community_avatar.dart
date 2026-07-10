@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/models/thunder_community.dart';
 import 'package:thunder/src/shared/avatars/avatar_util.dart';
 
 /// A widget that displays a community avatar.

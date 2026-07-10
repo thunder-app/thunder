@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 
 import 'package:thunder/src/features/private_message/data/repositories/private_message_repository.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/errors/errors.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 
 part 'create_private_message_state.dart';
 

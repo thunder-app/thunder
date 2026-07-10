@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/domain/models/search_results.dart';
 import 'package:thunder/src/features/search/data/repositories/search_repository.dart';

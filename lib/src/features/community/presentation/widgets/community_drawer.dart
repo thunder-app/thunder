@@ -8,15 +8,15 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 
 class CommunityDrawer extends StatefulWidget {
   const CommunityDrawer({super.key, this.navigateToAccount});

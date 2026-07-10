@@ -5,16 +5,16 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/foundation/networking/discovery/instance_discovery_service.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/services/instance_discovery_service.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/shared/sort_picker.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class InstancePageAppBar extends StatefulWidget {
   /// The instance being displayed.
@@ -125,7 +125,7 @@ class _InstancePageAppBarState extends State<InstancePageAppBar> {
                     title: blocked ? l10n.unblockInstance : l10n.blockInstance,
                     icon: blocked ? Icons.undo_rounded : Icons.block,
                     onTap: () async {
-                      final repository = InstanceRepositoryImpl(account: widget.account);
+                      final repository = createInstanceRepository(widget.account);
                       final success = await repository.block(widget.instance.id!, !blocked);
 
                       // Update the profile bloc state.

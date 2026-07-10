@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
 import 'package:thunder/src/shared/fabs/gesture_fab.dart';
 
 void main() {

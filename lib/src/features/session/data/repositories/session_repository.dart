@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 /// Repository contract for session persistence and profile ordering.
 abstract class SessionRepository {
@@ -67,7 +67,7 @@ class SessionRepositoryImpl implements SessionRepository {
     final storedSession = await (database.select(database.sessionStateTable)..where((table) => table.singleton.equals(0))).getSingleOrNull();
     if (storedSession?.accountId == null) return null;
 
-    final activeAccount = await Account.fetchAccount(storedSession!.accountId!.toString());
+    final activeAccount = await AccountLocalDataSource.fetchAccount(storedSession!.accountId!.toString());
     if (activeAccount != null) return activeAccount;
 
     await (database.delete(database.sessionStateTable)..where((table) => table.singleton.equals(0))).go();
@@ -76,12 +76,12 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<List<Account>> getAuthenticatedSessions() {
-    return Account.accounts();
+    return AccountLocalDataSource.accounts();
   }
 
   @override
   Future<List<Account>> getAnonymousSessions() {
-    return Account.anonymousInstances();
+    return AccountLocalDataSource.anonymousInstances();
   }
 
   @override
@@ -95,7 +95,7 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<Account?> getSessionByKey(String sessionKey) async {
-    final account = int.tryParse(sessionKey) != null ? await Account.fetchAccount(sessionKey) : null;
+    final account = int.tryParse(sessionKey) != null ? await AccountLocalDataSource.fetchAccount(sessionKey) : null;
     if (account != null) return account;
 
     final anonymousSessions = await getAnonymousSessions();
@@ -118,30 +118,30 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<Account?> addAuthenticatedSession(Account account) {
-    return Account.insertAccount(account);
+    return AccountLocalDataSource.insertAccount(account);
   }
 
   @override
   Future<Account?> addAnonymousSession(Account account) {
-    return Account.insertAnonymousInstance(account);
+    return AccountLocalDataSource.insertAnonymousInstance(account);
   }
 
   @override
   Future<void> removeSession(String sessionKey) async {
-    final account = int.tryParse(sessionKey) != null ? await Account.fetchAccount(sessionKey) : null;
+    final account = int.tryParse(sessionKey) != null ? await AccountLocalDataSource.fetchAccount(sessionKey) : null;
     final activeSession = await _resolveDriftActiveSession();
     final isRemovingActiveAuthenticatedSession = account != null && activeSession?.id == account.id;
     final isRemovingActiveAnonymousSession = account == null && activeSession?.instance == sessionKey;
 
     if (account != null) {
-      await Account.deleteAccount(sessionKey);
+      await AccountLocalDataSource.deleteAccount(sessionKey);
       if (isRemovingActiveAuthenticatedSession) {
         await _promoteFallbackSession();
       }
       return;
     }
 
-    await Account.deleteAnonymousInstance(sessionKey);
+    await AccountLocalDataSource.deleteAnonymousInstance(sessionKey);
     if (isRemovingActiveAnonymousSession) {
       await _promoteFallbackSession();
     }

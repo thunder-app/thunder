@@ -8,7 +8,7 @@ import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_body_sliver.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_bottom_sliver.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_comments_sliver.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Selects the post-page content branch and delegates each branch to slivers.
 class PostPageContentSlivers extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Represents a page of posts returned from an API request.
 class PostList extends Equatable {

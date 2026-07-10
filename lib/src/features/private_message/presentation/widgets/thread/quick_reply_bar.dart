@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Reply field for sending a short direct-messages.
 class QuickReplyBar extends StatelessWidget {

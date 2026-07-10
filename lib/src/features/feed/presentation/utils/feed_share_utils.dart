@@ -8,7 +8,7 @@ import 'package:thunder/src/features/feed/presentation/models/feed_share_options
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/networking/instance_uri.dart';
+import 'package:thunder/src/core/networking/instance_uri.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Shows a bottom modal sheet which allows sharing the given [community].

@@ -1,5 +1,5 @@
 import 'package:thunder/src/features/comment/data/models/comment_node.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
 import 'package:thunder/src/features/comment/presentation/utils/comment_utils.dart';
 
 /// Deterministic representation of API and UI comment ordering.

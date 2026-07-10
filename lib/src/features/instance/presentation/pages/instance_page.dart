@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/wiring/state_factories.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';

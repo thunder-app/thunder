@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_avif/flutter_avif.dart';

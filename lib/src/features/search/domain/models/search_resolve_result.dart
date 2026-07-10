@@ -1,7 +1,7 @@
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/thunder_community.dart';
+import 'package:thunder/src/core/domain/models/thunder_post.dart';
+import 'package:thunder/src/core/domain/models/thunder_user.dart';
 
 class SearchResolveResult {
   final ThunderCommunity? community;

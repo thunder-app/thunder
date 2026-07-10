@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/core/domain/models/thunder_user.dart';
 import 'package:thunder/src/shared/avatars/avatar_util.dart';
 
 /// A widget that displays a user avatar.

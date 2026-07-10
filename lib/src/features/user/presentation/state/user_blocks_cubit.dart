@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/user/data/repositories/user_repository.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/errors/errors.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 
 const _userBlocksUnset = Object();
 

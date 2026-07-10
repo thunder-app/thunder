@@ -2,12 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_utils.dart';
 import 'package:thunder/src/features/search/search.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/core/networking/networking.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
 
 part 'instance_page_state.dart';

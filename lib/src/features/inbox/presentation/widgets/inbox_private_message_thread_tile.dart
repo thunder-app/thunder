@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/navigation/navigation_private_message.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/src/features/inbox/presentation/state/inbox_bloc.dart';
-import 'package:thunder/src/features/private_message/domain/models/private_message_thread.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
+import 'package:thunder/src/features/private_message/domain/models/private_message_thread.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 

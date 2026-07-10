@@ -8,19 +8,19 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_highlight/smooth_highlight.dart';
 
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/presentation/utils/post_example_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class PostAppearanceSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -132,172 +132,172 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
       // General Settings
-      useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
-      hideThumbnails = prefs.getBool(LocalSettings.hideThumbnails.name) ?? false;
-      showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      postShowUserInstance = prefs.getBool(LocalSettings.postShowUserInstance.name) ?? false;
-      dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      showFullPostDate = prefs.getBool(LocalSettings.showFullPostDate.name) ?? false;
-      selectedDateFormat = prefs.getString(LocalSettings.dateFormat.name) != null ? DateFormat(prefs.getString(LocalSettings.dateFormat.name)) : dateFormats.first;
-      feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getString(LocalSettings.feedCardDividerThickness.name) ?? FeedCardDividerThickness.compact.name);
-      feedCardDividerColor = prefs.getInt(LocalSettings.feedCardDividerColor.name) != null ? Color(prefs.getInt(LocalSettings.feedCardDividerColor.name)!) : null;
+      useCompactView = prefs.getLocalSetting<bool>(LocalSettings.useCompactView) ?? false;
+      hideNsfwPreviews = prefs.getLocalSetting<bool>(LocalSettings.hideNsfwPreviews) ?? true;
+      hideThumbnails = prefs.getLocalSetting<bool>(LocalSettings.hideThumbnails) ?? false;
+      showPostAuthor = prefs.getLocalSetting<bool>(LocalSettings.showPostAuthor) ?? false;
+      postShowUserInstance = prefs.getLocalSetting<bool>(LocalSettings.postShowUserInstance) ?? false;
+      dimReadPosts = prefs.getLocalSetting<bool>(LocalSettings.dimReadPosts) ?? true;
+      showFullPostDate = prefs.getLocalSetting<bool>(LocalSettings.showFullPostDate) ?? false;
+      selectedDateFormat = prefs.getLocalSetting<String>(LocalSettings.dateFormat) != null ? DateFormat(prefs.getLocalSetting<String>(LocalSettings.dateFormat)) : dateFormats.first;
+      feedCardDividerThickness = FeedCardDividerThickness.values.byName(prefs.getLocalSetting<String>(LocalSettings.feedCardDividerThickness) ?? FeedCardDividerThickness.compact.name);
+      feedCardDividerColor = prefs.getLocalSetting<int>(LocalSettings.feedCardDividerColor) != null ? Color(prefs.getLocalSetting<int>(LocalSettings.feedCardDividerColor)!) : null;
 
       // Compact View Settings
       compactPostCardMetadataItems =
-          prefs.getStringList(LocalSettings.compactPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
-      cardPostCardMetadataItems = prefs.getStringList(LocalSettings.cardPostCardMetadataItems.name)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
-      showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
-      showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+          prefs.getLocalSetting<List<String>>(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
+      cardPostCardMetadataItems = prefs.getLocalSetting<List<String>>(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+      showThumbnailPreviewOnRight = prefs.getLocalSetting<bool>(LocalSettings.showThumbnailPreviewOnRight) ?? false;
+      showTextPostIndicator = prefs.getLocalSetting<bool>(LocalSettings.showTextPostIndicator) ?? false;
 
       // Card View Settings
-      showCommunityFirst = prefs.getBool(LocalSettings.showPostCommunityFirst.name) ?? false;
-      showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      linkPostsUseCompactView = prefs.getBool(LocalSettings.linkPostsUseCompactView.name) ?? false;
-      pinnedPostsUseCompactView = prefs.getBool(LocalSettings.pinnedPostsUseCompactView.name) ?? true;
-      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? true;
-      showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+      showCommunityFirst = prefs.getLocalSetting<bool>(LocalSettings.showPostCommunityFirst) ?? false;
+      showTitleFirst = prefs.getLocalSetting<bool>(LocalSettings.showPostTitleFirst) ?? false;
+      linkPostsUseCompactView = prefs.getLocalSetting<bool>(LocalSettings.linkPostsUseCompactView) ?? false;
+      pinnedPostsUseCompactView = prefs.getLocalSetting<bool>(LocalSettings.pinnedPostsUseCompactView) ?? true;
+      showFullHeightImages = prefs.getLocalSetting<bool>(LocalSettings.showPostFullHeightImages) ?? true;
+      showEdgeToEdgeImages = prefs.getLocalSetting<bool>(LocalSettings.showPostEdgeToEdgeImages) ?? false;
+      showTextContent = prefs.getLocalSetting<bool>(LocalSettings.showPostTextContentPreview) ?? false;
+      showVoteActions = prefs.getLocalSetting<bool>(LocalSettings.showPostVoteActions) ?? true;
+      showSaveAction = prefs.getLocalSetting<bool>(LocalSettings.showPostSaveAction) ?? true;
+      showCommunityIcons = prefs.getLocalSetting<bool>(LocalSettings.showPostCommunityIcons) ?? false;
 
       // Post body settings
-      showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
-      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
-      postBodyShowUserInstance = prefs.getBool(LocalSettings.postBodyShowUserInstance.name) ?? false;
-      postBodyShowCommunityInstance = prefs.getBool(LocalSettings.postBodyShowCommunityInstance.name) ?? false;
-      postBodyShowCommunityAvatar = prefs.getBool(LocalSettings.postBodyShowCommunityAvatar.name) ?? false;
+      showCrossPosts = prefs.getLocalSetting<bool>(LocalSettings.showCrossPosts) ?? true;
+      postBodyViewType = PostBodyViewType.values.byName(prefs.getLocalSetting<String>(LocalSettings.postBodyViewType) ?? PostBodyViewType.expanded.name);
+      postBodyShowUserInstance = prefs.getLocalSetting<bool>(LocalSettings.postBodyShowUserInstance) ?? false;
+      postBodyShowCommunityInstance = prefs.getLocalSetting<bool>(LocalSettings.postBodyShowCommunityInstance) ?? false;
+      postBodyShowCommunityAvatar = prefs.getLocalSetting<bool>(LocalSettings.postBodyShowCommunityAvatar) ?? false;
     });
   }
 
   /// Given an attribute and the associated value, update the setting in the shared preferences
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       case LocalSettings.useCompactView:
-        await prefs.setBool(LocalSettings.useCompactView.name, value);
+        await prefs.setSetting(LocalSettings.useCompactView, value);
         setState(() => useCompactView = value);
         break;
       case LocalSettings.hideNsfwPreviews:
-        await prefs.setBool(LocalSettings.hideNsfwPreviews.name, value);
+        await prefs.setSetting(LocalSettings.hideNsfwPreviews, value);
         setState(() => hideNsfwPreviews = value);
         break;
       case LocalSettings.hideThumbnails:
-        await prefs.setBool(LocalSettings.hideThumbnails.name, value);
+        await prefs.setSetting(LocalSettings.hideThumbnails, value);
         setState(() => hideThumbnails = value);
         break;
       case LocalSettings.showPostAuthor:
-        await prefs.setBool(LocalSettings.showPostAuthor.name, value);
+        await prefs.setSetting(LocalSettings.showPostAuthor, value);
         setState(() => showPostAuthor = value);
         break;
       case LocalSettings.postShowUserInstance:
-        await prefs.setBool(LocalSettings.postShowUserInstance.name, value);
+        await prefs.setSetting(LocalSettings.postShowUserInstance, value);
         setState(() => postShowUserInstance = value);
         break;
       case LocalSettings.dimReadPosts:
-        await prefs.setBool(LocalSettings.dimReadPosts.name, value);
+        await prefs.setSetting(LocalSettings.dimReadPosts, value);
         setState(() => dimReadPosts = value);
         break;
       case LocalSettings.showFullPostDate:
-        await prefs.setBool(LocalSettings.showFullPostDate.name, value);
+        await prefs.setSetting(LocalSettings.showFullPostDate, value);
         setState(() => showFullPostDate = value);
         break;
       case LocalSettings.dateFormat:
-        await prefs.setString(LocalSettings.dateFormat.name, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
+        await prefs.setSetting(LocalSettings.dateFormat, (value as DateFormat).pattern ?? dateFormats.first.pattern!);
         setState(() => selectedDateFormat = value);
         break;
       case LocalSettings.feedCardDividerThickness:
-        await prefs.setString(LocalSettings.feedCardDividerThickness.name, (value as FeedCardDividerThickness).name);
+        await prefs.setSetting(LocalSettings.feedCardDividerThickness, (value as FeedCardDividerThickness).name);
         setState(() => feedCardDividerThickness = value);
         break;
       case LocalSettings.feedCardDividerColor:
         if (value == null) {
           await prefs.remove(LocalSettings.feedCardDividerColor.name);
         } else {
-          await prefs.setInt(LocalSettings.feedCardDividerColor.name, value.value);
+          await prefs.setSetting(LocalSettings.feedCardDividerColor, value.value);
         }
         setState(() => feedCardDividerColor = value);
         break;
 
       case LocalSettings.compactPostCardMetadataItems:
-        await prefs.setStringList(LocalSettings.compactPostCardMetadataItems.name, value);
+        await prefs.setSetting(LocalSettings.compactPostCardMetadataItems, value);
         break;
       case LocalSettings.showThumbnailPreviewOnRight:
-        await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
+        await prefs.setSetting(LocalSettings.showThumbnailPreviewOnRight, value);
         setState(() => showThumbnailPreviewOnRight = value);
         break;
       case LocalSettings.linkPostsUseCompactView:
-        await prefs.setBool(LocalSettings.linkPostsUseCompactView.name, value);
+        await prefs.setSetting(LocalSettings.linkPostsUseCompactView, value);
         setState(() => linkPostsUseCompactView = value);
         break;
       case LocalSettings.pinnedPostsUseCompactView:
-        await prefs.setBool(LocalSettings.pinnedPostsUseCompactView.name, value);
+        await prefs.setSetting(LocalSettings.pinnedPostsUseCompactView, value);
         setState(() => pinnedPostsUseCompactView = value);
         break;
       case LocalSettings.showTextPostIndicator:
-        await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
+        await prefs.setSetting(LocalSettings.showTextPostIndicator, value);
         setState(() => showTextPostIndicator = value);
         break;
       case LocalSettings.cardPostCardMetadataItems:
-        await prefs.setStringList(LocalSettings.cardPostCardMetadataItems.name, value);
+        await prefs.setSetting(LocalSettings.cardPostCardMetadataItems, value);
         break;
       case LocalSettings.showPostCommunityFirst:
-        await prefs.setBool(LocalSettings.showPostCommunityFirst.name, value);
+        await prefs.setSetting(LocalSettings.showPostCommunityFirst, value);
         setState(() => showCommunityFirst = value);
         break;
       case LocalSettings.showPostTitleFirst:
-        await prefs.setBool(LocalSettings.showPostTitleFirst.name, value);
+        await prefs.setSetting(LocalSettings.showPostTitleFirst, value);
         setState(() => showTitleFirst = value);
         break;
       case LocalSettings.showPostFullHeightImages:
-        await prefs.setBool(LocalSettings.showPostFullHeightImages.name, value);
+        await prefs.setSetting(LocalSettings.showPostFullHeightImages, value);
         setState(() => showFullHeightImages = value);
         break;
       case LocalSettings.showPostEdgeToEdgeImages:
-        await prefs.setBool(LocalSettings.showPostEdgeToEdgeImages.name, value);
+        await prefs.setSetting(LocalSettings.showPostEdgeToEdgeImages, value);
         setState(() => showEdgeToEdgeImages = value);
         break;
       case LocalSettings.showPostTextContentPreview:
-        await prefs.setBool(LocalSettings.showPostTextContentPreview.name, value);
+        await prefs.setSetting(LocalSettings.showPostTextContentPreview, value);
         setState(() => showTextContent = value);
         break;
       case LocalSettings.showPostVoteActions:
-        await prefs.setBool(LocalSettings.showPostVoteActions.name, value);
+        await prefs.setSetting(LocalSettings.showPostVoteActions, value);
         setState(() => showVoteActions = value);
         break;
       case LocalSettings.showPostSaveAction:
-        await prefs.setBool(LocalSettings.showPostSaveAction.name, value);
+        await prefs.setSetting(LocalSettings.showPostSaveAction, value);
         setState(() => showSaveAction = value);
         break;
       case LocalSettings.showPostCommunityIcons:
-        await prefs.setBool(LocalSettings.showPostCommunityIcons.name, value);
+        await prefs.setSetting(LocalSettings.showPostCommunityIcons, value);
         setState(() => showCommunityIcons = value);
         break;
 
       case LocalSettings.showCrossPosts:
-        await prefs.setBool(LocalSettings.showCrossPosts.name, value);
+        await prefs.setSetting(LocalSettings.showCrossPosts, value);
         setState(() => showCrossPosts = value);
         break;
       case LocalSettings.postBodyViewType:
-        await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
+        await prefs.setSetting(LocalSettings.postBodyViewType, (value as PostBodyViewType).name);
         setState(() => postBodyViewType = value);
         break;
       case LocalSettings.postBodyShowUserInstance:
-        await prefs.setBool(LocalSettings.postBodyShowUserInstance.name, value);
+        await prefs.setSetting(LocalSettings.postBodyShowUserInstance, value);
         setState(() => postBodyShowUserInstance = value);
         break;
       case LocalSettings.postBodyShowCommunityInstance:
-        await prefs.setBool(LocalSettings.postBodyShowCommunityInstance.name, value);
+        await prefs.setSetting(LocalSettings.postBodyShowCommunityInstance, value);
         setState(() => postBodyShowCommunityInstance = value);
         break;
       case LocalSettings.postBodyShowCommunityAvatar:
-        await prefs.setBool(LocalSettings.postBodyShowCommunityAvatar.name, value);
+        await prefs.setSetting(LocalSettings.postBodyShowCommunityAvatar, value);
         setState(() => postBodyShowCommunityAvatar = value);
         break;
       default:
@@ -312,7 +312,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
   /// Reset the posts preferences to their defaults
   void resetPostPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     await prefs.remove(LocalSettings.useCompactView.name);
     await prefs.remove(LocalSettings.hideNsfwPreviews.name);

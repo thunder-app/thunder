@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_date.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_reply_count.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_header/comment_card_header_score.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/features/comment/api.dart';

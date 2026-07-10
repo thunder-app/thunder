@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/shared/media/compact_thumbnail_preview.dart';

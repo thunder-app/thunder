@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/shared/media/media_view.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays a card view of a post card. This view is used in the feed related pages.

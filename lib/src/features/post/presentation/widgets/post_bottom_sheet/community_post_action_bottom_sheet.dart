@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
@@ -102,7 +102,7 @@ class CommunityPostActionBottomSheet extends StatefulWidget {
 class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBottomSheet> {
   void performAction(CommunityPostAction action) async {
     final l10n = GlobalContext.l10n;
-    final repository = CommunityRepositoryImpl(account: widget.account);
+    final repository = createCommunityRepository(widget.account);
 
     switch (action) {
       case CommunityPostAction.viewCommunity:

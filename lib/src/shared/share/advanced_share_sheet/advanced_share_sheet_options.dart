@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// User-selected options for the advanced share sheet.
 class AdvancedShareSheetOptions {

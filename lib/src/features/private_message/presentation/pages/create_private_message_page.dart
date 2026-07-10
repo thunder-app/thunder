@@ -4,16 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keyboard_detection/keyboard_detection.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/private_message/presentation/widgets/create_private_message/create_private_message_bottom_bar.dart';
 import 'package:thunder/src/features/private_message/presentation/widgets/create_private_message/create_private_message_editor_section.dart';
 import 'package:thunder/src/features/private_message/presentation/widgets/create_private_message/create_private_message_recipient_tile.dart';
 import 'package:thunder/src/features/private_message/presentation/state/create_private_message_cubit.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/input_dialogs.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Page for composing and sending a direct message.
 class CreatePrivateMessagePage extends StatefulWidget {

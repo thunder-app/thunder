@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_anonymous_instance_tile.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_authenticated_accounts_sliver.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
+import 'package:thunder/src/core/domain/models/account.dart';
 
 /// Displays and reorders anonymous instance rows in the profile modal.
 class ProfileAnonymousInstancesSliver extends StatelessWidget {

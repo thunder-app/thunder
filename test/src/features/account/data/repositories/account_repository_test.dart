@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:thunder/src/features/account/data/repositories/account_repository.dart';
 import 'package:thunder/src/features/account/domain/models/account_media.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/mock_thunder_api_client.dart';
 import '../../../../../helpers/repository_test_fixtures.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/settings/presentation/utils/setting_link_utils.dart';
 

@@ -8,13 +8,13 @@ import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_fab_overlay.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_page_floating_action_button.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_page_scroll_body.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// A page that displays the post details and comments associated with a post.

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/presentation/state/instance_validation_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/login/login_credentials_fields.dart';
-import 'package:thunder/src/foundation/primitives/enums/threadiverse_platform.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_instance_info.dart';
+import 'package:thunder/src/core/domain/enums/threadiverse_platform.dart';
+import 'package:thunder/src/core/domain/models/thunder_instance_info.dart';
 
 import '../../../../../helpers/test_setup.dart';
 import '../../../../../helpers/widget_test_harness.dart';

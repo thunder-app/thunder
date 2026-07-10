@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/search/search.dart';
 
 /// Checks whether there are any results for the current given [searchType] in the [searchState] or the given [searchResponse].

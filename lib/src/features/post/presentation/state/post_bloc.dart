@@ -4,16 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/post/domain/utils/comment_state_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/networking/networking.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';

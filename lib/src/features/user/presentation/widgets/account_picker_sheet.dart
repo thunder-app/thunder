@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 Future<Account?> showAccountPickerSheet(
   BuildContext context, {
@@ -43,7 +44,7 @@ class _AccountPickerSheetState extends State<AccountPickerSheet> {
 
   Future<void> _loadAccounts() async {
     try {
-      final accounts = await Account.accounts().then(
+      final accounts = await createSessionRepository().getAuthenticatedSessions().then(
         (accounts) => accounts.where((account) => account.id != widget.currentAccount.id).toList(),
       );
 

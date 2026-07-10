@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';

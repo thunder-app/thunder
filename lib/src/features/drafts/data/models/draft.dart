@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/enums/draft_type.dart';
+import 'package:thunder/src/core/domain/enums/draft_type.dart';
 
 class Draft {
   /// The database identifier for this object

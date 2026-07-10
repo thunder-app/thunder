@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/account/presentation/state/instance_validation_cubit.dart';
 
 /// Displays submission and cancellation actions for the login form.

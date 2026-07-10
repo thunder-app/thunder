@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/user_chip.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a user
 enum UserBottomSheetAction {
@@ -136,8 +134,8 @@ class UserActionBottomSheet extends StatefulWidget {
 class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
   void performAction(UserBottomSheetAction action) async {
     final l10n = GlobalContext.l10n;
-    final userRepository = UserRepositoryImpl(account: widget.account);
-    final communityRepository = CommunityRepositoryImpl(account: widget.account);
+    final userRepository = createUserRepository(widget.account);
+    final communityRepository = createCommunityRepository(widget.account);
 
     switch (action) {
       case UserBottomSheetAction.viewProfile:
@@ -215,7 +213,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
       title: l10n.banFromCommunity,
       primaryButtonText: l10n.ban,
       onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
-        final communityRepository = CommunityRepositoryImpl(account: widget.account);
+        final communityRepository = createCommunityRepository(widget.account);
 
         final user = await communityRepository.banUserFromCommunity(userId: widget.user.id, communityId: widget.communityId!, ban: true, reason: controller.text, removeData: removeData);
         if (user.status.banned) {

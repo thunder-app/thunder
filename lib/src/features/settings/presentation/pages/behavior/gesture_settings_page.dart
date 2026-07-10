@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class GestureSettingsPage extends StatefulWidget {
   final LocalSettings? settingToHighlight;
@@ -73,69 +73,69 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   LocalSettings? settingToHighlight;
 
   void setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
       case LocalSettings.sidebarBottomNavBarSwipeGesture:
-        await prefs.setBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name, value);
+        await prefs.setSetting(LocalSettings.sidebarBottomNavBarSwipeGesture, value);
         setState(() => bottomNavBarSwipeGestures = value);
         break;
       case LocalSettings.sidebarBottomNavBarDoubleTapGesture:
-        await prefs.setBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name, value);
+        await prefs.setSetting(LocalSettings.sidebarBottomNavBarDoubleTapGesture, value);
         setState(() => bottomNavBarDoubleTapGestures = value);
         break;
 
       // Post Gesture Settings
       case LocalSettings.enablePostGestures:
-        await prefs.setBool(LocalSettings.enablePostGestures.name, value);
+        await prefs.setSetting(LocalSettings.enablePostGestures, value);
         setState(() => enablePostGestures = value);
         break;
       case LocalSettings.postGestureLeftPrimary:
-        await prefs.setString(LocalSettings.postGestureLeftPrimary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.postGestureLeftPrimary, (value as SwipeAction).name);
         setState(() => leftPrimaryPostGesture = value);
         break;
       case LocalSettings.postGestureLeftSecondary:
-        await prefs.setString(LocalSettings.postGestureLeftSecondary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.postGestureLeftSecondary, (value as SwipeAction).name);
         setState(() => leftSecondaryPostGesture = value);
         break;
       case LocalSettings.postGestureRightPrimary:
-        await prefs.setString(LocalSettings.postGestureRightPrimary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.postGestureRightPrimary, (value as SwipeAction).name);
         setState(() => rightPrimaryPostGesture = value);
         break;
       case LocalSettings.postGestureRightSecondary:
-        await prefs.setString(LocalSettings.postGestureRightSecondary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.postGestureRightSecondary, (value as SwipeAction).name);
         setState(() => rightSecondaryPostGesture = value);
         break;
 
       // Comment Gesture Settings
       case LocalSettings.enableCommentGestures:
-        await prefs.setBool(LocalSettings.enableCommentGestures.name, value);
+        await prefs.setSetting(LocalSettings.enableCommentGestures, value);
         setState(() => enableCommentGestures = value);
         break;
       case LocalSettings.commentGestureLeftPrimary:
-        await prefs.setString(LocalSettings.commentGestureLeftPrimary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.commentGestureLeftPrimary, (value as SwipeAction).name);
         setState(() => leftPrimaryCommentGesture = value);
         break;
       case LocalSettings.commentGestureLeftSecondary:
-        await prefs.setString(LocalSettings.commentGestureLeftSecondary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.commentGestureLeftSecondary, (value as SwipeAction).name);
         setState(() => leftSecondaryCommentGesture = value);
         break;
       case LocalSettings.commentGestureRightPrimary:
-        await prefs.setString(LocalSettings.commentGestureRightPrimary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.commentGestureRightPrimary, (value as SwipeAction).name);
         setState(() => rightPrimaryCommentGesture = value);
         break;
       case LocalSettings.commentGestureRightSecondary:
-        await prefs.setString(LocalSettings.commentGestureRightSecondary.name, (value as SwipeAction).name);
+        await prefs.setSetting(LocalSettings.commentGestureRightSecondary, (value as SwipeAction).name);
         setState(() => rightSecondaryCommentGesture = value);
         break;
       case LocalSettings.enableFullScreenSwipeNavigationGesture:
-        await prefs.setBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name, value);
+        await prefs.setSetting(LocalSettings.enableFullScreenSwipeNavigationGesture, value);
         setState(() => enableFullScreenSwipeNavigationGesture = value);
         break;
       case LocalSettings.imagePeekDuration:
-        await prefs.setInt(LocalSettings.imagePeekDuration.name, value);
+        await prefs.setSetting(LocalSettings.imagePeekDuration, value);
         setState(() => imagePeekDuration = value);
         break;
       default:
@@ -149,32 +149,32 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
-      bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
-      bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
+      bottomNavBarSwipeGestures = prefs.getLocalSetting<bool>(LocalSettings.sidebarBottomNavBarSwipeGesture) ?? true;
+      bottomNavBarDoubleTapGestures = prefs.getLocalSetting<bool>(LocalSettings.sidebarBottomNavBarDoubleTapGesture) ?? false;
 
       // Post Gesture Settings
-      enablePostGestures = prefs.getBool(LocalSettings.enablePostGestures.name) ?? true;
-      leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
-      leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
-      rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightPrimary.name) ?? SwipeAction.save.name);
-      rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightSecondary.name) ?? SwipeAction.toggleRead.name);
+      enablePostGestures = prefs.getLocalSetting<bool>(LocalSettings.enablePostGestures) ?? true;
+      leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postGestureLeftPrimary) ?? SwipeAction.upvote.name);
+      leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postGestureLeftSecondary) ?? SwipeAction.downvote.name);
+      rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postGestureRightPrimary) ?? SwipeAction.save.name);
+      rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.postGestureRightSecondary) ?? SwipeAction.toggleRead.name);
 
       // Comment Gesture Settings
-      enableCommentGestures = prefs.getBool(LocalSettings.enableCommentGestures.name) ?? true;
-      leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
-      leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
-      rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
-      rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
+      enableCommentGestures = prefs.getLocalSetting<bool>(LocalSettings.enableCommentGestures) ?? true;
+      leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.commentGestureLeftPrimary) ?? SwipeAction.upvote.name);
+      leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.commentGestureLeftSecondary) ?? SwipeAction.downvote.name);
+      rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.commentGestureRightPrimary) ?? SwipeAction.reply.name);
+      rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getLocalSetting<String>(LocalSettings.commentGestureRightSecondary) ?? SwipeAction.save.name);
 
-      enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+      enableFullScreenSwipeNavigationGesture = prefs.getLocalSetting<bool>(LocalSettings.enableFullScreenSwipeNavigationGesture) ?? true;
 
       // Image Peek Settings
-      imagePeekDuration = prefs.getInt(LocalSettings.imagePeekDuration.name) ?? 300;
+      imagePeekDuration = prefs.getLocalSetting<int>(LocalSettings.imagePeekDuration) ?? 300;
 
       isLoading = false;
     });

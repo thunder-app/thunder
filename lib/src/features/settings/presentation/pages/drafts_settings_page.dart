@@ -3,18 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/comment/comment.dart';
-import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/drafts/drafts.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/domain/full_name.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 class DraftsSettingsPage extends StatefulWidget {
   const DraftsSettingsPage({super.key, required this.account});
@@ -27,7 +23,7 @@ class DraftsSettingsPage extends StatefulWidget {
 }
 
 class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTickerProviderStateMixin {
-  final _draftRepository = DraftRepositoryImpl(database: database);
+  final _draftRepository = createDraftRepository();
 
   /// Whether the drafts are loading
   bool _loading = true;
@@ -68,7 +64,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.replyId != null) {
             try {
-              final details = await CommunityRepositoryImpl(account: account).getCommunity(id: draft.replyId);
+              final details = await createCommunityRepository(account).getCommunity(id: draft.replyId);
               community = details.community;
             } catch (_) {}
           }
@@ -84,7 +80,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.existingId != null) {
             try {
-              final response = await PostRepositoryImpl(account: account).getPost(draft.existingId!);
+              final response = await createPostRepository(account).getPost(draft.existingId!);
               final post = response?.post;
               if (post is ThunderPost) {
                 community = post.community;
@@ -103,7 +99,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.replyId != null) {
             try {
-              final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+              final response = await createPostRepository(account).getPost(draft.replyId!);
               final post = response?.post;
               if (post is ThunderPost) {
                 community = post.community;
@@ -122,7 +118,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.replyId != null) {
             try {
-              final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+              final comment = await createCommentRepository(account).getComment(draft.replyId!);
               community = comment.community ?? comment.post?.community;
             } catch (_) {}
           }
@@ -138,7 +134,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.existingId != null) {
             try {
-              final comment = await CommentRepositoryImpl(account: account).getComment(draft.existingId!);
+              final comment = await createCommentRepository(account).getComment(draft.existingId!);
               community = comment.community ?? comment.post?.community;
             } catch (_) {}
           }
@@ -155,12 +151,12 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
           if (draft.replyId != null) {
             try {
-              final comment = await CommentRepositoryImpl(account: account).getComment(draft.replyId!);
+              final comment = await createCommentRepository(account).getComment(draft.replyId!);
               community = comment.community ?? comment.post?.community;
               contextLabel = l10n.replyToComment;
             } catch (_) {
               try {
-                final response = await PostRepositoryImpl(account: account).getPost(draft.replyId!);
+                final response = await createPostRepository(account).getPost(draft.replyId!);
                 final post = response?.post;
                 if (post is ThunderPost) {
                   community = post.community;

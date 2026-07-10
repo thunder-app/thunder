@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/app/shell/state/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
 
 import 'package:thunder/src/features/post/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 enum FeedFabAction {
   openFab(),

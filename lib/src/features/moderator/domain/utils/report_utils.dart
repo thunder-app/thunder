@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Optimistically resolves a post report. This changes the value of the report locally, without sending the network request.
 ThunderReport optimisticallyResolveReport(ThunderReport report, bool resolved) {

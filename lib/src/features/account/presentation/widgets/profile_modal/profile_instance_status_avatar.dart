@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Displays an instance icon with an animated availability indicator.
 class ProfileInstanceStatusAvatar extends StatelessWidget {

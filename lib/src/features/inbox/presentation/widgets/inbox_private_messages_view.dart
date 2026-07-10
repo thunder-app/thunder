@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 import 'package:thunder/src/features/inbox/presentation/widgets/inbox_private_message_thread_tile.dart';
 import 'package:thunder/src/features/private_message/domain/utils/private_message_thread_utils.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Displays direct messages grouped into participant threads.
 class InboxPrivateMessagesView extends StatelessWidget {

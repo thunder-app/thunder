@@ -11,10 +11,10 @@ import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/utils/utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 
 /// A widget that displays detailed information about a user.
 class UserInformation extends StatefulWidget {

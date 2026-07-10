@@ -7,12 +7,12 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet_image.dart';
 import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet_options.dart';
-import 'package:thunder/src/shared/share/share_image_preview.dart';
+import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_sheet_preview.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class AdvancedShareSheetContent extends StatefulWidget {
   const AdvancedShareSheetContent({
@@ -86,7 +86,7 @@ class _AdvancedShareSheetContentState extends State<AdvancedShareSheetContent> {
   }
 
   Future<void> _share(Uint8List? generatedImage) async {
-    await UserPreferences.setSetting(LocalSettings.advancedShareOptions, jsonEncode(_options.toJson()));
+    await const UserPreferencesStore().setSetting(LocalSettings.advancedShareOptions, jsonEncode(_options.toJson()));
 
     final text = advancedShareText(_options, _post);
 

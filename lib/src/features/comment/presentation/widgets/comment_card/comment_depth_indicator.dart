@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/shared/theme/color_utils.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 class CommentDepthIndicatorDecoration extends Decoration {
   /// The [BuildContext] used to access the theme and colors for rendering.
@@ -88,7 +87,7 @@ class _BoxDecorationPainter extends BoxPainter {
         if (_decoration.scheme == NestedCommentIndicatorColor.monochrome) {
           paint.color = theme.hintColor.withValues(alpha: 0.25);
         } else {
-          paint.color = getCommentLevelColor(_decoration.context, i % 6);
+          paint.color = _getCommentLevelColor(_decoration.context, i % 6);
         }
 
         canvas.drawLine(
@@ -103,7 +102,7 @@ class _BoxDecorationPainter extends BoxPainter {
       if (_decoration.scheme == NestedCommentIndicatorColor.monochrome) {
         paint.color = theme.hintColor.withValues(alpha: 0.25);
       } else {
-        paint.color = getCommentLevelColor(_decoration.context, (_decoration.level - 1) % 6);
+        paint.color = _getCommentLevelColor(_decoration.context, (_decoration.level - 1) % 6);
       }
 
       // Draw only the current level of the comment indicator
@@ -114,4 +113,19 @@ class _BoxDecorationPainter extends BoxPainter {
       );
     }
   }
+}
+
+Color _getCommentLevelColor(BuildContext context, int level) {
+  final colors = [
+    Colors.red.shade300,
+    Colors.orange.shade300,
+    Colors.yellow.shade300,
+    Colors.green.shade300,
+    Colors.blue.shade300,
+    Colors.indigo.shade300,
+  ];
+
+  final theme = Theme.of(context);
+
+  return Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), colors[level]);
 }

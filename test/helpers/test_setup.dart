@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import 'mock_thunder_api_client.dart';
 

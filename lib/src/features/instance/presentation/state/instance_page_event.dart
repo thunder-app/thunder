@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 abstract class InstancePageEvent extends Equatable {
   const InstancePageEvent();

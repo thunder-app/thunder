@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Renders the visible comment body and optional inline action buttons.
 class CommentCardSurface extends StatelessWidget {

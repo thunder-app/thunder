@@ -2,12 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/errors/errors.dart';
+import 'package:thunder/src/core/services/services.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 import 'package:thunder/src/features/moderator/moderator.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';

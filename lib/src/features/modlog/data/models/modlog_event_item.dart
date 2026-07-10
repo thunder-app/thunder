@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/enums/modlog_action_type.dart';
-import 'package:thunder/src/foundation/primitives/models/modlog_event_item.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_community.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_post.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_user.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/enums/modlog_action_type.dart';
+import 'package:thunder/src/core/domain/models/modlog_event_item.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/thunder_community.dart';
+import 'package:thunder/src/core/domain/models/thunder_post.dart';
+import 'package:thunder/src/core/domain/models/thunder_user.dart';
 
 /// Represents a modlog event based on [ModlogActionType].
 /// This class is used to display modlog events in the UI.

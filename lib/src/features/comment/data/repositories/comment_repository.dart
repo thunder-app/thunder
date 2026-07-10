@@ -1,5 +1,5 @@
-import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
+import 'package:thunder/src/core/core.dart';
+import 'package:thunder/src/core/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/comment/domain/models/comment_page.dart';
 
 /// Repository contract for comment reads and mutations.

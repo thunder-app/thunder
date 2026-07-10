@@ -5,9 +5,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/feed/presentation/widgets/feed_post_card_list_item.dart';
 import 'package:thunder/src/features/feed/presentation/widgets/feed_read_tracking_controller.dart';
 

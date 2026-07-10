@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:thunder/src/foundation/utils/cache/platform_version_cache.dart';
+import 'package:thunder/src/core/utils/platform_version_cache.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/session/data/repositories/session_repository.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
+import 'package:thunder/src/core/services/localization_service.dart';
 
 part 'session_event.dart';
 part 'session_state.dart';

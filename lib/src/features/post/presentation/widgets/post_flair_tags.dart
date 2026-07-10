@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Displays PieFed flairs and tags for a post.
 class PostFlairTags extends StatelessWidget {

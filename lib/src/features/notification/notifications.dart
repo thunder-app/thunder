@@ -9,15 +9,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/notification/notification.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 /// The main function which triggers push notification logic. This handles delegating push notification logic to the correct service.
 ///
 /// The [controller] is passed in so that we can react to push notifications.
 Future<void> initPushNotificationLogic({required StreamController<NotificationResponse> controller}) async {
-  NotificationType notificationType = NotificationType.values.byName(UserPreferences.getLocalSetting(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
+  NotificationType notificationType = NotificationType.values.byName(const UserPreferencesStore().getLocalSetting(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
 
   debugPrint("Initializing push notifications for type: ${notificationType.name}");
 

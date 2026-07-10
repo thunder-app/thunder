@@ -35,7 +35,7 @@ jobs:
 
           # Convert to a dart file with a map of domain -> platform
           cat << EOF > lib/src/features/instance/data/constants/known_instances.dart
-          import 'package:thunder/src/foundation/primitives/primitives.dart';
+          import 'package:thunder/src/core/domain/domain.dart';
 
           const Map<String, ThreadiversePlatform> knownInstances = {
           $(awk '{ print "  \047"$0"\047: ThreadiversePlatform.lemmy," }' lemmy-instances.txt)

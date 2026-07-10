@@ -1,5 +1,5 @@
-import 'package:thunder/src/foundation/foundation.dart';
-import 'package:thunder/src/foundation/networking/resolved_api_client.dart';
+import 'package:thunder/src/core/core.dart';
+import 'package:thunder/src/core/networking/resolved_api_client.dart';
 import 'package:thunder/src/features/post/post.dart';
 
 /// Repository contract for post reads and mutations.

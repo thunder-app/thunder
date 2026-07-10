@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Creates the title of a post card. This includes the post title and any status icons.
 class PostCardTitle extends StatelessWidget {

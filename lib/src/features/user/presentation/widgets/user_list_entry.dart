@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/navigation/navigation_private_message.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/feed.dart';
-import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A widget that can display a single user entry for use within a list (e.g., search page, instance explorer)
 class UserListEntry extends StatelessWidget {
@@ -70,7 +68,7 @@ class UserListEntry extends StatelessWidget {
 
           if (resolutionAccount != null) {
             try {
-              final response = await SearchRepositoryImpl(account: resolutionAccount!).resolve(query: user.actorId);
+              final response = await createSearchRepository(resolutionAccount!).resolve(query: user.actorId);
 
               userId = response.user?.id;
             } catch (e) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expandable/expandable.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/media/media_view.dart';
 
 /// Displays the expandable media area for a post body.

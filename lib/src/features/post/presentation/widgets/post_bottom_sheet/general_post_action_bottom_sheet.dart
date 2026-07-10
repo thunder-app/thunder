@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
 import 'package:thunder/src/shared/name/full_name_copy_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the general actions that can be taken on a post
 enum GeneralPostAction {
@@ -153,7 +154,7 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
   }
 
   void performAction(GeneralQuickPostAction action) async {
-    final repository = PostRepositoryImpl(account: widget.account);
+    final repository = createPostRepository(widget.account);
 
     switch (action) {
       case GeneralQuickPostAction.upvote:

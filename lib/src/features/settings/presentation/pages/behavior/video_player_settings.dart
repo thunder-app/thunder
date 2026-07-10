@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/settings.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 class VideoPlayerSettingsPage extends StatefulWidget {
   const VideoPlayerSettingsPage({super.key, this.settingToHighlight});
@@ -77,30 +77,30 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   }
 
   Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
     switch (attribute) {
       case LocalSettings.videoAutoMute:
-        await prefs.setBool(LocalSettings.videoAutoMute.name, value);
+        await prefs.setSetting(LocalSettings.videoAutoMute, value);
         setState(() => videoAutoMute = value);
         break;
       case LocalSettings.videoAutoFullscreen:
-        await prefs.setBool(LocalSettings.videoAutoFullscreen.name, value);
+        await prefs.setSetting(LocalSettings.videoAutoFullscreen, value);
         setState(() => videoAutoFullscreen = value);
         break;
       case LocalSettings.videoAutoLoop:
-        await prefs.setBool(LocalSettings.videoAutoLoop.name, value);
+        await prefs.setSetting(LocalSettings.videoAutoLoop, value);
         setState(() => videoAutoLoop = value);
         break;
       case LocalSettings.videoAutoPlay:
-        await prefs.setString(LocalSettings.videoAutoPlay.name, value);
+        await prefs.setSetting(LocalSettings.videoAutoPlay, value);
         setState(() => videoAutoPlay = VideoAutoPlay.values.byName(value ?? VideoAutoPlay.never));
         break;
       case LocalSettings.videoDefaultPlaybackSpeed:
-        await prefs.setString(LocalSettings.videoDefaultPlaybackSpeed.name, value);
+        await prefs.setSetting(LocalSettings.videoDefaultPlaybackSpeed, value);
         setState(() => videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(value ?? VideoPlayBackSpeed.normal));
         break;
       case LocalSettings.videoPlayerMode:
-        await prefs.setString(LocalSettings.videoPlayerMode.name, value);
+        await prefs.setSetting(LocalSettings.videoPlayerMode, value);
         setState(() => videoPlayerMode = VideoPlayerMode.values.byName(value ?? VideoPlayerMode.inApp));
         break;
       default:
@@ -113,14 +113,14 @@ class _VideoPlayerSettingsPageState extends State<VideoPlayerSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
     setState(() {
-      videoAutoMute = prefs.getBool(LocalSettings.videoAutoMute.name) ?? true;
-      videoAutoFullscreen = prefs.getBool(LocalSettings.videoAutoFullscreen.name) ?? false;
-      videoAutoLoop = prefs.getBool(LocalSettings.videoAutoLoop.name) ?? false;
-      videoAutoPlay = VideoAutoPlay.values.byName(prefs.getString(LocalSettings.videoAutoPlay.name) ?? VideoAutoPlay.never.name);
-      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getString(LocalSettings.videoDefaultPlaybackSpeed.name) ?? VideoPlayBackSpeed.normal.name);
-      videoPlayerMode = VideoPlayerMode.values.byName(prefs.getString(LocalSettings.videoPlayerMode.name) ?? VideoPlayerMode.inApp.name);
+      videoAutoMute = prefs.getLocalSetting<bool>(LocalSettings.videoAutoMute) ?? true;
+      videoAutoFullscreen = prefs.getLocalSetting<bool>(LocalSettings.videoAutoFullscreen) ?? false;
+      videoAutoLoop = prefs.getLocalSetting<bool>(LocalSettings.videoAutoLoop) ?? false;
+      videoAutoPlay = VideoAutoPlay.values.byName(prefs.getLocalSetting<String>(LocalSettings.videoAutoPlay) ?? VideoAutoPlay.never.name);
+      videoDefaultPlaybackSpeed = VideoPlayBackSpeed.values.byName(prefs.getLocalSetting<String>(LocalSettings.videoDefaultPlaybackSpeed) ?? VideoPlayBackSpeed.normal.name);
+      videoPlayerMode = VideoPlayerMode.values.byName(prefs.getLocalSetting<String>(LocalSettings.videoPlayerMode) ?? VideoPlayerMode.inApp.name);
       isLoading = false;
     });
   }

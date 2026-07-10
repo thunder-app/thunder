@@ -9,7 +9,7 @@ import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_replies_loader.dart';
 import 'package:thunder/src/features/comment/presentation/widgets/comment_card/comment_card_surface.dart';
-import 'package:thunder/src/shared/gestures/swipe_utils.dart';
+import 'package:thunder/src/core/navigation/swipe_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a given comment.

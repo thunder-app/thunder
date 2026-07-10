@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/session/api.dart';
 
-import 'package:thunder/src/foundation/networking/networking.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity community, bool isFavorite) async {
   try {
@@ -19,7 +20,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     if (isFavorite) {
-      await Favorite.deleteFavorite(communityId: community.id);
+      await createFavoriteRepository().deleteFavorite(communityId: community.id);
       if (context.mounted) {
         context.read<ProfileBloc>().add(const FetchProfileFavorites());
       }
@@ -32,7 +33,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
       accountId: account.id,
     );
 
-    await Favorite.insertFavorite(favorite);
+    await createFavoriteRepository().insertFavorite(favorite);
     if (context.mounted) {
       context.read<ProfileBloc>().add(const FetchProfileFavorites());
     }
@@ -91,6 +92,6 @@ Future<ThunderCommunity?> handleSubscription(BuildContext context, ThunderCommun
   }
 
   final account = resolveEffectiveAccount(context);
-  final repository = CommunityRepositoryImpl(account: account);
+  final repository = createCommunityRepository(account);
   return await repository.subscribe(community.id, !isSubscribed);
 }

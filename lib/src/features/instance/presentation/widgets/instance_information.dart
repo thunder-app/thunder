@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/avatars/instance_avatar.dart';
 import 'package:thunder/packages/ui/ui.dart';

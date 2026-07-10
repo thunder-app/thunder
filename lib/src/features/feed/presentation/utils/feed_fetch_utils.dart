@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/user/user.dart';
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 /// Helper function which handles the logic of fetching items for the feed from the API
 /// This includes posts and user information (posts/comments)
@@ -23,7 +23,7 @@ Future<FeedResult> fetchFeedItems({
   bool showSaved = false,
   void Function()? notifyExcessiveApiCalls,
 }) async {
-  List<String> keywordFilters = UserPreferences.getLocalSetting(LocalSettings.keywordFilters) ?? [];
+  List<String> keywordFilters = const UserPreferencesStore().getLocalSetting(LocalSettings.keywordFilters) ?? [];
 
   int desiredPosts = 20;
   bool hasReachedPostsEnd = false;

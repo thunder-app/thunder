@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
-import 'package:thunder/src/foundation/config/app_config.dart';
+import 'package:thunder/src/core/config/app_config.dart';
 
 /// This script automatically generates the release files for the current version,
 /// and stores the release files in /release directory.

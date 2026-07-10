@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/features/settings/presentation/utils/local_setting_localization.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Generates a link to a local setting.

@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/post/presentation/state/create_post_cubit.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 class CreatePostAdditionalSettingsPage extends StatelessWidget {
   const CreatePostAdditionalSettingsPage({

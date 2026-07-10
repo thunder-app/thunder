@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/chips/community_chip.dart';
@@ -10,7 +10,7 @@ import 'package:thunder/src/shared/chips/user_chip.dart';
 import 'package:thunder/src/shared/media/compact_thumbnail_preview.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/post/presentation/widgets/post_flair_tags.dart';
 import 'package:thunder/packages/ui/ui.dart';
 

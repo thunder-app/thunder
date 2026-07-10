@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/private_message/domain/models/private_message_thread.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
 
 /// Returns the user on the other side of a private message.
 ThunderUser? otherPrivateMessageParticipant(ThunderPrivateMessage message, Account account) {

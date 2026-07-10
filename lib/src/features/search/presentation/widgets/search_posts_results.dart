@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/search/search.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Displays search results for posts.
 class SearchPostsResults extends StatefulWidget {
@@ -29,7 +30,7 @@ class _SearchPostsResultsState extends State<SearchPostsResults> {
   @override
   void initState() {
     super.initState();
-    _postListActionController = PostListActionController(postRepository: PostRepositoryImpl(account: widget.account));
+    _postListActionController = PostListActionController(postRepository: createPostRepository(widget.account));
     _posts = context.read<SearchBloc>().state.posts ?? const <ThunderPost>[];
   }
 

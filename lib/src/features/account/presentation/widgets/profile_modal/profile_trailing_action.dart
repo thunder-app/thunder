@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Displays the drag, progress, logout, or removal action for a profile row.
 class ProfileTrailingAction extends StatelessWidget {

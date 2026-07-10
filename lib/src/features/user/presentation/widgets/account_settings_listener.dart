@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/user/presentation/state/account_settings_cubit.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that listens to the [AccountSettingsCubit] and shows a snackbar on failure or success.

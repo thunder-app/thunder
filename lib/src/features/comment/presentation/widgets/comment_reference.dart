@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/api.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/comment/api.dart';
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
 
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// A widget that displays a reference to a comment with additional post and community information.

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// A widget that displays a placeholder when no user account is logged in.
 ///

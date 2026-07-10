@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/post/presentation/utils/post_media_utils.dart';
 
 /// Creates a placeholder post for appearance settings previews.

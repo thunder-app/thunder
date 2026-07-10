@@ -1,4 +1,4 @@
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 /// Creates a placeholder comment for appearance settings previews.
 ThunderComment createExampleComment({

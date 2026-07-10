@@ -4,18 +4,17 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/src/foundation/services/localization_service.dart';
 
-import 'package:thunder/src/foundation/utils/utils.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/core/utils/utils.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/contracts/contracts.dart';
+import 'package:thunder/src/core/services/services.dart';
 import 'package:thunder/src/features/account/domain/utils/profile_community_utils.dart';
 import 'package:thunder/src/features/instance/instance.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/core/networking/networking.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -305,7 +304,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         errorReason: () => null,
       ));
 
-      final favorites = await Favorite.favorites(account.id);
+      final favorites = await createFavoriteRepository().favorites(account.id);
       final communities = filterFavorites(
         subscriptions: state.subscriptions,
         favorites: favorites,

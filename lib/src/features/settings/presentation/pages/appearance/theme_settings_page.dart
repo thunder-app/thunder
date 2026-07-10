@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/persistence/persistence.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/settings.dart';
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/config.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/config.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart' show CommunityFullNameWidget, UserFullNameWidget;
+import 'package:thunder/src/core/services/preferences_store.dart';
 
 String _generateSampleUserFullName(FullNameSeparator separator, bool useDisplayName) => generateUserFullName(
       null,
@@ -164,13 +164,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   LocalSettings? settingToHighlight;
 
   Future<void> setPreferences(LocalSettings attribute, dynamic value) async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     switch (attribute) {
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
       case LocalSettings.appTheme:
-        await prefs.setInt(LocalSettings.appTheme.name, value);
+        await prefs.setSetting(LocalSettings.appTheme, value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
@@ -178,21 +178,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         Future.delayed(const Duration(milliseconds: 300), () => _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
         break;
       case LocalSettings.usePureBlackTheme:
-        await prefs.setBool(LocalSettings.usePureBlackTheme.name, value);
+        await prefs.setSetting(LocalSettings.usePureBlackTheme, value);
         setState(() => usePureBlackTheme = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
         }
         break;
       case LocalSettings.appThemeAccentColor:
-        await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
+        await prefs.setSetting(LocalSettings.appThemeAccentColor, (value as CustomThemeType).name);
         setState(() => selectedTheme = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
         }
         break;
       case LocalSettings.useMaterialYouTheme:
-        await prefs.setBool(LocalSettings.useMaterialYouTheme.name, value);
+        await prefs.setSetting(LocalSettings.useMaterialYouTheme, value);
         setState(() => useMaterialYouTheme = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
@@ -201,33 +201,33 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
       // Color settings
       case LocalSettings.upvoteColor:
-        await prefs.setString(LocalSettings.upvoteColor.name, value);
+        await prefs.setSetting(LocalSettings.upvoteColor, value);
         setState(() => upvoteColor = ActionColor.fromString(colorRaw: value));
         break;
       case LocalSettings.downvoteColor:
-        await prefs.setString(LocalSettings.downvoteColor.name, value);
+        await prefs.setSetting(LocalSettings.downvoteColor, value);
         setState(() => downvoteColor = ActionColor.fromString(colorRaw: value));
         break;
       case LocalSettings.saveColor:
-        await prefs.setString(LocalSettings.saveColor.name, value);
+        await prefs.setSetting(LocalSettings.saveColor, value);
         setState(() => saveColor = ActionColor.fromString(colorRaw: value));
         break;
       case LocalSettings.markReadColor:
-        await prefs.setString(LocalSettings.markReadColor.name, value);
+        await prefs.setSetting(LocalSettings.markReadColor, value);
         setState(() => markReadColor = ActionColor.fromString(colorRaw: value));
         break;
       case LocalSettings.replyColor:
-        await prefs.setString(LocalSettings.replyColor.name, value);
+        await prefs.setSetting(LocalSettings.replyColor, value);
         setState(() => replyColor = ActionColor.fromString(colorRaw: value));
         break;
       case LocalSettings.hideColor:
-        await prefs.setString(LocalSettings.hideColor.name, value);
+        await prefs.setSetting(LocalSettings.hideColor, value);
         setState(() => hideColor = ActionColor.fromString(colorRaw: value));
         break;
 
       // Font Settings
       case LocalSettings.titleFontSizeScale:
-        await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
+        await prefs.setSetting(LocalSettings.titleFontSizeScale, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
@@ -241,21 +241,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         }
         break;
       case LocalSettings.contentFontSizeScale:
-        await prefs.setString(LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
+        await prefs.setSetting(LocalSettings.contentFontSizeScale, (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
         }
         break;
       case LocalSettings.commentFontSizeScale:
-        await prefs.setString(LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
+        await prefs.setSetting(LocalSettings.commentFontSizeScale, (value as FontScale).name);
         setState(() => commentFontSizeScale = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
         }
         break;
       case LocalSettings.metadataFontSizeScale:
-        await prefs.setString(LocalSettings.metadataFontSizeScale.name, (value as FontScale).name);
+        await prefs.setSetting(LocalSettings.metadataFontSizeScale, (value as FontScale).name);
         setState(() => metadataFontSizeScale = value);
         if (context.mounted) {
           context.read<ThemePreferencesCubit>().reload();
@@ -264,51 +264,51 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
       // Name Settings
       case LocalSettings.userFormat:
-        await prefs.setString(LocalSettings.userFormat.name, value);
+        await prefs.setSetting(LocalSettings.userFormat, value);
         setState(() => userSeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
         break;
       case LocalSettings.userFullNameUserNameThickness:
-        await prefs.setString(LocalSettings.userFullNameUserNameThickness.name, value);
+        await prefs.setSetting(LocalSettings.userFullNameUserNameThickness, value);
         setState(() => userFullNameUserNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.userFullNameInstanceNameThickness:
-        await prefs.setString(LocalSettings.userFullNameInstanceNameThickness.name, value);
+        await prefs.setSetting(LocalSettings.userFullNameInstanceNameThickness, value);
         setState(() => userFullNameInstanceNameThickness = NameThickness.values.byName(value ?? NameThickness.light));
         break;
       case LocalSettings.userFullNameUserNameColor:
-        await prefs.setString(LocalSettings.userFullNameUserNameColor.name, value);
+        await prefs.setSetting(LocalSettings.userFullNameUserNameColor, value);
         setState(() => userFullNameUserNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.userFullNameInstanceNameColor:
-        await prefs.setString(LocalSettings.userFullNameInstanceNameColor.name, value);
+        await prefs.setSetting(LocalSettings.userFullNameInstanceNameColor, value);
         setState(() => userFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.communityFormat:
-        await prefs.setString(LocalSettings.communityFormat.name, value);
+        await prefs.setSetting(LocalSettings.communityFormat, value);
         setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
         break;
       case LocalSettings.communityFullNameCommunityNameThickness:
-        await prefs.setString(LocalSettings.communityFullNameCommunityNameThickness.name, value);
+        await prefs.setSetting(LocalSettings.communityFullNameCommunityNameThickness, value);
         setState(() => communityFullNameCommunityNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.communityFullNameInstanceNameThickness:
-        await prefs.setString(LocalSettings.communityFullNameInstanceNameThickness.name, value);
+        await prefs.setSetting(LocalSettings.communityFullNameInstanceNameThickness, value);
         setState(() => communityFullNameInstanceNameThickness = NameThickness.values.byName(value ?? NameThickness.normal));
         break;
       case LocalSettings.communityFullNameCommunityNameColor:
-        await prefs.setString(LocalSettings.communityFullNameCommunityNameColor.name, value);
+        await prefs.setSetting(LocalSettings.communityFullNameCommunityNameColor, value);
         setState(() => communityFullNameCommunityNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.communityFullNameInstanceNameColor:
-        await prefs.setString(LocalSettings.communityFullNameInstanceNameColor.name, value);
+        await prefs.setSetting(LocalSettings.communityFullNameInstanceNameColor, value);
         setState(() => communityFullNameInstanceNameColor = NameColor.fromString(color: value ?? NameColor.defaultColor));
         break;
       case LocalSettings.useDisplayNamesForUsers:
-        await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
+        await prefs.setSetting(LocalSettings.useDisplayNamesForUsers, value);
         setState(() => useDisplayNamesForUsers = value);
         break;
       case LocalSettings.useDisplayNamesForCommunities:
-        await prefs.setBool(LocalSettings.useDisplayNamesForCommunities.name, value);
+        await prefs.setSetting(LocalSettings.useDisplayNamesForCommunities, value);
         setState(() => useDisplayNamesForCommunities = value);
         break;
       default:
@@ -322,44 +322,44 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.preferences;
+    final prefs = const UserPreferencesStore();
 
     setState(() {
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
-      themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
-      usePureBlackTheme = prefs.getBool(LocalSettings.usePureBlackTheme.name) ?? false;
-      selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
-      useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      themeType = ThemeType.values[prefs.getLocalSetting<int>(LocalSettings.appTheme) ?? ThemeType.system.index];
+      usePureBlackTheme = prefs.getLocalSetting<bool>(LocalSettings.usePureBlackTheme) ?? false;
+      selectedTheme = CustomThemeType.values.byName(prefs.getLocalSetting<String>(LocalSettings.appThemeAccentColor) ?? CustomThemeType.deepBlue.name);
+      useMaterialYouTheme = prefs.getLocalSetting<bool>(LocalSettings.useMaterialYouTheme) ?? false;
 
       // Color settings
-      upvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.upvoteColor.name) ?? ActionColor.orange);
-      downvoteColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.downvoteColor.name) ?? ActionColor.blue);
-      saveColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.saveColor.name) ?? ActionColor.purple);
-      markReadColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.markReadColor.name) ?? ActionColor.teal);
-      replyColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.replyColor.name) ?? ActionColor.green);
-      hideColor = ActionColor.fromString(colorRaw: prefs.getString(LocalSettings.hideColor.name) ?? ActionColor.red);
+      upvoteColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.upvoteColor) ?? ActionColor.orange);
+      downvoteColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.downvoteColor) ?? ActionColor.blue);
+      saveColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.saveColor) ?? ActionColor.purple);
+      markReadColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.markReadColor) ?? ActionColor.teal);
+      replyColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.replyColor) ?? ActionColor.green);
+      hideColor = ActionColor.fromString(colorRaw: prefs.getLocalSetting<String>(LocalSettings.hideColor) ?? ActionColor.red);
 
       // Font Settings
-      titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
-      titleFontWeight = TitleFontWeight.values.byName(prefs.getString(LocalSettings.titleFontWeight.name) ?? TitleFontWeight.normal.name);
-      contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
-      commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
-      metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
+      titleFontSizeScale = FontScale.values.byName(prefs.getLocalSetting<String>(LocalSettings.titleFontSizeScale) ?? FontScale.base.name);
+      titleFontWeight = TitleFontWeight.values.byName(prefs.getLocalSetting<String>(LocalSettings.titleFontWeight) ?? TitleFontWeight.normal.name);
+      contentFontSizeScale = FontScale.values.byName(prefs.getLocalSetting<String>(LocalSettings.contentFontSizeScale) ?? FontScale.base.name);
+      commentFontSizeScale = FontScale.values.byName(prefs.getLocalSetting<String>(LocalSettings.commentFontSizeScale) ?? FontScale.base.name);
+      metadataFontSizeScale = FontScale.values.byName(prefs.getLocalSetting<String>(LocalSettings.metadataFontSizeScale) ?? FontScale.base.name);
 
       // Name Settings
-      userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
-      userFullNameUserNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameUserNameThickness.name) ?? NameThickness.normal.name);
-      userFullNameUserNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameUserNameColor.name) ?? NameColor.defaultColor);
-      userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.userFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.userFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
-      communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameCommunityNameThickness.name) ?? NameThickness.normal.name);
-      communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameCommunityNameColor.name) ?? NameColor.defaultColor);
-      communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getString(LocalSettings.communityFullNameInstanceNameThickness.name) ?? NameThickness.light.name);
-      communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getString(LocalSettings.communityFullNameInstanceNameColor.name) ?? NameColor.defaultColor);
-      useDisplayNamesForUsers = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? false;
-      useDisplayNamesForCommunities = prefs.getBool(LocalSettings.useDisplayNamesForCommunities.name) ?? false;
+      userSeparator = FullNameSeparator.values.byName(prefs.getLocalSetting<String>(LocalSettings.userFormat) ?? FullNameSeparator.at.name);
+      userFullNameUserNameThickness = NameThickness.values.byName(prefs.getLocalSetting<String>(LocalSettings.userFullNameUserNameThickness) ?? NameThickness.normal.name);
+      userFullNameUserNameColor = NameColor.fromString(color: prefs.getLocalSetting<String>(LocalSettings.userFullNameUserNameColor) ?? NameColor.defaultColor);
+      userFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getLocalSetting<String>(LocalSettings.userFullNameInstanceNameThickness) ?? NameThickness.light.name);
+      userFullNameInstanceNameColor = NameColor.fromString(color: prefs.getLocalSetting<String>(LocalSettings.userFullNameInstanceNameColor) ?? NameColor.defaultColor);
+      communitySeparator = FullNameSeparator.values.byName(prefs.getLocalSetting<String>(LocalSettings.communityFormat) ?? FullNameSeparator.dot.name);
+      communityFullNameCommunityNameThickness = NameThickness.values.byName(prefs.getLocalSetting<String>(LocalSettings.communityFullNameCommunityNameThickness) ?? NameThickness.normal.name);
+      communityFullNameCommunityNameColor = NameColor.fromString(color: prefs.getLocalSetting<String>(LocalSettings.communityFullNameCommunityNameColor) ?? NameColor.defaultColor);
+      communityFullNameInstanceNameThickness = NameThickness.values.byName(prefs.getLocalSetting<String>(LocalSettings.communityFullNameInstanceNameThickness) ?? NameThickness.light.name);
+      communityFullNameInstanceNameColor = NameColor.fromString(color: prefs.getLocalSetting<String>(LocalSettings.communityFullNameInstanceNameColor) ?? NameColor.defaultColor);
+      useDisplayNamesForUsers = prefs.getLocalSetting<bool>(LocalSettings.useDisplayNamesForUsers) ?? false;
+      useDisplayNamesForCommunities = prefs.getLocalSetting<bool>(LocalSettings.useDisplayNamesForCommunities) ?? false;
 
       isLoading = false;
     });

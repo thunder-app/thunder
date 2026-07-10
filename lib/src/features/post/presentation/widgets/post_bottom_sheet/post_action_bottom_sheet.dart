@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
-import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/post/post.dart';
 import 'package:thunder/src/features/session/api.dart';

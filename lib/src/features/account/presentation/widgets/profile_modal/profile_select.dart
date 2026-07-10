@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/account/presentation/state/profile_modal_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_anonymous_instances_sliver.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_authenticated_accounts_sliver.dart';
@@ -12,7 +12,7 @@ import 'package:thunder/src/features/account/presentation/widgets/profile_modal/
 import 'package:thunder/src/features/session/api.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/src/features/user/presentation/utils/user_session_utils.dart';
-import 'package:thunder/src/foundation/contracts/account.dart';
+import 'package:thunder/src/core/domain/models/account.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays profile sections and coordinates profile-modal user actions.

@@ -1,5 +1,5 @@
 export 'domain/enums/inbox_type.dart';
-export 'package:thunder/src/foundation/primitives/models/thunder_private_message.dart';
+export 'package:thunder/src/core/domain/models/thunder_private_message.dart';
 export 'domain/utils/inbox_utils.dart';
 export 'presentation/state/inbox_bloc.dart';
 export 'presentation/pages/inbox_page.dart';

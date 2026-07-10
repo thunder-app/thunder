@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/state/thunder/thunder_bloc.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
@@ -14,6 +13,7 @@ import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_event.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// A scaffold for instance tabs. Handles loading, retry and loading more.
 class _InstanceTabScaffold<T> extends StatefulWidget {
@@ -212,7 +212,7 @@ class _InstancePostTabState extends State<InstancePostTab> {
   @override
   void initState() {
     super.initState();
-    _postListActionController = PostListActionController(postRepository: PostRepositoryImpl(account: widget.account));
+    _postListActionController = PostListActionController(postRepository: createPostRepository(widget.account));
     _posts = context.read<InstancePageBloc>().state.posts.items;
   }
 

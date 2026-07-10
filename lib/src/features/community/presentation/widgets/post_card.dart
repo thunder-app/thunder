@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/community/community.dart';
@@ -10,9 +10,9 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/post/post.dart';
 
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/user/user.dart';
-import 'package:thunder/src/shared/gestures/swipe_utils.dart';
+import 'package:thunder/src/core/navigation/swipe_utils.dart';
 import 'package:thunder/src/features/settings/api.dart';
 import 'package:thunder/packages/ui/ui.dart';
 

@@ -9,13 +9,12 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/community/community.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/instance/instance.dart';
-import 'package:thunder/src/features/account/account.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
-import 'package:thunder/src/foundation/errors/errors.dart';
+import 'package:thunder/src/core/domain/domain.dart';
+import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/user/user.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/foundation/networking/networking.dart';
+import 'package:thunder/src/core/networking/networking.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/navigation/swipeable_page_route.dart';
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/navigation/swipeable_page_route.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/presentation/pages/login_page.dart';
 import 'package:thunder/src/features/account/presentation/widgets/profile_modal/profile_select.dart';
 import 'package:thunder/src/features/settings/api.dart';

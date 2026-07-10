@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/features/account/account.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 /// Fetches the user groups for a givencomment.
 List<UserType> getCommentUserGroups(ThunderComment comment, Account account) {

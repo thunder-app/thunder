@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:thunder/src/features/community/data/repositories/community_repository.dart';
-import 'package:thunder/src/foundation/foundation.dart';
+import 'package:thunder/src/core/core.dart';
 
 import '../../../../../helpers/mock_thunder_api_client.dart';
 import '../../../../../helpers/repository_test_fixtures.dart';

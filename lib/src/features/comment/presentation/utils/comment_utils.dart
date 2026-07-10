@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:thunder/src/foundation/config/global_context.dart';
-import 'package:thunder/src/app/shell/navigation/navigation_utils.dart';
+import 'package:thunder/src/core/config/global_context.dart';
+import 'package:thunder/src/core/navigation/navigation_utils.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/comment/data/models/comment_node.dart';
-import 'package:thunder/src/foundation/primitives/models/thunder_comment.dart';
-import 'package:thunder/src/foundation/primitives/models/vote_state.dart';
-import 'package:thunder/src/features/comment/data/repositories/comment_repository.dart';
+import 'package:thunder/src/core/domain/models/thunder_comment.dart';
+import 'package:thunder/src/core/domain/models/vote_state.dart';
 import 'package:thunder/src/features/comment/domain/enums/comment_action.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 // Optimistically updates a comment
 ThunderComment optimisticallyVoteComment(ThunderComment comment, int voteType) {
@@ -169,7 +169,7 @@ String cleanComment(String commentContent, bool? commentRemoved, bool? commentDe
 }
 
 Future<ThunderComment?> onCommentAction(BuildContext context, Account account, CommentAction action, ThunderComment comment, Map<String, dynamic>? data) async {
-  final repository = CommentRepositoryImpl(account: account);
+  final repository = createCommentRepository(account);
 
   ThunderComment? updatedComment;
 

@@ -4,6 +4,7 @@ import 'package:thunder/src/features/user/user.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Shows a dialog which allows the user to create/modify/edit a label for the given [username].
 /// Tip: Call `UserLabel.usernameFromParts` to generate a [username] in the right format.
@@ -14,7 +15,7 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
   final l10n = AppLocalizations.of(context)!;
 
   // Load up any existing label
-  UserLabel? existingLabel = await UserLabel.fetchUserLabel(username);
+  UserLabel? existingLabel = await createUserLabelRepository().fetchUserLabel(username);
   bool deleted = false;
 
   if (!context.mounted) return (userLabel: existingLabel, deleted: false);
@@ -46,7 +47,7 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
     },
     tertiaryButtonText: existingLabel != null ? l10n.delete : null,
     onTertiaryButtonPressed: (dialogContext) async {
-      await UserLabel.deleteUserLabel(username);
+      await createUserLabelRepository().deleteUserLabel(username);
       deleted = true;
 
       if (dialogContext.mounted) {
@@ -58,9 +59,9 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
     primaryButtonText: l10n.save,
     onPrimaryButtonPressed: (dialogContext, _) async {
       if (controller.text.isNotEmpty) {
-        existingLabel = await UserLabel.upsertUserLabel(UserLabel(id: '', username: username, label: controller.text));
+        existingLabel = await createUserLabelRepository().upsertUserLabel(UserLabel(id: '', username: username, label: controller.text));
       } else {
-        await UserLabel.deleteUserLabel(username);
+        await createUserLabelRepository().deleteUserLabel(username);
         deleted = true;
       }
 

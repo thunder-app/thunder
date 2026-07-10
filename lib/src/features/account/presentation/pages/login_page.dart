@@ -5,14 +5,14 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/src/app/shell/navigation/link_navigation_utils.dart';
-import 'package:thunder/src/app/wiring/state_factories.dart';
+import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
+import 'package:thunder/src/core/app/dependency_factories.dart';
 import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/features/account/presentation/state/instance_validation_cubit.dart';
 import 'package:thunder/src/features/account/presentation/widgets/login/login_page_view.dart';
 import 'package:thunder/src/features/instance/domain/models/instance_discovery_result.dart';
 import 'package:thunder/src/features/session/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 /// Coordinates instance validation and session submission for the login flow.
@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Adds an anonymous session to the account.
   Future<void> _addAnonymousSession(InstanceValidationState validationState, String instanceHost) async {
-    final anonymousInstances = await Account.anonymousInstances();
+    final anonymousInstances = await createSessionRepository().getAnonymousSessions();
     if (!mounted) return;
 
     if (anonymousInstances.any((anonymousInstance) => anonymousInstance.instance == instanceHost)) {

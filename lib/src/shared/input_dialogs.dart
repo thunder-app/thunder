@@ -4,22 +4,18 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 
-import 'package:thunder/src/foundation/primitives/primitives.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/settings/api.dart';
-import 'package:thunder/src/features/community/api.dart';
-import 'package:thunder/src/features/instance/api.dart';
-import 'package:thunder/src/features/account/api.dart';
 import 'package:thunder/src/features/feed/api.dart';
-import 'package:thunder/src/features/search/api.dart';
 import 'package:thunder/src/features/account/data/cache/profile_site_info_cache.dart';
 import 'package:thunder/src/shared/avatars/community_avatar.dart';
 import 'package:thunder/src/shared/avatars/user_avatar.dart';
 import 'package:thunder/src/shared/name/full_name_widgets.dart';
-import 'package:thunder/src/features/user/api.dart';
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/features/instance/domain/utils/instance_link_utils.dart';
-import 'package:thunder/src/foundation/utils/utils.dart';
+import 'package:thunder/src/core/utils/utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
+import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(
@@ -44,7 +40,7 @@ void showUserInputDialog(
 
     if (normalizedUsername != null) {
       try {
-        final response = await UserRepositoryImpl(account: account).getUser(username: normalizedUsername);
+        final response = await createUserRepository(account).getUser(username: normalizedUsername);
         final user = response!.user;
 
         onUserSelected(user);
@@ -77,7 +73,7 @@ Future<List<ThunderUser>> getUserSuggestions(
 }) async {
   if (query.isEmpty) return [];
 
-  final response = await SearchRepositoryImpl(account: account).search(
+  final response = await createSearchRepository(account).search(
     query: query,
     type: MetaSearchType.users,
     limit: 20,
@@ -134,8 +130,8 @@ void showCommunityInputDialog(
   List<ThunderCommunity>? favouritedCommunities;
 
   try {
-    final favourites = await Favorite.favorites(account.id);
-    final subscriptions = await AccountRepositoryImpl(account: account).subscriptions();
+    final favourites = await createFavoriteRepository().favorites(account.id);
+    final subscriptions = await createAccountRepository(account).subscriptions();
     favouritedCommunities = subscriptions.where((community) => favourites.any((favorite) => favorite.communityId == community.id)).toList();
 
     suggestions ??= prioritizeFavorites(subscriptions, favouritedCommunities);
@@ -157,7 +153,7 @@ void showCommunityInputDialog(
 
     if (normalizedCommunity != null) {
       try {
-        final response = await CommunityRepositoryImpl(account: account).getCommunity(name: normalizedCommunity);
+        final response = await createCommunityRepository(account).getCommunity(name: normalizedCommunity);
         final community = response.community;
 
         onCommunitySelected(community);
@@ -192,7 +188,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
 }) async {
   if (query.isEmpty) return suggestions ?? [];
 
-  final response = await SearchRepositoryImpl(account: account).search(
+  final response = await createSearchRepository(account).search(
     query: query,
     type: MetaSearchType.communities,
     limit: 20,
@@ -319,7 +315,7 @@ void showInstanceInputDialog(
 
 Future<void> _loadLinkedInstances(Account account, List<ThunderInstanceInfo> out) async {
   try {
-    final federated = await InstanceRepositoryImpl(account: account).federated();
+    final federated = await createInstanceRepository(account).federated();
     final linked = federated.linked
         .map(
           (instance) => ThunderInstanceInfo(id: instance.id, domain: instance.domain, name: instance.domain),

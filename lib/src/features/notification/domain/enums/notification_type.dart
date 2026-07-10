@@ -2,7 +2,7 @@
 import 'package:thunder/l10n/generated/app_localizations.dart';
 
 // Project imports
-import 'package:thunder/src/foundation/config/global_context.dart';
+import 'package:thunder/src/core/config/global_context.dart';
 
 enum NotificationType {
   none,
