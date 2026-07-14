@@ -218,14 +218,6 @@
     "gestures": "Gebaren",
     "hot": "Populair",
     "image": "Afbeelding",
-    "imageCachingModeAggressiveShort": "Agressief",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxedShort": "Ontspannen",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
-    },
     "inbox": "Postvak IN",
     "information": "Informatie",
     "@information": {
@@ -1881,10 +1873,6 @@
     "@hideNsfwPreviews": {
         "description": "Toggle to blur NSFW previews."
     },
-    "imageCachingMode": "Afbeelding­cache­modus",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
-    },
     "imageDimensionTimeout": "Time-out voor afbeeldings­afmetingen",
     "@imageDimensionTimeout": {
         "description": "Setting for how long to wait for the image dimensions to be fetched"
@@ -2267,14 +2255,6 @@
     "hideTopBarOnScroll": "Bovenbalk verbergen bĳ scrollen",
     "@hideTopBarOnScroll": {
         "description": "Settings toggle to hide the top bar on scroll"
-    },
-    "imageCachingModeAggressive": "Afbeeldingen agressief in cache opslaan (gebruikt meer geheugen)",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxed": "Cache voor afbeeldingen laten verlopen (gebruikt minder geheugen, maar afbeeldingen worden vaker opnieuw geladen)",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
     },
     "importExportThunderSettings": "Thunder-instellingen importeren/exporteren",
     "@importExportThunderSettings": {

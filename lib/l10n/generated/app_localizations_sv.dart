@@ -1163,23 +1163,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get image => 'Image';
 
   @override
-  String get imageCachingMode => 'Image Caching Mode';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Aggressively cache images (uses more memory)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Aggressive';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Let image caches expire (uses less memory but causes images to reload more often)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Relaxed';
-
-  @override
   String get imageDimensionTimeout => 'Image Dimension Timeout';
 
   @override

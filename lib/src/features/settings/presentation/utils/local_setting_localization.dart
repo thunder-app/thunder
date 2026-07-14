@@ -78,7 +78,6 @@ extension LocalizationExt on AppLocalizations {
       'userStyle': userStyle,
       'communityFormat': communityFormat,
       'communityStyle': communityStyle,
-      'imageCachingMode': imageCachingMode,
       'showNavigationLabels': showNavigationLabels,
       'defaultCommentSortType': defaultCommentSortType,
       'useProfilePictureForDrawer': useProfilePictureForDrawer,

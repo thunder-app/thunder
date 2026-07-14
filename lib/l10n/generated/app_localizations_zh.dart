@@ -1162,23 +1162,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get image => 'Image';
 
   @override
-  String get imageCachingMode => 'Image Caching Mode';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Aggressively cache images (uses more memory)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Aggressive';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Let image caches expire (uses less memory but causes images to reload more often)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Relaxed';
-
-  @override
   String get imageDimensionTimeout => 'Image Dimension Timeout';
 
   @override
@@ -4398,21 +4381,6 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get image => '图像';
-
-  @override
-  String get imageCachingMode => '图像缓存模式';
-
-  @override
-  String get imageCachingModeAggressive => '积极缓存图像（使用更多内存）';
-
-  @override
-  String get imageCachingModeAggressiveShort => '激进';
-
-  @override
-  String get imageCachingModeRelaxed => '让图像缓存过期（使用更少内存，但导致图像更频繁地重新加载）';
-
-  @override
-  String get imageCachingModeRelaxedShort => '放松';
 
   @override
   String get imageDimensionTimeout => '图像尺寸超时';

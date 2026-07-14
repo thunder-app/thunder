@@ -1170,23 +1170,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get image => 'Image';
 
   @override
-  String get imageCachingMode => 'Režim načítavania obrázkov do pamäte';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Agresívne ukladanie obrázkov do vyrovnávacej pamäte (používa viac pamäte)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agresívny';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Nechať vypršať obrázky vo vyrovnávacej pamäti (používa menej pamäte, ale spôsobuje častejšie načítanie obrázkov)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Uvoľnený';
-
-  @override
   String get imageDimensionTimeout => 'Image Dimension Timeout';
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:thunder/src/features/community/community.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 import 'package:thunder/src/features/user/user.dart';
 
@@ -8,13 +9,22 @@ import 'package:thunder/src/features/user/user.dart';
 class FeedHeaderSliver extends StatelessWidget {
   const FeedHeaderSliver({
     super.key,
-    required this.state,
+    required this.feedType,
+    required this.community,
+    required this.communityInstance,
+    required this.communityModerators,
+    required this.user,
+    required this.userModerates,
     required this.selectedSubview,
     required this.onChangeFeedType,
   });
 
-  /// Current feed state used to choose and populate the visible header.
-  final FeedState state;
+  final FeedType? feedType;
+  final ThunderCommunity? community;
+  final ThunderSite? communityInstance;
+  final List<ThunderUser> communityModerators;
+  final ThunderUser? user;
+  final List<ThunderCommunity> userModerates;
 
   /// Selected user-profile subview when the header belongs to a user feed.
   final FeedTypeSubview selectedSubview;
@@ -28,18 +38,18 @@ class FeedHeaderSliver extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (state.feedType == FeedType.general) TagLine(),
-          if (state.community != null && state.feedType == FeedType.community)
+          if (feedType == FeedType.general) TagLine(),
+          if (community != null && feedType == FeedType.community)
             CommunityHeader(
-              community: state.community!,
-              instance: state.communityInstance,
-              moderators: state.communityModerators,
+              community: community!,
+              instance: communityInstance,
+              moderators: communityModerators,
               condensed: false,
             ),
-          if (state.user != null && (state.feedType == FeedType.user || state.feedType == FeedType.account))
+          if (user != null && (feedType == FeedType.user || feedType == FeedType.account))
             UserHeader(
-              user: state.user!,
-              moderates: state.userModerates,
+              user: user!,
+              moderates: userModerates,
               feedType: selectedSubview,
               onChangeFeedType: onChangeFeedType,
               condensed: false,

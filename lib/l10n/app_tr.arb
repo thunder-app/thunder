@@ -1041,26 +1041,6 @@
     },
     "hot": "Popüler",
     "image": "Resim",
-    "imageCachingMode": "Resim Önbellekleme Modu",
-    "@imageCachingMode": {
-        "description": "Resim önbellekleme modu ile ilgili ayar için başlık"
-    },
-    "imageCachingModeAggressive": "Resimleri agresif bir şekilde önbelleğe al (daha fazla bellek kullanır)",
-    "@imageCachingModeAggressive": {
-        "description": "Agresif resim önbellekleme modu için uzun açıklama"
-    },
-    "imageCachingModeAggressiveShort": "Agresif",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Agresif resim önbellekleme modu için kısa açıklama"
-    },
-    "imageCachingModeRelaxed": "Resim önbelleklerinin süresinin dolmasına izin ver (daha az bellek kullanır ancak resimlerin daha sık yeniden yüklenmesine neden olur)",
-    "@imageCachingModeRelaxed": {
-        "description": "Rahat resim önbellekleme modu için uzun açıklama"
-    },
-    "imageCachingModeRelaxedShort": "Rahat",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Rahat resim önbellekleme modu için kısa açıklama"
-    },
     "imageDimensionTimeout": "Resim Boyutu Zaman Aşımı",
     "@imageDimensionTimeout": {
         "description": "Resim boyutlarının getirilmesi için ne kadar bekleneceği ayarı"

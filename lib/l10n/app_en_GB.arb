@@ -385,10 +385,6 @@
     "@hideNsfwPreviews": {
         "description": "Toggle to blur NSFW previews."
     },
-    "imageCachingModeRelaxed": "Let image caches expire (uses less memory but causes images to reload more often)",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
-    },
     "importExportThunderSettings": "Import/Export Thunder Settings",
     "@importExportThunderSettings": {
         "description": "This is specifically used in search results to distinguish from Lemmy import/export"
@@ -685,10 +681,6 @@
     "@green": {
         "description": "The color green"
     },
-    "imageCachingModeAggressive": "Aggressively cache images (uses more memory)",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
     "localPosts": "Local Posts",
     "inReplyTo": "In reply to {post} in {community}",
     "in_": "in",
@@ -891,10 +883,6 @@
     "guestModeFeedSettingsLabel": "The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.",
     "@guestModeFeedSettingsLabel": {
         "description": "Description for guest mode feed settings"
-    },
-    "imageCachingMode": "Image Caching Mode",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
     },
     "instanceActions": "Instance Actions",
     "@instanceActions": {
@@ -2339,14 +2327,6 @@
         "description": "The instance hosting a community"
     },
     "hot": "Hot",
-    "imageCachingModeAggressiveShort": "Aggressive",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxedShort": "Relaxed",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
-    },
     "importLemmyAccountSettingsDescription": "Import Lemmy account settings",
     "@importLemmyAccountSettingsDescription": {
         "description": "Description for setting related to Lemmy account settings import"

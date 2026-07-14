@@ -889,10 +889,6 @@
   "@failedToLoadVideo": {
     "description": "Error message that displays when we fail to load a video"
   },
-  "imageCachingModeRelaxedShort": "Rilassato",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
-  },
   "imageDimensionTimeout": "Timeout Dimensione Immagine",
   "@imageDimensionTimeout": {
     "description": "Setting for how long to wait for the image dimensions to be fetched"
@@ -1101,10 +1097,6 @@
   "@floatingActionButtonInformation": {
     "description": "Description of the FAB in the settings page"
   },
-  "imageCachingModeRelaxed": "Fai scadere image caching (usa meno memoria ma le immagini sono ricaricate più spesso)",
-  "@imageCachingModeRelaxed": {
-    "description": "Long description for relaxed image caching mode"
-  },
   "importDatabase": "Importa Database",
   "@importDatabase": {
     "description": "Name of setting for importing the db"
@@ -1267,10 +1259,6 @@
   "@email": {
     "description": "Label for email input"
   },
-  "imageCachingMode": "Modalità Image Caching",
-  "@imageCachingMode": {
-    "description": "Title for setting related to image caching mode"
-  },
   "addedInstanceMod": "Aggiunto Mod Istanza",
   "@addedInstanceMod": {
     "description": "Short decription for moderator action to add a mod to an instance"
@@ -1324,10 +1312,6 @@
   "favorites": "Preferiti",
   "@favorites": {
     "description": "The favorited communities on the drawer"
-  },
-  "imageCachingModeAggressiveShort": "Aggressivo",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
   },
   "accountSettingOverrideWarning": "Le impostazioni del tuo account sovrascrivono le seguenti impostazioni",
   "@accountSettingOverrideWarning": {
@@ -1562,10 +1546,6 @@
   "hostInstance": "Host Istanza",
   "@hostInstance": {
     "description": "The instance hosting a community"
-  },
-  "imageCachingModeAggressive": "Image caching aggressivo (utilizza più memoria)",
-  "@imageCachingModeAggressive": {
-    "description": "Long description for aggressive image caching mode"
   },
   "importExportDatabase": "Importa/Esporta Database Thunder",
   "@importExportDatabase": {

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -61,12 +59,11 @@ class _PostPageState extends State<PostPage> {
   /// Whether we have set the initial scroll offset.
   /// This needs to be done after building so the controller is attached
   bool hasSetInitialScroll = false;
+  bool _hasPendingScrollPositionUpdate = false;
 
   /// The ID of the comment that should be highlighted
   int? highlightedCommentId;
 
-  /// The timer for detecting when scrolling has stopped
-  Timer? _updateScrollPositionTimer;
   Set<int> _blockedCommunityIds = const <int>{};
   final Set<int> _notifiedBlockedPostIds = <int>{};
   ThunderPost? _lastNotifiedPost;
@@ -97,7 +94,6 @@ class _PostPageState extends State<PostPage> {
   void dispose() {
     scrollController.dispose();
     listController.dispose();
-    _updateScrollPositionTimer?.cancel();
     super.dispose();
   }
 
@@ -124,15 +120,14 @@ class _PostPageState extends State<PostPage> {
     if (isPastThreshold && state.status == PostPageStatus.success && !state.hasReachedCommentEnd) {
       context.read<PostBloc>().add(const GetPostCommentsPageEvent());
     }
-
-    _updateScrollPosition();
   }
 
-  /// Updates the scroll position in the cubit after scrolling has stopped
-  void _updateScrollPosition() {
-    _updateScrollPositionTimer?.cancel();
+  void _persistScrollPosition() {
+    if (_hasPendingScrollPositionUpdate) return;
 
-    _updateScrollPositionTimer = Timer(const Duration(milliseconds: 150), () {
+    _hasPendingScrollPositionUpdate = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hasPendingScrollPositionUpdate = false;
       if (!mounted || !scrollController.hasClients) return;
       context.read<PostNavigationCubit>().updateScrollPosition(scrollController.position.pixels);
     });
@@ -265,17 +260,20 @@ class _PostPageState extends State<PostPage> {
             bottom: false,
             child: Stack(
               children: [
-                PostPageScrollBody(
-                  scrollController: scrollController,
-                  listController: listController,
-                  appBarKey: appBarKey,
-                  initialPost: widget.initialPost,
-                  viewSource: viewSource,
-                  onViewSource: (value) => setState(() => viewSource = value),
-                  onReset: _resetScroll,
-                  onRetry: _refreshPost,
-                  highlightedCommentId: highlightedCommentId,
-                  commentPath: widget.commentPath,
+                PostScrollEndListener(
+                  onScrollEnd: _persistScrollPosition,
+                  child: PostPageScrollBody(
+                    scrollController: scrollController,
+                    listController: listController,
+                    appBarKey: appBarKey,
+                    initialPost: widget.initialPost,
+                    viewSource: viewSource,
+                    onViewSource: (value) => setState(() => viewSource = value),
+                    onReset: _resetScroll,
+                    onRetry: _refreshPost,
+                    highlightedCommentId: highlightedCommentId,
+                    commentPath: widget.commentPath,
+                  ),
                 ),
                 ThunderTopBarScrim(
                   visible: context.select<ThunderCubit, bool>((cubit) => cubit.state.hideTopBarOnScroll),
@@ -286,6 +284,29 @@ class _PostPageState extends State<PostPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Calls [onScrollEnd] when the primary descendant scrollable becomes idle.
+class PostScrollEndListener extends StatelessWidget {
+  const PostScrollEndListener({
+    super.key,
+    required this.onScrollEnd,
+    required this.child,
+  });
+
+  final VoidCallback onScrollEnd;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollEndNotification>(
+      onNotification: (notification) {
+        if (notification.depth == 0) onScrollEnd();
+        return false;
+      },
+      child: child,
     );
   }
 }

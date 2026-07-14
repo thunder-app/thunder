@@ -1373,26 +1373,6 @@
   "@hot": {},
   "image": "Image",
   "@image": {},
-  "imageCachingMode": "Image Caching Mode",
-  "@imageCachingMode": {
-    "description": "Title for setting related to image caching mode"
-  },
-  "imageCachingModeAggressive": "Aggressively cache images (uses more memory)",
-  "@imageCachingModeAggressive": {
-    "description": "Long description for aggressive image caching mode"
-  },
-  "imageCachingModeAggressiveShort": "Aggressive",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
-  },
-  "imageCachingModeRelaxed": "Let image caches expire (uses less memory but causes images to reload more often)",
-  "@imageCachingModeRelaxed": {
-    "description": "Long description for relaxed image caching mode"
-  },
-  "imageCachingModeRelaxedShort": "Relaxed",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
-  },
   "imageDimensionTimeout": "Image Dimension Timeout",
   "@imageDimensionTimeout": {
     "description": "Setting for how long to wait for the image dimensions to be fetched"

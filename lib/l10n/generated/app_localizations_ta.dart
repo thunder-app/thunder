@@ -1178,23 +1178,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get image => 'படம்';
 
   @override
-  String get imageCachingMode => 'பட கேச்சிங் பயன்முறை';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'படங்களை ஆக்ரோசமாக கேச் (அதிக நினைவகத்தைப் பயன்படுத்துகிறது)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'வன்கவர்வு';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'பட தற்காலிக சேமிப்புகள் காலாவதியாகட்டும் (குறைந்த நினைவகத்தைப் பயன்படுத்துகிறது, ஆனால் படங்களை அடிக்கடி மீண்டும் ஏற்றுகிறது)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'நிதானமாக';
-
-  @override
   String get imageDimensionTimeout => 'பட பரிமாண நேரம் முடிந்தது';
 
   @override

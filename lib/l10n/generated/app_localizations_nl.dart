@@ -1173,23 +1173,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get image => 'Afbeelding';
 
   @override
-  String get imageCachingMode => 'Afbeelding­cache­modus';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Afbeeldingen agressief in cache opslaan (gebruikt meer geheugen)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agressief';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Cache voor afbeeldingen laten verlopen (gebruikt minder geheugen, maar afbeeldingen worden vaker opnieuw geladen)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Ontspannen';
-
-  @override
   String get imageDimensionTimeout => 'Time-out voor afbeeldings­afmetingen';
 
   @override

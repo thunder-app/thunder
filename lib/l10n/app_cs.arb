@@ -229,14 +229,6 @@
   "@hot": {},
   "image": "Obrázek",
   "@image": {},
-  "imageCachingModeAggressiveShort": "Agresivní",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
-  },
-  "imageCachingModeRelaxedShort": "Uvolněný",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
-  },
   "importSettings": "Importovat Nastavení",
   "@importSettings": {
     "description": "Action to import application settings."

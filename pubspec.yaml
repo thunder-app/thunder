@@ -34,7 +34,6 @@ dependencies:
   dynamic_color: ^1.6.5
   equatable: ^2.0.5
   expandable: ^5.0.1
-  extended_image: ^10.0.1
   fading_edge_scrollview: ^4.1.1
   flex_color_scheme: ^8.1.1
   flutter_bloc: ^9.1.1

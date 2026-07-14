@@ -8,7 +8,7 @@ import 'package:thunder/src/core/state/app_startup_cubit.dart';
 void main() {
   blocTest<AppStartupCubit, AppStartupState>(
     'emits running then ready when maintenance succeeds',
-    build: () => AppStartupCubit(maintenanceRunner: () async {}),
+    build: () => AppStartupCubit(taskRunner: () async {}),
     act: (cubit) => cubit.initialize(),
     expect: () => const [
       AppStartupState(status: AppStartupStatus.running),
@@ -21,7 +21,7 @@ void main() {
     build: () {
       var attempts = 0;
       return AppStartupCubit(
-        maintenanceRunner: () async {
+        taskRunner: () async {
           attempts++;
           if (attempts == 1) throw StateError('maintenance failed');
         },
@@ -43,7 +43,7 @@ void main() {
     final completer = Completer<void>();
     var attempts = 0;
     final cubit = AppStartupCubit(
-      maintenanceRunner: () {
+      taskRunner: () {
         attempts++;
         return completer.future;
       },

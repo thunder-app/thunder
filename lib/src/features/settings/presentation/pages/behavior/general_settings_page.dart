@@ -111,9 +111,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, the post FAB and comment navigation buttons will be combined
   bool combineNavAndFab = true;
 
-  /// Defines the image caching mode
-  ImageCachingMode imageCachingMode = ImageCachingMode.relaxed;
-
   /// Whether or not to show navigation labels
   bool showNavigationLabels = true;
 
@@ -245,10 +242,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => pushNotificationServer = value);
         break;
 
-      case LocalSettings.imageCachingMode:
-        await prefs.setSetting(LocalSettings.imageCachingMode, value);
-        setState(() => imageCachingMode = ImageCachingMode.values.byName(value ?? ImageCachingMode.relaxed));
-        break;
       case LocalSettings.showNavigationLabels:
         await prefs.setSetting(LocalSettings.showNavigationLabels, value);
         setState(() => showNavigationLabels = value);
@@ -305,7 +298,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       openInReaderMode = prefs.getLocalSetting<bool>(LocalSettings.openLinksInReaderMode) ?? false;
 
-      imageCachingMode = ImageCachingMode.values.byName(prefs.getLocalSetting<String>(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
       showNavigationLabels = prefs.getLocalSetting<bool>(LocalSettings.showNavigationLabels) ?? true;
 
       showInAppUpdateNotification = prefs.getLocalSetting<bool>(LocalSettings.showInAppUpdateNotification) ?? false;
@@ -665,29 +657,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(l10n.advanced, style: theme.textTheme.titleMedium),
               ),
-              if (!kIsWeb && Platform.isAndroid)
-                ThunderListOption(
-                    title: l10n.imageCachingMode,
-                    value: ThunderListPickerItem(
-                      label: switch (imageCachingMode) {
-                        ImageCachingMode.aggressive => l10n.imageCachingModeAggressiveShort,
-                        ImageCachingMode.relaxed => l10n.imageCachingModeRelaxedShort,
-                      },
-                      payload: imageCachingMode,
-                      capitalizeLabel: false,
-                    ),
-                    options: [
-                      ThunderListPickerItem(icon: Icons.broken_image, label: l10n.imageCachingModeAggressive, payload: ImageCachingMode.aggressive, capitalizeLabel: false),
-                      ThunderListPickerItem(icon: Icons.broken_image_outlined, label: l10n.imageCachingModeRelaxed, payload: ImageCachingMode.relaxed, capitalizeLabel: false),
-                    ],
-                    leading: Icon(switch (imageCachingMode) {
-                      ImageCachingMode.aggressive => Icons.broken_image,
-                      ImageCachingMode.relaxed => Icons.broken_image_outlined,
-                    }),
-                    onChanged: (value) => setPreferences(LocalSettings.imageCachingMode, value.payload.name),
-                    highlightKey: settingToHighlightKey,
-                    onLongPress: () => shareLocalSetting(context, LocalSettings.imageCachingMode),
-                    highlighted: settingToHighlight == LocalSettings.imageCachingMode),
               ThunderToggleOption(
                   title: l10n.showNavigationLabels,
                   subtitle: l10n.showNavigationLabelsDescription,

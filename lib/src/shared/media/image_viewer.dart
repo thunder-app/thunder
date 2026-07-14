@@ -4,29 +4,22 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:gal/gal.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
-/// An experimental Thunder-specific image viewer built on top of
-/// [ThunderImageViewer].
-///
-/// This widget adds application-level behavior that should not live in the UI
-/// package, such as system UI coordination, media actions, post navigation, and
-/// the alt-text overlay.
-///
-/// The underlying gesture implementation is fully provided by
-/// [ThunderImageViewer].
-class ExperimentalImageViewer extends StatefulWidget {
-  /// Creates an experimental image viewer.
+class ImageViewer extends StatefulWidget {
+  /// Creates a full-screen image viewer.
   ///
   /// Either [url] or [bytes] must be provided.
-  const ExperimentalImageViewer({
+  const ImageViewer({
     super.key,
     this.altText,
     this.bytes,
@@ -56,10 +49,10 @@ class ExperimentalImageViewer extends StatefulWidget {
   final String? url;
 
   @override
-  State<ExperimentalImageViewer> createState() => _ExperimentalImageViewerState();
+  State<ImageViewer> createState() => _ImageViewerState();
 }
 
-class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
+class _ImageViewerState extends State<ImageViewer> {
   static const double _fullscreenScaleThreshold = 1.2;
 
   bool _autoFullscreen = false;
@@ -335,15 +328,6 @@ class _ExperimentalImageViewerState extends State<ExperimentalImageViewer> {
                                   color: Colors.white.withValues(alpha: 0.9),
                                 ),
                                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: _toggleFullscreen,
-                                icon: Icon(
-                                  Icons.fullscreen_rounded,
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                ),
-                                tooltip: l10n.fullscreen,
                               ),
                             ],
                           ),

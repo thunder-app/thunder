@@ -6,7 +6,6 @@ export 'draft_type.dart';
 export 'feed_card_divider_thickness.dart';
 export 'feed_list_type.dart';
 export 'font_scale.dart';
-export 'image_caching_mode.dart';
 export 'internet_connection_type.dart';
 export 'local_settings.dart';
 export 'media_type.dart';

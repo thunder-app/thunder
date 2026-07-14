@@ -3,19 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/src/core/state/thunder_bloc.dart';
+import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/feed/feed.dart';
 
 /// Sliver that displays either feed posts or user-profile comments.
 class FeedContentSliver extends StatelessWidget {
   const FeedContentSliver({
     super.key,
-    required this.state,
+    required this.posts,
+    required this.comments,
+    required this.feedType,
     required this.selectedSubview,
     required this.queuedForRemoval,
   });
 
-  /// Current feed state containing the visible posts or comments.
-  final FeedState state;
+  final List<ThunderPost> posts;
+  final List<ThunderComment> comments;
+  final FeedType? feedType;
 
   /// Selected feed subview for user profiles.
   final FeedTypeSubview selectedSubview;
@@ -30,17 +34,17 @@ class FeedContentSliver extends StatelessWidget {
 
     if (selectedSubview == FeedTypeSubview.comment) {
       return FeedCommentCardList(
-        comments: state.comments,
+        comments: comments,
         tabletMode: tabletMode,
       );
     }
 
     return FeedPostCardList(
-      posts: state.posts,
+      posts: posts,
       tabletMode: tabletMode,
       markPostReadOnScroll: markPostReadOnScroll,
       queuedForRemoval: queuedForRemoval,
-      dimReadPosts: state.feedType == FeedType.account ? false : null,
+      dimReadPosts: feedType == FeedType.account ? false : null,
     );
   }
 }

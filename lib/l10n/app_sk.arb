@@ -851,26 +851,6 @@
   "@hot": {},
   "image": "Image",
   "@image": {},
-  "imageCachingMode": "Režim načítavania obrázkov do pamäte",
-  "@imageCachingMode": {
-    "description": "Title for setting related to image caching mode"
-  },
-  "imageCachingModeAggressive": "Agresívne ukladanie obrázkov do vyrovnávacej pamäte (používa viac pamäte)",
-  "@imageCachingModeAggressive": {
-    "description": "Long description for aggressive image caching mode"
-  },
-  "imageCachingModeAggressiveShort": "Agresívny",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
-  },
-  "imageCachingModeRelaxed": "Nechať vypršať obrázky vo vyrovnávacej pamäti (používa menej pamäte, ale spôsobuje častejšie načítanie obrázkov)",
-  "@imageCachingModeRelaxed": {
-    "description": "Long description for relaxed image caching mode"
-  },
-  "imageCachingModeRelaxedShort": "Uvoľnený",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
-  },
   "importExportSettings": "Import/Export nastavení",
   "@importExportSettings": {
     "description": "Category for settings related to import and export."

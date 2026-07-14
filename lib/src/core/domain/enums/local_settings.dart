@@ -230,7 +230,6 @@ enum LocalSettings {
       name: 'setting_general_post_body_show_community_avatar', key: 'postBodyShowCommunityAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
 
   // Advanced Settings
-  imageCachingMode(name: 'setting_advanced_image_caching_mode', key: 'imageCachingMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
   showNavigationLabels(name: 'setting_advanced_show_navigation_labels', key: 'showNavigationLabels', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
 
   /// -------------------------- Post Page Related Settings --------------------------

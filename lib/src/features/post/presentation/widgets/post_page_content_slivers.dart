@@ -10,6 +10,26 @@ import 'package:thunder/src/features/post/presentation/widgets/post_bottom_slive
 import 'package:thunder/src/features/post/presentation/widgets/post_comments_sliver.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 
+enum PostContentPhase { loading, failure, content }
+
+PostContentPhase postContentPhaseForStatus(PostPageStatus status) => switch (status) {
+      PostPageStatus.initial || PostPageStatus.loading => PostContentPhase.loading,
+      PostPageStatus.failure => PostContentPhase.failure,
+      _ => PostContentPhase.content,
+    };
+
+bool postPageContentChanged(PostState previous, PostState current) {
+  final previousPhase = postContentPhaseForStatus(previous.status);
+  final currentPhase = postContentPhaseForStatus(current.status);
+  if (previousPhase != currentPhase) return true;
+
+  return switch (currentPhase) {
+    PostContentPhase.loading => false,
+    PostContentPhase.failure => previous.errorMessage != current.errorMessage,
+    PostContentPhase.content => previous.post != current.post || previous.crossPosts != current.crossPosts,
+  };
+}
+
 /// Selects the post-page content branch and delegates each branch to slivers.
 class PostPageContentSlivers extends StatelessWidget {
   const PostPageContentSlivers({
@@ -43,8 +63,7 @@ class PostPageContentSlivers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) =>
-          previous.status != current.status || previous.post != current.post || previous.crossPosts != current.crossPosts || previous.errorMessage != current.errorMessage,
+      buildWhen: postPageContentChanged,
       builder: (context, state) {
         if (state.status == PostPageStatus.initial || state.status == PostPageStatus.loading) {
           return const SliverFillRemaining(

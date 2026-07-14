@@ -471,10 +471,6 @@
     "@experimentalFeaturesDescription": {
         "description": "Description for experimental features setting"
     },
-    "imageCachingMode": "Bildcaching-Modus",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
-    },
     "excessiveApiCallsWarning": "Es kann sein, dass dein Feed aufgrund von Filtern für Suchbegriffe eine Weile zum Laden braucht.",
     "@excessiveApiCallsWarning": {
         "description": "A message shown to the user when the feed is taking a long time to load, possibly because many posts are being filtered out due to their keyword filters"
@@ -842,10 +838,6 @@
     "@localNotifications": {
         "description": "Describes the notification type for Local Notifications"
     },
-    "imageCachingModeRelaxedShort": "Entspannt",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
-    },
     "countUsers": "{count} Benutzer",
     "@countUsers": {
         "description": "Describes a certain number of users"
@@ -1051,18 +1043,6 @@
         "description": "Settings toggle to hide the top bar on scroll"
     },
     "hot": "Hot",
-    "imageCachingModeAggressive": "Aggressives Zwischenspeichern von Bildern (verbraucht mehr Speicher)",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
-    "imageCachingModeAggressiveShort": "Aggressiv",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxed": "Bild-Caches ablaufen lassen (verbraucht weniger Speicher, führt aber dazu, dass Bilder häufiger neu geladen werden)",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
-    },
     "importExportDatabase": "Thunder-Datenbank importieren/exportieren",
     "@importExportDatabase": {
         "description": "Overall name of setting for importing or exporting the db (for searching)"

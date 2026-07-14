@@ -1179,23 +1179,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get image => 'Imagem';
 
   @override
-  String get imageCachingMode => 'Modo de cache de imagens';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Armazene imagens em cache de forma agressiva (usa mais memória)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agressivo';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Deixar os caches de imagens expirarem (usa menos memória, mas faz com que as imagens sejam recarregadas com mais frequência)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Relaxado';
-
-  @override
   String get imageDimensionTimeout => 'Tempo limite de dimensão da imagem';
 
   @override
@@ -4522,23 +4505,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get image => 'Imagem';
-
-  @override
-  String get imageCachingMode => 'Modo de cache de imagens';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Armazene imagens em cache de forma agressiva (usa mais memória)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agressivo';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Deixar os caches de imagens expirarem (usa menos memória, mas faz com que as imagens sejam recarregadas com mais frequência)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Relaxado';
 
   @override
   String get imageDimensionTimeout => 'Tempo limite de dimensão da imagem';

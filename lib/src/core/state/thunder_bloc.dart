@@ -28,7 +28,6 @@ class ThunderCubit extends Cubit<ThunderState> {
       NotificationType inboxNotificationType = NotificationType.values.byName(_preferencesStore.getLocalSetting(LocalSettings.inboxNotificationType) ?? NotificationType.none.name);
       String? appLanguageCode = _preferencesStore.getLocalSetting(LocalSettings.appLanguageCode) ?? 'en';
       bool useProfilePictureForDrawer = _preferencesStore.getLocalSetting(LocalSettings.useProfilePictureForDrawer) ?? false;
-      ImageCachingMode imageCachingMode = ImageCachingMode.values.byName(_preferencesStore.getLocalSetting(LocalSettings.imageCachingMode) ?? ImageCachingMode.relaxed.name);
       bool enableExperimentalFeatures = _preferencesStore.getLocalSetting(LocalSettings.enableExperimentalFeatures) ?? false;
       bool showNavigationLabels = _preferencesStore.getLocalSetting(LocalSettings.showNavigationLabels) ?? true;
       bool hideTopBarOnScroll = _preferencesStore.getLocalSetting(LocalSettings.hideTopBarOnScroll) ?? false;
@@ -44,7 +43,6 @@ class ThunderCubit extends Cubit<ThunderState> {
         inboxNotificationType: inboxNotificationType,
         appLanguageCode: appLanguageCode,
         useProfilePictureForDrawer: useProfilePictureForDrawer,
-        imageCachingMode: imageCachingMode,
         enableExperimentalFeatures: enableExperimentalFeatures,
         showNavigationLabels: showNavigationLabels,
         hideTopBarOnScroll: hideTopBarOnScroll,

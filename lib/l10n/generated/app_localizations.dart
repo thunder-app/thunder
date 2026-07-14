@@ -2178,36 +2178,6 @@ abstract class AppLocalizations {
   /// **'Image'**
   String get image;
 
-  /// Title for setting related to image caching mode
-  ///
-  /// In en, this message translates to:
-  /// **'Image Caching Mode'**
-  String get imageCachingMode;
-
-  /// Long description for aggressive image caching mode
-  ///
-  /// In en, this message translates to:
-  /// **'Aggressively cache images (uses more memory)'**
-  String get imageCachingModeAggressive;
-
-  /// Short description for aggressive image caching mode
-  ///
-  /// In en, this message translates to:
-  /// **'Aggressive'**
-  String get imageCachingModeAggressiveShort;
-
-  /// Long description for relaxed image caching mode
-  ///
-  /// In en, this message translates to:
-  /// **'Let image caches expire (uses less memory but causes images to reload more often)'**
-  String get imageCachingModeRelaxed;
-
-  /// Short description for relaxed image caching mode
-  ///
-  /// In en, this message translates to:
-  /// **'Relaxed'**
-  String get imageCachingModeRelaxedShort;
-
   /// Setting for how long to wait for the image dimensions to be fetched
   ///
   /// In en, this message translates to:

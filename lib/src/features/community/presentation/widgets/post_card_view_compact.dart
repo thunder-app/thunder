@@ -72,19 +72,28 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final showThumbnailPreviewOnRight = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showThumbnailPreviewOnRight);
-    final showTextPostIndicator = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextPostIndicator);
-    final dimReadPostsSetting = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.dimReadPosts);
-    final showCommunityFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showPostCommunityFirst);
+    final preferences = context.select<
+        FeedPreferencesCubit,
+        ({
+          bool showThumbnailPreviewOnRight,
+          bool showTextPostIndicator,
+          bool dimReadPosts,
+          bool showCommunityFirst,
+        })>((cubit) => (
+          showThumbnailPreviewOnRight: cubit.state.showThumbnailPreviewOnRight,
+          showTextPostIndicator: cubit.state.showTextPostIndicator,
+          dimReadPosts: cubit.state.dimReadPosts,
+          showCommunityFirst: cubit.state.showPostCommunityFirst,
+        ));
 
     final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 
-    final indicateRead = this.indicateRead ?? dimReadPostsSetting;
+    final indicateRead = this.indicateRead ?? preferences.dimReadPosts;
     final dim = indicateRead && post.context.read == true;
 
     final hasMedia = post.media.isNotEmpty;
     final isTextPost = hasMedia && post.media.first.mediaType == MediaType.text;
-    final shouldShowThumbnail = showMedia && hasMedia && (isTextPost ? showTextPostIndicator : true);
+    final shouldShowThumbnail = showMedia && hasMedia && (isTextPost ? preferences.showTextPostIndicator : true);
 
     final containerColor = _getContainerColor(theme, useDarkTheme, dim);
     final containerPadding = showMedia ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.only(left: 4.0, top: 10.0, bottom: 10.0);
@@ -101,7 +110,7 @@ class PostCardViewCompact extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          !showThumbnailPreviewOnRight && shouldShowThumbnail
+          !preferences.showThumbnailPreviewOnRight && shouldShowThumbnail
               ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
               : const SizedBox(width: 8.0),
           Expanded(
@@ -109,7 +118,7 @@ class PostCardViewCompact extends StatelessWidget {
               spacing: 6.0,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (showCommunityFirst) postCardAuthor,
+                if (preferences.showCommunityFirst) postCardAuthor,
                 PostCardTitle(
                   title: post.name,
                   hidden: post.context.hidden ?? false,
@@ -121,7 +130,7 @@ class PostCardViewCompact extends StatelessWidget {
                   dim: dim,
                   flairs: flairs,
                 ),
-                if (!showCommunityFirst) postCardAuthor,
+                if (!preferences.showCommunityFirst) postCardAuthor,
                 PostCardMetadata(
                   postCardViewType: ViewMode.compact,
                   score: post.counts.score,
@@ -139,7 +148,9 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          showThumbnailPreviewOnRight && shouldShowThumbnail ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost) : const SizedBox(width: 8.0),
+          preferences.showThumbnailPreviewOnRight && shouldShowThumbnail
+              ? CompactThumbnailPreview(media: post.media.first, dim: dim, postId: post.id, navigateToPost: navigateToPost)
+              : const SizedBox(width: 8.0),
         ],
       ),
     );

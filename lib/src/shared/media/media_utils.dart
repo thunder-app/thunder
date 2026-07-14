@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:flutter_avif/flutter_avif.dart';
@@ -17,10 +15,8 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_dimension_parser/image_dimension_parser.dart';
 
-import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/core/utils/media_url_utils.dart';
-import 'package:thunder/src/core/state/thunder_bloc.dart';
-import 'package:thunder/src/shared/media/experimental_image_viewer.dart';
+import 'package:thunder/src/shared/media/image_viewer.dart';
 
 final Map<String, Size> _imageDimensionsCache = <String, Size>{};
 
@@ -196,13 +192,12 @@ Widget buildImageViewerWidget(
   BuildContext context, {
   String? altText,
   Uint8List? bytes,
-  bool? clearMemoryCacheWhenDispose,
   bool isPeek = false,
   void Function()? navigateToPost,
   int? postId,
   String? url,
 }) {
-  return ExperimentalImageViewer(
+  return ImageViewer(
     altText: altText,
     bytes: bytes,
     isPeek: isPeek,
@@ -211,9 +206,7 @@ Widget buildImageViewerWidget(
   );
 }
 
-void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText, bool? clearMemoryCacheWhenDispose}) {
-  final resolvedClearMemoryCacheWhenDispose = clearMemoryCacheWhenDispose ?? context.read<ThunderCubit>().state.imageCachingMode == ImageCachingMode.relaxed;
-
+void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText}) {
   Navigator.of(context).push(
     PageRouteBuilder(
       opaque: false,
@@ -227,7 +220,6 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
           postId: postId,
           navigateToPost: navigateToPost,
           altText: altText,
-          clearMemoryCacheWhenDispose: resolvedClearMemoryCacheWhenDispose,
         );
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

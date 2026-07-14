@@ -1170,23 +1170,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get image => 'Resim';
 
   @override
-  String get imageCachingMode => 'Resim Önbellekleme Modu';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Resimleri agresif bir şekilde önbelleğe al (daha fazla bellek kullanır)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agresif';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Resim önbelleklerinin süresinin dolmasına izin ver (daha az bellek kullanır ancak resimlerin daha sık yeniden yüklenmesine neden olur)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Rahat';
-
-  @override
   String get imageDimensionTimeout => 'Resim Boyutu Zaman Aşımı';
 
   @override

@@ -1415,25 +1415,9 @@
   "@moderatorActions": {
     "description": "Actions for moderators to perform on posts"
   },
-  "imageCachingMode": "Modo de almacenamiento en caché de imágenes",
-  "@imageCachingMode": {
-    "description": "Title for setting related to image caching mode"
-  },
-  "imageCachingModeAggressiveShort": "Agresivos",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
-  },
-  "imageCachingModeRelaxed": "Permitir que los cachés de imagen expiren (utiliza menos memoria pero hace que las imágenes se recarguen más a menudo)",
-  "@imageCachingModeRelaxed": {
-    "description": "Long description for relaxed image caching mode"
-  },
   "removalReason": "Razón de la eliminación",
   "@removalReason": {
     "description": "Title for the dialog for removing a post"
-  },
-  "imageCachingModeAggressive": "Almacenamiento agresivo de imágenes en caché (utiliza más memoria)",
-  "@imageCachingModeAggressive": {
-    "description": "Long description for aggressive image caching mode"
   },
   "reason": "Motivo",
   "@reason": {
@@ -1454,10 +1438,6 @@
   "pinToCommunity": "Fijar a la comunidad",
   "@pinToCommunity": {
     "description": "Setting for pinning a post to a community (moderator action)"
-  },
-  "imageCachingModeRelaxedShort": "Relajado",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
   },
   "removePost": "Eliminar el tema",
   "@removePost": {

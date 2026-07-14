@@ -1170,23 +1170,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get image => 'Obrázek';
 
   @override
-  String get imageCachingMode => 'Image Caching Mode';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Aggressively cache images (uses more memory)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agresivní';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Let image caches expire (uses less memory but causes images to reload more often)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Uvolněný';
-
-  @override
   String get imageDimensionTimeout => 'Image Dimension Timeout';
 
   @override

@@ -3,14 +3,14 @@ import 'package:equatable/equatable.dart';
 
 part 'app_startup_state.dart';
 
-typedef StartupMaintenanceRunner = Future<void> Function();
+typedef StartupTaskRunner = Future<void> Function();
 
 class AppStartupCubit extends Cubit<AppStartupState> {
-  AppStartupCubit({required StartupMaintenanceRunner maintenanceRunner})
-      : _maintenanceRunner = maintenanceRunner,
+  AppStartupCubit({required StartupTaskRunner taskRunner})
+      : _taskRunner = taskRunner,
         super(const AppStartupState());
 
-  final StartupMaintenanceRunner _maintenanceRunner;
+  final StartupTaskRunner _taskRunner;
 
   Future<void> initialize() async {
     if (state.status == AppStartupStatus.running) return;
@@ -18,10 +18,10 @@ class AppStartupCubit extends Cubit<AppStartupState> {
     emit(const AppStartupState(status: AppStartupStatus.running));
 
     try {
-      await _maintenanceRunner();
+      await _taskRunner();
       emit(const AppStartupState(status: AppStartupStatus.ready));
     } catch (error) {
-      emit(AppStartupState(status: AppStartupStatus.failure, errorMessage: error.toString()));
+      emit(AppStartupState(status: AppStartupStatus.failure, error: error.toString()));
     }
   }
 }

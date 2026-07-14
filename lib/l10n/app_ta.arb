@@ -2733,26 +2733,6 @@
     "@hideTopBarOnScroll": {
         "description": "Settings toggle to hide the top bar on scroll"
     },
-    "imageCachingMode": "பட கேச்சிங் பயன்முறை",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
-    },
-    "imageCachingModeAggressive": "படங்களை ஆக்ரோசமாக கேச் (அதிக நினைவகத்தைப் பயன்படுத்துகிறது)",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
-    "imageCachingModeAggressiveShort": "வன்கவர்வு",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxed": "பட தற்காலிக சேமிப்புகள் காலாவதியாகட்டும் (குறைந்த நினைவகத்தைப் பயன்படுத்துகிறது, ஆனால் படங்களை அடிக்கடி மீண்டும் ஏற்றுகிறது)",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
-    },
-    "imageCachingModeRelaxedShort": "நிதானமாக",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
-    },
     "imageDimensionTimeout": "பட பரிமாண நேரம் முடிந்தது",
     "@imageDimensionTimeout": {
         "description": "Setting for how long to wait for the image dimensions to be fetched"

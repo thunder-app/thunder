@@ -7,6 +7,8 @@ import 'package:thunder/src/features/comment/comment.dart';
 import 'package:thunder/src/features/post/domain/utils/comment_state_utils.dart';
 import 'package:thunder/src/features/post/post.dart';
 
+bool postCommentsChanged(PostState previous, PostState current) => previous.comments != current.comments || previous.collapsedComments != current.collapsedComments;
+
 /// Sliver list that renders post comments with collapsed-thread visibility.
 class PostCommentsSliver extends StatelessWidget {
   const PostCommentsSliver({super.key, required this.listController});
@@ -17,7 +19,7 @@ class PostCommentsSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) => previous.comments != current.comments || previous.collapsedComments != current.collapsedComments || previous.moddingCommentId != current.moddingCommentId,
+      buildWhen: postCommentsChanged,
       builder: (context, state) {
         final account = context.read<PostBloc>().account;
         final highlightedCommentId = context.select<PostNavigationCubit, int?>((cubit) => cubit.state.highlightedCommentId);

@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path/path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -227,7 +226,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                   highlighted: settingToHighlight == LocalSettings.debugDeleteLocalDatabase),
               const ThunderDivider(sliver: false),
               FutureBuilder<int>(
-                future: getExtendedImageCacheSize(),
+                future: getImageCacheSize(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ThunderSettingsTile(
@@ -235,7 +234,7 @@ class _DebugSettingsPageState extends State<DebugSettingsPage> {
                         title: l10n.clearCache('${(snapshot.data! / (1024 * 1024)).toStringAsFixed(2)} MB'),
                         trailing: const ThunderSettingsChevronTrailing(),
                         onTap: () async {
-                          await clearDiskCachedImages();
+                          await clearImageCache(expiration: null);
                           if (context.mounted) showThunderSnackbar(l10n.clearedCache);
                           setState(() {}); // Trigger a rebuild to refresh the cache size
                         },

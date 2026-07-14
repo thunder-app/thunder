@@ -3,11 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:thunder/l10n/generated/app_localizations.dart';
-import 'package:thunder/src/core/domain/domain.dart';
-import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 
 import 'package:thunder/src/shared/media/media_utils.dart';
@@ -91,7 +88,18 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
   Widget imagePreview(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final ThunderState thunderState = context.read<ThunderCubit>().state;
+    final memCacheWidth = ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt();
+    final readColor = widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null;
+    final readBlendMode = widget.read == true ? BlendMode.modulate : null;
+    final alignment = widget.isComment == true ? Alignment.topCenter : Alignment.center;
+    final constraints = widget.isComment == true
+        ? BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.width * 0.55,
+            maxWidth: MediaQuery.of(context).size.width * 0.60,
+          )
+        : BoxConstraints(
+            maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - (widget.url != null && widget.edgeToEdgeImages ? 0 : 24),
+          );
 
     return Container(
       clipBehavior: Clip.hardEdge,
@@ -100,72 +108,56 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
         children: [
           // This is used for link posts where the preview comes from Lemmy
           // in both compact and comfortable view
-          widget.url != null
-              ? ExtendedImage.network(
-                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-                  constraints: widget.isComment == true
-                      ? BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.width * 0.55,
-                          maxWidth: MediaQuery.of(context).size.width * 0.60,
-                        )
-                      : BoxConstraints(
-                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24),
-                        ),
-                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
-                  widget.url!,
-                  height: widget.height,
-                  width: widget.width,
-                  fit: BoxFit.cover,
-                  cache: true,
-                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
-                  loadStateChanged: (state) {
-                    if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container(color: getBackgroundColor(context));
-                    }
-                    if (state.extendedImageLoadState == LoadState.failed) {
-                      return Container(
-                        color: getBackgroundColor(context),
-                        child: const Icon(Icons.image_not_supported_outlined),
+          ConstrainedBox(
+            constraints: constraints,
+            child: widget.url != null
+                ? CachedNetworkImage(
+                    imageUrl: widget.url!,
+                    color: readColor,
+                    colorBlendMode: readBlendMode,
+                    alignment: alignment,
+                    height: widget.height,
+                    width: widget.width,
+                    fit: BoxFit.cover,
+                    fadeInDuration: const Duration(milliseconds: 100),
+                    fadeOutDuration: Duration.zero,
+                    memCacheWidth: memCacheWidth,
+                    placeholder: (context, url) => Container(color: getBackgroundColor(context)),
+                    errorWidget: (context, url, error) => Container(
+                      color: getBackgroundColor(context),
+                      child: const Icon(Icons.image_not_supported_outlined),
+                    ),
+                    imageBuilder: (context, imageProvider) {
+                      return Image(
+                        image: imageProvider,
+                        color: readColor,
+                        colorBlendMode: readBlendMode,
+                        alignment: alignment,
+                        height: widget.height,
+                        width: widget.width,
+                        fit: BoxFit.cover,
                       );
-                    }
-                    return null;
-                  },
-                )
-              : ExtendedImage.memory(
-                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-                  constraints: widget.isComment == true
-                      ? BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.width * 0.55,
-                          maxWidth: MediaQuery.of(context).size.width * 0.60,
-                        )
-                      : BoxConstraints(
-                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
-                        ),
-                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
-                  widget.bytes!,
-                  height: widget.height,
-                  width: widget.width,
-                  fit: BoxFit.cover,
-                  clearMemoryCacheWhenDispose: thunderState.imageCachingMode == ImageCachingMode.relaxed,
-                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
-                  loadStateChanged: (state) {
-                    if (state.extendedImageLoadState == LoadState.loading) {
-                      return Container(color: getBackgroundColor(context));
-                    }
-                    if (state.extendedImageLoadState == LoadState.failed) {
+                    },
+                  )
+                : Image.memory(
+                    widget.bytes!,
+                    color: readColor,
+                    colorBlendMode: readBlendMode,
+                    alignment: alignment,
+                    height: widget.height,
+                    width: widget.width,
+                    fit: BoxFit.cover,
+                    cacheWidth: memCacheWidth,
+                    errorBuilder: (context, error, stackTrace) {
                       return Text(
                         l10n.unableToLoadImage,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                         ),
                       );
-                    }
-                    return null;
-                  },
-                ),
+                    },
+                  ),
+          ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),

@@ -60,6 +60,40 @@ void main() {
     expect(scales, isNotEmpty);
   });
 
+  testWidgets('ThunderImageViewer double-tap-and-drag down zooms in', (tester) async {
+    final scales = <double>[];
+
+    await pumpUiWidget(
+      tester,
+      SizedBox(
+        height: 300,
+        width: 300,
+        child: ThunderImageViewer(
+          source: ThunderImageViewerSource.memory(_onePixelPng),
+          onScaleChanged: scales.add,
+        ),
+      ),
+    );
+
+    final center = tester.getCenter(find.byType(ThunderImageViewer));
+
+    // First tap.
+    final firstTap = await tester.startGesture(center);
+    await firstTap.up();
+    await tester.pump(const Duration(milliseconds: 40));
+
+    // Second tap held, then drag downward (Android quick-scale: down = zoom in).
+    final secondTap = await tester.startGesture(center);
+    await tester.pump();
+    await secondTap.moveBy(const Offset(0, 80));
+    await tester.pump();
+    await secondTap.up();
+    await tester.pump();
+
+    expect(scales, isNotEmpty);
+    expect(scales.last, greaterThan(1.0));
+  });
+
   testWidgets('ThunderImageViewer renders custom network loading builder', (tester) async {
     await pumpUiWidget(
       tester,

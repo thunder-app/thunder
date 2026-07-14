@@ -2,24 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:extended_image/extended_image.dart';
 
-/// Returns the total size of the image cache from ExtendedImage
-Future<int> getExtendedImageCacheSize() async {
+/// Returns the total size of the cached_network_image disk cache.
+Future<int> getImageCacheSize() async {
   try {
     if (kIsWeb) return 0;
-    final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
+    final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, DefaultCacheManager.key));
     if (!cacheImagesDirectory.existsSync()) return 0;
 
     int totalSize = 0;
 
-    // Iterate over the files in the directory
-    await for (final FileSystemEntity file in cacheImagesDirectory.list()) {
+    await for (final FileSystemEntity file in cacheImagesDirectory.list(recursive: true)) {
       try {
         final FileStat fs = file.statSync();
-        totalSize += fs.size;
+        if (fs.type == FileSystemEntityType.file) {
+          totalSize += fs.size;
+        }
       } catch (e) {
         // Ignore errors
       }
@@ -31,12 +32,30 @@ Future<int> getExtendedImageCacheSize() async {
   }
 }
 
-/// Clears the image cache from ExtendedImage, by deleting all files older than [duration].
-/// If [duration] is not provided, it defaults to 7 days.
-Future<void> clearExtendedImageCache({Duration expiration = const Duration(days: 7)}) async {
+/// Clears the cached_network_image [DefaultCacheManager] disk cache.
+///
+/// When [expiration] is provided (defaults to 7 days), only entries that have
+/// not been accessed within that duration are removed.
+/// When [expiration] is `null`, the entire cache is emptied.
+Future<void> clearImageCache({Duration? expiration = const Duration(days: 7)}) async {
   if (kIsWeb) return;
-  final Directory cacheImagesDirectory = Directory(join((await getTemporaryDirectory()).path, cacheImageFolderName));
-  if (!cacheImagesDirectory.existsSync()) return;
 
-  await clearDiskCachedImages(duration: expiration);
+  final cacheManager = DefaultCacheManager();
+  if (expiration == null) {
+    await cacheManager.emptyCache();
+    return;
+  }
+
+  final repo = cacheManager.config.repo;
+  await repo.open();
+
+  // SQLite getOldObjects is capped at 100 rows per query.
+  while (true) {
+    final oldObjects = await repo.getOldObjects(expiration);
+    if (oldObjects.isEmpty) break;
+
+    await Future.wait([
+      for (final cacheObject in oldObjects) cacheManager.store.removeCachedFile(cacheObject),
+    ]);
+  }
 }

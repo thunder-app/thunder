@@ -15,7 +15,6 @@ class ThunderState extends Equatable {
     this.showUpdateChangelogs = true,
     this.inboxNotificationType = NotificationType.none,
     this.scoreCounters = false,
-    this.imageCachingMode = ImageCachingMode.relaxed,
     this.enableExperimentalFeatures = false,
     this.showNavigationLabels = true,
     this.hideTopBarOnScroll = false,
@@ -34,7 +33,6 @@ class ThunderState extends Equatable {
   final bool showUpdateChangelogs;
   final NotificationType inboxNotificationType;
   final bool scoreCounters;
-  final ImageCachingMode imageCachingMode;
   final bool enableExperimentalFeatures;
   final bool showNavigationLabels;
   final bool hideTopBarOnScroll;
@@ -50,7 +48,6 @@ class ThunderState extends Equatable {
     bool? showUpdateChangelogs,
     NotificationType? inboxNotificationType,
     bool? scoreCounters,
-    ImageCachingMode? imageCachingMode,
     bool? enableExperimentalFeatures,
     bool? showNavigationLabels,
     bool? hideTopBarOnScroll,
@@ -66,7 +63,6 @@ class ThunderState extends Equatable {
       showUpdateChangelogs: showUpdateChangelogs ?? this.showUpdateChangelogs,
       inboxNotificationType: inboxNotificationType ?? this.inboxNotificationType,
       scoreCounters: scoreCounters ?? this.scoreCounters,
-      imageCachingMode: imageCachingMode ?? this.imageCachingMode,
       enableExperimentalFeatures: enableExperimentalFeatures ?? this.enableExperimentalFeatures,
       showNavigationLabels: showNavigationLabels ?? this.showNavigationLabels,
       hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
@@ -85,7 +81,6 @@ class ThunderState extends Equatable {
         showUpdateChangelogs,
         inboxNotificationType,
         scoreCounters,
-        imageCachingMode,
         enableExperimentalFeatures,
         showNavigationLabels,
         hideTopBarOnScroll,

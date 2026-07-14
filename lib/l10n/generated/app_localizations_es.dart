@@ -1187,23 +1187,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get image => 'Imagen';
 
   @override
-  String get imageCachingMode => 'Modo de almacenamiento en caché de imágenes';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Almacenamiento agresivo de imágenes en caché (utiliza más memoria)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Agresivos';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Permitir que los cachés de imagen expiren (utiliza menos memoria pero hace que las imágenes se recarguen más a menudo)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Relajado';
-
-  @override
   String get imageDimensionTimeout => 'Tiempo de Espera de Dimensión de Imagen';
 
   @override

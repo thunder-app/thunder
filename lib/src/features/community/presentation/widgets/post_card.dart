@@ -168,40 +168,62 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Select only the specific properties we need from GesturePreferencesCubit
-    final enablePostGestures = context.select<GesturePreferencesCubit, bool>((cubit) => cubit.state.enablePostGestures);
-    final leftPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftPrimaryPostGesture);
-    final leftSecondaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.leftSecondaryPostGesture);
-    final rightPrimaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightPrimaryPostGesture);
-    final rightSecondaryPostGesture = context.select<GesturePreferencesCubit, SwipeAction>((cubit) => cubit.state.rightSecondaryPostGesture);
-
-    // Select only the specific properties we need from FeedPreferencesCubit
-    final useCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.useCompactView);
-    final hideThumbnails = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideThumbnails);
-    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
-    final markPostReadOnMediaView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.markPostReadOnMediaView);
-    final showFullHeightImages = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showFullHeightImages);
-    final showEdgeToEdgeImages = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showEdgeToEdgeImages);
-    final showTitleFirst = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTitleFirst);
-    final showTextContent = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.showTextContent);
-    final linkPostsUseCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.linkPostsUseCompactView);
-    final pinnedPostsUseCompactView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.pinnedPostsUseCompactView);
+    final gesturePreferences = context.select<
+        GesturePreferencesCubit,
+        ({
+          bool enabled,
+          SwipeAction leftPrimary,
+          SwipeAction leftSecondary,
+          SwipeAction rightPrimary,
+          SwipeAction rightSecondary,
+        })>((cubit) => (
+          enabled: cubit.state.enablePostGestures,
+          leftPrimary: cubit.state.leftPrimaryPostGesture,
+          leftSecondary: cubit.state.leftSecondaryPostGesture,
+          rightPrimary: cubit.state.rightPrimaryPostGesture,
+          rightSecondary: cubit.state.rightSecondaryPostGesture,
+        ));
+    final renderPreferences = context.select<
+        FeedPreferencesCubit,
+        ({
+          bool useCompactView,
+          bool hideThumbnails,
+          bool hideNsfwPreviews,
+          bool markPostReadOnMediaView,
+          bool showFullHeightImages,
+          bool showEdgeToEdgeImages,
+          bool showTitleFirst,
+          bool showTextContent,
+          bool linkPostsUseCompactView,
+          bool pinnedPostsUseCompactView,
+        })>((cubit) => (
+          useCompactView: cubit.state.useCompactView,
+          hideThumbnails: cubit.state.hideThumbnails,
+          hideNsfwPreviews: cubit.state.hideNsfwPreviews,
+          markPostReadOnMediaView: cubit.state.markPostReadOnMediaView,
+          showFullHeightImages: cubit.state.showFullHeightImages,
+          showEdgeToEdgeImages: cubit.state.showEdgeToEdgeImages,
+          showTitleFirst: cubit.state.showTitleFirst,
+          showTextContent: cubit.state.showTextContent,
+          linkPostsUseCompactView: cubit.state.linkPostsUseCompactView,
+          pinnedPostsUseCompactView: cubit.state.pinnedPostsUseCompactView,
+        ));
 
     final currentSwipeDirection = determinePostSwipeDirection(
       isUserLoggedIn: isUserLoggedIn,
-      enablePostGestures: enablePostGestures,
-      leftPrimaryPostGesture: leftPrimaryPostGesture,
-      leftSecondaryPostGesture: leftSecondaryPostGesture,
-      rightPrimaryPostGesture: rightPrimaryPostGesture,
-      rightSecondaryPostGesture: rightSecondaryPostGesture,
+      enablePostGestures: gesturePreferences.enabled,
+      leftPrimaryPostGesture: gesturePreferences.leftPrimary,
+      leftSecondaryPostGesture: gesturePreferences.leftSecondary,
+      rightPrimaryPostGesture: gesturePreferences.rightPrimary,
+      rightSecondaryPostGesture: gesturePreferences.rightSecondary,
       disableSwiping: widget.disableSwiping,
     );
     final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
     final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
     final flairs = feedType == FeedType.community ? widget.post.flairs : const <ThunderFlair>[];
-    final postIsCompact = useCompactView ||
-        (pinnedPostsUseCompactView && (widget.post.status.featuredLocal || (feedType == FeedType.community && widget.post.status.featuredCommunity))) ||
-        (linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
+    final postIsCompact = renderPreferences.useCompactView ||
+        (renderPreferences.pinnedPostsUseCompactView && (widget.post.status.featuredLocal || (feedType == FeedType.community && widget.post.status.featuredCommunity))) ||
+        (renderPreferences.linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
 
     // Determine which post card view to use based on the settings
     Widget child = postIsCompact
@@ -214,7 +236,7 @@ class _PostCardState extends State<PostCard> {
             community: widget.post.community!,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
-            showMedia: !hideThumbnails,
+            showMedia: !renderPreferences.hideThumbnails,
             navigateToPost: ({ThunderPost? post}) async {
               widget.onTap();
               await navigateToPost(context, post: widget.post);
@@ -225,13 +247,13 @@ class _PostCardState extends State<PostCard> {
             feedType: feedType,
             feedListType: widget.feedListType,
             flairs: flairs,
-            hideThumbnails: hideThumbnails,
-            hideNsfwPreviews: hideNsfwPreviews,
-            markPostReadOnMediaView: markPostReadOnMediaView,
-            showFullHeightImages: showFullHeightImages,
-            edgeToEdgeImages: showEdgeToEdgeImages,
-            showTitleFirst: showTitleFirst,
-            showTextContent: showTextContent,
+            hideThumbnails: renderPreferences.hideThumbnails,
+            hideNsfwPreviews: renderPreferences.hideNsfwPreviews,
+            markPostReadOnMediaView: renderPreferences.markPostReadOnMediaView,
+            showFullHeightImages: renderPreferences.showFullHeightImages,
+            edgeToEdgeImages: renderPreferences.showEdgeToEdgeImages,
+            showTitleFirst: renderPreferences.showTitleFirst,
+            showTextContent: renderPreferences.showTextContent,
             isUserLoggedIn: isUserLoggedIn,
             indicateRead: widget.indicateRead,
             isLastTapped: widget.isLastTapped,
@@ -299,9 +321,9 @@ class _PostCardState extends State<PostCard> {
       final read = widget.post.context.read ?? false;
       final hidden = widget.post.context.hidden ?? false;
 
-      final actionThresholds = [0.15, 0.35];
-      final leftActions = [leftPrimaryPostGesture, leftSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
-      final rightActions = [rightPrimaryPostGesture, rightSecondaryPostGesture].where((action) => action != SwipeAction.none).toList();
+      const actionThresholds = [0.15, 0.35];
+      final leftActions = [gesturePreferences.leftPrimary, gesturePreferences.leftSecondary].where((action) => action != SwipeAction.none).toList();
+      final rightActions = [gesturePreferences.rightPrimary, gesturePreferences.rightSecondary].where((action) => action != SwipeAction.none).toList();
 
       child = ThunderMultiActionDismissible<SwipeAction>(
         key: ObjectKey(widget.post.id),

@@ -885,14 +885,6 @@
     "@hideNsfwPreviews": {
         "description": "Toggle to blur NSFW previews."
     },
-    "imageCachingModeAggressive": "积极缓存图像（使用更多内存）",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
-    "imageCachingModeAggressiveShort": "激进",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
     "importDatabase": "导入数据库",
     "@importDatabase": {
         "description": "Name of setting for importing the db"
@@ -1731,10 +1723,6 @@
     "@hot": {},
     "image": "图像",
     "@image": {},
-    "imageCachingMode": "图像缓存模式",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
-    },
     "imageDimensionTimeout": "图像尺寸超时",
     "@imageDimensionTimeout": {
         "description": "Setting for how long to wait for the image dimensions to be fetched"
@@ -2428,14 +2416,6 @@
     "hideTopBarOnScroll": "滚动时隐藏顶部栏",
     "@hideTopBarOnScroll": {
         "description": "Settings toggle to hide the top bar on scroll"
-    },
-    "imageCachingModeRelaxed": "让图像缓存过期（使用更少内存，但导致图像更频繁地重新加载）",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
-    },
-    "imageCachingModeRelaxedShort": "放松",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
     },
     "in_": "在",
     "@in_": {

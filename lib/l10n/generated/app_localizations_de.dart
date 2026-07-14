@@ -1179,23 +1179,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get image => 'Bild';
 
   @override
-  String get imageCachingMode => 'Bildcaching-Modus';
-
-  @override
-  String get imageCachingModeAggressive =>
-      'Aggressives Zwischenspeichern von Bildern (verbraucht mehr Speicher)';
-
-  @override
-  String get imageCachingModeAggressiveShort => 'Aggressiv';
-
-  @override
-  String get imageCachingModeRelaxed =>
-      'Bild-Caches ablaufen lassen (verbraucht weniger Speicher, führt aber dazu, dass Bilder häufiger neu geladen werden)';
-
-  @override
-  String get imageCachingModeRelaxedShort => 'Entspannt';
-
-  @override
   String get imageDimensionTimeout => 'Zeitüberschreitung Bild Abmessungen';
 
   @override

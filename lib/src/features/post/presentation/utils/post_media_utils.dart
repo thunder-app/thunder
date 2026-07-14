@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:html/parser.dart';
@@ -38,39 +39,83 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
     resolvedPosts = posts.toList();
   }
 
-  final postFutures = resolvedPosts
-      .expand((post) => [if (!hideNsfwPosts || (!post.status.nsfw && hideNsfwPosts)) parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode)])
-      .toList();
+  final visiblePosts = resolvedPosts.where((post) => !hideNsfwPosts || (!post.status.nsfw && hideNsfwPosts)).toList();
+  final textPreviews = await buildTextPreviewsForPosts(
+    visiblePosts.map((post) => post.body).toList(),
+    enabled: mediaOptions.buildTextPreview,
+  );
+
+  final postFutures = [
+    for (final (index, post) in visiblePosts.indexed)
+      parsePost(
+        post,
+        mediaOptions.fetchImageDimensions,
+        mediaOptions.edgeToEdgeImages,
+        mediaOptions.tabletMode,
+        textPreview: textPreviews[index],
+      ),
+  ];
   final parsedPosts = await Future.wait(postFutures);
   return parsedPosts;
 }
 
 /// Parses a single post with media using current user preferences.
-Future<ThunderPost> parsePostWithCurrentPreferences(ThunderPost post) {
+Future<ThunderPost> parsePostWithCurrentPreferences(ThunderPost post) async {
   final mediaOptions = _getMediaParsingOptions();
-  return parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode);
+  final textPreviews = await buildTextPreviewsForPosts([post.body], enabled: mediaOptions.buildTextPreview);
+  return parsePost(
+    post,
+    mediaOptions.fetchImageDimensions,
+    mediaOptions.edgeToEdgeImages,
+    mediaOptions.tabletMode,
+    textPreview: textPreviews.single,
+  );
 }
 
-({bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode}) _getMediaParsingOptions() {
+({bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool buildTextPreview}) _getMediaParsingOptions() {
   final prefs = const UserPreferencesStore();
-  final fetchImageDimensions = prefs.getLocalSetting<bool>(LocalSettings.showPostFullHeightImages) != false && prefs.getLocalSetting<bool>(LocalSettings.useCompactView) != true;
+  final useCompactView = prefs.getLocalSetting<bool>(LocalSettings.useCompactView) == true;
+  final fetchImageDimensions = prefs.getLocalSetting<bool>(LocalSettings.showPostFullHeightImages) != false && !useCompactView;
   final edgeToEdgeImages = prefs.getLocalSetting<bool>(LocalSettings.showPostEdgeToEdgeImages) ?? false;
   final tabletMode = prefs.getLocalSetting<bool>(LocalSettings.useTabletMode) ?? false;
+  // Keep previews ready while compact mode is active so switching view modes
+  // does not briefly expose the unparsed Markdown body on existing feed items.
+  final buildTextPreview = prefs.getLocalSetting<bool>(LocalSettings.showPostTextContentPreview) == true;
 
-  return (fetchImageDimensions: fetchImageDimensions, edgeToEdgeImages: edgeToEdgeImages, tabletMode: tabletMode);
+  return (fetchImageDimensions: fetchImageDimensions, edgeToEdgeImages: edgeToEdgeImages, tabletMode: tabletMode, buildTextPreview: buildTextPreview);
+}
+
+typedef TextPreviewBatchRunner = Future<List<String?>> Function(List<String?> bodies);
+
+Future<List<String?>> buildTextPreviewsForPosts(
+  List<String?> bodies, {
+  required bool enabled,
+  TextPreviewBatchRunner? runner,
+}) {
+  if (!enabled) return Future.value(List<String?>.filled(bodies.length, null));
+  return (runner ?? _computeTextPreviews)(bodies);
+}
+
+Future<List<String?>> _computeTextPreviews(List<String?> bodies) => compute(buildTextPreviews, bodies, debugLabel: 'post-text-previews');
+
+List<String?> buildTextPreviews(List<String?> bodies) {
+  return [
+    for (final body in bodies)
+      if (body == null || body.isEmpty) null else parse(markdownToHtml(body)).documentElement?.text.trim() ?? body,
+  ];
 }
 
 /// Perform some pre-processing on the post before displaying it.
 ///
 /// This includes unescaping the title and parsing any associated media.
-Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
+Future<ThunderPost> parsePost(
+  ThunderPost post,
+  bool fetchImageDimensions,
+  bool edgeToEdgeImages,
+  bool tabletMode, {
+  String? textPreview,
+}) async {
   final title = _htmlUnescape.convert(post.name);
-
-  // Compute text preview
-  String? textPreview;
-  if (post.body != null && post.body!.isNotEmpty) {
-    textPreview = parse(markdownToHtml(post.body!)).documentElement?.text.trim() ?? post.body;
-  }
 
   List<Media> mediaList = [];
 

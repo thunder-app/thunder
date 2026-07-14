@@ -14,9 +14,9 @@ void main() {
 
     await tester.pumpWidget(
       BlocProvider(
-        create: (context) => AppStartupCubit(maintenanceRunner: () => maintenance.future),
+        create: (context) => AppStartupCubit(taskRunner: () => maintenance.future),
         child: AppStartupGate(
-          readyBuilder: (context) {
+          builder: (context) {
             readyBuilds++;
             return const MaterialApp(home: Text('Ready app'));
           },
@@ -41,13 +41,13 @@ void main() {
     await tester.pumpWidget(
       BlocProvider(
         create: (context) => AppStartupCubit(
-          maintenanceRunner: () async {
+          taskRunner: () async {
             attempts++;
             if (attempts == 1) throw StateError('maintenance failed');
           },
         ),
         child: AppStartupGate(
-          readyBuilder: (context) => const MaterialApp(home: Text('Ready app')),
+          builder: (context) => const MaterialApp(home: Text('Ready app')),
         ),
       ),
     );

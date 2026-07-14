@@ -1,4 +1,0 @@
-enum ImageCachingMode {
-  aggressive,
-  relaxed;
-}

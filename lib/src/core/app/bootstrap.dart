@@ -20,17 +20,17 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Enables edge-to-edge on older Android devices. Android 15 and up automatically enforces it.
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  if (!kIsWeb && Platform.isAndroid) SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   runApp(
     BlocProvider<AppStartupCubit>(
-      create: (context) => AppStartupCubit(maintenanceRunner: runStartupMaintenance),
+      create: (context) => AppStartupCubit(taskRunner: runStartupTasks),
       child: AppStartupGate(
-        readyBuilder: (context) => BlocProvider<SessionBloc>(
+        builder: (context) => BlocProvider<SessionBloc>(
           create: (context) => createSessionBloc()..add(const SessionInitialized()),
           child: const ThunderApp(),
         ),
-        onReady: () => clearExtendedImageCache(),
+        onReady: () => clearImageCache(),
       ),
     ),
   );
@@ -39,7 +39,7 @@ Future<void> bootstrap() async {
   if (!kIsWeb && Platform.isAndroid) FlutterDisplayMode.setHighRefreshRate();
 }
 
-Future<void> runStartupMaintenance() async {
+Future<void> runStartupTasks() async {
   final appDatabase = initializeDatabase();
 
   await Future.wait([

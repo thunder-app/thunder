@@ -415,7 +415,8 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
 
     _dragZoomActive = true;
 
-    final scaleDelta = -delta.dy / 160;
+    // Android quick-scale: drag down zooms in, drag up zooms out.
+    final scaleDelta = delta.dy / 160;
     final targetScale = (_doubleTapBaseScale * (1 + scaleDelta)).clamp(widget.minScale, widget.maxScale);
     final targetOffset = targetScale <= widget.minScale + _gestureEpsilon
         ? Offset.zero

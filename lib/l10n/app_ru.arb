@@ -1093,14 +1093,6 @@
   "@linkHandlingInAppShort": {
     "description": "Short description for in-app link handling"
   },
-  "imageCachingModeAggressiveShort": "Агрессивный",
-  "@imageCachingModeAggressiveShort": {
-    "description": "Short description for aggressive image caching mode"
-  },
-  "imageCachingModeRelaxedShort": "Расслабление",
-  "@imageCachingModeRelaxedShort": {
-    "description": "Short description for relaxed image caching mode"
-  },
   "noItems": "Нет предметов",
   "@noItems": {
     "description": "Generic text when there are no items"

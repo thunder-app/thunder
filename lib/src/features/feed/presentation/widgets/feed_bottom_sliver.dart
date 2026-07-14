@@ -6,20 +6,13 @@ import 'package:thunder/src/features/feed/feed.dart';
 class FeedBottomSliver extends StatelessWidget {
   const FeedBottomSliver({
     super.key,
-    required this.state,
-    required this.selectedSubview,
+    required this.hasReachedEnd,
   });
 
-  /// Current feed state containing end-of-feed flags.
-  final FeedState state;
-
-  /// Selected feed subview whose end flag should be used.
-  final FeedTypeSubview selectedSubview;
+  final bool hasReachedEnd;
 
   @override
   Widget build(BuildContext context) {
-    final hasReachedEnd = selectedSubview == FeedTypeSubview.post ? state.hasReachedPostsEnd : state.hasReachedCommentsEnd;
-
     return SliverToBoxAdapter(
       child: hasReachedEnd
           ? const FeedReachedEnd()

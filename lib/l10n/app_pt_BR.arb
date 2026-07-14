@@ -1556,26 +1556,6 @@
         "description": "Settings toggle to hide the top bar on scroll"
     },
     "image": "Imagem",
-    "imageCachingMode": "Modo de cache de imagens",
-    "@imageCachingMode": {
-        "description": "Title for setting related to image caching mode"
-    },
-    "imageCachingModeAggressive": "Armazene imagens em cache de forma agressiva (usa mais memória)",
-    "@imageCachingModeAggressive": {
-        "description": "Long description for aggressive image caching mode"
-    },
-    "imageCachingModeAggressiveShort": "Agressivo",
-    "@imageCachingModeAggressiveShort": {
-        "description": "Short description for aggressive image caching mode"
-    },
-    "imageCachingModeRelaxed": "Deixar os caches de imagens expirarem (usa menos memória, mas faz com que as imagens sejam recarregadas com mais frequência)",
-    "@imageCachingModeRelaxed": {
-        "description": "Long description for relaxed image caching mode"
-    },
-    "imageCachingModeRelaxedShort": "Relaxado",
-    "@imageCachingModeRelaxedShort": {
-        "description": "Short description for relaxed image caching mode"
-    },
     "importDatabase": "Importar banco de dados",
     "@importDatabase": {
         "description": "Name of setting for importing the db"

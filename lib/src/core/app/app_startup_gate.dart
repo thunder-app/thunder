@@ -9,11 +9,14 @@ import 'package:thunder/src/core/state/app_startup_cubit.dart';
 class AppStartupGate extends StatefulWidget {
   const AppStartupGate({
     super.key,
-    required this.readyBuilder,
+    required this.builder,
     this.onReady,
   });
 
-  final WidgetBuilder readyBuilder;
+  /// The builder that will be used to build the app when the app is ready
+  final WidgetBuilder builder;
+
+  /// The callback that will be called when the app is ready
   final VoidCallback? onReady;
 
   @override
@@ -26,6 +29,7 @@ class _AppStartupGateState extends State<AppStartupGate> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) context.read<AppStartupCubit>().initialize();
     });
@@ -37,11 +41,12 @@ class _AppStartupGateState extends State<AppStartupGate> {
       listenWhen: (previous, current) => previous.status != AppStartupStatus.ready && current.status == AppStartupStatus.ready,
       listener: (context, state) {
         if (_hasRunReadyCallback) return;
+
         _hasRunReadyCallback = true;
         WidgetsBinding.instance.addPostFrameCallback((_) => widget.onReady?.call());
       },
       builder: (context, state) {
-        if (state.status == AppStartupStatus.ready) return widget.readyBuilder(context);
+        if (state.status == AppStartupStatus.ready) return widget.builder(context);
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -53,7 +58,7 @@ class _AppStartupGateState extends State<AppStartupGate> {
               AppStartupStatus.failure => Builder(
                   builder: (context) => ThunderStateView(
                     title: AppLocalizations.of(context)!.somethingWentWrong,
-                    message: state.errorMessage,
+                    message: state.error,
                     actions: [
                       ThunderStateAction(
                         label: AppLocalizations.of(context)!.retry,
