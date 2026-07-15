@@ -69,6 +69,7 @@ class PostCardTitle extends StatelessWidget {
     final theme = Theme.of(context);
     final textStyle = theme.textTheme.bodyMedium;
 
+    final titleFontWeight = context.select<ThemePreferencesCubit, TitleFontWeight>((cubit) => cubit.state.titleFontWeight);
     final textScaleFactor = context.select<ThemePreferencesCubit, double>((cubit) => cubit.state.titleFontSizeScale.textScaleFactor);
     final fontSize = _calculateFontSize(context, textStyle, textScaleFactor);
 
@@ -84,7 +85,7 @@ class PostCardTitle extends StatelessWidget {
               TextSpan(
                 text: title,
                 style: textStyle?.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: titleFontWeight.toWeight(),
                   fontSize: fontSize,
                   color: _getTitleColor(theme),
                 ),

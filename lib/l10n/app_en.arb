@@ -2221,6 +2221,26 @@
   "@postTitleFontScale": {
     "description": "Setting for post title font scale"
   },
+  "postTitleBold": "Bold post titles",
+  "@postTitleBold": {
+    "description": "Setting for bolding post titles"
+  },
+  "postTitleFontWeight": "Post Title Weight",
+  "@postTitleFontWeight": {
+    "description": "Setting for post title font weight"
+  },
+  "postTitleFontWeightNormal": "Normal",
+  "@postTitleFontWeightNormal": {
+    "description": "Label for normal post title font weight"
+  },
+  "postTitleFontWeightBold": "Bold",
+  "@postTitleFontWeightBold": {
+    "description": "Label for bold post title font weight"
+  },
+  "postTitleFontWeightExtraBold": "Extra bold",
+  "@postTitleFontWeightExtraBold": {
+    "description": "Label for extra bold post title font weight"
+  },
   "postTogglePreview": "Toggle Preview",
   "@postTogglePreview": {},
   "postURL": "URL",

@@ -1972,6 +1972,21 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tamaño de la fuente del título de la publicación';
 
   @override
+  String get postTitleBold => 'Bold post titles';
+
+  @override
+  String get postTitleFontWeight => 'Post Title Weight';
+
+  @override
+  String get postTitleFontWeightNormal => 'Normal';
+
+  @override
+  String get postTitleFontWeightBold => 'Bold';
+
+  @override
+  String get postTitleFontWeightExtraBold => 'Extra bold';
+
+  @override
   String get postTogglePreview => 'Cambiar vista previa';
 
   @override

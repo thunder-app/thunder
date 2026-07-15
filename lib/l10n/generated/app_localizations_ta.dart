@@ -1968,6 +1968,21 @@ class AppLocalizationsTa extends AppLocalizations {
   String get postTitleFontScale => 'தலைப்பு எழுத்துரு அளவை இடுங்கள்';
 
   @override
+  String get postTitleBold => 'Bold post titles';
+
+  @override
+  String get postTitleFontWeight => 'Post Title Weight';
+
+  @override
+  String get postTitleFontWeightNormal => 'Normal';
+
+  @override
+  String get postTitleFontWeightBold => 'Bold';
+
+  @override
+  String get postTitleFontWeightExtraBold => 'Extra bold';
+
+  @override
   String get postTogglePreview => 'முன்னோட்டத்தை மாற்றவும்';
 
   @override

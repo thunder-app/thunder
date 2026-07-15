@@ -3522,6 +3522,36 @@ abstract class AppLocalizations {
   /// **'Post Title Font Scale'**
   String get postTitleFontScale;
 
+  /// Setting for bolding post titles
+  ///
+  /// In en, this message translates to:
+  /// **'Bold post titles'**
+  String get postTitleBold;
+
+  /// Setting for post title font weight
+  ///
+  /// In en, this message translates to:
+  /// **'Post Title Weight'**
+  String get postTitleFontWeight;
+
+  /// Label for normal post title font weight
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get postTitleFontWeightNormal;
+
+  /// Label for bold post title font weight
+  ///
+  /// In en, this message translates to:
+  /// **'Bold'**
+  String get postTitleFontWeightBold;
+
+  /// Label for extra bold post title font weight
+  ///
+  /// In en, this message translates to:
+  /// **'Extra bold'**
+  String get postTitleFontWeightExtraBold;
+
   /// No description provided for @postTogglePreview.
   ///
   /// In en, this message translates to:

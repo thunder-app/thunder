@@ -49,6 +49,7 @@ class ThemePreferencesCubit extends Cubit<ThemePreferencesState> {
 
     // Font Settings
     final titleFontSizeScale = FontScale.values.byName(_preferencesStore.getLocalSetting(LocalSettings.titleFontSizeScale) ?? FontScale.base.name);
+    final titleFontWeight = TitleFontWeight.values.byName(_preferencesStore.getLocalSetting(LocalSettings.titleFontWeight) ?? TitleFontWeight.normal.name);
     final contentFontSizeScale = FontScale.values.byName(_preferencesStore.getLocalSetting(LocalSettings.contentFontSizeScale) ?? FontScale.base.name);
     final commentFontSizeScale = FontScale.values.byName(_preferencesStore.getLocalSetting(LocalSettings.commentFontSizeScale) ?? FontScale.base.name);
     final metadataFontSizeScale = FontScale.values.byName(_preferencesStore.getLocalSetting(LocalSettings.metadataFontSizeScale) ?? FontScale.base.name);
@@ -79,6 +80,7 @@ class ThemePreferencesCubit extends Cubit<ThemePreferencesState> {
       replyColor: replyColor,
       hideColor: hideColor,
       titleFontSizeScale: titleFontSizeScale,
+      titleFontWeight: titleFontWeight,
       contentFontSizeScale: contentFontSizeScale,
       commentFontSizeScale: commentFontSizeScale,
       metadataFontSizeScale: metadataFontSizeScale,

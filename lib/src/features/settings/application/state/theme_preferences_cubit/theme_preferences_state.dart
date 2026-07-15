@@ -13,6 +13,7 @@ class ThemePreferencesState extends Equatable {
     this.replyColor = const ActionColor.fromString(colorRaw: ActionColor.green),
     this.hideColor = const ActionColor.fromString(colorRaw: ActionColor.red),
     this.titleFontSizeScale = FontScale.base,
+    this.titleFontWeight = TitleFontWeight.normal,
     this.contentFontSizeScale = FontScale.base,
     this.commentFontSizeScale = FontScale.base,
     this.metadataFontSizeScale = FontScale.base,
@@ -62,6 +63,9 @@ class ThemePreferencesState extends Equatable {
 
   /// The font scale to use for the title font size (post title)
   final FontScale titleFontSizeScale;
+
+  /// The font weight to use for the title font (post title)
+  final TitleFontWeight titleFontWeight;
 
   /// The font scale to use for the content font size (post content)
   final FontScale contentFontSizeScale;
@@ -128,6 +132,7 @@ class ThemePreferencesState extends Equatable {
     ActionColor? replyColor,
     ActionColor? hideColor,
     FontScale? titleFontSizeScale,
+    TitleFontWeight? titleFontWeight,
     FontScale? contentFontSizeScale,
     FontScale? commentFontSizeScale,
     FontScale? metadataFontSizeScale,
@@ -156,6 +161,7 @@ class ThemePreferencesState extends Equatable {
       replyColor: replyColor ?? this.replyColor,
       hideColor: hideColor ?? this.hideColor,
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
+      titleFontWeight: titleFontWeight ?? this.titleFontWeight,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
       commentFontSizeScale: commentFontSizeScale ?? this.commentFontSizeScale,
       metadataFontSizeScale: metadataFontSizeScale ?? this.metadataFontSizeScale,
@@ -188,6 +194,7 @@ class ThemePreferencesState extends Equatable {
         replyColor,
         hideColor,
         titleFontSizeScale,
+        titleFontWeight,
         contentFontSizeScale,
         commentFontSizeScale,
         metadataFontSizeScale,
@@ -204,4 +211,28 @@ class ThemePreferencesState extends Equatable {
         communityFullNameInstanceNameThickness,
         communityFullNameInstanceNameColor,
       ];
+}
+
+enum TitleFontWeight {
+  normal,
+  bold,
+  extraBold,
+}
+
+extension TitleFontWeightExtension on TitleFontWeight {
+  FontWeight toWeight() {
+    return switch (this) {
+      TitleFontWeight.normal => FontWeight.w600,
+      TitleFontWeight.bold => FontWeight.w800,
+      TitleFontWeight.extraBold => FontWeight.w900,
+    };
+  }
+
+  String get label {
+    return switch (this) {
+      TitleFontWeight.normal => 'Normal',
+      TitleFontWeight.bold => 'Bold',
+      TitleFontWeight.extraBold => 'Extra bold',
+    };
+  }
 }

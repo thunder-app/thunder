@@ -284,6 +284,7 @@ enum LocalSettings {
 
   // Font Settings
   titleFontSizeScale(name: 'setting_theme_title_font_size_scale', key: 'postTitleFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
+  titleFontWeight(name: 'setting_theme_title_font_weight', key: 'postTitleFontWeight', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   contentFontSizeScale(name: 'setting_theme_content_font_size_scale', key: 'postContentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', key: 'commentFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),
   metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', key: 'metadataFontScale', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.fonts),

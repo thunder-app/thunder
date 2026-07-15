@@ -102,6 +102,7 @@ class PostBodyTitle extends StatelessWidget {
   Widget _buildTitleText(BuildContext context) {
     final theme = Theme.of(context);
     final titleFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.titleFontSizeScale);
+    final titleFontWeight = context.select<ThemePreferencesCubit, TitleFontWeight>((cubit) => cubit.state.titleFontWeight);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +110,7 @@ class PostBodyTitle extends StatelessWidget {
         ThunderScalableText(
           post.name,
           textScaleFactor: titleFontSizeScale.textScaleFactor,
-          style: theme.textTheme.titleMedium,
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: titleFontWeight.toWeight()),
         ),
       ],
     );

@@ -121,6 +121,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
+  TitleFontWeight titleFontWeight = TitleFontWeight.normal;
+  List<ThunderListPickerItem<TitleFontWeight>> titleFontWeightOptions = [];
   FontScale contentFontSizeScale = FontScale.base;
   FontScale commentFontSizeScale = FontScale.base;
   FontScale metadataFontSizeScale = FontScale.base;
@@ -231,6 +233,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
           context.read<ThemePreferencesCubit>().reload();
         }
         break;
+      case LocalSettings.titleFontWeight:
+        await prefs.setString(LocalSettings.titleFontWeight.name, (value as TitleFontWeight).name);
+        setState(() => titleFontWeight = value);
+        if (context.mounted) {
+          context.read<ThemePreferencesCubit>().reload();
+        }
+        break;
       case LocalSettings.contentFontSizeScale:
         await prefs.setString(LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
@@ -333,6 +342,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
+      titleFontWeight = TitleFontWeight.values.byName(prefs.getString(LocalSettings.titleFontWeight.name) ?? TitleFontWeight.normal.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
       commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
       metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
@@ -370,6 +380,19 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
                 ),
               ),
+            ),
+          )
+          .toList();
+      titleFontWeightOptions = TitleFontWeight.values
+          .map(
+            (TitleFontWeight weight) => ThunderListPickerItem(
+              icon: Icons.format_bold,
+              label: switch (weight) {
+                TitleFontWeight.normal => l10n.postTitleFontWeightNormal,
+                TitleFontWeight.bold => l10n.postTitleFontWeightBold,
+                TitleFontWeight.extraBold => l10n.postTitleFontWeightExtraBold,
+              },
+              payload: weight,
             ),
           )
           .toList();
@@ -553,6 +576,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         highlightKey: settingToHighlightKey,
                         onLongPress: () => shareLocalSetting(context, LocalSettings.titleFontSizeScale),
                         highlighted: settingToHighlight == LocalSettings.titleFontSizeScale),
+                    ThunderListOption(
+                        title: l10n.postTitleFontWeight,
+                        value: ThunderListPickerItem(
+                            label: switch (titleFontWeight) {
+                              TitleFontWeight.normal => l10n.postTitleFontWeightNormal,
+                              TitleFontWeight.bold => l10n.postTitleFontWeightBold,
+                              TitleFontWeight.extraBold => l10n.postTitleFontWeightExtraBold,
+                            },
+                            icon: Icons.format_bold,
+                            payload: titleFontWeight),
+                        options: titleFontWeightOptions,
+                        leading: Icon(Icons.format_bold),
+                        onChanged: (value) async => setPreferences(LocalSettings.titleFontWeight, value.payload),
+                        highlightKey: settingToHighlightKey,
+                        onLongPress: () => shareLocalSetting(context, LocalSettings.titleFontWeight),
+                        highlighted: settingToHighlight == LocalSettings.titleFontWeight),
                     ThunderListOption(
                         title: l10n.postContentFontScale,
                         value: ThunderListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
