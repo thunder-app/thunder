@@ -34,7 +34,9 @@ final RegExp _lemmyUserMention = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.
 
 /// Matches instance.tld/post/123
 /// Groups: 2=instance, 3=postId
-final RegExp _lemmyPostUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)$');
+// final RegExp _lemmyPostUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)$');
+// Modified to allow query parameters, e.g. /post/123?foo=bar
+final RegExp _lemmyPostUrl = RegExp(r'^(https?:\/\/)(.*)/post/([0-9]+)(?:\?.*)?$');
 
 /// Matches instance.tld/comment/123
 /// Groups: 2=instance, 3=commentId

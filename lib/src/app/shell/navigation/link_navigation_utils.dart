@@ -157,7 +157,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
   }
 
   // Try navigating to post
-  int? postId = await getLemmyPostId(context, url);
+  int? postId = await getLemmyPostId(context, checkEmbeddedInstance(url));
   if (postId != null) {
     try {
       // Show the loading page while we fetch the post

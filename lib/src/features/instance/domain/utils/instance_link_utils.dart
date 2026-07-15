@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
 import 'package:thunder/src/foundation/primitives/primitives.dart';
 import 'package:thunder/src/features/search/search.dart';
 import 'package:thunder/src/features/session/api.dart';
@@ -31,6 +32,21 @@ Future<String?> getLemmyCommunity(String text) async {
 Future<String?> getLemmyUser(String text) async {
   final result = parseUser(text);
   return result?.qualified;
+}
+
+// Check for URLs from instance-agnostic shareable links like lemmyverse.link and threadiverse.link.
+// Users and communities are already parsed correctly, this adds detection and handling for posts.
+String checkEmbeddedInstance(String text) {
+  final uri = Uri.tryParse(text);
+  if (uri == null || uri.host.isEmpty) return text;
+  if (uri.pathSegments.isEmpty) return text;
+
+  final first = uri.pathSegments.first;
+  // Only rewrite if the first path segment exactly matches a known instance host.
+  if (!knownInstances.containsKey(first)) return text;
+
+  final remaining = uri.pathSegments.sublist(1);
+  return uri.replace(host: first, pathSegments: remaining).toString();
 }
 
 /// Gets the post ID from a Lemmy/PieFed URL.
