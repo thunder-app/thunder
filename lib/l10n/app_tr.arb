@@ -9,7 +9,7 @@
     },
     "accessibility": "Erişilebilirlik",
     "accessibilityProfilesDescription": "Erişilebilirlik profilleri, belirli bir erişilebilirlik gereksinimini karşılamak için birkaç ayarın aynı anda uygulanmasına olanak tanır.",
-    "account": "{count, plural, one {Hesap} other {Hesap}} ",
+    "account": "{count, plural, zero {Hesap} one {Hesap} other {Hesap} } ",
     "@account": {
         "description": "Kullanıcı hesabını tanımlar"
     },
@@ -1113,7 +1113,7 @@
     "@information": {
         "description": "Bilgi başlığı - FAB ayarları sayfasında kullanılır"
     },
-    "instance": "{count, plural, one {Sunucu} other {Sunucu}}",
+    "instance": "{count, plural, zero {Sunucu} one {Sunucu} other {Sunucu} } ",
     "@instance": {
         "description": "Bir sunucu için başlık"
     },
@@ -1184,7 +1184,7 @@
     "@light": {
         "description": "Aydınlık temayı kullanmayı tanımlar"
     },
-    "link": "{count, plural, one {Bağlantı} other {Bağlantı}}",
+    "link": "{count, plural, zero {Bağlantı} one {Bağlantı} other {Bağlantı} } ",
     "linkActions": "Bağlantı Eylemleri",
     "linkHandlingCustomTabs": "Sistem tarayıcısında uygulama içi gömülü olarak aç",
     "@linkHandlingCustomTabs": {
@@ -1300,12 +1300,12 @@
     "@medium": {
         "description": "Orta yazı tipi ölçeği için açıklama"
     },
-    "mention": "{count, plural, one {Bahsetme} other {Bahsetme}}",
+    "mention": "{count, plural, zero {Bahsetme} one {Bahsetme} other {Bahsetme} }",
     "menu": "Menü",
     "@menu": {
         "description": "Menü düğmesi açıklaması"
     },
-    "message": "{count, plural, one {Mesaj} other {Mesaj}}",
+    "message": "{count, plural, zero {Mesaj} one {Mesaj} other {Mesaj} }",
     "metadataFontScale": "Meta Veri Yazı Tipi Ölçeği",
     "@metadataFontScale": {
         "description": "Meta veri yazı tipi ölçeği ayarı"
@@ -1359,7 +1359,7 @@
     "@moderates": {
         "description": "Bir kullanıcının moderatörlüğünü yaptığı toplulukları açıklayan bir başlık"
     },
-    "moderator": "{count, plural, one {Moderatör} other {Moderatör}}",
+    "moderator": "{count, plural, zero {Moderatör} one {Moderatör} other {Moderatör}}",
     "@moderator": {
         "description": "Moderatör için rol adı"
     },
@@ -1508,7 +1508,7 @@
     "notValidLemmyInstance": "{instance} geçerli bir örnek gibi görünmüyor",
     "notValidUrl": "Geçerli bir URL değil",
     "nothingToShare": "Paylaşacak bir şey yok",
-    "notifications": "{count, plural, one {Bildirim} other {Bildirim}}",
+    "notifications": "{count, plural, zero {Bildirim} one {Bildirim} other {Bildirim}}",
     "@notifications": {
         "description": "Bildirim sayısı için mesaj biçimlendirmesi."
     },
@@ -1818,7 +1818,7 @@
     "@reorder": {
         "description": "Liste düzenleyici düğmesi için araç ipucu metni"
     },
-    "reply": "{count, plural, one {Yanıtla} other {Yanıtla}}",
+    "reply": "{count, plural, zero {Yanıt} one {Yanıt} other {Yanıt} }",
     "replyColor": "Yanıt Rengi",
     "@replyColor": {
         "description": "Yanıt rengi ayarının adı"
@@ -1826,7 +1826,7 @@
     "replyNotSupported": "Bu görünümden yanıtlamak şu anda desteklenmiyor",
     "replyToPost": "Gönderiye Yanıtla",
     "replyingTo": "{author} kullanıcısına yanıt veriliyor",
-    "report": "{count, plural, one {Şikayet} other {Şikayet}}",
+    "report": "{count, plural, zero {Şikayet} one {Şikayet} other {Şikayet} } ",
     "reportComment": "Yorumu Şikayet Et",
     "reportPost": "Gönderiyi Şikayet Et",
     "@reportPost": {
@@ -2497,7 +2497,7 @@
     },
     "unableToFindUser": "Kullanıcı bulunamadı",
     "unableToFindUserName": "'{username}' kullanıcısı bulunamadı",
-    "unableToLoadImage": "Resim yüklenemedi",
+    "unableToLoadImage": "Resim yüklenemiyor",
     "@unableToLoadImage": {
         "description": "İkili bir resmi yükleyemediğimizde yer tutucu"
     },
@@ -2856,7 +2856,7 @@
         "description": "Gönderi veya yorumun toplam puanı"
     },
     "xUpvotes": "{x} artı oy",
-    "xYearsOld": "{count, plural, one {{x} yaşında} other {{x} yaşında}}",
+    "xYearsOld": "{count, plural, zero {{x} yaşında} one {{x} yaşında} other {{x} yaşında}}",
     "@xYearsOld": {
         "description": "Bir hesabın ne kadar eski olduğunu temsil eden bir hesap tanımlayıcısı"
     },
@@ -3009,5 +3009,16 @@
     "send": "İlet",
     "@send": {
         "description": "Action to send content"
-    }
+    },
+    "failedToCreateDefaultProfile": "Varsayılan profil oluşturulamadı",
+    "@failedToCreateDefaultProfile": {
+        "description": "Error when session bootstrap cannot create the default anonymous profile"
+    },
+    "instanceOffline": "Sunucu çevrim dışı",
+    "instanceOnline": "Sunucu çevrim içi",
+    "instanceStatusUnknown": "Sunucu durumu bilinmiyor",
+    "networkErrorMessage": "Sunucuya ulaşılamıyor. Bağlantınızı gözden geçirin ve tekrar deneyin.",
+    "notAvailable": "Yok",
+    "piefedSupportBeta": "PieFed desteği şu anda beta aşamasındadır.\nHenüz tüm özellikler desteklenmiyor.",
+    "profileOperationInProgress": "Profil işlemi devam ediyor"
 }
