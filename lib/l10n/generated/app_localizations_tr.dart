@@ -1938,22 +1938,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get postTitle => 'Başlık';
 
   @override
-  String get postTitleFontScale => 'Gönderi Başlığı Yazı Tipi Ölçeği';
-
-  @override
   String get postTitleBold => 'Bold post titles';
 
   @override
-  String get postTitleFontWeight => 'Post Title Weight';
+  String get postTitleFontScale => 'Gönderi Başlığı Yazı Tipi Ölçeği';
 
   @override
-  String get postTitleFontWeightNormal => 'Normal';
+  String get postTitleFontWeight => 'Post Title Weight';
 
   @override
   String get postTitleFontWeightBold => 'Bold';
 
   @override
   String get postTitleFontWeightExtraBold => 'Extra bold';
+
+  @override
+  String get postTitleFontWeightNormal => 'Normal';
 
   @override
   String get postTogglePreview => 'Önizlemeyi Aç/Kapat';

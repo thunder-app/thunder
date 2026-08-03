@@ -1957,22 +1957,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get postTitle => 'Titre';
 
   @override
-  String get postTitleFontScale => 'Taille de police du titre des publications';
-
-  @override
   String get postTitleBold => 'Bold post titles';
 
   @override
-  String get postTitleFontWeight => 'Post Title Weight';
+  String get postTitleFontScale => 'Taille de police du titre des publications';
 
   @override
-  String get postTitleFontWeightNormal => 'Normal';
+  String get postTitleFontWeight => 'Post Title Weight';
 
   @override
   String get postTitleFontWeightBold => 'Bold';
 
   @override
   String get postTitleFontWeightExtraBold => 'Extra bold';
+
+  @override
+  String get postTitleFontWeightNormal => 'Normal';
 
   @override
   String get postTogglePreview => 'Aperçu des modifications';

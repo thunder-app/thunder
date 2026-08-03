@@ -1935,22 +1935,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get postTitle => 'Nadpis';
 
   @override
-  String get postTitleFontScale => 'Velikost Fontu u Nadpisu Příspěvku';
-
-  @override
   String get postTitleBold => 'Bold post titles';
 
   @override
-  String get postTitleFontWeight => 'Post Title Weight';
+  String get postTitleFontScale => 'Velikost Fontu u Nadpisu Příspěvku';
 
   @override
-  String get postTitleFontWeightNormal => 'Normal';
+  String get postTitleFontWeight => 'Post Title Weight';
 
   @override
   String get postTitleFontWeightBold => 'Bold';
 
   @override
   String get postTitleFontWeightExtraBold => 'Extra bold';
+
+  @override
+  String get postTitleFontWeightNormal => 'Normal';
 
   @override
   String get postTogglePreview => 'Ukázat Náhled';
