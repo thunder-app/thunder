@@ -24,20 +24,31 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - uses: subosito/flutter-action@v2
+      - name: Resolve Flutter submodule commit
+        id: flutter-submodule
+        run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Flutter toolchain
+        uses: actions/cache@v4
         with:
-          flutter-version: '3.44.x'
-          channel: "stable"
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
+          path: flutter/bin/cache
+          key: flutter-${{ runner.os }}-${{ steps.flutter-submodule.outputs.sha }}
+
+      - name: Set up Flutter from submodule
+        run: |
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          git -C flutter fetch --tags --force origin
+          rm -f flutter/bin/cache/flutter.version.json flutter/version
+          ./flutter/bin/flutter config --no-analytics
+          ./flutter/bin/flutter --version
 
       - name: Dependencies
         run: flutter pub get
-      
+
       - name: Install arb_utils to check sorting of translations
-        run: dart pub global activate arb_utils
+        run: |
+          dart pub global activate arb_utils
+          echo "${PUB_CACHE:-$HOME/.pub-cache}/bin" >> "$GITHUB_PATH"
 
       - name: Copy translation file
         run: cp ./lib/l10n/app_en.arb ./lib/l10n/app_en_tmp.arb
@@ -64,7 +75,7 @@ jobs:
           find lib -name "*.g.dart" -o -name "*.steps.dart" -o -name "*.freezed.dart" > generated_files.txt
           cat generated_files.txt
         id: find-generated-files
-      
+
       - name: Pre-format auto-generated files
         run: |
           if [ -s generated_files.txt ]; then

@@ -45,8 +45,8 @@ class _AccountPickerSheetState extends State<AccountPickerSheet> {
   Future<void> _loadAccounts() async {
     try {
       final accounts = await createSessionRepository().getAuthenticatedSessions().then(
-        (accounts) => accounts.where((account) => account.id != widget.currentAccount.id).toList(),
-      );
+            (accounts) => accounts.where((account) => account.id != widget.currentAccount.id).toList(),
+          );
 
       if (!mounted) return;
       setState(() => _accounts = accounts);

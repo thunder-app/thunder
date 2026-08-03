@@ -150,7 +150,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       // Compact View Settings
       compactPostCardMetadataItems =
           prefs.getLocalSetting<List<String>>(LocalSettings.compactPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_COMPACT_POST_CARD_METADATA;
-      cardPostCardMetadataItems = prefs.getLocalSetting<List<String>>(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
+      cardPostCardMetadataItems =
+          prefs.getLocalSetting<List<String>>(LocalSettings.cardPostCardMetadataItems)?.map((e) => PostCardMetadataItem.values.byName(e)).toList() ?? DEFAULT_CARD_POST_CARD_METADATA;
       showThumbnailPreviewOnRight = prefs.getLocalSetting<bool>(LocalSettings.showThumbnailPreviewOnRight) ?? false;
       showTextPostIndicator = prefs.getLocalSetting<bool>(LocalSettings.showTextPostIndicator) ?? false;
 

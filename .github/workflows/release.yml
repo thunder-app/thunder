@@ -59,16 +59,30 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Resolve Flutter submodule commit
+        id: flutter-submodule
+        run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Flutter toolchain
+        uses: actions/cache@v4
         with:
-          flutter-version: '3.44.x' # When updating this, also update the corresponding f-droid metadata file
-          channel: 'stable'
-          cache: true
+          path: flutter/bin/cache
+          key: flutter-${{ runner.os }}-${{ steps.flutter-submodule.outputs.sha }}
+
+      - name: Set up Flutter from submodule
+        run: |
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          git -C flutter fetch --tags --force origin
+          rm -f flutter/bin/cache/flutter.version.json flutter/version
+          ./flutter/bin/flutter config --no-analytics
+          ./flutter/bin/flutter --version
+
+      - name: Dependencies
+        run: flutter pub get
 
       - name: Build Android APKs (unsigned)
         run: |
-          sed -i 's/signingConfig signingConfigs.release//g' android/app/build.gradle
+          # Signing is applied only when android/key.properties exists (see android/app/build.gradle).
           flutter build apk --split-per-abi --release --flavor production
           rm ./build/app/outputs/flutter-apk/*.sha1
           ls -l ./build/app/outputs/flutter-apk/
@@ -124,12 +138,23 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Resolve Flutter submodule commit
+        id: flutter-submodule
+        run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Flutter toolchain
+        uses: actions/cache@v4
         with:
-          flutter-version: '3.44.x' # When updating this, also update the corresponding f-droid metadata file
-          channel: 'stable'
-          cache: true
+          path: flutter/bin/cache
+          key: flutter-${{ runner.os }}-${{ steps.flutter-submodule.outputs.sha }}
+
+      - name: Set up Flutter from submodule
+        run: |
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          git -C flutter fetch --tags --force origin
+          rm -f flutter/bin/cache/flutter.version.json flutter/version
+          ./flutter/bin/flutter config --no-analytics
+          ./flutter/bin/flutter --version
 
       - name: Install Flutter dependencies
         run: flutter pub get
